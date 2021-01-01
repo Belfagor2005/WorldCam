@@ -55,7 +55,7 @@ from htmlentitydefs import name2codepoint as n2cp
 THISPLUG  = os.path.dirname(sys.modules[__name__].__file__)
 path = THISPLUG + '/channels/'
 DESKHEIGHT = getDesktop(0).size().height()
-version = '3.3_r1'
+version = '3.4_r1'
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.1', False)
 
@@ -566,7 +566,7 @@ class Webcam5(Screen):
         self.urls = []
         content = getUrl(self.url)
         print('content B =', content)
-        regexvideo = 'webcam"><a href="(.*?)".*?alt="(.*?)"'
+        regexvideo = 'webcam">.*?<a href="(.*?)".*?alt="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         print('match =', match)
         items = []
