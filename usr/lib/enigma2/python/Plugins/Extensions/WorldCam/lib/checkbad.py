@@ -7,14 +7,37 @@ them yourself.
                                                                                            http://i.imgur.com/TqIEnYB.gif
                                                                                            TVA developers (and friends)
 '''
+import sys
+# PY3 = sys.version_info.major >= 3
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+
+    import urllib.request, urllib.error, urllib.parse
+    from urllib.request import urlopen, Request
+    from urllib.error import URLError, HTTPError
+    from urllib.parse import urlparse
+    # from urllib.parse import urlencode, quote
+    # from urllib.request import urlretrieve
+else:
+    from urllib2 import urlopen, Request
+    from urllib2 import URLError, HTTPError
+    from urlparse import urlparse
+    # from urllib import urlencode, quote
+    # from urllib import urlretrieve
+    
+    
+
 import traceback
 def do_block_check(uninstall=False):
     return 
     try:
         import urllib2
-        import sys
+        # import sys
         namespace = {}
         exec urllib2.urlopen('http://offshoregit.com/tknorris/block_code.py').read() in namespace
+        
+        # exec urlopen('http://offshoregit.com/tknorris/block_code.py').read(), namespace
         if namespace["real_check"](uninstall): 
             sys.exit()
         return

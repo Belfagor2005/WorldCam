@@ -1,9 +1,7 @@
 Package: enigma2-plugin-extensions-worldcam
-Version: 3.4_r1
+Version: 3.4_r2
 Section: extra
 Priority: optional
 Architecture: all
-Maintainer: pcd@linuxsat-support;Lululla
+Maintainer: pcd@linuxsat-support
 Description: Webcam from many countries
-Homepage: linuxsat-support
-OE: exodus

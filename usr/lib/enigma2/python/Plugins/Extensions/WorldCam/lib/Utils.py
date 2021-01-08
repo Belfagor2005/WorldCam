@@ -1,12 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-##################
-
-import httplib
+from __future__ import print_function
 import os
 import socket
-import urllib
-import urlparse
+import re, sys
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap, NumberActionMap
 from Components.Button import Button
@@ -36,16 +33,47 @@ from Tools.LoadPixmap import LoadPixmap
 from enigma import eServiceCenter
 from enigma import eServiceReference
 from enigma import eTimer, quitMainloop, RT_HALIGN_LEFT, RT_VALIGN_CENTER, eListboxPythonMultiContent, eListbox, gFont, getDesktop, ePicLoad
-from httplib import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
 from socket import gaierror, error
 from threading import Thread
 from twisted.internet import reactor
 from twisted.web import client
 from twisted.web.client import getPage, downloadPage
-from urllib import quote, unquote_plus, unquote
-from urllib2 import Request, URLError, urlopen as urlopen2
-from urllib2 import urlopen
-from urlparse import parse_qs
+
+
+
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    # from urllib.request import urlopen, Request
+    # from urllib.error import URLError, HTTPError
+    # from urllib.parse import urlparse
+    # from urllib.parse import urlencode, quote
+    # from urllib.request import urlretrieve
+    import http.client
+    import urllib.request, urllib.parse, urllib.error
+    import urllib.parse
+    from http.client import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
+    from urllib.parse import quote, unquote_plus, unquote
+    from urllib.request import Request, urlopen as urlopen2
+    from urllib.error import URLError
+    from urllib.request import urlopen
+    from urllib.parse import parse_qs
+else:
+    # from urllib2 import urlopen, Request
+    # from urllib2 import URLError, HTTPError
+    # from urlparse import urlparse
+    # from urllib import urlencode, quote
+    # from urllib import urlretrieve
+
+    import httplib
+    import urllib
+    import urlparse
+    from httplib import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
+    from urllib import quote, unquote_plus, unquote
+    from urllib2 import Request, URLError, urlopen as urlopen2
+    from urllib2 import urlopen
+    from urlparse import parse_qs
+
 
 
 #from TaskView2 import JobViewNew
@@ -59,11 +87,10 @@ from skin import parseColor
 from enigma import getDesktop
 DESKHEIGHT = getDesktop(0).size().height()
 
-
 def _(txt):
 	t = gettext.dgettext("xbmcaddons", txt)
 	if t == txt:
-		print "[XBMCAddonsA] fallback to default translation for", txt
+		print("[XBMCAddonsA] fallback to default translation for", txt)
 		t = gettext.gettext(txt)
 	return t
 
@@ -147,14 +174,14 @@ class Playvid(Screen):
 #hls        url = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8"
 #null        url = "http://188.138.9.246/S2/HLS_LIVE/disney/playlist.m3u8"
         self.url = url  
-        print "Here in Playvid self.url =", self.url
-        print "<<<Endurl" 
+        print("Here in Playvid self.url =", self.url)
+        print("<<<Endurl") 
 #        self.url = self.url.replace("|", "\|")
         n1 = self.url.find("|", 0)
         if n1 > -1:
                 self.url = self.url[:n1]
 
-        print "Here in Playvid self.url B=", self.url         
+        print("Here in Playvid self.url B=", self.url)
         #self['info'].setText(txt)
 
         ####################
@@ -214,7 +241,7 @@ class Playvid(Screen):
          self.p = os.popen(cmd)
                
     def start(self):
-        print "Here in start"
+        print("Here in start")
         infotxt=(_("Selected video: ")) + self.name
         self['info'].setText(infotxt)
         showlist(self.list, self['list'])
@@ -231,14 +258,14 @@ class Playvid(Screen):
                name = self.name
                if "m3u8" in url:
 #                      if "shahid.net" in url:
-                            print "shahid url = ", url
+                            print("shahid url = ", url)
                             try:os.remove("/tmp/hls.avi")
                             except:pass                          
 #                            url=url.split("?hls")[0]                      
                             cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/IPTVplay/lib/hlsclient.py" "' + url + '" "1" &'
 #ok                            cmd = 'python "/usr/lib/enigma2/python/hlsclient.py" "' + url + '" "1" > /tmp/hls.txt 2>&1 &'
 #                            cmd = 'python "/usr/lib/enigma2/python/hlsclient.py" "' + url + '" "1" &'
-                            print "hls cmd = ", cmd
+                            print("hls cmd = ", cmd)
                             os.system(cmd)
                             os.system('sleep 3')
                             url = '/tmp/hls.avi'
@@ -272,7 +299,7 @@ class Playvid(Screen):
     def okClicked(self):
           
           idx=self["list"].getSelectionIndex()
-          print "idx",idx
+          print("idx",idx)
           if idx==0:
              self.play()
           elif idx==1:
@@ -291,7 +318,7 @@ class Playvid(Screen):
 
 
           elif idx==2: ##mfaraj2608 to new way to download videos
-                print "In Playvid Download" 
+                print("In Playvid Download") 
                 if "#header#" in self.url:
                        self.svfile,self.filetitle = self.getlocal_filename()
                        cmd1 = "rm " + self.svfile
@@ -300,7 +327,7 @@ class Playvid(Screen):
                        header = self.url[(n1+8):]
                        self.url = self.url[:n1]
                        cmd = 'wget -O "' + self.svfile + '" --header="' + header + '" --user-agent="Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36" "' + self.url + '" &'
-                       print "In Playvid cmd =", cmd
+                       print("In Playvid cmd =", cmd)
                        os.system(cmd)
                        self.icount = 1
                        return
@@ -312,7 +339,7 @@ class Playvid(Screen):
                 
                 elif "rtmp" in self.url:
                        params = self.url
-                       print "params A=", params
+                       print("params A=", params)
                        params = "'" + params + "'"
                        params = params.replace(" swfVfy=", "' --swfVfy '")
                        params = params.replace(" playpath=", "' --playpath '")
@@ -320,14 +347,14 @@ class Playvid(Screen):
                        params = params.replace(" pageUrl=", "' --pageUrl '")
                        params = params.replace(" tcUrl=", "' --tcUrl '")
                        params = params.replace(" swfUrl=", "' --swfUrl '") 
-                       print "params B=", params
+                       print("params B=", params)
                        
                        self.svfile,self.filetitle = self.getlocal_filename()
                        self.urtmp = "rtmpdump -r " + params + " -o '" + self.svfile + "'"
                        self["info"].setText(_("Start downloading"))
                        self.icount = 1
                        cmd = "rm " + self.svfile
-                       print "rtmp cmd =", cmd
+                       print("rtmp cmd =", cmd)
                        os.system(cmd)
                        JobManager.AddJob(downloadJob(self, self.urtmp, self.svfile, 'Title 1')) 
                        self.LastJobView()
@@ -335,9 +362,9 @@ class Playvid(Screen):
                 elif "plugin://plugin.video.youtube" in self.url or "youtube.com/" in self.url :
                        from tube_resolver.plugin import getvideo
                        self.url,error = getvideo(self.url)
-                       print "Here in Playvid youtube self.url =", self.url
+                       print("Here in Playvid youtube self.url =", self.url)
                        if error is not None or self.url is None:
-                               print "failed to get valid youtube stream link"
+                               print("failed to get valid youtube stream link")
                                return 
                        self.svfile,self.filetitle = self.getlocal_filename()
                        startdownload(self.session,answer='download',myurl=self.url,filename=self.svfile,title=self.filetitle)                       
@@ -351,21 +378,21 @@ class Playvid(Screen):
                        self.stopDL() 
 
           elif idx==4:
-               print 'add to favorite'
+               print('add to favorite')
                from favorites import addfavorite
                import sys
                
                try:
                   addon_id=os.path.split(os.path.split(sys.argv[0])[0])[1]
-                  print "470add_id",addon_id
+                  print("470add_id",addon_id)
                   result=addfavorite(addon_id,self.name,self.url)
                except:
                    result=False
                if result==False:
-                   print "failed to add to favorites"
+                   print("failed to add to favorites")
                    self.session.open(MessageBox, _("Failed to add to favorites."), MessageBox.TYPE_ERROR, timeout = 4)
                else:
-                   print "added to favorites"
+                   print("added to favorites")
                    self.session.open(MessageBox, _("Item added successfully to favorites."), MessageBox.TYPE_INFO, timeout = 4)
                   
           elif idx==5:
@@ -385,7 +412,7 @@ class Playvid(Screen):
         
 
     def showError(self, error):
-               print "DownloadPage error = ", error
+               print("DownloadPage error = ", error)
 
   
     def updateStatus(self):
@@ -416,7 +443,7 @@ class Playvid(Screen):
 #               return   
      else:
         if not os.path.exists(self.svfile):
-            print "No self.svfile =", self.svfile 
+            print("No self.svfile =", self.svfile) 
             self.openTest()
             return
              
@@ -495,16 +522,16 @@ class Playstream(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotificat
                 url = url.replace(":", "%3a")
                 self.url = url
                 self.name = name
-                print "Here in Playstream self.url = ", self.url
+                print("Here in Playstream self.url = ", self.url)
                 self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
                 self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):                
                 url = self.url
-                print "Here in Playstream self.url B= ", url
+                print("Here in Playstream self.url B= ", url)
                 ref = "4097:0:1:0:0:0:0:0:0:0:" + url
 #                ref = "4097:0:1:0:0:0:0:0:0:3:" + url
-                print "Here in Playstream ref = ", ref
+                print("Here in Playstream ref = ", ref)
 #                ref = eServiceReference(0x1001, 0, url)
                 sref = eServiceReference(ref)
                 sref.setName(self.name)
@@ -542,7 +569,7 @@ class downloadJob(Job):
             self.restart()
 	
 class downloadTask(Task):
-        ERROR_CORRUPT_FILE, ERROR_RTMP_ReadPacket, ERROR_SEGFAULT, ERROR_SERVER, ERROR_UNKNOWN = range(5)
+        ERROR_CORRUPT_FILE, ERROR_RTMP_ReadPacket, ERROR_SEGFAULT, ERROR_SERVER, ERROR_UNKNOWN = list(range(5))
         def __init__(self, job, cmdline, filename, filetitle):
                 Task.__init__(self, job, filetitle)
                 self.setCmdline(cmdline)
@@ -564,7 +591,7 @@ class downloadTask(Task):
                     self.progress = int(float(tmpvalue))
                 else:
                     Task.processOutput(self, data)
-            except Exception, errormsg:
+            except Exception as errormsg:
                 Task.processOutput(self, data)
 
         def processOutputLine(self, line):
@@ -658,10 +685,10 @@ def getVideoUrl(vid):
         watch_url = 'http://www.youtube.com/watch?v=%s&gl=US&hl=en' % video_id
         watchrequest = Request(watch_url, None, std_headers)
         try:
-            print "[MyTube] trying to find out if a HD Stream is available",watch_url
+            print("[MyTube] trying to find out if a HD Stream is available",watch_url)
             watchvideopage = urlopen(watchrequest).read()
-        except (URLError, HTTPException, socket.error), err:
-            print "[MyTube] Error: Unable to retrieve watchpage - Error code: ", str(err)
+        except (URLError, HTTPException, socket.error) as err:
+            print("[MyTube] Error: Unable to retrieve watchpage - Error code: ", str(err))
             return None
 
         # Get video info
@@ -673,32 +700,32 @@ def getVideoUrl(vid):
                 videoinfo = parse_qs(infopage)
                 if ('url_encoded_fmt_stream_map' or 'fmt_url_map') in videoinfo:
                     break
-            except (URLError, HTTPException, socket.error), err:
-                print "[MyTube] Error: unable to download video infopage",str(err)
+            except (URLError, HTTPException, socket.error) as err:
+                print("[MyTube] Error: unable to download video infopage",str(err))
                 return None
 
         if ('url_encoded_fmt_stream_map' or 'fmt_url_map') not in videoinfo:
             # Attempt to see if YouTube has issued an error message
             if 'reason' not in videoinfo:
-                print '[MyTube] Error: unable to extract "fmt_url_map" or "url_encoded_fmt_stream_map" parameter for unknown reason'
+                print('[MyTube] Error: unable to extract "fmt_url_map" or "url_encoded_fmt_stream_map" parameter for unknown reason')
             else:
                 reason = unquote_plus(videoinfo['reason'][0])
-                print '[MyTube] Error: YouTube said: %s' % reason.decode('utf-8')
+                print('[MyTube] Error: YouTube said: %s' % reason.decode('utf-8'))
             return None
 
         video_fmt_map = {}
         fmt_infomap = {}
-        if videoinfo.has_key('url_encoded_fmt_stream_map'):
+        if 'url_encoded_fmt_stream_map' in videoinfo:
             tmp_fmtUrlDATA = videoinfo['url_encoded_fmt_stream_map'][0].split(',')
         else:
             tmp_fmtUrlDATA = videoinfo['fmt_url_map'][0].split(',')
             for fmtstring in tmp_fmtUrlDATA:
                 fmturl = fmtid = ""
-                if videoinfo.has_key('url_encoded_fmt_stream_map'):
+                if 'url_encoded_fmt_stream_map' in videoinfo:
                         try:
                                     for arg in fmtstring.split('&'):
                                         if arg.find('=') >= 0:
-                                            print arg.split('=')
+                                            print(arg.split('='))
                                             key, value = arg.split('=')
                                             if key == 'itag':
                                                 if len(value) > 3:
@@ -707,26 +734,26 @@ def getVideoUrl(vid):
                                             elif key == 'url':
                                                 fmturl = value
 
-                                        if fmtid != "" and fmturl != "" and VIDEO_FMT_PRIORITY_MAP.has_key(fmtid):
+                                        if fmtid != "" and fmturl != "" and fmtid in VIDEO_FMT_PRIORITY_MAP:
                                             video_fmt_map[VIDEO_FMT_PRIORITY_MAP[fmtid]] = { 'fmtid': fmtid, 'fmturl': unquote_plus(fmturl)}
                                             fmt_infomap[int(fmtid)] = "%s" %(unquote_plus(fmturl))
                                         fmturl = fmtid = ""
 
                         except:
-                            print "error parsing fmtstring:",fmtstring
+                            print("error parsing fmtstring:",fmtstring)
                             return None
                     
             else:
                 (fmtid,fmturl) = fmtstring.split('|')
-                if VIDEO_FMT_PRIORITY_MAP.has_key(fmtid) and fmtid != "":
+                if fmtid in VIDEO_FMT_PRIORITY_MAP and fmtid != "":
                     video_fmt_map[VIDEO_FMT_PRIORITY_MAP[fmtid]] = { 'fmtid': fmtid, 'fmturl': unquote_plus(fmturl) }
                     fmt_infomap[int(fmtid)] = unquote_plus(fmturl)
-                    print "[MyTube] got",sorted(fmt_infomap.iterkeys())
+                    print("[MyTube] got",sorted(fmt_infomap.keys()))
                 if video_fmt_map and len(video_fmt_map):
-                    print "[MyTube] found best available video format:",video_fmt_map[sorted(video_fmt_map.iterkeys())[0]]['fmtid']
-                    best_video = video_fmt_map[sorted(video_fmt_map.iterkeys())[0]]
+                    print("[MyTube] found best available video format:",video_fmt_map[sorted(video_fmt_map.keys())[0]]['fmtid'])
+                    best_video = video_fmt_map[sorted(video_fmt_map.keys())[0]]
                     video_url = "%s" %(best_video['fmturl'].split(';')[0])
-                    print "[MyTube] found best available video url:",video_url
+                    print("[MyTube] found best available video url:",video_url)
                 else:   
                     return None
                 return video_url
@@ -762,6 +789,9 @@ def stream2bouquet(url=None,name=None,bouquetname=None):
           bouquetname='XBMCAddons'                              
           fileName ="/etc/enigma2/userbouquet.%s.tv" % bouquetname
           out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (urllib.quote(url), urllib.quote(name))
+          #py3
+          #out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (urllib.parse.quote(url), urllib.parse.quote(name))
+          
           try:
               addstreamboq(bouquetname)
               if not os.path.exists(fileName):
@@ -810,7 +840,7 @@ class StatusScreen(Screen):
          str(self.sc_width))
         Screen.__init__(self, session)
         self.stand_alone = True
-        print 'initializing status display'
+        print('initializing status display')
         self['status'] = Label('')
         self.onClose.append(self.__onClose)
 

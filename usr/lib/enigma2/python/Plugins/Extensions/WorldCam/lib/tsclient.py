@@ -19,6 +19,27 @@ Depends on python-crypto (for secure stream)
 Modified for OpenPli enigma2 usage by athoik
 Modified for KodiDirect, KodiLite and IPTVworld by pcd 
 """
+import os , re , sys
+
+# PY3 = sys.version_info.major >= 3
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    from urllib.request import urlopen, Request
+    from urllib.error import URLError, HTTPError
+    from urllib.parse import urlparse
+    from urllib.parse import urlencode, quote
+    from urllib.request import urlretrieve
+    import queue
+    
+else:
+    from urllib2 import urlopen, Request
+    from urllib2 import URLError, HTTPError
+    from urlparse import urlparse
+    from urllib import urlencode, quote
+    from urllib import urlretrieve
+    import urlparse, urllib2, Queue
+
 def log(msg):
         f1=open("/tmp/e.log","a")
         ms = "\n" + msg
@@ -26,9 +47,9 @@ def log(msg):
         f1.close()
 
 pass#log("Here in hlsclient-py 1")
-import urlparse, urllib2, os , re
+
 pass#print "Here in hlsclient-py 2"
-import sys, threading, time, Queue
+import threading, time
 pass#print "Here in hlsclient-py 3"
 import operator
 pass#print "Here in hlsclient-py 4"
@@ -395,7 +416,7 @@ class hlsclient(threading.Thread):
 #    def download_chunks(self, downloadUrl, chunk_size=4096):
     def download_chunks(self, downloadUrl, chunk_size=192512):
         pass#print "Here in hlsclient-py downloadUrl =", downloadUrl
-        conn=urllib2.urlopen(downloadUrl)
+        conn=urlopen(downloadUrl)
         pass#print "Here in hlsclient-py downloadUrl done"
         while 1:
             data=conn.read(chunk_size)
@@ -479,7 +500,10 @@ class hlsclient(threading.Thread):
 ##            choice = 0
             self.url = urlparse.urljoin(self.url, variants[choice][0])
         """
-        queue = Queue.Queue(1024) # 1024 blocks of 4K each ~ 4MB buffer
+        if PY3:
+            queue = queue.Queue(1024) # 1024 blocks of 4K each ~ 4MB buffer
+        else:
+            queue = Queue.Queue(1024) # 1024 blocks of 4K each ~ 4MB buffer
         self.thread = threading.Thread(target=self.player_pipe, args=(queue, videopipe))
         self.thread.start()
 #        try:

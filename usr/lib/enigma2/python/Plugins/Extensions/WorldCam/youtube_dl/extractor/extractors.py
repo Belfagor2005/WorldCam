@@ -274,7 +274,9 @@ from .douyutv import (
     DouyuShowIE,
     DouyuTVIE,
 )
+"""
 from .dplay import DPlayIE
+"""
 from .dreisat import DreiSatIE
 from .drbonanza import DRBonanzaIE
 """
@@ -613,7 +615,9 @@ from .markiza import (
 from .massengeschmacktv import MassengeschmackTVIE
 from .matchtv import MatchTVIE
 from .mdr import MDRIE
+"""
 from .mediaset import MediasetIE
+"""
 from .mediasite import (
     MediasiteIE,
     MediasiteCatalogIE,
@@ -920,12 +924,14 @@ from .radiode import RadioDeIE
 from .radiojavan import RadioJavanIE
 from .radiobremen import RadioBremenIE
 from .radiofrance import RadioFranceIE
+"""
 from .rai import (
     RaiPlayIE,
     RaiPlayLiveIE,
     RaiPlayPlaylistIE,
     RaiIE,
 )
+"""
 from .raywenderlich import (
     RayWenderlichIE,
     RayWenderlichCourseIE,
@@ -1549,6 +1555,9 @@ from .zdf import ZDFIE, ZDFChannelIE
 from .zingmp3 import ZingMp3IE
 from .zype import ZypeIE
 """
+
+
+
 
 
 

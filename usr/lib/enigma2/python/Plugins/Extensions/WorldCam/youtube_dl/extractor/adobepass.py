@@ -1,4 +1,3 @@
-# Embedded file name: /usr/lib/enigma2/python/Plugins/Extensions/KodiLite/plugins/plugin.video.YTtest/youtube_dl/extractor/adobepass.py
 from __future__ import unicode_literals
 import re
 import time

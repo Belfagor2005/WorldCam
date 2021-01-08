@@ -1,4 +1,15 @@
-#pcd and lululla enjoy
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+'''
+****************************************
+*        coded by Lululla              *
+*             and Pcd                  *
+*             01/12/2020               *
+****************************************
+'''
+#Info http://t.me/tivustream
+# from __future__ import print_function
+# from . import _
 from Components.MenuList import MenuList
 from Components.Label import Label
 from Screens.Screen import Screen
@@ -31,26 +42,12 @@ from Components.config import config, ConfigSubsection, ConfigSelection, ConfigT
 from Components.config import NoSave
 from Components.ConfigList import ConfigListScreen
 from Screens.Standby import TryQuitMainloop
-from os import path, system
+from os import path
+from os import system
 import socket
+import ssl
 from htmlentitydefs import name2codepoint as n2cp
-##python2
-# import httplib
-# import urlparse
-# import urllib2
-# from urllib2 import Request, urlopen
-# from urllib2 import URLError
-# from urlparse import parse_qs
-# from urllib import unquote_plus
-## python 3
-# from html.entities import name2codepoint as n2cp
-# import http.client
-# import urllib.parse
-# import urllib.request, urllib.error, urllib.parse
-# from urllib.request import Request, urlopen
-# from urllib.error import URLError
-# from urllib.parse import parse_qs
-# from urllib.parse import unquote_plus
+from sys import version_info
 
 THISPLUG  = os.path.dirname(sys.modules[__name__].__file__)
 path = THISPLUG + '/channels/'
@@ -59,7 +56,7 @@ version = '3.4_r1'
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.1', False)
 
-PY3 = sys.version_info.major >= 3
+PY3 = sys.version_info[0] == 3
 
 if PY3:
 ## python 3
@@ -84,24 +81,41 @@ else:
     from urllib2 import HTTPPasswordMgrWithDefaultRealm
     from urllib2 import HTTPBasicAuthHandler
     from urllib2 import build_opener
-    
+
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
+        
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+
+
+if sys.version_info >= (2, 7, 9):
+    try:
+        import ssl
+        sslContext = ssl._create_unverified_context()
+    except:
+        sslContext = None
+
+def ssl_urlopen(url):
+    if sslContext:
+        return urlopen(url, context=sslContext)
+    else:
+        return urlopen(url)
+
 
 def checkStr(txt):
-    # convert variable to type str both in Python 2 and 3
     if PY3:
-        # Python 3
         if type(txt) == type(bytes()):
             txt = txt.decode('utf-8')
     else:
-        #Python 2
         if type(txt) == type(unicode()):
             txt = txt.encode('utf-8')
-        
     return txt
-    
 
-
-# SCREEN PATH SETTING
 SKIN_PATH = THISPLUG
 HD = getDesktop(0).size()
 iconpic = 'plugin.png'
@@ -121,7 +135,6 @@ class IPTVConf(ConfigListScreen, Screen):
 
     def __init__(self, session, args = 0):
         Screen.__init__(self, session)
-
         self.session = session
         self.setup_title = _('Plugin Configuration')
         self['title'] = Button(self.setup_title)
@@ -168,19 +181,37 @@ class IPTVConf(ConfigListScreen, Screen):
         self.session.open(TryQuitMainloop, 3)
         self.close()
 
+# def getUrl(url):
+    # print('Here in client2 getUrl url =', url)
+    # try:
+        # req = Request(url)
+        # req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        # # response = urlopen(req)
+        # response = checkStr(urlopen(req))
+        # link = response.read()
+        # response.close()
+        # return link
+    # except:
+        # return ''
+
+
 def getUrl(url):
-    print('Here in client2 getUrl url =', url)
     try:
-        req = Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        # response = urlopen(req)
-        
-        response = checkStr(urlopen(req))
-        link = response.read()
-        response.close()
-        return link
+            req = Request(url)
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0')
+            response = urlopen(req)
+            link = response.read()
+            response.close()
+            print("link =", link)
+            return link
     except:
-        return ''
+        e = URLError
+        print('We failed to open "%s".' % url)
+        if hasattr(e, 'code'):
+            print('We failed with error code - %s.' % e.code)
+        if hasattr(e, 'reason'):
+            print('We failed to reach a server.')
+            print('Reason: ', e.reason)
 
 def getUrl2(url, referer):
     print('Here in getUrl2 url =', url)
@@ -188,8 +219,7 @@ def getUrl2(url, referer):
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36')
     req.add_header('Referer', referer)
     # response = urlopen(req)
-    
-    response = checkStr(urlopen(req))    
+    response = checkStr(urlopen(req))
     link = response.read()
     response.close()
     return link
@@ -228,7 +258,7 @@ class Webcam1(Screen):
         self.urls.append('https://www.earthcam.com')
         self.names.append('livecameras.gr')
         self.urls.append('http://www.livecameras.gr/')
-        showlist(self.names, self['list']) 
+        showlist(self.names, self['list'])
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
@@ -277,6 +307,7 @@ class Webcam8(Screen):
         self.urls = []
         url = 'http://www.livecameras.gr/'
         content = getUrl(url)
+        # content = ssl_urlopen(url)
         print('content d =', content)
         regexvideo = 'a class="item1" href="(.*?)".*?data-title="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -335,6 +366,7 @@ class Webcam6(Screen):
         self.urls = []
         url = 'https://www.earthcam.com/'
         content = getUrl(url)
+        # content = ssl_urlopen(url)
         print('content C =', content)
         regexvideo = '<a class="noDec" href="(.*?)".*?alt="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -361,6 +393,7 @@ class Webcam6(Screen):
         url1 = self.urls[idx]
         name = self.names[idx]
         content = getUrl(url1)
+        # content = ssl_urlopen(url1)
         print('content C =', content)
         regexvideo = 'html5_streamingdomain"\:"(.*?)".*?html5_streampath"\:"(.*?)m3u8'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -495,11 +528,11 @@ class Webcam4(Screen):
         self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
-
     def openTest(self):
         self.names = []
         self.urls = []
         contenta = getUrl('https://www.skylinewebcams.com/en.html')
+        # contenta = ssl_urlopen('https://www.skylinewebcams.com/en.html')
         print('content A =', contenta)
         n1 = contenta.find('menu-title text-center">', 0)
         n2 = contenta.find('id="cams-category', n1)
@@ -520,7 +553,6 @@ class Webcam4(Screen):
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
-
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
@@ -565,6 +597,7 @@ class Webcam5(Screen):
         self.names = []
         self.urls = []
         content = getUrl(self.url)
+        # content = ssl_urlopen(self.url)
         print('content B =', content)
         regexvideo = 'webcam">.*?<a href="(.*?)".*?alt="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -591,8 +624,9 @@ class Webcam5(Screen):
         url1 = self.urls[idx]
         name = self.names[idx]
         content = getUrl(url1)
+        # content = ssl_urlopen(url1)
         print('content C =', content)
-
+        match = 'bho'
         if 'source:"' in content:
             regexvideo = 'source:"(.*?)"'
             print(' aaaaaaaaaaaaaaaaaa', regexvideo)
@@ -603,14 +637,14 @@ class Webcam5(Screen):
                 self.session.open(Playstream1, name, url)
             except:
                 return
-        else: 
-            if '"og:url" content="' in content:
+        elif '"og:url" content="' in content:
                 regexvideo = '"og:url" content="(.*?)"'
                 print(' oooooooooooooo', regexvideo)
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
                 url2 = match[0]
                 print('url2 match 0 ', url2)
                 content2 = getUrl(url2)
+
                 regexvideo2 = ',source:"(.*?)"'
                 match2 = re.compile(regexvideo2, re.DOTALL).findall(content2)
                 print('match2 =', match2)
@@ -619,6 +653,7 @@ class Webcam5(Screen):
                     self.session.open(Playstream1, name, url)
                 except:
                     return
+        else: return
 
 
     def cancel(self):
@@ -659,7 +694,6 @@ class Playstream1(Screen):
         url = self.url
         self.names = []
         self.urls = []
-
         self.names.append('Play direct')
         self.urls.append(url)
         self.names.append('Play .m3u8')
@@ -689,7 +723,6 @@ class Playstream1(Screen):
                 os.remove('/tmp/hls.avi')
             except:
                 pass
-
             header = ''
             cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/KodiLite/lib/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
             print('In playVideo cmd =', cmd)
@@ -750,15 +783,6 @@ class Playstream1(Screen):
 
 
     def cancel(self):
-        # try:
-            # password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-            # password_mgr.add_password(None, self.hostaddr, '', 'Admin')
-            # handler = urllib2.HTTPBasicAuthHandler(password_mgr)
-            # opener = urllib2.build_opener(handler)
-            # f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_stop')
-            # f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_empty')
-        # except:
-            # pass
         try:
             password_mgr = HTTPPasswordMgrWithDefaultRealm()
             password_mgr.add_password(None, self.hostaddr, '', 'Admin')
@@ -783,7 +807,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         Screen.__init__(self, session)
         self.skinName = 'MoviePlayer'
         title = 'Play'
-        self['list'] = MenuList([])
+        # self['list'] = MenuList([])
         InfoBarMenu.__init__(self)
         InfoBarNotifications.__init__(self)
         InfoBarBase.__init__(self)
@@ -805,26 +829,31 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
-           url = self.url
+        url = self.url
+        if 'youtube' in url :
+            import youtube_dl
+            print("Here in getVideos4 url 1=", url)
+            from youtube_dl import YoutubeDL
+            print("Here in getVideos4 url 2", url)
+            '''
+            ydl_opts = {'format': 'best'}
+            ydl_opts = {'format': 'bestaudio/best'}
+            '''
+            ydl_opts = {'format': 'best'}
+            ydl = YoutubeDL(ydl_opts)
+            ydl.add_default_info_extractors()
+            # url = "https://www.youtube.com/watch?v=CSYCEyMQWQA"
+            result = ydl.extract_info(url, download=False)
+            print("result =", result)
+            url = result["url"]
+            print("Here in Test url =", url)
 
-           if 'youtube' in url :
-               import youtube_dl
-               print("Here in getVideos4 url 1=", url)
-               from youtube_dl import YoutubeDL
-               print("Here in getVideos4 url 2", url)
-               ydl_opts = {'format': 'best'}
-               ydl = YoutubeDL(ydl_opts)
-               ydl.add_default_info_extractors()
-              # url = "https://www.youtube.com/watch?v=CSYCEyMQWQA"
-               result = ydl.extract_info(url, download=False)
-               print("result =", result)
-               url = result["url"]
-               print("Here in Test url =", url)
-           ref = '4097:0:1:0:0:0:0:0:0:0:' + url
-           sref = eServiceReference(ref)
-           sref.setName(self.name)
-           self.session.nav.stopService()
-           self.session.nav.playService(sref)
+
+        ref = '4097:0:1:0:0:0:0:0:0:0:' + url
+        sref = eServiceReference(ref)
+        sref.setName(self.name)
+        self.session.nav.stopService()
+        self.session.nav.playService(sref)
 
     def cancel(self):
         if os.path.exists('/tmp/hls.avi'):

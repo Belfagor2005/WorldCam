@@ -13,22 +13,45 @@ http://sam.zoy.org/wtfpl/COPYING for more details.
 Last updated: July 22, 2012
 MODIFIED BY shani to make it work with F4mProxy
 """
+import sys
+import os
 
-import urlparse, urllib2, subprocess, os,traceback,cookielib,re,Queue,threading
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    from urllib.request import urlopen, Request
+    from urllib.error import URLError, HTTPError
+    from urllib.parse import urlparse
+    from urllib.parse import urlencode, quote
+    from urllib.request import urlretrieve
+    import http.cookiejar
+    import queue
+    
+else:
+    from urllib2 import urlopen, Request
+    from urllib2 import URLError, HTTPError
+    from urlparse import urlparse
+    from urllib import urlencode, quote
+    from urllib import urlretrieve
+    import Queue
+    import urlparse
+    import urllib2
+    import urllib
+    import cookielib
+
+
+import threading
+import subprocess
 import xml.etree.ElementTree as etree
 import base64
 from struct import unpack, pack
 import struct
-import sys
 import io
-import os
 import time
 import itertools
 import xbmcaddon
 import xbmc
-import urllib2,urllib
 import traceback
-import urlparse
 import posixpath
 import re
 import hmac
@@ -36,7 +59,6 @@ import hashlib
 import binascii 
 import zlib
 from hashlib import sha256
-import cookielib
 import array, random, string
 import requests
 #from Crypto.Cipher import AES
@@ -53,12 +75,12 @@ try:
     from Crypto.Cipher import AES
     USEDec=1 ## 1==crypto 2==local, local pycrypto
 except:
-    print 'pycrypt not available using slow decryption'
+    print('pycrypt not available using slow decryption')
     USEDec=3 ## 1==crypto 2==local, local pycrypto
 
 if USEDec==1:
     #from Crypto.Cipher import AES
-    print 'using pycrypto'
+    print('using pycrypto')
 elif USEDec==2:
     from decrypter import AESDecrypter
     AES=AESDecrypter()
@@ -74,7 +96,10 @@ VALUE_SAFE = ''.join(chr(c) for c in range(33, 127)
     
 SUPPORTED_VERSION=3
 
-cookieJar=cookielib.LWPCookieJar()
+if PY3:
+    cookieJar=http.cookiejar.LWPCookieJar()
+else:
+    cookieJar=cookielib.LWPCookieJar()
 clientHeader=None
     
 class HLSDownloader():
@@ -111,9 +136,12 @@ class HLSDownloader():
                 sp = url.split('|')
                 url = sp[0]
                 clientHeader = sp[1]
-                print clientHeader
-                clientHeader= urlparse.parse_qsl(clientHeader)
-                print 'header recieved now url and headers are',url, clientHeader 
+                print(clientHeader)
+                if PY3:
+                    clientHeader= urllib.parse.parse_qsl(clientHeader)
+                else:
+                    clientHeader= urlparse.parse_qsl(clientHeader)
+                print('header recieved now url and headers are',url, clientHeader) 
             self.status='init done'
             self.url=url
             return self.preDownoload()
@@ -124,7 +152,7 @@ class HLSDownloader():
         
     def preDownoload(self):
         
-        print 'code here'
+        print('code here')
         return True
         
     def keep_sending_video(self,dest_stream, segmentToStart=None, totalSegmentToSend=0):
@@ -167,7 +195,7 @@ def getUrl(url,timeout=15,returnres=False,stream=False):
             return req.text
 
     except:
-        print 'Error in getUrl'
+        print('Error in getUrl')
         traceback.print_exc()
         return None
         
@@ -177,18 +205,20 @@ def getUrlold(url,timeout=20, returnres=False):
     global clientHeader
     try:
         post=None
-        #print 'url',url
-        
-        #openner = urllib2.build_opener(urllib2.HTTPHandler, urllib2.HTTPSHandler)
-        cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
-        openner = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
-        
-        #print cookieJar
 
-        if post:
-            req = urllib2.Request(url, post)
+        if PY3:
+            cookie_handler = urllib.request.HTTPCookieProcessor(cookieJar)
+            openner = urllib.request.build_opener(cookie_handler, urllib.request.HTTPBasicAuthHandler(), urllib.request.HTTPHandler())
         else:
-            req = urllib2.Request(url)
+            cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
+            openner = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
+        
+
+        #print cookieJar
+        if post:
+            req = Request(url, post)
+        else:
+            req = Request(url)
         
         ua_header=False
         if clientHeader:
@@ -213,7 +243,7 @@ def getUrlold(url,timeout=20, returnres=False):
         return data
 
     except:
-        print 'Error in getUrl'
+        print('Error in getUrl')
         traceback.print_exc()
         return None
 
@@ -393,8 +423,10 @@ def handle_basic_m3u(url):
                         #key = download_file(codeurl)
                         
                         if not codeurl.startswith('http'):
-                            import urlparse
-                            codeurl=urlparse.urljoin(url, codeurl)
+                            if PY3:
+                                codeurl=urllib.parse.urljoin(url, codeurl)
+                            else:
+                                codeurl=urlparse.urljoin(url, codeurl)
                             
                         assert len(key) == 16, 'EXT-X-KEY: downloaded key file has bad length'
                         if 'IV' in attribs:
@@ -431,11 +463,11 @@ def handle_basic_m3u(url):
                 raise ValueError("don't know how to handle EXT-X-STREAM-INF in basic playlist")
             elif tag == '#EXT-X-DISCONTINUITY':
                 assert not attribs
-                print "[warn] discontinuity in stream"
+                print("[warn] discontinuity in stream")
             elif tag == '#EXT-X-VERSION':
                 assert len(attribs) == 1
                 if int(attribs[0]) > SUPPORTED_VERSION:
-                    print "[warn] file version %s exceeds supported version %d; some things might be broken"%(attribs[0], SUPPORTED_VERSION)
+                    print("[warn] file version %s exceeds supported version %d; some things might be broken"%(attribs[0], SUPPORTED_VERSION))
             #else:
             #    raise ValueError("tag %s not known"%tag)
         else:
@@ -466,16 +498,16 @@ def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
      #url check if requires redirect
     redirurl=url
     try:
-        print 'going gor  ',url
+        print('going gor  ',url)
         res=getUrl(url,returnres=True )
-        print 'here ', res
+        print('here ', res)
         if res.history: 
-            print 'history'
+            print('history')
             redirurl=res.url
         res.close()
         
     except: traceback.print_exc()
-    print 'redirurl',redirurl
+    print('redirurl',redirurl)
     
     
     for line in gen_m3u(url):
@@ -486,41 +518,50 @@ def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
         elif variant:
             variants.append((line, variant))
             variant = None
-    print 'variants',variants
+    print('variants',variants)
     if len(variants)==0: url=redirurl
     if len(variants) == 1:
-        url = urlparse.urljoin(redirurl, variants[0][0])
+        if PY3:
+            url = urllib.parse.urljoin(redirurl, variants[0][0])
+        else:
+            url = urlparse.urljoin(redirurl, variants[0][0])
+        
     elif len(variants) >= 2:
-        print "More than one variant of the stream was provided."
+        print("More than one variant of the stream was provided.")
 
         choice=-1
         lastbitrate=0
-        print 'maxbitrate',maxbitrate
+        print('maxbitrate',maxbitrate)
         for i, (vurl, vattrs) in enumerate(variants):
-            print i, vurl,
+            print(i, vurl, end=' ')
             for attr in vattrs:
                 key, value = attr.split('=')
                 key = key.strip()
                 value = value.strip().strip('"')
                 if key == 'BANDWIDTH':
-                    print 'bitrate %.2f kbps'%(int(value)/1024.0)
+                    print('bitrate %.2f kbps'%(int(value)/1024.0))
                     if int(value)<=int(maxbitrate) and int(value)>lastbitrate:
                         choice=i
                         lastbitrate=int(value)
                 elif key == 'PROGRAM-ID':
-                    print 'program %s'%value,
+                    print('program %s'%value, end=' ')
                 elif key == 'CODECS':
-                    print 'codec %s'%value,
+                    print('codec %s'%value, end=' ')
                 elif key == 'RESOLUTION':
-                    print 'resolution %s'%value,
+                    print('resolution %s'%value, end=' ')
                 else:
-                    print "unknown STREAM-INF attribute %s"%key
+                    print("unknown STREAM-INF attribute %s"%key)
                     #raise ValueError("unknown STREAM-INF attribute %s"%key)
-            print
+            print()
         if choice==-1: choice=0
         #choice = int(raw_input("Selection? "))
-        print 'choose %d'%choice
-        url = urlparse.urljoin(redirurl, variants[choice][0])
+        print('choose %d'%choice)
+        if PY3:
+            url = urllib.parse.urljoin(redirurl, variants[choice][0])
+        else:
+            url = urlparse.urljoin(redirurl, variants[choice][0])
+        
+        
 
     #queue = Queue.Queue(1024) # 1024 blocks of 4K each ~ 4MB buffer
     control = ['go']

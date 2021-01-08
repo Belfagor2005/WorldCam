@@ -2620,12 +2620,12 @@ class Bits(object):
         """
         s = self.__class__()
         i = iter(sequence)
-        print 'join...'
+        print('join...')
         try:
             nn=next(i)
-            print nn
+            print(nn)
             dd=Bits(nn)
-            print dd
+            print(dd)
             s._append(dd)
             while True:
                 n = next(i)
