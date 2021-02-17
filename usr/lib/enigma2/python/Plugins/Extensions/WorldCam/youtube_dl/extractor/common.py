@@ -19,7 +19,7 @@ from ..compat import (
     compat_cookies,
     compat_etree_Element,
     compat_etree_fromstring,
-    compat_getpass,
+    # compat_getpass,
     compat_integer_types,
     compat_http_client,
     compat_os_name,
@@ -1062,21 +1062,21 @@ class InfoExtractor(object):
 
         return username, password
 
-    def _get_tfa_info(self, note='two-factor verification code'):
-        """
-        Get the two-factor authentication info
-        TODO - asking the user will be required for sms/phone verify
-        currently just uses the command line option
-        If there's no info available, return None
-        """
-        if self._downloader is None:
-            return None
-        downloader_params = self._downloader.params
+    # def _get_tfa_info(self, note='two-factor verification code'):
+        # """
+        # Get the two-factor authentication info
+        # TODO - asking the user will be required for sms/phone verify
+        # currently just uses the command line option
+        # If there's no info available, return None
+        # """
+        # if self._downloader is None:
+            # return None
+        # downloader_params = self._downloader.params
 
-        if downloader_params.get('twofactor') is not None:
-            return downloader_params['twofactor']
+        # if downloader_params.get('twofactor') is not None:
+            # return downloader_params['twofactor']
 
-        return compat_getpass('Type %s and press [Return]: ' % note)
+        # return compat_getpass('Type %s and press [Return]: ' % note)
 
     # Helper functions for extracting OpenGraph info
     @staticmethod

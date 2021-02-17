@@ -44,11 +44,6 @@ from twisted.web.client import getPage, downloadPage
 PY3 = sys.version_info[0] == 3
 
 if PY3:
-    # from urllib.request import urlopen, Request
-    # from urllib.error import URLError, HTTPError
-    # from urllib.parse import urlparse
-    # from urllib.parse import urlencode, quote
-    # from urllib.request import urlretrieve
     import http.client
     import urllib.request, urllib.parse, urllib.error
     import urllib.parse
@@ -59,12 +54,6 @@ if PY3:
     from urllib.request import urlopen
     from urllib.parse import parse_qs
 else:
-    # from urllib2 import urlopen, Request
-    # from urllib2 import URLError, HTTPError
-    # from urlparse import urlparse
-    # from urllib import urlencode, quote
-    # from urllib import urlretrieve
-
     import httplib
     import urllib
     import urlparse
@@ -229,9 +218,9 @@ class Playvid(Screen):
         self.close()
 
     def start4(self):
-                       from Playlist import Playlist
-                       self.session.open(Playlist, self.url)
-                       self.close()       
+        from Playlist import Playlist
+        self.session.open(Playlist, self.url)
+        self.close()       
     def start5(self): 
          self.pop = 1 
          n1 = self.url.find("video_id", 0)
@@ -275,25 +264,25 @@ class Playvid(Screen):
         self.session.open(Playstream, name, url)
                
     def getlocal_filename(self):
-                       fold = config.plugins.kodiplug.cachefold.value+"/"
-                       name = self.name.replace("/media/hdd/xbmc/vid/", "")
-                       name = name.replace(" ", "-")
-                       pattern = '[a-zA-Z0-9\-]'
-                       input = name
-                       output = ''.join(re.findall(pattern, input))
-                       self.name = output
-                       if self.url.endswith("mp4"):
-                          svfile = fold + self.name+".mp4"
-                       elif self.url.endswith("flv"):   
-                          svfile = fold + self.name+".flv"
-                       elif self.url.endswith("avi"):   
-                          svfile = fold + self.name+".avi"                        
-                       elif self.url.endswith("ts"):   
-                          svfile = fold + self.name+".ts"                        
-                       else:  
-                          svfile = fold + self.name+".mpg"
-                       filetitle=os.path.split(svfile)[1]    
-                       return svfile,filetitle   
+        fold = config.plugins.kodiplug.cachefold.value+"/"
+        name = self.name.replace("/media/hdd/xbmc/vid/", "")
+        name = name.replace(" ", "-")
+        pattern = '[a-zA-Z0-9\-]'
+        input = name
+        output = ''.join(re.findall(pattern, input))
+        self.name = output
+        if self.url.endswith("mp4"):
+          svfile = fold + self.name+".mp4"
+        elif self.url.endswith("flv"):   
+          svfile = fold + self.name+".flv"
+        elif self.url.endswith("avi"):   
+          svfile = fold + self.name+".avi"                        
+        elif self.url.endswith("ts"):   
+          svfile = fold + self.name+".ts"                        
+        else:  
+          svfile = fold + self.name+".mpg"
+        filetitle=os.path.split(svfile)[1]    
+        return svfile,filetitle   
                           
                                
     def okClicked(self):
@@ -303,18 +292,18 @@ class Playvid(Screen):
           if idx==0:
              self.play()
           elif idx==1:
-                try:
-                      from Plugins.Extensions.VlcPlayer.VlcServerConfig import vlcServerConfig
-                      self.serverList = vlcServerConfig.getServerlist()
-                      if len(self.serverList) == 0:
-                          self.session.open(MessageBox, "No server configured in VlcPlayer Plugin!", MessageBox.TYPE_ERROR)
-                      elif len(self.serverList) == 1:
-                          self.playfile(0)
-                      else:
-                          self.playfile(0)
-                except:
-                      txt = _("Plugin VlcPlayer is not installed.\nPlease install it and set it up.")
-                      self.session.open(MessageBox, "Plugin VlcPlayer is not installed!", MessageBox.TYPE_ERROR)
+            try:
+                  from Plugins.Extensions.VlcPlayer.VlcServerConfig import vlcServerConfig
+                  self.serverList = vlcServerConfig.getServerlist()
+                  if len(self.serverList) == 0:
+                      self.session.open(MessageBox, "No server configured in VlcPlayer Plugin!", MessageBox.TYPE_ERROR)
+                  elif len(self.serverList) == 1:
+                      self.playfile(0)
+                  else:
+                      self.playfile(0)
+            except:
+                  txt = _("Plugin VlcPlayer is not installed.\nPlease install it and set it up.")
+                  self.session.open(MessageBox, "Plugin VlcPlayer is not installed!", MessageBox.TYPE_ERROR)
 
 
           elif idx==2: ##mfaraj2608 to new way to download videos
@@ -610,8 +599,8 @@ class webcamList(MenuList):
             self.l.setItemHeight(50)
             self.l.setFont(0, gFont('Regular', 40))
         else:
-            self.l.setItemHeight(40)
-            self.l.setFont(0, gFont('Regular', 23))        
+            self.l.setItemHeight(50 )
+            self.l.setFont(0, gFont('Regular', 24))        
 
 ##################            
             
@@ -619,14 +608,13 @@ class webcamList(MenuList):
 class RSList(MenuList):
         def __init__(self, list):
             MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-            self.l.setItemHeight(40)
-            textfont = int(25)
+            self.l.setItemHeight(50)
+            textfont = int(24)
             self.l.setFont(0, gFont("Regular", textfont))
                     
 
 def RSListEntry(download):
         res = [(download)]
-
         white = 0xffffff 
         grey = 0xb3b3b9
         green = 0x389416
@@ -647,16 +635,10 @@ def showlist(data, list):
                    icount = 0
                    plist = []
                    for line in data:
-#                               print "In showlist line =", line
                            name = data[icount]            
-
                            plist.append(RSListEntry(name))                               
                            icount = icount+1
-
                    list.setList(plist)
-                        #list.sort() 
-
-
 #################                
 
 def getserviceinfo(sref):## this def returns the current playing service name and stream_url from give sref

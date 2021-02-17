@@ -6,7 +6,7 @@ import binascii
 import collections
 import ctypes
 import email
-import getpass
+# import getpass
 import io
 import itertools
 import optparse
@@ -2786,14 +2786,14 @@ else:
         print(s)
 
 
-if sys.version_info < (3, 0) and sys.platform == 'win32':
-    def compat_getpass(prompt, *args, **kwargs):
-        if isinstance(prompt, compat_str):
-            from .utils import preferredencoding
-            prompt = prompt.encode(preferredencoding())
-        return getpass.getpass(prompt, *args, **kwargs)
-else:
-    compat_getpass = getpass.getpass
+# if sys.version_info < (3, 0) and sys.platform == 'win32':
+    # def compat_getpass(prompt, *args, **kwargs):
+        # if isinstance(prompt, compat_str):
+            # from .utils import preferredencoding
+            # prompt = prompt.encode(preferredencoding())
+        # return getpass.getpass(prompt, *args, **kwargs)
+# else:
+    # compat_getpass = getpass.getpass
 
 try:
     compat_input = raw_input
@@ -3007,7 +3007,7 @@ __all__ = [
     'compat_expanduser',
     'compat_get_terminal_size',
     'compat_getenv',
-    'compat_getpass',
+    # 'compat_getpass',
     'compat_html_entities',
     'compat_html_entities_html5',
     'compat_http_client',

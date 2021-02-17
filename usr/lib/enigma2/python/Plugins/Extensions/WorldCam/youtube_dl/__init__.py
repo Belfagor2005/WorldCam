@@ -16,7 +16,7 @@ from .options import (
     parseOpts,
 )
 from .compat import (
-    compat_getpass,
+    # compat_getpass,
     compat_shlex_split,
     workaround_optparse_bug9161,
 )
@@ -141,10 +141,10 @@ def _real_main(argv=None):
             parser.error('auto number start must be positive or 0')
     if opts.usetitle and opts.useid:
         parser.error('using title conflicts with using video ID')
-    if opts.username is not None and opts.password is None:
-        opts.password = compat_getpass('Type account password and press [Return]: ')
-    if opts.ap_username is not None and opts.ap_password is None:
-        opts.ap_password = compat_getpass('Type TV provider account password and press [Return]: ')
+    # if opts.username is not None and opts.password is None:
+        # opts.password = compat_getpass('Type account password and press [Return]: ')
+    # if opts.ap_username is not None and opts.ap_password is None:
+        # opts.ap_password = compat_getpass('Type TV provider account password and press [Return]: ')
     if opts.ratelimit is not None:
         numeric_limit = FileDownloader.parse_bytes(opts.ratelimit)
         if numeric_limit is None:
