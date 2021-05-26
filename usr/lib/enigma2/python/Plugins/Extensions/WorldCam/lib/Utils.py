@@ -613,42 +613,62 @@ class RSList(MenuList):
             self.l.setFont(0, gFont("Regular", textfont))
                     
 
-def RSListEntry(download):
-        res = [(download)]
-        white = 0xffffff 
-        grey = 0xb3b3b9
-        green = 0x389416
-        black = 0x000000
-        yellow = 0xe5b243
-        blue = 0x002d39
-        red = 0xf07655
-        col = 0xffffff
-        colsel = 0xf07655
-        backcol = 0x000000
-        backsel = 0x000000
-#        res.append(MultiContentEntryText(pos=(0, 0), size=(650, 40), text=download, color=col, color_sel = colsel, backcolor = backcol, backcolor_sel = backcol))
-        res.append(MultiContentEntryText(pos=(0, 0), size=(1000, 40), text=download, color=col, color_sel = colsel, backcolor = backcol, backcolor_sel = backcol))
-        return res
+# def RSListEntry(download):
+        # res = [(download)]
+        # white = 0xffffff 
+        # grey = 0xb3b3b9
+        # green = 0x389416
+        # black = 0x000000
+        # yellow = 0xe5b243
+        # blue = 0x002d39
+        # red = 0xf07655
+        # col = 0xffffff
+        # colsel = 0xf07655
+        # backcol = 0x000000
+        # backsel = 0x000000
+# #        res.append(MultiContentEntryText(pos=(0, 0), size=(650, 40), text=download, color=col, color_sel = colsel, backcolor = backcol, backcolor_sel = backcol))
+        # res.append(MultiContentEntryText(pos=(0, 0), size=(1000, 40), text=download, color=col, color_sel = colsel, backcolor = backcol, backcolor_sel = backcol))
+        # return res
 
-                  
+def RSListEntry(download):
+    res = [(download)]
+    white = 0xffffff 
+    grey = 0xb3b3b9
+    green = 0x389416
+    black = 0x000000
+    yellow = 0xe5b243
+    blue = 0x002d39
+    red = 0xf07655
+    col = 0xffffff
+    colsel = 0xf07655
+    backcol = 0x000000
+    backsel = 0x000000
+    if DESKHEIGHT > 1000:
+        # res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(0, 0), size=(1900, 50), font=0, text=download, color = col, color_sel = colsel, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+    else:
+        # res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 6), size=(34, 25), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(0, 0), size=(1000, 50), font=0, text=download, color = col, color_sel = colsel, flags=RT_HALIGN_LEFT))
+    return res
+    
 def showlist(data, list):                   
-                   icount = 0
-                   plist = []
-                   for line in data:
-                           name = data[icount]            
-                           plist.append(RSListEntry(name))                               
-                           icount = icount+1
-                   list.setList(plist)
+    icount = 0
+    plist = []
+    for line in data:
+        name = data[icount]            
+        plist.append(RSListEntry(name))                               
+        icount = icount+1
+    list.setList(plist)
 #################                
 
 def getserviceinfo(sref):## this def returns the current playing service name and stream_url from give sref
-          try:
-                    p=ServiceReference(sref)
-                    servicename=str(p.getServiceName())
-                    serviceurl=str(p.getPath())
-                    return servicename,serviceurl
-          except:
-                return None,None
+    try:
+        p=ServiceReference(sref)
+        servicename=str(p.getServiceName())
+        serviceurl=str(p.getPath())
+        return servicename,serviceurl
+    except:
+        return None,None
                 
 def getVideoUrl(vid):
         VIDEO_FMT_PRIORITY_MAP = {
