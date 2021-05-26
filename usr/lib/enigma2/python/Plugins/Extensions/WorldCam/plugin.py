@@ -1,10 +1,9 @@
-'''
-****************************************
-*        coded by Lululla              *
-*             and Pcd                  *
-*             01/12/2020               *
-****************************************
-'''
+#######################################################################
+#   Enigma2 plugin Worldcam is coded by Lululla and Pcd               #
+#   This is free software; you can redistribute it and/or modify it.  #
+#   But no delete this message support on forum linuxsat-support      #
+#######################################################################
+#25/05/2021
 #Info http://t.me/tivustream
 from __future__ import print_function
 from Components.MenuList import MenuList
@@ -56,7 +55,6 @@ config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 PY3 = sys.version_info[0] == 3
 
 if PY3:
-## python 3
     import http.client
     import urllib.parse
     import urllib.request, urllib.error, urllib.parse
@@ -76,8 +74,6 @@ else:
     from urllib2 import HTTPPasswordMgrWithDefaultRealm
     from urllib2 import HTTPBasicAuthHandler
     from urllib2 import build_opener
-
-
 
 if sys.version_info >= (2, 7, 9):
     try:
@@ -217,11 +213,9 @@ class IPTVConf(ConfigListScreen, Screen):
         self.session.open(TryQuitMainloop, 3)
         self.close()
 
-
 class Webcam1(Screen):
 
     def __init__(self, session):
-
         Screen.__init__(self, session)
         self.session = session
         skin = SKIN_PATH + '/Webcam1.xml'
@@ -252,7 +246,6 @@ class Webcam1(Screen):
         self.urls.append('http://www.livecameras.gr/')
         showlist(self.names, self['list'])
 
-
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         if idx is None:
@@ -269,7 +262,6 @@ class Webcam1(Screen):
     def cancel(self):
         Screen.close(self, False)
 
-       
 class Webcam8(Screen):
 
     def __init__(self, session):
@@ -292,19 +284,15 @@ class Webcam8(Screen):
         self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
-
     def openTest(self):
         self.names = []
         self.urls = []
         content = getUrl('http://www.livecameras.gr/')
-        
         regexvideo = 'a class="item1" href="(.*?)".*?data-title="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         pic = ' '
-                              
         for url, name in match:
             url1 = 'http:' + url
-                                                         
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -313,12 +301,9 @@ class Webcam8(Screen):
         idx = self['list'].getSelectionIndex()
         if idx is None:
             return
-                                                                                             
         else:
             name = self.names[idx]
             url = self.urls[idx]
-                                                                                   
-            
             self.session.open(Webcam8, name, url)
             return
 
@@ -347,7 +332,6 @@ class Webcam8(Screen):
         self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
-
     def openTest(self):
         self.names = []
         self.urls = []
@@ -359,10 +343,8 @@ class Webcam8(Screen):
         pic = ' '
         for url, name in match:
             url1 = 'http:' + url
-
             url1 = checkStr(url1)
             name = checkStr(name)
-
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -379,7 +361,6 @@ class Webcam8(Screen):
     def cancel(self):
         Screen.close(self, False)
 
-
 class Webcam2(Screen):
 
     def __init__(self, session):
@@ -389,7 +370,6 @@ class Webcam2(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label()
@@ -420,7 +400,6 @@ class Webcam2(Screen):
 
     def cancel(self):
         Screen.close(self, False)
-
 
 class Webcam3(Screen):
 
@@ -475,7 +454,6 @@ class Webcam3(Screen):
     def cancel(self):
         Screen.close(self, False)
 
-
 class Webcam4(Screen):
 
     def __init__(self, session):
@@ -497,7 +475,6 @@ class Webcam4(Screen):
          'ok': self.okClicked}, -2)
         self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
-
 
     def openTest(self):
         self.names = []
@@ -535,7 +512,6 @@ class Webcam4(Screen):
     def cancel(self):
         Screen.close(self, False)
 
-
 class Webcam5(Screen):
 
     def __init__(self, session, name, url):
@@ -569,25 +545,20 @@ class Webcam5(Screen):
         content = getUrl(self.url)
         content = six.ensure_str(content)
         start = 0
-        # n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
-        # n2 = content.find('div class="collapse navbar-collapse', n1)
         n1 = content.find(b'div class="dropdown-menu mega-dropdown-menu', start)
         n2 = content.find(b'div class="collapse navbar-collapse', n1)
         content2 = content[n1:n2]
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
         ctry = ctry.replace('.html', '')
-        # regexvideo = '<a href="/' + ctry + '/webcam(.*?)">(.*?)</a>'
         regexvideo = b'<a href="/' + ctry.encode("UTF-8") + b'/webcam(.*?)">(.*?)</a>'        
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
         for url, name in match:
             url1 = 'https://www.skylinewebcams.com/' + ctry + '/webcam' + url
-            
             url1 = checkStr(url1)
             item = checkStr(name) + "###" + url1
             print('Items sort 2: ', item)            
             items.append(item)
-
         items.sort()
         for item in items:
             name = item.split('###')[0]
@@ -608,7 +579,6 @@ class Webcam5(Screen):
     def cancel(self):
         Screen.close(self, False)
         
-
 class Webcam6(Screen):
 
     def __init__(self, session, name, url):
@@ -648,7 +618,6 @@ class Webcam6(Screen):
             url1 = 'https://www.skylinewebcams.com/' + stext + url
             url1 = checkStr(url1)
             item = checkStr(name) + "###" + url1            
-            
             items.append(item)
         items.sort()
         for item in items:
@@ -789,17 +758,14 @@ class Playstream1(Screen):
     def play2(self):
         desc = ' '
         self['info'].setText(self.name)
-
         url = self.url
         url = url.replace(':', '%3a')
         print('In WorldCam url =', url)
         ref = '4097:0:1:0:0:0:0:0:0:0:' + url
         sref = eServiceReference(ref)
-                                            
         print('SREF: ', sref)
         sref.setName(self.name)
         self.session.nav.playService(sref)
-
 
     def cancel(self):
         try:
@@ -839,7 +805,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
-
         self.new_aspect = self.init_aspect
         self['actions'] = ActionMap(['WizardActions',
          'MoviePlayerActions',
@@ -856,7 +821,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
          'down': self.av}, -1)
         self.allowPiP = False
         InfoBarSeek.__init__(self, actionmap='MediaPlayerSeekActions')
-                                                                                    
         self.icount = 0
         self.name = name
         self.url = url
@@ -904,7 +868,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.setAspect(temp)
 
     def showinfo(self):
-        # debug = True
         sTitle = ''
         sServiceref = ''
         try:
