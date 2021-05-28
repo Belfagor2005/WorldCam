@@ -3,7 +3,7 @@
 #   This is free software; you can redistribute it and/or modify it.  #
 #   But no delete this message support on forum linuxsat-support      #
 #######################################################################
-#25/05/2021
+#28/05/2021
 #Info http://t.me/tivustream
 from __future__ import print_function
 from Components.MenuList import MenuList
@@ -53,6 +53,12 @@ config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 
 PY3 = sys.version_info[0] == 3
+wDreamOs = False
+try:
+    from enigma import eMediaDatabase
+    wDreamOs = True
+except:
+    wDreamOs = False
 
 if PY3:
     import http.client
@@ -486,7 +492,10 @@ class Webcam4(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         items = []
         for url, name in match:
-            url1 = b'https://www.skylinewebcams.com/' + url + b'.html'
+            # url = checkStr(url)
+            url1 = 'https://www.skylinewebcams.com/' + url + '.html'
+            if wDreamOs:
+                url1 = b'https://www.skylinewebcams.com/' + url + b'.html'
             url1 = checkStr(url1)
             item = checkStr(name) + "###" + url1
             print('Items sort: ', item)
@@ -545,12 +554,19 @@ class Webcam5(Screen):
         content = getUrl(self.url)
         content = six.ensure_str(content)
         start = 0
-        n1 = content.find(b'div class="dropdown-menu mega-dropdown-menu', start)
-        n2 = content.find(b'div class="collapse navbar-collapse', n1)
+
+        n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
+        n2 = content.find('div class="collapse navbar-collapse', n1) 
+        if wDreamOs:
+            n1 = content.find(b'div class="dropdown-menu mega-dropdown-menu', start)
+            n2 = content.find(b'div class="collapse navbar-collapse', n1)                
+        
         content2 = content[n1:n2]
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
         ctry = ctry.replace('.html', '')
-        regexvideo = b'<a href="/' + ctry.encode("UTF-8") + b'/webcam(.*?)">(.*?)</a>'        
+        regexvideo = '<a href="/' + ctry + '/webcam(.*?)">(.*?)</a>'        
+        if wDreamOs:      
+            regexvideo = b'<a href="/' + ctry.encode("UTF-8") + b'/webcam(.*?)">(.*?)</a>' 
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
         for url, name in match:
@@ -611,7 +627,9 @@ class Webcam6(Screen):
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
         stext = stext.replace('.html', '')
         stext = stext + '/'
-        regexvideo = b'><a href="' + stext.encode("UTF-8") + b'(.*?)".*?alt="(.*?)"'        
+        regexvideo = '><a href="' + stext + '(.*?)".*?alt="(.*?)"'        
+        if wDreamOs: 
+            regexvideo = b'><a href="' + stext.encode("UTF-8") + b'(.*?)".*?alt="(.*?)"'         
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         items = []
         for url, name in match:
@@ -640,9 +658,13 @@ class Webcam6(Screen):
     def getVid(self, name, url):
         content = getUrl(url)
         content = six.ensure_str(content)        
-        regexvideo = b'source\:\'(.*?)\''
+        regexvideo = 'source\:\'(.*?)\''
+        if wDreamOs:   
+            regexvideo = b'source\:\'(.*?)\''        
         match = re.compile(regexvideo, re.DOTALL).findall(content)
-        url = "https://hd-auth.skylinewebcams.com/" + match[0].decode()
+        url = "https://hd-auth.skylinewebcams.com/" + match[0]
+        if wDreamOs:   
+            url = "https://hd-auth.skylinewebcams.com/" + match[0].decode()        
         print("Here in Test url =", url)
         self.session.open(Playstream1, name, url)
 
