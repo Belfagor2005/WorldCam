@@ -1,9 +1,11 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 #######################################################################
 #   Enigma2 plugin Worldcam is coded by Lululla and Pcd               #
 #   This is free software; you can redistribute it and/or modify it.  #
 #   But no delete this message support on forum linuxsat-support      #
 #######################################################################
-#28/05/2021
+#06/06/2021
 #Info http://t.me/tivustream
 from __future__ import print_function
 from Components.MenuList import MenuList
@@ -48,7 +50,7 @@ import six
 THISPLUG  = os.path.dirname(sys.modules[__name__].__file__)
 path = THISPLUG + '/channels/'
 DESKHEIGHT = getDesktop(0).size().height()
-version = '3.6_r0'
+version = '3.6_r1'
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 
@@ -294,24 +296,33 @@ class Webcam8(Screen):
         self.names = []
         self.urls = []
         content = getUrl('http://www.livecameras.gr/')
-        regexvideo = 'a class="item1" href="(.*?)".*?data-title="(.*?)"'
+        regexvideo = '<a class="item1" href="/(.*?)".*?data-title="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         pic = ' '
         for url, name in match:
-            url1 = 'http:' + url
+            url1 = 'https://www.livecameras.gr/' + url
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
+    # def okClicked(self):
+        # idx = self['list'].getSelectionIndex()
+        # if idx is None:
+            # return
+        # else:
+            # name = self.names[idx]
+            # url = self.urls[idx]
+            # self.session.open(Webcam8, name, url)
+            # return
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         if idx is None:
             return
         else:
-            name = self.names[idx]
             url = self.urls[idx]
-            self.session.open(Webcam8, name, url)
-            return
+            name = self.names[idx]
+            self.session.open(Playstream1, name, url)
+
 
     def cancel(self):
         Screen.close(self, False)
@@ -328,7 +339,7 @@ class Webcam8(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label()
-        self['info'].setText('EarthCam')
+        self['info'].setText('livecameras')
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -492,11 +503,12 @@ class Webcam4(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         items = []
         for url, name in match:
-            # url = checkStr(url)
-            url1 = 'https://www.skylinewebcams.com/' + url + '.html'
-            if wDreamOs:
-                url1 = b'https://www.skylinewebcams.com/' + url + b'.html'
-            url1 = checkStr(url1)
+            try:
+                url = 'https://www.skylinewebcams.com/' + url + '.html'
+            except:
+                url = b'https://www.skylinewebcams.com/'  + six.binary_type(url, encoding="utf-8") + b'.html'
+
+            url1 = checkStr(url)
             item = checkStr(name) + "###" + url1
             print('Items sort: ', item)
             items.append(item)
@@ -557,9 +569,9 @@ class Webcam5(Screen):
 
         n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
         n2 = content.find('div class="collapse navbar-collapse', n1) 
-        if wDreamOs:
-            n1 = content.find(b'div class="dropdown-menu mega-dropdown-menu', start)
-            n2 = content.find(b'div class="collapse navbar-collapse', n1)                
+        # if wDreamOs:
+            # n1 = content.find(b'div class="dropdown-menu mega-dropdown-menu', start)
+            # n2 = content.find(b'div class="collapse navbar-collapse', n1)                
         
         content2 = content[n1:n2]
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
@@ -570,8 +582,14 @@ class Webcam5(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
         for url, name in match:
-            url1 = 'https://www.skylinewebcams.com/' + ctry + '/webcam' + url
-            url1 = checkStr(url1)
+        
+            try:
+                url = 'https://www.skylinewebcams.com/' + ctry + '/webcam' + url
+            except:
+                url = b'https://www.skylinewebcams.com/' + ctry + '/webcam'  + six.binary_type(url, encoding="utf-8")
+        
+            # url1 = 'https://www.skylinewebcams.com/' + ctry + '/webcam' + url
+            url1 = checkStr(url)
             item = checkStr(name) + "###" + url1
             print('Items sort 2: ', item)            
             items.append(item)
@@ -629,11 +647,17 @@ class Webcam6(Screen):
         stext = stext + '/'
         regexvideo = '><a href="' + stext + '(.*?)".*?alt="(.*?)"'        
         if wDreamOs: 
-            regexvideo = b'><a href="' + stext.encode("UTF-8") + b'(.*?)".*?alt="(.*?)"'         
+            # regexvideo = '><a href="' + stext.encode("UTF-8") + '(.*?)".*?alt="(.*?)"'  
+            regexvideo = '><a href="' + stext + '(.*?)".*?alt="(.*?)"'              
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         items = []
         for url, name in match:
-            url1 = 'https://www.skylinewebcams.com/' + stext + url
+            try:
+                url1 = 'https://www.skylinewebcams.com/' + stext + url
+            except:
+                url1 = b'https://www.skylinewebcams.com/' + stext + six.binary_type(url, encoding="utf-8")
+                
+            # url1 = 'https://www.skylinewebcams.com/' + stext + url
             url1 = checkStr(url1)
             item = checkStr(name) + "###" + url1            
             items.append(item)
@@ -657,16 +681,28 @@ class Webcam6(Screen):
 
     def getVid(self, name, url):
         content = getUrl(url)
-        content = six.ensure_str(content)        
-        regexvideo = 'source\:\'(.*?)\''
+        content = six.ensure_str(content)  
+        print('in content getvideo ', content)
+        regexvideo = "source:'(.*?)'"
         if wDreamOs:   
             regexvideo = b'source\:\'(.*?)\''        
+           
         match = re.compile(regexvideo, re.DOTALL).findall(content)
-        url = "https://hd-auth.skylinewebcams.com/" + match[0]
-        if wDreamOs:   
-            url = "https://hd-auth.skylinewebcams.com/" + match[0].decode()        
+        
+        print('match 0 ', match)
+        try:
+            url = 'https://hd-auth.skylinewebcams.com/' + match[0]
+        except:
+            url = b'https://hd-auth.skylinewebcams.com/' +  six.binary_type(match[0], encoding="utf-8")
+                
+        # url = "https://hd-auth.skylinewebcams.com/" + match[0]
+        # if wDreamOs:   
+            # url = "https://hd-auth.skylinewebcams.com/" + match[0].decode()        
         print("Here in Test url =", url)
         self.session.open(Playstream1, name, url)
+
+#https://hd-auth.skylinewebcams.com/live.m3u8?a=t6mgjuhfnp8psqh66uch0nnvu1
+
 
     def cancel(self):
         Screen.close(self, False)
