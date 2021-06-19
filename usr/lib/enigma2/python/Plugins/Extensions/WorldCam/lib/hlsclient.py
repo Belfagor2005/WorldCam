@@ -33,26 +33,29 @@ SUPPORTED_VERSION = 3
 STREAM_PFILE      = '/tmp/hls.avi'
 
 
-PY3 = sys.version_info[0] == 3
 
-if PY3:
-    from urllib.request import urlopen, Request
-    from urllib.error import URLError, HTTPError
-    from urllib.parse import urlparse
-    from urllib.parse import urlencode, quote
-    from urllib.request import urlretrieve
+PY3 = sys.version_info.major >= 3
+print('Py3: ',PY3)
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.request import Request
+from six.moves.urllib.error import HTTPError, URLError
+from six.moves.urllib.request import urlretrieve    
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import parse_qs
+from six.moves.urllib.request import build_opener
+from six.moves.urllib.parse import quote_plus
+from six.moves.urllib.parse import unquote_plus
+from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import unquote
+from six.moves.urllib.parse import urlencode
+import six.moves.urllib.request
+import six.moves.urllib.parse
+import six.moves.urllib.error
+
+try:
     import queue
-else:
+except:
     import Queue
-    from urllib2 import urlopen, Request
-    from urllib2 import URLError, HTTPError
-    from urlparse import urlparse
-    from urllib import urlencode, quote
-    from urllib import urlretrieve
-
-
-
-
 
 def getUrl2(url, referer):
     pass#print "Here in client2 getUrl url =", url
@@ -530,29 +533,4 @@ if __name__ == '__main__':
              pass#print "In except"
              os.remove(STREAM_PFILE)
              h.stop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

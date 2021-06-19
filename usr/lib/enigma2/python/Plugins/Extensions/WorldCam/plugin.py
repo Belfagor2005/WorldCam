@@ -54,34 +54,37 @@ version = '3.6_r1'
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 
-PY3 = sys.version_info[0] == 3
 wDreamOs = False
+PY3 = sys.version_info.major >= 3
+print('Py3: ',PY3)
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.request import Request
+from six.moves.urllib.error import HTTPError, URLError
+from six.moves.urllib.request import urlretrieve    
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import parse_qs
+from six.moves.urllib.request import build_opener
+
+import six.moves.urllib.request
+import six.moves.urllib.parse
+import six.moves.urllib.error
+
 try:
     from enigma import eMediaDatabase
     wDreamOs = True
 except:
     wDreamOs = False
 
-if PY3:
+try:
     import http.client
-    import urllib.parse
-    import urllib.request, urllib.error, urllib.parse
-    from urllib.request import Request, urlopen
     from urllib.request import HTTPPasswordMgrWithDefaultRealm
     from urllib.request import HTTPBasicAuthHandler
-    from urllib.request import build_opener
-    from urllib.error import URLError
-    from urllib.parse import parse_qs
-else:
+except:
     import httplib
     import urlparse
     import urllib2
-    from urllib2 import Request, urlopen
-    from urllib2 import URLError
-    from urlparse import parse_qs
     from urllib2 import HTTPPasswordMgrWithDefaultRealm
     from urllib2 import HTTPBasicAuthHandler
-    from urllib2 import build_opener
 
 if sys.version_info >= (2, 7, 9):
     try:
@@ -685,7 +688,7 @@ class Webcam6(Screen):
         print('in content getvideo ', content)
         regexvideo = "source:'(.*?)'"
         if wDreamOs:   
-            regexvideo = b'source\:\'(.*?)\''        
+            regexvideo = b'source\:\'(.*?)\','        
            
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         
@@ -702,7 +705,7 @@ class Webcam6(Screen):
         self.session.open(Playstream1, name, url)
 
 #https://hd-auth.skylinewebcams.com/live.m3u8?a=t6mgjuhfnp8psqh66uch0nnvu1
-
+#https://hd-auth.skylinewebcams.com/live.m3u8?a=f1g2q7u9m75qf2kgdbdrafhif1
 
     def cancel(self):
         Screen.close(self, False)

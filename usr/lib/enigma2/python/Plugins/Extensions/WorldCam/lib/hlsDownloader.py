@@ -15,31 +15,6 @@ MODIFIED BY shani to make it work with F4mProxy
 """
 import sys
 import os
-
-PY3 = sys.version_info[0] == 3
-
-if PY3:
-    from urllib.request import urlopen, Request
-    from urllib.error import URLError, HTTPError
-    from urllib.parse import urlparse
-    from urllib.parse import urlencode, quote
-    from urllib.request import urlretrieve
-    import http.cookiejar
-    import queue
-    
-else:
-    from urllib2 import urlopen, Request
-    from urllib2 import URLError, HTTPError
-    from urlparse import urlparse
-    from urllib import urlencode, quote
-    from urllib import urlretrieve
-    import Queue
-    import urlparse
-    import urllib2
-    import urllib
-    import cookielib
-
-
 import threading
 import subprocess
 import xml.etree.ElementTree as etree
@@ -61,6 +36,34 @@ import zlib
 from hashlib import sha256
 import array, random, string
 import requests
+
+PY3 = sys.version_info.major >= 3
+print('Py3: ',PY3)
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.request import Request
+from six.moves.urllib.error import HTTPError, URLError
+from six.moves.urllib.request import urlretrieve    
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import parse_qs
+from six.moves.urllib.request import build_opener
+from six.moves.urllib.parse import quote_plus
+from six.moves.urllib.parse import unquote_plus
+from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import unquote
+from six.moves.urllib.parse import urlencode
+import six.moves.urllib.request
+import six.moves.urllib.parse
+import six.moves.urllib.error
+
+try:
+    import http.cookiejar
+    import queue
+except:
+    import Queue
+    import cookielib
+
+
+
 #from Crypto.Cipher import AES
 '''
 from crypto.cipher.aes      import AES

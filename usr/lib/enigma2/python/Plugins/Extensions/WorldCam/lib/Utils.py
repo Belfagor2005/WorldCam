@@ -1,9 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-import os
-import socket
-import re, sys
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap, NumberActionMap
 from Components.Button import Button
@@ -38,42 +35,41 @@ from threading import Thread
 from twisted.internet import reactor
 from twisted.web import client
 from twisted.web.client import getPage, downloadPage
-
-
-
-PY3 = sys.version_info[0] == 3
-
-if PY3:
-    import http.client
-    import urllib.request, urllib.parse, urllib.error
-    import urllib.parse
-    from http.client import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
-    from urllib.parse import quote, unquote_plus, unquote
-    from urllib.request import Request, urlopen as urlopen2
-    from urllib.error import URLError
-    from urllib.request import urlopen
-    from urllib.parse import parse_qs
-else:
-    import httplib
-    import urllib
-    import urlparse
-    from httplib import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
-    from urllib import quote, unquote_plus, unquote
-    from urllib2 import Request, URLError, urlopen as urlopen2
-    from urllib2 import urlopen
-    from urlparse import parse_qs
-
-
-
-#from TaskView2 import JobViewNew
+import os
 import re
-##########################
+import sys
+import socket
+import re
 import gettext
 from skin import parseColor
-#from Playlist import Playlist
-
-
 from enigma import getDesktop
+
+PY3 = sys.version_info.major >= 3
+print('Py3: ',PY3)
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.request import Request
+from six.moves.urllib.error import HTTPError, URLError
+from six.moves.urllib.request import urlretrieve    
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import parse_qs
+from six.moves.urllib.request import build_opener
+from six.moves.urllib.parse import quote_plus
+from six.moves.urllib.parse import unquote_plus
+from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import unquote
+from six.moves.urllib.parse import urlencode
+import six.moves.urllib.request
+import six.moves.urllib.parse
+import six.moves.urllib.error
+
+
+try:
+    import http.client
+    from http.client import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
+except:
+    import httplib
+    from httplib import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
+
 DESKHEIGHT = getDesktop(0).size().height()
 
 def _(txt):
@@ -100,8 +96,6 @@ std_headers = {
 ##############################################################
 
 SREF = " "
-
-
 
 class Playvid(Screen):
     skin = """
