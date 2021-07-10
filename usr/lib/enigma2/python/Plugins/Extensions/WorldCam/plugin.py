@@ -308,15 +308,6 @@ class Webcam8(Screen):
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
-    # def okClicked(self):
-        # idx = self['list'].getSelectionIndex()
-        # if idx is None:
-            # return
-        # else:
-            # name = self.names[idx]
-            # url = self.urls[idx]
-            # self.session.open(Webcam8, name, url)
-            # return
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         if idx is None:
