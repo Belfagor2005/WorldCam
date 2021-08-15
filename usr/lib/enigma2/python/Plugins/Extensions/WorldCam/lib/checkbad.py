@@ -23,9 +23,9 @@ from six.moves.urllib.parse import unquote_plus
 from six.moves.urllib.parse import quote
 from six.moves.urllib.parse import unquote
 from six.moves.urllib.parse import urlencode
-import six.moves.urllib.request
-import six.moves.urllib.parse
-import six.moves.urllib.error
+# import six.moves.urllib.request
+# import six.moves.urllib.parse
+# import six.moves.urllib.error
 
 
 def do_block_check(uninstall=False):

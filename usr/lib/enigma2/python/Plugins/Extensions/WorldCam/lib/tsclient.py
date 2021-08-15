@@ -20,9 +20,9 @@ Modified for OpenPli enigma2 usage by athoik
 Modified for KodiDirect, KodiLite and IPTVworld by pcd 
 """
 import os , re , sys
-import six.moves.urllib.request
-import six.moves.urllib.parse
-import six.moves.urllib.error
+# import six.moves.urllib.request
+# import six.moves.urllib.parse
+# import six.moves.urllib.error
 import threading, time
 import operator
 import bitstring
