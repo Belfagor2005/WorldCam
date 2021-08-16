@@ -5,7 +5,7 @@
 #   This is free software; you can redistribute it and/or modify it.  #
 #   But no delete this message support on forum linuxsat-support      #
 #######################################################################
-#06/06/2021
+#16/08/2021
 #Info http://t.me/tivustream
 from __future__ import print_function
 from Components.AVSwitch import AVSwitch
@@ -20,12 +20,8 @@ from Components.Pixmap import Pixmap
 from Components.ScrollLabel import ScrollLabel
 from Components.SelectionList import SelectionList, SelectionEntryComponent
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
-from Components.config import NoSave
-from Components.config import config, ConfigSubsection, ConfigSelection, ConfigText, ConfigYesNo, getConfigListEntry
-from Plugins.Extensions.WorldCam.lib.Utils import showlist, webcamList
+from Components.config import config, ConfigSubsection, ConfigText, getConfigListEntry
 from Plugins.Plugin import PluginDescriptor
-from Screens.ChoiceBox import ChoiceBox
-from Screens.Console import Console
 from Screens.InfoBar import MoviePlayer, InfoBar
 from Screens.InfoBarGenerics import InfoBarSeek, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarNotifications
 from Screens.InfoBarGenerics import InfoBarServiceNotifications, InfoBarMoviePlayerSummarySupport, InfoBarMenu
@@ -43,14 +39,11 @@ from os import path
 from os import system
 from twisted.web.client import getPage, downloadPage
 import Components.PluginComponent
-
 import os, re, sys
 import socket
 import ssl
-from sys import version_info
 import six
-
-socket.setdefaulttimeout(30)
+from Plugins.Extensions.WorldCam.lib.Utils import showlist, webcamList
 
 THISPLUG  = os.path.dirname(sys.modules[__name__].__file__)
 path = THISPLUG + '/channels/'
@@ -60,8 +53,6 @@ config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 
 wDreamOs = False
-PY3 = sys.version_info.major >= 3
-print('Py3: ',PY3)
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.request import Request
 from six.moves.urllib.error import HTTPError, URLError
@@ -70,10 +61,7 @@ from six.moves.urllib.parse import urlparse
 from six.moves.urllib.parse import parse_qs
 from six.moves.urllib.request import build_opener
 
-import six.moves.urllib.request
-import six.moves.urllib.parse
-import six.moves.urllib.error
-import urllib
+socket.setdefaulttimeout(30)
 try:
     from enigma import eMediaDatabase
     wDreamOs = True
@@ -99,9 +87,6 @@ if sys.version_info >= (2, 7, 9):
 def ssl_urlopen(url):
     if sslContext:
         return urlopen(url, context=sslContext)
-
-
-
     else:
         return urlopen(url)
 
@@ -114,7 +99,7 @@ def checkInternet():
         return False
 
 def checkStr(txt):
-    if PY3:
+    if six.PY3:
         if isinstance(txt, type(bytes())):
             txt = txt.decode('utf-8')
     else:
@@ -124,8 +109,10 @@ def checkStr(txt):
 
 def getUrl2(url, referer):
         try:
+            import urllib
             req = urllib.request.Request(url)
         except:
+            import urllib2
             req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
         req.add_header('Referer', referer)
@@ -256,7 +243,6 @@ class Webcam1(Screen):
          'green': self.okClicked,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
-        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -301,7 +287,6 @@ class Webcam2(Screen):
          'green': self.okClicked,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
-        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -342,7 +327,6 @@ class Webcam3(Screen):
          'green': self.okClicked,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
-        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -394,7 +378,6 @@ class Webcam4(Screen):
          'green': self.okClicked,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
-        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -407,28 +390,31 @@ class Webcam4(Screen):
         n1 = content.find('span class="nav-header ">Countries<', 0)
         n2 = content.find('>All Cameras<', n1)
         content2 = content[n1:n2]
-
         regexvideo = b'<a href=(.*?)>(.*?)<'
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
-        for url, name in match:
-            if name in items:
-                continue
-            url1 = b'https://www.webcamtaxi.com' + url
-            url1 = url1.decode()
-            name = name.decode()
-            url1 = checkStr(url1)
-            item = checkStr(name) + "###" + url1
-            print('Items sort: ', item)
+        try:
+            for url, name in match:
+                if name in items:
+                    continue
+                url1 = b'https://www.webcamtaxi.com' + url
+                url1 = url1.decode()
+                name = name.decode()
+                url1 = checkStr(url1)
+                item = checkStr(name) + "###" + url1
+                print('Items sort: ', item)
 
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            self.names.append(name)
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
+                items.append(item)
+            items.sort()
+            for item in items:
+                name = item.split('###')[0]
+                url1 = item.split('###')[1]
+                self.names.append(name)
+                self.urls.append(url1)
+            showlist(self.names, self['list'])                
+        except Exception as e:
+            print('error ', str(e))
+
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
@@ -464,10 +450,6 @@ class Webcam5(Screen):
          'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
-        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
-        global srefInit
-        self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
-        srefInit = self.initialservice
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -485,26 +467,28 @@ class Webcam5(Screen):
         print( 'getVideos2 match =', match)
         pic = " "
         items = []
-        for url, name in match:
-            if b"/" in url:
-                  continue
-            name = checkStr(name)
-            if name in items:
-                  continue
-            url = 'https://www.webcamtaxi.com/en/' + self.name.lower() +'/' + url.decode() + 'html'
-            url1 = checkStr(url)
-            items.append(name)
-            # item = checkStr(name) + "###" + url1
-            # print('Items sort 2: ', item)
-            # items.append(item)
-        # items.sort()
-        # for newitem in items:
-            # name = newitem.split('###')[0]
-            # url = newitem.split('###')[1]
-            self.names.append(name)
-            self.urls.append(url)
-        showlist(self.names, self['list'])
-
+        try:
+            for url, name in match:
+                if b"/" in url:
+                      continue
+                name = checkStr(name)
+                if name in items:
+                      continue
+                url = 'https://www.webcamtaxi.com/en/' + self.name.lower() +'/' + url.decode() + 'html'
+                url1 = checkStr(url)
+                items.append(name)
+                # item = checkStr(name) + "###" + url1
+                # print('Items sort 2: ', item)
+                # items.append(item)
+            # items.sort()
+            # for newitem in items:
+                # name = newitem.split('###')[0]
+                # url = newitem.split('###')[1]
+                self.names.append(name)
+                self.urls.append(url)
+            showlist(self.names, self['list'])
+        except Exception as e:
+            print('error ', str(e))
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
@@ -515,6 +499,7 @@ class Webcam5(Screen):
             url = self.urls[idx]
             self.session.open(Webcam6, name, url)
             return
+            
     def cancel(self):
         Screen.close(self, False)
 
@@ -539,7 +524,6 @@ class Webcam6(Screen):
          'green': self.okClicked,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
-        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -555,31 +539,34 @@ class Webcam6(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         print( 'getVideos3 match =', match)
         items = []
-        for url in match:
-            url1 = 'https://www.webcamtaxi.com' + url.decode() + '.html'
-            n1 = url.rfind("/")
-            name = url[n1:]
-            print( "getVideos3 name 2 =", name)
-            url1 = checkStr(url1)
-            name = checkStr(name)
-            item = name + "###" + url1
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            self.names.append(name)
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-
+        try:
+            for url in match:
+                url1 = 'https://www.webcamtaxi.com' + url.decode() + '.html'
+                n1 = url.rfind("/")
+                name = url[n1:]
+                print( "getVideos3 name 2 =", name)
+                url1 = checkStr(url1)
+                name = checkStr(name)
+                item = name + "###" + url1
+                items.append(item)
+            items.sort()
+            for item in items:
+                name = item.split('###')[0]
+                url1 = item.split('###')[1]
+                self.names.append(name)
+                self.urls.append(url1)
+            showlist(self.names, self['list'])
+        except Exception as e:
+            print('error ', str(e))
+            
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         if idx is None:
             return
         else:
-            url1 = self.urls[idx]
+            url = self.urls[idx]
             name = self.names[idx]
-            self.getVid(name, url1)
+            self.getVid(name, url)
             return
 
     def getVid(self, name, url):
@@ -593,34 +580,41 @@ class Webcam6(Screen):
         url = match[0]
         url = url.replace('"', '')
         print( 'getVideos4 url 2 =', url)
+        try:
+            
+            if "youtube" in url.lower():
+                   print( 'getVideos4 url 3 =', url)
+                   content2 = getUrl(url)
+                   regexvideo = b'\?v(.*?)"'
+                   match2 = re.compile(regexvideo, re.DOTALL).findall(content2)
+                   print( 'getVideos4 match2 =', match2)
+                   s = match2[0]
+                   s = s.replace("\\", "")
+                   s = s.replace("u003d", "")
+                   print( 'getVideos4 s =', s)
+                   url = 'http://www.youtube.com/watch?v=' + s
+                   self.youandtube(name, url)
+            else:
+                   n1 = url.find("src", 0)
+                   url = url[(n1+4):]
+                   self.session.open(Playstream1, name, url)
+        except Exception as e:
+            print('error ', str(e))
 
-        if "youtube" in url.lower():
-               print( 'getVideos4 url 3 =', url)
-               content2 = getUrl(url)
-               regexvideo = b'\?v(.*?)"'
-               match2 = re.compile(regexvideo, re.DOTALL).findall(content2)
-               print( 'getVideos4 match2 =', match2)
-               s = match2[0]
-               s = s.replace("\\", "")
-               s = s.replace("u003d", "")
-               print( 'getVideos4 s =', s)
-               url = 'http://www.youtube.com/watch?v=' + s
-               self.youandtube(name, url)
-        else:
-               n1 = url.find("src", 0)
-               url = url[(n1+4):]
-               self.session.open(Playstream1, name, url)
 
     def youandtube(self, name,url):
-        from Plugins.Extensions.WorldCam.youtube_dl import YoutubeDL
-        ydl_opts = {'format': 'best'}
-        ydl = YoutubeDL(ydl_opts)
-        ydl.add_default_info_extractors()
-        result = ydl.extract_info(url, download=False)
-        print( "result =", result)
-        url = result["url"]
-        print( "Here in Test url =", url)
-        self.session.open(Playstream1, name, url)
+        try:
+            from Plugins.Extensions.WorldCam.youtube_dl import YoutubeDL
+            ydl_opts = {'format': 'best'}
+            ydl = YoutubeDL(ydl_opts)
+            ydl.add_default_info_extractors()
+            result = ydl.extract_info(url, download=False)
+            print( "result =", result)
+            url = result["url"]
+            print( "Here in Test url =", url)
+            self.session.open(Playstream1, name, url)
+        except Exception as e:
+            print('error ', str(e))        
 
     def cancel(self):
         Screen.close(self, False)
@@ -648,9 +642,9 @@ class Playstream1(Screen):
         self.name1 = name
         self.url = url
         print('In Playstream1 self.url =', url)
-        global srefInit
+        global srefOld
         self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
-        srefInit = self.initialservice
+        srefOld = self.initialservice
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -713,7 +707,7 @@ class Playstream1(Screen):
             elif idx == 3:
                 self.name = self.names[idx]
                 self.url = self.urls[idx]
-                print('In playVideo url D=', self.url)
+                print('In playVideo url c=', self.url)
                 self.play2()
             else:
                 self.name = self.names[idx]
@@ -762,7 +756,7 @@ class Playstream1(Screen):
         except:
             pass
         self.session.nav.stopService()
-        self.session.nav.playService(srefInit)
+        self.session.nav.playService(srefOld)
         self.close()
 
 
@@ -915,7 +909,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.name = name
         self.state = self.STATE_PLAYING
         self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
-        SREF = self.srefOld
+        srefOld = self.srefOld
         if '8088' in str(self.url):
             self.onLayoutFinish.append(self.slinkPlay)
         else:
@@ -1076,6 +1070,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.servicetype = str(next(nextStreamType))
         print('servicetype2: ', self.servicetype)
         self.openPlay(self.servicetype, url)
+        
     def subtitles(self):
         self.session.open(MessageBox, _('Please install script.module.SubSupport.'), MessageBox.TYPE_ERROR, timeout=10)
 
@@ -1084,7 +1079,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
 
-        self.session.nav.playService(SREF)
+        self.session.nav.playService(srefOld)
         if self.pcip != 'None':
             url2 = 'http://' + self.pcip + ':8080/requests/status.xml?command=pl_stop'
 
@@ -1096,8 +1091,10 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                 pass
         streaml = False
         self.close()
+        
     def leavePlayer(self):
         self.close()
+        
     def keyLeft(self):
         self['text'].left()
 
@@ -1106,7 +1103,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def keyNumberGlobal(self, number):
         self['text'].number(number)
-
 
 def main(session, **kwargs):
     global _session

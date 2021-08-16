@@ -44,8 +44,6 @@ import gettext
 from skin import parseColor
 from enigma import getDesktop
 
-PY3 = sys.version_info.major >= 3
-print('Py3: ',PY3)
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.request import Request
 from six.moves.urllib.error import HTTPError, URLError
@@ -58,9 +56,6 @@ from six.moves.urllib.parse import unquote_plus
 from six.moves.urllib.parse import quote
 from six.moves.urllib.parse import unquote
 from six.moves.urllib.parse import urlencode
-import six.moves.urllib.request
-import six.moves.urllib.parse
-import six.moves.urllib.error
 
 
 try:
