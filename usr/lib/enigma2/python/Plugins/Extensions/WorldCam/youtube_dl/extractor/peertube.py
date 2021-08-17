@@ -427,7 +427,7 @@ class PeerTubeIE(InfoExtractor):
                     ''' % (_INSTANCES_RE, _UUID_RE)
     _TESTS = [{
         'url': 'https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d',
-        'md5': '9bed8c0137913e17b86334e5885aacff',
+        'md5': '8563064d245a4be5705bddb22bb00a28',
         'info_dict': {
             'id': '9c9de5e8-0a1e-484a-b099-e80766180a6d',
             'ext': 'mp4',
@@ -569,15 +569,15 @@ class PeerTubeIE(InfoExtractor):
             formats.append(f)
         self._sort_formats(formats)
 
-        full_description = self._call_api(
-            host, video_id, 'description', note='Downloading description JSON',
-            fatal=False)
+        description = video.get('description')
+        if description and len(description) >= 250:
+            # description is shortened
+            full_description = self._call_api(
+                host, video_id, 'description', note='Downloading description JSON',
+                fatal=False)
 
-        description = None
-        if isinstance(full_description, dict):
-            description = str_or_none(full_description.get('description'))
-        if not description:
-            description = video.get('description')
+            if isinstance(full_description, dict):
+                description = str_or_none(full_description.get('description')) or description
 
         subtitles = self.extract_subtitles(host, video_id)
 

@@ -1,11 +1,13 @@
 from __future__ import unicode_literals
 
+import functools
 import os
 
+from ..compat import compat_str
 from ..utils import (
-    PostProcessingError,
     cli_configuration_args,
     encodeFilename,
+    PostProcessingError,
 )
 
 
@@ -33,10 +35,57 @@ class PostProcessor(object):
 
     def __init__(self, downloader=None):
         self._downloader = downloader
+        self.PP_NAME = self.pp_key()
+
+    @classmethod
+    def pp_key(cls):
+        name = cls.__name__[:-2]
+        return compat_str(name[6:]) if name[:6].lower() == 'ffmpeg' else name
+
+    def to_screen(self, text, prefix=True, *args, **kwargs):
+        tag = '[%s] ' % self.PP_NAME if prefix else ''
+        if self._downloader:
+            return self._downloader.to_screen('%s%s' % (tag, text), *args, **kwargs)
+
+    def report_warning(self, text, *args, **kwargs):
+        if self._downloader:
+            return self._downloader.report_warning(text, *args, **kwargs)
+
+    def report_error(self, text, *args, **kwargs):
+        if self._downloader:
+            return self._downloader.report_error(text, *args, **kwargs)
+
+    def write_debug(self, text, *args, **kwargs):
+        if self._downloader:
+            return self._downloader.write_debug(text, *args, **kwargs)
+
+    def get_param(self, name, default=None, *args, **kwargs):
+        if self._downloader:
+            return self._downloader.params.get(name, default, *args, **kwargs)
+        return default
 
     def set_downloader(self, downloader):
         """Sets the downloader for this PP."""
         self._downloader = downloader
+
+    @staticmethod
+    def _restrict_to(*, video=True, audio=True, images=True):
+        allowed = {'video': video, 'audio': audio, 'images': images}
+
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(self, info):
+                format_type = (
+                    'video' if info.get('vcodec') != 'none'
+                    else 'audio' if info.get('acodec') != 'none'
+                    else 'images')
+                if allowed[format_type]:
+                    return func(self, info)
+                else:
+                    self.to_screen('Skipping %s' % format_type)
+                    return [], info
+            return wrapper
+        return decorator
 
     def run(self, information):
         """Run the PostProcessor.
@@ -59,10 +108,20 @@ class PostProcessor(object):
         try:
             os.utime(encodeFilename(path), (atime, mtime))
         except Exception:
-            self._downloader.report_warning(errnote)
+            self.report_warning(errnote)
 
-    def _configuration_args(self, default=[]):
-        return cli_configuration_args(self._downloader.params, 'postprocessor_args', default)
+    def _configuration_args(self, exe, keys=None, default=[], use_compat=True):
+        pp_key = self.pp_key().lower()
+        exe = exe.lower()
+        root_key = exe if pp_key == exe else '%s+%s' % (pp_key, exe)
+        keys = ['%s%s' % (root_key, k) for k in (keys or [''])]
+        if root_key in keys:
+            keys += [root_key] + ([] if pp_key == exe else [(self.pp_key(), exe)]) + ['default']
+        else:
+            use_compat = False
+        return cli_configuration_args(
+            self.get_param('postprocessor_args'),
+            keys, default, use_compat)
 
 
 class AudioConversionError(PostProcessingError):

@@ -142,11 +142,11 @@ class IviIE(InfoExtractor):
                     continue
                 elif bundled:
                     raise ExtractorError(
-                        'This feature does not work from bundled exe. Run youtube-dl from sources.',
+                        'This feature does not work from bundled exe. Run yt-dlp from sources.',
                         expected=True)
                 elif not pycryptodomex_found:
                     raise ExtractorError(
-                        'pycryptodomex not found. Please install it.',
+                        'pycryptodomex not found. Please install',
                         expected=True)
                 elif message:
                     extractor_msg += ': ' + message
@@ -163,7 +163,10 @@ class IviIE(InfoExtractor):
         for f in result.get('files', []):
             f_url = f.get('url')
             content_format = f.get('content_format')
-            if not f_url or '-MDRM-' in content_format or '-FPS-' in content_format:
+            if not f_url:
+                continue
+            if (not self.get_param('allow_unplayable_formats')
+                    and ('-MDRM-' in content_format or '-FPS-' in content_format)):
                 continue
             formats.append({
                 'url': f_url,

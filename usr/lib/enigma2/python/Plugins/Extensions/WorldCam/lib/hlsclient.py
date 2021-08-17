@@ -501,7 +501,7 @@ class hlsclient(threading.Thread):
         if self.thread:
             self.thread._Thread__stop()
         pass#print '[hlsclient::stop] Stopping Main hlsclient thread'
-        self._Thread__stop()
+        # self._Thread__stop()
 
 
 pass#print "Here in sys.argv =", sys.argv

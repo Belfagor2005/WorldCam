@@ -151,6 +151,7 @@ class FranceTVIE(InfoExtractor):
                     videos.append(fallback_info['video'])
 
         formats = []
+        subtitles = {}
         for video in videos:
             video_url = video.get('url')
             if not video_url:
@@ -171,10 +172,12 @@ class FranceTVIE(InfoExtractor):
                     sign(video_url, format_id) + '&hdcore=3.7.0&plugin=aasp-3.7.0.39.44',
                     video_id, f4m_id=format_id, fatal=False))
             elif ext == 'm3u8':
-                formats.extend(self._extract_m3u8_formats(
+                m3u8_fmts, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
                     sign(video_url, format_id), video_id, 'mp4',
                     entry_protocol='m3u8_native', m3u8_id=format_id,
-                    fatal=False))
+                    fatal=False)
+                formats.extend(m3u8_fmts)
+                subtitles = self._merge_subtitles(subtitles, m3u8_subs)
             elif ext == 'mpd':
                 formats.extend(self._extract_mpd_formats(
                     sign(video_url, format_id), video_id, mpd_id=format_id, fatal=False))
@@ -199,13 +202,12 @@ class FranceTVIE(InfoExtractor):
             title += ' - %s' % subtitle
         title = title.strip()
 
-        subtitles = {}
-        subtitles_list = [{
-            'url': subformat['url'],
-            'ext': subformat.get('format'),
-        } for subformat in info.get('subtitles', []) if subformat.get('url')]
-        if subtitles_list:
-            subtitles['fr'] = subtitles_list
+        subtitles.setdefault('fr', []).extend(
+            [{
+                'url': subformat['url'],
+                'ext': subformat.get('format'),
+            } for subformat in info.get('subtitles', []) if subformat.get('url')]
+        )
 
         return {
             'id': video_id,
@@ -341,16 +343,33 @@ class FranceTVInfoIE(FranceTVBaseInfoExtractor):
     _VALID_URL = r'https?://(?:www|mobile|france3-regions)\.francetvinfo\.fr/(?:[^/]+/)*(?P<id>[^/?#&.]+)'
 
     _TESTS = [{
-        'url': 'http://www.francetvinfo.fr/replay-jt/france-3/soir-3/jt-grand-soir-3-lundi-26-aout-2013_393427.html',
+        'url': 'https://www.francetvinfo.fr/replay-jt/france-3/soir-3/jt-grand-soir-3-jeudi-22-aout-2019_3561461.html',
         'info_dict': {
-            'id': '84981923',
+            'id': 'd12458ee-5062-48fe-bfdd-a30d6a01b793',
             'ext': 'mp4',
             'title': 'Soir 3',
-            'upload_date': '20130826',
-            'timestamp': 1377548400,
+            'upload_date': '20190822',
+            'timestamp': 1566510900,
+            'description': 'md5:72d167097237701d6e8452ff03b83c00',
             'subtitles': {
                 'fr': 'mincount:2',
             },
+        },
+        'params': {
+            'skip_download': True,
+        },
+        'add_ie': [FranceTVIE.ie_key()],
+    }, {
+        'note': 'Only an image exists in initial webpage instead of the video',
+        'url': 'https://www.francetvinfo.fr/sante/maladie/coronavirus/covid-19-en-inde-une-situation-catastrophique-a-new-dehli_4381095.html',
+        'info_dict': {
+            'id': '7d204c9e-a2d3-11eb-9e4c-000d3a23d482',
+            'ext': 'mp4',
+            'title': 'Covid-19 : une situation catastrophique à New Dehli',
+            'thumbnail': str,
+            'duration': 76,
+            'timestamp': 1619028518,
+            'upload_date': '20210421',
         },
         'params': {
             'skip_download': True,

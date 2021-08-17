@@ -1,12 +1,12 @@
 from __future__ import unicode_literals
 
-import io
-import json
-import traceback
 import hashlib
+import json
 import os
+import platform
 import subprocess
 import sys
+import traceback
 from zipimport import zipimporter
 
 from .compat import compat_realpath
@@ -15,6 +15,7 @@ from .utils import encode_compat_str
 from .version import __version__
 
 
+'''  # Not signed
 def rsa_verify(message, signature, key):
     from hashlib import sha256
     assert isinstance(message, bytes)
@@ -27,153 +28,213 @@ def rsa_verify(message, signature, key):
         return False
     expected = b'0001' + (byte_size - len(asn1) // 2 - 3) * b'ff' + b'00' + asn1
     return expected == signature
+'''
 
 
 def update_self(to_screen, verbose, opener):
-    """Update the program file with the latest version from the repository"""
+    ''' Exists for backward compatibility. Use run_update(ydl) instead '''
 
-    UPDATE_URL = 'https://yt-dl.org/update/'
-    VERSION_URL = UPDATE_URL + 'LATEST_VERSION'
-    JSON_URL = UPDATE_URL + 'versions.json'
-    UPDATES_RSA_KEY = (0x9d60ee4d8f805312fdb15a62f87b95bd66177b91df176765d13514a0f1754bcd2057295c5b6f1d35daa6742c3ffc9a82d3e118861c207995a8031e151d863c9927e304576bc80692bc8e094896fcf11b66f3e29e04e3a71e9a11558558acea1840aec37fc396fb6b65dc81a1c4144e03bd1c011de62e3f1357b327d08426fe93, 65537)
+    printfn = to_screen
 
-    if not isinstance(globals().get('__loader__'), zipimporter) and not hasattr(sys, 'frozen'):
-        to_screen('It looks like you installed youtube-dl with a package manager, pip, setup.py or a tarball. Please use that to update.')
-        return
+    class FakeYDL():
+        _opener = opener
+        to_screen = printfn
 
-    # Check if there is a new version
-    try:
-        newversion = opener.open(VERSION_URL).read().decode('utf-8').strip()
-    except Exception:
-        if verbose:
-            to_screen(encode_compat_str(traceback.format_exc()))
-        to_screen('ERROR: can\'t find the current version. Please try again later.')
-        return
-    if newversion == __version__:
-        to_screen('youtube-dl is up-to-date (' + __version__ + ')')
-        return
+        @staticmethod
+        def report_warning(msg, *args, **kwargs):
+            return printfn('WARNING: %s' % msg, *args, **kwargs)
 
-    # Download and check versions info
-    try:
-        versions_info = opener.open(JSON_URL).read().decode('utf-8')
-        versions_info = json.loads(versions_info)
-    except Exception:
-        if verbose:
-            to_screen(encode_compat_str(traceback.format_exc()))
-        to_screen('ERROR: can\'t obtain versions info. Please try again later.')
-        return
-    if 'signature' not in versions_info:
-        to_screen('ERROR: the versions file is not signed or corrupted. Aborting.')
-        return
-    signature = versions_info['signature']
-    del versions_info['signature']
-    if not rsa_verify(json.dumps(versions_info, sort_keys=True).encode('utf-8'), signature, UPDATES_RSA_KEY):
-        to_screen('ERROR: the versions file signature is invalid. Aborting.')
-        return
+        @staticmethod
+        def report_error(msg, tb=None):
+            printfn('ERROR: %s' % msg)
+            if not verbose:
+                return
+            if tb is None:
+                # Copied from YoutubeDl.trouble
+                if sys.exc_info()[0]:
+                    tb = ''
+                    if hasattr(sys.exc_info()[1], 'exc_info') and sys.exc_info()[1].exc_info[0]:
+                        tb += ''.join(traceback.format_exception(*sys.exc_info()[1].exc_info))
+                    tb += encode_compat_str(traceback.format_exc())
+                else:
+                    tb_data = traceback.format_list(traceback.extract_stack())
+                    tb = ''.join(tb_data)
+            if tb:
+                printfn(tb)
 
-    version_id = versions_info['latest']
+    return run_update(FakeYDL())
 
-    def version_tuple(version_str):
-        return tuple(map(int, version_str.split('.')))
-    if version_tuple(__version__) >= version_tuple(version_id):
-        to_screen('youtube-dl is up to date (%s)' % __version__)
-        return
 
-    to_screen('Updating to version ' + version_id + ' ...')
-    version = versions_info['versions'][version_id]
+def run_update(ydl):
+    """
+    Update the program file with the latest version from the repository
+    Returns whether the program should terminate
+    """
 
-    print_notes(to_screen, versions_info['versions'])
+    JSON_URL = 'https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest'
+
+    def report_error(msg, network=False, expected=False, delim=';'):
+        if network:
+            msg += '%s Visit  https://github.com/yt-dlp/yt-dlp/releases/latest' % delim
+        ydl.report_error(msg, tb='' if network or expected else None)
+
+    def calc_sha256sum(path):
+        h = hashlib.sha256()
+        b = bytearray(128 * 1024)
+        mv = memoryview(b)
+        with open(os.path.realpath(path), 'rb', buffering=0) as f:
+            for n in iter(lambda: f.readinto(mv), 0):
+                h.update(mv[:n])
+        return h.hexdigest()
+
+    err = None
+    if isinstance(globals().get('__loader__'), zipimporter):
+        pass
+    elif hasattr(sys, 'frozen'):
+        pass
+    else:
+        err = 'It looks like you installed yt-dlp with a package manager, pip, setup.py or a tarball. Please use that to update'
+    if err:
+        return report_error(err, expected=True)
 
     # sys.executable is set to the full pathname of the exe-file for py2exe
     # though symlinks are not followed so that we need to do this manually
     # with help of realpath
     filename = compat_realpath(sys.executable if hasattr(sys, 'frozen') else sys.argv[0])
+    ydl.to_screen('Current Build Hash %s' % calc_sha256sum(filename))
 
-    if not os.access(filename, os.W_OK):
-        to_screen('ERROR: no write permissions on %s' % filename)
+    # Download and check versions info
+    try:
+        version_info = ydl._opener.open(JSON_URL).read().decode('utf-8')
+        version_info = json.loads(version_info)
+    except Exception:
+        return report_error('can\'t obtain versions info. Please try again later ', True, delim='or')
+
+    def version_tuple(version_str):
+        return tuple(map(int, version_str.split('.')))
+
+    version_id = version_info['tag_name']
+    if version_tuple(__version__) >= version_tuple(version_id):
+        ydl.to_screen('yt-dlp is up to date (%s)' % __version__)
         return
 
-    # Py2EXE
+    ydl.to_screen('Updating to version ' + version_id + ' ...')
+
+    version_labels = {
+        'zip_3': '',
+        'exe_64': '.exe',
+        'exe_32': '_x86.exe',
+    }
+
+    def get_bin_info(bin_or_exe, version):
+        label = version_labels['%s_%s' % (bin_or_exe, version)]
+        return next((i for i in version_info['assets'] if i['name'] == 'yt-dlp%s' % label), {})
+
+    def get_sha256sum(bin_or_exe, version):
+        filename = 'yt-dlp%s' % version_labels['%s_%s' % (bin_or_exe, version)]
+        urlh = next(
+            (i for i in version_info['assets'] if i['name'] in ('SHA2-256SUMS')),
+            {}).get('browser_download_url')
+        if not urlh:
+            return None
+        hash_data = ydl._opener.open(urlh).read().decode('utf-8')
+        if hash_data.startswith('version:'):
+            # Old colon-separated hash file
+            return dict(ln.split(':') for ln in hash_data.splitlines()).get(filename)
+        else:
+            # GNU-style hash file
+            return dict(ln.split()[::-1] for ln in hash_data.splitlines()).get(filename)
+
+    if not os.access(filename, os.W_OK):
+        return report_error('no write permissions on %s' % filename, expected=True)
+
+    # PyInstaller
     if hasattr(sys, 'frozen'):
         exe = filename
         directory = os.path.dirname(exe)
         if not os.access(directory, os.W_OK):
-            to_screen('ERROR: no write permissions on %s' % directory)
-            return
+            return report_error('no write permissions on %s' % directory, expected=True)
+        try:
+            if os.path.exists(filename + '.old'):
+                os.remove(filename + '.old')
+        except (IOError, OSError):
+            return report_error('unable to remove the old version')
 
         try:
-            urlh = opener.open(version['exe'][0])
+            arch = platform.architecture()[0][:2]
+            url = get_bin_info('exe', arch).get('browser_download_url')
+            if not url:
+                return report_error('unable to fetch updates', True)
+            urlh = ydl._opener.open(url)
             newcontent = urlh.read()
             urlh.close()
-        except (IOError, OSError):
-            if verbose:
-                to_screen(encode_compat_str(traceback.format_exc()))
-            to_screen('ERROR: unable to download latest version')
-            return
-
-        newcontent_hash = hashlib.sha256(newcontent).hexdigest()
-        if newcontent_hash != version['exe'][1]:
-            to_screen('ERROR: the downloaded file hash does not match. Aborting.')
-            return
+        except (IOError, OSError, StopIteration):
+            return report_error('unable to download latest version', True)
 
         try:
             with open(exe + '.new', 'wb') as outf:
                 outf.write(newcontent)
         except (IOError, OSError):
-            if verbose:
-                to_screen(encode_compat_str(traceback.format_exc()))
-            to_screen('ERROR: unable to write the new version')
-            return
+            return report_error('unable to write the new version')
+
+        expected_sum = get_sha256sum('exe', arch)
+        if not expected_sum:
+            ydl.report_warning('no hash information found for the release')
+        elif calc_sha256sum(exe + '.new') != expected_sum:
+            report_error('unable to verify the new executable', True)
+            try:
+                os.remove(exe + '.new')
+            except OSError:
+                return report_error('unable to remove corrupt download')
 
         try:
-            bat = os.path.join(directory, 'youtube-dl-updater.bat')
-            with io.open(bat, 'w') as batfile:
-                batfile.write('''
-@echo off
-echo Waiting for file handle to be closed ...
-ping 127.0.0.1 -n 5 -w 1000 > NUL
-move /Y "%s.new" "%s" > NUL
-echo Updated youtube-dl to version %s.
-start /b "" cmd /c del "%%~f0"&exit /b"
-                \n''' % (exe, exe, version_id))
-
-            subprocess.Popen([bat])  # Continues to run in the background
-            return  # Do not show premature success messages
+            os.rename(exe, exe + '.old')
         except (IOError, OSError):
-            if verbose:
-                to_screen(encode_compat_str(traceback.format_exc()))
-            to_screen('ERROR: unable to overwrite current version')
+            return report_error('unable to move current version')
+        try:
+            os.rename(exe + '.new', exe)
+        except (IOError, OSError):
+            report_error('unable to overwrite current version')
+            os.rename(exe + '.old', exe)
             return
+        try:
+            # Continues to run in the background
+            subprocess.Popen(
+                'ping 127.0.0.1 -n 5 -w 1000 & del /F "%s.old"' % exe,
+                shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            ydl.to_screen('Updated yt-dlp to version %s' % version_id)
+            return True  # Exit app
+        except OSError:
+            report_error('unable to delete old version')
 
     # Zip unix package
     elif isinstance(globals().get('__loader__'), zipimporter):
         try:
-            urlh = opener.open(version['bin'][0])
+            url = get_bin_info('zip', '3').get('browser_download_url')
+            if not url:
+                return report_error('unable to fetch updates', True)
+            urlh = ydl._opener.open(url)
             newcontent = urlh.read()
             urlh.close()
-        except (IOError, OSError):
-            if verbose:
-                to_screen(encode_compat_str(traceback.format_exc()))
-            to_screen('ERROR: unable to download latest version')
-            return
+        except (IOError, OSError, StopIteration):
+            return report_error('unable to download latest version', True)
 
-        newcontent_hash = hashlib.sha256(newcontent).hexdigest()
-        if newcontent_hash != version['bin'][1]:
-            to_screen('ERROR: the downloaded file hash does not match. Aborting.')
-            return
+        expected_sum = get_sha256sum('zip', '3')
+        if not expected_sum:
+            ydl.report_warning('no hash information found for the release')
+        elif hashlib.sha256(newcontent).hexdigest() != expected_sum:
+            return report_error('unable to verify the new zip', True)
 
         try:
             with open(filename, 'wb') as outf:
                 outf.write(newcontent)
         except (IOError, OSError):
-            if verbose:
-                to_screen(encode_compat_str(traceback.format_exc()))
-            to_screen('ERROR: unable to overwrite current version')
-            return
+            return report_error('unable to overwrite current version')
 
-    to_screen('Updated youtube-dl. Restart youtube-dl to use the new version.')
+    ydl.to_screen('Updated yt-dlp to version %s; Restart yt-dlp to use the new version' % version_id)
 
 
+'''  # UNUSED
 def get_notes(versions, fromVersion):
     notes = []
     for v, vdata in sorted(versions.items()):
@@ -188,3 +249,4 @@ def print_notes(to_screen, versions, fromVersion=__version__):
         to_screen('PLEASE NOTE:')
         for note in notes:
             to_screen(note)
+'''

@@ -376,7 +376,7 @@ def _make_video_result(node):
     return {
         '_type': 'url_transparent',
         'ie_key': TwitchVodIE.ie_key(),
-        'id': video_id,
+        'id': 'v' + video_id,
         'url': 'https://www.twitch.tv/videos/%s' % video_id,
         'title': node.get('title'),
         'thumbnail': node.get('previewThumbnailURL'),
@@ -864,6 +864,7 @@ class TwitchClipsIE(TwitchBaseIE):
         'md5': '761769e1eafce0ffebfb4089cb3847cd',
         'info_dict': {
             'id': '42850523',
+            'display_id': 'FaintLightGullWholeWheat',
             'ext': 'mp4',
             'title': 'EA Play 2016 Live from the Novo Theatre',
             'thumbnail': r're:^https?://.*\.jpg',
@@ -976,6 +977,7 @@ class TwitchClipsIE(TwitchBaseIE):
 
         return {
             'id': clip.get('id') or video_id,
+            'display_id': video_id,
             'title': clip.get('title') or video_id,
             'formats': formats,
             'duration': int_or_none(clip.get('durationSeconds')),

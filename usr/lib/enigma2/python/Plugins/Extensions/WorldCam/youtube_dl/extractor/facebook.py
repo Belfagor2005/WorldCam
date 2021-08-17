@@ -3,14 +3,11 @@ from __future__ import unicode_literals
 
 import json
 import re
-import socket
 
 from .common import InfoExtractor
 from ..compat import (
     compat_etree_fromstring,
-    compat_http_client,
     compat_str,
-    compat_urllib_error,
     compat_urllib_parse_unquote,
     compat_urllib_parse_unquote_plus,
 )
@@ -23,6 +20,7 @@ from ..utils import (
     int_or_none,
     js_to_json,
     limit_length,
+    network_exceptions,
     parse_count,
     qualities,
     sanitized_Request,
@@ -348,7 +346,7 @@ class FacebookIE(InfoExtractor):
                     login_results, 'login error', default=None, group='error')
                 if error:
                     raise ExtractorError('Unable to login: %s' % error, expected=True)
-                self._downloader.report_warning('unable to log in: bad username/password, or exceeded login rate limit (~3/min). Check credentials or wait.')
+                self.report_warning('unable to log in: bad username/password, or exceeded login rate limit (~3/min). Check credentials or wait.')
                 return
 
             fb_dtsg = self._search_regex(
@@ -369,9 +367,9 @@ class FacebookIE(InfoExtractor):
             check_response = self._download_webpage(check_req, None,
                                                     note='Confirming login')
             if re.search(r'id="checkpointSubmitButton"', check_response) is not None:
-                self._downloader.report_warning('Unable to confirm login, you have to login in your browser and authorize the login.')
-        except (compat_urllib_error.URLError, compat_http_client.HTTPException, socket.error) as err:
-            self._downloader.report_warning('unable to log in: %s' % error_to_compat_str(err))
+                self.report_warning('Unable to confirm login, you have to login in your browser and authorize the login.')
+        except network_exceptions as err:
+            self.report_warning('unable to log in: %s' % error_to_compat_str(err))
             return
 
     def _real_initialize(self):
@@ -622,27 +620,20 @@ class FacebookIE(InfoExtractor):
                         formats.append({
                             'format_id': '%s_%s_%s' % (format_id, quality, src_type),
                             'url': src,
-                            'preference': preference,
+                            'quality': preference,
                         })
             extract_dash_manifest(f[0], formats)
             subtitles_src = f[0].get('subtitles_src')
             if subtitles_src:
                 subtitles.setdefault('en', []).append({'url': subtitles_src})
-        if not formats:
-            raise ExtractorError('Cannot find video formats')
 
         process_formats(formats)
 
+        description = self._html_search_meta('description', webpage, default=None)
         video_title = self._html_search_regex(
-            r'<h2\s+[^>]*class="uiHeaderTitle"[^>]*>([^<]*)</h2>', webpage,
-            'title', default=None)
-        if not video_title:
-            video_title = self._html_search_regex(
-                r'(?s)<span class="fbPhotosPhotoCaption".*?id="fbPhotoPageCaption"><span class="hasCaption">(.*?)</span>',
-                webpage, 'alternative title', default=None)
-        if not video_title:
-            video_title = self._html_search_meta(
-                'description', webpage, 'title', default=None)
+            (r'<h2\s+[^>]*class="uiHeaderTitle"[^>]*>([^<]*)</h2>',
+             r'(?s)<span class="fbPhotosPhotoCaption".*?id="fbPhotoPageCaption"><span class="hasCaption">(.*?)</span>'),
+            webpage, 'title', default=None) or self._og_search_title(webpage, default=None) or description
         if video_title:
             video_title = limit_length(video_title, 80)
         else:
@@ -666,6 +657,7 @@ class FacebookIE(InfoExtractor):
             'formats': formats,
             'uploader': uploader,
             'timestamp': timestamp,
+            'description': description,
             'thumbnail': thumbnail,
             'view_count': view_count,
             'subtitles': subtitles,

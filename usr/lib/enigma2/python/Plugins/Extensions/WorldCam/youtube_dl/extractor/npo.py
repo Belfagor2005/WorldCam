@@ -246,8 +246,8 @@ class NPOIE(NPOBaseIE):
                 })
 
         if not formats:
-            if drm:
-                raise ExtractorError('This video is DRM protected.', expected=True)
+            if not self.get_param('allow_unplayable_formats') and drm:
+                self.raise_no_formats('This video is DRM protected.', expected=True)
             return
 
         self._sort_formats(formats)
@@ -425,7 +425,7 @@ class NPOIE(NPOBaseIE):
                         stream_url, video_id, fatal=False)
                     # f4m downloader downloads only piece of live stream
                     for f4m_format in f4m_formats:
-                        f4m_format['preference'] = -1
+                        f4m_format['preference'] = -5
                     formats.extend(f4m_formats)
                 elif stream_type == 'hls':
                     formats.extend(self._extract_m3u8_formats(
