@@ -20,32 +20,25 @@ Modified for OpenPli enigma2 usage by athoik
 Modified for KodiDirect, KodiLite and IPTVworld by pcd 
 """
 import os , re , sys
-# import six.moves.urllib.request
-# import six.moves.urllib.parse
-# import six.moves.urllib.error
-import threading, time
-import operator
-import bitstring
 
-PY3 = sys.version_info.major >= 3
-print('Py3: ',PY3)
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.request import Request
-from six.moves.urllib.error import HTTPError, URLError
-from six.moves.urllib.request import urlretrieve    
-from six.moves.urllib.parse import urlparse
-from six.moves.urllib.parse import parse_qs
-from six.moves.urllib.request import build_opener
-from six.moves.urllib.parse import quote_plus
-from six.moves.urllib.parse import unquote_plus
-from six.moves.urllib.parse import quote
-from six.moves.urllib.parse import unquote
-from six.moves.urllib.parse import urlencode
+# PY3 = sys.version_info.major >= 3
+PY3 = sys.version_info[0] == 3
 
-try:
+if PY3:
+    from urllib.request import urlopen, Request
+    from urllib.error import URLError, HTTPError
+    from urllib.parse import urlparse
+    from urllib.parse import urlencode, quote
+    from urllib.request import urlretrieve
     import queue
-except:
-    import Queue
+    
+else:
+    from urllib2 import urlopen, Request
+    from urllib2 import URLError, HTTPError
+    from urlparse import urlparse
+    from urllib import urlencode, quote
+    from urllib import urlretrieve
+    import urlparse, urllib2, Queue
 
 def log(msg):
         f1=open("/tmp/e.log","a")
@@ -53,10 +46,18 @@ def log(msg):
         f1.write(ms)
         f1.close()
 
+pass#log("Here in hlsclient-py 1")
+
+pass#print "Here in hlsclient-py 2"
+import threading, time
+pass#print "Here in hlsclient-py 3"
+import operator
+pass#print "Here in hlsclient-py 4"
+
 SUPPORTED_VERSION = 3
 STREAM_PFILE      = '/tmp/hls.avi'
 ################################
-
+import bitstring
 
 defualtype=""
 def getLastPTS(data,rpid,type="video"):
@@ -660,3 +661,23 @@ if __name__ == '__main__':
              pass#print "In except"
              os.remove(STREAM_PFILE)
              h.stop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
