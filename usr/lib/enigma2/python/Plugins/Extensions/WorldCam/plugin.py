@@ -1045,11 +1045,11 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         sServiceref = ''
         try:
             servicename, serviceurl = getserviceinfo(sref)
-            if servicename is not None:
+            if servicename != None:
                 sTitle = servicename
             else:
                 sTitle = ''
-            if serviceurl is not None:
+            if serviceurl != None:
                 sServiceref = serviceurl
             else:
                 sServiceref = ''
@@ -1094,7 +1094,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             name = name.replace('/', '-')
             name = name.replace(',', '-')
 
-            if url is not None:
+            if url != None:
                 url = str(url)
                 url = url.replace(':', '%3a')
                 url = url.replace('\\', '/')
