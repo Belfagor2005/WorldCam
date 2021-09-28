@@ -256,8 +256,11 @@ class Webcam1(Screen):
         elif 'webcamtaxi' in name:
             self.session.open(Webcam7)
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
+        self.close()
+
        
 class Webcam2(Screen):
 
@@ -296,9 +299,10 @@ class Webcam2(Screen):
         name = self.names[idx]
         self.session.open(Webcam3, name)
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-
+        self.close()
 
 class Webcam3(Screen):
 
@@ -309,8 +313,8 @@ class Webcam3(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self.name = name
         self.list = []
+        self.name = name        
         self['list'] = webcamList([])
         self['info'] = Label()
         self['info'].setText('UserList')
@@ -336,6 +340,8 @@ class Webcam3(Screen):
             items = line.split('###')
             name = items[0]
             url = items[1]
+            name = checkStr(name)
+            url = checkStr(url)
             self.names.append(name)
             self.urls.append(url)
         showlist(self.names, self['list'])
@@ -347,10 +353,10 @@ class Webcam3(Screen):
         name = self.names[idx]
         url = self.urls[idx]
         self.session.open(Playstream1, name, url)
-        return
+        # return
             
     def cancel(self):
-        Screen.close(self, False)
+        self.close()
 
 class Webcam4(Screen):
     def __init__(self, session):
@@ -376,7 +382,8 @@ class Webcam4(Screen):
         self.names = []
         self.urls = []
         content = getUrl('http://www.skylinewebcams.com/')
-        content = six.ensure_str(content)
+        if six.PY3:
+            content = six.ensure_str(content)
         print('content: ',content)
         regexvideo = 'class="ln_css ln-(.*?)" alt="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -406,9 +413,10 @@ class Webcam4(Screen):
             self.session.open(Webcam5, name, url)
             return
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-
+        self.close()
 class Webcam5(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
@@ -435,7 +443,8 @@ class Webcam5(Screen):
         self.names = []
         self.urls = []
         content = getUrl(self.url)
-        content = six.ensure_str(content)
+        if six.PY3:
+            content = six.ensure_str(content)
         start = 0
         # n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
         # n2 = content.find('div class="collapse navbar-collapse', n1)
@@ -476,9 +485,10 @@ class Webcam5(Screen):
             url = self.urls[idx]
             self.session.open(Webcam6, name, url)
             return
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-
+        self.close()
 class Webcam6(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
@@ -505,7 +515,8 @@ class Webcam6(Screen):
         self.names = []
         self.urls = []
         content = getUrl(self.url)
-        content = six.ensure_str(content)
+        if six.PY3:
+            content = six.ensure_str(content)
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
         stext = stext.replace('.html', '')
         stext = stext + '/'
@@ -558,9 +569,10 @@ class Webcam6(Screen):
         desc = ' '
         self.session.open(Playstream2, name, ref, desc)
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-        
+        self.close()
 class Webcam7(Screen):
 
     def __init__(self, session):
@@ -586,7 +598,8 @@ class Webcam7(Screen):
         self.names = []
         self.urls = []
         content = getUrl('https://www.webcamtaxi.com/en/')
-        content = six.ensure_str(content)
+        if six.PY3:
+            content = six.ensure_str(content)
         print('content: ',content)
         n1 = content.find('span class="nav-header ">Countries<', 0)
         n2 = content.find('>All Cameras<', n1)
@@ -625,9 +638,10 @@ class Webcam7(Screen):
             self.session.open(Webcam8, name, url)
             return
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-
+        self.close()
 class Webcam8(Screen):
 
     def __init__(self, session, name, url):
@@ -655,7 +669,8 @@ class Webcam8(Screen):
         self.names = []
         self.urls = []
         content = getUrl(self.url)
-        content = six.ensure_str(content)
+        if six.PY3:
+            content = six.ensure_str(content)
         print( 'getVideos2 content =', content)
         regexvideo = 'href=/en/' + self.name.lower() + '/(.*?)html.*?self>(.*?)<'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -683,9 +698,10 @@ class Webcam8(Screen):
             self.session.open(Webcam9, name, url)
             return
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-        
+        self.close()
 class Webcam9(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
@@ -712,7 +728,8 @@ class Webcam9(Screen):
         self.names = []
         self.urls = []
         content = getUrl(self.url)
-        content = six.ensure_str(content)
+        if six.PY3:
+            content = six.ensure_str(content)
         print( 'getVideos2 content =', content)
         regexvideo = '<div class="nspArt nspCol3".*?a href=(.*?).html'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -737,9 +754,10 @@ class Webcam9(Screen):
             self.session.open(Webcam10, name, url)
             return
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-        
+        self.close()
 class Webcam10(Screen):
 
     def __init__(self, session, name, url):
@@ -768,7 +786,8 @@ class Webcam10(Screen):
         self.names = []
         self.urls = []
         content = getUrl(self.url)
-        content = six.ensure_str(content)
+        if six.PY3:
+            content = six.ensure_str(content)
         print( 'getVideos2 content =', content)
         regexvideo = '<iframe src=(.*?) '
         pass#pass#print 'getVideos3 regexvideo =', regexvideo
@@ -816,9 +835,10 @@ class Webcam10(Screen):
     def okClicked(self):
         pass
 
+    # def cancel(self):
+        # Screen.close(self, False)
     def cancel(self):
-        Screen.close(self, False)
-        
+        self.close()
 class Playstream1(Screen):
 
     def __init__(self, session, name, url):
@@ -937,19 +957,19 @@ class Playstream1(Screen):
         self.session.nav.playService(sref)
 
     def cancel(self):
-        try:
-            password_mgr = HTTPPasswordMgrWithDefaultRealm()
-            password_mgr.add_password(None, self.hostaddr, '', 'Admin')
-            handler = HTTPBasicAuthHandler(password_mgr)
-            opener = build_opener(handler)
-            f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_stop')
-            f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_empty')
-        except:
-            pass
+        # try:
+            # password_mgr = HTTPPasswordMgrWithDefaultRealm()
+            # password_mgr.add_password(None, self.hostaddr, '', 'Admin')
+            # handler = HTTPBasicAuthHandler(password_mgr)
+            # opener = build_opener(handler)
+            # f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_stop')
+            # f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_empty')
+        # except:
+            # pass
         self.session.nav.stopService()
         self.session.nav.playService(srefInit)
-        # self.close()
-        return              
+        self.close()
+        # return              
 
         
 class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarShowHide):
