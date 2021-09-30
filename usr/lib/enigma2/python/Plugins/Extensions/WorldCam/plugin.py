@@ -45,7 +45,7 @@ from Plugins.Extensions.WorldCam.lib.Utils import showlist, webcamList
 THISPLUG  = os.path.dirname(sys.modules[__name__].__file__)
 path = THISPLUG + '/channels/'
 DESKHEIGHT = getDesktop(0).size().height()
-version = '4.1_r1' #edit lululla
+version = '4.1_r3' #edit lululla
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 
@@ -121,30 +121,49 @@ def getUrl2(url, referer):
             response.close()
             return link 
             
+# def getUrl(url):
+    # link = []
+    # try:
+        # import requests
+        # # if six.PY3:
+            # # url = url.encode()
+        # link = requests.get(url, headers = {'User-Agent': 'Mozilla/5.0'}).text
+        # # link = requests.get(url, headers = headers).text
+        # return link
+    # except ImportError:
+        # print("Here in client2 getUrl url =", url)
+        # # if six.PY3:
+            # # url = url.encode()
+        # req = Request(url)
+        # req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        # response = urlopen(req, None, 30)
+        # link=response.read().decode('utf-8')
+        # response.close()
+        # print("Here in client2 link =", link)
+        # return link
+    # except:
+        # return
+    # return    
 def getUrl(url):
-    link = []
-    try:
-        import requests
-        # if six.PY3:
-            # url = url.encode()
-        link = requests.get(url, headers = {'User-Agent': 'Mozilla/5.0'}).text
-        # link = requests.get(url, headers = headers).text
-        return link
-    except ImportError:
-        print("Here in client2 getUrl url =", url)
-        # if six.PY3:
-            # url = url.encode()
+        link = []
+
+        print(  "Here in getUrl url =", url)
         req = Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urlopen(req, None, 30)
-        link=response.read().decode('utf-8')
-        response.close()
-        print("Here in client2 link =", link)
-        return link
-    except:
-        return
-    return    
-    
+        try:
+               response = urlopen(req)
+               link=response.read()
+               response.close()
+               return link
+        except:
+               import ssl
+               gcontext = ssl._create_unverified_context()
+               response = urlopen(req, context=gcontext)
+               link=response.read()
+               response.close()
+               return link
+               
+
 SKIN_PATH = THISPLUG
 HD = getDesktop(0).size()
 iconpic = 'plugin.png'
@@ -245,19 +264,19 @@ class Webcam1(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
+        if idx and idx != '' or idx != None:
+            name = self.names[idx]
+            url = self.urls[idx]
+            
+            if 'User' in name:
+                self.session.open(Webcam2)
+            elif 'skylinewebcams' in name:
+                self.session.open(Webcam4)
+            elif 'webcamtaxi' in name:
+                self.session.open(Webcam7)
+        else:
             return
-        name = self.names[idx]
-        url = self.urls[idx]
-        if 'User' in name:
-            self.session.open(Webcam2)
-        elif 'skylinewebcams' in name:
-            self.session.open(Webcam4)
-        elif 'webcamtaxi' in name:
-            self.session.open(Webcam7)
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
 
@@ -294,13 +313,12 @@ class Webcam2(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
+        if idx and idx != '' or idx != None:
+            name = self.names[idx]
+            self.session.open(Webcam3, name)
+        else:
             return
-        name = self.names[idx]
-        self.session.open(Webcam3, name)
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
 
@@ -348,12 +366,12 @@ class Webcam3(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
+        if idx and idx != '' or idx != None:
+            name = self.names[idx]
+            url = self.urls[idx]
+            self.session.open(Playstream1, name, url)
+        else:    
             return
-        name = self.names[idx]
-        url = self.urls[idx]
-        self.session.open(Playstream1, name, url)
-        # return
             
     def cancel(self):
         self.close()
@@ -391,8 +409,10 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = 'https://www.skylinewebcams.com/' + url + '.html'
-            url1 = checkStr(url1)
-            item = checkStr(name) + "###" + url1
+            # url1 = checkStr(url1)
+            # item = checkStr(name) + "###" + url1
+            url1 = url1
+            item = name + "###" + url1            
             print('Webcam4 Items sort: ', item)
             items.append(item)
         items.sort()
@@ -405,18 +425,16 @@ class Webcam4(Screen):
         
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
-            return
-        else:
+        if idx and idx != '' or idx != None:
             name = self.names[idx]
             url = self.urls[idx]
             self.session.open(Webcam5, name, url)
+        else:
             return
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
+        
 class Webcam5(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
@@ -459,9 +477,10 @@ class Webcam5(Screen):
         items = []
         for url, name in match:
             url1 = 'https://www.skylinewebcams.com/' + ctry + '/webcam' + url
-            url1 = checkStr(url1)
-            item = checkStr(name) + "###" + url1
-#            item = name.decode() + "###" + url1
+            # url1 = checkStr(url1)
+            # item = checkStr(name) + "###" + url1
+            url1 = url1
+            item = name + "###" + url1
             print('Items sort 2: ', item)            
             items.append(item)
 
@@ -478,17 +497,16 @@ class Webcam5(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
-            return
-        else:
+        if idx and idx != '' or idx != None:
             name = self.names[idx]
             url = self.urls[idx]
             self.session.open(Webcam6, name, url)
+        else:
             return
-    # def cancel(self):
-        # Screen.close(self, False)
+
     def cancel(self):
         self.close()
+
 class Webcam6(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
@@ -538,43 +556,47 @@ class Webcam6(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
-            return
-        else:
+        if idx and idx != '' or idx != None:
             url1 = self.urls[idx]
             name = self.names[idx]
             self.getVid(name, url1)
-##            return
+        else:
+            return
 
 #http%3a//127.0.0.1%3a8088/https%3a//www.skylinewebcams.com/de/webcam/italia/sardegna/sassari/stintino.html:La Pelosa
 #https://www.skylinewebcams.com/en/webcam/espana/comunidad-valenciana/alicante/benidorm-playa-alicante.html
     def getVid(self, name, url):
-    
-        content = getUrl(url)
-        # content = six.ensure_str(content)
-        print('content ============================ ', content)
-        #source:'livee.m3u8?a=cg98qs9hqu6nubune3gv1a3jn0'
-        regexvideo = "source:'livee.m3u8(.*?)'"
-        match = re.compile(regexvideo, re.DOTALL).findall(content)  
-        print('id: ', match) 
-        id = match[0]
-        id = id.replace('?a=','')
-        url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+        try:
+            content = getUrl(url)
+            if six.PY3:
+                content = six.ensure_str(content)
+            print('content ============================ ', content)
+            #source:'livee.m3u8?a=cg98qs9hqu6nubune3gv1a3jn0'
+            regexvideo = "source:'livee.m3u8(.*?)'"
+            match = re.compile(regexvideo, re.DOTALL).findall(content)  
+            print('id: ', match) 
+            id = match[0]
+            id = id.replace('?a=','')
             
-        print( "Here in plugin.py getVid play with streamlink url =", url)
-        url = url.replace(":", "%3a")
-        url = url.replace("\\", "/")
-        # ref = "http://127.0.0.1:8088/" + url
-        ref = url
-        desc = ' '
-        self.session.open(Playstream2, name, ref, desc)
+            if id or id != '':
+            
+                url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                print( "Here in plugin.py getVid play with streamlink url =", url)
+                url = url.replace(":", "%3a")
+                url = url.replace("\\", "/")
+                # ref = "http://127.0.0.1:8088/" + url
+                ref = url
+                desc = ' '
+                self.session.open(Playstream2, name, ref, desc)
+            else:
+                return
+        except Exception as e:
+           print(e)
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
+        
 class Webcam7(Screen):
-
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
@@ -630,18 +652,16 @@ class Webcam7(Screen):
         """
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
-            return
-        else:
+        if idx and idx != '' or idx != None:
             name = self.names[idx]
             url = self.urls[idx]
             self.session.open(Webcam8, name, url)
+        else:
             return
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
+        
 class Webcam8(Screen):
 
     def __init__(self, session, name, url):
@@ -690,18 +710,16 @@ class Webcam8(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
-            return
-        else:
+        if idx and idx != '' or idx != None:
             name = self.names[idx]
             url = self.urls[idx]
             self.session.open(Webcam9, name, url)
+        else:
             return
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
+
 class Webcam9(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
@@ -746,20 +764,17 @@ class Webcam9(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
-            return
-        else:
+        if idx and idx != '' or idx != None:
             name = self.names[idx]
             url = self.urls[idx]
             self.session.open(Webcam10, name, url)
+        else:
             return
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
-class Webcam10(Screen):
 
+class Webcam10(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
@@ -835,10 +850,9 @@ class Webcam10(Screen):
     def okClicked(self):
         pass
 
-    # def cancel(self):
-        # Screen.close(self, False)
     def cancel(self):
         self.close()
+        
 class Playstream1(Screen):
 
     def __init__(self, session, name, url):
@@ -883,57 +897,58 @@ class Playstream1(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx is None:
+        if idx != '':
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            if idx == 0:
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                print('In playVideo url D=', self.url)
+                self.play()
+            elif idx == 1:
+                print('In playVideo url B=', self.url)
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                try:
+                    os.remove('/tmp/hls.avi')
+                except:
+                    pass
+                header = ''
+                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
+                print('In playVideo cmd =', cmd)
+                os.system(cmd)
+                os.system('sleep 3')
+                self.url = '/tmp/hls.avi'
+                self.play()
+            elif idx == 2:
+                print('In playVideo url A=', self.url)
+                url = self.url
+                try:
+                    os.remove('/tmp/hls.avi')
+                except:
+                    pass
+
+                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + url + '" "1" + &'
+                print('hls cmd = ', cmd)
+                os.system(cmd)
+                os.system('sleep 3')
+                self.url = '/tmp/hls.avi'
+                self.name = self.names[idx]
+                self.play()
+
+            elif idx == 3:
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                print('In playVideo url D=', self.url)
+                self.play2()
+            else:
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                print('In playVideo url D=', self.url)
+                self.play()
             return
-        self.name = self.names[idx]
-        self.url = self.urls[idx]
-        if idx == 0:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            print('In playVideo url D=', self.url)
-            self.play()
-        elif idx == 1:
-            print('In playVideo url B=', self.url)
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            try:
-                os.remove('/tmp/hls.avi')
-            except:
-                pass
-            header = ''
-            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
-            print('In playVideo cmd =', cmd)
-            os.system(cmd)
-            os.system('sleep 3')
-            self.url = '/tmp/hls.avi'
-            self.play()
-        elif idx == 2:
-            print('In playVideo url A=', self.url)
-            url = self.url
-            try:
-                os.remove('/tmp/hls.avi')
-            except:
-                pass
-
-            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + url + '" "1" + &'
-            print('hls cmd = ', cmd)
-            os.system(cmd)
-            os.system('sleep 3')
-            self.url = '/tmp/hls.avi'
-            self.name = self.names[idx]
-            self.play()
-
-        elif idx == 3:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            print('In playVideo url D=', self.url)
-            self.play2()
         else:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            print('In playVideo url D=', self.url)
-            self.play()
-        return                  
+            return
 
     def playfile(self, serverint):
         self.serverList[serverint].play(self.session, self.url, self.name)
@@ -957,25 +972,14 @@ class Playstream1(Screen):
         self.session.nav.playService(sref)
 
     def cancel(self):
-        # try:
-            # password_mgr = HTTPPasswordMgrWithDefaultRealm()
-            # password_mgr.add_password(None, self.hostaddr, '', 'Admin')
-            # handler = HTTPBasicAuthHandler(password_mgr)
-            # opener = build_opener(handler)
-            # f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_stop')
-            # f = opener.open(self.hostaddr + '/requests/status.xml?command=pl_empty')
-        # except:
-            # pass
         self.session.nav.stopService()
         self.session.nav.playService(srefInit)
         self.close()
-        # return              
 
         
 class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarShowHide):
     STATE_PLAYING = 1
     STATE_PAUSED = 2
-
     def __init__(self, session, name, url, desc):
         global SREF
         Screen.__init__(self, session)
@@ -1052,7 +1056,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def av(self):
         temp = int(self.getAspect())
-
         temp = temp + 1
         if temp > 6:
             temp = 0
@@ -1105,7 +1108,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.session.nav.stopService()
             self.session.nav.playService(sref)
         else:
- 
             url = self.url
             name = self.name
             name = name.replace(':', '-')
@@ -1113,7 +1115,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             name = name.replace(' ', '-')
             name = name.replace('/', '-')
             name = name.replace(',', '-')
-
             if url != None:
                 url = str(url)
                 url = url.replace(':', '%3a')
@@ -1134,18 +1135,15 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         if os.path.exists('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
-
         self.session.nav.playService(SREF)
         if self.pcip != 'None':
             url2 = 'http://' + self.pcip + ':8080/requests/status.xml?command=pl_stop'
-
             resp = urlopen(url2)
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)
             except:
                 pass
-
         self.close()
 
     def keyLeft(self):
