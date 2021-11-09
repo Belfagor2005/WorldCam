@@ -1,9 +1,9 @@
 Package: enigma2-plugin-extensions-worldcam
-Version: 4.1_r3
+Version: 4.2_r0
 Section: extra
 Priority: optional
 Architecture: all
-Maintainer: pcd@linuxsat-support
+Maintainer: pcd@linuxsat-support; @lululla
 Description: Enigma2 Plugin WorldCam by pcd
 Source: None
 Homepage: worldcam
