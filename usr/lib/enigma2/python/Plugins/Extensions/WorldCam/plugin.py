@@ -53,10 +53,20 @@ pythonVer = sys.version_info.major
 PY3 = False
 if pythonFull < 3.9:
     PY3 = True
+    
+if sys.version_info >= (2, 7, 9):
+    try:
+        import ssl
+        sslContext = ssl._create_unverified_context()
+    except:
+        sslContext = None    
+    
+    
 dreamos = False
 if os.path.exists('/var/lib/dpkg/status'):
     dreamos = True
     
+
 try:
     from Components.config import config
     language = config.osd.language.value
@@ -90,8 +100,15 @@ except:
     from urllib.parse import parse_qs
     PY3 = True; unicode = str; unichr = chr; long = int 
     
+    
 from xml.sax.saxutils import escape, unescape
 from six.moves.html_parser import HTMLParser    
+# def html_unescape(s):
+    # h = HTMLParser()
+    # return h.unescape(s)
+# def html_unescape(s):
+    # h = HTMLParser()
+    # return h.unescape(s)    
 def replaceHTMLCodes(txt):
     txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
     txt = unescape(txt)
@@ -108,6 +125,7 @@ def clean_html(html):
     elif type(html) == type(''):
         strType = 'utf-8'
         html = html.decode("utf-8", 'ignore')
+        
     # Newline vs <br />
     html = html.replace('\n', ' ')
     html = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', html)
@@ -116,9 +134,12 @@ def clean_html(html):
     html = re.sub('<.*?>', '', html)
     # Replace html entities
     html = unescapeHTML(html)
+    
     if strType == 'utf-8': 
         html = html.encode("utf-8")
+    
     return html.strip()
+
 
 # try:
     # from urllib2 import urlopen, Request, URLError
@@ -144,12 +165,7 @@ def clean_html(html):
         # # PY3 = True and not dreamos; unicode = str; unichr = chr; long = int
         # PY3 = True; unicode = str; unichr = chr; long = int       
 
-if sys.version_info >= (2, 7, 9):
-    try:
-        import ssl
-        sslContext = ssl._create_unverified_context()
-    except:
-        sslContext = None
+
 
 def ssl_urlopen(url):
     if sslContext:
@@ -165,36 +181,84 @@ def checkStr(txt):
         if isinstance(txt, type(six.text_type())):
             txt = txt.encode('utf-8')
     return txt
+       
 
-# def getUrl(url):
-    # link = []
-    # try:
-        # import requests
-        # # if six.PY3:
-            # # url = url.encode()
-        # link = requests.get(url, headers = {'User-Agent': 'Mozilla/5.0'}).text
-        # # link = requests.get(url, headers = headers).text
-        # return link
-    # except ImportError:
-        # print("Here in client2 getUrl url =", url)
-        # # if six.PY3:
-            # # url = url.encode()
-        # req = Request(url)
-        # req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        # response = urlopen(req, None, 30)
-        # link=response.read().decode('utf-8')
-        # response.close()
-        # print("Here in client2 link =", link)
-        # return link
-    # except:
-        # return
-    # return
+if PY3:    
+    def getUrl(url):
+            link = []
 
-def getUrl(url):
-        link = []
-        print(  "Here in getUrl url =", url)
+            print(  "Here in getUrl url =", url)
+            req = Request(url)
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+            try:
+                   response = urlopen(req)
+                   link=response.read().decode('utf-8',errors='ignore')
+                   # if PY3:
+                   link = six.ensure_str(link)
+                   print('+++++++++++++++++++++go1')
+                   response.close()
+                   return link
+            except:
+                   import ssl
+                   gcontext = ssl._create_unverified_context()
+                   response = urlopen(req, context=gcontext)
+                   link=response.read().decode('utf-8',errors='ignore')
+                   print('+++++++++++++++++++++go101')
+                   response.close()
+                   return link
+            print("Here in  getUrl url =", url)
+            print("Here in  getUrl link =", link)  
+                   
+    def getUrl2(url, referer):
+            req = Request(url)      
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+            req.add_header('Referer', referer)
+            try:
+                   response = urlopen(req)
+                   link=response.read().decode('utf-8',errors='ignore')
+                   # if PY3:
+                   link = six.ensure_str(link)
+                   print('+++++++++++++++++++++go1')
+                   response.close()
+                   return link
+            except:
+                   import ssl
+                   gcontext = ssl._create_unverified_context()
+                   response = urlopen(req, context=gcontext)
+                   link=response.read().decode('utf-8',errors='ignore')
+                   print('+++++++++++++++++++++go101')
+                   response.close()
+                   return link
+            print("Here in  getUrl link =", link)  
+else:
+    def getUrl(url):
+        pass#print "Here in getUrl url =", url
         req = Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        try:
+               response = urlopen(req)
+               pass#print "Here in getUrl response =", response
+               link=response.read()
+               response.close()
+               return link
+        except:
+               import ssl
+               gcontext = ssl._create_unverified_context()
+               response = urlopen(req, context=gcontext)
+               pass#print "Here in getUrl response 2=", response
+               link=response.read()
+               response.close()
+               return link
+        print("Here in  getUrl py2  url =", url)
+        print("Here in  getUrl py2 link =", link)    
+        
+        
+    def getUrl2(url, referer):
+        pass#print "Here in  getUrl2 url =", url
+        pass#print "Here in  getUrl2 referer =", referer
+        req = Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        req.add_header('Referer', referer)
         try:
                response = urlopen(req)
                link=response.read()
@@ -207,33 +271,13 @@ def getUrl(url):
                link=response.read()
                response.close()
                return link
+        print("Here in  getUrl2 py2 url =", url)
+        print("Here in  getUrl2 py2 referer =", referer)
+        print("Here in  getUrl2 py2 link =", link)        
 
-def getUrl2(url, referer):
-        try:
-            req =Request(url)
-        except:
-            req = Request(url)       
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        req.add_header('Referer', referer)
-        try:
-            try:
-                response = urlopen(req)
-            except:       
-                response = urlopen(req)
-            link=response.read()
-            response.close()
-            return link
-        except:
-            import ssl
-            gcontext = ssl._create_unverified_context()
-            try:
-                response = urlopen(req)
-            except:       
-                response = urlopen(req)
-            link=response.read()
-            response.close()
-            return link               
 
+
+        
 SKIN_PATH = THISPLUG
 HD = getDesktop(0).size()
 iconpic = 'plugin.png'
@@ -326,13 +370,17 @@ class Webcam1(Screen):
         self.urls.append('https://www.skylinewebcams.com/')
         self.names.append('skylinetop')
         self.urls.append('https://www.skylinewebcams.com/') #{0}/top-live-cams.html'.format(language))
+        # self.names.append('livecameras.gr')
+        # self.urls.append('http://www.livecameras.gr/')
         showlist(self.names, self['list'])
+
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         if idx and idx != '' or idx != None:
             name = self.names[idx]
             url = self.urls[idx]
+            
             if 'User' in name:
                 self.session.open(Webcam2)
             elif 'skylinewebcams' in name:
@@ -344,8 +392,10 @@ class Webcam1(Screen):
 
     def cancel(self):
         self.close()
+
        
 class Webcam2(Screen):
+
     def __init__(self, session):
         Screen.__init__(self, session)    
         self.session = session
@@ -353,6 +403,7 @@ class Webcam2(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label()
@@ -385,6 +436,7 @@ class Webcam2(Screen):
         self.close()
 
 class Webcam3(Screen):
+
     def __init__(self, session, name):
         Screen.__init__(self, session)
         self.session = session
@@ -470,10 +522,10 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = 'https://www.skylinewebcams.com/' + url + '.html'
-            # url1 = checkStr(url1)
-            # item = checkStr(name) + "###" + url1
-            url1 = url1
-            item = name + "###" + url1            
+            url1 = checkStr(url1)
+            item = checkStr(name) + "###" + url1
+            # url1 = url1
+            # item = name + "###" + url1            
             print('Webcam4 Items sort: ', item)
             items.append(item)
         items.sort()
@@ -525,16 +577,11 @@ class Webcam5(Screen):
         if PY3:
             content = six.ensure_str(content)
         start = 0
-        # n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)                  utility mega-dropdown
-        # n2 = content.find('div class="collapse navbar-collapse', n1)
         n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
         n2 = content.find('div class="collapse navbar-collapse', n1)
         content2 = content[n1:n2]
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
         ctry = ctry.replace('.html', '')
-        
-        #<a href="en/webcam/
-        # regexvideo = '<a href="/' + ctry + '/webcam(.*?)">(.*?)</a>'
         regexvideo = '<a href="/' + ctry + '/webcam(.*?)">(.*?)</a>'        
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
@@ -547,6 +594,75 @@ class Webcam5(Screen):
             print('Items sort 2: ', item)            
             items.append(item)
 
+        items.sort()
+        for item in items:
+            name = item.split('###')[0]
+            url1 = item.split('###')[1]
+            self.names.append(name)
+            print("Webcam5 name =", name)
+            self.urls.append(url1)
+            print("Webcam5 self.names =", self.names)
+            print("Webcam5 self.urls =", self.urls)
+        showlist(self.names, self['list'])
+
+    def okClicked(self):
+        idx = self['list'].getSelectionIndex()
+        if idx and idx != '' or idx != None:
+            name = self.names[idx]
+            url = self.urls[idx]
+            # self.session.open(Webcam6, name, url)
+            self.session.open(Webcam5a, name, url)            
+        else:
+            return
+
+    def cancel(self):
+        self.close()
+
+class Webcam5a(Screen):
+    def __init__(self, session, name, url):
+        Screen.__init__(self, session)
+        self.session = session
+        skin = SKIN_PATH + '/Webcam1.xml'
+        f = open(skin, 'r')
+        self.skin = f.read()
+        f.close()
+        self.list = []
+        self['list'] = webcamList([])
+        self['info'] = Label()
+        self['info'].setText(name)
+        self['key_red'] = Button(_('Exit'))
+        self['key_green'] = Button(_('Select'))
+        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
+         'green': self.okClicked,
+         'cancel': self.cancel,
+         'ok': self.okClicked}, -2)
+        self.name = name
+        self.url = url
+        self.onLayoutFinish.append(self.openTest)
+
+    def openTest(self):
+        self.names = []
+        self.urls = []
+        content = getUrl(self.url)
+        if PY3:
+            content = six.ensure_str(content)
+        n1 = content.find('col-xs-12"><h1>', 0)
+        n2 = content.find('</div>', n1)
+        content2 = content[n1:n2]
+        ctry = self.url.replace('https://www.skylinewebcams.com/', '')
+        ctry = ctry.replace('.html', '')
+        print('------->>> ctry: ', ctry)
+        regexvideo = '<a href="/' + ctry + '/(.*?)".*?tag">(.*?)</a>'        
+        match = re.compile(regexvideo, re.DOTALL).findall(content2)
+        items = []
+        for url, name in match:
+            url1 = 'https://www.skylinewebcams.com/' + ctry + '/' + url
+            url1 = checkStr(url1)
+            item = checkStr(name) + "###" + url1
+            url1 = url1
+            item = name + "###" + url1
+            print('Items sort 2: ', item)            
+            items.append(item)
         items.sort()
         for item in items:
             name = item.split('###')[0]
@@ -607,7 +723,7 @@ class Webcam6(Screen):
         for url, name in match:
             url1 = 'https://www.skylinewebcams.com/' + stext + url
             url1 = checkStr(url1)
-            item = name + "###" + url1            
+            item = checkStr(name) + "###" + url1
             items.append(item)
         items.sort()
         for item in items:
@@ -753,13 +869,14 @@ class Webcam8(Screen):
         self.urls = []
         items = []
         BASEURL = 'https://www.skylinewebcams.com/{0}/webcam.html'
-        from . import client, dom_parser as dom 
+        from . import client, dom_parser as dom   #,control
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         r = six.ensure_str(client.request(self.url, headers=headers))
         data = client.parseDOM(r, 'div', attrs={'class': 'container'})[0]
         data = dom.parse_dom(data, 'a', req='href')
         data = [i for i in data if 'subt' in i.content]
+        # xbmc.log('DATA22: {}'.format(str(data)))
         for item in data:
             link = item.attrs['href']
             if link == '#':
@@ -782,10 +899,11 @@ class Webcam8(Screen):
                 # poster = poster.encode('utf-8')
             base_url = 'https://www.skylinewebcams.com'
             url = '{}/{}'.format(base_url, link)
-
+            
             item = name + "###" + url
             print('Items sort 2: ', item)            
             items.append(item)
+
         items.sort()
         for item in items:
             name = item.split('###')[0]
@@ -796,6 +914,15 @@ class Webcam8(Screen):
             print("Webcam5 self.names =", self.names)
             print("Webcam5 self.urls =", self.urls)
         showlist(self.names, self['list'])            
+            # name = checkStr(name)
+            # url = checkStr(url)
+            # self.names.append(name)
+            # print("Webcam5 name =", name)
+            # self.urls.append(url)
+            # print("Webcam5 self.names =", self.names)
+            # print("Webcam5 self.urls =", self.urls)
+        # showlist(self.names, self['list'])        
+        
        
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
@@ -834,10 +961,63 @@ class Webcam8(Screen):
         except Exception as e:
            print(e)
 
+
+    def cancel(self):
+        self.close()
+
+class Webcam9(Screen):
+    def __init__(self, session, name, url):
+        Screen.__init__(self, session)
+        self.session = session
+        self.name = name
+        self.url = url
+        skin = SKIN_PATH + '/Webcam1.xml'
+        f = open(skin, 'r')
+        self.skin = f.read()
+        f.close()
+        self.list = []
+        self['list'] = webcamList([])
+        self['info'] = Label()
+        self['info'].setText(name)
+        self['key_red'] = Button(_('Exit'))
+        self['key_green'] = Button(_('Select'))
+        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
+         'green': self.okClicked,
+         'cancel': self.cancel,
+         'ok': self.okClicked}, -2)
+        self.onLayoutFinish.append(self.openTest)
+
+    def openTest(self, name, url):
+        try:
+            content = getUrl(url)
+            if PY3:
+                content = six.ensure_str(content)
+            print('content ============================ ', content)
+            #source:'livee.m3u8?a=cg98qs9hqu6nubune3gv1a3jn0'
+            regexvideo = "source:'livee.m3u8(.*?)'"
+            match = re.compile(regexvideo, re.DOTALL).findall(content)  
+            print('id: ', match) 
+            id = match[0]
+            id = id.replace('?a=','')
+            if id or id != '':
+                url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                print( "Here in plugin.py getVid play with streamlink url =", url)
+                url = url.replace(":", "%3a")
+                url = url.replace("\\", "/")
+                # ref = "http://127.0.0.1:8088/" + url
+                ref = url
+                desc = ' '
+                self.session.open(Playstream2, name, ref, desc)
+            else:
+                return
+        except Exception as e:
+           print(e)
+
     def cancel(self):
         self.close()
 
 class Playstream1(Screen):
+
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
@@ -958,6 +1138,7 @@ class Playstream1(Screen):
         self.session.nav.stopService()
         self.session.nav.playService(srefInit)
         self.close()
+
         
 class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarShowHide):
     STATE_PLAYING = 1
@@ -980,6 +1161,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
+
         self.new_aspect = self.init_aspect
         self['actions'] = ActionMap(['WizardActions',
          'MoviePlayerActions',
@@ -996,6 +1178,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
          'down': self.av}, -1)
         self.allowPiP = False
         InfoBarSeek.__init__(self, actionmap='MediaPlayerSeekActions')
+                                                                                    
         self.icount = 0
         self.name = name
         self.url = url
