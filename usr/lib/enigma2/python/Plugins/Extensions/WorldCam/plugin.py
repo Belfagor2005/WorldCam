@@ -42,17 +42,17 @@ import socket
 import ssl
 from Plugins.Extensions.WorldCam.lib.Utils import showlist, webcamList
 
-THISPLUG  = os.path.dirname(sys.modules[__name__].__file__)
+THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 path = THISPLUG + '/channels/'
 DESKHEIGHT = getDesktop(0).size().height()
-version = '4.2_r0' #edit lululla
+version = '4.2_r0' #edit lululla 11/11/2021
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
 PY3 = False
-if pythonFull < 3.9:
-    PY3 = True
+# if pythonFull < 3.9:
+    # PY3 = True
     
 if sys.version_info >= (2, 7, 9):
     try:
@@ -65,7 +65,6 @@ if sys.version_info >= (2, 7, 9):
 dreamos = False
 if os.path.exists('/var/lib/dpkg/status'):
     dreamos = True
-    
 
 try:
     from Components.config import config
@@ -100,7 +99,10 @@ except:
     from urllib.parse import parse_qs
     PY3 = True; unicode = str; unichr = chr; long = int 
     
-    
+# try:
+    # import xml.etree.cElementTree as ET
+# except ImportError:
+    # import xml.etree.ElementTree as ET    
 from xml.sax.saxutils import escape, unescape
 from six.moves.html_parser import HTMLParser    
 # def html_unescape(s):
@@ -125,7 +127,6 @@ def clean_html(html):
     elif type(html) == type(''):
         strType = 'utf-8'
         html = html.decode("utf-8", 'ignore')
-        
     # Newline vs <br />
     html = html.replace('\n', ' ')
     html = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', html)
@@ -134,10 +135,8 @@ def clean_html(html):
     html = re.sub('<.*?>', '', html)
     # Replace html entities
     html = unescapeHTML(html)
-    
     if strType == 'utf-8': 
         html = html.encode("utf-8")
-    
     return html.strip()
 
 
@@ -186,7 +185,6 @@ def checkStr(txt):
 if PY3:    
     def getUrl(url):
             link = []
-
             print(  "Here in getUrl url =", url)
             req = Request(url)
             req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -210,6 +208,7 @@ if PY3:
             print("Here in  getUrl link =", link)  
                    
     def getUrl2(url, referer):
+            link = []
             req = Request(url)      
             req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
             req.add_header('Referer', referer)
@@ -232,7 +231,7 @@ if PY3:
             print("Here in  getUrl link =", link)  
 else:
     def getUrl(url):
-        pass#print "Here in getUrl url =", url
+        link = []
         req = Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
         try:
@@ -254,8 +253,7 @@ else:
         
         
     def getUrl2(url, referer):
-        pass#print "Here in  getUrl2 url =", url
-        pass#print "Here in  getUrl2 referer =", referer
+        link = []
         req = Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
         req.add_header('Referer', referer)
@@ -864,7 +862,6 @@ class Webcam8(Screen):
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
-    # def get_content(url):  # 5 <div id="content"><div class="container">
         self.names = []
         self.urls = []
         items = []
@@ -876,7 +873,6 @@ class Webcam8(Screen):
         data = client.parseDOM(r, 'div', attrs={'class': 'container'})[0]
         data = dom.parse_dom(data, 'a', req='href')
         data = [i for i in data if 'subt' in i.content]
-        # xbmc.log('DATA22: {}'.format(str(data)))
         for item in data:
             link = item.attrs['href']
             if link == '#':
@@ -1017,7 +1013,6 @@ class Webcam9(Screen):
         self.close()
 
 class Playstream1(Screen):
-
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
