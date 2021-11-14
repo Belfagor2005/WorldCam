@@ -45,7 +45,7 @@ from Plugins.Extensions.WorldCam.lib.Utils import showlist, webcamList
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 path = THISPLUG + '/channels/'
 DESKHEIGHT = getDesktop(0).size().height()
-version = '4.2_r0' #edit lululla 11/11/2021
+version = '4.2_r2' #edit lululla 11/11/2021
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
