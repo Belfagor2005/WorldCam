@@ -48,7 +48,7 @@ from enigma import quitMainloop
 from sys import version_info
 from twisted.web.client import getPage, downloadPage
 from xml.sax.saxutils import escape, unescape
-from six.moves.html_parser import HTMLParser  
+from six.moves.html_parser import HTMLParser
 import Components.PluginComponent
 import os, re, sys
 import six
@@ -76,6 +76,13 @@ pythonVer = sys.version_info.major
 PY3 = False
 # if pythonFull < 3.9:
     # PY3 = True
+
+if sys.version_info >= (2, 7, 9):
+    try:
+        import ssl
+        sslContext = ssl._create_unverified_context()
+    except:
+        sslContext = None
 try:
     from Components.config import config
     language = config.osd.language.value
@@ -83,7 +90,7 @@ try:
 except:
 	language = 'en'
 	pass
-# print('language: ', language)    
+# print('language: ', language)
 try:
     import httplib
     import urlparse
@@ -106,7 +113,7 @@ except:
     from urllib.request import build_opener
     from urllib.error import URLError
     from urllib.parse import parse_qs
-    PY3 = True; unicode = str; unichr = chr; long = int 
+    PY3 = True; unicode = str; unichr = chr; long = int
 
 def replaceHTMLCodes(txt):
     txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
@@ -132,7 +139,7 @@ def clean_html(html):
     html = re.sub('<.*?>', '', html)
     # Replace html entities
     html = unescapeHTML(html)  #and for py3 ?
-    if strType == 'utf-8': 
+    if strType == 'utf-8':
         html = html.encode("utf-8")
     return html.strip()
 
@@ -173,7 +180,7 @@ def showlist(data, list):
         plist.append(wcListEntry(name))
         icount = icount+1
         list.setList(plist)
-       
+
 class ConfscreenFHD(Screen):
     skin = '\n          <screen name="Confiptv" position="center,center" size="1260,1050" title=" " >\n        <!--ePixmap position="0,0" zPosition="-10" size="930,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WebMedia/icons/menu.png" /-->\n        <!--widget name="title" position="1020,75" size="600,75" zPosition="3" halign="center" foregroundColor="#e5b243" backgroundColor="black" font="Regular;60" transparent="1" /-->\n        <ePixmap name="red"    position="0,975"   zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />\n\t<ePixmap name="green"  position="210,975" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />\n\n\t<widget name="key_red" position="0,975" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\t<widget name="key_green" position="210,975" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\n\t<widget name="config" position="75,120" size="825,210" scrollbarMode="showOnDemand" />\n\n</screen>'
 
@@ -275,10 +282,10 @@ class Webcam1(Screen):
 
     def cancel(self):
         self.close()
-       
+
 class Webcam2(Screen):
     def __init__(self, session):
-        Screen.__init__(self, session)    
+        Screen.__init__(self, session)
         self.session = session
         skin = SKIN_PATH + '/Webcam1.xml'
         f = open(skin, 'r')
@@ -324,7 +331,7 @@ class Webcam3(Screen):
         self.skin = f.read()
         f.close()
         self.list = []
-        self.name = name        
+        self.name = name
         self['list'] = webcamList([])
         self['info'] = Label()
         self['info'].setText('UserList')
@@ -362,9 +369,9 @@ class Webcam3(Screen):
             name = self.names[idx]
             url = self.urls[idx]
             self.session.open(Playstream1, name, url)
-        else:    
+        else:
             return
-            
+
     def cancel(self):
         self.close()
 
@@ -404,7 +411,7 @@ class Webcam4(Screen):
             url1 = checkStr(url1)
             item = checkStr(name) + "###" + url1
             # url1 = url1
-            # item = name + "###" + url1            
+            # item = name + "###" + url1
             print('Webcam4 Items sort: ', item)
             items.append(item)
         items.sort()
@@ -414,7 +421,7 @@ class Webcam4(Screen):
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
-        
+
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         if idx and idx != '' or idx != None:
@@ -426,7 +433,7 @@ class Webcam4(Screen):
 
     def cancel(self):
         self.close()
-        
+
 class Webcam5(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
@@ -461,7 +468,7 @@ class Webcam5(Screen):
         content2 = content[n1:n2]
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
         ctry = ctry.replace('.html', '')
-        regexvideo = '<a href="/' + ctry + '/webcam(.*?)">(.*?)</a>'        
+        regexvideo = '<a href="/' + ctry + '/webcam(.*?)">(.*?)</a>'
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
         for url, name in match:
@@ -470,7 +477,7 @@ class Webcam5(Screen):
             # item = checkStr(name) + "###" + url1
             url1 = url1
             item = name + "###" + url1
-            print('Items sort 2: ', item)            
+            print('Items sort 2: ', item)
             items.append(item)
 
         items.sort()
@@ -490,7 +497,7 @@ class Webcam5(Screen):
             name = self.names[idx]
             url = self.urls[idx]
             # self.session.open(Webcam6, name, url)
-            self.session.open(Webcam5a, name, url)            
+            self.session.open(Webcam5a, name, url)
         else:
             return
 
@@ -531,7 +538,7 @@ class Webcam5a(Screen):
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
         ctry = ctry.replace('.html', '')
         print('------->>> ctry: ', ctry)
-        regexvideo = '<a href="/' + ctry + '/(.*?)".*?tag">(.*?)</a>'        
+        regexvideo = '<a href="/' + ctry + '/(.*?)".*?tag">(.*?)</a>'
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
         for url, name in match:
@@ -540,7 +547,7 @@ class Webcam5a(Screen):
             item = checkStr(name) + "###" + url1
             url1 = url1
             item = name + "###" + url1
-            print('Items sort 2: ', item)            
+            print('Items sort 2: ', item)
             items.append(item)
         items.sort()
         for item in items:
@@ -596,7 +603,7 @@ class Webcam6(Screen):
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
         stext = stext.replace('.html', '')
         stext = stext + '/'
-        regexvideo = '><a href="' + stext + '(.*?)".*?alt="(.*?)"'  
+        regexvideo = '><a href="' + stext + '(.*?)".*?alt="(.*?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         items = []
         for url, name in match:
@@ -629,8 +636,8 @@ class Webcam6(Screen):
             print('content ============================ ', content)
             #source:'livee.m3u8?a=cg98qs9hqu6nubune3gv1a3jn0'
             regexvideo = "source:'livee.m3u8(.*?)'"
-            match = re.compile(regexvideo, re.DOTALL).findall(content)  
-            print('id: ', match) 
+            match = re.compile(regexvideo, re.DOTALL).findall(content)
+            print('id: ', match)
             id = match[0]
             id = id.replace('?a=','')
             if id or id != '':
@@ -650,7 +657,7 @@ class Webcam6(Screen):
     def cancel(self):
         self.close()
 
-#topcam        
+#topcam
 class Webcam7(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -678,7 +685,6 @@ class Webcam7(Screen):
         if PY3:
             content = six.ensure_str(content)
         print('content: ',content)
-        
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
         n2 = content.find('</div></div>', n1)
         content2 = content[n1:n2]
@@ -775,9 +781,9 @@ class Webcam8(Screen):
                 # poster = poster.encode('utf-8')
             base_url = 'https://www.skylinewebcams.com'
             url = '{}/{}'.format(base_url, link)
-            
+
             item = name + "###" + url
-            print('Items sort 2: ', item)            
+            print('Items sort 2: ', item)
             items.append(item)
 
         items.sort()
@@ -789,7 +795,7 @@ class Webcam8(Screen):
             self.urls.append(url)
             print("Webcam5 self.names =", self.names)
             print("Webcam5 self.urls =", self.urls)
-        showlist(self.names, self['list'])            
+        showlist(self.names, self['list'])
             # name = checkStr(name)
             # url = checkStr(url)
             # self.names.append(name)
@@ -797,9 +803,9 @@ class Webcam8(Screen):
             # self.urls.append(url)
             # print("Webcam5 self.names =", self.names)
             # print("Webcam5 self.urls =", self.urls)
-        # showlist(self.names, self['list'])        
-        
-       
+        # showlist(self.names, self['list'])
+
+
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         if idx and idx != '' or idx != None:
@@ -817,8 +823,8 @@ class Webcam8(Screen):
             print('content ============================ ', content)
             #source:'livee.m3u8?a=cg98qs9hqu6nubune3gv1a3jn0'
             regexvideo = "source:'livee.m3u8(.*?)'"
-            match = re.compile(regexvideo, re.DOTALL).findall(content)  
-            print('id: ', match) 
+            match = re.compile(regexvideo, re.DOTALL).findall(content)
+            print('id: ', match)
             id = match[0]
             id = id.replace('?a=','')
             if id or id != '':
@@ -868,8 +874,8 @@ class Webcam9(Screen):
             print('content ============================ ', content)
             #source:'livee.m3u8?a=cg98qs9hqu6nubune3gv1a3jn0'
             regexvideo = "source:'livee.m3u8(.*?)'"
-            match = re.compile(regexvideo, re.DOTALL).findall(content)  
-            print('id: ', match) 
+            match = re.compile(regexvideo, re.DOTALL).findall(content)
+            print('id: ', match)
             id = match[0]
             id = id.replace('?a=','')
             if id or id != '':
@@ -1100,84 +1106,55 @@ class TvInfoBarShowHide():
     def debug(obj, text = ""):
         print(text + " %s\n" % obj)
 
-class Playstream2(
-    InfoBarBase,
-    InfoBarMenu,
-    InfoBarSeek,
-    InfoBarAudioSelection,
-    InfoBarSubtitleSupport,
-    InfoBarNotifications,
-    TvInfoBarShowHide,
-    Screen
-):
-    STATE_IDLE = 0
+class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarShowHide):
     STATE_PLAYING = 1
     STATE_PAUSED = 2
-    ENABLE_RESUME_SUPPORT = True
-    ALLOW_SUSPEND = True
-    screen_timeout = 5000
-
     def __init__(self, session, name, url, desc):
-        global SREF, streaml
+        global SREF
         Screen.__init__(self, session)
-        self.session = session
-        global _session
-        _session = session
         self.skinName = 'MoviePlayer'
-        title = name
-        streaml = False
-        
-        for x in InfoBarBase, \
-                InfoBarMenu, \
-                InfoBarSeek, \
-                InfoBarAudioSelection, \
-                InfoBarMoviePlayerSummarySupport, \
-                InfoBarSubtitleSupport, \
-                InfoBarNotifications, \
-                TvInfoBarShowHide:
-            x.__init__(self)        
-        
+        title = 'Play'
+        self.sref = None
+        self['title'] = Button(title)
+        self['list'] = MenuList([])
+        self['info'] = Label()
+        self['key_yellow'] = Button(_(' '))
+        InfoBarMenu.__init__(self)
+        InfoBarNotifications.__init__(self)
+        InfoBarBase.__init__(self)
+        InfoBarShowHide.__init__(self)
         try:
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
+
         self.new_aspect = self.init_aspect
-        self['actions'] = ActionMap(['MoviePlayerActions',
-         'MovieSelectionActions',
-         'MediaPlayerActions',
+        self['actions'] = ActionMap(['WizardActions',
+         'MoviePlayerActions',
          'EPGSelectActions',
          'MediaPlayerSeekActions',
-         'SetupActions',
          'ColorActions',
          'InfobarShowHideActions',
-         'InfobarActions',
-         'InfobarSeekActions'], {'leavePlayer': self.cancel,
-         'epg': self.showIMDB,
+         'InfobarSeekActions',
+         'InfobarActions'], {'leavePlayer': self.cancel,
+         'back': self.cancel,
          'info': self.showinfo,
-         'tv': self.cicleStreamType,
-         'stop': self.leavePlayer,
-         'cancel': self.cancel,
-         'back': self.cancel}, -1)
+         'playpauseService': self.playpauseService,
+         'yellow': self.subtitles,
+         'down': self.av}, -1)
         self.allowPiP = False
-        self.service = None
-        service = None
-        url = checkStr(url)
+        InfoBarSeek.__init__(self, actionmap='MediaPlayerSeekActions')
+
         self.icount = 0
-        self.desc = desc
-        # self.pcip = 'None'
-        self.url = url
         self.name = name
+        self.url = url
+        self.desc = desc
+        self.pcip = 'None'
         self.state = self.STATE_PLAYING
-        SREF= self.session.nav.getCurrentlyPlayingServiceReference()
-        # self.onLayoutFinish.append(self.cicleStreamType)
-        # self.onClose.append(self.cancel)
-		# self.onClose.append(self.__onClose)
-        if '8088' in str(self.url):
-            # self.onLayoutFinish.append(self.slinkPlay)
-            self.onFirstExecBegin.append(self.slinkPlay)
-        else:
-            # self.onLayoutFinish.append(self.cicleStreamType)
-            self.onFirstExecBegin.append(self.cicleStreamType)
+        global SREF
+        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
+        SREF = self.srefOld
+        self.onLayoutFinish.append(self.openTest)
         return
 
     def getAspect(self):
@@ -1215,6 +1192,7 @@ class Playstream2(
         self.setAspect(temp)
 
     def showinfo(self):
+        # debug = True
         sTitle = ''
         sServiceref = ''
         try:
@@ -1231,89 +1209,71 @@ class Playstream2(
             sTagCodec = currPlay.info().getInfoString(iServiceInformation.sTagCodec)
             sTagVideoCodec = currPlay.info().getInfoString(iServiceInformation.sTagVideoCodec)
             sTagAudioCodec = currPlay.info().getInfoString(iServiceInformation.sTagAudioCodec)
-            message = 'stitle:' + str(sTitle) + '\n' + 'sServiceref:' + str(sServiceref) + '\n' + 'sTagCodec:' + str(sTagCodec) + '\n' + 'sTagVideoCodec:' + str(sTagVideoCodec) + '\n' + 'sTagAudioCodec:' + str(sTagAudioCodec)
-            self.mbox = self.session.open(MessageBox, message, MessageBox.TYPE_INFO)
+            message = 'stitle:' + str(sTitle) + '\n' + 'sServiceref:' + str(sServiceref) + '\n' + 'sTagCodec:' + str(sTagCodec) + '\n' + 'sTagVideoCodec:' + str(sTagVideoCodec) + '\n' + 'sTagAudioCodec :' + str(sTagAudioCodec)
+            self.session.open(MessageBox, message, MessageBox.TYPE_INFO)
         except:
             pass
-
         return
 
-    def showIMDB(self):
-        text_clear = self.name    
-        if is_tmdb:
-            try:
-                from Plugins.Extensions.tmdb import tmdb
-                text = charRemove(text_clear)
-                _session.open(tmdb.tmdbScreen, text, 0)
-            except Exception as e:
-                print("[XCF] Tmdb: ", e)
-        elif is_imdb:
-            try:
-                from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = charRemove(text_clear)
-                imdb(_session, text)
-            except Exception as e:
-                print("[XCF] imdb: ", e)
+    def playpauseService(self):
+        if self.state == self.STATE_PLAYING:
+            self.pause()
+            self.state = self.STATE_PAUSED
+        elif self.state == self.STATE_PAUSED:
+            self.unpause()
+            self.state = self.STATE_PLAYING
+
+    def pause(self):
+        self.session.nav.pause(True)
+
+    def unpause(self):
+        self.session.nav.pause(False)
+
+    def openTest(self):
+        if '5002' in self.url:
+            ref = self.url
+            sref = eServiceReference(ref)
+            sref.setName(self.name)
+            self.session.nav.stopService()
+            self.session.nav.playService(sref)
         else:
-            inf = self.desc
-            if inf and inf != '':
-                text_clear = inf
+            url = self.url
+            name = self.name
+            name = name.replace(':', '-')
+            name = name.replace('&', '-')
+            name = name.replace(' ', '-')
+            name = name.replace('/', '-')
+            name = name.replace(',', '-')
+            if url != None:
+                url = str(url)
+                url = url.replace(':', '%3a')
+                url = url.replace('\\', '/')
+                ref = '4097:0:1:0:0:0:0:0:0:0:' + url
+                sref = eServiceReference(ref)
+                sref.setName(self.name)
+                self.session.nav.stopService()
+                self.session.nav.playService(sref)
             else:
-                text_clear = name
-            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+                return
+        return
 
-    def slinkPlay(self):
-        ref = str(self.url)
-        ref = ref.replace(':', '%3a').replace(' ','%20')
-        print('final reference:   ', ref)
-        sref = eServiceReference(ref)
-        sref.setName(self.name)
+    def subtitles(self):
+        self.session.open(MessageBox, _('Please install script.module.SubSupport.'), MessageBox.TYPE_ERROR, timeout=10)
+
+    def cancel(self):
+        if os.path.exists('/tmp/hls.avi'):
+            os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
-        self.session.nav.playService(sref)
-
-    def openPlay(self, servicetype, url):
-        url = url.replace(':', '%3a').replace(' ','%20')
-        ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
-        if streaml == True:
-            ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
-        print('final reference:   ', ref)
-        sref = eServiceReference(ref)
-        sref.setName(self.name)
-        self.session.nav.stopService()
-        self.session.nav.playService(sref)
-
-    def cicleStreamType(self):
-        global streml
-        streaml = False
-        from itertools import cycle, islice
-        self.servicetype = '4097:0:1:0:0:0:0:0:0:0:'#  '4097'
-        print('servicetype1: ', self.servicetype)
-        url = str(self.url)
-        currentindex = 0
-        streamtypelist = ["4097"]
-        # if "youtube" in str(self.url):
-            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            # return
-        if os.path.exists("/usr/sbin/streamlinksrv"):
-            streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            streaml = True
-        if os.path.exists("/usr/bin/gstplayer"):
-            streamtypelist.append("5001")
-        if os.path.exists("/usr/bin/exteplayer3"):
-            streamtypelist.append("5002")
-        if os.path.exists("/usr/bin/apt-get"):
-            streamtypelist.append("8193")
-        for index, item in enumerate(streamtypelist, start=0):
-            if str(item) == str(self.servicetype):
-                currentindex = index
-                break
-        nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
-        self.servicetype = str(next(nextStreamType))
-        print('servicetype2: ', self.servicetype)
-        self.openPlay(self.servicetype, url)
-
-    def keyNumberGlobal(self, number):
-        self['text'].number(number)
+        self.session.nav.playService(SREF)
+        if self.pcip != 'None':
+            url2 = 'http://' + self.pcip + ':8080/requests/status.xml?command=pl_stop'
+            resp = urlopen(url2)
+        if not self.new_aspect == self.init_aspect:
+            try:
+                self.setAspect(self.init_aspect)
+            except:
+                pass
+        self.close()
 
     def keyLeft(self):
         self['text'].left()
@@ -1321,40 +1281,263 @@ class Playstream2(
     def keyRight(self):
         self['text'].right()
 
-    def showVideoInfo(self):
-        if self.shown:
-            self.hideInfobar()
-        if self.infoCallback != None:
-            self.infoCallback()
-        return
+    def keyNumberGlobal(self, number):
+        self['text'].number(number)
+# class Playstream2(
+    # InfoBarBase,
+    # InfoBarMenu,
+    # InfoBarSeek,
+    # InfoBarAudioSelection,
+    # InfoBarSubtitleSupport,
+    # InfoBarNotifications,
+    # TvInfoBarShowHide,
+    # Screen
+# ):
+    # STATE_IDLE = 0
+    # STATE_PLAYING = 1
+    # STATE_PAUSED = 2
+    # ENABLE_RESUME_SUPPORT = True
+    # ALLOW_SUSPEND = True
+    # screen_timeout = 5000
 
-    def showAfterSeek(self):
-        if isinstance(self, TvInfoBarShowHide):
-            self.doShow()
-    def cancel(self):
-        if os.path.isfile('/tmp/hls.avi'):
-            os.remove('/tmp/hls.avi')
-        self.session.nav.stopService()
-        self.session.nav.playService(SREF)
-        if not self.new_aspect == self.init_aspect:
-            try:
-                self.setAspect(self.init_aspect)
-            except:
-                pass
-        streaml = False
-        self.close()
+    # def __init__(self, session, name, url, desc):
+        # global SREF, streaml
+        # Screen.__init__(self, session)
+        # self.session = session
+        # global _session
+        # _session = session
+        # self.skinName = 'MoviePlayer'
+        # title = name
+        # streaml = False
 
-    def leavePlayer(self):
-        self.close()
-                               
+        # for x in InfoBarBase, \
+                # InfoBarMenu, \
+                # InfoBarSeek, \
+                # InfoBarAudioSelection, \
+                # InfoBarMoviePlayerSummarySupport, \
+                # InfoBarSubtitleSupport, \
+                # InfoBarNotifications, \
+                # TvInfoBarShowHide:
+            # x.__init__(self)
+
+        # try:
+            # self.init_aspect = int(self.getAspect())
+        # except:
+            # self.init_aspect = 0
+        # self.new_aspect = self.init_aspect
+        # self['actions'] = ActionMap(['MoviePlayerActions',
+         # 'MovieSelectionActions',
+         # 'MediaPlayerActions',
+         # 'EPGSelectActions',
+         # 'MediaPlayerSeekActions',
+         # 'SetupActions',
+         # 'ColorActions',
+         # 'InfobarShowHideActions',
+         # 'InfobarActions',
+         # 'InfobarSeekActions'], {'leavePlayer': self.cancel,
+         # 'epg': self.showIMDB,
+         # 'info': self.showinfo,
+         # 'tv': self.cicleStreamType,
+         # 'stop': self.leavePlayer,
+         # 'cancel': self.cancel,
+         # 'back': self.cancel}, -1)
+        # self.allowPiP = False
+        # self.service = None
+        # service = None
+        # url = checkStr(url)
+        # self.icount = 0
+        # self.desc = desc
+        # # self.pcip = 'None'
+        # self.url = url
+        # self.name = name
+        # self.state = self.STATE_PLAYING
+        # SREF= self.session.nav.getCurrentlyPlayingServiceReference()
+        # # self.onLayoutFinish.append(self.cicleStreamType)
+        # # self.onClose.append(self.cancel)
+		# # self.onClose.append(self.__onClose)
+        # if '8088' in str(self.url):
+            # # self.onLayoutFinish.append(self.slinkPlay)
+            # self.onFirstExecBegin.append(self.slinkPlay)
+        # else:
+            # # self.onLayoutFinish.append(self.cicleStreamType)
+            # self.onFirstExecBegin.append(self.cicleStreamType)
+        # return
+
+    # def getAspect(self):
+        # return AVSwitch().getAspectRatioSetting()
+
+    # def getAspectString(self, aspectnum):
+        # return {0: _('4:3 Letterbox'),
+         # 1: _('4:3 PanScan'),
+         # 2: _('16:9'),
+         # 3: _('16:9 always'),
+         # 4: _('16:10 Letterbox'),
+         # 5: _('16:10 PanScan'),
+         # 6: _('16:9 Letterbox')}[aspectnum]
+
+    # def setAspect(self, aspect):
+        # map = {0: '4_3_letterbox',
+         # 1: '4_3_panscan',
+         # 2: '16_9',
+         # 3: '16_9_always',
+         # 4: '16_10_letterbox',
+         # 5: '16_10_panscan',
+         # 6: '16_9_letterbox'}
+        # config.av.aspectratio.setValue(map[aspect])
+        # try:
+            # AVSwitch().setAspectRatio(aspect)
+        # except:
+            # pass
+
+    # def av(self):
+        # temp = int(self.getAspect())
+        # temp = temp + 1
+        # if temp > 6:
+            # temp = 0
+        # self.new_aspect = temp
+        # self.setAspect(temp)
+
+    # def showinfo(self):
+        # sTitle = ''
+        # sServiceref = ''
+        # try:
+            # servicename, serviceurl = getserviceinfo(sref)
+            # if servicename != None:
+                # sTitle = servicename
+            # else:
+                # sTitle = ''
+            # if serviceurl != None:
+                # sServiceref = serviceurl
+            # else:
+                # sServiceref = ''
+            # currPlay = self.session.nav.getCurrentService()
+            # sTagCodec = currPlay.info().getInfoString(iServiceInformation.sTagCodec)
+            # sTagVideoCodec = currPlay.info().getInfoString(iServiceInformation.sTagVideoCodec)
+            # sTagAudioCodec = currPlay.info().getInfoString(iServiceInformation.sTagAudioCodec)
+            # message = 'stitle:' + str(sTitle) + '\n' + 'sServiceref:' + str(sServiceref) + '\n' + 'sTagCodec:' + str(sTagCodec) + '\n' + 'sTagVideoCodec:' + str(sTagVideoCodec) + '\n' + 'sTagAudioCodec:' + str(sTagAudioCodec)
+            # self.session.open(MessageBox, message, MessageBox.TYPE_INFO)
+        # except:
+            # pass
+
+        # return
+
+    # def showIMDB(self):
+        # text_clear = self.name
+        # if is_tmdb:
+            # try:
+                # from Plugins.Extensions.tmdb import tmdb
+                # text = charRemove(text_clear)
+                # _session.open(tmdb.tmdbScreen, text, 0)
+            # except Exception as e:
+                # print("[XCF] Tmdb: ", e)
+        # elif is_imdb:
+            # try:
+                # from Plugins.Extensions.IMDb.plugin import main as imdb
+                # text = charRemove(text_clear)
+                # imdb(_session, text)
+            # except Exception as e:
+                # print("[XCF] imdb: ", e)
+        # else:
+            # inf = self.desc
+            # if inf and inf != '':
+                # text_clear = inf
+            # else:
+                # text_clear = name
+            # self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+
+    # def slinkPlay(self):
+        # ref = str(self.url)
+        # ref = ref.replace(':', '%3a').replace(' ','%20')
+        # print('final reference:   ', ref)
+        # sref = eServiceReference(ref)
+        # sref.setName(self.name)
+        # self.session.nav.stopService()
+        # self.session.nav.playService(sref)
+
+    # def openPlay(self, servicetype, url):
+        # url = url.replace(':', '%3a').replace(' ','%20')
+        # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
+        # if streaml == True:
+            # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
+        # print('final reference:   ', ref)
+        # sref = eServiceReference(ref)
+        # sref.setName(self.name)
+        # self.session.nav.stopService()
+        # self.session.nav.playService(sref)
+
+    # def cicleStreamType(self):
+        # global streml
+        # streaml = False
+        # from itertools import cycle, islice
+        # self.servicetype = '4097:0:1:0:0:0:0:0:0:0:'#  '4097'
+        # print('servicetype1: ', self.servicetype)
+        # url = str(self.url)
+        # currentindex = 0
+        # streamtypelist = ["4097"]
+        # # if "youtube" in str(self.url):
+            # # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
+            # # return
+        # if os.path.exists("/usr/sbin/streamlinksrv"):
+            # streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            # streaml = True
+        # if os.path.exists("/usr/bin/gstplayer"):
+            # streamtypelist.append("5001")
+        # if os.path.exists("/usr/bin/exteplayer3"):
+            # streamtypelist.append("5002")
+        # if os.path.exists("/usr/bin/apt-get"):
+            # streamtypelist.append("8193")
+        # for index, item in enumerate(streamtypelist, start=0):
+            # if str(item) == str(self.servicetype):
+                # currentindex = index
+                # break
+        # nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
+        # self.servicetype = str(next(nextStreamType))
+        # print('servicetype2: ', self.servicetype)
+        # self.openPlay(self.servicetype, url)
+
+    # def keyNumberGlobal(self, number):
+        # self['text'].number(number)
+
+    # def keyLeft(self):
+        # self['text'].left()
+
+    # def keyRight(self):
+        # self['text'].right()
+
+    # def showVideoInfo(self):
+        # if self.shown:
+            # self.hideInfobar()
+        # if self.infoCallback != None:
+            # self.infoCallback()
+        # return
+
+    # def showAfterSeek(self):
+        # if isinstance(self, TvInfoBarShowHide):
+            # self.doShow()
+    # def cancel(self):
+        # if os.path.isfile('/tmp/hls.avi'):
+            # os.remove('/tmp/hls.avi')
+        # self.session.nav.stopService()
+        # self.session.nav.playService(SREF)
+        # if not self.new_aspect == self.init_aspect:
+            # try:
+                # self.setAspect(self.init_aspect)
+            # except:
+                # pass
+        # streaml = False
+        # self.close()
+
+    # def leavePlayer(self):
+        # self.close()
+
 def main(session, **kwargs):
     global _session
     _session = session
     try:
         from Plugins.Extensions.WorldCam.Update import upd_done
         upd_done()
-    except:       
-        pass    
+    except:
+        pass
     session.open(Webcam1)
 
 def Plugins(**kwargs):
