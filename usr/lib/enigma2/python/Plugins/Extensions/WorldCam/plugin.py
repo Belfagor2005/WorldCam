@@ -9,7 +9,6 @@ from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.ConfigList import ConfigListScreen
 from Components.FileList import FileList
-from Components.HTMLComponent import *
 from Components.Input import Input
 from Components.Label import Label
 from Components.MenuList import MenuList
@@ -54,8 +53,8 @@ import os, re, sys
 import six
 import socket
 import ssl
-from Plugins.Extensions.WorldCam.Utils import *
-version = '4.2_r3' #edit lululla 11/11/2021
+from Plugins.Extensions.WorldCam.lib.Utils import *
+version = '4.2_r4' #edit lululla 11/11/2021
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 path = THISPLUG + '/channels/'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
@@ -101,6 +100,11 @@ try:
     from urllib2 import HTTPPasswordMgrWithDefaultRealm
     from urllib2 import HTTPBasicAuthHandler
     from urllib2 import build_opener
+    _str = str
+    str = unicode
+    range = xrange
+    unicode = unicode
+    basestring = basestring    
 except:
 # if PY3:
     # import http.client
@@ -113,19 +117,23 @@ except:
     from urllib.request import build_opener
     from urllib.error import URLError
     from urllib.parse import parse_qs
-    PY3 = True; unicode = str; unichr = chr; long = int
-
-def replaceHTMLCodes(txt):
-    txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
-    txt = unescape(txt)
-    txt = txt.replace("&quot;", "\"")
-    txt = txt.replace("&amp;", "&")
-    txt = txt.replace("&#38;", "&")
-    txt = txt.replace("&nbsp;", "")
-    return txt
+    PY3 = True
+    str = unicode = basestring = str
+    unichr = chr; long = int
+    
+# def replaceHTMLCodes(txt):
+    # txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
+    # txt = unescape(txt)
+    # txt = txt.replace("&quot;", "\"")
+    # txt = txt.replace("&amp;", "&")
+    # txt = txt.replace("&#38;", "&")
+    # txt = txt.replace("&nbsp;", "")
+    # return txt
 
 def clean_html(html):
     """Clean an HTML snippet into a readable string"""
+    import xml.sax.saxutils as saxutils
+    # saxutils.unescape("Suzy &amp; John")    
     if type(html) == type(u''):
         strType = 'unicode'
     elif type(html) == type(''):
@@ -138,7 +146,7 @@ def clean_html(html):
     # Strip html tags
     html = re.sub('<.*?>', '', html)
     # Replace html entities
-    html = unescapeHTML(html)  #and for py3 ?
+    html = saxutils.unescape(html)  #and for py3 ?
     if strType == 'utf-8':
         html = html.encode("utf-8")
     return html.strip()
@@ -398,7 +406,7 @@ class Webcam4(Screen):
     def openTest(self):
         self.names = []
         self.urls = []
-        content = getUrl('http://www.skylinewebcams.com/')
+        content = ReadUrl('http://www.skylinewebcams.com/')
         if PY3:
             content = six.ensure_str(content)
         print('content: ',content)
@@ -459,7 +467,7 @@ class Webcam5(Screen):
     def openTest(self):
         self.names = []
         self.urls = []
-        content = getUrl(self.url)
+        content = ReadUrl(self.url)
         if PY3:
             content = six.ensure_str(content)
         start = 0
@@ -529,7 +537,7 @@ class Webcam5a(Screen):
     def openTest(self):
         self.names = []
         self.urls = []
-        content = getUrl(self.url)
+        content = ReadUrl(self.url)
         if PY3:
             content = six.ensure_str(content)
         n1 = content.find('col-xs-12"><h1>', 0)
@@ -597,7 +605,7 @@ class Webcam6(Screen):
     def openTest(self):
         self.names = []
         self.urls = []
-        content = getUrl(self.url)
+        content = ReadUrl(self.url)
         if PY3:
             content = six.ensure_str(content)
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
@@ -630,7 +638,7 @@ class Webcam6(Screen):
 
     def getVid(self, name, url):
         try:
-            content = getUrl(url)
+            content = ReadUrl(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -681,7 +689,7 @@ class Webcam7(Screen):
     def openTest(self):
         self.names = []
         self.urls = []
-        content = getUrl('https://www.skylinewebcams.com/')
+        content = ReadUrl('https://www.skylinewebcams.com/')
         if PY3:
             content = six.ensure_str(content)
         print('content: ',content)
@@ -763,16 +771,16 @@ class Webcam8(Screen):
             link = item.attrs['href']
             if link == '#':
                 continue
-            link = replaceHTMLCodes(link)
+            link = decodeHtml(link)
             name = client.parseDOM(item.content, 'img', ret='alt')[0]
-            name = replaceHTMLCodes(name)
+            name = decodeHtml(name)
             # desc = client.parseDOM(item.content, 'p', attrs={'class': 'subt'})[0]
             # desc = clear_Title(desc)
             # try:
                 # poster = client.parseDOM(item.content, 'img', ret='data-src')[0]
             # except IndexError:
                 # poster = client.parseDOM(item.content, 'img', ret='src')[0]
-            # poster = replaceHTMLCodes(poster)
+            # poster = decodeHtml(poster)
             # poster = 'https:' + poster if poster.startswith('//') else poster
             if six.PY2:
                 link = link.encode('utf-8')
@@ -817,7 +825,7 @@ class Webcam8(Screen):
 
     def getVid(self, name, url):
         try:
-            content = getUrl(url)
+            content = ReadUrl(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -868,7 +876,7 @@ class Webcam9(Screen):
 
     def openTest(self, name, url):
         try:
-            content = getUrl(url)
+            content = ReadUrl(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -1534,7 +1542,7 @@ def main(session, **kwargs):
     global _session
     _session = session
     try:
-        from Plugins.Extensions.WorldCam.Update import upd_done
+        from Plugins.Extensions.WorldCam.lib.Update import upd_done
         upd_done()
     except:
         pass
