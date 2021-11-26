@@ -1,7 +1,7 @@
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
 January 2021
-edited from Lululla: updated to 20211120
+edited from Lululla: updated to 20211126
 """
 from __future__ import print_function
 from Components.AVSwitch import AVSwitch
