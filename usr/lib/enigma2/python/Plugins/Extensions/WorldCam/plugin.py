@@ -54,6 +54,7 @@ import six
 import socket
 import ssl
 from Plugins.Extensions.WorldCam.lib.Utils import *
+# from . import Utils
 version = '4.2_r4' #edit lululla 11/11/2021
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 path = THISPLUG + '/channels/'
@@ -130,26 +131,26 @@ except:
     # txt = txt.replace("&nbsp;", "")
     # return txt
 
-def clean_html(html):
-    """Clean an HTML snippet into a readable string"""
-    import xml.sax.saxutils as saxutils
+# def clean_html(html):
+    # """Clean an HTML snippet into a readable string"""
+    # import xml.sax.saxutils as saxutils
     # saxutils.unescape("Suzy &amp; John")    
-    if type(html) == type(u''):
-        strType = 'unicode'
-    elif type(html) == type(''):
-        strType = 'utf-8'
-        html = html.decode("utf-8", 'ignore')
+    # if type(html) == type(u''):
+        # strType = 'unicode'
+    # elif type(html) == type(''):
+        # strType = 'utf-8'
+        # html = html.decode("utf-8", 'ignore')
     # Newline vs <br />
-    html = html.replace('\n', ' ')
-    html = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', html)
-    html = re.sub(r'<\s*/\s*p\s*>\s*<\s*p[^>]*>', '\n', html)
+    # html = html.replace('\n', ' ')
+    # html = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', html)
+    # html = re.sub(r'<\s*/\s*p\s*>\s*<\s*p[^>]*>', '\n', html)
     # Strip html tags
-    html = re.sub('<.*?>', '', html)
+    # html = re.sub('<.*?>', '', html)
     # Replace html entities
-    html = saxutils.unescape(html)  #and for py3 ?
-    if strType == 'utf-8':
-        html = html.encode("utf-8")
-    return html.strip()
+    # html = saxutils.unescape(html)  #and for py3 ?
+    # if strType == 'utf-8':
+        # html = html.encode("utf-8")
+    # return html.strip()
 
 class webcamList(MenuList):
     def __init__(self, list):
@@ -501,7 +502,7 @@ class Webcam5(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
+        if idx and idx != ' ' or idx != None:
             name = self.names[idx]
             url = self.urls[idx]
             # self.session.open(Webcam6, name, url)
