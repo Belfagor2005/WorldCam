@@ -1,16 +1,15 @@
-<screen name="FullHD1" position="0,0" size="1920,1080" title="WorldCam" backgroundColor="#FF000000" flags="wfNoBorder">
+<screen name="Webcam1" position="0,0" size="1920,1080" title="WorldCam" backgroundColor="#FF000000" flags="wfNoBorder">
 <ePixmap position="1426,105" size="454,454" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/skin/fhd/ft.png" zPosition="-3" />
 <eLabel text="WorldCam" font="Regular;50" position="1401,560" size="500,75" zPosition="4" halign="center" foregroundColor="blue" backgroundColor="#000000" transparent="1" /> 
 <eLabel position="22,114" zPosition="-1" size="767,862" backgroundColor="#00000000" />
 <widget name="list" position="39,186" size="726,704" zPosition="4" scrollbarMode="showOnDemand" />
 <widget name="info" position="26,118" zPosition="4" size="764,56" font="Regular;38" foregroundColor="#ffffff" transparent="1" halign="center" valign="center" />
-<ePixmap name="red" position="39,913" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-<widget name="key_red" position="37,909" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-<ePixmap name="green" position="550,905" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-<widget name="key_green" position="550,903" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-
+<ePixmap name="red" position="39,910" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+<widget name="key_red" position="92,910" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+<ePixmap name="green" position="505,910" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
+<widget name="key_green" position="556,910" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
 <!-- Clock -->
-<widget source="global.CurrentTime" render="Label" position="1451,23" size="400,80" font="Regular;34" halign="right" valign="center" foregroundColor="#808080" backgroundColor="#101010" transparent="1" zPosition="1">
+<widget source="global.CurrentTime" render="Label" position="1425,20" size="400,80" font="Regular;34" halign="right" valign="center" foregroundColor="#808080" backgroundColor="#101010" transparent="1" zPosition="1">
   <convert type="ClockToText">Format %A %d %B %H:%M:%S</convert>
 </widget>
 </screen>
