@@ -124,14 +124,14 @@ except:
     PY3 = True; unicode = str; unichr = chr; long = int
     unichr = chr; long = int
 
-def checkStr(txt):
-    if PY3:
-        if isinstance(txt, type(bytes())):
-            txt = txt.decode('utf-8')
-    else:
-        if isinstance(txt, type(six.text_type())):
-            txt = txt.encode('utf-8')
-    return txt
+# def checkStr(txt):
+    # if PY3:
+        # if isinstance(txt, type(bytes())):
+            # txt = txt.decode('utf-8')
+    # else:
+        # if isinstance(txt, type(six.text_type())):
+            # txt = txt.encode('utf-8')
+    # return txt
 
 class webcamList(MenuList):
     def __init__(self, list):
@@ -393,13 +393,7 @@ class Webcam4(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
-    # def openTest(self):
-        # self.names = []
-        # self.urls = []
-        # content = getUrl('https://www.skylinewebcams.com')
-        # if PY3:
-            # content = six.ensure_str(content)
-        # print('content: ',content)
+
         regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         print('Webcam4 match = ', match)
@@ -461,12 +455,7 @@ class Webcam5(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
-    # def openTest(self):
-        # self.names = []
-        # self.urls = []
-        # content = getUrl(self.url)
-        # if PY3:
-            # content = six.ensure_str(content)
+
         start = 0
         n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
         n2 = content.find('div class="collapse navbar-collapse', n1)
@@ -535,12 +524,7 @@ class Webcam5a(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
-    # def openTest(self):
-        # self.names = []
-        # self.urls = []
-        # content = getUrl(self.url)
-        # if PY3:
-            # content = six.ensure_str(content)
+
         n1 = content.find('col-xs-12"><h1>', 0)
         n2 = content.find('</div>', n1)
         content2 = content[n1:n2]
@@ -609,12 +593,7 @@ class Webcam6(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
-    # def openTest(self):
-        # self.names = []
-        # self.urls = []
-        # content = getUrl(self.url)
-        # if PY3:
-            # content = six.ensure_str(content)
+
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
         stext = stext.replace('.html', '')
         stext = stext + '/'
@@ -700,12 +679,7 @@ class Webcam7(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
-    # def openTest(self):
-        # self.names = []
-        # self.urls = []
-        # content = getUrl('https://www.skylinewebcams.com')
-        # if PY3:
-            # content = six.ensure_str(content)
+
         print('content: ',content)
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
         n2 = content.find('</div></div>', n1)
@@ -1122,6 +1096,7 @@ class TvInfoBarShowHide():
 
 
 class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, TvInfoBarShowHide):
+    STATE_IDLE = 0              
     STATE_PLAYING = 1
     STATE_PAUSED = 2
     def __init__(self, session, name, url, desc):
@@ -1131,9 +1106,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         title = 'Play'
         self.sref = None
         self['title'] = Button(title)
-        # self['list'] = MenuList([])
-        # self['info'] = Label()
-        # self['key_yellow'] = Button(_(' '))
         InfoBarMenu.__init__(self)
         InfoBarNotifications.__init__(self)
         InfoBarBase.__init__(self)
@@ -1142,7 +1114,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
-
         self.new_aspect = self.init_aspect
         self['actions'] = ActionMap(['WizardActions',
          'MoviePlayerActions',
@@ -1168,8 +1139,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.pcip = 'None'
         self.state = self.STATE_PLAYING
         global SREF
-        self.srefOld = self.session.nav.getCurrentlyPlayingServiceReference()
-        SREF = self.srefOld
+        SREF= self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
         return
 
@@ -1272,12 +1242,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                 self.session.nav.stopService()
                 self.session.nav.playService(sref)
             else:
-                # url = str(url)
-                # url = url.replace(':', '%3a')
-                # url = url.replace('\\', '/')
-                # ref = '4097:0:1:0:0:0:0:0:0:0:' + url
                 ref = "4097:0:0:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3A"), name.replace(":", "%3A"))
-                # reference = eServiceReference(ref)
                 sref = eServiceReference(ref)
                 sref.setName(self.name)
                 self.session.nav.stopService()
@@ -1301,15 +1266,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             except:
                 pass
         self.close()
-
-    # def keyLeft(self):
-        # self['text'].left()
-
-    # def keyRight(self):
-        # self['text'].right()
-
-    # def keyNumberGlobal(self, number):
-        # self['text'].number(number)
 
 def main(session, **kwargs):
     global _session
