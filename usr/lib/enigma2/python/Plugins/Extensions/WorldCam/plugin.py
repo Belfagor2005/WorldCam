@@ -124,15 +124,6 @@ except:
     PY3 = True; unicode = str; unichr = chr; long = int
     unichr = chr; long = int
 
-# def checkStr(txt):
-    # if PY3:
-        # if isinstance(txt, type(bytes())):
-            # txt = txt.decode('utf-8')
-    # else:
-        # if isinstance(txt, type(six.text_type())):
-            # txt = txt.encode('utf-8')
-    # return txt
-
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, False, eListboxPythonMultiContent)
@@ -235,10 +226,9 @@ class Webcam1(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['info'].setText('HOME VIEW')
+        self['info'] = Label('HOME VIEW')
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
          'green': self.okClicked,
          'cancel': self.cancel,
@@ -283,8 +273,7 @@ class Webcam2(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText('UserList')
+        self['info'] = Label('UserList')
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -323,8 +312,7 @@ class Webcam3(Screen):
         self.list = []
         self.name = name
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText('UserList')
+        self['info'] = Label('UserList')
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -375,8 +363,7 @@ class Webcam4(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText('Skyline Webcams')
+        self['info'] = Label('Skyline Webcams')
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -435,8 +422,7 @@ class Webcam5(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText(name)
+        self['info'] = Label(name)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -504,8 +490,7 @@ class Webcam5a(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText(name)
+        self['info'] = Label(name)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -575,8 +560,7 @@ class Webcam6(Screen):
         self.name = name
         self.url = url
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText(name)
+        self['info'] = Label(name)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -625,7 +609,7 @@ class Webcam6(Screen):
 
     def getVid(self, name, url):
         try:
-            content = getUrl(url)
+            content = ReadUrl2(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -661,8 +645,7 @@ class Webcam7(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText('Skyline Top')
+        self['info'] = Label('Skyline Top')
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -732,8 +715,7 @@ class Webcam8(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText(name)
+        self['info'] = Label(name)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -805,7 +787,7 @@ class Webcam8(Screen):
 
     def getVid(self, name, url):
         try:
-            content = getUrl(url)
+            content = ReadUrl2(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -844,8 +826,7 @@ class Webcam9(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText(name)
+        self['info'] = Label(name)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -856,7 +837,7 @@ class Webcam9(Screen):
 
     def openTest(self, name, url):
         try:
-            content = getUrl(url)
+            content = ReadUrl2(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -893,8 +874,7 @@ class Playstream1(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['info'] = Label()
-        self['info'].setText('Select Player')
+        self['info'] = Label('Select Player')
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.cancel,
