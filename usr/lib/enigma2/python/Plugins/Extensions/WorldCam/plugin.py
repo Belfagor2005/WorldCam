@@ -27,12 +27,17 @@ from Screens.ChoiceBox import ChoiceBox
 from Screens.Console import Console
 from Screens.InfoBar import MoviePlayer, InfoBar
 from Screens.InfoBarGenerics import *
-# from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarMoviePlayerSummarySupport, \
-    # InfoBarSubtitleSupport, InfoBarSummarySupport, InfoBarServiceErrorPopupSupport, InfoBarNotifications
+from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarMoviePlayerSummarySupport, \
+    InfoBarSubtitleSupport, InfoBarSummarySupport, InfoBarServiceErrorPopupSupport, InfoBarNotifications
 from Screens.InputBox import InputBox
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.Standby import TryQuitMainloop
+from Screens.VirtualKeyBoard import VirtualKeyBoard
+from ServiceReference import ServiceReference
+from Tools.Directories import SCOPE_PLUGINS, resolveFilename
+from Tools.Downloader import downloadWithProgress
+from Tools.LoadPixmap import LoadPixmap
 from enigma import *
 from enigma import RT_HALIGN_CENTER, RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT, RT_HALIGN_RIGHT
@@ -150,7 +155,7 @@ def wcListEntry(name):
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=7, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 6), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=2, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=2, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 def showlist(data, list):
@@ -441,7 +446,6 @@ class Webcam5(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
-
         start = 0
         n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
         n2 = content.find('div class="collapse navbar-collapse', n1)
@@ -577,7 +581,6 @@ class Webcam6(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
-
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
         stext = stext.replace('.html', '')
         stext = stext + '/'
@@ -662,7 +665,6 @@ class Webcam7(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
-
         print('content: ',content)
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
         n2 = content.find('</div></div>', n1)
@@ -1075,53 +1077,77 @@ class TvInfoBarShowHide():
         print(text + " %s\n" % obj)
 
 
-class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, TvInfoBarShowHide):
-    STATE_IDLE = 0              
+# class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, TvInfoBarShowHide):
+class Playstream2(
+    InfoBarBase,
+    InfoBarMenu,
+    InfoBarSeek,
+    InfoBarAudioSelection,
+    InfoBarSubtitleSupport,
+    InfoBarNotifications,
+    TvInfoBarShowHide,
+    Screen
+):
+    STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
+    ENABLE_RESUME_SUPPORT = True
+    ALLOW_SUSPEND = True                                
+    screen_timeout = 5000
     def __init__(self, session, name, url, desc):
-        global SREF
+        global SREF, streaml
         Screen.__init__(self, session)
+        self.session = session
         self.skinName = 'MoviePlayer'
-        title = 'Play'
-        self.sref = None
-        self['title'] = Button(title)
-        InfoBarMenu.__init__(self)
-        InfoBarNotifications.__init__(self)
-        InfoBarBase.__init__(self)
-        TvInfoBarShowHide.__init__(self)
+        title = name
+        streaml = False
+        for x in InfoBarBase, \
+                InfoBarMenu, \
+                InfoBarSeek, \
+                InfoBarAudioSelection, \
+                InfoBarSubtitleSupport, \
+                InfoBarNotifications, \
+                TvInfoBarShowHide:
+            x.__init__(self)
         try:
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
         self.new_aspect = self.init_aspect
-        self['actions'] = ActionMap(['WizardActions',
-         'MoviePlayerActions',
+        self['actions'] = ActionMap(['MoviePlayerActions',
+         'MovieSelectionActions',
+         'MediaPlayerActions',
          'EPGSelectActions',
          'MediaPlayerSeekActions',
+         'SetupActions',
          'ColorActions',
          'InfobarShowHideActions',
-         'InfobarSeekActions',
-         'InfobarActions'], {'leavePlayer': self.cancel,
-         'back': self.cancel,
-         'info': self.showinfo,
-         # "ok": self.toggleShow,
+         'InfobarActions',
+         'InfobarSeekActions'], {'leavePlayer': self.cancel,
+         'epg': self.showIMDB,
+         'info': self.showIMDB,
          'playpauseService': self.playpauseService,
          'yellow': self.subtitles,
+         'tv': self.cicleStreamType,
+         'stop': self.cancel,
+         'cancel': self.cancel,
+         'back': self.cancel,
          'down': self.av}, -1)
         self.allowPiP = False
-        InfoBarSeek.__init__(self, actionmap='MediaPlayerSeekActions')
-
-        self.icount = 0
-        self.name = name
+        self.service = None
+        service = None
         self.url = url
-        self.desc = desc
+        self.desc = desc                        
         self.pcip = 'None'
+        self.name = decodeHtml(name)
         self.state = self.STATE_PLAYING
-        global SREF
-        SREF= self.session.nav.getCurrentlyPlayingServiceReference()
-        self.onLayoutFinish.append(self.openTest)
-        return
+                   
+        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
+        if '8088' in str(self.url):
+            self.onFirstExecBegin.append(self.slinkPlay)
+        else:
+            self.onFirstExecBegin.append(self.cicleStreamType)
+        self.onClose.append(self.cancel)
 
     def getAspect(self):
         return AVSwitch().getAspectRatioSetting()
@@ -1158,7 +1184,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.setAspect(temp)
 
     def showinfo(self):
-        # debug = True
         sTitle = ''
         sServiceref = ''
         try:
@@ -1180,6 +1205,78 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         except:
             pass
         return
+    def showIMDB(self):
+        TMDB = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('TMDB'))
+        IMDb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('IMDb'))
+        if os.path.exists(TMDB):
+            from Plugins.Extensions.TMBD.plugin import TMBD
+            text_clear = self.name
+            text = charRemove(text_clear)
+            self.session.open(TMBD, text, False)
+        elif os.path.exists(IMDb):
+            from Plugins.Extensions.IMDb.plugin import IMDB
+            text_clear = self.name
+            text = charRemove(text_clear)
+            self.session.open(IMDB, text)
+        else:
+            text_clear = self.name
+            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+
+    def slinkPlay(self, url):
+        name = self.name
+        ref = "{0}:{1}".format(url.replace(":", "%3A"), name.replace(":", "%3A"))
+        print('final reference:   ', ref)
+        sref = eServiceReference(ref)
+        sref.setName(name)
+        self.session.nav.stopService()
+        self.session.nav.playService(sref)
+
+    def openPlay(self, servicetype, url):
+        name = self.name
+        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+        print('reference:   ', ref)
+        if streaml == True:
+            url = 'http://127.0.0.1:8088/' + str(url)
+            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+            print('streaml reference:   ', ref)
+        print('final reference:   ', ref)
+        sref = eServiceReference(ref)
+        sref.setName(name)
+        self.session.nav.stopService()
+        self.session.nav.playService(sref)
+
+    def cicleStreamType(self):
+        global streaml
+        streaml = False
+        from itertools import cycle, islice
+        self.servicetype = str(config.plugins.stvcl.services.value)
+        print('servicetype1: ', self.servicetype)
+        url = str(self.url)
+        if str(os.path.splitext(self.url)[-1]) == ".m3u8":
+            if self.servicetype == "1":
+                self.servicetype = "4097"
+        currentindex = 0
+        streamtypelist = ["4097"]
+        # if "youtube" in str(self.url):
+            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
+            # return
+        if isStreamlinkAvailable():
+            streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streaml = True
+        if os.path.exists("/usr/bin/gstplayer"):
+            streamtypelist.append("5001")
+        if os.path.exists("/usr/bin/exteplayer3"):
+            streamtypelist.append("5002")
+        if os.path.exists("/usr/bin/apt-get"):
+            streamtypelist.append("8193")
+        for index, item in enumerate(streamtypelist, start=0):
+            if str(item) == str(self.servicetype):
+                currentindex = index
+                break
+        nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
+        self.servicetype = str(next(nextStreamType))
+        print('servicetype2: ', self.servicetype)
+        self.openPlay(self.servicetype, url)
 
     def playpauseService(self):
         if self.state == self.STATE_PLAYING:
@@ -1191,7 +1288,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def pause(self):
         self.session.nav.pause(True)
-
+        
     def unpause(self):
         self.session.nav.pause(False)
         
@@ -1232,21 +1329,28 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
     def subtitles(self):
         self.session.open(MessageBox, _('Please install script.module.SubSupport.'), MessageBox.TYPE_ERROR, timeout=10)
 
+    def showAfterSeek(self):
+        if isinstance(self, TvInfoBarShowHide):
+            self.doShow()
+
     def cancel(self):
         if os.path.exists('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
         self.session.nav.playService(SREF)
-        if self.pcip != 'None':
-            url2 = 'http://' + self.pcip + ':8080/requests/status.xml?command=pl_stop'
-            resp = urlopen(url2)
+        # if self.pcip != 'None':
+            # url2 = 'http://' + self.pcip + ':8080/requests/status.xml?command=pl_stop'
+            # resp = urlopen(url2)
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)
             except:
                 pass
+        streaml = False
         self.close()
 
+    def leavePlayer(self):
+        self.close()                 
 def main(session, **kwargs):
     global _session
     _session = session
