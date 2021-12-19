@@ -49,6 +49,7 @@ from enigma import eSize, ePicLoad
 from enigma import iServiceInformation
 from enigma import loadPNG, gFont
 from enigma import quitMainloop
+from enigma import iPlayableService 
 from sys import version_info
 from twisted.web.client import getPage, downloadPage
 from xml.sax.saxutils import escape, unescape
@@ -129,33 +130,44 @@ except:
     PY3 = True; unicode = str; unichr = chr; long = int
     unichr = chr; long = int
 
+# class webcamList(MenuList):
+    # def __init__(self, list):
+        # MenuList.__init__(self, list, False, eListboxPythonMultiContent)
+        # self.l.setFont(0, gFont('Regular', 20))
+        # self.l.setFont(1, gFont('Regular', 22))
+        # self.l.setFont(2, gFont('Regular', 24))
+        # self.l.setFont(3, gFont('Regular', 26))
+        # self.l.setFont(4, gFont('Regular', 28))
+        # self.l.setFont(5, gFont('Regular', 30))
+        # self.l.setFont(6, gFont('Regular', 32))
+        # self.l.setFont(7, gFont('Regular', 34))
+        # self.l.setFont(8, gFont('Regular', 36))
+        # self.l.setFont(9, gFont('Regular', 40))
+        # if isFHD:
+            # self.l.setItemHeight(50)
+        # else:
+            # self.l.setItemHeight(50)
 class webcamList(MenuList):
     def __init__(self, list):
-        MenuList.__init__(self, list, False, eListboxPythonMultiContent)
-        self.l.setFont(0, gFont('Regular', 20))
-        self.l.setFont(1, gFont('Regular', 22))
-        self.l.setFont(2, gFont('Regular', 24))
-        self.l.setFont(3, gFont('Regular', 26))
-        self.l.setFont(4, gFont('Regular', 28))
-        self.l.setFont(5, gFont('Regular', 30))
-        self.l.setFont(6, gFont('Regular', 32))
-        self.l.setFont(7, gFont('Regular', 34))
-        self.l.setFont(8, gFont('Regular', 36))
-        self.l.setFont(9, gFont('Regular', 40))
-        if isFHD:
+        MenuList.__init__(self, list, True, eListboxPythonMultiContent)
+        if isFHD():
             self.l.setItemHeight(50)
+            textfont=int(34)
+            self.l.setFont(0, gFont('Regular', textfont))
         else:
             self.l.setItemHeight(50)
+            textfont=int(22)
+            self.l.setFont(0, gFont('Regular', textfont))
 
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
     if isFHD:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=7, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 6), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=2, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 def showlist(data, list):
@@ -1076,7 +1088,6 @@ class TvInfoBarShowHide():
     def debug(obj, text = ""):
         print(text + " %s\n" % obj)
 
-
 # class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, TvInfoBarShowHide):
 class Playstream2(
     InfoBarBase,
@@ -1123,7 +1134,7 @@ class Playstream2(
          'ColorActions',
          'InfobarShowHideActions',
          'InfobarActions',
-         'InfobarSeekActions'], {'leavePlayer': self.cancel,
+         'InfobarSeekActions'], {'stop': self.cancel,
          'epg': self.showIMDB,
          'info': self.showIMDB,
          'playpauseService': self.playpauseService,
@@ -1296,7 +1307,6 @@ class Playstream2(
         pass
 
     def down(self):
-        # pass
         self.up()
 
     def doEofInternal(self, playing):
