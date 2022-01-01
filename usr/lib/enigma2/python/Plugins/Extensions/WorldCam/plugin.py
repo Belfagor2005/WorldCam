@@ -110,11 +110,11 @@ try:
     from urllib2 import HTTPPasswordMgrWithDefaultRealm
     from urllib2 import HTTPBasicAuthHandler
     from urllib2 import build_opener
-    _str = str
-    str = unicode
-    range = xrange
-    unicode = unicode
-    basestring = basestring
+    # _str = str
+    # str = unicode
+    # range = xrange
+    # unicode = unicode
+    # basestring = basestring
 except:
 # if PY3:
     # import http.client
@@ -130,23 +130,6 @@ except:
     PY3 = True; unicode = str; unichr = chr; long = int
     unichr = chr; long = int
 
-# class webcamList(MenuList):
-    # def __init__(self, list):
-        # MenuList.__init__(self, list, False, eListboxPythonMultiContent)
-        # self.l.setFont(0, gFont('Regular', 20))
-        # self.l.setFont(1, gFont('Regular', 22))
-        # self.l.setFont(2, gFont('Regular', 24))
-        # self.l.setFont(3, gFont('Regular', 26))
-        # self.l.setFont(4, gFont('Regular', 28))
-        # self.l.setFont(5, gFont('Regular', 30))
-        # self.l.setFont(6, gFont('Regular', 32))
-        # self.l.setFont(7, gFont('Regular', 34))
-        # self.l.setFont(8, gFont('Regular', 36))
-        # self.l.setFont(9, gFont('Regular', 40))
-        # if isFHD:
-            # self.l.setItemHeight(50)
-        # else:
-            # self.l.setItemHeight(50)
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
@@ -1235,7 +1218,7 @@ class Playstream2(
 
     def slinkPlay(self, url):
         name = self.name
-        ref = "{0}:{1}".format(url.replace(":", "%3A"), name.replace(":", "%3A"))
+        ref = "{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('final reference:   ', ref)
         sref = eServiceReference(ref)
         sref.setName(name)
@@ -1244,11 +1227,11 @@ class Playstream2(
 
     def openPlay(self, servicetype, url):
         name = self.name
-        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
         if streaml == True:
             url = 'http://127.0.0.1:8088/' + str(url)
-            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
             print('streaml reference:   ', ref)
         print('final reference:   ', ref)
         sref = eServiceReference(ref)
@@ -1323,13 +1306,13 @@ class Playstream2(
         if url != None:
             if '5002' in url:
                 # ref = self.url
-                ref = "5002:0:0:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3A"), name.replace(":", "%3A"))
+                ref = "5002:0:0:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
                 sref = eServiceReference(ref)
                 sref.setName(self.name)
                 self.session.nav.stopService()
                 self.session.nav.playService(sref)
             else:
-                ref = "4097:0:0:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3A"), name.replace(":", "%3A"))
+                ref = "4097:0:0:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
                 sref = eServiceReference(ref)
                 sref.setName(self.name)
                 self.session.nav.stopService()
@@ -1360,7 +1343,8 @@ class Playstream2(
         self.close()
 
     def leavePlayer(self):
-        self.close()                 
+        self.close()
+        
 def main(session, **kwargs):
     global _session
     _session = session

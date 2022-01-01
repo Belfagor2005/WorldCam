@@ -414,7 +414,24 @@ def isStreamlinkAvailable():
         # return urlopen(url, context=sslContext)
     # else:
         # return urlopen(url)
-
+def AdultUrl(url):
+        if sys.version_info.major == 3:
+             import urllib.request as urllib2
+        elif sys.version_info.major == 2:
+             import urllib2
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14')
+        r = urllib2.urlopen(req, None, 15)
+        link = r.read()
+        r.close()
+        tlink = link
+        if str(type(tlink)).find('bytes') != -1:
+            try:
+                tlink = tlink.decode("utf-8")
+            except Exception as e:
+                   print("Error: %s." % e)
+        return tlink
+        
 from random import choice
 ListAgent = [
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
