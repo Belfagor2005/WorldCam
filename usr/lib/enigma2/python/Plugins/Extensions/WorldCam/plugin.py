@@ -1,7 +1,7 @@
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
 January 2021
-edited from Lululla: updated to 20211129
+edited from Lululla: updated to 20220106
 """
 from __future__ import print_function
 from Components.AVSwitch import AVSwitch
@@ -261,6 +261,7 @@ class Webcam1(Screen):
             return
 
     def cancel(self):
+        deletetmp()
         self.close()
 
 class Webcam2(Screen):
