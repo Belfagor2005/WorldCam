@@ -1,7 +1,7 @@
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
 January 2021
-edited from Lululla: updated to 20220106
+edited from Lululla: updated to 20220113
 """
 from __future__ import print_function
 from Components.AVSwitch import AVSwitch
@@ -63,22 +63,19 @@ try:
     from Plugins.Extensions.WorldCam.Utils import *
 except:
     from . import Utils
-version = '4.2_r5' #edit lululla 29/11/2021
+version = '4.2_r5' #edit lululla 13/01/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 path = THISPLUG + '/channels/'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
 ico_path2 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugins.png'
-SKIN_PATH = THISPLUG
 iconpic = 'plugin.png'
 # BASEURL = 'https://www.skylinewebcams.com'
 # ori_url = 'https://www.skylinewebcams.com/'
 config.plugins.WorldCam = ConfigSubsection()
 config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
-
+SKIN_PATH = THISPLUG + '/skin/hd'
 if isFHD():
     SKIN_PATH = THISPLUG + '/skin/fhd'
-else:
-    SKIN_PATH = THISPLUG + '/skin/hd'
 
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
@@ -628,7 +625,7 @@ class Webcam6(Screen):
             else:
                 return
         except Exception as e:
-           print(e)
+           print(str(e))
 
     def cancel(self):
         self.close()
@@ -807,7 +804,7 @@ class Webcam8(Screen):
             else:
                 return
         except Exception as e:
-           print(e)
+           print(str(e))
 
     def cancel(self):
         self.close()
@@ -857,7 +854,7 @@ class Webcam9(Screen):
             else:
                 return
         except Exception as e:
-           print(e)
+           print(str(e))
 
     def cancel(self):
         self.close()
@@ -1200,6 +1197,7 @@ class Playstream2(
         except:
             pass
         return
+
     def showIMDB(self):
         TMDB = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('TMDB'))
         IMDb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('IMDb'))
