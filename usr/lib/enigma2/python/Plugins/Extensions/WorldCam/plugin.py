@@ -1,6 +1,6 @@
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
-January 2021
+last update 13 January 2021
 edited from Lululla: updated to 20220113
 """
 from __future__ import print_function
@@ -65,14 +65,13 @@ except:
     from . import Utils
 version = '4.2_r5' #edit lululla 13/01/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
-path = THISPLUG + '/channels/'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
 ico_path2 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugins.png'
 iconpic = 'plugin.png'
 # BASEURL = 'https://www.skylinewebcams.com'
 # ori_url = 'https://www.skylinewebcams.com/'
-config.plugins.WorldCam = ConfigSubsection()
-config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
+# config.plugins.WorldCam = ConfigSubsection()
+# config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 SKIN_PATH = THISPLUG + '/skin/hd'
 if isFHD():
     SKIN_PATH = THISPLUG + '/skin/fhd'
@@ -89,14 +88,11 @@ if sys.version_info >= (2, 7, 9):
         sslContext = ssl._create_unverified_context()
     except:
         sslContext = None
-try:
-    from Components.config import config
-    language = config.osd.language.value
-    language = language[:-3]
-except:
-	language = 'en'
-	pass
-# print('language: ', language)
+
+leng1 = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read().replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
+language = leng1[:-3]
+print('lengg: ', language)
+
 try:
     import httplib
     import urlparse
@@ -159,59 +155,59 @@ def showlist(data, list):
         icount = icount+1
         list.setList(plist)
 
-class ConfscreenFHD(Screen):
-    skin = '\n          <screen name="Confiptv" position="center,center" size="1260,1050" title=" " >\n        <!--ePixmap position="0,0" zPosition="-10" size="930,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WebMedia/icons/menu.png" /-->\n        <!--widget name="title" position="1020,75" size="600,75" zPosition="3" halign="center" foregroundColor="#e5b243" backgroundColor="black" font="Regular;60" transparent="1" /-->\n        <ePixmap name="red"    position="0,975"   zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />\n\t<ePixmap name="green"  position="210,975" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />\n\n\t<widget name="key_red" position="0,975" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\t<widget name="key_green" position="210,975" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\n\t<widget name="config" position="75,120" size="825,210" scrollbarMode="showOnDemand" />\n\n</screen>'
+# class ConfscreenFHD(Screen):
+    # skin = '\n          <screen name="Confiptv" position="center,center" size="1260,1050" title=" " >\n        <!--ePixmap position="0,0" zPosition="-10" size="930,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WebMedia/icons/menu.png" /-->\n        <!--widget name="title" position="1020,75" size="600,75" zPosition="3" halign="center" foregroundColor="#e5b243" backgroundColor="black" font="Regular;60" transparent="1" /-->\n        <ePixmap name="red"    position="0,975"   zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />\n\t<ePixmap name="green"  position="210,975" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />\n\n\t<widget name="key_red" position="0,975" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\t<widget name="key_green" position="210,975" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\n\t<widget name="config" position="75,120" size="825,210" scrollbarMode="showOnDemand" />\n\n</screen>'
 
-class ConfscreenHD(Screen):
-    skin = '\n        <screen name="Confiptv" position="center,center" size="840,700" title=" " >\n        <!--ePixmap position="0,0" zPosition="-10" size="620,720" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WebMedia/icons/menu.png" /-->\n        <!--widget name="title" position="680,50" size="400,50" zPosition="3" halign="center" foregroundColor="#e5b243" backgroundColor="black" font="Regular;40" transparent="1" /-->\n        <ePixmap name="red"    position="0,650"   zPosition="2" size="140,40" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />\n\t<ePixmap name="green"  position="140,650" zPosition="2" size="140,40" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />\n\n\t<widget name="key_red" position="0,650" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;20" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\t<widget name="key_green" position="140,650" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;20" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\n\t<widget name="config" position="50,80" size="550,140" scrollbarMode="showOnDemand" />\n\n</screen>'
+# class ConfscreenHD(Screen):
+    # skin = '\n        <screen name="Confiptv" position="center,center" size="840,700" title=" " >\n        <!--ePixmap position="0,0" zPosition="-10" size="620,720" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WebMedia/icons/menu.png" /-->\n        <!--widget name="title" position="680,50" size="400,50" zPosition="3" halign="center" foregroundColor="#e5b243" backgroundColor="black" font="Regular;40" transparent="1" /-->\n        <ePixmap name="red"    position="0,650"   zPosition="2" size="140,40" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />\n\t<ePixmap name="green"  position="140,650" zPosition="2" size="140,40" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />\n\n\t<widget name="key_red" position="0,650" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;20" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\t<widget name="key_green" position="140,650" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;20" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /> \n\n\t<widget name="config" position="50,80" size="550,140" scrollbarMode="showOnDemand" />\n\n</screen>'
 
-class IPTVConf(ConfigListScreen, Screen):
-    def __init__(self, session, args = 0):
-        Screen.__init__(self, session)
-        self.session = session
-        self.setup_title = _('Plugin Configuration')
-        self['title'] = Button(self.setup_title)
-        if isFHD():
-            self.skin = ConfscreenFHD.skin
-        else:
-            self.skin = ConfscreenHD.skin
-        cfg = config.plugins.WorldCam
-        self.list = [getConfigListEntry(_('vlc server ip'), cfg.vlcip)]
-        ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
-        self['status'] = Label()
-        self['statusbar'] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Save'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.cancel,
-         'green': self.save,
-         'cancel': self.cancel,
-         'ok': self.save}, -2)
-        self.onChangedEntry = []
+# class IPTVConf(ConfigListScreen, Screen):
+    # def __init__(self, session, args = 0):
+        # Screen.__init__(self, session)
+        # self.session = session
+        # self.setup_title = _('Plugin Configuration')
+        # self['title'] = Button(self.setup_title)
+        # if isFHD():
+            # self.skin = ConfscreenFHD.skin
+        # else:
+            # self.skin = ConfscreenHD.skin
+        # cfg = config.plugins.WorldCam
+        # self.list = [getConfigListEntry(_('vlc server ip'), cfg.vlcip)]
+        # ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
+        # self['status'] = Label()
+        # self['statusbar'] = Label()
+        # self['key_red'] = Button(_('Exit'))
+        # self['key_green'] = Button(_('Save'))
+        # self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.cancel,
+         # 'green': self.save,
+         # 'cancel': self.cancel,
+         # 'ok': self.save}, -2)
+        # self.onChangedEntry = []
 
-    def changedEntry(self):
-        for x in self.onChangedEntry:
-            x()
+    # def changedEntry(self):
+        # for x in self.onChangedEntry:
+            # x()
 
-    def getCurrentEntry(self):
-        return self['config'].getCurrent()[0]
+    # def getCurrentEntry(self):
+        # return self['config'].getCurrent()[0]
 
-    def getCurrentValue(self):
-        return str(self['config'].getCurrent()[1].getText())
+    # def getCurrentValue(self):
+        # return str(self['config'].getCurrent()[1].getText())
 
-    def createSummary(self):
-        from Screens.Setup import SetupSummary
-        return SetupSummary
+    # def createSummary(self):
+        # from Screens.Setup import SetupSummary
+        # return SetupSummary
 
-    def cancel(self):
-        for x in self['config'].list:
-            x[1].cancel()
-        self.close()
+    # def cancel(self):
+        # for x in self['config'].list:
+            # x[1].cancel()
+        # self.close()
 
-    def save(self):
-        print('Here in Save')
-        self.saveAll()
-        self.session.open(TryQuitMainloop, 3)
-        self.close()
+    # def save(self):
+        # print('Here in Save')
+        # self.saveAll()
+        # self.session.open(TryQuitMainloop, 3)
+        # self.close()
 
 class Webcam1(Screen):
     def __init__(self, session):
@@ -1069,7 +1065,6 @@ class TvInfoBarShowHide():
     def debug(obj, text = ""):
         print(text + " %s\n" % obj)
 
-# class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, TvInfoBarShowHide):
 class Playstream2(
     InfoBarBase,
     InfoBarMenu,
@@ -1130,7 +1125,7 @@ class Playstream2(
         service = None
         self.url = url
         self.desc = desc                        
-        self.pcip = 'None'
+        # self.pcip = 'None'
         self.name = decodeHtml(name)
         self.state = self.STATE_PLAYING
                    
@@ -1242,11 +1237,11 @@ class Playstream2(
         global streaml
         streaml = False
         from itertools import cycle, islice
-        self.servicetype = str(config.plugins.stvcl.services.value)
+        self.servicetype = '4097'
         print('servicetype1: ', self.servicetype)
         url = str(self.url)
         if str(os.path.splitext(self.url)[-1]) == ".m3u8":
-            if self.servicetype == "1":
+            # if self.servicetype == "1":
                 self.servicetype = "4097"
         currentindex = 0
         streamtypelist = ["4097"]
