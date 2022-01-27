@@ -126,24 +126,22 @@ except:
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
+        self.l.setItemHeight(50)
+        textfont=int(22)
+        self.l.setFont(0, gFont('Regular', textfont))        
         if isFHD():
             self.l.setItemHeight(50)
             textfont=int(34)
-            self.l.setFont(0, gFont('Regular', textfont))
-        else:
-            self.l.setItemHeight(50)
-            textfont=int(22)
             self.l.setFont(0, gFont('Regular', textfont))
 
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
+    res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
+    res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))    
     if isFHD:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
-    else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 6), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 def showlist(data, list):
