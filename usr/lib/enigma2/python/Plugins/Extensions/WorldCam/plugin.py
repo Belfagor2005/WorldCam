@@ -63,7 +63,7 @@ try:
     from Plugins.Extensions.WorldCam.Utils import *
 except:
     from . import Utils
-version = '4.2_r5' #edit lululla 13/01/2022
+version = '4.2_r5' #edit lululla 07/02/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
 ico_path2 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugins.png'
@@ -126,22 +126,26 @@ except:
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        self.l.setItemHeight(50)
-        textfont=int(22)
-        self.l.setFont(0, gFont('Regular', textfont))        
+    
         if isFHD():
             self.l.setItemHeight(50)
             textfont=int(34)
             self.l.setFont(0, gFont('Regular', textfont))
+        else:
+            self.l.setItemHeight(50)
+            textfont=int(22)
+            self.l.setFont(0, gFont('Regular', textfont))            
 
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
-    res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-    res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))    
+   
     if isFHD:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+    else:    
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))         
     return res
 
 def showlist(data, list):
@@ -862,6 +866,12 @@ class Playstream1(Screen):
         self.skin = f.read()
         f.close()
         self.list = []
+        self.name1 = name
+        self.url = url
+        print('In Playstream1 self.url =', url)
+        global srefInit
+        self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
+        srefInit = self.initialservice        
         self['list'] = webcamList([])
         self['info'] = Label('Select Player')
         self['key_red'] = Button(_('Exit'))
@@ -871,12 +881,6 @@ class Playstream1(Screen):
          'back' : self.cancel,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
-        self.name1 = name
-        self.url = url
-        print('In Playstream1 self.url =', url)
-        global srefInit
-        self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
-        srefInit = self.initialservice
         self.onLayoutFinish.append(self.openTest)
 
     def openTest(self):
@@ -1099,6 +1103,15 @@ class Playstream2(
         except:
             self.init_aspect = 0
         self.new_aspect = self.init_aspect
+        SREF = self.session.nav.getCurrentlyPlayingServiceReference()          
+        self.allowPiP = False
+        self.service = None
+        service = None
+        self.url = url
+        self.desc = desc                        
+        # self.pcip = 'None'
+        self.name = decodeHtml(name)
+        self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
          'MovieSelectionActions',
          'MediaPlayerActions',
@@ -1118,16 +1131,6 @@ class Playstream2(
          'cancel': self.cancel,
          'back': self.cancel,
          'down': self.av}, -1)
-        self.allowPiP = False
-        self.service = None
-        service = None
-        self.url = url
-        self.desc = desc                        
-        # self.pcip = 'None'
-        self.name = decodeHtml(name)
-        self.state = self.STATE_PLAYING
-                   
-        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
         if '8088' in str(self.url):
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
