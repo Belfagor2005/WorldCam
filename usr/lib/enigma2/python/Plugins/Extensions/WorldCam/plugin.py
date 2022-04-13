@@ -287,12 +287,16 @@ class Webcam2(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            name = self.names[idx]
-            self.session.open(Webcam3, name)
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        # if idx and idx != '' or idx != None:
+        name = self.names[idx]
+        self.session.open(Webcam3, name)
+        # else:
+            # return
 
     def cancel(self):
         self.close()
@@ -338,13 +342,14 @@ class Webcam3(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            name = self.names[idx]
-            url = self.urls[idx]
-            self.session.open(Playstream1, name, url)
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        name = self.names[idx]
+        url = self.urls[idx]
+        self.session.open(Playstream1, name, url)
 
     def cancel(self):
         self.close()
@@ -397,13 +402,14 @@ class Webcam4(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            name = self.names[idx]
-            url = self.urls[idx]
-            self.session.open(Webcam5, name, url)
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        name = self.names[idx]
+        url = self.urls[idx]
+        self.session.open(Webcam5, name, url)
 
     def cancel(self):
         self.close()
@@ -464,13 +470,14 @@ class Webcam5(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            name = self.names[idx]
-            url = self.urls[idx]
-            self.session.open(Webcam5a, name, url)
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        name = self.names[idx]
+        url = self.urls[idx]
+        self.session.open(Webcam5a, name, url)
 
     def cancel(self):
         self.close()
@@ -532,13 +539,14 @@ class Webcam5a(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            name = self.names[idx]
-            url = self.urls[idx]
-            self.session.open(Webcam6, name, url)
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        name = self.names[idx]
+        url = self.urls[idx]
+        self.session.open(Webcam6, name, url)
 
     def cancel(self):
         self.close()
@@ -593,13 +601,14 @@ class Webcam6(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            url1 = self.urls[idx]
-            name = self.names[idx]
-            self.getVid(name, url1)
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        url1 = self.urls[idx]
+        name = self.names[idx]
+        self.getVid(name, url1)
 
     def getVid(self, name, url):
         try:
@@ -687,13 +696,14 @@ class Webcam7(Screen):
         """
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            name = self.names[idx]
-            url = self.urls[idx]
-            self.session.open(Webcam8, name, url) #Webcam5
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        name = self.names[idx]
+        url = self.urls[idx]
+        self.session.open(Webcam8, name, url) #Webcam5
 
     def cancel(self):
         self.close()
@@ -770,13 +780,14 @@ class Webcam8(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            url1 = self.urls[idx]
-            name = self.names[idx]
-            self.getVid(name, url1)
-        else:
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
             return
+        idx = self['list'].getSelectionIndex()
+        url1 = self.urls[idx]
+        name = self.names[idx]
+        self.getVid(name, url1)
 
     def getVid(self, name, url):
         try:
@@ -898,59 +909,60 @@ class Playstream1(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
+            return
         idx = self['list'].getSelectionIndex()
-        if idx != '':
+        self.name = self.names[idx]
+        self.url = self.urls[idx]
+        if idx == 0:
             self.name = self.names[idx]
             self.url = self.urls[idx]
-            if idx == 0:
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                print('In playVideo url D=', self.url)
-                self.play()
-            elif idx == 1:
-                print('In playVideo url B=', self.url)
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                try:
-                    os.remove('/tmp/hls.avi')
-                except:
-                    pass
-                header = ''
-                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
-                print('In playVideo cmd =', cmd)
-                os.system(cmd)
-                os.system('sleep 3')
-                self.url = '/tmp/hls.avi'
-                self.play()
-            elif idx == 2:
-                print('In playVideo url A=', self.url)
-                url = self.url
-                try:
-                    os.remove('/tmp/hls.avi')
-                except:
-                    pass
+            print('In playVideo url D=', self.url)
+            self.play()
+        elif idx == 1:
+            print('In playVideo url B=', self.url)
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            try:
+                os.remove('/tmp/hls.avi')
+            except:
+                pass
+            header = ''
+            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
+            print('In playVideo cmd =', cmd)
+            os.system(cmd)
+            os.system('sleep 3')
+            self.url = '/tmp/hls.avi'
+            self.play()
+        elif idx == 2:
+            print('In playVideo url A=', self.url)
+            url = self.url
+            try:
+                os.remove('/tmp/hls.avi')
+            except:
+                pass
 
-                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + url + '" "1" + &'
-                print('ts cmd = ', cmd)
-                os.system(cmd)
-                os.system('sleep 3')
-                self.url = '/tmp/hls.avi'
-                self.name = self.names[idx]
-                self.play()
+            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + url + '" "1" + &'
+            print('ts cmd = ', cmd)
+            os.system(cmd)
+            os.system('sleep 3')
+            self.url = '/tmp/hls.avi'
+            self.name = self.names[idx]
+            self.play()
 
-            elif idx == 3:
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                print('In playVideo url D=', self.url)
-                self.play2()
-            else:
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                print('In playVideo url D=', self.url)
-                self.play()
-            return
+        elif idx == 3:
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            print('In playVideo url D=', self.url)
+            self.play2()
         else:
-            return
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            print('In playVideo url D=', self.url)
+            self.play()
+        return
 
     def playfile(self, serverint):
         self.serverList[serverint].play(self.session, self.url, self.name)
