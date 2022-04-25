@@ -126,7 +126,6 @@ except:
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-    
         if isFHD():
             self.l.setItemHeight(50)
             textfont=int(34)
@@ -139,7 +138,6 @@ class webcamList(MenuList):
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
-   
     if isFHD:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
@@ -224,12 +222,25 @@ class Webcam1(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['info'] = Label('HOME VIEW')
+        self["paypal"] = Label()
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
          'green': self.okClicked,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         self.names = []
         self.urls = []
@@ -270,6 +281,7 @@ class Webcam2(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -277,7 +289,19 @@ class Webcam2(Screen):
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         uLists = THISPLUG + '/Playlists'
         self.names = []
@@ -313,6 +337,7 @@ class Webcam3(Screen):
         self.name = name
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -320,7 +345,19 @@ class Webcam3(Screen):
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         uLists = THISPLUG + '/Playlists'
         file1 = uLists + '/' + self.name
@@ -365,6 +402,7 @@ class Webcam4(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -372,7 +410,19 @@ class Webcam4(Screen):
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         self.names = []
         self.urls = []
@@ -425,6 +475,7 @@ class Webcam5(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -434,7 +485,19 @@ class Webcam5(Screen):
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         self.names = []
         self.urls = []
@@ -493,6 +556,7 @@ class Webcam5a(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -502,7 +566,19 @@ class Webcam5a(Screen):
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         self.names = []
         self.urls = []
@@ -564,6 +640,7 @@ class Webcam6(Screen):
         self.url = url
         self['list'] = webcamList([])
         self['info'] = Label(name)
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -571,7 +648,19 @@ class Webcam6(Screen):
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         self.names = []
         self.urls = []
@@ -649,6 +738,7 @@ class Webcam7(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Top')
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -656,7 +746,19 @@ class Webcam7(Screen):
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         self.names = []
         self.urls = []
@@ -719,6 +821,7 @@ class Webcam8(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -728,7 +831,19 @@ class Webcam8(Screen):
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self):
         self.names = []
         self.urls = []
@@ -831,6 +946,7 @@ class Webcam9(Screen):
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
@@ -838,7 +954,19 @@ class Webcam9(Screen):
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
-
+        self.onLayoutFinish.append(self.layoutFinished)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
+        
     def openTest(self, name, url):
         try:
             content = ReadUrl2(url)
@@ -885,6 +1013,7 @@ class Playstream1(Screen):
         srefInit = self.initialservice        
         self['list'] = webcamList([])
         self['info'] = Label('Select Player')
+        self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.cancel,
@@ -892,7 +1021,19 @@ class Playstream1(Screen):
          'back' : self.cancel,
          'cancel': self.cancel,
          'ok': self.okClicked}, -2)
+        self.onLayoutFinish.append(self.layoutFinished)         
         self.onLayoutFinish.append(self.openTest)
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
+    
+    def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)    
+        # self.setTitle(self.setup_title)
 
     def openTest(self):
         url = self.url
@@ -1356,8 +1497,8 @@ def main(session, **kwargs):
     global _session
     _session = session
     try:
-        from Plugins.Extensions.WorldCam.lib.Update import upd_done
-        upd_done()
+        from . import Update
+        Update.upd_done()
     except:
         pass
     session.open(Webcam1)
