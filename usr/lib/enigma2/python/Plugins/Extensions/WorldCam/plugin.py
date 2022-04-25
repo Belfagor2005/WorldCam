@@ -59,10 +59,7 @@ import os, re, sys
 import six
 import socket
 import ssl
-try:
-    from Plugins.Extensions.WorldCam.Utils import *
-except:
-    from . import Utils
+from . import Utils
 version = '4.2_r5' #edit lululla 07/02/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
@@ -73,7 +70,7 @@ iconpic = 'plugin.png'
 # config.plugins.WorldCam = ConfigSubsection()
 # config.plugins.WorldCam.vlcip = ConfigText('192.168.1.2', False)
 SKIN_PATH = THISPLUG + '/skin/hd'
-if isFHD():
+if Utils.isFHD():
     SKIN_PATH = THISPLUG + '/skin/fhd'
 
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
@@ -126,7 +123,7 @@ except:
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if isFHD():
+        if Utils.isFHD():
             self.l.setItemHeight(50)
             textfont=int(34)
             self.l.setFont(0, gFont('Regular', textfont))
@@ -138,7 +135,7 @@ class webcamList(MenuList):
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
-    if isFHD:
+    if Utils.isFHD:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:    
@@ -167,7 +164,7 @@ def showlist(data, list):
         # self.session = session
         # self.setup_title = _('Plugin Configuration')
         # self['title'] = Button(self.setup_title)
-        # if isFHD():
+        # if Utils.isFHD():
             # self.skin = ConfscreenFHD.skin
         # else:
             # self.skin = ConfscreenHD.skin
@@ -253,21 +250,22 @@ class Webcam1(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
+            return     
         idx = self['list'].getSelectionIndex()
-        if idx and idx != '' or idx != None:
-            name = self.names[idx]
-            url = self.urls[idx]
-            if 'User' in name:
-                self.session.open(Webcam2)
-            elif 'skylinewebcams' in name:
-                self.session.open(Webcam4)
-            elif 'skylinetop' in name:
-                self.session.open(Webcam7)
-        else:
-            return
+        name = self.names[idx]
+        url = self.urls[idx]
+        if 'User' in name:
+            self.session.open(Webcam2)
+        elif 'skylinewebcams' in name:
+            self.session.open(Webcam4)
+        elif 'skylinetop' in name:
+            self.session.open(Webcam7)
 
     def cancel(self):
-        deletetmp()
+        Utils.deletetmp()
         self.close()
 
 class Webcam2(Screen):
@@ -316,11 +314,8 @@ class Webcam2(Screen):
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
-        # if idx and idx != '' or idx != None:
         name = self.names[idx]
         self.session.open(Webcam3, name)
-        # else:
-            # return
 
     def cancel(self):
         self.close()
@@ -372,8 +367,8 @@ class Webcam3(Screen):
             items = line.split('###')
             name = items[0]
             url = items[1]
-            name = checkStr(name)
-            url = checkStr(url)
+            name = Utils.checkStr(name)
+            url = Utils.checkStr(url)
             self.names.append(name)
             self.urls.append(url)
         showlist(self.names, self['list'])
@@ -438,8 +433,8 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
-            url1 = checkStr(url1)
-            name = checkStr(name)
+            url1 = Utils.checkStr(url1)
+            name = Utils.checkStr(name)
             item = name + "###" + url1
             print('Webcam4 Items sort: ', item)
             items.append(item)
@@ -517,8 +512,8 @@ class Webcam5(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}/webcam{}'.format('https://www.skylinewebcams.com', ctry, url)
-            # name = checkStr(name)
-            # url1 = checkStr(url1)
+            # name = Utils.checkStr(name)
+            # url1 = Utils.checkStr(url1)
             item = name + "###" + url1
             print('Items sort 2: ', item)
             items.append(item)
@@ -599,8 +594,8 @@ class Webcam5a(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            url1 = checkStr(url1)
-            name = checkStr(name)
+            url1 = Utils.checkStr(url1)
+            name = Utils.checkStr(name)
             item = name + "###" + url1
             print('Items sort 2: ', item)
             items.append(item)
@@ -677,8 +672,8 @@ class Webcam6(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            url1 = checkStr(url1)
-            name = checkStr(name)
+            url1 = Utils.checkStr(url1)
+            name = Utils.checkStr(name)
             item = name + "###" + url1
             items.append(item)
         items.sort()
@@ -701,7 +696,7 @@ class Webcam6(Screen):
 
     def getVid(self, name, url):
         try:
-            content = ReadUrl2(url)
+            content = Utils.ReadUrl2(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -777,25 +772,11 @@ class Webcam7(Screen):
         for url, name, in match:
             # url1 = '{}/{}'.format(BASEURL, url)
             url1 = 'https://www.skylinewebcams.com' + url
-            url1 = checkStr(url1)
-            name = checkStr(name)
+            url1 = Utils.checkStr(url1)
+            name = Utils.checkStr(name)
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
-        """
-            url1 = b'https://www.skylinewebcams.com/' + url + b'.html'
-            url1 = checkStr(url1)
-            item = checkStr(name) + "###" + url1
-            print('Items sort: ', item)
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            self.names.append(name)
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-        """
 
     def okClicked(self):
         i = len(self.names)
@@ -860,16 +841,16 @@ class Webcam8(Screen):
             link = item.attrs['href']
             if link == '#':
                 continue
-            link = decodeHtml(link)
+            link = Utils.decodeHtml(link)
             name = client.parseDOM(item.content, 'img', ret='alt')[0]
-            name = decodeHtml(name)
+            name = Utils.decodeHtml(name)
             # desc = client.parseDOM(item.content, 'p', attrs={'class': 'subt'})[0]
             # desc = clear_Title(desc)
             # try:
                 # poster = client.parseDOM(item.content, 'img', ret='data-src')[0]
             # except IndexError:
                 # poster = client.parseDOM(item.content, 'img', ret='src')[0]
-            # poster = decodeHtml(poster)
+            # poster = Utils.decodeHtml(poster)
             # poster = 'https:' + poster if poster.startswith('//') else poster
             if six.PY2:
                 link = link.encode('utf-8')
@@ -878,8 +859,8 @@ class Webcam8(Screen):
                 # poster = poster.encode('utf-8')
             base_url = 'https://www.skylinewebcams.com'
             url = '{}/{}'.format(base_url, link)
-            url = checkStr(url)
-            name = checkStr(name)
+            url = Utils.checkStr(url)
+            name = Utils.checkStr(name)
             item = name + "###" + url
             print('Items sort 2: ', item)
             items.append(item)
@@ -906,7 +887,7 @@ class Webcam8(Screen):
 
     def getVid(self, name, url):
         try:
-            content = ReadUrl2(url)
+            content = Utils.ReadUrl2(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -969,7 +950,7 @@ class Webcam9(Screen):
         
     def openTest(self, name, url):
         try:
-            content = ReadUrl2(url)
+            content = Utils.ReadUrl2(url)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -1058,14 +1039,14 @@ class Playstream1(Screen):
         self.name = self.names[idx]
         self.url = self.urls[idx]
         if idx == 0:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
+            # self.name = self.names[idx]
+            # self.url = self.urls[idx]
             print('In playVideo url D=', self.url)
             self.play()
         elif idx == 1:
             print('In playVideo url B=', self.url)
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
+            # self.name = self.names[idx]
+            # self.url = self.urls[idx]
             try:
                 os.remove('/tmp/hls.avi')
             except:
@@ -1084,7 +1065,6 @@ class Playstream1(Screen):
                 os.remove('/tmp/hls.avi')
             except:
                 pass
-
             cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + url + '" "1" + &'
             print('ts cmd = ', cmd)
             os.system(cmd)
@@ -1094,13 +1074,13 @@ class Playstream1(Screen):
             self.play()
 
         elif idx == 3:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
+            # self.name = self.names[idx]
+            # self.url = self.urls[idx]
             print('In playVideo url D=', self.url)
             self.play2()
         else:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
+            # self.name = self.names[idx]
+            # self.url = self.urls[idx]
             print('In playVideo url D=', self.url)
             self.play()
         return
@@ -1263,7 +1243,7 @@ class Playstream2(
         self.url = url
         self.desc = desc                        
         # self.pcip = 'None'
-        self.name = decodeHtml(name)
+        self.name = Utils.decodeHtml(name)
         self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
          'MovieSelectionActions',
@@ -1402,7 +1382,7 @@ class Playstream2(
         # if "youtube" in str(self.url):
             # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # return
-        if isStreamlinkAvailable():
+        if Utils.isStreamlinkAvailable():
             streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
