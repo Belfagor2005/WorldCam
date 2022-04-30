@@ -3,8 +3,8 @@
 	<eLabel position="22,57" zPosition="1" size="700,644" backgroundColor="#000000"/>
 	<eLabel position="22,56" zPosition="-1" size="700,644" backgroundColor="#ffffff"/>
 	<ePixmap position="294,612" size="145,50" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" transparent="1" alphatest="blend" zPosition="5"/>
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/hd/PayPal.png" position="894,20" size="156,75" zPosition="2" alphatest="on"/>
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/hd/qr-code.png" position="806,94" size="320,320" zPosition="2" alphatest="on"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="894,20" size="156,75" zPosition="2" alphatest="on"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="806,94" size="320,320" zPosition="2" alphatest="on"/>
 	<widget name="paypal" position="767,416" size="405,283" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2"/>
 	<eLabel position="758,12" size="418,692" backgroundColor="#80000000" cornerRadius="20" zPosition="1"/>
 	<!-- List -->
