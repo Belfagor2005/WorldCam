@@ -1,6 +1,6 @@
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
-last update 13 January 2021
+last update 13 07 2021
 edited from Lululla: updated to 20220113
 """
 from __future__ import print_function
@@ -1472,16 +1472,43 @@ class Playstream2(
 
     def leavePlayer(self):
         self.close()
-        
+
+
+def intCheck():
+    import socket
+    try:
+        socket.setdefaulttimeout(1)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))
+        return True
+    except:
+        return False
+
 def main(session, **kwargs):
     global _session
     _session = session
     try:
-        from . import Update
-        Update.upd_done()
+        if intCheck():
+                from . import Update
+                Update.upd_done()
+                session.open(Webcam1)
+        else:
+            from Screens.MessageBox import MessageBox
+            from Tools.Notifications import AddPopup
+            AddPopup(_("Sorry but No Internet :("),MessageBox.TYPE_INFO, 10, 'Sorry')  
     except:
+        import traceback
+        traceback.print_exc() 
         pass
-    session.open(Webcam1)
+        
+# def main(session, **kwargs):
+    # global _session
+    # _session = session
+    # try:
+        # from . import Update
+        # Update.upd_done()
+    # except:
+        # pass
+    # session.open(Webcam1)
 
 def Plugins(**kwargs):
     return PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU,icon='plugin.png', fnc=main)
