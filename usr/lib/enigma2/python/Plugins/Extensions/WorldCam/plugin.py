@@ -1,6 +1,6 @@
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
-last update 13 07 2021
+last update 13 08 2022
 edited from Lululla: updated to 20220113
 """
 from __future__ import print_function
@@ -1311,19 +1311,10 @@ class Playstream2(
 		self.close()
 
 
-def intCheck():
-	import socket
-	try:
-		socket.setdefaulttimeout(1)
-		socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))
-		return True
-	except:
-		return False
-
 def main(session, **kwargs):
 	global _session
 	_session = session
-	if intCheck():
+	if Utils.zCheckInternet(0):
 		try:
 			try:
 				from . import Update
