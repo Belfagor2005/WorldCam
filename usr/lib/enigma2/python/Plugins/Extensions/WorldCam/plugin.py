@@ -1170,12 +1170,12 @@ class Playstream2(
 		if os.path.exists(TMDB):
 			from Plugins.Extensions.TMBD.plugin import TMBD
 			text_clear = self.name
-			text = charRemove(text_clear)
+			text = Utils.charRemove(text_clear)
 			self.session.open(TMBD, text, False)
 		elif os.path.exists(IMDb):
 			from Plugins.Extensions.IMDb.plugin import IMDB
 			text_clear = self.name
-			text = charRemove(text_clear)
+			text = Utils.charRemove(text_clear)
 			self.session.open(IMDB, text)
 		else:
 			text_clear = self.name
@@ -1310,22 +1310,19 @@ class Playstream2(
 	def leavePlayer(self):
 		self.close()
 
-
 def main(session, **kwargs):
 	global _session
 	_session = session
-	if Utils.zCheckInternet(0):
+	if Utils.zCheckInternet(1):
 		try:
-			try:
-				from . import Update
-				Update.upd_done()
-				session.open(Webcam1)
-			except:
-				session.open(Webcam1)
+            from . import Update
+            Update.upd_done()
+            # session.open(Webcam1)
 		except:
 			import traceback
 			traceback.print_exc()
 			pass
+        session.open(Webcam1)
 	else:
 		from Screens.MessageBox import MessageBox
 		from Tools.Notifications import AddPopup
