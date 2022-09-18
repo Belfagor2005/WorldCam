@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 '''
@@ -21,18 +22,6 @@
 
 import re, hashlib, time, os
 
-# try:
-    # from sqlite3 import dbapi2 as database
-# except ImportError:
-    # from pysqlite2 import dbapi2 as database
-
-# import xbmcaddon, xbmcvfs, xbmcgui, xbmc
-
-# dataPath = xbmcaddon.Addon().getAddonInfo('profile')
-# execute = xbmc.executebuiltin
-# dialog = xbmcgui.Dialog()
-
-
 def get(function, timeout = 10, *args, **table):
     try:
         response = None
@@ -51,23 +40,6 @@ def get(function, timeout = 10, *args, **table):
     except:
         table = 'rel_list'
 
-    # try:
-        # xbmcvfs.mkdir(dataPath)
-        # dbcon = database.connect(os.path.join(dataPath, 'cache.db'))
-        # dbcur = dbcon.cursor()
-        # dbcur.execute("SELECT * FROM %s WHERE func = '%s' AND args = '%s'" % (table, f, a))
-        # match = dbcur.fetchone()
-
-        # response = eval(match[2].encode('utf-8'))
-
-        # t1 = int(match[3])
-        # t2 = int(time.time())
-        # update = (abs(t2 - t1) / 3600) >= int(timeout)
-        # if update == False:
-            # return response
-    # except:
-        # pass
-
     try:
         r = function(*args)
         if (r == None or r == []) and not response == None:
@@ -77,74 +49,11 @@ def get(function, timeout = 10, *args, **table):
     except:
         return
 
-    # try:
-        # r = repr(r)
-        # t = int(time.time())
-        # dbcur.execute("CREATE TABLE IF NOT EXISTS %s (""func TEXT, ""args TEXT, ""response TEXT, ""added TEXT, ""UNIQUE(func, args)"");" % table)
-        # dbcur.execute("DELETE FROM %s WHERE func = '%s' AND args = '%s'" % (table, f, a))
-        # dbcur.execute("INSERT INTO %s Values (?, ?, ?, ?)" % table, (f, a, r, t))
-        # dbcon.commit()
-    # except:
-        # pass
-
     try:
         return eval(r.encode('utf-8'))
     except:
         pass
 
 
-# def timeout(function, *args, **table):
-    # try:
-        # response = None
-
-        # f = repr(function)
-        # f = re.sub('.+\smethod\s|.+function\s|\sat\s.+|\sof\s.+', '', f)
-
-        # a = hashlib.md5()
-        # for i in args: a.update(str(i))
-        # a = str(a.hexdigest())
-    # except:
-        # pass
-
-    # try:
-        # table = table['table']
-    # except:
-        # table = 'rel_list'
-
-    # try:
-        # xbmcvfs.mkdir(dataPath)
-        # dbcon = database.connect(os.path.join(dataPath, 'cache.db'))
-        # dbcur = dbcon.cursor()
-        # dbcur.execute("SELECT * FROM %s WHERE func = '%s' AND args = '%s'" % (table, f, a))
-        # match = dbcur.fetchone()
-        # return int(match[3])
-    # except:
-        # return
-
-
-# def clear(table=None):
-    # try:
-        # execute('Dialog.Close(busydialog)')
-
-        # if table == None: table = ['rel_list', 'rel_lib']
-        # elif not type(table) == list: table = [table]
-
-        # yes = dialog.yesno(heading=xbmcaddon.Addon().getAddonInfo('name'), line1=xbmcaddon.Addon().getLocalizedString(30401).encode('utf-8'))
-        # if not yes: return
-
-        # dbcon = database.connect(os.path.join(dataPath, 'cache.db'))
-        # dbcur = dbcon.cursor()
-
-        # for t in table:
-            # try:
-                # dbcur.execute("DROP TABLE IF EXISTS %s" % t)
-                # dbcur.execute("VACUUM")
-                # dbcon.commit()
-            # except:
-                # pass
-
-        # dialog.notification(heading=xbmcaddon.Addon().getAddonInfo('name'), message=xbmcaddon.Addon().getLocalizedString(30402).encode('utf-8'), time=2000, sound=False)
-    # except:
-        # pass
 
 

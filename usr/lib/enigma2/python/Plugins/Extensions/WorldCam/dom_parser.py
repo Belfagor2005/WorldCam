@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 """
    Based on Parsedom for XBMC plugins
    Copyright (C) 2010-2011 Tobias Ussing And Henrik Mosgaard Jensen
