@@ -10,59 +10,45 @@ from __future__ import print_function
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
-from Components.ConfigList import ConfigListScreen
-from Components.FileList import FileList
-from Components.Input import Input
 from Components.Label import Label
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryText, MultiContentEntryPixmapAlphaTest
 from Components.Pixmap import Pixmap
 from Components.ScrollLabel import ScrollLabel
-from Components.SelectionList import SelectionList, SelectionEntryComponent
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.Sources.List import List
 from Components.Sources.Source import Source
 from Components.Sources.StaticText import StaticText
 from Components.config import NoSave, ConfigYesNo, ConfigSelection, ConfigText
-from Components.config import config, ConfigSubsection, getConfigListEntry
+from Components.config import config, ConfigSubsection
 from Plugins.Plugin import PluginDescriptor
-from Screens.ChoiceBox import ChoiceBox
-from Screens.Console import Console
 from Screens.InfoBar import MoviePlayer, InfoBar
-from Screens.InfoBarGenerics import *
-from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarMoviePlayerSummarySupport, \
-    InfoBarSubtitleSupport, InfoBarSummarySupport, InfoBarServiceErrorPopupSupport, InfoBarNotifications
-from Screens.InputBox import InputBox
+from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarNotifications
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
-from Screens.Standby import TryQuitMainloop
 from Screens.VirtualKeyBoard import VirtualKeyBoard
 from ServiceReference import ServiceReference
 from Tools.Directories import SCOPE_PLUGINS, resolveFilename
-from Tools.Downloader import downloadWithProgress
 from Tools.LoadPixmap import LoadPixmap
-from enigma import *
-from enigma import RT_HALIGN_CENTER, RT_VALIGN_CENTER
-from enigma import RT_HALIGN_LEFT, RT_HALIGN_RIGHT
+from enigma import RT_VALIGN_CENTER
+from enigma import RT_HALIGN_LEFT
 from enigma import eListbox, eTimer
 from enigma import eListboxPythonMultiContent, eConsoleAppContainer
 from enigma import eServiceCenter
 from enigma import eServiceReference
-from enigma import eSize, ePicLoad
+from enigma import ePicLoad
 from enigma import iServiceInformation
 from enigma import loadPNG, gFont
-from enigma import quitMainloop
 from enigma import iPlayableService
-from sys import version_info
 from twisted.web.client import getPage, downloadPage
-from xml.sax.saxutils import escape, unescape
-from six.moves.html_parser import HTMLParser
-import Components.PluginComponent
-import os, re, sys
+import os
+import re
+import sys
 import six
 import socket
 import ssl
 from . import Utils
+
 
 version = '4.2_r5' #edit lululla 07/02/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
@@ -77,6 +63,7 @@ pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.mino
 pythonVer = sys.version_info.major
 PY3 = False
 
+
 if sys.version_info >= (2, 7, 9):
     try:
         import ssl
@@ -89,57 +76,48 @@ language = leng1[:-3]
 print('lengg: ', language)
 
 try:
-    import httplib
-    import urlparse
-    import urllib2
     from urllib2 import Request, urlopen
-    from urllib2 import URLError
-    from urlparse import parse_qs
-    from urllib2 import HTTPPasswordMgrWithDefaultRealm
-    from urllib2 import HTTPBasicAuthHandler
-    from urllib2 import build_opener
     # _str = str
     # str = unicode
     # range = xrange
     # unicode = unicode
     # basestring = basestring
 except:
-# if PY3:
-    # import http.client
-    import http.client as httplib
     import urllib.parse
-    import urllib.request, urllib.error, urllib.parse
+    import urllib.request
     from urllib.request import Request, urlopen
-    from urllib.request import HTTPPasswordMgrWithDefaultRealm
-    from urllib.request import HTTPBasicAuthHandler
-    from urllib.request import build_opener
-    from urllib.error import URLError
-    from urllib.parse import parse_qs
-    PY3 = True; unicode = str; unichr = chr; long = int
-    unichr = chr; long = int
+    PY3 = True
+    unicode = str
+    unichr = chr
+    long = int
+    unichr = chr
+    long = int
+
 
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
         if Utils.isFHD():
             self.l.setItemHeight(50)
-            textfont=int(34)
+            textfont = int(34)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
             self.l.setItemHeight(50)
-            textfont=int(22)
+            textfont = int(22)
             self.l.setFont(0, gFont('Regular', textfont))
+
 
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
     if Utils.isFHD:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
+
 
 def showlist(data, list):
     icount = 0
@@ -149,6 +127,7 @@ def showlist(data, list):
         plist.append(wcListEntry(name))
         icount = icount+1
         list.setList(plist)
+
 
 def paypal():
     conthelp = "If you like what I do you\n"
@@ -172,9 +151,9 @@ class Webcam1(Screen):
         self['info'] = Label('HOME VIEW')
         self["paypal"] = Label()
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                         'green': self.okClicked,
+                                         'cancel': self.cancel,
+                                         'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -194,12 +173,11 @@ class Webcam1(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
-        url = self.urls[idx]
         if 'User' in name:
             self.session.open(Webcam2)
         elif 'skylinewebcams' in name:
@@ -210,6 +188,7 @@ class Webcam1(Screen):
     def cancel(self):
         Utils.deletetmp()
         self.close()
+
 
 class Webcam2(Screen):
     def __init__(self, session):
@@ -226,9 +205,9 @@ class Webcam2(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -245,7 +224,7 @@ class Webcam2(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -254,6 +233,7 @@ class Webcam2(Screen):
 
     def cancel(self):
         self.close()
+
 
 class Webcam3(Screen):
     def __init__(self, session, name):
@@ -271,9 +251,9 @@ class Webcam3(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -302,7 +282,7 @@ class Webcam3(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -328,9 +308,9 @@ class Webcam4(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -341,9 +321,8 @@ class Webcam4(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        from . import client, dom_parser as dom
-        headers = {'User-Agent': client.agent(),
-           'Referer': BASEURL}
+        from . import client
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
 
         regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
@@ -367,7 +346,7 @@ class Webcam4(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -377,6 +356,7 @@ class Webcam4(Screen):
 
     def cancel(self):
         self.close()
+
 
 class Webcam5(Screen):
     def __init__(self, session, name, url):
@@ -393,9 +373,9 @@ class Webcam5(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -438,7 +418,7 @@ class Webcam5(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -448,6 +428,7 @@ class Webcam5(Screen):
 
     def cancel(self):
         self.close()
+
 
 class Webcam5a(Screen):
     def __init__(self, session, name, url):
@@ -464,9 +445,9 @@ class Webcam5a(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -486,8 +467,7 @@ class Webcam5a(Screen):
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
         from . import client
-        headers = {'User-Agent': client.agent(),
-           'Referer': BASEURL}
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         n1 = content.find('col-xs-12"><h1>', 0)
         n2 = content.find('</div>', n1)
@@ -517,7 +497,7 @@ class Webcam5a(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -527,6 +507,7 @@ class Webcam5a(Screen):
 
     def cancel(self):
         self.close()
+
 
 class Webcam6(Screen):
     def __init__(self, session, name, url):
@@ -545,9 +526,9 @@ class Webcam6(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -559,8 +540,7 @@ class Webcam6(Screen):
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
         from . import client
-        headers = {'User-Agent': client.agent(),
-           'Referer': BASEURL}
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
         stext = stext.replace('.html', '')
@@ -584,7 +564,7 @@ class Webcam6(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -602,10 +582,10 @@ class Webcam6(Screen):
             match = re.compile(regexvideo, re.DOTALL).findall(content)
             print('id: ', match)
             id = match[0]
-            id = id.replace('?a=','')
+            id = id.replace('?a=', '')
             if id or id != '':
                 url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                print( "Here in plugin.py getVid play with streamlink url =", url)
+                print("Here in plugin.py getVid play with streamlink url =", url)
                 url = url.replace(":", "%3a")
                 url = url.replace("\\", "/")
                 ref = url
@@ -614,12 +594,13 @@ class Webcam6(Screen):
             else:
                 return
         except Exception as e:
-           print(str(e))
+            print(str(e))
 
     def cancel(self):
         self.close()
 
-#topcam
+
+# topcam
 class Webcam7(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -652,13 +633,12 @@ class Webcam7(Screen):
         headers = {'User-Agent': client.agent(),
            'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
-        print('content: ',content)
+        print('content: ', content)
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
         n2 = content.find('</div></div>', n1)
         content2 = content[n1:n2]
         regexvideo = 'href="(.+?)".*?tcam">(.+?)</p>'
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
-        items = []
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
             url1 = Utils.checkStr(url1)
@@ -669,16 +649,17 @@ class Webcam7(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
         url = self.urls[idx]
-        self.session.open(Webcam8, name, url) #Webcam5
+        self.session.open(Webcam8, name, url)  # Webcam5
 
     def cancel(self):
         self.close()
+
 
 class Webcam8(Screen):
     def __init__(self, session, name, url):
@@ -695,9 +676,9 @@ class Webcam8(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -711,9 +692,8 @@ class Webcam8(Screen):
         self.urls = []
         items = []
         BASEURL = 'https://www.skylinewebcams.com/{0}/webcam.html'
-        from . import client, dom_parser as dom   #,control
-        headers = {'User-Agent': client.agent(),
-           'Referer': BASEURL}
+        from . import client, dom_parser as dom   # ,control
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         data = client.parseDOM(content, 'div', attrs={'class': 'container'})[0]
         data = dom.parse_dom(data, 'a', req='href')
@@ -748,7 +728,7 @@ class Webcam8(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -766,10 +746,10 @@ class Webcam8(Screen):
             match = re.compile(regexvideo, re.DOTALL).findall(content)
             print('id: ', match)
             id = match[0]
-            id = id.replace('?a=','')
+            id = id.replace('?a=', '')
             if id or id != '':
                 url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                print( "Here in plugin.py getVid play with streamlink url =", url)
+                print("Here in plugin.py getVid play with streamlink url =", url)
                 url = url.replace(":", "%3a")
                 url = url.replace("\\", "/")
                 ref = url
@@ -778,10 +758,11 @@ class Webcam8(Screen):
             else:
                 return
         except Exception as e:
-           print(str(e))
+            print(str(e))
 
     def cancel(self):
         self.close()
+
 
 class Webcam9(Screen):
     def __init__(self, session, name, url):
@@ -800,9 +781,9 @@ class Webcam9(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -819,10 +800,10 @@ class Webcam9(Screen):
             match = re.compile(regexvideo, re.DOTALL).findall(content)
             print('id: ', match)
             id = match[0]
-            id = id.replace('?a=','')
+            id = id.replace('?a=', '')
             if id or id != '':
                 url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                print( "Here in plugin.py getVid play with streamlink url =", url)
+                print("Here in plugin.py getVid play with streamlink url =", url)
                 url = url.replace(":", "%3a")
                 url = url.replace("\\", "/")
                 ref = url
@@ -835,6 +816,7 @@ class Webcam9(Screen):
 
     def cancel(self):
         self.close()
+
 
 class Playstream1(Screen):
     def __init__(self, session, name, url):
@@ -857,10 +839,10 @@ class Playstream1(Screen):
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.cancel,
-         'green': self.okClicked,
-         'back' : self.cancel,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+                                          'green': self.okClicked,
+                                          'back': self.cancel,
+                                          'cancel': self.cancel,
+                                          'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.layoutFinished)
         self.onLayoutFinish.append(self.openTest)
 
@@ -881,7 +863,7 @@ class Playstream1(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ',i)
+        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -936,14 +918,12 @@ class Playstream1(Screen):
         self.session.open(Playstream2, name, url, desc)
 
     def play2(self):
-        desc = ' '
         self['info'].setText(self.name)
         url = self.url
         url = url.replace(':', '%3a')
         print('In WorldCam url =', url)
         ref = '4097:0:1:0:0:0:0:0:0:0:' + url
         sref = eServiceReference(ref)
-        print('SREF: ', sref)
         sref.setName(self.name)
         self.session.nav.playService(sref)
 
@@ -951,6 +931,7 @@ class Playstream1(Screen):
         self.session.nav.stopService()
         self.session.nav.playService(srefInit)
         self.close()
+
 
 class TvInfoBarShowHide():
     """ InfoBar show/hide control, accepts toggleShow and hide actions, might start
@@ -962,8 +943,7 @@ class TvInfoBarShowHide():
     skipToggleShow = False
 
     def __init__(self):
-        self["ShowHideActions"] = ActionMap(["InfobarShowHideActions"], {"toggleShow": self.OkPressed,
-         "hide": self.hide}, 0)
+        self["ShowHideActions"] = ActionMap(["InfobarShowHideActions"], {"toggleShow": self.OkPressed, "hide": self.hide}, 0)
         self.__event_tracker = ServiceEventTracker(screen=self, eventmap={iPlayableService.evStart: self.serviceStarted})
         self.__state = self.STATE_SHOWN
         self.__locked = 0
@@ -1038,8 +1018,9 @@ class TvInfoBarShowHide():
         if self.execing:
             self.startHideTimer()
 
-    def debug(obj, text = ""):
+    def debug(obj, text=""):
         print(text + " %s\n" % obj)
+
 
 class Playstream2(
     InfoBarBase,
@@ -1057,12 +1038,12 @@ class Playstream2(
     ENABLE_RESUME_SUPPORT = True
     ALLOW_SUSPEND = True
     screen_timeout = 5000
+
     def __init__(self, session, name, url, desc):
-        global SREF, streaml
+        global streaml
         Screen.__init__(self, session)
         self.session = session
         self.skinName = 'MoviePlayer'
-        title = name
         streaml = False
         for x in InfoBarBase, \
                 InfoBarMenu, \
@@ -1077,33 +1058,31 @@ class Playstream2(
         except:
             self.init_aspect = 0
         self.new_aspect = self.init_aspect
-        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self.allowPiP = False
         self.service = None
-        service = None
         self.url = url
         self.desc = desc
         self.name = Utils.decodeHtml(name)
         self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
-         'MovieSelectionActions',
-         'MediaPlayerActions',
-         'EPGSelectActions',
-         'MediaPlayerSeekActions',
-         'SetupActions',
-         'ColorActions',
-         'InfobarShowHideActions',
-         'InfobarActions',
-         'InfobarSeekActions'], {'stop': self.cancel,
-         'epg': self.showIMDB,
-         'info': self.showIMDB,
-         'playpauseService': self.playpauseService,
-         'yellow': self.subtitles,
-         'tv': self.cicleStreamType,
-         'stop': self.cancel,
-         'cancel': self.cancel,
-         'back': self.cancel,
-         'down': self.av}, -1)
+                                     'MovieSelectionActions',
+                                     'MediaPlayerActions',
+                                     'EPGSelectActions',
+                                     'MediaPlayerSeekActions',
+                                     'SetupActions',
+                                     'ColorActions',
+                                     'InfobarShowHideActions',
+                                     'InfobarActions',
+                                     'InfobarSeekActions'], {'stop': self.cancel,
+                                     'epg': self.showIMDB,
+                                     'info': self.showIMDB,
+                                     'playpauseService': self.playpauseService,
+                                     'yellow': self.subtitles,
+                                     'tv': self.cicleStreamType,
+                                     'cancel': self.cancel,
+                                     'back': self.cancel,
+                                     'down': self.av}, -1)
         if '8088' in str(self.url):
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
@@ -1115,21 +1094,21 @@ class Playstream2(
 
     def getAspectString(self, aspectnum):
         return {0: _('4:3 Letterbox'),
-         1: _('4:3 PanScan'),
-         2: _('16:9'),
-         3: _('16:9 always'),
-         4: _('16:10 Letterbox'),
-         5: _('16:10 PanScan'),
-         6: _('16:9 Letterbox')}[aspectnum]
+                1: _('4:3 PanScan'),
+                2: _('16:9'),
+                3: _('16:9 always'),
+                4: _('16:10 Letterbox'),
+                5: _('16:10 PanScan'),
+                6: _('16:9 Letterbox')}[aspectnum]
 
     def setAspect(self, aspect):
         map = {0: '4_3_letterbox',
-         1: '4_3_panscan',
-         2: '16_9',
-         3: '16_9_always',
-         4: '16_10_letterbox',
-         5: '16_10_panscan',
-         6: '16_9_letterbox'}
+               1: '4_3_panscan',
+               2: '16_9',
+               3: '16_9_always',
+               4: '16_10_letterbox',
+               5: '16_10_panscan',
+               6: '16_9_letterbox'}
         config.av.aspectratio.setValue(map[aspect])
         try:
             AVSwitch().setAspectRatio(aspect)
@@ -1145,24 +1124,28 @@ class Playstream2(
         self.setAspect(temp)
 
     def showinfo(self):
+        sref = self.srefInit
+        p = ServiceReference(sref)
+        servicename = str(p.getServiceName())
+        serviceurl = str(p.getPath())
         sTitle = ''
         sServiceref = ''
         try:
-            servicename, serviceurl = getserviceinfo(sref)
-            if servicename != None:
+            if servicename is not None:
                 sTitle = servicename
             else:
                 sTitle = ''
-            if serviceurl != None:
+            if serviceurl is not None:
                 sServiceref = serviceurl
             else:
                 sServiceref = ''
             currPlay = self.session.nav.getCurrentService()
-            sTagCodec = currPlay.info().getInfoString(iServiceInformation.sTagCodec)
-            sTagVideoCodec = currPlay.info().getInfoString(iServiceInformation.sTagVideoCodec)
-            sTagAudioCodec = currPlay.info().getInfoString(iServiceInformation.sTagAudioCodec)
-            message = 'stitle:' + str(sTitle) + '\n' + 'sServiceref:' + str(sServiceref) + '\n' + 'sTagCodec:' + str(sTagCodec) + '\n' + 'sTagVideoCodec:' + str(sTagVideoCodec) + '\n' + 'sTagAudioCodec :' + str(sTagAudioCodec)
-            self.session.open(MessageBox, message, MessageBox.TYPE_INFO)
+            if currPlay:
+                sTagCodec = currPlay.info().getInfoString(iServiceInformation.sTagCodec)
+                sTagVideoCodec = currPlay.info().getInfoString(iServiceInformation.sTagVideoCodec)
+                sTagAudioCodec = currPlay.info().getInfoString(iServiceInformation.sTagAudioCodec)
+                message = 'stitle:' + str(sTitle) + '\n' + 'sServiceref:' + str(sServiceref) + '\n' + 'sTagCodec:' + str(sTagCodec) + '\n' + 'sTagVideoCodec: ' + str(sTagVideoCodec) + '\n' + 'sTagAudioCodec :' + str(sTagAudioCodec)
+                self.mbox = self.session.open(MessageBox, message, MessageBox.TYPE_INFO)
         except:
             pass
         return
@@ -1197,7 +1180,7 @@ class Playstream2(
         name = self.name
         ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
-        if streaml == True:
+        if streaml is True:
             url = 'http://127.0.0.1:8088/' + str(url)
             ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
             print('streaml reference:   ', ref)
@@ -1216,14 +1199,14 @@ class Playstream2(
         url = str(self.url)
         if str(os.path.splitext(self.url)[-1]) == ".m3u8":
             # if self.servicetype == "1":
-                self.servicetype = "4097"
+            self.servicetype = "4097"
         currentindex = 0
         streamtypelist = ["4097"]
         # if "youtube" in str(self.url):
             # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # return
         if Utils.isStreamlinkAvailable():
-            streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
             streamtypelist.append("5001")
@@ -1271,7 +1254,7 @@ class Playstream2(
         name = name.replace(':', '-').replace('&', '-').replace(' ', '-')
         name = name.replace('/', '-').replace(',', '-')
         url = self.url
-        if url != None:
+        if url is not None:
             if '5002' in url:
                 # ref = self.url
                 ref = "5002:0:0:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
@@ -1295,10 +1278,11 @@ class Playstream2(
             self.doShow()
 
     def cancel(self):
+        srefinit = self.srefInit
         if os.path.exists('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
-        self.session.nav.playService(SREF)
+        self.session.nav.playService(srefinit)
         # if self.pcip != 'None':
             # url2 = 'http://' + self.pcip + ':8080/requests/status.xml?command=pl_stop'
             # resp = urlopen(url2)
@@ -1312,6 +1296,7 @@ class Playstream2(
 
     def leavePlayer(self):
         self.close()
+
 
 def main(session, **kwargs):
     global _session
@@ -1329,9 +1314,8 @@ def main(session, **kwargs):
     else:
         from Screens.MessageBox import MessageBox
         from Tools.Notifications import AddPopup
-        AddPopup(_("Sorry but No Internet :("),MessageBox.TYPE_INFO, 10, 'Sorry')
+        AddPopup(_("Sorry but No Internet :("), MessageBox.TYPE_INFO, 10, 'Sorry')
 
 
 def Plugins(**kwargs):
-    return PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU,icon='plugin.png', fnc=main)
-
+    return PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)
