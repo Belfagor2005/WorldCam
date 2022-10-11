@@ -16,13 +16,9 @@ from Components.MultiContent import MultiContentEntryText, MultiContentEntryPixm
 from Components.Pixmap import Pixmap
 from Components.ScrollLabel import ScrollLabel
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
-from Components.Sources.List import List
-from Components.Sources.Source import Source
-from Components.Sources.StaticText import StaticText
-from Components.config import NoSave, ConfigYesNo, ConfigSelection, ConfigText
-from Components.config import config, ConfigSubsection
+from Components.config import config
 from Plugins.Plugin import PluginDescriptor
-from Screens.InfoBar import MoviePlayer, InfoBar
+from Screens.InfoBar import MoviePlayer
 from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarNotifications
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
@@ -32,25 +28,21 @@ from Tools.Directories import SCOPE_PLUGINS, resolveFilename
 from Tools.LoadPixmap import LoadPixmap
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
-from enigma import eListbox, eTimer
-from enigma import eListboxPythonMultiContent, eConsoleAppContainer
-from enigma import eServiceCenter
+from enigma import eTimer
+from enigma import eListboxPythonMultiContent
 from enigma import eServiceReference
-from enigma import ePicLoad
 from enigma import iServiceInformation
 from enigma import loadPNG, gFont
 from enigma import iPlayableService
-from twisted.web.client import getPage, downloadPage
 import os
 import re
 import sys
 import six
-import socket
 import ssl
 from . import Utils
 
 
-version = '4.2_r5' #edit lululla 07/02/2022
+version = '4.2_r5'  # edit lululla 07/02/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
 ico_path2 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugins.png'
@@ -71,21 +63,20 @@ if sys.version_info >= (2, 7, 9):
     except:
         sslContext = None
 
-leng1 = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read().replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
+leng1 = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
+leng1 = leng1.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
 language = leng1[:-3]
 print('lengg: ', language)
 
 try:
-    from urllib2 import Request, urlopen
+    from urllib2 import Request
     # _str = str
     # str = unicode
     # range = xrange
     # unicode = unicode
     # basestring = basestring
 except:
-    import urllib.parse
-    import urllib.request
-    from urllib.request import Request, urlopen
+    from urllib.request import Request
     PY3 = True
     unicode = str
     unichr = chr
@@ -150,10 +141,12 @@ class Webcam1(Screen):
         self['key_green'] = Button(_('Select'))
         self['info'] = Label('HOME VIEW')
         self["paypal"] = Label()
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                         'green': self.okClicked,
-                                         'cancel': self.cancel,
-                                         'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -204,10 +197,12 @@ class Webcam2(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -250,10 +245,12 @@ class Webcam3(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -293,6 +290,7 @@ class Webcam3(Screen):
     def cancel(self):
         self.close()
 
+
 class Webcam4(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -307,10 +305,12 @@ class Webcam4(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -372,10 +372,12 @@ class Webcam5(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -389,8 +391,7 @@ class Webcam5(Screen):
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
         from . import client
-        headers = {'User-Agent': client.agent(),
-           'Referer': BASEURL}
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         start = 0
         n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
@@ -444,10 +445,12 @@ class Webcam5a(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -525,10 +528,12 @@ class Webcam6(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -615,10 +620,12 @@ class Webcam7(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-         'green': self.okClicked,
-         'cancel': self.cancel,
-         'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -630,8 +637,7 @@ class Webcam7(Screen):
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
         from . import client
-        headers = {'User-Agent': client.agent(),
-           'Referer': BASEURL}
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
         print('content: ', content)
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
@@ -675,10 +681,12 @@ class Webcam8(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -780,10 +788,12 @@ class Webcam9(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.close,
-                                          'green': self.okClicked,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.close,
+                                                                'green': self.okClicked,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -812,7 +822,7 @@ class Webcam9(Screen):
             else:
                 return
         except Exception as e:
-           print(str(e))
+            print(str(e))
 
     def cancel(self):
         self.close()
@@ -838,11 +848,13 @@ class Playstream1(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.cancel,
-                                          'green': self.okClicked,
-                                          'back': self.cancel,
-                                          'cancel': self.cancel,
-                                          'ok': self.okClicked}, -2)
+        self['setupActions'] = ActionMap(['SetupActions',
+                                          'ColorActions',
+                                          'TimerEditActions'], {'red': self.cancel,
+                                                                'green': self.okClicked,
+                                                                'back': self.cancel,
+                                                                'cancel': self.cancel,
+                                                                'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.layoutFinished)
         self.onLayoutFinish.append(self.openTest)
 
@@ -1075,14 +1087,14 @@ class Playstream2(
                                      'InfobarShowHideActions',
                                      'InfobarActions',
                                      'InfobarSeekActions'], {'stop': self.cancel,
-                                     'epg': self.showIMDB,
-                                     'info': self.showIMDB,
-                                     'playpauseService': self.playpauseService,
-                                     'yellow': self.subtitles,
-                                     'tv': self.cicleStreamType,
-                                     'cancel': self.cancel,
-                                     'back': self.cancel,
-                                     'down': self.av}, -1)
+                                                             'epg': self.showIMDB,
+                                                             'info': self.showIMDB,
+                                                             'playpauseService': self.playpauseService,
+                                                             'yellow': self.subtitles,
+                                                             'tv': self.cicleStreamType,
+                                                             'cancel': self.cancel,
+                                                             'back': self.cancel,
+                                                             'down': self.av}, -1)
         if '8088' in str(self.url):
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
@@ -1283,9 +1295,6 @@ class Playstream2(
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
         self.session.nav.playService(srefinit)
-        # if self.pcip != 'None':
-            # url2 = 'http://' + self.pcip + ':8080/requests/status.xml?command=pl_stop'
-            # resp = urlopen(url2)
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)

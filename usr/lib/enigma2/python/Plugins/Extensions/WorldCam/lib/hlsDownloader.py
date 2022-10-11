@@ -15,53 +15,34 @@ MODIFIED BY shani to make it work with F4mProxy
 """
 import sys
 import os
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.request import build_opener
+import six.moves.urllib.request
+import six.moves.urllib.parse
+import xbmcaddon
+import xbmc
+import traceback
+import re
+import hmac
+import array
+import random
+import string
+import requests
 
 PY3 = sys.version_info[0] == 3
 
 if PY3:
-    from urllib.request import urlopen, Request
-    from urllib.error import URLError, HTTPError
-    from urllib.parse import urlparse
-    from urllib.parse import urlencode, quote
-    from urllib.request import urlretrieve
     import http.cookiejar
     import queue
-    
+    from urllib.request import Request
 else:
-    from urllib2 import urlopen, Request
-    from urllib2 import URLError, HTTPError
-    from urlparse import urlparse
-    from urllib import urlencode, quote
-    from urllib import urlretrieve
-    import Queue
-    import urlparse
+    import Queue as queue
     import urllib2
     import urllib
     import cookielib
+    from urllib2 import Request
 
 
-import threading
-import subprocess
-import xml.etree.ElementTree as etree
-import base64
-from struct import unpack, pack
-import struct
-import io
-import time
-import itertools
-import xbmcaddon
-import xbmc
-import traceback
-import posixpath
-import re
-import hmac
-import hashlib
-import binascii 
-import zlib
-from hashlib import sha256
-import array, random, string
-import requests
-#from Crypto.Cipher import AES
 '''
 from crypto.cipher.aes      import AES
 from crypto.cipher.cbc      import CBC
@@ -69,39 +50,41 @@ from crypto.cipher.base     import padWithPadLen
 from crypto.cipher.rijndael import Rijndael
 from crypto.cipher.aes_cbc import AES_CBC
 '''
-gproxy=None
-gauth=None
+gproxy = None
+gauth = None
+
 try:
     from Crypto.Cipher import AES
-    USEDec=1 ## 1==crypto 2==local, local pycrypto
+    USEDec = 1  # 1==crypto 2==local, local pycrypto
 except:
     print('pycrypt not available using slow decryption')
-    USEDec=3 ## 1==crypto 2==local, local pycrypto
+    USEDec = 3  # 1==crypto 2==local, local pycrypto
 
-if USEDec==1:
-    #from Crypto.Cipher import AES
+if USEDec == 1:
+    # from Crypto.Cipher import AES
     print('using pycrypto')
-elif USEDec==2:
+elif USEDec == 2:
     from decrypter import AESDecrypter
-    AES=AESDecrypter()
+    AES = AESDecrypter()
 else:
     from f4mUtils import python_aes
-#from decrypter import AESDecrypter
+# from decrypter import AESDecrypter
 
-iv=None
-key=None
+iv = None
+key = None
 value_unsafe = '%+&;#'
 VALUE_SAFE = ''.join(chr(c) for c in range(33, 127)
-    if chr(c) not in value_unsafe)
-    
-SUPPORTED_VERSION=3
+                     if chr(c) not in value_unsafe)
+
+SUPPORTED_VERSION = 3
 
 if PY3:
-    cookieJar=http.cookiejar.LWPCookieJar()
+    cookieJar = http.cookiejar.LWPCookieJar()
 else:
-    cookieJar=cookielib.LWPCookieJar()
-clientHeader=None
-    
+    cookieJar = cookielib.LWPCookieJar()
+clientHeader = None
+
+
 class HLSDownloader():
     global cookieJar
     """
@@ -109,174 +92,163 @@ class HLSDownloader():
     """
 
     def __init__(self):
-        self.init_done=False
+        self.init_done = False
 
-    def init(self, out_stream, url, proxy=None,use_proxy_for_chunks=True,g_stopEvent=None, maxbitrate=0, auth=''):
-        global clientHeader,gproxy,gauth
+    def init(self, out_stream, url, proxy=None, use_proxy_for_chunks=True, g_stopEvent=None, maxbitrate=0, auth=''):
+        global clientHeader, gproxy, gauth
         try:
-            self.init_done=False
-            self.init_url=url
-            clientHeader=None
-            self.status='init'
+            self.init_done = False
+            self.init_url = url
+            clientHeader = None
+            self.status = 'init'
             self.proxy = proxy
-            self.auth=auth
-            if self.auth ==None or self.auth =='None'  or self.auth=='':
-                self.auth=None
+            self.auth = auth
+            if self.auth is None or self.auth == 'None' or self.auth == '':
+                self.auth = None
             if self.auth:
-                gauth=self.auth
-            
-            if self.proxy and len(self.proxy)==0:
-                self.proxy=None
-            gproxy=self.proxy
-            self.use_proxy_for_chunks=use_proxy_for_chunks
-            self.out_stream=out_stream
-            self.g_stopEvent=g_stopEvent
-            self.maxbitrate=maxbitrate
+                gauth = self.auth
+
+            if self.proxy and len(self.proxy) == 0:
+                self.proxy = None
+            gproxy = self.proxy
+            self.use_proxy_for_chunks = use_proxy_for_chunks
+            self.out_stream = out_stream
+            self.g_stopEvent = g_stopEvent
+            self.maxbitrate = maxbitrate
             if '|' in url:
                 sp = url.split('|')
                 url = sp[0]
                 clientHeader = sp[1]
                 print(clientHeader)
                 if PY3:
-                    clientHeader= urllib.parse.parse_qsl(clientHeader)
+                    clientHeader = urllib.parse.parse_qsl(clientHeader)
                 else:
-                    clientHeader= urlparse.parse_qsl(clientHeader)
-                print('header recieved now url and headers are',url, clientHeader) 
-            self.status='init done'
-            self.url=url
+                    clientHeader = urlparse.parse_qsl(clientHeader)
+                print('header recieved now url and headers are', url, clientHeader)
+            self.status = 'init done'
+            self.url = url
             return self.preDownoload()
-        except: 
+        except:
             traceback.print_exc()
-            self.status='finished'
+            self.status = 'finished'
         return False
-        
+
     def preDownoload(self):
-        
+
         print('code here')
         return True
-        
-    def keep_sending_video(self,dest_stream, segmentToStart=None, totalSegmentToSend=0):
-        try:
-            self.status='download Starting'
-            downloadInternal(self.url,dest_stream,self.maxbitrate,self.g_stopEvent)
-        except: 
-            traceback.print_exc()
-        self.status='finished'
 
-        
-def getUrl(url,timeout=15,returnres=False,stream=False):
+    def keep_sending_video(self, dest_stream, segmentToStart=None, totalSegmentToSend=0):
+        try:
+            self.status = 'download Starting'
+            downloadInternal(self.url, dest_stream, self.maxbitrate, self.g_stopEvent)
+        except:
+            traceback.print_exc()
+        self.status = 'finished'
+
+
+def getUrl(url, timeout=15, returnres=False, stream=False):
     global cookieJar
     global clientHeader
     try:
-        post=None
-        #print 'url',url
+        post = None
+        # print 'url', url
         session = requests.Session()
         session.cookies = cookieJar
-
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:42.0) Gecko/20100101 Firefox/42.0 Iceweasel/42.0'}
         if clientHeader:
-            for n,v in clientHeader:
-                headers[n]=v
-        proxies={}
-        
+            for n, v in clientHeader:
+                headers[n] = v
+        proxies = {}
         if gproxy:
-            proxies= {"http": "http://"+gproxy}
-        #import random
-        #headers['User-Agent'] =headers['User-Agent'] + str(int(random.random()*100000))
+            proxies = {"http": "http://" + gproxy}
+        # import random
+        # headers['User-Agent'] =headers['User-Agent'] + str(int(random.random()*100000))
         if post:
-            req = session.post(url, headers = headers, data= post, proxies=proxies,verify=False,timeout=timeout,stream=stream)
+            req = session.post(url, headers=headers, data=post, proxies=proxies, verify=False, timeout=timeout, stream=stream)
         else:
-            req = session.get(url, headers=headers,proxies=proxies,verify=False ,timeout=timeout,stream=stream)
+            req = session.get(url, headers=headers, proxies=proxies, verify=False, timeout=timeout, stream=stream)
 
         req.raise_for_status()
-        if returnres: 
+        if returnres:
             return req
         else:
             return req.text
-
     except:
         print('Error in getUrl')
         traceback.print_exc()
         return None
-        
-    
-def getUrlold(url,timeout=20, returnres=False):
+
+
+def getUrlold(url, timeout=20, returnres=False):
     global cookieJar
     global clientHeader
     try:
-        post=None
-
+        post = None
         if PY3:
-            cookie_handler = urllib.request.HTTPCookieProcessor(cookieJar)
-            openner = urllib.request.build_opener(cookie_handler, urllib.request.HTTPBasicAuthHandler(), urllib.request.HTTPHandler())
+            cookie_handler = request.HTTPCookieProcessor(cookieJar)
+            openner = build_opener(cookie_handler, request.HTTPBasicAuthHandler(), request.HTTPHandler())
         else:
             cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
-            openner = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
-        
-
-        #print cookieJar
+            openner = build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
+        # print cookieJar
         if post:
             req = Request(url, post)
         else:
             req = Request(url)
-        
-        ua_header=False
+        ua_header = False
         if clientHeader:
-            for n,v in clientHeader:
-                req.add_header(n,v)
-                if n=='User-Agent':
-                    ua_header=True
-
+            for n, v in clientHeader:
+                req.add_header(n, v)
+                if n == 'User-Agent':
+                    ua_header = True
         if not ua_header:
-            req.add_header('User-Agent','AppleCoreMedia/1.0.0.12B411 (iPhone; U; CPU OS 8_1 like Mac OS X; en_gb)')
-        
-        #req.add_header('X-Playback-Session-Id','9A1E596D-6AB6-435F-85D1-59BDD0E62D24')
+            req.add_header('User-Agent', 'AppleCoreMedia/1.0.0.12B411 (iPhone; U; CPU OS 8_1 like Mac OS X; en_gb)')
+        # req.add_header('X-Playback-Session-Id','9A1E596D-6AB6-435F-85D1-59BDD0E62D24')
         if gproxy:
             req.set_proxy(gproxy, 'http')
         response = openner.open(req)
-        
-        if returnres: return response
-        data=response.read()
 
-        #print len(data)
-
+        if returnres:
+            return response
+        data = response.read()
+        # print len(data)
         return data
-
     except:
         print('Error in getUrl')
         traceback.print_exc()
         return None
 
+
 def download_chunks(URL, chunk_size=4096, enc=None):
-    #conn=urllib2.urlopen(URL)
-    #print 'starting download'
-    
-    conn=getUrl(URL,timeout=6,returnres=True,stream=True)
-    #while 1:
+    # conn = urllib2.urlopen(URL)
+    # print 'starting download'
+    conn = getUrl(URL, timeout=6, returnres=True, stream=True)
+    # while 1:
     if enc:
-        if USEDec==1 :
-            chunk_size*=1000
+        if USEDec == 1:
+            chunk_size *= 1000
         else:
-            chunk_size*=100
+            chunk_size *= 100
 
     else:
-#        yield conn.content;
-        chunk_size=chunk_size*1000
-    
+        # yield conn.content;
+        chunk_size = chunk_size * 1000
+
     for chunk in conn.iter_content(chunk_size=chunk_size):
         yield chunk
 
-        #if chunk_size==-1:
+        # if chunk_size==-1:
         #    data=conn.read()
-        #else:
+        # else:
         #    data=conn.read(chunk_size)
-        #if not data : return
-        #yield data
-        #if chunk_size==-1: return
-    #return 
-    #print 'function finished'
+        # if not data : return
+        # yield data
+        # if chunk_size==-1: return
+    # return
+    # print 'function finished'
 
-    #if 1==2:
+    # if 1==2:
     #    data= conn.read()
     #    #print repr(data)
     #    #print 'data downloaded'
@@ -284,22 +256,24 @@ def download_chunks(URL, chunk_size=4096, enc=None):
     #        d=data[i:i+chunk_size]
     #        #print repr(d)
     #        yield d
-    #        
+    #
     #    mod_index=len(data)%chunk_size;
     #    if mod_index>0 and mod_index <chunk_size :
     #        d=data[-mod_index:]
     #        yield d
     #    #print 'function finished'
     #    return
-    
+
     #    data=conn.read(chunk_size)
     #    if not data: return
     #    yield data
-    #print 'LEN of DATA %d'%len(data)
-    #return data
+    # print 'LEN of DATA %d'%len(data)
+    # return data
+
 
 def download_file(URL):
     return ''.join(download_chunks(URL))
+
 
 def validate_m3u(conn):
     ''' make sure file is an m3u, and returns the encoding to use. '''
@@ -319,23 +293,24 @@ def validate_m3u(conn):
         raise Exception("Stream is not in M3U format")
     return enc
 
+
 def gen_m3u(url, skip_comments=True):
     global cookieJar
-    #print url
-    #url0="https://secure.en.beinsports.net/streaming/wab/multiformat/index.html?partnerId=1864&eventId=978267&xmlerrs=true&antiCache=1417448354098"
-    #conn = getUrl(url0)#urllib2.urlopen(url)
-    #url2= re.compile('streamLaunchCode>\s?.*?(http.*)\s?]]').findall(conn)[0]
-    #print url2
-    #url2="https://beinsportnet5-lh.akamaihd.net/i/bisusch332_0@99606/master.m3u8?reportingKey=eventId-978267_partnerId-1864&hdnea=st=1417475666~exp=1417475726~acl=/*~hmac=7ba8a95d718b62d0a5d83f2e3702c7e076c03825c8631242a9f777d58350199d"
-    #conn = getUrl(url2)#urllib2.urlopen(url)
-    #print conn
-    #url=re.compile(',RESOLUTION=512x2.*\s?(.*?)\s').findall(conn)[0]
-    conn = getUrl(url,returnres=True )#urllib2.urlopen(url)
-    #print conn
-    #conn=urllib2.urlopen(url)
+    # print url
+    # url0="https://secure.en.beinsports.net/streaming/wab/multiformat/index.html?partnerId=1864&eventId=978267&xmlerrs=true&antiCache=1417448354098"
+    # conn = getUrl(url0)#urllib2.urlopen(url)
+    # url2= re.compile('streamLaunchCode>\s?.*?(http.*)\s?]]').findall(conn)[0]
+    # print url2
+    # url2="https://beinsportnet5-lh.akamaihd.net/i/bisusch332_0@99606/master.m3u8?reportingKey=eventId-978267_partnerId-1864&hdnea=st=1417475666~exp=1417475726~acl=/*~hmac=7ba8a95d718b62d0a5d83f2e3702c7e076c03825c8631242a9f777d58350199d"
+    # conn = getUrl(url2)#urllib2.urlopen(url)
+    # print conn
+    # url=re.compile(',RESOLUTION=512x2.*\s?(.*?)\s').findall(conn)[0]
+    conn = getUrl(url, returnres=True)  # urllib2.urlopen(url)
+    # print conn
+    # conn=urllib2.urlopen(url)
     enc = validate_m3u(conn)
-    #print conn
-    for line in conn.iter_lines():#.split('\n'):
+    # print conn
+    for line in conn.iter_lines():  # .split('\n'):
         line = line.rstrip('\r\n').decode(enc)
         if not line:
             # blank line
@@ -353,6 +328,7 @@ def gen_m3u(url, skip_comments=True):
             # media file
             yield line
 
+
 def parse_m3u_tag(line):
     if ':' not in line:
         return line, []
@@ -360,26 +336,28 @@ def parse_m3u_tag(line):
     attribs = []
     last = 0
     quote = False
-    for i,c in enumerate(attribstr+','):
+    for i, c in enumerate(attribstr + ','):
         if c == '"':
             quote = not quote
         if quote:
             continue
         if c == ',':
             attribs.append(attribstr[last:i])
-            last = i+1
+            last = i + 1
     return tag, attribs
+
 
 def parse_kv(attribs, known_keys=None):
     d = {}
     for item in attribs:
         k, v = item.split('=', 1)
-        k=k.strip()
-        v=v.strip().strip('"')
+        k = k.strip()
+        v = v.strip().strip('"')
         if known_keys is not None and k not in known_keys:
-            raise ValueError("unknown attribute %s"%k)
+            raise ValueError("unknown attribute %s" % k)
         d[k] = v
     return d
+
 
 def handle_basic_m3u(url):
     global iv
@@ -390,8 +368,8 @@ def handle_basic_m3u(url):
     enc = None
     nextlen = 5
     duration = 5
-    targetduration=5
-    aesdone=False
+    targetduration = 5
+    aesdone = False
     for line in gen_m3u(url):
         if line.startswith('#EXT'):
             tag, attribs = parse_m3u_tag(line)
@@ -413,41 +391,28 @@ def handle_basic_m3u(url):
                     enc = None
                 elif attribs['METHOD'] == 'AES-128':
                     if not aesdone:
-                        aesdone=False
+                        aesdone = False
                         assert 'URI' in attribs, 'EXT-X-KEY: METHOD=AES-128, but no URI found'
-                        #from Crypto.Cipher import AES
-                        codeurl=attribs['URI'].strip('"')
+                        # from Crypto.Cipher import AES
+                        codeurl = attribs['URI'].strip('"')
                         if gauth:
-                            codeurl=gauth
-                        
-                        #key = download_file(codeurl)
-                        
+                            codeurl = gauth
+                        # key = download_file(codeurl)
                         if not codeurl.startswith('http'):
                             if PY3:
-                                codeurl=urllib.parse.urljoin(url, codeurl)
+                                codeurl = urllib.parse.urljoin(url, codeurl)
                             else:
-                                codeurl=urlparse.urljoin(url, codeurl)
-                            
+                                codeurl = urlparse.urljoin(url, codeurl)
+
                         assert len(key) == 16, 'EXT-X-KEY: downloaded key file has bad length'
                         if 'IV' in attribs:
                             assert attribs['IV'].lower().startswith('0x'), 'EXT-X-KEY: IV attribute has bad format'
                             iv = attribs['IV'][2:].zfill(32).decode('hex')
                             assert len(iv) == 16, 'EXT-X-KEY: IV attribute has bad length'
                         else:
-                            iv = '\0'*8 + struct.pack('>Q', seq)
-                        enc=(codeurl,iv)
-                        #if not USEDec==3:
-                        #    enc = AES.new(key, AES.MODE_CBC, iv)
-                        #else:
-                        #    ivb=array.array('B',iv)
-                        #    keyb= array.array('B',key)
-                        #    enc=python_aes.new(keyb, 2, ivb)
-                        #enc = AES_CBC(key)
-                        #print key
-                        #print iv
-                        #enc=AESDecrypter.new(key, 2, iv)
+                            iv = '\0' * 8 + struct.pack('>Q', seq)
                 else:
-                    assert False, 'EXT-X-KEY: METHOD=%s unknown'%attribs['METHOD']
+                    assert False, 'EXT-X-KEY: METHOD=%s unknown' % attribs['METHOD']
             elif tag == '#EXT-X-PROGRAM-DATE-TIME':
                 assert len(attribs) == 1, "too many attribs in EXT-X-PROGRAM-DATE-TIME"
                 # TODO parse attribs[0] as ISO8601 date/time
@@ -467,49 +432,52 @@ def handle_basic_m3u(url):
             elif tag == '#EXT-X-VERSION':
                 assert len(attribs) == 1
                 if int(attribs[0]) > SUPPORTED_VERSION:
-                    print("[warn] file version %s exceeds supported version %d; some things might be broken"%(attribs[0], SUPPORTED_VERSION))
-            #else:
+                    print("[warn] file version %s exceeds supported version %d; some things might be broken" % (attribs[0], SUPPORTED_VERSION))
+            # else:
             #    raise ValueError("tag %s not known"%tag)
         else:
             yield (seq, enc, duration, targetduration, line)
             seq += 1
 
-def player_pipe(queue, control,file):
+
+def player_pipe(queue, control, file):
     while 1:
         block = queue.get(block=True)
-        if block is None: return
+        if block is None:
+            return
         file.write(block)
         file.flush()
-        
-def send_back(data,file):
+
+
+def send_back(data, file):
     file.write(data)
     file.flush()
-        
-def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
+
+
+def downloadInternal(url, file, maxbitrate=0, stopEvent=None):
     global key
     global iv
     global USEDec
     if stopEvent and stopEvent.isSet():
         return
     dumpfile = None
-    #dumpfile=open('c:\\temp\\myfile.mp4',"wb")
+    # dumpfile=open('c:\\temp\\myfile.mp4',"wb")
     variants = []
     variant = None
-     #url check if requires redirect
-    redirurl=url
+    # url check if requires redirect
+    redirurl = url
     try:
-        print('going gor  ',url)
-        res=getUrl(url,returnres=True )
+        print('going gor  ', url)
+        res = getUrl(url, returnres=True)
         print('here ', res)
-        if res.history: 
+        if res.history:
             print('history')
-            redirurl=res.url
+            redirurl = res.url
         res.close()
-        
-    except: traceback.print_exc()
-    print('redirurl',redirurl)
-    
-    
+
+    except:
+        traceback.print_exc()
+    print('redirurl', redirurl)
     for line in gen_m3u(url):
         if line.startswith('#EXT'):
             tag, attribs = parse_m3u_tag(line)
@@ -518,129 +486,127 @@ def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
         elif variant:
             variants.append((line, variant))
             variant = None
-    print('variants',variants)
-    if len(variants)==0: url=redirurl
+    print('variants', variants)
+    if len(variants) == 0:
+        url = redirurl
     if len(variants) == 1:
         if PY3:
             url = urllib.parse.urljoin(redirurl, variants[0][0])
         else:
             url = urlparse.urljoin(redirurl, variants[0][0])
-        
     elif len(variants) >= 2:
         print("More than one variant of the stream was provided.")
-
-        choice=-1
-        lastbitrate=0
-        print('maxbitrate',maxbitrate)
+        choice = - 1
+        lastbitrate = 0
+        print('maxbitrate', maxbitrate)
         for i, (vurl, vattrs) in enumerate(variants):
-            print(i, vurl, end=' ')
+            # print(i, vurl, end=' ')
             for attr in vattrs:
                 key, value = attr.split('=')
                 key = key.strip()
                 value = value.strip().strip('"')
                 if key == 'BANDWIDTH':
-                    print('bitrate %.2f kbps'%(int(value)/1024.0))
-                    if int(value)<=int(maxbitrate) and int(value)>lastbitrate:
-                        choice=i
-                        lastbitrate=int(value)
+                    print('bitrate %.2f kbps' % (int(value)/1024.0))
+                    if int(value) <= int(maxbitrate) and int(value) > lastbitrate:
+                        choice = i
+                        lastbitrate = int(value)
                 elif key == 'PROGRAM-ID':
-                    print('program %s'%value, end=' ')
+                    print('program %s' % value)
                 elif key == 'CODECS':
-                    print('codec %s'%value, end=' ')
+                    print('codec %s' % value)
                 elif key == 'RESOLUTION':
-                    print('resolution %s'%value, end=' ')
+                    print('resolution %s' % value)
                 else:
-                    print("unknown STREAM-INF attribute %s"%key)
-                    #raise ValueError("unknown STREAM-INF attribute %s"%key)
+                    print("unknown STREAM-INF attribute %s" % key)
+                    # raise ValueError("unknown STREAM-INF attribute %s"%key)
             print()
-        if choice==-1: choice=0
-        #choice = int(raw_input("Selection? "))
-        print('choose %d'%choice)
+        if choice == - 1:
+            choice = 0
+        # choice = int(raw_input("Selection? "))
+        print('choose %d' % choice)
         if PY3:
             url = urllib.parse.urljoin(redirurl, variants[choice][0])
         else:
             url = urlparse.urljoin(redirurl, variants[choice][0])
-        
-        
-
-    #queue = Queue.Queue(1024) # 1024 blocks of 4K each ~ 4MB buffer
+    # queue = Queue.Queue(1024) # 1024 blocks of 4K each ~ 4MB buffer
     control = ['go']
-    #thread = threading.Thread(target=player_pipe, args=(queue, control,file))
-    #thread.start()
+    # thread = threading.Thread(target=player_pipe, args=(queue, control,file))
+    # thread.start()
     last_seq = -1
     targetduration = 5
     changed = 0
-    glsession=None
+    glsession = None
     if ':7777' in url:
         try:
-            glsession=re.compile(':7777\/.*?m3u8.*?session=(.*?)&').findall(url)[0]
-        except: 
+            glsession = re.compile(':7777\/.*?m3u8.*?session=(.*?)&').findall(url)[0]
+        except:
             pass
-
     try:
-        while 1==1:#thread.isAlive():
+        while 1 == 1:
             if stopEvent and stopEvent.isSet():
                 return
             medialist = list(handle_basic_m3u(url))
-            playedSomething=False
-            if medialist==None: return
+            playedSomething = False
+            if medialist is None:
+                return
             if None in medialist:
                 # choose to start playback at the start, since this is a VOD stream
                 pass
             else:
                 # choose to start playback three files from the end, since this is a live stream
                 medialist = medialist[-6:]
-            #print 'medialist',medialist
-            addsomewait=False
+            # print 'medialist',medialist
+            addsomewait = False
             for media in medialist:
-                 
                 if stopEvent and stopEvent.isSet():
                     return
                 if media is None:
-                    #queue.put(None, block=True)
+                    # queue.put(None, block=True)
                     return
                 seq, encobj, duration, targetduration, media_url = media
-                addsomewait=True
+                addsomewait = True
                 if seq > last_seq:
-                    #print 'downloading.............',url
-                    
-                    enc=None
-                    if encobj:
-                        codeurl,iv=encobj
-                        key = download_file(codeurl)
+                    # print 'downloading.............',url
 
-                        if not USEDec==3:
+                    enc = None
+                    if encobj:
+                        codeurl, iv = encobj
+                        key = download_file(codeurl)
+                        if not USEDec == 3:
                             enc = AES.new(key, AES.MODE_CBC, iv)
                         else:
-                            ivb=array.array('B',iv)
-                            keyb= array.array('B',key)
-                            enc=python_aes.new(keyb, 2, ivb)
-                        #enc=AESDecrypter.new(key, 2, iv)
-                        
-                    if glsession: media_url=media_url.replace(glsession,glsession[:-10]+''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+                            ivb = array.array('B', iv)
+                            keyb = array.array('B', key)
+                            enc = python_aes.new(keyb, 2, ivb)
+                        # enc=AESDecrypter.new(key, 2, iv)
+
+                    if glsession:
+                        media_url = media_url.replace(glsession, glsession[:-10] + '' .join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
                     try:
-                        for chunk in download_chunks(urlparse.urljoin(url, media_url),enc=encobj):
+                        for chunk in download_chunks(urlparse.urljoin(url, media_url), enc=encobj):
                             if stopEvent and stopEvent.isSet():
                                 return
-                            #print '1. chunk available %d'%len(chunk)
-                            if enc: 
-                                 if not USEDec==3:
+                            # print '1. chunk available %d'%len(chunk)
+                            if enc:
+                                if not USEDec == 3:
                                     chunk = enc.decrypt(chunk)
-                                 else:
-                                    chunkb=array.array('B',chunk)
+                                else:
+                                    chunkb = array.array('B', chunk)
                                     chunk = enc.decrypt(chunkb)
-                                    chunk="".join(map(chr, chunk))
-                            #if enc: chunk = enc.decrypt(chunk,key,'CBC')
-                            #print '2. chunk done %d'%len(chunk)
-                            if dumpfile: dumpfile.write(chunk)
-                            #queue.put(chunk, block=True)
-                            send_back(chunk,file)
-                            #print '3. chunk available %d'%len(chunk)
+                                    chunk = "".join(map(chr, chunk))
+                            # if enc: chunk = enc.decrypt(chunk,key,'CBC')
+                            # print '2. chunk done %d'%len(chunk)
+                            if dumpfile:
+                                dumpfile.write(chunk)
+                            # queue.put(chunk, block=True)
+                            send_back(chunk, file)
+                            # print '3. chunk available %d'%len(chunk)
                         last_seq = seq
                         changed = 1
-                        playedSomething=True
-                    except: pass
-            
+                        playedSomething = True
+                    except:
+                        pass
+
             '''if changed == 1:
                 # initial minimum reload delay
                 time.sleep(duration)
@@ -653,13 +619,11 @@ def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
             else:
                 # third attempt and beyond
                 time.sleep(targetduration*3.0)
-            
+
             changed -= 1
             '''
             if not playedSomething:
-                xbmc.sleep(2000+ (3000 if addsomewait else 0))
+                xbmc.sleep(2000 + (3000 if addsomewait else 0))
     except:
         control[0] = 'stop'
         raise
-
-    
