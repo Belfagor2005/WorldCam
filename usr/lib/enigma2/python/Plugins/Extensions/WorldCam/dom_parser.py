@@ -19,13 +19,12 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import absolute_import
-
+from collections import namedtuple
 import re
 import sys
 is_py2 = sys.version_info[0] == 2
 is_py3 = sys.version_info[0] == 3
 
-from collections import namedtuple
 
 if is_py2:
 

@@ -1,16 +1,12 @@
 <screen name="Hd" position="0,0" size="1056,831" title="WorldCam" flags="wfNoBorder" backgroundColor="transparent">
-<eLabel position="center,center" zPosition="1" size="1050,825" backgroundColor="#000000" />
-<eLabel position="center,center" zPosition="-1" size="1056,831" backgroundColor="#ffffff" />
-<eLabel text="WorldCam" font="Regular;50" position="500,750" size="500,75" zPosition="4" halign="center" foregroundColor="blue" backgroundColor="#000000" transparent="1" />
-<widget name="list" position="120,80" size="900,600" zPosition="4" scrollbarMode="showOnDemand" />
-<eLabel position="105,150" zPosition="-1" size="150,103" backgroundColor="#222222" />
-<widget name="info" position="17,691" zPosition="4" size="979,52" font="Regular;27" foregroundColor="#ffffff" transparent="1" halign="center" valign="center" />
-<ePixmap name="red" position="0,750" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-<ePixmap name="green" position="210,750" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-<!--ePixmap name="yellow" position="420,525" zPosition="2" size="210,60" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
-<ePixmap name="blue"   position="630,525" zPosition="2" size="210,60" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" /-->
-<widget name="key_red" position="0,750" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-<widget name="key_green" position="210,750" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-<!--widget name="key_yellow" position="420,525" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-<widget name="key_blue" position="630,525" size="210,60" valign="center" halign="center" zPosition="4"  foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" /-->
+	<eLabel position="center,center" zPosition="1" size="1050,825" backgroundColor="#000000" />
+	<eLabel position="center,center" zPosition="-1" size="1056,831" backgroundColor="#ffffff" />
+	<eLabel text="WorldCam" font="Regular;50" position="500,750" size="500,75" zPosition="4" halign="center" foregroundColor="blue" backgroundColor="#000000" transparent="1" />
+	<widget name="list" position="120,80" size="900,600" zPosition="4" scrollbarMode="showOnDemand" />
+	<eLabel position="105,150" zPosition="-1" size="150,103" backgroundColor="#222222" />
+	<widget name="info" position="17,691" zPosition="4" size="979,52" font="Regular;27" foregroundColor="#ffffff" transparent="1" halign="center" valign="center" />
+	<ePixmap name="red" position="0,750" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<ePixmap name="green" position="210,750" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
+	<widget name="key_red" position="0,750" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<widget name="key_green" position="210,750" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
 </screen>

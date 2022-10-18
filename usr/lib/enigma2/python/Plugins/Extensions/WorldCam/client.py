@@ -87,7 +87,7 @@ def request(url, close=True, redirect=True, error=False, proxy=None, post=None, 
 
     if 'User-Agent' in headers:
         pass
-    elif not mobile is True:
+    elif mobile is not True:
         # headers['User-Agent'] = agent()
         # headers['User-Agent'] = cache.get(randomagent, 1)
     # else:
@@ -100,7 +100,7 @@ def request(url, close=True, redirect=True, error=False, proxy=None, post=None, 
     else:
         headers['Referer'] = referer
 
-    if not 'Accept-Language' in headers:
+    if 'Accept-Language' not in headers:
         headers['Accept-Language'] = 'en-US'
 
     if 'Cookie' in headers:
@@ -279,7 +279,7 @@ def _getDOMContent(html, name, match, ret):  # Cleanup
 
     start = html.find(match)
     end = html.find(endstr, start)
-    pos = html.find("<" + name, start + 1 )
+    pos = html.find("<" + name, start + 1)
 
     while pos < end and pos != -1:  # Ignore too early </endstr> return
         tend = html.find(endstr, end + len(endstr))
@@ -422,7 +422,7 @@ def cfcookie(netloc, ua, timeout):
     try:
         headers = {'User-Agent': ua}
 
-        req =urllib_request.Request(netloc, headers=headers)
+        req = urllib_request.Request(netloc, headers=headers)
 
         try:
             urllib_request.urlopen(req, timeout=int(timeout))
@@ -443,7 +443,7 @@ def cfcookie(netloc, ua, timeout):
 
             if len(line) > 0 and '=' in line:
 
-                sections=line.split('=')
+                sections = line.split('=')
                 line_val = parseJSString(sections[1])
                 decryptVal = int(eval(str(decryptVal)+sections[0][-1]+str(line_val)))
 
@@ -476,8 +476,8 @@ def cfcookie(netloc, ua, timeout):
 
 def parseJSString(s):
     try:
-        offset=1 if s[0]=='+' else 0
-        val = int(eval(s.replace('!+[]','1').replace('!![]','1').replace('[]','0').replace('(','str(')[offset:]))
+        offset = 1 if s[0] == '+' else 0
+        val = int(eval(s.replace('!+[]', '1').replace('!![]', '1').replace('[]', '0').replace('(', 'str(')[offset:]))
         return val
     except:
         pass

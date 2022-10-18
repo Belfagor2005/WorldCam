@@ -20,17 +20,19 @@
 '''
 
 
-import re, hashlib, time, os
+import re
+import hashlib
 
-def get(function, timeout = 10, *args, **table):
+
+def get(function, timeout=10, *args, **table):
     try:
         response = None
 
         f = repr(function)
         f = re.sub('.+\smethod\s|.+function\s|\sat\s.+|\sof\s.+', '', f)
-
         a = hashlib.md5()
-        for i in args: a.update(str(i))
+        for i in args:
+            a.update(str(i))
         a = str(a.hexdigest())
     except:
         pass
@@ -42,9 +44,9 @@ def get(function, timeout = 10, *args, **table):
 
     try:
         r = function(*args)
-        if (r == None or r == []) and not response == None:
+        if (r is None or r == []) and response is not None:
             return response
-        elif (r == None or r == []):
+        elif (r is None or r == []):
             return r
     except:
         return
@@ -53,7 +55,3 @@ def get(function, timeout = 10, *args, **table):
         return eval(r.encode('utf-8'))
     except:
         pass
-
-
-
-

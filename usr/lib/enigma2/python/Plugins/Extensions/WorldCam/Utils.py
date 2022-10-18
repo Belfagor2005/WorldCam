@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# 20.09.2022
+# 01.10.2022
 # a common tips used from Lululla
 #
 import sys
@@ -12,7 +12,7 @@ import base64
 from random import choice
 
 # from sys import version_info
-# pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
+# pythonFull = float(str(sys.version_info.major) + '.' + str(sys.version_info.minor))
 # pythonVer = sys.version_info.major
 # PY3 = version_info[0] == 3
 
@@ -116,11 +116,10 @@ def purge(dir, pattern):
 
 
 def get_safe_filename(filename, fallback=''):
-    """Convert filename to safe filename
-    """
+    '''Convert filename to safe filename'''
     import unicodedata
     import six
-    name = filename.replace(" ", "_").replace("/", "_")
+    name = filename.replace(' ', '_').replace('/', '_')
     if isinstance(name, six.text_type):
         name = name.encode('utf-8')
     name = unicodedata.normalize('NFKD', six.text_type(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
@@ -216,13 +215,13 @@ def downloadFile(url, target):
         response.close()
         return True
     except HTTPError:
-        print("Http error")
+        print('Http error')
         return False
     except URLError:
-        print("Url error")
+        print('Url error')
         return False
     except socket.timeout:
-        print("sochet error")
+        print('sochet error')
         return False
 
 
@@ -274,7 +273,7 @@ CountConnOk = 0
 def zCheckInternet(opt=1, server=None, port=None):  # opt=5 custom server and port.
     global CountConnOk
     sock = False
-    checklist = [("8.8.44.4", 53), ("8.8.88.8", 53), ("www.lululla.altervista.org/", 80), ("www.linuxsat-support.com", 443), ("www.google.com", 443)]
+    checklist = [('8.8.44.4', 53), ('8.8.88.8', 53), ('www.lululla.altervista.org/', 80), ('www.e2skin.blogspot.com', 443), ('www.google.com', 443)]
     if opt < 5:
         srv = checklist[opt]
     else:
@@ -284,20 +283,20 @@ def zCheckInternet(opt=1, server=None, port=None):  # opt=5 custom server and po
         socket.setdefaulttimeout(0.5)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(srv)
         sock = True
-        # print("[iSettingE2] - Internet OK")
+        # print('[iSettingE2] - Internet OK')
         CountConnOk = 0
-        print(_("Status Internet: %s:%s -> OK" % (srv[0], srv[1])))
+        print(_('Status Internet: %s:%s -> OK' % (srv[0], srv[1])))
     except:
         sock = False
-        # print("[iSettingE2] - Internet KO")
-        print(_("Status Internet: %s:%s -> KO" % (srv[0], srv[1])))
+        # print('[iSettingE2] - Internet KO')
+        print(_('Status Internet: %s:%s -> KO' % (srv[0], srv[1])))
         if CountConnOk == 0 and opt != 2 and opt != 3:
             CountConnOk = 1
-            print(_("Restart Check 1 Internet."))
+            print(_('Restart Check 1 Internet.'))
             return zCheckInternet(0)
         elif CountConnOk == 1 and opt != 2 and opt != 3:
             CountConnOk = 2
-            print(_("Restart Check 2 Internet."))
+            print(_('Restart Check 2 Internet.'))
             return zCheckInternet(4)
     return sock
 
@@ -306,7 +305,7 @@ def checkInternet():
     try:
         import socket
         socket.setdefaulttimeout(0.5)
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(('8.8.8.8', 53))
         return True
     except:
         return False
@@ -330,7 +329,7 @@ def check(url):
         return False
 
 
-def testWebConnection(host="www.google.com", port=80, timeout=3):
+def testWebConnection(host='www.google.com', port=80, timeout=3):
     import socket
     try:
         socket.setdefaulttimeout(timeout)
@@ -341,7 +340,7 @@ def testWebConnection(host="www.google.com", port=80, timeout=3):
         return False
 
 
-def checkStr(text, encoding="utf8"):
+def checkStr(text, encoding='utf8'):
     if PY3 is False:
         if isinstance(text, unicode):
             return text.encode(encoding)
@@ -375,15 +374,15 @@ def checkStr(text, encoding="utf8"):
 
 
 def checkRedirect(url):
-    # print("*** check redirect ***")
+    # print('*** check redirect ***')
     try:
         import requests
         x = requests.get(url, timeout=15, verify=False, stream=True)
-        print("**** redirect url 1 *** %s" % x.url)
+        print('**** redirect url 1 *** %s' % x.url)
         return str(x.url)
     except Exception as e:
         print('checkRedirect get failed: ', str(e))
-        print("**** redirect url 2 *** %s" % url)
+        print('**** redirect url 2 *** %s' % url)
         return str(url)
 
 
@@ -409,7 +408,7 @@ def b64encoder(source):
 
 
 def b64decoder(s):
-    """Add missing padding to string and return the decoded base64 string."""
+    '''Add missing padding to string and return the decoded base64 string.'''
     import base64
     s = str(s).strip()
     try:
@@ -424,7 +423,7 @@ def b64decoder(s):
     except TypeError:
         padding = len(s) % 4
         if padding == 1:
-            print("Invalid base64 string: {}".format(s))
+            print('Invalid base64 string: {}'.format(s))
             return ''
         elif padding == 2:
             s += b'=='
@@ -440,10 +439,10 @@ def b64decoder(s):
 
 def MemClean():
     try:
-        os.system("sync")
-        os.system("echo 1 > /proc/sys/vm/drop_caches")
-        os.system("echo 2 > /proc/sys/vm/drop_caches")
-        os.system("echo 3 > /proc/sys/vm/drop_caches")
+        os.system('sync')
+        os.system('echo 1 > /proc/sys/vm/drop_caches')
+        os.system('echo 2 > /proc/sys/vm/drop_caches')
+        os.system('echo 3 > /proc/sys/vm/drop_caches')
     except:
         pass
 
@@ -454,7 +453,8 @@ def __createdir(list):
         dir += '/' + line
         if not os.path.exists(dir):
             try:
-                os.mkdir(dir)
+                from os import mkdir
+                mkdir(dir)
             except:
                 print('Mkdir Failed', dir)
 
@@ -512,7 +512,7 @@ def deletetmp():
 
 def del_jpg():
     import glob
-    for i in glob.glob(os.path.join("/tmp", "*.jpg")):
+    for i in glob.glob(os.path.join('/tmp', '*.jpg')):
         try:
             os.chmod(i, 0o777)
             os.remove(i)
@@ -522,42 +522,42 @@ def del_jpg():
 
 def OnclearMem():
     try:
-        os.system("sync")
-        os.system("echo 1 > /proc/sys/vm/drop_caches")
-        os.system("echo 2 > /proc/sys/vm/drop_caches")
-        os.system("echo 3 > /proc/sys/vm/drop_caches")
+        os.system('sync')
+        os.system('echo 1 > /proc/sys/vm/drop_caches')
+        os.system('echo 2 > /proc/sys/vm/drop_caches')
+        os.system('echo 3 > /proc/sys/vm/drop_caches')
     except:
         pass
 
 
 def findSoftCamKey():
-    paths = ["/usr/keys",
-             "/etc/tuxbox/config/oscam-emu",
-             "/etc/tuxbox/config/oscam-trunk",
-             "/etc/tuxbox/config/oscam",
-             "/etc/tuxbox/config/ncam",
-             "/etc/tuxbox/config/gcam",
-             "/etc/tuxbox/config",
-             "/etc",
-             "/var/keys"]
+    paths = ['/usr/keys',
+             '/etc/tuxbox/config/oscam-emu',
+             '/etc/tuxbox/config/oscam-trunk',
+             '/etc/tuxbox/config/oscam',
+             '/etc/tuxbox/config/ncam',
+             '/etc/tuxbox/config/gcam',
+             '/etc/tuxbox/config',
+             '/etc',
+             '/var/keys']
     from os import path as os_path
-    if os_path.exists("/tmp/.oscam/oscam.version"):
-        data = open("/tmp/.oscam/oscam.version", "r").readlines()
-    elif os_path.exists("/tmp/.ncam/ncam.version"):
-        data = open("/tmp/.ncam/ncam.version", "r").readlines()
-    elif os_path.exists("/tmp/.gcam/gcam.version"):
-        data = open("/tmp/.gcam/gcam.version", "r").readlines()
+    if os_path.exists('/tmp/.oscam/oscam.version'):
+        data = open('/tmp/.oscam/oscam.version', 'r').readlines()
+    elif os_path.exists('/tmp/.ncam/ncam.version'):
+        data = open('/tmp/.ncam/ncam.version', 'r').readlines()
+    elif os_path.exists('/tmp/.gcam/gcam.version'):
+        data = open('/tmp/.gcam/gcam.version', 'r').readlines()
         for line in data:
-            if "configdir:" in line.lower():
-                paths.insert(0, line.split(":")[1].strip())
+            if 'configdir:' in line.lower():
+                paths.insert(0, line.split(':')[1].strip())
     for path in paths:
-        softcamkey = os_path.join(path, "SoftCam.Key")
-        print("[key] the %s exists %d" % (softcamkey, os_path.exists(softcamkey)))
+        softcamkey = os_path.join(path, 'SoftCam.Key')
+        print('[key] the %s exists %d' % (softcamkey, os_path.exists(softcamkey)))
         if os_path.exists(softcamkey):
             return softcamkey
         else:
-            return "/usr/keys/SoftCam.Key"
-    return "/usr/keys/SoftCam.Key"
+            return '/usr/keys/SoftCam.Key'
+    return '/usr/keys/SoftCam.Key'
 
 
 def web_info(message):
@@ -568,11 +568,11 @@ def web_info(message):
             from urllib.parse import quote_plus
         message = quote_plus(message)
         cmd = "wget -qO - 'http://127.0.0.1/web/message?type=2&timeout=10&text=%s' > /dev/null 2>&1 &" % message
-        # debug(cmd, "CMD -> Console -> WEBIF")
+        # debug(cmd, 'CMD -> Console -> WEBIF')
         os.popen(cmd)
     except Exception as e:
         print('error: ', str(e))
-        print("web_info ERROR")
+        print('web_info ERROR')
 
 
 def trace_error():
@@ -587,7 +587,7 @@ def trace_error():
 
 def log(label, data):
     data = str(data)
-    open("/tmp/my__debug.log", "a").write("\n" + label + ":>" + data)
+    open('/tmp/my__debug.log', 'a').write('\n' + label+':>' + data)
 
 
 def ConverDate(data):
@@ -615,23 +615,23 @@ def isStreamlinkAvailable():
 
 # def Controlexteplayer():
     # exteplayer = False
-    # if os.path.exists("/usr/bin/exteplayer3") or os.path.exists("/bin/exteplayer3")  or os.path.exists("exteplayer3"):
-      # exteplayer = True
+    # if os.path.exists('/usr/bin/exteplayer3') or os.path.exists('/bin/exteplayer3')  or os.path.exists('exteplayer3'):
+        # exteplayer = True
     # return exteplayer
 
 # if not Controlexteplayer():
-  # os.system("opkg update")
-  # os.popen("opkg list | grep exteplayer > /tmp/exteplayer")
-  # if os.path.exists("/tmp/exteplayer"):
-    # File = open("/tmp/exteplayer", 'r')
+  # os.system('opkg update')
+  # os.popen('opkg list | grep exteplayer > /tmp/exteplayer')
+  # if os.path.exists('/tmp/exteplayer'):
+    # File = open('/tmp/exteplayer', 'r')
     # for line in File:
       # linesplit = line.split(' ')
       # if len(linesplit) >1 :
-        # if linesplit[0].find("exteplayer") != -1:
-          # os.system("opkg install %s"%linesplit[0])
+        # if linesplit[0].find('exteplayer') != -1:
+          # os.system('opkg install %s'%linesplit[0])
           # break
     # File.close()
-    # os.system("rm -fr /tmp/exteplayer")
+    # os.system('rm -fr /tmp/exteplayer')
 
 # PluginDescriptor:
 # WHERE_EXTENSIONSMENU = 0
@@ -673,11 +673,11 @@ def AdultUrl(url):
 
 
 std_headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100627 Firefox/3.6.6',
-        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-us,en;q=0.5',
-}
+               'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100627 Firefox/3.6.6',
+               'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+               'Accept-Language': 'en-us,en;q=0.5',
+               }
 
 
 ListAgent = [
@@ -756,7 +756,7 @@ def ReadUrl2(url):
     content = link
     if str(type(content)).find('bytes') != -1:
         try:
-            content = content.decode("utf-8")
+            content = content.decode('utf-8')
         except Exception as e:
             print('error: ', str(e))
     return content
@@ -775,7 +775,7 @@ def ReadUrl(url):
         CONTEXT = None
 
     TIMEOUT_URL = 15
-    print(_("ReadUrl1:\n  url = %s") % url)
+    print(_('ReadUrl1:\n  url = %s') % url)
     try:
         req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
@@ -783,44 +783,44 @@ def ReadUrl(url):
             r = urllib2.urlopen(req, None, TIMEOUT_URL, context=CONTEXT)
         except Exception as e:
             r = urllib2.urlopen(req, None, TIMEOUT_URL)
-            print("CreateLog Codifica ReadUrl: %s." % str(e))
+            print('CreateLog Codifica ReadUrl: %s.' % str(e))
         link = r.read()
         r.close()
 
-        dec = "Null"
+        dec = 'Null'
         dcod = 0
         tlink = link
         if str(type(link)).find('bytes') != -1:
             try:
-                tlink = link.decode("utf-8")
-                dec = "utf-8"
+                tlink = link.decode('utf-8')
+                dec = 'utf-8'
             except Exception as e:
                 dcod = 1
-                print("ReadUrl2 - Error: ", str(e))
+                print('ReadUrl2 - Error: ', str(e))
             if dcod == 1:
                 dcod = 0
                 try:
-                    tlink = link.decode("cp437")
-                    dec = "cp437"
+                    tlink = link.decode('cp437')
+                    dec = 'cp437'
                 except Exception as e:
                     dcod = 1
-                    print("ReadUrl3 - Error:", str(e))
+                    print('ReadUrl3 - Error:', str(e))
             if dcod == 1:
                 dcod = 0
                 try:
-                    tlink = link.decode("iso-8859-1")
-                    dec = "iso-8859-1"
+                    tlink = link.decode('iso-8859-1')
+                    dec = 'iso-8859-1'
                 except Exception as e:
                     dcod = 1
-                    print("CreateLog Codific ReadUrl: ", str(e))
+                    print('CreateLog Codific ReadUrl: ', str(e))
             link = tlink
 
         elif str(type(link)).find('str') != -1:
-            dec = "str"
+            dec = 'str'
 
-        print("CreateLog Codifica ReadUrl: %s." % dec)
+        print('CreateLog Codifica ReadUrl: %s.' % dec)
     except Exception as e:
-        print("ReadUrl5 - Error: ", str(e))
+        print('ReadUrl5 - Error: ', str(e))
         link = None
     return link
 
@@ -940,32 +940,25 @@ def decodeHtml(text):
     text = text.replace('&auml;', 'ä')
     text = text.replace('\u00e4', 'ä')
     text = text.replace('&#228;', 'ä')
-
     text = text.replace('&Auml;', 'Ä')
     text = text.replace('\u00c4', 'Ä')
     text = text.replace('&#196;', 'Ä')
-
     text = text.replace('&ouml;', 'ö')
     text = text.replace('\u00f6', 'ö')
     text = text.replace('&#246;', 'ö')
-
     text = text.replace('&ouml;', 'Ö')
     text = text.replace('&Ouml;', 'Ö')
     text = text.replace('\u00d6', 'Ö')
     text = text.replace('&#214;', 'Ö')
-
     text = text.replace('&uuml;', 'ü')
     text = text.replace('\u00fc', 'ü')
     text = text.replace('&#252;', 'ü')
-
     text = text.replace('&Uuml;', 'Ü')
     text = text.replace('\u00dc', 'Ü')
     text = text.replace('&#220;', 'Ü')
-
     text = text.replace('&szlig;', 'ß')
     text = text.replace('\u00df', 'ß')
     text = text.replace('&#223;', 'ß')
-
     text = text.replace('&amp;', '&')
     text = text.replace('&quot;', '\"')
     text = text.replace('&gt;', '>')
@@ -991,16 +984,16 @@ def decodeHtml(text):
     text = text.replace('&#225;', 'a')
     text = text.replace('&#233;', 'e')
     text = text.replace('&#243;', 'o')
-    text = text.replace('&#8211;', "-")
-    text = text.replace('&#8212;', "—")
+    text = text.replace('&#8211;', '-')
+    text = text.replace('&#8212;', '—')
     text = text.replace('&mdash;', '—')
-    text = text.replace('\u2013', "–")
+    text = text.replace('\u2013', '–')
     text = text.replace('&#8216;', "'")
     text = text.replace('&#8217;', "'")
     text = text.replace('&#8220;', "'")
     text = text.replace('&#8221;', '"')
-    text = text.replace('&#8222;', ',')
-    text = text.replace('\u014d',  'ō')
+    text = text.replace('&#8222;', ', ')
+    text = text.replace('\u014d', 'ō')
     text = text.replace('\u016b', 'ū')
     text = text.replace('\u201a', '\"')
     text = text.replace('\u2018', '\"')
@@ -1025,12 +1018,12 @@ def decodeHtml(text):
     text = text.replace('&#xDF;', 'ß')
     text = text.replace('&#xE9;', 'é')
     text = text.replace('&#xB7;', '·')
-    text = text.replace("&#x27;", "'")
-    text = text.replace("&#x26;", "&")
-    text = text.replace("&#xFB;", "û")
-    text = text.replace("&#xF8;", "ø")
-    text = text.replace("&#x21;", "!")
-    text = text.replace("&#x3f;", "?")
+    text = text.replace('&#x27;', "'")
+    text = text.replace('&#x26;', '&')
+    text = text.replace('&#xFB;', 'û')
+    text = text.replace('&#xF8;', 'ø')
+    text = text.replace('&#x21;', '!')
+    text = text.replace('&#x3f;', '?')
 
     text = text.replace('&#8230;', '...')
     text = text.replace('\u2026', '...')
@@ -1041,81 +1034,81 @@ def decodeHtml(text):
 
 
 conversion = {
-    str("\xd0\xb0"): "a",
-    str("\xd0\x90"): "A",
-    str("\xd0\xb1"): "b",
-    str("\xd0\x91"): "B",
-    str("\xd0\xb2"): "v",
-    str("\xd0\x92"): "V",
-    str("\xd0\xb3"): "g",
-    str("\xd0\x93"): "G",
-    str("\xd0\xb4"): "d",
-    str("\xd0\x94"): "D",
-    str("\xd0\xb5"): "e",
-    str("\xd0\x95"): "E",
-    str("\xd1\x91"): "jo",
-    str("\xd0\x81"): "jo",
-    str("\xd0\xb6"): "zh",
-    str("\xd0\x96"): "ZH",
-    str("\xd0\xb7"): "z",
-    str("\xd0\x97"): "Z",
-    str("\xd0\xb8"): "i",
-    str("\xd0\x98"): "I",
-    str("\xd0\xb9"): "j",
-    str("\xd0\x99"): "J",
-    str("\xd0\xba"): "k",
-    str("\xd0\x9a"): "K",
-    str("\xd0\xbb"): "l",
-    str("\xd0\x9b"): "L",
-    str("\xd0\xbc"): "m",
-    str("\xd0\x9c"): "M",
-    str("\xd0\xbd"): "n",
-    str("\xd0\x9d"): "N",
-    str("\xd0\xbe"): "o",
-    str("\xd0\x9e"): "O",
-    str("\xd0\xbf"): "p",
-    str("\xd0\x9f"): "P",
-    str("\xd1\x80"): "r",
-    str("\xd0\xa0"): "R",
-    str("\xd1\x81"): "s",
-    str("\xd0\xa1"): "S",
-    str("\xd1\x82"): "t",
-    str("\xd0\xa2"): "T",
-    str("\xd1\x83"): "u",
-    str("\xd0\xa3"): "U",
-    str("\xd1\x84"): "f",
-    str("\xd0\xa4"): "F",
-    str("\xd1\x85"): "h",
-    str("\xd0\xa5"): "H",
-    str("\xd1\x86"): "c",
-    str("\xd0\xa6"): "C",
-    str("\xd1\x87"): "ch",
-    str("\xd0\xa7"): "CH",
-    str("\xd1\x88"): "sh",
-    str("\xd0\xa8"): "SH",
-    str("\xd1\x89"): "sh",
-    str("\xd0\xa9"): "SH",
-    str("\xd1\x8a"): "",
-    str("\xd0\xaa"): "",
-    str("\xd1\x8b"): "y",
-    str("\xd0\xab"): "Y",
-    str("\xd1\x8c"): "j",
-    str("\xd0\xac"): "J",
-    str("\xd1\x8d"): "je",
-    str("\xd0\xad"): "JE",
-    str("\xd1\x8e"): "ju",
-    str("\xd0\xae"): "JU",
-    str("\xd1\x8f"): "ja",
-    str("\xd0\xaf"): "JA"}
+    str('\xd0\xb0'): 'a',
+    str('\xd0\x90'): 'A',
+    str('\xd0\xb1'): 'b',
+    str('\xd0\x91'): 'B',
+    str('\xd0\xb2'): 'v',
+    str('\xd0\x92'): 'V',
+    str('\xd0\xb3'): 'g',
+    str('\xd0\x93'): 'G',
+    str('\xd0\xb4'): 'd',
+    str('\xd0\x94'): 'D',
+    str('\xd0\xb5'): 'e',
+    str('\xd0\x95'): 'E',
+    str('\xd1\x91'): 'jo',
+    str('\xd0\x81'): 'jo',
+    str('\xd0\xb6'): 'zh',
+    str('\xd0\x96'): 'ZH',
+    str('\xd0\xb7'): 'z',
+    str('\xd0\x97'): 'Z',
+    str('\xd0\xb8'): 'i',
+    str('\xd0\x98'): 'I',
+    str('\xd0\xb9'): 'j',
+    str('\xd0\x99'): 'J',
+    str('\xd0\xba'): 'k',
+    str('\xd0\x9a'): 'K',
+    str('\xd0\xbb'): 'l',
+    str('\xd0\x9b'): 'L',
+    str('\xd0\xbc'): 'm',
+    str('\xd0\x9c'): 'M',
+    str('\xd0\xbd'): 'n',
+    str('\xd0\x9d'): 'N',
+    str('\xd0\xbe'): 'o',
+    str('\xd0\x9e'): 'O',
+    str('\xd0\xbf'): 'p',
+    str('\xd0\x9f'): 'P',
+    str('\xd1\x80'): 'r',
+    str('\xd0\xa0'): 'R',
+    str('\xd1\x81'): 's',
+    str('\xd0\xa1'): 'S',
+    str('\xd1\x82'): 't',
+    str('\xd0\xa2'): 'T',
+    str('\xd1\x83'): 'u',
+    str('\xd0\xa3'): 'U',
+    str('\xd1\x84'): 'f',
+    str('\xd0\xa4'): 'F',
+    str('\xd1\x85'): 'h',
+    str('\xd0\xa5'): 'H',
+    str('\xd1\x86'): 'c',
+    str('\xd0\xa6'): 'C',
+    str('\xd1\x87'): 'ch',
+    str('\xd0\xa7'): 'CH',
+    str('\xd1\x88'): 'sh',
+    str('\xd0\xa8'): 'SH',
+    str('\xd1\x89'): 'sh',
+    str('\xd0\xa9'): 'SH',
+    str('\xd1\x8a'): '',
+    str('\xd0\xaa'): '',
+    str('\xd1\x8b'): 'y',
+    str('\xd0\xab'): 'Y',
+    str('\xd1\x8c'): 'j',
+    str('\xd0\xac'): 'J',
+    str('\xd1\x8d'): 'je',
+    str('\xd0\xad'): 'JE',
+    str('\xd1\x8e'): 'ju',
+    str('\xd0\xae'): 'JU',
+    str('\xd1\x8f'): 'ja',
+    str('\xd0\xaf'): 'JA'}
 
 
 def cyr2lat(text):
     i = 0
-    text = text.strip(" \t\n\r")
+    text = text.strip(' \t\n\r')
     text = str(text)
-    retval = ""
-    bukva_translit = ""
-    bukva_original = ""
+    retval = ''
+    bukva_translit = ''
+    bukva_original = ''
     while i < len(text):
         bukva_original = text[i]
         try:
@@ -1128,106 +1121,112 @@ def cyr2lat(text):
 
 
 def charRemove(text):
-    char = ["1080p",
-            "PF1",
-            "PF2",
-            "PF3",
-            "PF4",
-            "PF5",
-            "PF6",
-            "PF7",
-            "PF8",
-            "PF9",
-            "PF10",
-            "PF11",
-            "PF12",
-            "PF13",
-            "PF14",
-            "PF15",
-            "PF16",
-            "PF17",
-            "PF18",
-            "PF19",
-            "PF20",
-            "PF21",
-            "PF22",
-            "PF23",
-            "PF24",
-            "PF25",
-            "PF26",
-            "PF27",
-            "PF28",
-            "PF29",
-            "PF30"
-            "480p",
-            "4K",
-            "720p",
-            "ANIMAZIONE",
-            # "APR",
-            # "AVVENTURA",
-            "BIOGRAFICO",
-            "BDRip",
-            "BluRay",
-            "CINEMA",
-            # "COMMEDIA",
-            "DOCUMENTARIO",
-            "DRAMMATICO",
-            "FANTASCIENZA",
-            "FANTASY",
-            # "FEB",
-            # "GEN",
-            # "GIU",
-            "HDCAM",
-            "HDTC",
-            "HDTS",
-            "LD",
-            "MAFIA",
-            # "MAG",
-            "MARVEL",
-            "MD",
-            # "ORROR",
-            "NEW_AUDIO",
-            "POLIZ",
-            "R3",
-            "R6",
-            "SD",
-            "SENTIMENTALE",
-            "TC",
-            "TEEN",
-            "TELECINE",
-            "TELESYNC",
-            "THRILLER",
-            "Uncensored",
-            "V2",
-            "WEBDL",
-            "WEBRip",
-            "WEB",
-            "WESTERN",
-            "-",
-            "_",
-            ".",
-            "+",
-            "[",
-            "]", ]
+    char = ['1080p',
+             # '2018',
+             # '2019',
+             # '2020',
+             # '2021',
+             # '2022'
+             'PF1',
+             'PF2',
+             'PF3',
+             'PF4',
+             'PF5',
+             'PF6',
+             'PF7',
+             'PF8',
+             'PF9',
+             'PF10',
+             'PF11',
+             'PF12',
+             'PF13',
+             'PF14',
+             'PF15',
+             'PF16',
+             'PF17',
+             'PF18',
+             'PF19',
+             'PF20',
+             'PF21',
+             'PF22',
+             'PF23',
+             'PF24',
+             'PF25',
+             'PF26',
+             'PF27',
+             'PF28',
+             'PF29',
+             'PF30'
+             '480p',
+             '4K',
+             '720p',
+             'ANIMAZIONE',
+             # 'APR',
+             # 'AVVENTURA',
+             'BIOGRAFICO',
+             'BDRip',
+             'BluRay',
+             'CINEMA',
+             # 'COMMEDIA',
+             'DOCUMENTARIO',
+             'DRAMMATICO',
+             'FANTASCIENZA',
+             'FANTASY',
+             # 'FEB',
+             # 'GEN',
+             # 'GIU',
+             'HDCAM',
+             'HDTC',
+             'HDTS',
+             'LD',
+             'MAFIA',
+             # 'MAG',
+             'MARVEL',
+             'MD',
+             # 'ORROR',
+             'NEW_AUDIO',
+             'POLIZ',
+             'R3',
+             'R6',
+             'SD',
+             'SENTIMENTALE',
+             'TC',
+             'TEEN',
+             'TELECINE',
+             'TELESYNC',
+             'THRILLER',
+             'Uncensored',
+             'V2',
+             'WEBDL',
+             'WEBRip',
+             'WEB',
+             'WESTERN',
+             '-',
+             '_',
+             '.',
+             '+',
+             '[',
+             ']'
+             ]              
 
-    myreplace = text  #.lower()
-    for ch in char:  #.lower():
-        # ch = ch  #.lower()
+    myreplace = text  # .lower()
+    for ch in char:  # .lower():
+        # ch= ch #.lower()
         if text == ch:
-            myreplace = text.replace(ch, "").replace("  ", " ").replace("   ", " ").strip()
+            myreplace = text.replace(ch, '').replace('  ', ' ').replace('   ', ' ').strip()
     print('myreplace: ', myreplace)
     return myreplace
 
 
 def clean_html(html):
-    """Clean an HTML snippet into a readable string"""
+    '''Clean an HTML snippet into a readable string'''
     import xml.sax.saxutils as saxutils
-    # saxutils.unescape("Suzy &amp; John")
+    # saxutils.unescape('Suzy &amp; John')
     if type(html) == type(u''):
         strType = 'unicode'
     elif type(html) == type(''):
         strType = 'utf-8'
-        html = html.decode("utf-8", 'ignore')
+        html = html.decode('utf-8', 'ignore')
     # Newline vs <br />
     html = html.replace('\n', ' ')
     html = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', html)
@@ -1237,41 +1236,42 @@ def clean_html(html):
     # Replace html entities
     html = saxutils.unescape(html)  # and for py3 ?
     if strType == 'utf-8':
-        html = html.encode("utf-8")
+        html = html.encode('utf-8')
     return html.strip()
+#######################################
 
 
 def addstreamboq(bouquetname=None):
-    boqfile = "/etc/enigma2/bouquets.tv"
+    boqfile = '/etc/enigma2/bouquets.tv'
     if not os.path.exists(boqfile):
         pass
     else:
-        fp = open(boqfile, "r")
+        fp = open(boqfile, 'r')
         lines = fp.readlines()
         fp.close()
         add = True
         for line in lines:
-            if "userbouquet." + bouquetname+".tv" in line:
+            if 'userbouquet.' + bouquetname + '.tv' in line:
                 add = False
                 break
-            if add is True:
-                fp = open(boqfile, "a")
-                fp.write('#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.%s.tv" ORDER BY bouquet\n' % bouquetname)
-                fp.close()
-                add = True
+    if add is True:
+        fp = open(boqfile, 'a')
+        fp.write('#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.%s.tv" ORDER BY bouquet\n' % bouquetname)
+        fp.close()
+        add = True
 
 
 def stream2bouquet(url=None, name=None, bouquetname=None):
     error = 'none'
     bouquetname = 'XBMCAddons'
-    fileName = "/etc/enigma2/userbouquet.%s.tv" % bouquetname
+    fileName = '/etc/enigma2/userbouquet.%s.tv' % bouquetname
     out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (quote(url), quote(name))
 
     try:
         addstreamboq(bouquetname)
         if not os.path.exists(fileName):
             fp = open(fileName, 'w')
-            fp.write("#NAME %s\n" % bouquetname)
+            fp.write('#NAME %s\n' % bouquetname)
             fp.close()
             fp = open(fileName, 'a')
             fp.write(out)
@@ -1283,10 +1283,10 @@ def stream2bouquet(url=None, name=None, bouquetname=None):
                 if out in line:
                     error = (_('Stream already added to bouquet'))
                     return error
-                fp = open(fileName, 'a')
-                fp.write(out)
-            fp.write("")
-            fp.close()
+            fp = open(fileName, 'a')
+            fp.write(out)
+        fp.write('')
+        fp.close()
     except:
-        error = (_('Adding to bouquet failed'))
+        error = ('Adding to bouquet failed')
     return error

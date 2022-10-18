@@ -12,20 +12,21 @@ from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
 from Components.MenuList import MenuList
-from Components.MultiContent import MultiContentEntryText, MultiContentEntryPixmapAlphaTest
+from Components.MultiContent import MultiContentEntryText
+from Components.MultiContent import MultiContentEntryPixmapAlphaTest
 from Components.Pixmap import Pixmap
-from Components.ScrollLabel import ScrollLabel
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBar import MoviePlayer
-from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarNotifications
+from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek
+from Screens.InfoBarGenerics import InfoBarAudioSelection
+from Screens.InfoBarGenerics import InfoBarSubtitleSupport, InfoBarNotifications
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.VirtualKeyBoard import VirtualKeyBoard
 from ServiceReference import ServiceReference
 from Tools.Directories import SCOPE_PLUGINS, resolveFilename
-from Tools.LoadPixmap import LoadPixmap
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
 from enigma import eTimer
@@ -102,11 +103,11 @@ def wcListEntry(name):
     pngx = ico_path1
     res = [name]
     if Utils.isFHD:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(80, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(80, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 
@@ -324,7 +325,6 @@ class Webcam4(Screen):
         from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
-
         regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         print('Webcam4 match = ', match)
