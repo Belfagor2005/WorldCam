@@ -128,6 +128,32 @@ def paypal():
     return conthelp
 
 
+def returnIMDB(text_clear):
+    TMDB = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('TMDB'))
+    IMDb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('IMDb'))
+    if TMDB:
+        try:
+            from Plugins.Extensions.TMBD.plugin import TMBD
+            text = decodeHtml(text_clear)
+            _session.open(TMBD.tmdbScreen, text, 0)
+        except Exception as ex:
+            print("[XCF] Tmdb: ", str(ex))
+        return True
+    elif IMDb:
+        try:
+            from Plugins.Extensions.IMDb.plugin import main as imdb
+            text = decodeHtml(text_clear)
+            imdb(_session, text)
+        except Exception as ex:
+            print("[XCF] imdb: ", str(ex))
+        return True
+    else:
+        text_clear = decodeHtml(text_clear)
+        _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        return True
+    return
+
+
 class Webcam1(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -1054,7 +1080,8 @@ class Playstream2(
     def __init__(self, session, name, url, desc):
         global streaml
         Screen.__init__(self, session)
-        self.session = session
+        global _session
+        _session = session
         self.skinName = 'MoviePlayer'
         streaml = False
         for x in InfoBarBase, \
@@ -1163,21 +1190,9 @@ class Playstream2(
         return
 
     def showIMDB(self):
-        TMDB = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('TMDB'))
-        IMDb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('IMDb'))
-        if os.path.exists(TMDB):
-            from Plugins.Extensions.TMBD.plugin import TMBD
-            text_clear = self.name
-            text = Utils.charRemove(text_clear)
-            self.session.open(TMBD, text, False)
-        elif os.path.exists(IMDb):
-            from Plugins.Extensions.IMDb.plugin import IMDB
-            text_clear = self.name
-            text = Utils.charRemove(text_clear)
-            self.session.open(IMDB, text)
-        else:
-            text_clear = self.name
-            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        text_clear = self.name
+        if returnIMDB(text_clear):
+            print('show imdb/tmdb')
 
     def slinkPlay(self, url):
         name = self.name
