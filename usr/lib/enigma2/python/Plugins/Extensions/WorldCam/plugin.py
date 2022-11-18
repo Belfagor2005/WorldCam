@@ -171,12 +171,11 @@ class Webcam1(Screen):
         self['key_green'] = Button(_('Select'))
         self['info'] = Label('HOME VIEW')
         self["paypal"] = Label()
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -195,10 +194,10 @@ class Webcam1(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        i = len(self.names)
-        print('iiiiii= ', i)
-        if i < 1:
-            return
+        # i = len(self.names)
+        # print('iiiiii= ', i)
+        # if i < 1:
+            # return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
         if 'User' in name:
@@ -227,12 +226,11 @@ class Webcam2(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -275,12 +273,11 @@ class Webcam3(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -335,12 +332,11 @@ class Webcam4(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -401,12 +397,11 @@ class Webcam5(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -474,12 +469,11 @@ class Webcam5a(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -557,12 +551,11 @@ class Webcam6(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -690,12 +683,11 @@ class Webcam7(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -751,12 +743,11 @@ class Webcam8(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.name = name
         self.url = url
         self.onLayoutFinish.append(self.openTest)
@@ -857,12 +848,11 @@ class Webcam9(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.close,
-                                                                'green': self.okClicked,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.close,
+                                                       'green': self.okClicked,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -918,13 +908,12 @@ class Playstream1(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions'], {'red': self.cancel,
-                                                                'green': self.okClicked,
-                                                                'back': self.cancel,
-                                                                'cancel': self.cancel,
-                                                                'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['SetupActions',
+                                     'ColorActions'], {'red': self.cancel,
+                                                       'green': self.okClicked,
+                                                       'back': self.cancel,
+                                                       'cancel': self.cancel,
+                                                       'ok': self.okClicked}, -2)
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -1485,6 +1474,6 @@ def main(session, **kwargs):
 
 
 def Plugins(**kwargs):
-    result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
-              PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
+    result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + str(version), where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
+              PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + str(version), where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
     return result
