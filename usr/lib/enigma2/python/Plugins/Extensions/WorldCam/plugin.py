@@ -50,7 +50,7 @@ ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png
 ico_path2 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugins.png'
 iconpic = 'plugin.png'
 refer = 'https://www.skylinewebcams.com/'
-_firstStartstcl = True
+_firstStartwrd = True
 SKIN_PATH = THISPLUG + '/skin/hd'
 if Utils.isFHD():
     SKIN_PATH = THISPLUG + '/skin/fhd'
