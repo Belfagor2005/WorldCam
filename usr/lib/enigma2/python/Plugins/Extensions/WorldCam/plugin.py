@@ -6,6 +6,7 @@ Plugin Worldcam is developed by Linuxsat-Support Team
 last update 13 08 2022
 edited from Lululla: updated to 20220113
 """
+from __future__ import unicode_literals
 from __future__ import print_function
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
@@ -43,11 +44,13 @@ import ssl
 from . import Utils
 
 
-version = '4.2_r5'  # edit lululla 07/02/2022
+version = '4.3'  # edit lululla 07/11/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
 ico_path2 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugins.png'
 iconpic = 'plugin.png'
+refer = 'https://www.skylinewebcams.com/'
+_firstStartstcl = True
 SKIN_PATH = THISPLUG + '/skin/hd'
 if Utils.isFHD():
     SKIN_PATH = THISPLUG + '/skin/fhd'
@@ -134,7 +137,7 @@ def returnIMDB(text_clear):
     if TMDB:
         try:
             from Plugins.Extensions.TMBD.plugin import TMBD
-            text = decodeHtml(text_clear)
+            text = Utils.decodeHtml(text_clear)
             _session.open(TMBD.tmdbScreen, text, 0)
         except Exception as ex:
             print("[XCF] Tmdb: ", str(ex))
@@ -142,13 +145,13 @@ def returnIMDB(text_clear):
     elif IMDb:
         try:
             from Plugins.Extensions.IMDb.plugin import main as imdb
-            text = decodeHtml(text_clear)
+            text = Utils.decodeHtml(text_clear)
             imdb(_session, text)
         except Exception as ex:
             print("[XCF] imdb: ", str(ex))
         return True
     else:
-        text_clear = decodeHtml(text_clear)
+        text_clear = Utils.decodeHtml(text_clear)
         _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
         return True
     return
@@ -299,7 +302,6 @@ class Webcam3(Screen):
             name = items[0]
             url = items[1]
             name = Utils.checkStr(name)
-            url = Utils.checkStr(url)
             self.names.append(name)
             self.urls.append(url)
         showlist(self.names, self['list'])
@@ -311,8 +313,9 @@ class Webcam3(Screen):
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
+        desc = self.names[idx]
         url = self.urls[idx]
-        self.session.open(Playstream1, name, url)
+        self.session.open(Playstream1, name, url, desc)
 
     def cancel(self):
         self.close()
@@ -357,7 +360,7 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
-            url1 = Utils.checkStr(url1)
+            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             item = name + "###" + url1
             print('Webcam4 Items sort: ', item)
@@ -509,7 +512,7 @@ class Webcam5a(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            url1 = Utils.checkStr(url1)
+            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             item = name + "###" + url1
             print('Items sort 2: ', item)
@@ -581,7 +584,7 @@ class Webcam6(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            url1 = Utils.checkStr(url1)
+            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             item = name + "###" + url1
             items.append(item)
@@ -605,25 +608,66 @@ class Webcam6(Screen):
 
     def getVid(self, name, url):
         try:
-            content = Utils.ReadUrl2(url)
-            if PY3:
-                content = six.ensure_str(content)
-            print('content ============================ ', content)
-            regexvideo = "source:'livee.m3u8(.+?)'"
-            match = re.compile(regexvideo, re.DOTALL).findall(content)
-            print('id: ', match)
-            id = match[0]
-            id = id.replace('?a=', '')
-            if id or id != '':
-                url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                print("Here in plugin.py getVid play with streamlink url =", url)
-                url = url.replace(":", "%3a")
-                url = url.replace("\\", "/")
-                ref = url
-                desc = ' '
-                self.session.open(Playstream2, name, ref, desc)
+            content = Utils.ReadUrl2(url, refer)
+            # if PY3:
+                # content = six.ensure_str(content)
+            print('content =====test======== ', content)
+
+            if "source:'livee.m3u8" in content:
+                regexvideo = "source:'livee.m3u8(.+?)'"
+                match = re.compile(regexvideo, re.DOTALL).findall(content)
+                print('id: ', match)
+                id = match[0]
+                id = id.replace('?a=', '')
+                if id or id != '':
+                    url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                    print("Here in plugin.py getVid play with streamlink url =", url)
+                    url = url.replace(":", "%3a")
+                    url = url.replace("\\", "/")
+                    ref = url
+                    desc = name
+                    self.session.open(Playstream2, name, ref, desc)
+
             else:
-                return
+                if "videoId:" in content:
+                    # videoId:'hT7fwPNLRFo',
+                    regexvideo = "videoId.*?'(.*?)'"
+                    match = re.compile(regexvideo, re.DOTALL).findall(content)
+                    id = match[0]
+                    # self.url = 'https://www.youtube.com/embed/' + str(id)
+                    self.url = 'https://www.youtube.com/watch?v=' + id
+                    print('ytdl url is ', self.url)
+                    desc = name
+                    try:
+                        # from Plugins.Extensions.WorldCam.scripts.script.youtube_dl import YoutubeDL
+                        # '''
+                        # ydl_opts = {'format': 'best'}
+                        # ydl_opts = {'format': 'bestaudio/best'}
+                        # '''
+                        # ydl_opts = {'format': 'best'}
+                        # ydl = YoutubeDL(ydl_opts)
+                        # ydl.add_default_info_extractors()
+                        # result = ydl.extract_info(content, download=False)
+                        # self.url = result["url"]
+                        self.session.open(Playstream1, name, self.url, desc)
+                    except:
+                        pass
+
+                # regexvideo = "source:'livee.m3u8(.+?)'"
+                # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                # print('id: ', match)
+                # id = match[0]
+                # id = id.replace('?a=', '')
+                # if id or id != '':
+                    # url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                    # print("Here in plugin.py getVid play with streamlink url =", url)
+                    # url = url.replace(":", "%3a")
+                    # url = url.replace("\\", "/")
+                    # ref = url
+                    # desc = ' '
+                    # self.session.open(Playstream2, name, ref, desc)
+                # else:
+                    # return
         except Exception as e:
             print(str(e))
 
@@ -673,7 +717,7 @@ class Webcam7(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
-            url1 = Utils.checkStr(url1)
+            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             self.names.append(name)
             self.urls.append(url1)
@@ -744,7 +788,6 @@ class Webcam8(Screen):
                 name = name.encode('utf-8')
             base_url = 'https://www.skylinewebcams.com'
             url = '{}/{}'.format(base_url, link)
-            url = Utils.checkStr(url)
             name = Utils.checkStr(name)
             item = name + "###" + url
             print('Items sort 2: ', item)
@@ -772,7 +815,7 @@ class Webcam8(Screen):
 
     def getVid(self, name, url):
         try:
-            content = Utils.ReadUrl2(url)
+            content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -828,7 +871,7 @@ class Webcam9(Screen):
 
     def openTest(self, name, url):
         try:
-            content = Utils.ReadUrl2(url)
+            content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
             print('content ============================ ', content)
@@ -855,7 +898,7 @@ class Webcam9(Screen):
 
 
 class Playstream1(Screen):
-    def __init__(self, session, name, url):
+    def __init__(self, session, name, url, desc):
         Screen.__init__(self, session)
         self.session = session
         skin = SKIN_PATH + '/Webcam1.xml'
@@ -865,6 +908,7 @@ class Playstream1(Screen):
         self.list = []
         self.name1 = name
         self.url = url
+        self.desc = desc
         print('In Playstream1 self.url =', url)
         global srefInit
         self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
@@ -881,8 +925,8 @@ class Playstream1(Screen):
                                                                 'back': self.cancel,
                                                                 'cancel': self.cancel,
                                                                 'ok': self.okClicked}, -2)
-        self.onLayoutFinish.append(self.layoutFinished)
         self.onLayoutFinish.append(self.openTest)
+        self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
         self["paypal"].setText(paypal)
@@ -897,6 +941,10 @@ class Playstream1(Screen):
         self.urls.append(url)
         self.names.append('Play Ts')
         self.urls.append(url)
+        self.names.append('Streamlink')
+        self.urls.append(url)
+        # self.names.append('Test Youtube')
+        # self.urls.append(url)
         showlist(self.names, self['list'])
 
     def okClicked(self):
@@ -942,7 +990,20 @@ class Playstream1(Screen):
             print('In playVideo url D=', self.url)
             self.play2()
         else:
-            print('In playVideo url D=', self.url)
+            print('In playVideo url Y=', self.url)
+            url = self.url
+            try:
+                os.remove('/tmp/vid.txt')
+            except:
+                pass
+            cmd = "python '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/scripts/script.module.ytdl/lib/__main__.py' -f mp4/bestvideo+bestaudio --no-check-certificate --skip-download --get-url " + url + " > /tmp/vid.txt"
+            print('ytl cmd = ', cmd)
+            os.system(cmd)
+            os.system('sleep 3')
+            currenturl = open('/tmp/vid.txt', 'r')
+            currenturl = currenturl.read()
+            self.url = currenturl.strip()  # '/tmp/vid.txt'
+            self.name = self.names[idx]
             self.play()
         return
 
@@ -950,20 +1011,28 @@ class Playstream1(Screen):
         self.serverList[serverint].play(self.session, self.url, self.name)
 
     def play(self):
-        desc = ' '
+        desc = self.desc
         url = self.url
         name = self.name
         self.session.open(Playstream2, name, url, desc)
 
     def play2(self):
-        self['info'].setText(self.name)
-        url = self.url
-        url = url.replace(':', '%3a')
-        print('In WorldCam url =', url)
-        ref = '4097:0:1:0:0:0:0:0:0:0:' + url
-        sref = eServiceReference(ref)
-        sref.setName(self.name)
-        self.session.nav.playService(sref)
+        if Utils.isStreamlinkAvailable():
+            desc = self.desc
+            name = self.name1
+            url = self.url
+            url = url.replace(':', '%3a')
+            print('In url =', url)
+            print(type(url))
+            sref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + url
+            print(type(sref))
+            # sref = eServiceReference(ref)
+            print('SREF: ', sref)
+            # sref.setName(self.name1)
+            self.session.open(Playstream2, name, sref, desc)
+            self.close()
+        else:
+            self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
 
     def cancel(self):
         self.session.nav.stopService()
@@ -1114,7 +1183,8 @@ class Playstream2(
                                      'InfobarShowHideActions',
                                      'InfobarActions',
                                      'InfobarSeekActions'], {'stop': self.cancel,
-                                                             'epg': self.showIMDB,
+                                                             # 'epg': self.showIMDB,
+                                                             'epg': self.cicleStreamType,
                                                              'info': self.showIMDB,
                                                              'playpauseService': self.playpauseService,
                                                              'yellow': self.subtitles,
@@ -1122,10 +1192,16 @@ class Playstream2(
                                                              'cancel': self.cancel,
                                                              'back': self.cancel,
                                                              'down': self.av}, -1)
-        if '8088' in str(self.url):
+
+        # if "youtube" in self.url.lower():
+            # print('youtube in url')
+            # self.onFirstExecBegin.append(self.openYtdl)
+        if '8088' in self.url:
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
             self.onFirstExecBegin.append(self.cicleStreamType)
+            # self.onFirstExecBegin.append(self.openPlay)
+
         self.onClose.append(self.cancel)
 
     def getAspect(self):
@@ -1194,24 +1270,69 @@ class Playstream2(
         if returnIMDB(text_clear):
             print('show imdb/tmdb')
 
-    def slinkPlay(self, url):
+    def to_bytes(value, encoding='utf-8'):
+        """
+        Makes sure the value is encoded as a byte string.
+
+        :param value: The Python string value to encode.
+        :param encoding: The encoding to use.
+        :return: The byte string that was encoded.
+        """
+        if isinstance(value, six.binary_type):
+            return value
+        return value.encode(encoding)
+
+
+    def slinkPlay(self):
         name = self.name
-        ref = "{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
-        print('final reference:   ', ref)
-        sref = eServiceReference(ref)
-        sref.setName(name)
+        url = self.url
+        # sref = "{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
+        print('final reference:   ', url)
+        print('type url ', type(url))
+        # url = self.to_bytes(url)
+        # if PY3:
+            # url = url.encode()
+        # print('type url value ', type(url))
+        # sref = eServiceReference(ref)
+        # sref.setName(name)
         self.session.nav.stopService()
-        self.session.nav.playService(sref)
+        self.session.nav.playService(url)
 
     def openPlay(self, servicetype, url):
         name = self.name
         ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
         if streaml is True:
-            url = 'http://127.0.0.1:8088/' + str(url)
+            url = 'http://127.0.0.1:8088/' + url
             ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
             print('streaml reference:   ', ref)
         print('final reference:   ', ref)
+        sref = eServiceReference(ref)
+        sref.setName(name)
+        self.session.nav.stopService()
+        self.session.nav.playService(sref)
+
+    def openYtdl(self):
+        name = self.name
+        url = self.url
+        servicetype = '4097'
+        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
+        print('reference youtube:   ', ref)
+        # if "youtube" in str(self.url):
+            # desc = self.desc
+            # try:
+                # from Plugins.Extensions.Worldcam.script.module.ytdl.lib.youtube_dl import YoutubeDL
+                # '''
+                # ydl_opts = {'format': 'best'}
+                # ydl_opts = {'format': 'bestaudio/best'}
+                # '''
+                # ydl_opts = {'format': 'best'}
+                # ydl = YoutubeDL(ydl_opts)
+                # ydl.add_default_info_extractors()
+                # result = ydl.extract_info(self.url, download=False)
+                # self.url = result["url"]
+            # except:
+                # pass
         sref = eServiceReference(ref)
         sref.setName(name)
         self.session.nav.stopService()
@@ -1229,18 +1350,18 @@ class Playstream2(
             self.servicetype = "4097"
         currentindex = 0
         streamtypelist = ["4097"]
-        # if "youtube" in str(self.url):
-            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            # return
+        # # if "youtube" in str(self.url):
+            # # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
+            # # return
+        # if os.path.exists("/usr/bin/gstplayer"):
+            # streamtypelist.append("5001")
+        # if os.path.exists("/usr/bin/exteplayer3"):
+            # streamtypelist.append("5002")
+        # if os.path.exists("/usr/bin/apt-get"):
+            # streamtypelist.append("8193")
         if Utils.isStreamlinkAvailable():
-            streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streamtypelist.append("4097")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             streaml = True
-        if os.path.exists("/usr/bin/gstplayer"):
-            streamtypelist.append("5001")
-        if os.path.exists("/usr/bin/exteplayer3"):
-            streamtypelist.append("5002")
-        if os.path.exists("/usr/bin/apt-get"):
-            streamtypelist.append("8193")
         for index, item in enumerate(streamtypelist, start=0):
             if str(item) == str(self.servicetype):
                 currentindex = index
@@ -1322,24 +1443,48 @@ class Playstream2(
         self.close()
 
 
-def main(session, **kwargs):
-    global _session
-    _session = session
-    if Utils.zCheckInternet(1):
+class AutoStartTimerwrd:
+
+    def __init__(self, session):
+        self.session = session
+        global _firstStartwrd
+        print("*** running AutoStartTimerwrd ***")
+        if _firstStartwrd:
+            self.runUpdate()
+
+    def runUpdate(self):
+        print("*** running update ***")
         try:
             from . import Update
             Update.upd_done()
-            # session.open(Webcam1)
-        except:
-            import traceback
-            traceback.print_exc()
-            pass
+            _firstStartwrd = False
+        except Exception as e:
+            print('error Fxy', str(e))
+
+
+def autostart(reason, session=None, **kwargs):
+    print("*** running autostart ***")
+    global autoStartTimerwrd
+    global _firstStartwrd
+    if reason == 0:
+        if session is not None:
+            _firstStartwrd = True
+            autoStartTimerwrd = AutoStartTimerwrd(session)
+    return
+
+
+def main(session, **kwargs):
+    global _session
+    _session = session
+    try:
         session.open(Webcam1)
-    else:
-        from Screens.MessageBox import MessageBox
-        from Tools.Notifications import AddPopup
-        AddPopup(_("Sorry but No Internet :("), MessageBox.TYPE_INFO, 10, 'Sorry')
+    except:
+        import traceback
+        traceback.print_exc()
+        pass
 
 
 def Plugins(**kwargs):
-    return PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)
+    result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
+              PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
+    return result

@@ -509,7 +509,7 @@ class hlsclient(threading.Thread):
 #        try:
         while self.thread.isAlive():
             if self._stop:
-                self.hread._Thread__stop()
+                self.thread._Thread__stop()
             medialist = list(self.handle_basic_m3u(self.url))
             if None in medialist:
                 # choose to start playback at the start, since this is a VOD stream
