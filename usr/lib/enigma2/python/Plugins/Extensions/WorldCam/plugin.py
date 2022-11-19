@@ -6,7 +6,7 @@ Plugin Worldcam is developed by Linuxsat-Support Team
 last update 13 08 2022
 edited from Lululla: updated to 20220113
 """
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 from __future__ import print_function
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
@@ -70,16 +70,9 @@ if sys.version_info >= (2, 7, 9):
 leng1 = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
 leng1 = leng1.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
 language = leng1[:-3]
-print('lengg: ', language)
+print('lang: ', language)
 
 try:
-    from urllib2 import Request
-    # _str = str
-    # str = unicode
-    # range = xrange
-    # unicode = unicode
-    # basestring = basestring
-except:
     from urllib.request import Request
     PY3 = True
     unicode = str
@@ -87,6 +80,13 @@ except:
     long = int
     unichr = chr
     long = int
+except:
+    from urllib2 import Request
+    # _str = str
+    # str = unicode
+    # range = xrange
+    # unicode = unicode
+    # basestring = basestring
 
 
 class webcamList(MenuList):
@@ -194,10 +194,6 @@ class Webcam1(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        # i = len(self.names)
-        # print('iiiiii= ', i)
-        # if i < 1:
-            # return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
         if 'User' in name:
@@ -356,7 +352,6 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
-            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             item = name + "###" + url1
             print('Webcam4 Items sort: ', item)
@@ -506,7 +501,6 @@ class Webcam5a(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             item = name + "###" + url1
             print('Items sort 2: ', item)
@@ -577,7 +571,6 @@ class Webcam6(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             item = name + "###" + url1
             items.append(item)
@@ -709,7 +702,6 @@ class Webcam7(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
-            # url1 = Utils.checkStr(url1)
             name = Utils.checkStr(name)
             self.names.append(name)
             self.urls.append(url1)
@@ -908,7 +900,7 @@ class Playstream1(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.cancel,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
