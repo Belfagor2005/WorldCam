@@ -171,7 +171,7 @@ class Webcam1(Screen):
         self['key_green'] = Button(_('Select'))
         self['info'] = Label('HOME VIEW')
         self["paypal"] = Label()
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -222,7 +222,7 @@ class Webcam2(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -269,7 +269,7 @@ class Webcam3(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -328,7 +328,7 @@ class Webcam4(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -392,7 +392,7 @@ class Webcam5(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -464,7 +464,7 @@ class Webcam5a(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -545,7 +545,7 @@ class Webcam6(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -676,7 +676,7 @@ class Webcam7(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -735,7 +735,7 @@ class Webcam8(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -840,7 +840,7 @@ class Webcam9(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
-        self['actions'] = ActionMap(['OkActions',
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
@@ -1160,6 +1160,7 @@ class Playstream2(
                                      'MediaPlayerSeekActions',
                                      'DirectionActions',
                                      'ColorActions',
+                                     'OkCancelActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
                                      'InfobarSeekActions'], {'stop': self.cancel,
