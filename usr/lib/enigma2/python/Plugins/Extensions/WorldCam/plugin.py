@@ -224,6 +224,7 @@ class Webcam2(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -272,6 +273,7 @@ class Webcam3(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -332,6 +334,7 @@ class Webcam4(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -397,6 +400,7 @@ class Webcam5(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -470,6 +474,7 @@ class Webcam5a(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -552,6 +557,7 @@ class Webcam6(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -684,6 +690,7 @@ class Webcam7(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -744,6 +751,7 @@ class Webcam8(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -850,6 +858,7 @@ class Webcam9(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
@@ -911,6 +920,7 @@ class Playstream1(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
