@@ -42,7 +42,7 @@ import sys
 import six
 import ssl
 from . import Utils
-
+from . import html_conv
 
 version = '4.3'  # edit lululla 07/11/2022
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
@@ -137,7 +137,7 @@ def returnIMDB(text_clear):
     if TMDB:
         try:
             from Plugins.Extensions.TMBD.plugin import TMBD
-            text = Utils.decodeHtml(text_clear)
+            text = html_conv.html_unescape(text_clear)
             _session.open(TMBD.tmdbScreen, text, 0)
         except Exception as ex:
             print("[XCF] Tmdb: ", str(ex))
@@ -145,13 +145,13 @@ def returnIMDB(text_clear):
     elif IMDb:
         try:
             from Plugins.Extensions.IMDb.plugin import main as imdb
-            text = Utils.decodeHtml(text_clear)
+            text = html_conv.html_unescape(text_clear)
             imdb(_session, text)
         except Exception as ex:
             print("[XCF] imdb: ", str(ex))
         return True
     else:
-        text_clear = Utils.decodeHtml(text_clear)
+        text_clear = html_conv.html_unescape(text_clear)
         _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
         return True
     return
@@ -781,9 +781,9 @@ class Webcam8(Screen):
             link = item.attrs['href']
             if link == '#':
                 continue
-            link = Utils.decodeHtml(link)
+            link = html_conv.html_unescape(link)
             name = client.parseDOM(item.content, 'img', ret='alt')[0]
-            name = Utils.decodeHtml(name)
+            name = html_conv.html_unescape(name)
             if six.PY2:
                 link = link.encode('utf-8')
                 name = name.encode('utf-8')
@@ -1150,10 +1150,11 @@ class Playstream2(
 
     def __init__(self, session, name, url, desc):
         global streaml
-        Screen.__init__(self, session)
         global _session
-        _session = session
+        Screen.__init__(self, session)
+        self.session = session
         self.skinName = 'MoviePlayer'
+        _session = session
         streaml = False
         for x in InfoBarBase, \
                 InfoBarMenu, \
@@ -1173,7 +1174,7 @@ class Playstream2(
         self.service = None
         self.url = url
         self.desc = desc
-        self.name = Utils.decodeHtml(name)
+        self.name = html_conv.html_unescape(name)
         self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
                                      'MovieSelectionActions',
@@ -1194,7 +1195,7 @@ class Playstream2(
                                                              'yellow': self.subtitles,
                                                              'tv': self.cicleStreamType,
                                                              'cancel': self.cancel,
-                                                             'back': self.cancel,
+                                                             'back': self.leavePlayer,
                                                              'down': self.av}, -1)
 
         # if "youtube" in self.url.lower():
@@ -1244,7 +1245,7 @@ class Playstream2(
 
     def showinfo(self):
         sref = self.srefInit
-        p = ServiceReference(sref)
+        p = Utils.ServiceReference(sref)
         servicename = str(p.getServiceName())
         serviceurl = str(p.getPath())
         sTitle = ''
@@ -1489,6 +1490,6 @@ def main(session, **kwargs):
 
 
 def Plugins(**kwargs):
-    result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + str(version), where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
-              PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + str(version), where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
+    result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
+              PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
     return result
