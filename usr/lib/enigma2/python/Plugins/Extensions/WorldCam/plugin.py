@@ -22,7 +22,8 @@ from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBar import MoviePlayer
 from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek
 from Screens.InfoBarGenerics import InfoBarAudioSelection
-from Screens.InfoBarGenerics import InfoBarSubtitleSupport, InfoBarNotifications
+from Screens.InfoBarGenerics import InfoBarSubtitleSupport
+from Screens.InfoBarGenerics import InfoBarNotifications
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.VirtualKeyBoard import VirtualKeyBoard
@@ -44,10 +45,12 @@ import ssl
 from . import Utils
 from . import html_conv
 
+# from six.moves.urllib.parse import urljoin, unquote_plus, quote_plus, quote, unquote
+
 version = '4.3'  # edit lululla 07/11/2022
+setup_title = ('WORLDCAM v.' + version)
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
-ico_path2 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugins.png'
 iconpic = 'plugin.png'
 refer = 'https://www.skylinewebcams.com/'
 _firstStartwrd = True
@@ -71,22 +74,6 @@ leng1 = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^co
 leng1 = leng1.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
 language = leng1[:-3]
 print('lang: ', language)
-
-try:
-    from urllib.request import Request
-    PY3 = True
-    unicode = str
-    unichr = chr
-    long = int
-    unichr = chr
-    long = int
-except:
-    from urllib2 import Request
-    # _str = str
-    # str = unicode
-    # range = xrange
-    # unicode = unicode
-    # basestring = basestring
 
 
 class webcamList(MenuList):
@@ -126,7 +113,7 @@ def showlist(data, list):
 
 def paypal():
     conthelp = "If you like what I do you\n"
-    conthelp += " can contribute with a coffee\n\n"
+    conthelp += " can contribute with a coffee\n"
     conthelp += "scan the qr code and donate € 1.00"
     return conthelp
 
@@ -167,6 +154,7 @@ class Webcam1(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
+        self['title'] = Label(setup_title)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['info'] = Label('HOME VIEW')
@@ -182,7 +170,8 @@ class Webcam1(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         self.names = []
@@ -218,6 +207,7 @@ class Webcam2(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
@@ -235,7 +225,8 @@ class Webcam2(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         uLists = THISPLUG + '/Playlists'
@@ -266,6 +257,7 @@ class Webcam3(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self.name = name
         self['list'] = webcamList([])
@@ -284,7 +276,8 @@ class Webcam3(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         uLists = THISPLUG + '/Playlists'
@@ -328,6 +321,7 @@ class Webcam4(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
@@ -345,7 +339,8 @@ class Webcam4(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         self.names = []
@@ -394,6 +389,7 @@ class Webcam5(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -413,7 +409,8 @@ class Webcam5(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         self.names = []
@@ -468,6 +465,7 @@ class Webcam5a(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -486,14 +484,9 @@ class Webcam5a(Screen):
         self.onLayoutFinish.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
-    def paypal2(self):
-        conthelp = "If you like what I do you\n"
-        conthelp += " can contribute with a coffee\n\n"
-        conthelp += "scan the qr code and donate € 1.00"
-        return conthelp
-
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         self.names = []
@@ -549,6 +542,7 @@ class Webcam6(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self.name = name
         self.url = url
@@ -568,7 +562,8 @@ class Webcam6(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         self.names = []
@@ -627,7 +622,6 @@ class Webcam6(Screen):
                     ref = url
                     desc = name
                     self.session.open(Playstream2, name, ref, desc)
-
             else:
                 if "videoId:" in content:
                     # videoId:'hT7fwPNLRFo',
@@ -639,35 +633,9 @@ class Webcam6(Screen):
                     print('ytdl url is ', self.url)
                     desc = name
                     try:
-                        # from Plugins.Extensions.WorldCam.scripts.script.youtube_dl import YoutubeDL
-                        # '''
-                        # ydl_opts = {'format': 'best'}
-                        # ydl_opts = {'format': 'bestaudio/best'}
-                        # '''
-                        # ydl_opts = {'format': 'best'}
-                        # ydl = YoutubeDL(ydl_opts)
-                        # ydl.add_default_info_extractors()
-                        # result = ydl.extract_info(content, download=False)
-                        # self.url = result["url"]
                         self.session.open(Playstream1, name, self.url, desc)
                     except:
                         pass
-
-                # regexvideo = "source:'livee.m3u8(.+?)'"
-                # match = re.compile(regexvideo, re.DOTALL).findall(content)
-                # print('id: ', match)
-                # id = match[0]
-                # id = id.replace('?a=', '')
-                # if id or id != '':
-                    # url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                    # print("Here in plugin.py getVid play with streamlink url =", url)
-                    # url = url.replace(":", "%3a")
-                    # url = url.replace("\\", "/")
-                    # ref = url
-                    # desc = ' '
-                    # self.session.open(Playstream2, name, ref, desc)
-                # else:
-                    # return
         except Exception as e:
             print(str(e))
 
@@ -684,6 +652,7 @@ class Webcam7(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Top')
@@ -701,7 +670,8 @@ class Webcam7(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         self.names = []
@@ -745,6 +715,7 @@ class Webcam8(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -764,7 +735,8 @@ class Webcam8(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         self.names = []
@@ -852,6 +824,7 @@ class Webcam9(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -869,7 +842,8 @@ class Webcam9(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self, name, url):
         try:
@@ -907,6 +881,7 @@ class Playstream1(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
+        self['title'] = Label(setup_title)
         self.list = []
         self.name1 = name
         self.url = url
@@ -931,7 +906,8 @@ class Playstream1(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def layoutFinished(self):
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
 
     def openTest(self):
         url = self.url
@@ -1015,7 +991,7 @@ class Playstream1(Screen):
     def play(self):
         desc = self.desc
         url = self.url
-        name = self.name
+        name = self.name1
         self.session.open(Playstream2, name, url, desc)
 
     def play2(self):
@@ -1287,7 +1263,6 @@ class Playstream2(
             return value
         return value.encode(encoding)
 
-
     def slinkPlay(self):
         name = self.name
         url = self.url
@@ -1323,21 +1298,6 @@ class Playstream2(
         servicetype = '4097'
         ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference youtube:   ', ref)
-        # if "youtube" in str(self.url):
-            # desc = self.desc
-            # try:
-                # from Plugins.Extensions.Worldcam.script.module.ytdl.lib.youtube_dl import YoutubeDL
-                # '''
-                # ydl_opts = {'format': 'best'}
-                # ydl_opts = {'format': 'bestaudio/best'}
-                # '''
-                # ydl_opts = {'format': 'best'}
-                # ydl = YoutubeDL(ydl_opts)
-                # ydl.add_default_info_extractors()
-                # result = ydl.extract_info(self.url, download=False)
-                # self.url = result["url"]
-            # except:
-                # pass
         sref = eServiceReference(ref)
         sref.setName(name)
         self.session.nav.stopService()

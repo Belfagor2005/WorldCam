@@ -1374,8 +1374,7 @@ def stream2bouquet(url=None, name=None, bouquetname=None):
     error = 'none'
     bouquetname = 'MyFavoriteBouquet'
     fileName = '/etc/enigma2/userbouquet.%s.tv' % bouquetname
-    out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (quote(url), quote(name))
-
+    out = '#SERVICE 4097:0:1:0:0:0:0:0:0:0:%s:%s\r\n' % (quote(url), quote(name))
     try:
         addstreamboq(bouquetname)
         if not os.path.exists(fileName):
