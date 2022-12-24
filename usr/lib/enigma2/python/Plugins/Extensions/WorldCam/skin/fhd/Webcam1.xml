@@ -14,7 +14,7 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/sep.png" position="220,925" size="970,8" alphatest="blend" zPosition="5" />
 		
 	<!-- Menu List -->
-	<widget name="list" position="220,190" size="970,550" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/sliderb.png" />
+	<widget name="list" position="220,190" size="970,550" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider.png" />
 	<!-- Colors 1220 -->
 	<ePixmap name="red" position="227,968" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
 	<widget name="key_red" position="327,961" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />

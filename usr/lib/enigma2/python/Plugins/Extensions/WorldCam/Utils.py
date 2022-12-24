@@ -95,6 +95,47 @@ def DreamOS():
         DreamOS = True
         return DreamOS
 
+def getEnigmaVersionString():
+    try:
+        from enigma import getEnigmaVersionString
+        return getEnigmaVersionString()
+    except:
+        return "N/A"
+
+def getImageVersionString():
+    try:
+        from Tools.Directories import resolveFilename, SCOPE_SYSETC
+        file = open(resolveFilename(SCOPE_SYSETC, 'image-version'), 'r')
+        lines = file.readlines()
+        for x in lines:
+            splitted = x.split('=')
+            if splitted[0] == "version":
+                #     YYYY MM DD hh mm
+                #0120 2005 11 29 01 16
+                #0123 4567 89 01 23 45
+                version = splitted[1]
+                image_type = version[0] # 0 = release, 1 = experimental
+                major = version[1]
+                minor = version[2]
+                revision = version[3]
+                year = version[4:8]
+                month = version[8:10]
+                day = version[10:12]
+                date = '-'.join((year, month, day))
+                if image_type == '0':
+                    image_type = "Release"
+                else:
+                    image_type = "Experimental"
+                version = '.'.join((major, minor, revision))
+                if version != '0.0.0':
+                    return ' '.join((image_type, version, date))
+                else:
+                    return ' '.join((image_type, date))
+        file.close()
+    except IOError:
+        pass
+
+    return "unavailable"
 
 def mySkin():
     from Components.config import config
@@ -108,6 +149,73 @@ if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/MediaPlayer'):
 else:
     MediaPlayerInstalled = False
 
+
+def getFreeMemory():
+    mem_free=None
+    mem_total=None
+    try:
+        with open('/proc/meminfo', 'r') as f:
+            for line in f.readlines():
+                if line.find('MemFree') != -1:
+                    parts = line.strip().split()
+                    mem_free = float(parts[1])
+                elif line.find('MemTotal') != -1:
+                    parts = line.strip().split()
+                    mem_total = float(parts[1])
+            f.close()
+    except:
+        pass
+    return (mem_free,mem_total)
+
+def sizeToString(nbytes):
+    suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    size="0 B"
+    if nbytes > 0:
+        i = 0
+        while nbytes >= 1024 and i < len(suffixes)-1:
+            nbytes /= 1024.
+            i += 1
+        f = ('%.2f' % nbytes).rstrip('0').rstrip('.').replace(".",",")
+        size = '%s %s' % (f, suffixes[i])
+    return size  
+
+def getMountPoint(path):
+    pathname= os.path.realpath(path)
+    parent_device=os.stat(pathname).st_dev
+    path_device= os.stat(pathname).st_dev
+    mount_point=""
+    while parent_device == path_device:
+        mount_point=pathname
+        pathname= os.path.dirname(pathname)
+        if pathname == mount_point:
+            break
+        parent_device= os.stat(pathname).st_dev
+    return mount_point
+
+def getMointedDevice(pathname):
+    md=None
+    try:
+        with open("/proc/mounts", "r") as f:
+            for line in f:
+                fields= line.rstrip('\n').split()
+                if fields[1] == pathname:
+                    md=fields[0]
+                    break
+            f.close()
+    except:
+        pass
+    return md
+
+def getFreeSpace(path):
+    try:
+        moin_point=getMountPoint(path)
+        device=getMointedDevice(moin_point)
+        print(moin_point+"|"+device)
+        stat= os.statvfs(device)  # @UndefinedVariable
+        print(stat)
+        return sizeToString(stat.f_bfree*stat.f_bsize)
+    except:
+        return "N/A"
 
 def listDir(what):
     f = None
@@ -284,7 +392,7 @@ CountConnOk = 0
 def zCheckInternet(opt=1, server=None, port=None):  # opt=5 custom server and port.
     global CountConnOk
     sock = False
-    checklist = [('8.8.4.4', 53), ('8.8.8.8', 53), ('www.lululla.altervista.org/', 80), ('www.e2skin.blogspot.com', 443), ('www.google.com', 443)]
+    checklist = [('8.8.44.4', 53), ('8.8.88.8', 53), ('www.lululla.altervista.org/', 80), ('www.e2skin.blogspot.com', 443), ('www.google.com', 443)]
     if opt < 5:
         srv = checklist[opt]
     else:
@@ -773,24 +881,24 @@ def RequestAgent():
     return RandomAgent
 
 
-def ReadUrl21(url):
-    import sys
-    if sys.version_info.major == 3:
-        import urllib.request as urllib2
-    elif sys.version_info.major == 2:
-        import urllib2
-    req = urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14')
-    r = urllib2.urlopen(req, None, 15)
-    link = r.read()
-    r.close()
-    content = link
-    if str(type(content)).find('bytes') != -1:
-        try:
-            content = content.decode('utf-8')
-        except Exception as e:
-            print('error: ', str(e))
-    return content
+# def ReadUrl2(url):
+    # import sys
+    # if sys.version_info.major == 3:
+        # import urllib.request as urllib2
+    # elif sys.version_info.major == 2:
+        # import urllib2
+    # req = urllib2.Request(url)
+    # req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14')
+    # r = urllib2.urlopen(req, None, 15)
+    # link = r.read()
+    # r.close()
+    # content = link
+    # if str(type(content)).find('bytes') != -1:
+        # try:
+            # content = content.decode('utf-8')
+        # except Exception as e:
+            # print('error: ', str(e))
+    # return content
 
 
 def ReadUrl2(url, referer):
@@ -924,8 +1032,14 @@ def ReadUrl(url):
 
 
 if PY3:
+    import sys
+    if sys.version_info.major == 3:
+        import urllib.request as urllib2
+    elif sys.version_info.major == 2:
+        import urllib2
+
     def getUrl(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -941,7 +1055,7 @@ if PY3:
             return link
 
     def getUrl2(url, referer):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         req.add_header('Referer', referer)
         try:
@@ -958,7 +1072,7 @@ if PY3:
             return link
 
     def getUrlresp(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -969,8 +1083,14 @@ if PY3:
             response = urlopen(req, context=gcontext)
             return response
 else:
+    import sys
+    if sys.version_info.major == 3:
+        import urllib.request as urllib2
+    elif sys.version_info.major == 2:
+        import urllib2
+
     def getUrl(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -986,7 +1106,7 @@ else:
             return link
 
     def getUrl2(url, referer):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         req.add_header('Referer', referer)
         try:
@@ -1003,7 +1123,7 @@ else:
             return link
 
     def getUrlresp(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -1032,6 +1152,35 @@ def decodeUrl(text):
     text = text.replace('%3F', '?')
     text = text.replace('%40', '@')
     return text
+
+
+# import re
+# from six import ensure_str, unichr, iteritems
+# from six.moves import html_entities
+# _UNICODE_MAP = { k:unichr(v) for k,v in iteritems(html_entities.name2codepoint) }
+# _ESCAPE_RE = re.compile("[&<>\"']")
+# _UNESCAPE_RE = re.compile(r"&\s*(#?)(\w+?)\s*;")        # Whitespace handling added due to "hand-assed" parsers of html pages
+# _ESCAPE_DICT = {
+                # "&": "&amp;",
+                # "<": "&lt;",
+                # ">": "&gt;",
+                # '"': "&quot;",
+                # "'": "&apos;",
+                # }
+
+# def html_escape(value):
+    # return _ESCAPE_RE.sub(lambda match: _ESCAPE_DICT[match.group(0)], ensure_str(value).strip())
+
+# def html_unescape(value):
+    # return _UNESCAPE_RE.sub(_convert_entity, ensure_str(value).strip())
+
+# def _convert_entity(m):
+    # if m.group(1) == "#":
+        # try:
+            # return unichr(int(m.group(2)[1:], 16)) if m.group(2)[:1].lower() == "x" else unichr(int(m.group(2)))
+        # except ValueError:
+            # return "&#%s;" % m.group(2)
+    # return _UNICODE_MAP.get(m.group(2), "&%s;" % m.group(2))
 
 
 def decodeHtml(text):
@@ -1374,7 +1523,8 @@ def stream2bouquet(url=None, name=None, bouquetname=None):
     error = 'none'
     bouquetname = 'MyFavoriteBouquet'
     fileName = '/etc/enigma2/userbouquet.%s.tv' % bouquetname
-    out = '#SERVICE 4097:0:1:0:0:0:0:0:0:0:%s:%s\r\n' % (quote(url), quote(name))
+    out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (quote(url), quote(name))
+
     try:
         addstreamboq(bouquetname)
         if not os.path.exists(fileName):

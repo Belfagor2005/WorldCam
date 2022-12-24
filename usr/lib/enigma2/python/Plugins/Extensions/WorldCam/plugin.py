@@ -307,7 +307,7 @@ class Webcam3(Screen):
         name = self.names[idx]
         desc = self.names[idx]
         url = self.urls[idx]
-        self.session.open(Playstream1, name, url, desc)
+        self.session.open(PlayWorldcam, name, url, desc)
 
     def cancel(self):
         self.close()
@@ -621,7 +621,7 @@ class Webcam6(Screen):
                     url = url.replace("\\", "/")
                     ref = url
                     desc = name
-                    self.session.open(Playstream2, name, ref, desc)
+                    self.session.open(PlayWorldcam2, name, ref, desc)
             else:
                 if "videoId:" in content:
                     # videoId:'hT7fwPNLRFo',
@@ -633,7 +633,7 @@ class Webcam6(Screen):
                     print('ytdl url is ', self.url)
                     desc = name
                     try:
-                        self.session.open(Playstream1, name, self.url, desc)
+                        self.session.open(PlayWorldcam, name, self.url, desc)
                     except:
                         pass
         except Exception as e:
@@ -804,7 +804,7 @@ class Webcam8(Screen):
                 url = url.replace("\\", "/")
                 ref = url
                 desc = ' '
-                self.session.open(Playstream2, name, ref, desc)
+                self.session.open(PlayWorldcam2, name, ref, desc)
             else:
                 return
         except Exception as e:
@@ -863,7 +863,7 @@ class Webcam9(Screen):
                 url = url.replace("\\", "/")
                 ref = url
                 desc = ' '
-                self.session.open(Playstream2, name, ref, desc)
+                self.session.open(PlayWorldcam2, name, ref, desc)
             else:
                 return
         except Exception as e:
@@ -873,7 +873,7 @@ class Webcam9(Screen):
         self.close()
 
 
-class Playstream1(Screen):
+class PlayWorldcam(Screen):
     def __init__(self, session, name, url, desc):
         Screen.__init__(self, session)
         self.session = session
@@ -886,7 +886,7 @@ class Playstream1(Screen):
         self.name1 = name
         self.url = url
         self.desc = desc
-        print('In Playstream1 self.url =', url)
+        print('In PlayWorldcam self.url =', url)
         global srefInit
         self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
         srefInit = self.initialservice
@@ -992,7 +992,7 @@ class Playstream1(Screen):
         desc = self.desc
         url = self.url
         name = self.name1
-        self.session.open(Playstream2, name, url, desc)
+        self.session.open(PlayWorldcam2, name, url, desc)
 
     def play2(self):
         if Utils.isStreamlinkAvailable():
@@ -1007,7 +1007,7 @@ class Playstream1(Screen):
             # sref = eServiceReference(ref)
             print('SREF: ', sref)
             # sref.setName(self.name1)
-            self.session.open(Playstream2, name, sref, desc)
+            self.session.open(PlayWorldcam2, name, sref, desc)
             self.close()
         else:
             self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
@@ -1107,7 +1107,7 @@ class TvInfoBarShowHide():
         print(text + " %s\n" % obj)
 
 
-class Playstream2(
+class PlayWorldcam2(
     InfoBarBase,
     InfoBarMenu,
     InfoBarSeek,
@@ -1324,9 +1324,15 @@ class Playstream2(
             # streamtypelist.append("5002")
         # if os.path.exists("/usr/bin/apt-get"):
             # streamtypelist.append("8193")
-        if Utils.isStreamlinkAvailable():
-            streamtypelist.append("4097")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            streaml = True
+        # if Utils.isStreamlinkAvailable():
+            # streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            # streaml = True
+        # if os.path.exists("/usr/bin/gstplayer"):
+            # streamtypelist.append("5001")
+        # if os.path.exists("/usr/bin/exteplayer3"):
+            # streamtypelist.append("5002")
+        if os.path.exists("/usr/bin/apt-get"):
+            streamtypelist.append("8193")
         for index, item in enumerate(streamtypelist, start=0):
             if str(item) == str(self.servicetype):
                 currentindex = index
