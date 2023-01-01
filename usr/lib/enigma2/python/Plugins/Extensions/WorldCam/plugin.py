@@ -54,10 +54,11 @@ ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png
 iconpic = 'plugin.png'
 refer = 'https://www.skylinewebcams.com/'
 _firstStartwrd = True
-SKIN_PATH = THISPLUG + '/skin/hd'
+
 if Utils.isFHD():
     SKIN_PATH = THISPLUG + '/skin/fhd'
-
+else:
+    SKIN_PATH = THISPLUG + '/skin/hd'
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
 PY3 = False
@@ -81,11 +82,11 @@ class webcamList(MenuList):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
         if Utils.isFHD():
             self.l.setItemHeight(50)
-            textfont = int(34)
+            textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(50)
-            textfont = int(22)
+            self.l.setItemHeight(30)
+            textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
 
@@ -93,11 +94,11 @@ def wcListEntry(name):
     pngx = ico_path1
     res = [name]
     if Utils.isFHD:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(80, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(80, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(30, 30), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 
@@ -113,7 +114,7 @@ def showlist(data, list):
 
 def paypal():
     conthelp = "If you like what I do you\n"
-    conthelp += " can contribute with a coffee\n"
+    conthelp += "can contribute with a coffee\n"
     conthelp += "scan the qr code and donate € 1.00"
     return conthelp
 
@@ -154,7 +155,7 @@ class Webcam1(Screen):
         f.close()
         self.list = []
         self['list'] = webcamList([])
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['info'] = Label('HOME VIEW')
@@ -207,7 +208,7 @@ class Webcam2(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
@@ -257,7 +258,7 @@ class Webcam3(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self.name = name
         self['list'] = webcamList([])
@@ -321,7 +322,7 @@ class Webcam4(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
@@ -389,7 +390,7 @@ class Webcam5(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -465,7 +466,7 @@ class Webcam5a(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -542,7 +543,7 @@ class Webcam6(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self.name = name
         self.url = url
@@ -652,7 +653,7 @@ class Webcam7(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Top')
@@ -715,7 +716,7 @@ class Webcam8(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -824,7 +825,7 @@ class Webcam9(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -881,7 +882,7 @@ class PlayWorldcam(Screen):
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
-        self['title'] = Label(setup_title)
+        # self['title'] = Label(setup_title)
         self.list = []
         self.name1 = name
         self.url = url
