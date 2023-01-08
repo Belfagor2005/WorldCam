@@ -1280,18 +1280,21 @@ class PlayWorldcam2(
         self.session.nav.playService(url)
 
     def openPlay(self, servicetype, url):
-        name = self.name
-        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
-        print('reference:   ', ref)
-        if streaml is True:
-            url = 'http://127.0.0.1:8088/' + url
-            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
-            print('streaml reference:   ', ref)
-        print('final reference:   ', ref)
-        sref = eServiceReference(ref)
-        sref.setName(name)
-        self.session.nav.stopService()
-        self.session.nav.playService(sref)
+        try:
+            name = self.name
+            ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
+            print('reference:   ', ref)
+            if streaml is True:
+                url = 'http://127.0.0.1:8088/' + url
+                ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
+                print('streaml reference:   ', ref)
+            print('final reference:   ', ref)
+            sref = eServiceReference(ref)
+            sref.setName(name)
+            self.session.nav.stopService()
+            self.session.nav.playService(sref)
+        except Exception as e:
+            print('error player ', str(e))
 
     def openYtdl(self):
         name = self.name
@@ -1332,8 +1335,8 @@ class PlayWorldcam2(
             # streamtypelist.append("5001")
         # if os.path.exists("/usr/bin/exteplayer3"):
             # streamtypelist.append("5002")
-        if os.path.exists("/usr/bin/apt-get"):
-            streamtypelist.append("8193")
+        # if os.path.exists("/usr/bin/apt-get"):
+            # streamtypelist.append("8193")
         for index, item in enumerate(streamtypelist, start=0):
             if str(item) == str(self.servicetype):
                 currentindex = index
