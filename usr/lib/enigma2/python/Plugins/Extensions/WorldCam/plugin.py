@@ -3,7 +3,7 @@
 
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
-last update 13 08 2022
+last update 13 01 2023
 edited from Lululla: updated to 20220113
 """
 # from __future__ import unicode_literals
@@ -50,7 +50,7 @@ from . import html_conv
 version = '4.3'  # edit lululla 07/11/2022
 setup_title = ('WORLDCAM v.' + version)
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
-ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/plugin.png'
+ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/webcam.png'
 iconpic = 'plugin.png'
 refer = 'https://www.skylinewebcams.com/'
 _firstStartwrd = True
@@ -283,7 +283,7 @@ class Webcam3(Screen):
     def openTest(self):
         uLists = THISPLUG + '/Playlists'
         file1 = uLists + '/' + self.name
-        print('Here in showContentA2 file1 = ', file1)
+        # print('Here in showContentA2 file1 = ', file1)
         self.names = []
         self.urls = []
         f1 = open(file1, 'r')
@@ -301,7 +301,6 @@ class Webcam3(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -352,13 +351,13 @@ class Webcam4(Screen):
         content = six.ensure_str(client.request(BASEURL, headers=headers))
         regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
-        print('Webcam4 match = ', match)
+        # print('Webcam4 match = ', match)
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
             name = Utils.checkStr(name)
             item = name + "###" + url1
-            print('Webcam4 Items sort: ', item)
+            # print('Webcam4 Items sort: ', item)
             items.append(item)
         items.sort()
         for item in items:
@@ -370,7 +369,6 @@ class Webcam4(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -432,7 +430,7 @@ class Webcam5(Screen):
         for url, name in match:
             url1 = '{}/{}/webcam{}'.format('https://www.skylinewebcams.com', ctry, url)
             item = name + "###" + url1
-            print('Items sort 2: ', item)
+            # print('Items sort 2: ', item)
             items.append(item)
         items.sort()
         for item in items:
@@ -440,13 +438,12 @@ class Webcam5(Screen):
             url1 = item.split('###')[1]
             self.names.append(name)
             self.urls.append(url1)
-            print("Webcam5 self.names =", self.names)
-            print("Webcam5 self.urls =", self.urls)
+            # print("Webcam5 self.names =", self.names)
+            # print("Webcam5 self.urls =", self.urls)
         showlist(self.names, self['list'])
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -501,7 +498,7 @@ class Webcam5a(Screen):
         content2 = content[n1:n2]
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
         ctry = ctry.replace('.html', '')
-        print('------->>> ctry: ', ctry)
+        # print('------->>> ctry: ', ctry)
         regexvideo = '<a href="/' + ctry + '/(.+?)".*?tag">(.+?)</a>'
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
@@ -509,7 +506,6 @@ class Webcam5a(Screen):
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
             name = Utils.checkStr(name)
             item = name + "###" + url1
-            print('Items sort 2: ', item)
             items.append(item)
         items.sort()
         for item in items:
@@ -517,13 +513,10 @@ class Webcam5a(Screen):
             url1 = item.split('###')[1]
             self.names.append(name)
             self.urls.append(url1)
-            print("Webcam5 self.names =", self.names)
-            print("Webcam5 self.urls =", self.urls)
         showlist(self.names, self['list'])
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -594,7 +587,6 @@ class Webcam6(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -607,17 +599,17 @@ class Webcam6(Screen):
             content = Utils.ReadUrl2(url, refer)
             # if PY3:
                 # content = six.ensure_str(content)
-            print('content =====test======== ', content)
+            # print('content =====test======== ', content)
 
             if "source:'livee.m3u8" in content:
                 regexvideo = "source:'livee.m3u8(.+?)'"
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
-                print('id: ', match)
+                # print('id: ', match)
                 id = match[0]
                 id = id.replace('?a=', '')
                 if id or id != '':
                     url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                    print("Here in plugin.py getVid play with streamlink url =", url)
+                    # print("Here in plugin.py getVid play with streamlink url =", url)
                     url = url.replace(":", "%3a")
                     url = url.replace("\\", "/")
                     ref = url
@@ -631,7 +623,7 @@ class Webcam6(Screen):
                     id = match[0]
                     # self.url = 'https://www.youtube.com/embed/' + str(id)
                     self.url = 'https://www.youtube.com/watch?v=' + id
-                    print('ytdl url is ', self.url)
+                    # print('ytdl url is ', self.url)
                     desc = name
                     try:
                         self.session.open(PlayWorldcam, name, self.url, desc)
@@ -681,7 +673,7 @@ class Webcam7(Screen):
         from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
-        print('content: ', content)
+        # print('content: ', content)
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
         n2 = content.find('</div></div>', n1)
         content2 = content[n1:n2]
@@ -696,7 +688,6 @@ class Webcam7(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -764,22 +755,18 @@ class Webcam8(Screen):
             url = '{}/{}'.format(base_url, link)
             name = Utils.checkStr(name)
             item = name + "###" + url
-            print('Items sort 2: ', item)
+            # print('Items sort 2: ', item)
             items.append(item)
-
         items.sort()
         for item in items:
             name = item.split('###')[0]
             url = item.split('###')[1]
             self.names.append(name)
             self.urls.append(url)
-            print("Webcam5 self.names =", self.names)
-            print("Webcam5 self.urls =", self.urls)
         showlist(self.names, self['list'])
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
@@ -792,10 +779,10 @@ class Webcam8(Screen):
             content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
-            print('content ============================ ', content)
+            # print('content ============================ ', content)
             regexvideo = "source:'livee.m3u8(.+?)'"
             match = re.compile(regexvideo, re.DOTALL).findall(content)
-            print('id: ', match)
+            # print('id: ', match)
             id = match[0]
             id = id.replace('?a=', '')
             if id or id != '':
@@ -851,15 +838,15 @@ class Webcam9(Screen):
             content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
-            print('content ============================ ', content)
+            # print('content ============================ ', content)
             regexvideo = "source:'livee.m3u8(.+?)'"
             match = re.compile(regexvideo, re.DOTALL).findall(content)
-            print('id: ', match)
+            # print('id: ', match)
             id = match[0]
             id = id.replace('?a=', '')
             if id or id != '':
                 url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                print("Here in plugin.py getVid play with streamlink url =", url)
+                # print("Here in plugin.py getVid play with streamlink url =", url)
                 url = url.replace(":", "%3a")
                 url = url.replace("\\", "/")
                 ref = url
@@ -887,7 +874,7 @@ class PlayWorldcam(Screen):
         self.name1 = name
         self.url = url
         self.desc = desc
-        print('In PlayWorldcam self.url =', url)
+        # print('In PlayWorldcam self.url =', url)
         global srefInit
         self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
         srefInit = self.initialservice
@@ -928,55 +915,45 @@ class PlayWorldcam(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
         self.name = self.names[idx]
         self.url = self.urls[idx]
+        cmd = ''
         if idx == 0:
-            print('In playVideo url D=', self.url)
             self.play()
         elif idx == 1:
-            print('In playVideo url B=', self.url)
             try:
                 os.remove('/tmp/hls.avi')
             except:
                 pass
             header = ''
             cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
-            print('In playVideo cmd =', cmd)
             os.system(cmd)
             os.system('sleep 3')
             self.url = '/tmp/hls.avi'
             self.play()
         elif idx == 2:
-            print('In playVideo url A=', self.url)
-            url = self.url
             try:
                 os.remove('/tmp/hls.avi')
             except:
                 pass
-            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + url + '" "1" + &'
-            print('ts cmd = ', cmd)
+            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + self.url + '" "1" + &'
             os.system(cmd)
             os.system('sleep 3')
             self.url = '/tmp/hls.avi'
             self.name = self.names[idx]
             self.play()
-
         elif idx == 3:
-            print('In playVideo url D=', self.url)
             self.play2()
         else:
-            print('In playVideo url Y=', self.url)
-            url = self.url
             try:
                 os.remove('/tmp/vid.txt')
             except:
                 pass
-            cmd = "python '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/scripts/script.module.ytdl/lib/__main__.py' -f mp4/bestvideo+bestaudio --no-check-certificate --skip-download --get-url " + url + " > /tmp/vid.txt"
-            print('ytl cmd = ', cmd)
+            cmd = "python '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/scripts/script.module.ytdl/lib/__main__.py' -f mp4/bestvideo+bestaudio --no-check-certificate --skip-download --get-url " + self.url + " > /tmp/vid.txt"
+
             os.system(cmd)
             os.system('sleep 3')
             currenturl = open('/tmp/vid.txt', 'r')
@@ -984,6 +961,8 @@ class PlayWorldcam(Screen):
             self.url = currenturl.strip()  # '/tmp/vid.txt'
             self.name = self.names[idx]
             self.play()
+        print('In playVideo url =', self.url)
+        print('In playVideo  cmd =', cmd)
         return
 
     def playfile(self, serverint):
@@ -991,9 +970,8 @@ class PlayWorldcam(Screen):
 
     def play(self):
         desc = self.desc
-        url = self.url
         name = self.name1
-        self.session.open(PlayWorldcam2, name, url, desc)
+        self.session.open(PlayWorldcam2, name, self.url, desc)
 
     def play2(self):
         if Utils.isStreamlinkAvailable():
@@ -1001,12 +979,12 @@ class PlayWorldcam(Screen):
             name = self.name1
             url = self.url
             url = url.replace(':', '%3a')
-            print('In url =', url)
-            print(type(url))
+            # print('In url =', url)
+            # print(type(url))
             sref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + url
-            print(type(sref))
+            # print(type(sref))
             # sref = eServiceReference(ref)
-            print('SREF: ', sref)
+            # print('SREF: ', sref)
             # sref.setName(self.name1)
             self.session.open(PlayWorldcam2, name, sref, desc)
             self.close()
@@ -1268,8 +1246,8 @@ class PlayWorldcam2(
         name = self.name
         url = self.url
         # sref = "{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
-        print('final reference:   ', url)
-        print('type url ', type(url))
+        # print('final reference:   ', url)
+        # print('type url ', type(url))
         # url = self.to_bytes(url)
         # if PY3:
             # url = url.encode()
