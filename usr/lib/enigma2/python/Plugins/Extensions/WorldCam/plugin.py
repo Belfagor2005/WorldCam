@@ -8,6 +8,8 @@ edited from Lululla: updated to 20220113
 """
 # from __future__ import unicode_literals
 from __future__ import print_function
+from . import Utils
+from . import html_conv
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
@@ -42,23 +44,20 @@ import re
 import sys
 import six
 import ssl
-from . import Utils
-from . import html_conv
 
-# from six.moves.urllib.parse import urljoin, unquote_plus, quote_plus, quote, unquote
 
 version = '4.3'  # edit lululla 07/11/2022
 setup_title = ('WORLDCAM v.' + version)
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
-ico_path1 = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/webcam.png'
+ico_path1 = os.path.join(THISPLUG, 'pics/webcam.png')
 iconpic = 'plugin.png'
 refer = 'https://www.skylinewebcams.com/'
 _firstStartwrd = True
-
+SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
 if Utils.isFHD():
-    SKIN_PATH = THISPLUG + '/skin/fhd'
+    SKIN_PATH = os.path.join(THISPLUG, 'skin/fhd/')
 else:
-    SKIN_PATH = THISPLUG + '/skin/hd'
+    SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
 PY3 = False
@@ -85,7 +84,7 @@ class webcamList(MenuList):
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(30)
+            self.l.setItemHeight(40)
             textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
@@ -97,7 +96,7 @@ def wcListEntry(name):
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(30, 30), png=loadPNG(pngx)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 8), size=(40, 40), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
@@ -149,13 +148,11 @@ class Webcam1(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
-        # self['title'] = Label(setup_title)
         self['key_red'] = Button(_('Exit'))
         self['key_green'] = Button(_('Select'))
         self['info'] = Label('HOME VIEW')
@@ -204,11 +201,9 @@ class Webcam2(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
@@ -230,7 +225,7 @@ class Webcam2(Screen):
         self["paypal"].setText(payp)
 
     def openTest(self):
-        uLists = THISPLUG + '/Playlists'
+        uLists = os.path.join(THISPLUG, 'Playlists')
         self.names = []
         for root, dirs, files in os.walk(uLists):
             for name in files:
@@ -240,7 +235,7 @@ class Webcam2(Screen):
     def okClicked(self):
         i = len(self.names)
         print('iiiiii= ', i)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
@@ -254,11 +249,9 @@ class Webcam3(Screen):
     def __init__(self, session, name):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self.name = name
         self['list'] = webcamList([])
@@ -281,27 +274,29 @@ class Webcam3(Screen):
         self["paypal"].setText(payp)
 
     def openTest(self):
-        uLists = THISPLUG + '/Playlists'
+        uLists = os.path.join(THISPLUG, 'Playlists')
         file1 = uLists + '/' + self.name
-        # print('Here in showContentA2 file1 = ', file1)
         self.names = []
         self.urls = []
         f1 = open(file1, 'r')
-        for line in f1.readlines():
-            if '##' not in line:
-                continue
-            line = line.replace('\n', '')
-            items = line.split('###')
-            name = items[0]
-            url = items[1]
-            name = Utils.checkStr(name)
+        try:
+            for line in f1.readlines():
+                if '##' not in line:
+                    continue
+                line = line.replace('\n', '').strip()
+                items = line.split('###')
+                name = items[0]
+                url = items[1]
+                name = Utils.checkStr(name)
             self.names.append(name)
             self.urls.append(url)
+        except Exception as e:
+            print(str(e))
         showlist(self.names, self['list'])
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
@@ -317,11 +312,9 @@ class Webcam4(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
@@ -369,7 +362,7 @@ class Webcam4(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
@@ -384,11 +377,9 @@ class Webcam5(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -444,7 +435,7 @@ class Webcam5(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
@@ -459,11 +450,9 @@ class Webcam5a(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -498,7 +487,6 @@ class Webcam5a(Screen):
         content2 = content[n1:n2]
         ctry = self.url.replace('https://www.skylinewebcams.com/', '')
         ctry = ctry.replace('.html', '')
-        # print('------->>> ctry: ', ctry)
         regexvideo = '<a href="/' + ctry + '/(.+?)".*?tag">(.+?)</a>'
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         items = []
@@ -517,7 +505,7 @@ class Webcam5a(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
@@ -532,11 +520,9 @@ class Webcam6(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self.name = name
         self.url = url
@@ -587,7 +573,7 @@ class Webcam6(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         url1 = self.urls[idx]
@@ -641,11 +627,9 @@ class Webcam7(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Top')
@@ -688,7 +672,7 @@ class Webcam7(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
@@ -703,11 +687,9 @@ class Webcam8(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -755,7 +737,6 @@ class Webcam8(Screen):
             url = '{}/{}'.format(base_url, link)
             name = Utils.checkStr(name)
             item = name + "###" + url
-            # print('Items sort 2: ', item)
             items.append(item)
         items.sort()
         for item in items:
@@ -767,7 +748,7 @@ class Webcam8(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         url1 = self.urls[idx]
@@ -779,15 +760,12 @@ class Webcam8(Screen):
             content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
-            # print('content ============================ ', content)
             regexvideo = "source:'livee.m3u8(.+?)'"
             match = re.compile(regexvideo, re.DOTALL).findall(content)
-            # print('id: ', match)
             id = match[0]
             id = id.replace('?a=', '')
             if id or id != '':
                 url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                print("Here in plugin.py getVid play with streamlink url =", url)
                 url = url.replace(":", "%3a")
                 url = url.replace("\\", "/")
                 ref = url
@@ -808,11 +786,9 @@ class Webcam9(Screen):
         self.session = session
         self.name = name
         self.url = url
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -838,15 +814,12 @@ class Webcam9(Screen):
             content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
-            # print('content ============================ ', content)
             regexvideo = "source:'livee.m3u8(.+?)'"
             match = re.compile(regexvideo, re.DOTALL).findall(content)
-            # print('id: ', match)
             id = match[0]
             id = id.replace('?a=', '')
             if id or id != '':
                 url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                # print("Here in plugin.py getVid play with streamlink url =", url)
                 url = url.replace(":", "%3a")
                 url = url.replace("\\", "/")
                 ref = url
@@ -865,16 +838,13 @@ class PlayWorldcam(Screen):
     def __init__(self, session, name, url, desc):
         Screen.__init__(self, session)
         self.session = session
-        skin = SKIN_PATH + '/Webcam1.xml'
-        f = open(skin, 'r')
-        self.skin = f.read()
-        f.close()
-        # self['title'] = Label(setup_title)
+        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        with open(skin, 'r') as f:
+            self.skin = f.read()
         self.list = []
         self.name1 = name
         self.url = url
         self.desc = desc
-        # print('In PlayWorldcam self.url =', url)
         global srefInit
         self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
         srefInit = self.initialservice
@@ -915,7 +885,7 @@ class PlayWorldcam(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        if i < 1:
+        if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         self.name = self.names[idx]
@@ -953,7 +923,6 @@ class PlayWorldcam(Screen):
             except:
                 pass
             cmd = "python '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/scripts/script.module.ytdl/lib/__main__.py' -f mp4/bestvideo+bestaudio --no-check-certificate --skip-download --get-url " + self.url + " > /tmp/vid.txt"
-
             os.system(cmd)
             os.system('sleep 3')
             currenturl = open('/tmp/vid.txt', 'r')
@@ -981,11 +950,7 @@ class PlayWorldcam(Screen):
             url = url.replace(':', '%3a')
             # print('In url =', url)
             # print(type(url))
-            sref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + url
-            # print(type(sref))
-            # sref = eServiceReference(ref)
-            # print('SREF: ', sref)
-            # sref.setName(self.name1)
+            sref = 'http%3a//127.0.0.1%3a8088/' + url
             self.session.open(PlayWorldcam2, name, sref, desc)
             self.close()
         else:
@@ -1161,29 +1126,32 @@ class PlayWorldcam2(
         else:
             self.onFirstExecBegin.append(self.cicleStreamType)
             # self.onFirstExecBegin.append(self.openPlay)
-
         self.onClose.append(self.cancel)
 
     def getAspect(self):
         return AVSwitch().getAspectRatioSetting()
 
     def getAspectString(self, aspectnum):
-        return {0: _('4:3 Letterbox'),
-                1: _('4:3 PanScan'),
-                2: _('16:9'),
-                3: _('16:9 always'),
-                4: _('16:10 Letterbox'),
-                5: _('16:10 PanScan'),
-                6: _('16:9 Letterbox')}[aspectnum]
+        return {
+            0: '4:3 Letterbox',
+            1: '4:3 PanScan',
+            2: '16:9',
+            3: '16:9 always',
+            4: '16:10 Letterbox',
+            5: '16:10 PanScan',
+            6: '16:9 Letterbox'
+        }[aspectnum]
 
     def setAspect(self, aspect):
-        map = {0: '4_3_letterbox',
-               1: '4_3_panscan',
-               2: '16_9',
-               3: '16_9_always',
-               4: '16_10_letterbox',
-               5: '16_10_panscan',
-               6: '16_9_letterbox'}
+        map = {
+            0: '4_3_letterbox',
+            1: '4_3_panscan',
+            2: '16_9',
+            3: '16_9_always',
+            4: '16_10_letterbox',
+            5: '16_10_panscan',
+            6: '16_9_letterbox'
+        }
         config.av.aspectratio.setValue(map[aspect])
         try:
             AVSwitch().setAspectRatio(aspect)
@@ -1197,33 +1165,6 @@ class PlayWorldcam2(
             temp = 0
         self.new_aspect = temp
         self.setAspect(temp)
-
-    def showinfo(self):
-        sref = self.srefInit
-        p = Utils.ServiceReference(sref)
-        servicename = str(p.getServiceName())
-        serviceurl = str(p.getPath())
-        sTitle = ''
-        sServiceref = ''
-        try:
-            if servicename is not None:
-                sTitle = servicename
-            else:
-                sTitle = ''
-            if serviceurl is not None:
-                sServiceref = serviceurl
-            else:
-                sServiceref = ''
-            currPlay = self.session.nav.getCurrentService()
-            if currPlay:
-                sTagCodec = currPlay.info().getInfoString(iServiceInformation.sTagCodec)
-                sTagVideoCodec = currPlay.info().getInfoString(iServiceInformation.sTagVideoCodec)
-                sTagAudioCodec = currPlay.info().getInfoString(iServiceInformation.sTagAudioCodec)
-                message = 'stitle:' + str(sTitle) + '\n' + 'sServiceref:' + str(sServiceref) + '\n' + 'sTagCodec:' + str(sTagCodec) + '\n' + 'sTagVideoCodec: ' + str(sTagVideoCodec) + '\n' + 'sTagAudioCodec :' + str(sTagAudioCodec)
-                self.mbox = self.session.open(MessageBox, message, MessageBox.TYPE_INFO)
-        except:
-            pass
-        return
 
     def showIMDB(self):
         text_clear = self.name
@@ -1244,18 +1185,14 @@ class PlayWorldcam2(
 
     def slinkPlay(self):
         name = self.name
-        url = self.url
-        # sref = "{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
-        # print('final reference:   ', url)
-        # print('type url ', type(url))
-        # url = self.to_bytes(url)
-        # if PY3:
-            # url = url.encode()
-        # print('type url value ', type(url))
-        # sref = eServiceReference(ref)
-        # sref.setName(name)
+        url = '5002:0:1:0:0:0:0:0:0:0:' + self.url
+        if PY3:
+            url = url.encode()
+        print('type url value ', type(url))
+        sref = eServiceReference(url)
+        sref.setName(name)
         self.session.nav.stopService()
-        self.session.nav.playService(url)
+        self.session.nav.playService(sref)
 
     def openPlay(self, servicetype, url):
         try:
@@ -1357,7 +1294,6 @@ class PlayWorldcam2(
         url = self.url
         if url is not None:
             if '5002' in url:
-                # ref = self.url
                 ref = "5002:0:0:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
                 sref = eServiceReference(ref)
                 sref.setName(self.name)
