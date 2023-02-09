@@ -17,7 +17,6 @@ from Components.Label import Label
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryText
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest
-from Components.Pixmap import Pixmap
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
 from Plugins.Plugin import PluginDescriptor
@@ -29,14 +28,12 @@ from Screens.InfoBarGenerics import InfoBarNotifications
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.VirtualKeyBoard import VirtualKeyBoard
-from ServiceReference import ServiceReference
 from Tools.Directories import SCOPE_PLUGINS, resolveFilename
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
 from enigma import eTimer
 from enigma import eListboxPythonMultiContent
 from enigma import eServiceReference
-from enigma import iServiceInformation
 from enigma import loadPNG, gFont
 from enigma import iPlayableService
 import os
@@ -153,8 +150,8 @@ class Webcam1(Screen):
             self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['info'] = Label('HOME VIEW')
         self["paypal"] = Label()
         self['actions'] = ActionMap(['OkCancelActions',
@@ -208,8 +205,8 @@ class Webcam2(Screen):
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -234,7 +231,6 @@ class Webcam2(Screen):
 
     def okClicked(self):
         i = len(self.names)
-        print('iiiiii= ', i)
         if i < 0:
             return
         idx = self['list'].getSelectionIndex()
@@ -257,8 +253,8 @@ class Webcam3(Screen):
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -281,15 +277,15 @@ class Webcam3(Screen):
         f1 = open(file1, 'r')
         try:
             for line in f1.readlines():
-                if '##' not in line:
+                if '###' not in line:
                     continue
                 line = line.replace('\n', '').strip()
                 items = line.split('###')
                 name = items[0]
                 url = items[1]
-                name = Utils.checkStr(name)
-            self.names.append(name)
-            self.urls.append(url)
+                name = html_conv.html_unescape(name)
+                self.names.append(name)
+                self.urls.append(url)
         except Exception as e:
             print(str(e))
         showlist(self.names, self['list'])
@@ -319,8 +315,8 @@ class Webcam4(Screen):
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -348,7 +344,7 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
-            name = Utils.checkStr(name)
+            name = html_conv.html_unescape(name)
             item = name + "###" + url1
             # print('Webcam4 Items sort: ', item)
             items.append(item)
@@ -384,8 +380,8 @@ class Webcam5(Screen):
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -457,8 +453,8 @@ class Webcam5a(Screen):
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -492,7 +488,7 @@ class Webcam5a(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            name = Utils.checkStr(name)
+            name = html_conv.html_unescape(name)
             item = name + "###" + url1
             items.append(item)
         items.sort()
@@ -529,8 +525,8 @@ class Webcam6(Screen):
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -560,7 +556,7 @@ class Webcam6(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            name = Utils.checkStr(name)
+            name = html_conv.html_unescape(name)
             item = name + "###" + url1
             items.append(item)
         items.sort()
@@ -586,7 +582,6 @@ class Webcam6(Screen):
             # if PY3:
                 # content = six.ensure_str(content)
             # print('content =====test======== ', content)
-
             if "source:'livee.m3u8" in content:
                 regexvideo = "source:'livee.m3u8(.+?)'"
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -634,8 +629,8 @@ class Webcam7(Screen):
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Top')
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -665,7 +660,7 @@ class Webcam7(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
-            name = Utils.checkStr(name)
+            name = html_conv.html_unescape(name)
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -694,8 +689,8 @@ class Webcam8(Screen):
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -735,7 +730,7 @@ class Webcam8(Screen):
                 name = name.encode('utf-8')
             base_url = 'https://www.skylinewebcams.com'
             url = '{}/{}'.format(base_url, link)
-            name = Utils.checkStr(name)
+            name = html_conv.html_unescape(name)
             item = name + "###" + url
             items.append(item)
         items.sort()
@@ -793,8 +788,8 @@ class Webcam9(Screen):
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -851,8 +846,8 @@ class PlayWorldcam(Screen):
         self['list'] = webcamList([])
         self['info'] = Label('Select Player')
         self["paypal"] = Label()
-        self['key_red'] = Button(_('Exit'))
-        self['key_green'] = Button(_('Select'))
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -954,7 +949,7 @@ class PlayWorldcam(Screen):
             self.session.open(PlayWorldcam2, name, sref, desc)
             self.close()
         else:
-            self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(MessageBox, 'Install Streamlink first', MessageBox.TYPE_INFO, timeout=5)
 
     def cancel(self):
         self.session.nav.stopService()
@@ -1234,6 +1229,7 @@ class PlayWorldcam2(
             self.servicetype = "4097"
         currentindex = 0
         streamtypelist = ["4097"]
+        '''
         # # if "youtube" in str(self.url):
             # # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # # return
@@ -1252,6 +1248,7 @@ class PlayWorldcam2(
             # streamtypelist.append("5002")
         # if os.path.exists("/usr/bin/apt-get"):
             # streamtypelist.append("8193")
+        '''
         for index, item in enumerate(streamtypelist, start=0):
             if str(item) == str(self.servicetype):
                 currentindex = index
@@ -1308,7 +1305,7 @@ class PlayWorldcam2(
         return
 
     def subtitles(self):
-        self.session.open(MessageBox, _('Please install script.module.SubSupport.'), MessageBox.TYPE_ERROR, timeout=10)
+        self.session.open(MessageBox, 'Please install script.module.SubSupport.', MessageBox.TYPE_ERROR, timeout=10)
 
     def showAfterSeek(self):
         if isinstance(self, TvInfoBarShowHide):
