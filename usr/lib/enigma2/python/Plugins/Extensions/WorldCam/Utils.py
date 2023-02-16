@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# 15.01.2023
+# 15.02.2023
 # a common tips used from Lululla
 #
 import sys
@@ -122,12 +122,14 @@ def DreamOS():
         DreamOS = True
         return DreamOS
 
+
 def getEnigmaVersionString():
     try:
         from enigma import getEnigmaVersionString
         return getEnigmaVersionString()
     except:
         return "N/A"
+
 
 def getImageVersionString():
     try:
@@ -138,8 +140,8 @@ def getImageVersionString():
             splitted = x.split('=')
             if splitted[0] == "version":
                 #     YYYY MM DD hh mm
-                #0120 2005 11 29 01 16
-                #0123 4567 89 01 23 45
+                # 0120 2005 11 29 01 16
+                # 0123 4567 89 01 23 45
                 version = splitted[1]
                 image_type = version[0] # 0 = release, 1 = experimental
                 major = version[1]
@@ -163,6 +165,7 @@ def getImageVersionString():
         pass
 
     return "unavailable"
+
 
 def mySkin():
     from Components.config import config
@@ -205,7 +208,7 @@ def sizeToString(nbytes):
             i += 1
         f = ('%.2f' % nbytes).rstrip('0').rstrip('.').replace(".", ",")
         size = '%s %s' % (f, suffixes[i])
-    return size  
+    return size
 
 
 def convert_size(size_bytes):
@@ -232,6 +235,7 @@ def getMountPoint(path):
         parent_device = os.stat(pathname).st_dev
     return mount_point
 
+
 def getMointedDevice(pathname):
     md = None
     try:
@@ -257,6 +261,7 @@ def getFreeSpace(path):
         return sizeToString(stat.f_bfree*stat.f_bsize)
     except:
         return "N/A"
+
 
 def listDir(what):
     f = None
@@ -438,42 +443,6 @@ def checkStr(text, encoding='utf8'):
     return text
 
 
-# def checkStr(txt):
-    # # convert variable to type str both in Python 2 and 3
-    # if PY3:
-        # # Python 3
-        # if type(txt) == type(bytes()):
-            # txt = txt.decode('utf-8')
-    # else:
-        # #Python 2
-        # if type(txt) == type(unicode()):
-            # txt = txt.encode('utf-8')
-    # return txt
-
-# def checkStr(txt):
-    # import six
-    # if six.PY3:
-        # if isinstance(txt, type(bytes())):
-            # txt = txt.decode('utf-8')
-    # else:
-        # if isinstance(txt, type(six.text_type())):
-            # txt = txt.encode('utf-8')
-    # return txt
-
-
-# def checkRedirect(url):
-    # # print('*** check redirect ***')
-    # try:
-        # import requests
-        # x = requests.get(url, timeout=15, verify=False, stream=True)
-        # print('**** redirect url 1 *** %s' % x.url)
-        # return str(x.url)
-    # except Exception as e:
-        # print('checkRedirect get failed: ', str(e))
-        # print('**** redirect url 2 *** %s' % url)
-        # return str(url)
-
-
 def checkRedirect(url):
     # print("*** check redirect ***")
     import requests
@@ -490,8 +459,8 @@ def checkRedirect(url):
     except Exception as e:
         print(e)
         return str(url)
-            
-            
+
+
 def freespace():
     try:
         diskSpace = os.statvfs('/')
@@ -499,7 +468,7 @@ def freespace():
         available = float(diskSpace.f_bsize * diskSpace.f_bavail)
         fspace = round(float(available / 1048576.0), 2)
         tspace = round(float(capacity / 1048576.0), 1)
-        spacestr = 'Free space(' + str(fspace) + 'MB)\nTotal space(' + str(tspace) + 'MB)'
+        spacestr = 'Free space(' + str(fspace) + 'MB) Total space(' + str(tspace) + 'MB)'
         return spacestr
     except:
         return ''
@@ -518,7 +487,6 @@ def b64decoder(s):
     import base64
     s = str(s).strip()
     try:
-        # return base64.b64decode(s)
         outp = base64.b64decode(s)
         print('outp1 ', outp)
         if PY3:
@@ -541,7 +509,6 @@ def b64decoder(s):
             outp = outp.decode('utf-8')
             print('outp2 ', outp)
         return outp
-
 
 
 def __createdir(list):
@@ -587,11 +554,7 @@ def uniq(inlist):
 
 
 def ReloadBouquets():
-    # global set
     print('\n----Reloading bouquets----\n')
-    # if set == 1:
-        # set = 0
-        # terrestrial_rest()
     try:
         from enigma import eDVBDB
         eDVBDB.getInstance().reloadBouquets()
@@ -867,26 +830,6 @@ def RequestAgent():
     from random import choice
     RandomAgent = choice(ListAgent)
     return RandomAgent
-
-
-# def ReadUrl2(url):
-    # import sys
-    # if sys.version_info.major == 3:
-        # import urllib.request as urllib2
-    # elif sys.version_info.major == 2:
-        # import urllib2
-    # req = urllib2.Request(url)
-    # req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14')
-    # r = urllib2.urlopen(req, None, 15)
-    # link = r.read()
-    # r.close()
-    # content = link
-    # if str(type(content)).find('bytes') != -1:
-        # try:
-            # content = content.decode('utf-8')
-        # except Exception as e:
-            # print('error: ', str(e))
-    # return content
 
 
 def ReadUrl2(url, referer):
@@ -1470,6 +1413,12 @@ def clean_html(html):
         html = html.encode('utf-8')
     return html.strip()
 #######################################
+
+
+def cachedel(folder):
+    fold = str(folder)
+    cmd = "rm " + fold + "/*"
+    os.system(cmd)
 
 
 def cleanName(name):
