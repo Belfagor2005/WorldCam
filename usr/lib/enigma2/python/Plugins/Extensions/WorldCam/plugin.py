@@ -115,31 +115,6 @@ def paypal():
     return conthelp
 
 
-def returnIMDB(text_clear):
-    TMDB = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('TMDB'))
-    IMDb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('IMDb'))
-    if os.path.exists(TMDB):
-        try:
-            from Plugins.Extensions.TMBD.plugin import TMBD
-            text = html_conv.html_unescape(text_clear)
-            _session.open(TMBD.tmdbScreen, text, 0)
-        except Exception as e:
-            print("[XCF] Tmdb: ", str(e))
-        return True
-    elif os.path.exists(IMDb):
-        try:
-            from Plugins.Extensions.IMDb.plugin import main as imdb
-            text = html_conv.html_unescape(text_clear)
-            imdb(_session, text)
-        except Exception as e:
-            print("[XCF] imdb: ", str(e))
-        return True
-    else:
-        text_clear = html_conv.html_unescape(text_clear)
-        _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
-        return True
-
-
 class Webcam1(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -1104,7 +1079,7 @@ class PlayWorldcam2(
                                                              # 'epg': self.showIMDB,
                                                              'leavePlayer': self.cancel,
                                                              'epg': self.cicleStreamType,
-                                                             'info': self.showIMDB,
+                                                             # 'info': self.showIMDB,
                                                              'playpauseService': self.playpauseService,
                                                              'yellow': self.subtitles,
                                                              'tv': self.cicleStreamType,
@@ -1159,11 +1134,6 @@ class PlayWorldcam2(
             temp = 0
         self.new_aspect = temp
         self.setAspect(temp)
-
-    def showIMDB(self):
-        text_clear = self.name
-        if returnIMDB(text_clear):
-            print('show imdb/tmdb')
 
     def to_bytes(value, encoding='utf-8'):
         """
