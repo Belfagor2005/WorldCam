@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# 15.02.2023
+# 30.03.2023
 # a common tips used from Lululla
 #
 import sys
@@ -302,7 +302,11 @@ def downloadFile(url, target):
         response = urlopen(url, None, 5)
         with open(target, 'wb') as output:
             # print('response: ', response)
-            output.write(response.read())
+            if PY3:
+                output.write(response.read().decode('utf-8'))
+            else:
+                output.write(response.read())
+            # output.write(response.read())
         response.close()
         return True
     except HTTPError:
