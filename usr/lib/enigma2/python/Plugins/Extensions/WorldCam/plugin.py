@@ -63,9 +63,9 @@ if sys.version_info >= (2, 7, 9):
     except:
         sslContext = None
 
-leng1 = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
-leng1 = leng1.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
-language = leng1[:-3]
+leng = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
+leng2 = leng.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
+language = leng2[:-3]
 
 
 class webcamList(MenuList):
@@ -310,13 +310,11 @@ class Webcam4(Screen):
         content = six.ensure_str(client.request(BASEURL, headers=headers))
         regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
-        # print('Webcam4 match = ', match)
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
             name = html_conv.html_unescape(name)
             item = name + "###" + url1
-            # print('Webcam4 Items sort: ', item)
             items.append(item)
         items.sort()
         for item in items:
@@ -494,11 +492,13 @@ class Webcam6(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
+        self['key_yellow'] = Button('Export')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
+                                                       'yellow': self.crea_bouquet,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
         self.onFirstExecBegin.append(self.openTest)
@@ -520,18 +520,27 @@ class Webcam6(Screen):
         stext = stext + '/'
         regexvideo = '><a href="' + stext + '(.+?)".*?alt="(.+?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
+
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
             name = html_conv.html_unescape(name)
-            item = name + "###" + url1
+            item = name + "###" + url1 + '\n'
             items.append(item)
         items.sort()
+
+        self.xxxname = '/tmp/' + self.name + '_conv.m3u'
+        with open(self.xxxname, 'w') as e:
+            for item in items:
+                e.write(item)
+        e.close
+
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
             self.names.append(name)
             self.urls.append(url1)
+
         showlist(self.names, self['list'])
 
     def okClicked(self):
@@ -548,6 +557,7 @@ class Webcam6(Screen):
             content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
+
             if "source:'livee.m3u8" in content:
                 regexvideo = "source:'livee.m3u8(.+?)'"
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
@@ -558,18 +568,17 @@ class Webcam6(Screen):
                     ref = url.replace(":", "%3a").replace("\\", "/")
                     desc = name
                     self.session.open(PlayWorldcam2, name, ref, desc)
+
             elif "videoId:" in content:
-                    regexvideo = "videoId.*?'(.*?)'"
-                    match = re.compile(regexvideo, re.DOTALL).findall(content)
-                    id = match[0]
-
-                    ref = 'https://www.youtube.com/watch?v=' + id
-
-                    desc = name
-                    try:
-                        self.session.open(PlayWorldcam, name, ref, desc)
-                    except:
-                        pass
+                regexvideo = "videoId.*?'(.*?)'"
+                match = re.compile(regexvideo, re.DOTALL).findall(content)
+                id = match[0]
+                ref = 'https://www.youtube.com/watch?v=' + id
+                desc = name
+                try:
+                    self.session.open(PlayWorldcam, name, ref, desc)
+                except:
+                    pass
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
@@ -578,8 +587,93 @@ class Webcam6(Screen):
     def cancel(self):
         self.close()
 
+    def crea_bouquet(self, answer=None):
+        if answer is None:
+            self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
+        elif answer:
 
-# topcam
+            if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
+                name_clean = Utils.cleanName(self.name)
+                name_file = name_clean.replace('.m3u', '')
+                bouquetname = 'userbouquet.%s.tv' % (name_file.lower())
+                print("Converting Bouquet %s" % name_file)
+                path1 = '/etc/enigma2/' + str(bouquetname)
+                path2 = '/etc/enigma2/bouquets.tv'
+                name = ''
+                servicez = ''
+                descriptionz = ''
+                self.tmplist = []
+                self.tmplist.append('#NAME %s Worldcam by Lululla' % name_file)
+                self.tmplist.append('#SERVICE 1:64:0:0:0:0:0:0:0:0::%s CHANNELS' % name_file)
+                self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
+                tag = '1'
+                for line in open(self.xxxname):
+                    name = line.split('###')[0]
+                    url = line.split('###')[1]
+                    # if PY3:
+                        # content = six.ensure_str(content)
+                    content = Utils.ReadUrl2(url, refer)
+                    ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+                    if "source:'livee.m3u8" in content:
+                        regexvideo = "source:'livee.m3u8(.+?)'"
+                        match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        id = match[0]
+                        id = id.replace('?a=', '')
+                        if id or id != '':
+                            url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                            ref = url.replace(":", "%3a").replace("\\", "/")
+                    elif "videoId:" in content:
+                        regexvideo = "videoId.*?'(.*?)'"
+                        match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        id = match[0]
+                        url = 'https://www.youtube.com/watch?v=' + id
+                        ref = url.replace(":", "%3a").replace("\\", "/")
+                    else:
+                        ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+
+                    descriptiona = ('#DESCRIPTION %s' % name).splitlines()
+                    descriptionz = ''.join(descriptiona)
+                    servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
+                    servicex = (servicea + ':' + name).splitlines()
+                    servicez = ''.join(servicex)
+                    print(descriptionz)
+                    print(servicez)
+                    # if servicez not in self.tmplist:
+                    self.tmplist.append(servicez)
+                    self.tmplist.append(descriptionz)
+
+                with open(path1, 'w+') as s:
+                    for item in self.tmplist:
+                        # if item not in s.read():
+                        s.write("%s\n" % item)
+                        print('item  -> ', item)
+                    # s.close()
+                in_bouquets = 0
+                for line in open('/etc/enigma2/bouquets.tv'):
+                    if bouquetname in line:
+                        in_bouquets = 1
+                if in_bouquets == 0:
+                    with open(path2, 'a+') as f:
+                        bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(bouquetname) + '" ORDER BY bouquet\n'
+                        f.write(str(bouquetTvString))
+                try:
+                    from enigma import eDVBDB
+                    eDVBDB.getInstance().reloadServicelist()
+                    eDVBDB.getInstance().reloadBouquets()
+                    print('all bouquets reloaded...')
+                except:
+                    eDVBDB = None
+                    os.system('wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &')
+                    print('bouquets reloaded...')
+                # f.close()
+                # for x in self.tmplist:
+                    # del self.tmplist[0]
+                # del self.tmplist[:]
+                message = self.session.open(MessageBox, _('bouquets reloaded..'), MessageBox.TYPE_INFO, timeout=5)
+                message.setTitle(_("Reload Bouquet"))
+            return
+
+
 class Webcam7(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -652,6 +746,7 @@ class Webcam8(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
+        self['key_yellow'] = Button('')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -692,9 +787,16 @@ class Webcam8(Screen):
             base_url = 'https://www.skylinewebcams.com'
             url = '{}/{}'.format(base_url, link)
             name = html_conv.html_unescape(name)
-            item = name + "###" + url
+            item = name + "###" + url1 + '\n'
             items.append(item)
         items.sort()
+
+        self.xxxname = '/tmp/' + self.name + '_conv.m3u'
+        with open(self.xxxname, 'w') as e:
+            for item in items:
+                e.write(item)
+        e.close
+
         for item in items:
             name = item.split('###')[0]
             url = item.split('###')[1]
@@ -727,19 +829,105 @@ class Webcam8(Screen):
                     desc = name
                     self.session.open(PlayWorldcam2, name, ref, desc)
             elif "videoId:" in content:
-                    regexvideo = "videoId.*?'(.*?)'"
-                    match = re.compile(regexvideo, re.DOTALL).findall(content)
-                    id = match[0]
-                    ref = 'https://www.youtube.com/watch?v=' + id
-                    desc = name
-                    try:
-                        self.session.open(PlayWorldcam, name, ref, desc)
-                    except:
-                        pass
+                regexvideo = "videoId.*?'(.*?)'"
+                match = re.compile(regexvideo, re.DOTALL).findall(content)
+                id = match[0]
+                ref = 'https://www.youtube.com/watch?v=' + id
+                desc = name
+                try:
+                    self.session.open(PlayWorldcam, name, ref, desc)
+                except:
+                    pass
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
             print(e)
+
+    def crea_bouquet(self, answer=None):
+        if answer is None:
+            self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
+        elif answer:
+
+            if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
+                name_clean = Utils.cleanName(self.name)
+                name_file = name_clean.replace('.m3u', '')
+                bouquetname = 'userbouquet.%s.tv' % (name_file.lower())
+                print("Converting Bouquet %s" % name_file)
+                path1 = '/etc/enigma2/' + str(bouquetname)
+                path2 = '/etc/enigma2/bouquets.tv'
+                name = ''
+                servicez = ''
+                descriptionz = ''
+                self.tmplist = []
+                self.tmplist.append('#NAME %s Worldcam by Lululla' % name_file)
+                self.tmplist.append('#SERVICE 1:64:0:0:0:0:0:0:0:0::%s CHANNELS' % name_file)
+                self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
+                tag = '1'
+                for line in open(self.xxxname):
+                    name = line.split('###')[0]
+                    url = line.split('###')[1]
+                    # if PY3:
+                        # content = six.ensure_str(content)
+                    content = Utils.ReadUrl2(url, refer)
+                    ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+                    if "source:'livee.m3u8" in content:
+                        regexvideo = "source:'livee.m3u8(.+?)'"
+                        match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        id = match[0]
+                        id = id.replace('?a=', '')
+                        if id or id != '':
+                            url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                            ref = url.replace(":", "%3a").replace("\\", "/")
+                    elif "videoId:" in content:
+                        regexvideo = "videoId.*?'(.*?)'"
+                        match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        id = match[0]
+                        url = 'https://www.youtube.com/watch?v=' + id
+                        ref = url.replace(":", "%3a").replace("\\", "/")
+                    else:
+                        ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+
+                    descriptiona = ('#DESCRIPTION %s' % name).splitlines()
+                    descriptionz = ''.join(descriptiona)
+                    servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
+                    servicex = (servicea + ':' + name).splitlines()
+                    servicez = ''.join(servicex)
+                    print(descriptionz)
+                    print(servicez)
+                    # if servicez not in self.tmplist:
+                    self.tmplist.append(servicez)
+                    self.tmplist.append(descriptionz)
+
+                with open(path1, 'w+') as s:
+                    for item in self.tmplist:
+                        # if item not in s.read():
+                        s.write("%s\n" % item)
+                        print('item  -> ', item)
+                    # s.close()
+                in_bouquets = 0
+                for line in open('/etc/enigma2/bouquets.tv'):
+                    if bouquetname in line:
+                        in_bouquets = 1
+                if in_bouquets == 0:
+                    with open(path2, 'a+') as f:
+                        bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(bouquetname) + '" ORDER BY bouquet\n'
+                        f.write(str(bouquetTvString))
+                try:
+                    from enigma import eDVBDB
+                    eDVBDB.getInstance().reloadServicelist()
+                    eDVBDB.getInstance().reloadBouquets()
+                    print('all bouquets reloaded...')
+                except:
+                    eDVBDB = None
+                    os.system('wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &')
+                    print('bouquets reloaded...')
+                # f.close()
+                # for x in self.tmplist:
+                    # del self.tmplist[0]
+                # del self.tmplist[:]
+                message = self.session.open(MessageBox, _('bouquets reloaded..'), MessageBox.TYPE_INFO, timeout=5)
+                message.setTitle(_("Reload Bouquet"))
+            return
 
     def cancel(self):
         self.close()
@@ -793,17 +981,17 @@ class Webcam9(Screen):
 
             elif "videoId:" in content:
 
-                    regexvideo = "videoId.*?'(.*?)'"
-                    match = re.compile(regexvideo, re.DOTALL).findall(content)
-                    id = match[0]
+                regexvideo = "videoId.*?'(.*?)'"
+                match = re.compile(regexvideo, re.DOTALL).findall(content)
+                id = match[0]
 
-                    ref = 'https://www.youtube.com/watch?v=' + id
+                ref = 'https://www.youtube.com/watch?v=' + id
 
-                    desc = name
-                    try:
-                        self.session.open(PlayWorldcam, name, ref, desc)
-                    except:
-                        pass
+                desc = name
+                try:
+                    self.session.open(PlayWorldcam, name, ref, desc)
+                except:
+                    pass
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
@@ -1265,26 +1453,6 @@ class PlayWorldcam2(
 
     def __evEOF(self):
         self.end = True
-
-    # def openTest(self):
-        # name = self.name
-        # name = name.replace(':', '-').replace('&', '-').replace(' ', '-')
-        # name = name.replace('/', '-').replace(',', '-')
-        # url = self.url
-        # if url is not None:
-            # if '5002' in url:
-                # ref = "5002:0:1:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
-                # sref = eServiceReference(ref)
-                # sref.setName(self.name)
-                # self.session.nav.stopService()
-                # self.session.nav.playService(sref)
-            # else:
-                # ref = "4097:0:1:0:0:0:0:0:0:0:{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
-                # sref = eServiceReference(ref)
-                # sref.setName(self.name)
-                # self.session.nav.stopService()
-                # self.session.nav.playService(sref)
-        # return
 
     def subtitles(self):
         self.session.open(MessageBox, 'Please install script.module.SubSupport.', MessageBox.TYPE_ERROR, timeout=10)
