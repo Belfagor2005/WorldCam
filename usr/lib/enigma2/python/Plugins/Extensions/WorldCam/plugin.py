@@ -609,28 +609,33 @@ class Webcam6(Screen):
                 tag = '1'
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
-                    url = line.split('###')[1]
+                    ref = line.split('###')[1]
+
                     # if PY3:
                         # content = six.ensure_str(content)
-                    content = Utils.ReadUrl2(url, refer)
-                    ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
-                    if "source:'livee.m3u8" in content:
-                        regexvideo = "source:'livee.m3u8(.+?)'"
-                        match = re.compile(regexvideo, re.DOTALL).findall(content)
-                        id = match[0]
-                        id = id.replace('?a=', '')
-                        if id or id != '':
-                            url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                            ref = url.replace(":", "%3a").replace("\\", "/")
-                    elif "videoId:" in content:
-                        regexvideo = "videoId.*?'(.*?)'"
-                        match = re.compile(regexvideo, re.DOTALL).findall(content)
-                        id = match[0]
-                        url = 'https://www.youtube.com/watch?v=' + id
-                        ref = url.replace(":", "%3a").replace("\\", "/")
-                    else:
-                        ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+                        
 
+                    # content = Utils.ReadUrl2(ref, refer)
+                    # ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+                    # if "source:'livee.m3u8" in content:
+                        # regexvideo = "source:'livee.m3u8(.+?)'"
+                        # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        # id = match[0]
+                        # id = id.replace('?a=', '')
+                        # if id or id != '':
+                            # url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                            # ref = url.replace(":", "%3a").replace("\\", "/")
+                    # elif "videoId:" in content:
+                        # regexvideo = "videoId.*?'(.*?)'"
+                        # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        # id = match[0]
+                        # url = 'https://www.youtube.com/watch?v=' + id
+                        # ref = url.replace(":", "%3a").replace("\\", "/")
+                    # else:
+                        # ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+
+                    ref = 'streamlink%3a//' + ref.replace(":", "%3a").replace("\\", "/")
+                    
                     descriptiona = ('#DESCRIPTION %s' % name).splitlines()
                     descriptionz = ''.join(descriptiona)
                     servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
@@ -746,11 +751,12 @@ class Webcam8(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('')
+        self['key_yellow'] = Button('Export')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
+                                                       'yellow': self.crea_bouquet,
                                                        'cancel': self.cancel,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
@@ -787,7 +793,7 @@ class Webcam8(Screen):
             base_url = 'https://www.skylinewebcams.com'
             url = '{}/{}'.format(base_url, link)
             name = html_conv.html_unescape(name)
-            item = name + "###" + url1 + '\n'
+            item = name + "###" + url + '\n'
             items.append(item)
         items.sort()
 
@@ -865,27 +871,32 @@ class Webcam8(Screen):
                 tag = '1'
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
-                    url = line.split('###')[1]
+                    ref = line.split('###')[1]
+
                     # if PY3:
                         # content = six.ensure_str(content)
-                    content = Utils.ReadUrl2(url, refer)
-                    ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
-                    if "source:'livee.m3u8" in content:
-                        regexvideo = "source:'livee.m3u8(.+?)'"
-                        match = re.compile(regexvideo, re.DOTALL).findall(content)
-                        id = match[0]
-                        id = id.replace('?a=', '')
-                        if id or id != '':
-                            url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                            ref = url.replace(":", "%3a").replace("\\", "/")
-                    elif "videoId:" in content:
-                        regexvideo = "videoId.*?'(.*?)'"
-                        match = re.compile(regexvideo, re.DOTALL).findall(content)
-                        id = match[0]
-                        url = 'https://www.youtube.com/watch?v=' + id
-                        ref = url.replace(":", "%3a").replace("\\", "/")
-                    else:
-                        ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+                        
+
+                    # content = Utils.ReadUrl2(ref, refer)
+                    # ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+                    # if "source:'livee.m3u8" in content:
+                        # regexvideo = "source:'livee.m3u8(.+?)'"
+                        # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        # id = match[0]
+                        # id = id.replace('?a=', '')
+                        # if id or id != '':
+                            # url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                            # ref = url.replace(":", "%3a").replace("\\", "/")
+                    # elif "videoId:" in content:
+                        # regexvideo = "videoId.*?'(.*?)'"
+                        # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                        # id = match[0]
+                        # url = 'https://www.youtube.com/watch?v=' + id
+                        # ref = url.replace(":", "%3a").replace("\\", "/")
+                    # else:
+                        # ref = 'streamlink%3a//http%3a//patbuweb.com/iptv/e2liste/startend.avi'
+
+                    ref = 'streamlink%3a//' + ref.replace(":", "%3a").replace("\\", "/")
 
                     descriptiona = ('#DESCRIPTION %s' % name).splitlines()
                     descriptionz = ''.join(descriptiona)
