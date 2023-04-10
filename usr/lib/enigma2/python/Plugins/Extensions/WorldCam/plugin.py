@@ -1131,12 +1131,12 @@ class Webcam12(Screen):
                     return 'http://patbuweb.com/iptv/e2liste/startend.avi'
                 self.close()
             else:
-                n1 = content.find('"<div class="link-image', 0)
-                n2 = content.find(' Webcam"', n1)
+                n1 = content.find('class="map-data-host">', 0)
+                n2 = content.find('View Webcam</a></div></div>', n1)
                 content2 = content[n1:n2]
                 print('content2 ', content2)
 
-                regexvideo = 'href="(.+?)".*?img src="(.+?)"alt="(.+?)"'
+                regexvideo = 'image"><a href="(.+?)".*?img src="(.+?)".*?alt="(.+?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
                 items = []
                 for url, pic, name in match:
@@ -1224,7 +1224,7 @@ class PlayWorldcam(Screen):
         if i < 0:
             return
         idx = self['list'].getSelectionIndex()
-        self.name = self.names[idx]
+        # self.name = self.names[idx]
         self.url = self.urls[idx]
         cmd = ''
         if idx == 0:
@@ -1249,7 +1249,7 @@ class PlayWorldcam(Screen):
             os.system(cmd)
             os.system('sleep 3')
             self.url = '/tmp/hls.avi'
-            self.name = self.names[idx]
+            # self.name = self.names[idx]
             self.play()
         elif idx == 3:
             self.play2()
@@ -1460,6 +1460,10 @@ class PlayWorldcam2(
         if "youtube" in self.url.lower():
             print('youtube in url')
             self.onFirstExecBegin.append(self.openYtdl)
+        elif "vistalive" in self.url.lower():
+            print('vistalive in url')
+            self.onFirstExecBegin.append(self.openYtdl)            
+            
         elif '8088' in self.url:
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
