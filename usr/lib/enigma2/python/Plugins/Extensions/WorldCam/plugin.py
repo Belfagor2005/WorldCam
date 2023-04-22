@@ -17,28 +17,22 @@ from Components.Label import Label
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryText
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest
-from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
 from Plugins.Plugin import PluginDescriptor
-from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek
-from Screens.InfoBarGenerics import InfoBarAudioSelection
-from Screens.InfoBarGenerics import InfoBarSubtitleSupport
-from Screens.InfoBarGenerics import InfoBarNotifications
+from Screens.InfoBar import MoviePlayer as WRCPlayer
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
-from enigma import eTimer
 from enigma import eListboxPythonMultiContent
 from enigma import eServiceReference
 from enigma import loadPNG, gFont
-from enigma import iPlayableService
 import os
 import re
 import sys
 import six
 import ssl
-global SKIN_PATH
+global SKIN_PATH, SREF
 
 version = '4.3'  # edit lululla 07/11/2022
 setup_title = ('WORLDCAM v.' + version)
@@ -118,6 +112,8 @@ class Webcam1(Screen):
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.list = []
+        global SREF
+        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
@@ -227,6 +223,8 @@ class Webcam3(Screen):
             self.skin = f.read()
         self.list = []
         self.name = name
+        global SREF
+        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
         self["paypal"] = Label()
@@ -273,10 +271,21 @@ class Webcam3(Screen):
         if i < 0:
             return
         idx = self['list'].getSelectionIndex()
-        name = self.names[idx]
-        desc = self.names[idx]
-        url = self.urls[idx]
-        self.session.open(PlayWorldcam, name, url, desc)
+        title = self.names[idx]
+        video_url = self.urls[idx]
+        # self.session.open(PlayWorldcam, title, video_url, title)
+        # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+            # if os.path.exists('/usr/bin/exteplayer3'):
+                # stream = eServiceReference(5002, 0, video_url)
+            # elif os.path.exists('/usr/bin/gstplayer'):
+                # stream = eServiceReference(5001, 0, video_url)
+            # else:
+                # stream = eServiceReference(4097, 0, video_url)
+        # else:
+            # stream = eServiceReference(4097, 0, video_url)
+        stream = eServiceReference(4097, 0, video_url)
+        stream.setName(title)
+        self.session.open(MoviePlayer, stream)
 
     def cancel(self):
         self.close()
@@ -498,6 +507,8 @@ class Webcam6(Screen):
         self.list = []
         self.name = name
         self.url = url
+        global SREF
+        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
@@ -568,35 +579,85 @@ class Webcam6(Screen):
             content = Utils.ReadUrl2(url, refer)
             if PY3:
                 content = six.ensure_str(content)
-
             if "source:'livee.m3u8" in content:
                 regexvideo = "source:'livee.m3u8(.+?)'"
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
                 id = match[0]
                 id = id.replace('?a=', '')
                 if id or id != '':
-                    url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                    ref = url.replace(":", "%3a").replace("\\", "/")
-                    desc = name
-                    self.session.open(PlayWorldcam2, name, ref, desc)
+                    video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                    title = name
+                    # self.session.open(PlayWorldcam2, title, video_url, title)
+
+                    # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+                        # if os.path.exists('/usr/bin/exteplayer3'):
+                            # stream = eServiceReference(5002, 0, video_url)
+                        # elif os.path.exists('/usr/bin/gstplayer'):
+                            # stream = eServiceReference(5001, 0, video_url)
+                        # else:
+                            # stream = eServiceReference(4097, 0, video_url)
+                    # else:
+                        # stream = eServiceReference(4097, 0, video_url)
+                    stream = eServiceReference(4097, 0, video_url)
+                    stream.setName(title)
+                    self.session.open(MoviePlayer, stream)
 
             elif "videoId:" in content:
                 regexvideo = "videoId.*?'(.*?)'"
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
                 id = match[0]
-                ref = 'https://www.youtube.com/watch?v=' + id
-                desc = name
-                try:
-                    self.session.open(PlayWorldcam, name, ref, desc)
-                except:
-                    pass
+                nid = len(str(id))
+                print(nid)
+                print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
+                if str(nid) == '11':
+                    # self.getYTID(name, str(id))
+
+                    # try:
+                        video_url = 'https://www.youtube.com/watch?v=' + id
+                        stream = self.openYTID(video_url)
+                        stream.setName(name)
+                        print('direct open ytl: ', stream)
+                        self.session.open(MoviePlayer, stream)
+                    # except:
+                        # self.getYTID(name, str(id))
+
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
             print(e)
 
-    def cancel(self):
-        self.close()
+
+    def openYTID(self, video_url):
+        video_url = 'streamlink://' + video_url
+        print('reference Youtube 1:   ', )
+        stream = eServiceReference(4097, 0, video_url)
+        return stream
+
+    def getYTID(self, title, id):
+            yttitle = title  # .encode('ascii', 'replace')
+            video_url = 'https://www.youtube.com/watch?v=' + id
+            print('video_url: %s ' % (video_url))
+            self.playYTID(video_url, yttitle)
+
+    def playYTID(self, video_url, yttitle):
+        title = yttitle
+        stream = eServiceReference(4097, 0, video_url)
+        if os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyc'):
+            video_url = 'streamlink://' + video_url
+            stream = eServiceReference(4097, 0, video_url)
+
+        # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+            # if os.path.exists('/usr/bin/exteplayer3'):
+                # stream = eServiceReference(5002, 0, video_url)
+            # elif os.path.exists('/usr/bin/gstplayer'):
+                # stream = eServiceReference(5001, 0, video_url)
+            # else:
+                # stream = eServiceReference(4097, 0, video_url)
+        # else:
+            # stream = eServiceReference(4097, 0, video_url)
+        # stream = eServiceReference(4097, 0, video_url)
+        stream.setName(title)
+        self.session.open(MoviePlayer, stream)
 
     def crea_bouquet(self, answer=None):
         if answer is None:
@@ -621,12 +682,7 @@ class Webcam6(Screen):
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
-
-                    # if PY3:
-                        # content = six.ensure_str(content)
-
-                    ref = 'streamlink%3a//' + ref.replace(":", "%3a").replace("\\", "/")
-
+                    ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
                     descriptiona = ('#DESCRIPTION %s' % name).splitlines()
                     descriptionz = ''.join(descriptiona)
                     servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
@@ -634,16 +690,13 @@ class Webcam6(Screen):
                     servicez = ''.join(servicex)
                     print(descriptionz)
                     print(servicez)
-                    # if servicez not in self.tmplist:
                     self.tmplist.append(servicez)
                     self.tmplist.append(descriptionz)
 
                 with open(path1, 'w+') as s:
                     for item in self.tmplist:
-                        # if item not in s.read():
                         s.write("%s\n" % item)
                         print('item  -> ', item)
-                    # s.close()
                 in_bouquets = 0
                 for line in open('/etc/enigma2/bouquets.tv'):
                     if bouquetname in line:
@@ -661,13 +714,13 @@ class Webcam6(Screen):
                     eDVBDB = None
                     os.system('wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &')
                     print('bouquets reloaded...')
-                # f.close()
-                # for x in self.tmplist:
-                    # del self.tmplist[0]
-                # del self.tmplist[:]
+
                 message = self.session.open(MessageBox, _('bouquets reloaded..'), MessageBox.TYPE_INFO, timeout=5)
                 message.setTitle(_("Reload Bouquet"))
             return
+
+    def cancel(self):
+        self.close()
 
 
 class Webcam7(Screen):
@@ -738,6 +791,8 @@ class Webcam8(Screen):
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.list = []
+        global SREF
+        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
@@ -821,24 +876,60 @@ class Webcam8(Screen):
                 id = match[0]
                 id = id.replace('?a=', '')
                 if id or id != '':
-                    url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                    ref = url.replace(":", "%3a").replace("\\", "/")
-                    desc = name
-                    self.session.open(PlayWorldcam2, name, ref, desc)
+                    video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                    title = name
+                    # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+                        # if os.path.exists('/usr/bin/exteplayer3'):
+                            # stream = eServiceReference(5002, 0, video_url)
+                        # elif os.path.exists('/usr/bin/gstplayer'):
+                            # stream = eServiceReference(5001, 0, video_url)
+                        # else:
+                            # stream = eServiceReference(4097, 0, video_url)
+                    # else:
+                        # stream = eServiceReference(4097, 0, video_url)
+                    stream = eServiceReference(4097, 0, video_url)
+                    stream.setName(title)
+                    self.session.open(MoviePlayer, stream)
+
             elif "videoId:" in content:
                 regexvideo = "videoId.*?'(.*?)'"
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
                 id = match[0]
-                ref = 'https://www.youtube.com/watch?v=' + id
-                desc = name
-                try:
-                    self.session.open(PlayWorldcam, name, ref, desc)
-                except:
-                    pass
+                nid = len(str(id))
+                print(nid)
+                print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
+                if str(nid) == '11':
+                    self.getYTID(name, str(id))
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
             print(e)
+
+    def getYTID(self, title, id):
+            yttitle = title  # .encode('ascii', 'replace')
+            video_url = 'https://www.youtube.com/watch?v=' + id
+            print('video_url: %s ' % (video_url))
+            self.playYTID(video_url, yttitle)
+
+    def playYTID(self, video_url, yttitle):
+        title = yttitle
+        stream = eServiceReference(4097, 0, video_url)
+        if os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyc'):
+            video_url = 'streamlink://' + video_url
+            stream = eServiceReference(4097, 0, video_url)
+
+        # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+            # if os.path.exists('/usr/bin/exteplayer3'):
+                # stream = eServiceReference(5002, 0, video_url)
+            # elif os.path.exists('/usr/bin/gstplayer'):
+                # stream = eServiceReference(5001, 0, video_url)
+            # else:
+                # stream = eServiceReference(4097, 0, video_url)
+        # else:
+            # stream = eServiceReference(4097, 0, video_url)
+        # stream = eServiceReference(4097, 0, video_url)
+        stream.setName(title)
+        self.session.open(MoviePlayer, stream)
 
     def crea_bouquet(self, answer=None):
         if answer is None:
@@ -862,9 +953,7 @@ class Webcam8(Screen):
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
-                    # if PY3:
-                        # content = six.ensure_str(content)
-                    ref = 'streamlink%3a//' + ref.replace(":", "%3a").replace("\\", "/")
+                    ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
                     descriptiona = ('#DESCRIPTION %s' % name).splitlines()
                     descriptionz = ''.join(descriptiona)
                     servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
@@ -872,16 +961,13 @@ class Webcam8(Screen):
                     servicez = ''.join(servicex)
                     print(descriptionz)
                     print(servicez)
-                    # if servicez not in self.tmplist:
                     self.tmplist.append(servicez)
                     self.tmplist.append(descriptionz)
 
                 with open(path1, 'w+') as s:
                     for item in self.tmplist:
-                        # if item not in s.read():
                         s.write("%s\n" % item)
                         print('item  -> ', item)
-                    # s.close()
                 in_bouquets = 0
                 for line in open('/etc/enigma2/bouquets.tv'):
                     if bouquetname in line:
@@ -899,10 +985,6 @@ class Webcam8(Screen):
                     eDVBDB = None
                     os.system('wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &')
                     print('bouquets reloaded...')
-                # f.close()
-                # for x in self.tmplist:
-                    # del self.tmplist[0]
-                # del self.tmplist[:]
                 message = self.session.open(MessageBox, _('bouquets reloaded..'), MessageBox.TYPE_INFO, timeout=5)
                 message.setTitle(_("Reload Bouquet"))
             return
@@ -1067,6 +1149,8 @@ class Webcam12(Screen):
         self.list = []
         self.name = name
         self.url = url
+        global SREF
+        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
         self["paypal"] = Label()
@@ -1113,20 +1197,33 @@ class Webcam12(Screen):
                     id = match[0]
                     id = id.replace('?a=', '')
                     if id or id != '':
-                        url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                        ref = url.replace(":", "%3a").replace("\\", "/")
-                        desc = self.name
-                        self.session.open(PlayWorldcam2, self.name, ref, desc)
+                        video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                        # video_url = video_url.replace(":", "%3a").replace("\\", "/")
+                        title = self.name
+                        # self.session.open(PlayWorldcam2, title, video_url, title)
+
+                        # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+                            # if os.path.exists('/usr/bin/exteplayer3'):
+                                # stream = eServiceReference(5002, 0, video_url)
+                            # elif os.path.exists('/usr/bin/gstplayer'):
+                                # stream = eServiceReference(5001, 0, video_url)
+                            # else:
+                                # stream = eServiceReference(4097, 0, video_url)
+                        # else:
+                            # stream = eServiceReference(4097, 0, video_url)
+                        stream = eServiceReference(4097, 0, video_url)
+                        stream.setName(title)
+                        self.session.open(MoviePlayer, stream)
+
                 elif "videoId:" in content:
                     regexvideo = "videoId.*?'(.*?)'"
                     match = re.compile(regexvideo, re.DOTALL).findall(content)
                     id = match[0]
-                    ref = 'https://www.youtube.com/watch?v=' + id
-                    desc = self.name
-                    try:
-                        self.session.open(PlayWorldcam, self.name, ref, desc)
-                    except:
-                        pass
+                    nid = len(str(id))
+                    print(nid)
+                    print('name: %s\nid: %s\nLenYTL: %s' % (str(self.name), str(id), nid))
+                    if str(nid) == '11':
+                        self.getYTID(self.name, str(id))
                 else:
                     return 'http://patbuweb.com/iptv/e2liste/startend.avi'
                 self.close()
@@ -1157,249 +1254,69 @@ class Webcam12(Screen):
         except Exception as e:
             print('openTest ', e)
 
+    def getYTID(self, title, id):
+        yttitle = title  # .encode('ascii', 'replace')
+        video_url = 'https://www.youtube.com/watch?v=' + id
+        print('video_url: %s ' % (video_url))
+        self.playYTID(video_url, yttitle)
+
+    def playYTID(self, video_url, yttitle):
+        title = yttitle
+        stream = eServiceReference(4097, 0, video_url)
+        if os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyc'):
+            video_url = 'streamlink://' + video_url
+            stream = eServiceReference(4097, 0, video_url)
+
+        # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+            # if os.path.exists('/usr/bin/exteplayer3'):
+                # stream = eServiceReference(5002, 0, video_url)
+            # elif os.path.exists('/usr/bin/gstplayer'):
+                # stream = eServiceReference(5001, 0, video_url)
+            # else:
+                # stream = eServiceReference(4097, 0, video_url)
+        # else:
+            # stream = eServiceReference(4097, 0, video_url)
+        # stream = eServiceReference(4097, 0, video_url)
+        stream.setName(title)
+        self.session.open(MoviePlayer, stream)
+
+    def openYTID(self, video_url):
+        url = 'streamlink://' + video_url
+        print('reference vistalive:   ', url)
+        stream = eServiceReference(4097, 0, video_url)
+        return stream
+
     def okClicked(self):
         i = len(self.names)
         if i < 0:
             return
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
-        url = self.urls[idx]
-        print(name + '\n' + url + '\n')
-        self.session.open(PlayWorldcam, name, url, name)
+        video_url = self.urls[idx]
+        print(name + '\n' + video_url + '\n')
+        stream = eServiceReference(4097, 0, video_url)
+        if "vistalive" in video_url:
+            stream = self.openYTID(video_url)
+        # else:
+            # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+                # if os.path.exists('/usr/bin/exteplayer3'):
+                    # stream = eServiceReference(5002, 0, video_url)
+                # elif os.path.exists('/usr/bin/gstplayer'):
+                    # stream = eServiceReference(5001, 0, video_url)
+                # else:
+                    # stream = eServiceReference(4097, 0, video_url)
+            # else:
+                # stream = eServiceReference(4097, 0, video_url)
+        # stream = eServiceReference(4097, 0, video_url)
+        # stream = stream.replace('%25', '%')
+        stream.setName(name)
+        self.session.open(MoviePlayer, stream)
 
     def cancel(self):
         self.close()
 
 
-class PlayWorldcam(Screen):
-    def __init__(self, session, name, url, desc):
-        Screen.__init__(self, session)
-        self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
-            self.skin = f.read()
-        self.list = []
-        self.name = name
-        self.url = url
-        self.desc = desc
-        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
-        self['list'] = webcamList([])
-        self['info'] = Label('Select Player')
-        self["paypal"] = Label()
-        self['key_red'] = Button('Exit')
-        self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('')
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
-        self.onFirstExecBegin.append(self.openTest)
-        self.onLayoutFinish.append(self.layoutFinished)
-
-    def layoutFinished(self):
-        payp = paypal()
-        self["paypal"].setText(payp)
-
-    def openTest(self):
-        url = self.url
-        self.names = []
-        self.urls = []
-        self.names.append('Play Direct')
-        self.urls.append(url)
-        self.names.append('Play Hls')
-        self.urls.append(url)
-        self.names.append('Play Ts')
-        self.urls.append(url)
-        self.names.append('Streamlink')
-        self.urls.append(url)
-        # self.names.append('Test Youtube')
-        # self.urls.append(url)
-        showlist(self.names, self['list'])
-
-    def okClicked(self):
-        i = len(self.names)
-        if i < 0:
-            return
-        idx = self['list'].getSelectionIndex()
-        # self.name = self.names[idx]
-        self.url = self.urls[idx]
-        cmd = ''
-        if idx == 0:
-            self.play()
-        elif idx == 1:
-            try:
-                os.remove('/tmp/hls.avi')
-            except:
-                pass
-            header = ''
-            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
-            os.system(cmd)
-            os.system('sleep 3')
-            self.url = '/tmp/hls.avi'
-            self.play()
-        elif idx == 2:
-            try:
-                os.remove('/tmp/hls.avi')
-            except:
-                pass
-            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/lib/tsclient.py" "' + self.url + '" "1" + &'
-            os.system(cmd)
-            os.system('sleep 3')
-            self.url = '/tmp/hls.avi'
-            # self.name = self.names[idx]
-            self.play()
-        elif idx == 3:
-            self.play2()
-        else:
-            '''
-            try:
-                os.remove('/tmp/vid.txt')
-            except:
-                pass
-            cmd = "python '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/scripts/script.module.ytdl/lib/__main__.py' -f mp4/bestvideo+bestaudio --no-check-certificate --skip-download --get-url " + self.url + " > /tmp/vid.txt"
-            os.system(cmd)
-            os.system('sleep 3')
-            currenturl = open('/tmp/vid.txt', 'r')
-            currenturl = currenturl.read()
-            self.url = currenturl.strip()  # '/tmp/vid.txt'
-            self.name = self.names[idx]
-            self.play()
-            '''
-            pass
-        print('In playVideo url =', self.url)
-        print('In playVideo  cmd =', cmd)
-        return
-
-    def playfile(self, serverint):
-        self.serverList[serverint].play(self.session, self.url, self.name)
-
-    def play(self):
-        desc = self.desc
-        name = self.name
-        self.session.open(PlayWorldcam2, name, self.url, desc)
-
-    def play2(self):
-        if Utils.isStreamlinkAvailable():
-            desc = self.desc
-            name = self.name
-            url = self.url
-            url = url.replace(':', '%3a')
-            # print('In url =', url)
-            # print(type(url))
-            sref = 'http%3a//127.0.0.1%3a8088/' + url
-            self.session.open(PlayWorldcam2, name, sref, desc)
-            self.close()
-        else:
-            self.session.open(MessageBox, 'Install Streamlink first', MessageBox.TYPE_INFO, timeout=5)
-
-    def cancel(self):
-        self.session.nav.stopService()
-        self.session.nav.playService(self.srefInit)
-        self.close()
-
-
-class TvInfoBarShowHide():
-    """ InfoBar show/hide control, accepts toggleShow and hide actions, might start
-    fancy animations. """
-    STATE_HIDDEN = 0
-    STATE_HIDING = 1
-    STATE_SHOWING = 2
-    STATE_SHOWN = 3
-    skipToggleShow = False
-
-    def __init__(self):
-        self["ShowHideActions"] = ActionMap(["InfobarShowHideActions"], {"toggleShow": self.OkPressed, "hide": self.hide}, 0)
-        self.__event_tracker = ServiceEventTracker(screen=self, eventmap={iPlayableService.evStart: self.serviceStarted})
-        self.__state = self.STATE_SHOWN
-        self.__locked = 0
-        self.hideTimer = eTimer()
-        try:
-            self.hideTimer_conn = self.hideTimer.timeout.connect(self.doTimerHide)
-        except:
-            self.hideTimer.callback.append(self.doTimerHide)
-        self.hideTimer.start(5000, True)
-        self.onShow.append(self.__onShow)
-        self.onHide.append(self.__onHide)
-
-    def OkPressed(self):
-        self.toggleShow()
-
-    def toggleShow(self):
-        if self.skipToggleShow:
-            self.skipToggleShow = False
-            return
-        if self.__state == self.STATE_HIDDEN:
-            self.show()
-            self.hideTimer.stop()
-        else:
-            self.hide()
-            self.startHideTimer()
-
-    def serviceStarted(self):
-        if self.execing:
-            if config.usage.show_infobar_on_zap.value:
-                self.doShow()
-
-    def __onShow(self):
-        self.__state = self.STATE_SHOWN
-        self.startHideTimer()
-
-    def startHideTimer(self):
-        if self.__state == self.STATE_SHOWN and not self.__locked:
-            idx = config.usage.infobar_timeout.index
-            if idx:
-                self.hideTimer.start(idx * 1500, True)
-
-    def __onHide(self):
-        self.__state = self.STATE_HIDDEN
-
-    def doShow(self):
-        self.hideTimer.stop()
-        self.show()
-        self.startHideTimer()
-
-    def doTimerHide(self):
-        self.hideTimer.stop()
-        if self.__state == self.STATE_SHOWN:
-            self.hide()
-
-    def lockShow(self):
-        try:
-            self.__locked += 1
-        except:
-            self.__locked = 0
-        if self.execing:
-            self.show()
-            self.hideTimer.stop()
-            self.skipToggleShow = False
-
-    def unlockShow(self):
-        try:
-            self.__locked -= 1
-        except:
-            self.__locked = 0
-        if self.__locked < 0:
-            self.__locked = 0
-        if self.execing:
-            self.startHideTimer()
-
-    def debug(obj, text=""):
-        print(text + " %s\n" % obj)
-
-
-class PlayWorldcam2(
-    InfoBarBase,
-    InfoBarMenu,
-    InfoBarSeek,
-    InfoBarAudioSelection,
-    InfoBarSubtitleSupport,
-    InfoBarNotifications,
-    TvInfoBarShowHide,
-    Screen
-):
+class MoviePlayer(WRCPlayer):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -1407,69 +1324,33 @@ class PlayWorldcam2(
     ALLOW_SUSPEND = True
     screen_timeout = 5000
 
-    def __init__(self, session, name, url, desc):
-        global streaml
-        # global _session
-        Screen.__init__(self, session)
-        self.session = session
-        self.skinName = 'MoviePlayer'
-        # _session = session
-        streaml = False
-        for x in InfoBarBase, \
-                InfoBarMenu, \
-                InfoBarSeek, \
-                InfoBarAudioSelection, \
-                InfoBarSubtitleSupport, \
-                InfoBarNotifications, \
-                TvInfoBarShowHide:
-            x.__init__(self)
+    def __init__(self, session, service):
+        WRCPlayer.__init__(self, session, service)
         try:
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
         self.new_aspect = self.init_aspect
-        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
-        self.allowPiP = False
-        self.service = None
-        self.url = url
-        self.desc = desc
-        self.name = html_conv.html_unescape(name)
         self.state = self.STATE_PLAYING
-        self['actions'] = ActionMap(['MoviePlayerActions',
-                                     'MovieSelectionActions',
-                                     'MediaPlayerActions',
-                                     'EPGSelectActions',
-                                     'MediaPlayerSeekActions',
-                                     'DirectionActions',
-                                     'ButtonSetupActions',
-                                     'OkCancelActions',
-                                     'InfobarShowHideActions',
-                                     'InfobarActions',
-                                     'InfobarSeekActions'], {'stop': self.cancel,
-                                                             # 'epg': self.showIMDB,
-                                                             'leavePlayer': self.cancel,
-                                                             'epg': self.cicleStreamType,
-                                                             # 'info': self.showIMDB,
-                                                             'playpauseService': self.playpauseService,
-                                                             'yellow': self.subtitles,
-                                                             'tv': self.cicleStreamType,
-                                                             'cancel': self.cancel,
-                                                             'back': self.leavePlayer,
-                                                             'down': self.av}, -1)
-        # if "youtube" or 'skylinewebcams' in self.url.lower():
-        if "youtube" in self.url.lower():
-            print('youtube in url')
-            self.onFirstExecBegin.append(self.openYtdl)
-        elif "vistalive" in self.url.lower():
-            print('vistalive in url')
-            self.onFirstExecBegin.append(self.openYtdl)            
-            
-        elif '8088' in self.url:
-            self.onFirstExecBegin.append(self.slinkPlay)
-        else:
-            self.onFirstExecBegin.append(self.cicleStreamType)
-        # self.onFirstExecBegin.append(self.openYtdl)
-        self.onClose.append(self.cancel)
+        self['actions'] = ActionMap(['MoviePlayerActions', 'DirectionActions', 'OkCancelActions'], {'cancel': self.leavePlayerOnExit,
+         # 'cancel': self.leavePlayerOnExit,
+         'left': self.keyPrev,
+         'right': self.keyNext,
+         'up': self.keyPrev,
+         'down': self.keyNext}, -1)
+
+    def leavePlayer(self):
+        self.is_closing = True
+        if os.path.exists('/tmp/hls.avi'):
+            os.remove('/tmp/hls.avi')
+        self.session.nav.stopService()
+        self.session.nav.playService(SREF)
+        if not self.new_aspect == self.init_aspect:
+            try:
+                self.setAspect(self.init_aspect)
+            except:
+                pass
+        self.close()
 
     def getAspect(self):
         return AVSwitch().getAspectRatioSetting()
@@ -1501,109 +1382,32 @@ class PlayWorldcam2(
         except:
             pass
 
-    def av(self):
-        temp = int(self.getAspect())
-        temp += 1
-        if temp > 6:
-            temp = 0
-        self.new_aspect = temp
-        self.setAspect(temp)
+    def leavePlayerOnExit(self):
+        self.leavePlayer()
 
-    def to_bytes(value, encoding='utf-8'):
-        """
-        Makes sure the value is encoded as a byte string.
+    def leavePlayerConfirmed(self, answer):
+        answer = answer and answer[1]
+        if answer == 'quit':
+            self.leavePlayer()
 
-        :param value: The Python string value to encode.
-        :param encoding: The encoding to use.
-        :return: The byte string that was encoded.
-        """
-        if isinstance(value, six.binary_type):
-            return value
-        return value.encode(encoding)
+    def doEofInternal(self, playing):
+        if self.execing and playing:
+            self.leavePlayer()
+            return
+        else:
+            return
 
-    def slinkPlay(self):
-        name = self.name
-        url = '5002:0:1:0:0:0:0:0:0:0:' + self.url
-        if PY3:
-            url = url.encode()
-        print('type url value ', type(url))
-        sref = eServiceReference(url)
-        sref.setName(name)
-        self.session.nav.stopService()
-        self.session.nav.playService(sref)
+    def showMovies(self):
+        self.leavePlayer()
 
-    def openPlay(self, servicetype, url):
-        try:
-            name = self.name
-            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
-            print('reference:   ', ref)
-            if streaml is True:
-                url = 'http://127.0.0.1:8088/' + url
-                ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
-                print('streaml reference:   ', ref)
-            print('final reference:   ', ref)
-            sref = eServiceReference(ref)
-            sref.setName(name)
-            self.session.nav.stopService()
-            self.session.nav.playService(sref)
-        except Exception as e:
-            print('error player ', e)
+    def movieSelected(self, service):
+        self.leavePlayer()
 
-    def openYtdl(self):
-        name = self.name
-        url = 'streamlink%3a//' + self.url
-        servicetype = '4097'
-        ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
-        print('reference youtube:   ', ref)
-        sref = eServiceReference(ref)
-        sref.setName(name)
-        self.session.nav.stopService()
-        self.session.nav.playService(sref)
+    def __onClose(self):
+        self.leavePlayer()
 
-    def cicleStreamType(self):
-        global streaml
-        streaml = False
-        from itertools import cycle, islice
-        self.servicetype = '4097'
-        print('servicetype1: ', self.servicetype)
-        url = str(self.url)
-        if str(os.path.splitext(self.url)[-1]) == ".m3u8":
-            # if self.servicetype == "1":
-            self.servicetype = "4097"
-        currentindex = 0
-        streamtypelist = ["4097"]
-        if "youtube" in url.lower():
-            print('youtube in url')
-            url = 'streamlink%3a//' + url
-            print('final 1 youtube in url')
-        '''
-        # # if "youtube" in str(self.url):
-            # # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            # # return
-        # if os.path.exists("/usr/bin/gstplayer"):
-            # streamtypelist.append("5001")
-        # if os.path.exists("/usr/bin/exteplayer3"):
-            # streamtypelist.append("5002")
-        # if os.path.exists("/usr/bin/apt-get"):
-            # streamtypelist.append("8193")
-        # if Utils.isStreamlinkAvailable():
-            # streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            # streaml = True
-        # if os.path.exists("/usr/bin/gstplayer"):
-            # streamtypelist.append("5001")
-        # if os.path.exists("/usr/bin/exteplayer3"):
-            # streamtypelist.append("5002")
-        # if os.path.exists("/usr/bin/apt-get"):
-            # streamtypelist.append("8193")
-        '''
-        for index, item in enumerate(streamtypelist, start=0):
-            if str(item) == str(self.servicetype):
-                currentindex = index
-                break
-        nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
-        self.servicetype = str(next(nextStreamType))
-        print('servicetype2: ', self.servicetype)
-        self.openPlay(self.servicetype, url)
+    def mainMenu(self):
+        pass
 
     def playpauseService(self):
         if self.state == self.STATE_PLAYING:
@@ -1623,36 +1427,19 @@ class PlayWorldcam2(
         pass
 
     def down(self):
-        self.up()
+        pass
 
-    def doEofInternal(self, playing):
-        self.close()
+    def left(self):
+        pass
 
-    def __evEOF(self):
-        self.end = True
+    def right(self):
+        pass
 
-    def subtitles(self):
-        self.session.open(MessageBox, 'Please install script.module.SubSupport.', MessageBox.TYPE_ERROR, timeout=10)
+    def keyPrev(self):
+        self.leavePlayer()
 
-    def showAfterSeek(self):
-        if isinstance(self, TvInfoBarShowHide):
-            self.doShow()
-
-    def cancel(self):
-        if os.path.exists('/tmp/hls.avi'):
-            os.remove('/tmp/hls.avi')
-        self.session.nav.stopService()
-        self.session.nav.playService(self.srefInit)
-        if not self.new_aspect == self.init_aspect:
-            try:
-                self.setAspect(self.init_aspect)
-            except:
-                pass
-        streaml = False
-        self.close()
-
-    def leavePlayer(self):
-        self.close()
+    def keyNext(self):
+        self.leavePlayer()
 
 
 class AutoStartTimerwrd:
