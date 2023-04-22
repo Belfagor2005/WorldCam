@@ -642,7 +642,7 @@ class Webcam6(Screen):
     def playYTID(self, video_url, yttitle):
         title = yttitle
         stream = eServiceReference(4097, 0, video_url)
-        if os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyc'):
+        if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
             stream = eServiceReference(4097, 0, video_url)
 
@@ -914,7 +914,7 @@ class Webcam8(Screen):
     def playYTID(self, video_url, yttitle):
         title = yttitle
         stream = eServiceReference(4097, 0, video_url)
-        if os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyc'):
+        if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
             stream = eServiceReference(4097, 0, video_url)
 
@@ -1263,7 +1263,7 @@ class Webcam12(Screen):
     def playYTID(self, video_url, yttitle):
         title = yttitle
         stream = eServiceReference(4097, 0, video_url)
-        if os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Exstensions/YTDLWrapper/plugin.pyc'):
+        if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
             stream = eServiceReference(4097, 0, video_url)
 
