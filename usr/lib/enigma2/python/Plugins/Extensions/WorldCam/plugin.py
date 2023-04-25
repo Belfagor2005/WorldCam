@@ -17,16 +17,23 @@ from Components.Label import Label
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryText
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest
+from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBar import MoviePlayer as WRCPlayer
+from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek
+from Screens.InfoBarGenerics import InfoBarAudioSelection
+from Screens.InfoBarGenerics import InfoBarSubtitleSupport
+from Screens.InfoBarGenerics import InfoBarNotifications
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
+from enigma import iPlayableService
 from enigma import eListboxPythonMultiContent
 from enigma import eServiceReference
 from enigma import loadPNG, gFont
+from enigma import eTimer
 import os
 import re
 import sys
@@ -338,6 +345,12 @@ class Webcam4(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -409,6 +422,12 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -480,6 +499,12 @@ class Webcam5a(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -560,6 +585,12 @@ class Webcam6(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url1)
 
@@ -625,7 +656,6 @@ class Webcam6(Screen):
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
             print(e)
-
 
     def openYTID(self, video_url):
         video_url = 'streamlink://' + video_url
@@ -766,6 +796,12 @@ class Webcam7(Screen):
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
             name = html_conv.html_unescape(name)
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -852,6 +888,12 @@ class Webcam8(Screen):
         for item in items:
             name = item.split('###')[0]
             url = item.split('###')[1]
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url)
         showlist(self.names, self['list'])
@@ -906,10 +948,10 @@ class Webcam8(Screen):
             print(e)
 
     def getYTID(self, title, id):
-            yttitle = title  # .encode('ascii', 'replace')
-            video_url = 'https://www.youtube.com/watch?v=' + id
-            print('video_url: %s ' % (video_url))
-            self.playYTID(video_url, yttitle)
+        yttitle = title  # .encode('ascii', 'replace')
+        video_url = 'https://www.youtube.com/watch?v=' + id
+        print('video_url: %s ' % (video_url))
+        self.playYTID(video_url, yttitle)
 
     def playYTID(self, video_url, yttitle):
         title = yttitle
@@ -1045,6 +1087,12 @@ class Webcam10(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -1121,6 +1169,12 @@ class Webcam11(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+
+            if PY3:
+                name = name.decode("utf-8")
+            else:
+                name = name.encode("utf-8")
+
             self.names.append(name)
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -1248,6 +1302,12 @@ class Webcam12(Screen):
                 for item in items:
                     name = item.split('###')[0]
                     url1 = item.split('###')[1]
+
+                    if PY3:
+                        name = name.decode("utf-8")
+                    else:
+                        name = name.encode("utf-8")
+
                     self.names.append(name)
                     self.urls.append(url1)
                 showlist(self.names, self['list'])
@@ -1316,7 +1376,105 @@ class Webcam12(Screen):
         self.close()
 
 
-class MoviePlayer(WRCPlayer):
+class TvInfoBarShowHide():
+    """ InfoBar show/hide control, accepts toggleShow and hide actions, might start
+    fancy animations. """
+    STATE_HIDDEN = 0
+    STATE_HIDING = 1
+    STATE_SHOWING = 2
+    STATE_SHOWN = 3
+    skipToggleShow = False
+
+    def __init__(self):
+        self["ShowHideActions"] = ActionMap(["InfobarShowHideActions"], {"toggleShow": self.OkPressed, "hide": self.hide}, 0)
+        self.__event_tracker = ServiceEventTracker(screen=self, eventmap={iPlayableService.evStart: self.serviceStarted})
+        self.__state = self.STATE_SHOWN
+        self.__locked = 0
+        self.hideTimer = eTimer()
+        try:
+            self.hideTimer_conn = self.hideTimer.timeout.connect(self.doTimerHide)
+        except:
+            self.hideTimer.callback.append(self.doTimerHide)
+        self.hideTimer.start(5000, True)
+        self.onShow.append(self.__onShow)
+        self.onHide.append(self.__onHide)
+
+    def OkPressed(self):
+        self.toggleShow()
+
+    def toggleShow(self):
+        if self.skipToggleShow:
+            self.skipToggleShow = False
+            return
+        if self.__state == self.STATE_HIDDEN:
+            self.show()
+            self.hideTimer.stop()
+        else:
+            self.hide()
+            self.startHideTimer()
+
+    def serviceStarted(self):
+        if self.execing:
+            if config.usage.show_infobar_on_zap.value:
+                self.doShow()
+
+    def __onShow(self):
+        self.__state = self.STATE_SHOWN
+        self.startHideTimer()
+
+    def startHideTimer(self):
+        if self.__state == self.STATE_SHOWN and not self.__locked:
+            idx = config.usage.infobar_timeout.index
+            if idx:
+                self.hideTimer.start(idx * 1500, True)
+
+    def __onHide(self):
+        self.__state = self.STATE_HIDDEN
+
+    def doShow(self):
+        self.hideTimer.stop()
+        self.show()
+        self.startHideTimer()
+
+    def doTimerHide(self):
+        self.hideTimer.stop()
+        if self.__state == self.STATE_SHOWN:
+            self.hide()
+
+    def lockShow(self):
+        try:
+            self.__locked += 1
+        except:
+            self.__locked = 0
+        if self.execing:
+            self.show()
+            self.hideTimer.stop()
+            self.skipToggleShow = False
+
+    def unlockShow(self):
+        try:
+            self.__locked -= 1
+        except:
+            self.__locked = 0
+        if self.__locked < 0:
+            self.__locked = 0
+        if self.execing:
+            self.startHideTimer()
+
+    def debug(obj, text=""):
+        print(text + " %s\n" % obj)
+
+
+class MoviePlayer(
+    InfoBarBase,
+    InfoBarMenu,
+    InfoBarSeek,
+    InfoBarAudioSelection,
+    InfoBarSubtitleSupport,
+    InfoBarNotifications,
+    TvInfoBarShowHide,
+    Screen
+):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -1324,33 +1482,48 @@ class MoviePlayer(WRCPlayer):
     ALLOW_SUSPEND = True
     screen_timeout = 5000
 
-    def __init__(self, session, service):
-        WRCPlayer.__init__(self, session, service)
+    def __init__(self, session, stream):
+        global streaml
+        Screen.__init__(self, session)
+        self.session = session
+        self.skinName = 'MoviePlayer'
+        streaml = False
+        for x in InfoBarBase, \
+                InfoBarMenu, \
+                InfoBarSeek, \
+                InfoBarAudioSelection, \
+                InfoBarSubtitleSupport, \
+                InfoBarNotifications, \
+                TvInfoBarShowHide:
+            x.__init__(self)
         try:
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
         self.new_aspect = self.init_aspect
+        self.allowPiP = False
+        self.service = None
+        self.stream = stream
         self.state = self.STATE_PLAYING
-        self['actions'] = ActionMap(['MoviePlayerActions', 'DirectionActions', 'OkCancelActions'], {'cancel': self.leavePlayerOnExit,
-         # 'cancel': self.leavePlayerOnExit,
-         'left': self.keyPrev,
-         'right': self.keyNext,
-         'up': self.keyPrev,
-         'down': self.keyNext}, -1)
-
-    def leavePlayer(self):
-        self.is_closing = True
-        if os.path.exists('/tmp/hls.avi'):
-            os.remove('/tmp/hls.avi')
-        self.session.nav.stopService()
-        self.session.nav.playService(SREF)
-        if not self.new_aspect == self.init_aspect:
-            try:
-                self.setAspect(self.init_aspect)
-            except:
-                pass
-        self.close()
+        self['actions'] = ActionMap(['MoviePlayerActions',
+                                     'MovieSelectionActions',
+                                     'MediaPlayerActions',
+                                     'EPGSelectActions',
+                                     'MediaPlayerSeekActions',
+                                     'DirectionActions',
+                                     'ButtonSetupActions',
+                                     'OkCancelActions',
+                                     'InfobarShowHideActions',
+                                     'InfobarActions',
+                                     'InfobarSeekActions'], {'stop': self.cancel,
+                                                             'leavePlayer': self.cancel,
+                                                             'playpauseService': self.playpauseService,
+                                                             'yellow': self.subtitles,
+                                                             'cancel': self.cancel,
+                                                             'back': self.leavePlayer,
+                                                             'down': self.av}, -1)
+        self.onFirstExecBegin.append(self.openPlay)
+        self.onClose.append(self.cancel)
 
     def getAspect(self):
         return AVSwitch().getAspectRatioSetting()
@@ -1382,32 +1555,31 @@ class MoviePlayer(WRCPlayer):
         except:
             pass
 
-    def leavePlayerOnExit(self):
-        self.leavePlayer()
+    def av(self):
+        temp = int(self.getAspect())
+        temp += 1
+        if temp > 6:
+            temp = 0
+        self.new_aspect = temp
+        self.setAspect(temp)
 
-    def leavePlayerConfirmed(self, answer):
-        answer = answer and answer[1]
-        if answer == 'quit':
-            self.leavePlayer()
+    def to_bytes(value, encoding='utf-8'):
+        """
+        Makes sure the value is encoded as a byte string.
+        :param value: The Python string value to encode.
+        :param encoding: The encoding to use.
+        :return: The byte string that was encoded.
+        """
+        if isinstance(value, six.binary_type):
+            return value
+        return value.encode(encoding)
 
-    def doEofInternal(self, playing):
-        if self.execing and playing:
-            self.leavePlayer()
-            return
-        else:
-            return
-
-    def showMovies(self):
-        self.leavePlayer()
-
-    def movieSelected(self, service):
-        self.leavePlayer()
-
-    def __onClose(self):
-        self.leavePlayer()
-
-    def mainMenu(self):
-        pass
+    def openPlay(self):
+        try:
+            self.session.nav.stopService()
+            self.session.nav.playService(self.stream)
+        except Exception as e:
+            print('error player ', e)
 
     def playpauseService(self):
         if self.state == self.STATE_PLAYING:
@@ -1427,19 +1599,163 @@ class MoviePlayer(WRCPlayer):
         pass
 
     def down(self):
-        pass
+        self.up()
 
-    def left(self):
-        pass
+    def doEofInternal(self, playing):
+        self.close()
 
-    def right(self):
-        pass
+    def __evEOF(self):
+        self.end = True
 
-    def keyPrev(self):
+    def subtitles(self):
+        self.session.open(MessageBox, 'Please install script.module.SubSupport.', MessageBox.TYPE_ERROR, timeout=10)
+
+    def showAfterSeek(self):
+        if isinstance(self, TvInfoBarShowHide):
+            self.doShow()
+
+    def cancel(self):
+        if os.path.exists('/tmp/hls.avi'):
+            os.remove('/tmp/hls.avi')
+        self.session.nav.stopService()
+        self.session.nav.playService(SREF)
+        if not self.new_aspect == self.init_aspect:
+            try:
+                self.setAspect(self.init_aspect)
+            except:
+                pass
+        streaml = False
         self.leavePlayer()
 
-    def keyNext(self):
-        self.leavePlayer()
+    def leavePlayer(self):
+        self.close()
+
+# class MoviePlayer(WRCPlayer):
+    # STATE_IDLE = 0
+    # STATE_PLAYING = 1
+    # STATE_PAUSED = 2
+    # ENABLE_RESUME_SUPPORT = True
+    # ALLOW_SUSPEND = True
+    # screen_timeout = 5000
+
+    # def __init__(self, session, service):
+        # WRCPlayer.__init__(self, session, service)
+        # self.state = self.STATE_PLAYING
+        # # self.init_aspect = 0
+        # # self.new_aspect = self.init_aspect
+        # # try:
+            # # self.init_aspect = int(self.getAspect())
+        # # except:
+            # # self.init_aspect = 0
+        # # self.new_aspect = self.init_aspect
+        # self['actions'] = ActionMap(['MoviePlayerActions', 'DirectionActions', 'OkCancelActions'], {'cancel': self.leavePlayerOnExit,
+         # # 'cancel': self.leavePlayerOnExit,
+         # 'left': self.keyPrev,
+         # 'right': self.keyNext,
+         # 'up': self.keyPrev,
+         # 'down': self.keyNext}, -1)
+
+    # def leavePlayer(self):
+        # self.is_closing = True
+        # if os.path.exists('/tmp/hls.avi'):
+            # os.remove('/tmp/hls.avi')
+        # self.session.nav.stopService()
+        # self.session.nav.playService(SREF)
+        # # if self.new_aspect != self.init_aspect:
+            # # try:
+                # # self.setAspect(self.init_aspect)
+            # # except:
+                # # pass
+        # self.close()
+
+    # # def getAspect(self):
+        # # return AVSwitch().getAspectRatioSetting()
+
+    # # def getAspectString(self, aspectnum):
+        # # return {
+            # # 0: '4:3 Letterbox',
+            # # 1: '4:3 PanScan',
+            # # 2: '16:9',
+            # # 3: '16:9 always',
+            # # 4: '16:10 Letterbox',
+            # # 5: '16:10 PanScan',
+            # # 6: '16:9 Letterbox'
+        # # }[aspectnum]
+
+    # # def setAspect(self, aspect):
+        # # map = {
+            # # 0: '4_3_letterbox',
+            # # 1: '4_3_panscan',
+            # # 2: '16_9',
+            # # 3: '16_9_always',
+            # # 4: '16_10_letterbox',
+            # # 5: '16_10_panscan',
+            # # 6: '16_9_letterbox'
+        # # }
+        # # config.av.aspectratio.setValue(map[aspect])
+        # # try:
+            # # AVSwitch().setAspectRatio(aspect)
+        # # except:
+            # # pass
+
+    # def leavePlayerOnExit(self):
+        # self.leavePlayer()
+
+    # def leavePlayerConfirmed(self, answer):
+        # answer = answer and answer[1]
+        # if answer == 'quit':
+            # self.leavePlayer()
+
+    # def doEofInternal(self, playing):
+        # if self.execing and playing:
+            # self.leavePlayer()
+            # return
+        # else:
+            # return
+
+    # def showMovies(self):
+        # self.leavePlayer()
+
+    # def movieSelected(self, service):
+        # self.leavePlayer()
+
+    # def __onClose(self):
+        # self.leavePlayer()
+
+    # def mainMenu(self):
+        # pass
+
+    # def playpauseService(self):
+        # if self.state == self.STATE_PLAYING:
+            # self.pause()
+            # self.state = self.STATE_PAUSED
+        # elif self.state == self.STATE_PAUSED:
+            # self.unpause()
+            # self.state = self.STATE_PLAYING
+
+    # def pause(self):
+        # self.session.nav.pause(True)
+
+    # def unpause(self):
+        # self.session.nav.pause(False)
+
+    # def up(self):
+        # pass
+
+    # def down(self):
+        # pass
+
+    # def left(self):
+        # pass
+
+    # def right(self):
+        # pass
+
+    # def keyPrev(self):
+        # self.leavePlayer()
+
+    # def keyNext(self):
+        # self.leavePlayer()
 
 
 class AutoStartTimerwrd:
