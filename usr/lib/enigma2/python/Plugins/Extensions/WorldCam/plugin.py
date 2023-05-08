@@ -346,10 +346,10 @@ class Webcam4(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url1)
@@ -423,10 +423,10 @@ class Webcam5(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url1)
@@ -500,10 +500,10 @@ class Webcam5a(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url1)
@@ -586,10 +586,10 @@ class Webcam6(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url1)
@@ -797,10 +797,10 @@ class Webcam7(Screen):
             url1 = 'https://www.skylinewebcams.com' + url
             name = html_conv.html_unescape(name)
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url1)
@@ -889,10 +889,10 @@ class Webcam8(Screen):
             name = item.split('###')[0]
             url = item.split('###')[1]
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url)
@@ -1088,10 +1088,10 @@ class Webcam10(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url1)
@@ -1170,10 +1170,10 @@ class Webcam11(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
 
-            if PY3:
-                name = name.decode("utf-8")
-            else:
-                name = name.encode("utf-8")
+            # if PY3:
+                # name = name.decode("utf-8")
+            # else:
+                # name = name.encode("utf-8")
 
             self.names.append(name)
             self.urls.append(url1)
@@ -1303,10 +1303,10 @@ class Webcam12(Screen):
                     name = item.split('###')[0]
                     url1 = item.split('###')[1]
 
-                    if PY3:
-                        name = name.decode("utf-8")
-                    else:
-                        name = name.encode("utf-8")
+                    # if PY3:
+                        # name = name.decode("utf-8")
+                    # else:
+                        # name = name.encode("utf-8")
 
                     self.names.append(name)
                     self.urls.append(url1)
