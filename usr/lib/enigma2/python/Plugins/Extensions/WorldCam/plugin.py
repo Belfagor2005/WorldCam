@@ -34,6 +34,7 @@ from enigma import eListboxPythonMultiContent
 from enigma import eServiceReference
 from enigma import loadPNG, gFont
 from enigma import eTimer
+from enigma import getDesktop
 import os
 import re
 import sys
@@ -49,7 +50,11 @@ iconpic = 'plugin.png'
 refer = 'https://www.skylinewebcams.com/'
 _firstStartwrd = True
 SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
-if Utils.isFHD():
+
+screenwidth = getDesktop(0).size()
+if screenwidth.width() == 2560:
+    SKIN_PATH = os.path.join(THISPLUG, 'skin/uhd/')
+elif screenwidth.width() == 1920:
     SKIN_PATH = os.path.join(THISPLUG, 'skin/fhd/')
 else:
     SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
@@ -72,7 +77,11 @@ language = leng2[:-3]
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if Utils.isFHD():
+        if screenwidth.width() == 2560:
+            self.l.setItemHeight(64)
+            textfont = int(42)
+            self.l.setFont(0, gFont('Regular', textfont))
+        elif screenwidth.width() == 1920:
             self.l.setItemHeight(50)
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
@@ -85,7 +94,10 @@ class webcamList(MenuList):
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
-    if Utils.isFHD:
+    if screenwidth.width() == 2560:
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(60, 60), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(90, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))    
+    elif screenwidth.width() == 1920:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
