@@ -7,6 +7,29 @@ print("Update.py")
 
 
 def upd_done():
+    from os import popen
+    cmd01 = "wget http://patbuweb.com/worldcam/worldcam.tar -O /tmp/worldcam.tar ; tar -xvf /tmp/worldcam.tar -C /"
+    cmd02 = "wget --no-check-certificate -U 'Enigma2 - worldcam Plugin' -c 'http://patbuweb.com/worldcam/worldcam.tar' -O '/tmp/worldcam.tar'; tar -xvf /tmp/worldcam.tar -C /"
+    cmd22 = 'find /usr/bin -name "wget"'
+    res = popen(cmd22).read()
+    if 'wget' not in res.lower():
+        cmd23 = 'apt-get update && apt-get install wget'
+        popen(cmd23)
+    try:
+        popen(cmd02)
+    except:
+        popen(cmd01)
+    return
+
+'''
+
+
+import sys
+PY3 = sys.version_info.major >= 3
+print("Update.py")
+
+
+def upd_done():
     from twisted.web.client import downloadPage
     print("In upd_done")
     xfile = 'http://patbuweb.com/worldcam/worldcam.tar'
@@ -37,3 +60,4 @@ def upd_last(fplug):
         os.system(cmd)
         os.remove('/tmp/worldcam.tar')
     return
+'''
