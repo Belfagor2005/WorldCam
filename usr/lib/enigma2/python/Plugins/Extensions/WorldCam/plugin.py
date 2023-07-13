@@ -20,7 +20,7 @@ from Components.MultiContent import MultiContentEntryPixmapAlphaTest
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
 from Plugins.Plugin import PluginDescriptor
-from Screens.InfoBar import MoviePlayer as WRCPlayer
+# from Screens.InfoBar import MoviePlayer as WRCPlayer
 from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek
 from Screens.InfoBarGenerics import InfoBarAudioSelection
 from Screens.InfoBarGenerics import InfoBarSubtitleSupport
@@ -96,7 +96,7 @@ def wcListEntry(name):
     res = [name]
     if screenwidth.width() == 2560:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(60, 60), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(90, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))    
+        res.append(MultiContentEntryText(pos=(90, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     elif screenwidth.width() == 1920:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
@@ -1641,133 +1641,6 @@ class MoviePlayer(
 
     def leavePlayer(self):
         self.close()
-
-# class MoviePlayer(WRCPlayer):
-    # STATE_IDLE = 0
-    # STATE_PLAYING = 1
-    # STATE_PAUSED = 2
-    # ENABLE_RESUME_SUPPORT = True
-    # ALLOW_SUSPEND = True
-    # screen_timeout = 5000
-
-    # def __init__(self, session, service):
-        # WRCPlayer.__init__(self, session, service)
-        # self.state = self.STATE_PLAYING
-        # # self.init_aspect = 0
-        # # self.new_aspect = self.init_aspect
-        # # try:
-            # # self.init_aspect = int(self.getAspect())
-        # # except:
-            # # self.init_aspect = 0
-        # # self.new_aspect = self.init_aspect
-        # self['actions'] = ActionMap(['MoviePlayerActions', 'DirectionActions', 'OkCancelActions'], {'cancel': self.leavePlayerOnExit,
-         # # 'cancel': self.leavePlayerOnExit,
-         # 'left': self.keyPrev,
-         # 'right': self.keyNext,
-         # 'up': self.keyPrev,
-         # 'down': self.keyNext}, -1)
-
-    # def leavePlayer(self):
-        # self.is_closing = True
-        # if os.path.exists('/tmp/hls.avi'):
-            # os.remove('/tmp/hls.avi')
-        # self.session.nav.stopService()
-        # self.session.nav.playService(SREF)
-        # # if self.new_aspect != self.init_aspect:
-            # # try:
-                # # self.setAspect(self.init_aspect)
-            # # except:
-                # # pass
-        # self.close()
-
-    # # def getAspect(self):
-        # # return AVSwitch().getAspectRatioSetting()
-
-    # # def getAspectString(self, aspectnum):
-        # # return {
-            # # 0: '4:3 Letterbox',
-            # # 1: '4:3 PanScan',
-            # # 2: '16:9',
-            # # 3: '16:9 always',
-            # # 4: '16:10 Letterbox',
-            # # 5: '16:10 PanScan',
-            # # 6: '16:9 Letterbox'
-        # # }[aspectnum]
-
-    # # def setAspect(self, aspect):
-        # # map = {
-            # # 0: '4_3_letterbox',
-            # # 1: '4_3_panscan',
-            # # 2: '16_9',
-            # # 3: '16_9_always',
-            # # 4: '16_10_letterbox',
-            # # 5: '16_10_panscan',
-            # # 6: '16_9_letterbox'
-        # # }
-        # # config.av.aspectratio.setValue(map[aspect])
-        # # try:
-            # # AVSwitch().setAspectRatio(aspect)
-        # # except:
-            # # pass
-
-    # def leavePlayerOnExit(self):
-        # self.leavePlayer()
-
-    # def leavePlayerConfirmed(self, answer):
-        # answer = answer and answer[1]
-        # if answer == 'quit':
-            # self.leavePlayer()
-
-    # def doEofInternal(self, playing):
-        # if self.execing and playing:
-            # self.leavePlayer()
-            # return
-        # else:
-            # return
-
-    # def showMovies(self):
-        # self.leavePlayer()
-
-    # def movieSelected(self, service):
-        # self.leavePlayer()
-
-    # def __onClose(self):
-        # self.leavePlayer()
-
-    # def mainMenu(self):
-        # pass
-
-    # def playpauseService(self):
-        # if self.state == self.STATE_PLAYING:
-            # self.pause()
-            # self.state = self.STATE_PAUSED
-        # elif self.state == self.STATE_PAUSED:
-            # self.unpause()
-            # self.state = self.STATE_PLAYING
-
-    # def pause(self):
-        # self.session.nav.pause(True)
-
-    # def unpause(self):
-        # self.session.nav.pause(False)
-
-    # def up(self):
-        # pass
-
-    # def down(self):
-        # pass
-
-    # def left(self):
-        # pass
-
-    # def right(self):
-        # pass
-
-    # def keyPrev(self):
-        # self.leavePlayer()
-
-    # def keyNext(self):
-        # self.leavePlayer()
 
 
 class AutoStartTimerwrd:
