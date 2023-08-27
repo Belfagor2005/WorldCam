@@ -166,7 +166,6 @@ class Webcam1(Screen):
         self.urls.append('https://www.skylinewebcams.com/')  # {0}/top-live-cams.html'.format(language))
         self.names.append('webcamhopper')
         self.urls.append('https://www.webcamhopper.com/countries.html')
-
         showlist(self.names, self['list'])
 
     def okClicked(self):
@@ -250,12 +249,13 @@ class Webcam3(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('')
+        self['key_yellow'] = Button('Export')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
+                                                       'yellow': self.export,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
         self.onFirstExecBegin.append(self.openTest)
@@ -264,6 +264,10 @@ class Webcam3(Screen):
     def layoutFinished(self):
         payp = paypal()
         self["paypal"].setText(payp)
+
+    def export(self):
+        conv = Webcam6(self.session, None)
+        conv.crea_bouquet()
 
     def openTest(self):
         uLists = os.path.join(THISPLUG, 'Playlists')
@@ -863,6 +867,10 @@ class Webcam8(Screen):
         payp = paypal()
         self["paypal"].setText(payp)
 
+    def crea_bouquet(self):
+        conv = Webcam6(self.session, None)
+        conv.crea_bouquet()
+
     def openTest(self):
         self.names = []
         self.urls = []
@@ -984,63 +992,63 @@ class Webcam8(Screen):
         stream.setName(title)
         self.session.open(MoviePlayer, stream)
 
-    def crea_bouquet(self, answer=None):
-        if answer is None:
-            self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
-        elif answer:
-            if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
-                name_clean = Utils.cleanName(self.name)
-                name_file = name_clean.replace('.m3u', '')
-                bouquetname = 'userbouquet.%s.tv' % (name_file.lower())
-                print("Converting Bouquet %s" % name_file)
-                path1 = '/etc/enigma2/' + str(bouquetname)
-                path2 = '/etc/enigma2/bouquets.tv'
-                name = ''
-                servicez = ''
-                descriptionz = ''
-                self.tmplist = []
-                self.tmplist.append('#NAME %s Worldcam by Lululla' % name_file)
-                self.tmplist.append('#SERVICE 1:64:0:0:0:0:0:0:0:0::%s CHANNELS' % name_file)
-                self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
-                tag = '1'
-                for line in open(self.xxxname):
-                    name = line.split('###')[0]
-                    ref = line.split('###')[1]
-                    ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
-                    descriptiona = ('#DESCRIPTION %s' % name).splitlines()
-                    descriptionz = ''.join(descriptiona)
-                    servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
-                    servicex = (servicea + ':' + name).splitlines()
-                    servicez = ''.join(servicex)
-                    print(descriptionz)
-                    print(servicez)
-                    self.tmplist.append(servicez)
-                    self.tmplist.append(descriptionz)
+    # def crea_bouquet(self, answer=None):
+        # if answer is None:
+            # self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
+        # elif answer:
+            # if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
+                # name_clean = Utils.cleanName(self.name)
+                # name_file = name_clean.replace('.m3u', '')
+                # bouquetname = 'userbouquet.%s.tv' % (name_file.lower())
+                # print("Converting Bouquet %s" % name_file)
+                # path1 = '/etc/enigma2/' + str(bouquetname)
+                # path2 = '/etc/enigma2/bouquets.tv'
+                # name = ''
+                # servicez = ''
+                # descriptionz = ''
+                # self.tmplist = []
+                # self.tmplist.append('#NAME %s Worldcam by Lululla' % name_file)
+                # self.tmplist.append('#SERVICE 1:64:0:0:0:0:0:0:0:0::%s CHANNELS' % name_file)
+                # self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
+                # tag = '1'
+                # for line in open(self.xxxname):
+                    # name = line.split('###')[0]
+                    # ref = line.split('###')[1]
+                    # ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
+                    # descriptiona = ('#DESCRIPTION %s' % name).splitlines()
+                    # descriptionz = ''.join(descriptiona)
+                    # servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
+                    # servicex = (servicea + ':' + name).splitlines()
+                    # servicez = ''.join(servicex)
+                    # print(descriptionz)
+                    # print(servicez)
+                    # self.tmplist.append(servicez)
+                    # self.tmplist.append(descriptionz)
 
-                with open(path1, 'w+') as s:
-                    for item in self.tmplist:
-                        s.write("%s\n" % item)
-                        print('item  -> ', item)
-                in_bouquets = 0
-                for line in open('/etc/enigma2/bouquets.tv'):
-                    if bouquetname in line:
-                        in_bouquets = 1
-                if in_bouquets == 0:
-                    with open(path2, 'a+') as f:
-                        bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(bouquetname) + '" ORDER BY bouquet\n'
-                        f.write(str(bouquetTvString))
-                try:
-                    from enigma import eDVBDB
-                    eDVBDB.getInstance().reloadServicelist()
-                    eDVBDB.getInstance().reloadBouquets()
-                    print('all bouquets reloaded...')
-                except:
-                    eDVBDB = None
-                    os.system('wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &')
-                    print('bouquets reloaded...')
-                message = self.session.open(MessageBox, _('bouquets reloaded..'), MessageBox.TYPE_INFO, timeout=5)
-                message.setTitle(_("Reload Bouquet"))
-            return
+                # with open(path1, 'w+') as s:
+                    # for item in self.tmplist:
+                        # s.write("%s\n" % item)
+                        # print('item  -> ', item)
+                # in_bouquets = 0
+                # for line in open('/etc/enigma2/bouquets.tv'):
+                    # if bouquetname in line:
+                        # in_bouquets = 1
+                # if in_bouquets == 0:
+                    # with open(path2, 'a+') as f:
+                        # bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(bouquetname) + '" ORDER BY bouquet\n'
+                        # f.write(str(bouquetTvString))
+                # try:
+                    # from enigma import eDVBDB
+                    # eDVBDB.getInstance().reloadServicelist()
+                    # eDVBDB.getInstance().reloadBouquets()
+                    # print('all bouquets reloaded...')
+                # except:
+                    # eDVBDB = None
+                    # os.system('wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &')
+                    # print('bouquets reloaded...')
+                # message = self.session.open(MessageBox, _('bouquets reloaded..'), MessageBox.TYPE_INFO, timeout=5)
+                # message.setTitle(_("Reload Bouquet"))
+            # return
 
     def cancel(self):
         self.close()
@@ -1220,17 +1228,22 @@ class Webcam12(Screen):
         self["paypal"] = Label()
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('')
+        self['key_yellow'] = Button('Export')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
+                                                       'yellow': self.crea_bouquet,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
 
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
+
+    def crea_bouquet(self):
+        conv = Webcam6(self.session, None)
+        conv.crea_bouquet()
 
     def layoutFinished(self):
         payp = paypal()
@@ -1336,7 +1349,7 @@ class Webcam12(Screen):
         if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
             stream = eServiceReference(4097, 0, video_url)
-            
+
             # stream ='4097:0:1:1:0:0:0:0:0:0:streamlink%3a//' + video_url
 
         # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
