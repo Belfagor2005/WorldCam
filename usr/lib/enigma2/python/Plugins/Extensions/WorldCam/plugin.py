@@ -43,7 +43,7 @@ import re
 import sys
 import six
 import ssl
-global SKIN_PATH, SREF
+global SKIN_PATH
 
 version = '4.3'  # edit lululla 07/11/2022
 setup_title = ('WORLDCAM v.' + version)
@@ -134,8 +134,7 @@ class Webcam1(Screen):
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.list = []
-        global SREF
-        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
@@ -245,8 +244,7 @@ class Webcam3(Screen):
             self.skin = f.read()
         self.list = []
         self.name = name
-        global SREF
-        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
         self["paypal"] = Label()
@@ -547,8 +545,7 @@ class Webcam6(Screen):
         self.list = []
         self.name = name
         self.url = url
-        global SREF
-        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
@@ -679,10 +676,10 @@ class Webcam6(Screen):
         return stream
 
     def getYTID(self, title, id):
-            yttitle = title  # .encode('ascii', 'replace')
-            video_url = 'https://www.youtube.com/watch?v=' + id
-            print('video_url: %s ' % (video_url))
-            self.playYTID(video_url, yttitle)
+        yttitle = title  # .encode('ascii', 'replace')
+        video_url = 'https://www.youtube.com/watch?v=' + id
+        print('video_url: %s ' % (video_url))
+        self.playYTID(video_url, yttitle)
 
     def playYTID(self, video_url, yttitle):
         title = yttitle
@@ -842,8 +839,9 @@ class Webcam8(Screen):
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.list = []
-        global SREF
-        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.name = name
+        self.url = url
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label(name)
         self["paypal"] = Label()
@@ -858,8 +856,6 @@ class Webcam8(Screen):
                                                        'cancel': self.cancel,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
-        self.name = name
-        self.url = url
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -1218,8 +1214,7 @@ class Webcam12(Screen):
         self.list = []
         self.name = name
         self.url = url
-        global SREF
-        SREF = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
         self["paypal"] = Label()
@@ -1268,8 +1263,7 @@ class Webcam12(Screen):
                     if id or id != '':
                         video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
                         # video_url = video_url.replace(":", "%3a").replace("\\", "/")
-                        title = self.name
-                        # self.session.open(PlayWorldcam2, title, video_url, title)
+                        # self.session.open(PlayWorldcam2, self.name, video_url, self.name)
 
                         # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
                             # if os.path.exists('/usr/bin/exteplayer3'):
@@ -1281,7 +1275,7 @@ class Webcam12(Screen):
                         # else:
                             # stream = eServiceReference(4097, 0, video_url)
                         stream = eServiceReference(4097, 0, video_url)
-                        stream.setName(title)
+                        stream.setName(self.name)
                         self.session.open(MoviePlayer, stream)
 
                 elif "videoId:" in content:
@@ -1332,6 +1326,7 @@ class Webcam12(Screen):
     def getYTID(self, title, id):
         yttitle = title  # .encode('ascii', 'replace')
         video_url = 'https://www.youtube.com/watch?v=' + id
+
         print('video_url: %s ' % (video_url))
         self.playYTID(video_url, yttitle)
 
@@ -1341,6 +1336,8 @@ class Webcam12(Screen):
         if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
             stream = eServiceReference(4097, 0, video_url)
+            
+            # stream ='4097:0:1:1:0:0:0:0:0:0:streamlink%3a//' + video_url
 
         # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
             # if os.path.exists('/usr/bin/exteplayer3'):
@@ -1516,6 +1513,7 @@ class MoviePlayer(
         except:
             self.init_aspect = 0
         self.new_aspect = self.init_aspect
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self.allowPiP = False
         self.service = None
         self.stream = stream
@@ -1633,7 +1631,7 @@ class MoviePlayer(
         if os.path.exists('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
-        self.session.nav.playService(SREF)
+        self.session.nav.playService(self.srefInit)
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)
