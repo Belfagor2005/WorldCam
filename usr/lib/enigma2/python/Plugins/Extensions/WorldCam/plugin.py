@@ -243,6 +243,7 @@ class Webcam3(Screen):
             self.skin = f.read()
         self.list = []
         self.name = name
+        self.xxxname = '/tmp/' + str(name) + '_conv.m3u'
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label('UserList')
@@ -266,7 +267,7 @@ class Webcam3(Screen):
         self["paypal"].setText(payp)
 
     def export(self):
-        conv = Webcam6(self.session, None)
+        conv = Webcam6(self.session, self.name, None)
         conv.crea_bouquet()
 
     def openTest(self):
@@ -274,18 +275,37 @@ class Webcam3(Screen):
         file1 = uLists + '/' + self.name
         self.names = []
         self.urls = []
+        items = []
         f1 = open(file1, 'r')
         try:
             for line in f1.readlines():
                 if '###' not in line:
                     continue
                 line = line.replace('\n', '').strip()
-                items = line.split('###')
-                name = items[0]
-                url = items[1]
+                itemx = line.split('###')
+                name = itemx[0]
+                url = itemx[1]
+
                 name = html_conv.html_unescape(name)
                 self.names.append(name)
                 self.urls.append(url)
+
+
+                # for export
+                item = name + "###" + url + '\n'
+                items.append(item)
+            items.sort()
+            self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
+            with open(self.xxxname, 'w') as e:
+                for item in items:
+                    e.write(item)
+            e.close
+            # end for exp
+
+                
+                # name = html_conv.html_unescape(name)
+                # self.names.append(name)
+                # self.urls.append(url)
         except Exception as e:
             print(e)
         showlist(self.names, self['list'])
@@ -549,6 +569,7 @@ class Webcam6(Screen):
         self.list = []
         self.name = name
         self.url = url
+        self.xxxname = '/tmp/' + str(name) + '_conv.m3u'
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -592,7 +613,7 @@ class Webcam6(Screen):
             items.append(item)
         items.sort()
 
-        self.xxxname = '/tmp/' + self.name + '_conv.m3u'
+        self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
         with open(self.xxxname, 'w') as e:
             for item in items:
                 e.write(item)
@@ -845,6 +866,7 @@ class Webcam8(Screen):
         self.list = []
         self.name = name
         self.url = url
+        self.xxxname = '/tmp/' + str(name) + '_conv.m3u'
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label(name)
@@ -856,7 +878,7 @@ class Webcam8(Screen):
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
-                                                       'yellow': self.crea_bouquet,
+                                                       'yellow': self.export,
                                                        'cancel': self.cancel,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
@@ -867,8 +889,8 @@ class Webcam8(Screen):
         payp = paypal()
         self["paypal"].setText(payp)
 
-    def crea_bouquet(self):
-        conv = Webcam6(self.session, None)
+    def export(self):
+        conv = Webcam6(self.session, self.name, None)
         conv.crea_bouquet()
 
     def openTest(self):
@@ -899,7 +921,7 @@ class Webcam8(Screen):
             items.append(item)
         items.sort()
 
-        self.xxxname = '/tmp/' + self.name + '_conv.m3u'
+        self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
         with open(self.xxxname, 'w') as e:
             for item in items:
                 e.write(item)
@@ -1222,6 +1244,7 @@ class Webcam12(Screen):
         self.list = []
         self.name = name
         self.url = url
+        self.xxxname = '/tmp/' + str(name) + '_conv.m3u'
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
         self['info'] = Label('Skyline Webcams')
@@ -1234,15 +1257,15 @@ class Webcam12(Screen):
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
-                                                       'yellow': self.crea_bouquet,
+                                                       'yellow': self.export,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
 
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
-    def crea_bouquet(self):
-        conv = Webcam6(self.session, None)
+    def export(self):
+        conv = Webcam6(self.session, self.name, None)
         conv.crea_bouquet()
 
     def layoutFinished(self):
@@ -1332,6 +1355,15 @@ class Webcam12(Screen):
 
                     self.names.append(name)
                     self.urls.append(url1)
+
+                # for export
+                self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
+                with open(self.xxxname, 'w') as e:
+                    for item in items:
+                        e.write(item)
+                e.close                
+                # end for exp                    
+                    
                 showlist(self.names, self['list'])
         except Exception as e:
             print('openTest ', e)
