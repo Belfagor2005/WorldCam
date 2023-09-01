@@ -6,10 +6,10 @@ Plugin Worldcam is developed by Linuxsat-Support Team
 last update 07 04 2023
 edited from Lululla: updated to 20220113
 """
-# from __future__ import unicode_literals
 from __future__ import print_function
 from . import Utils
 from . import html_conv
+# from . import cvbq
 try:
     from Components.AVSwitch import eAVSwitch
 except Exception:
@@ -730,8 +730,12 @@ class Webcam6(Screen):
         if answer is None:
             self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
         elif answer:
-
-            if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
+            if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:        
+                # service = '4097'
+                # ch = 0
+                # ch = cvbq.convert_bouquet(url, name, service)
+                # if ch:
+                    # _session.open(MessageBox, _('bouquets reloaded..\nWith %s channel' % ch), MessageBox.TYPE_INFO, timeout=5)
                 name_clean = Utils.cleanName(self.name)
                 name_file = name_clean.replace('.m3u', '')
                 bouquetname = 'userbouquet.%s.tv' % (name_file.lower())
