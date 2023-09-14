@@ -3,17 +3,20 @@
 
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
-last update 07 04 2023
+last update 01 09 2023
 edited from Lululla: updated to 20220113
 """
 from __future__ import print_function
+from . import _, paypal
 from . import Utils
 from . import html_conv
 # from . import cvbq
+import codecs
+from Components.AVSwitch import AVSwitch
 try:
-    from Components.AVSwitch import eAVSwitch
-except Exception:
-    from Components.AVSwitch import iAVSwitch as eAVSwitch
+    from Components.AVSwitch import iAVSwitch
+except:
+    from enigma import eAVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
@@ -23,7 +26,6 @@ from Components.MultiContent import MultiContentEntryPixmapAlphaTest
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
 from Plugins.Plugin import PluginDescriptor
-# from Screens.InfoBar import MoviePlayer as WRCPlayer
 from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek
 from Screens.InfoBarGenerics import InfoBarAudioSelection
 from Screens.InfoBarGenerics import InfoBarSubtitleSupport
@@ -119,19 +121,12 @@ def showlist(data, list):
         list.setList(plist)
 
 
-def paypal():
-    conthelp = "If you like what I do you\n"
-    conthelp += "can contribute with a coffee\n"
-    conthelp += "scan the qr code and donate € 1.00"
-    return conthelp
-
-
 class Webcam1(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
@@ -191,7 +186,7 @@ class Webcam2(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
@@ -219,7 +214,7 @@ class Webcam2(Screen):
         self.names = []
         for root, dirs, files in os.walk(uLists):
             for name in files:
-                self.names.append(name)
+                self.names.append(str(name))
         showlist(self.names, self['list'])
 
     def okClicked(self):
@@ -239,7 +234,7 @@ class Webcam3(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self.name = name
@@ -287,7 +282,7 @@ class Webcam3(Screen):
                 url = itemx[1]
 
                 name = html_conv.html_unescape(name)
-                self.names.append(name)
+                self.names.append(str(name))
                 self.urls.append(url)
 
 
@@ -304,7 +299,7 @@ class Webcam3(Screen):
 
                 
                 # name = html_conv.html_unescape(name)
-                # self.names.append(name)
+                # self.names.append(str(name))
                 # self.urls.append(url)
         except Exception as e:
             print(e)
@@ -328,7 +323,7 @@ class Webcam3(Screen):
         # else:
             # stream = eServiceReference(4097, 0, video_url)
         stream = eServiceReference(4097, 0, video_url)
-        stream.setName(title)
+        stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
     def cancel(self):
@@ -340,7 +335,7 @@ class Webcam4(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
@@ -388,7 +383,7 @@ class Webcam4(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -410,7 +405,7 @@ class Webcam5(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
@@ -465,7 +460,7 @@ class Webcam5(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -487,7 +482,7 @@ class Webcam5a(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
@@ -542,7 +537,7 @@ class Webcam5a(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -564,7 +559,7 @@ class Webcam6(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self.name = name
@@ -628,7 +623,7 @@ class Webcam6(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url1)
 
         showlist(self.names, self['list'])
@@ -667,7 +662,7 @@ class Webcam6(Screen):
                     # else:
                         # stream = eServiceReference(4097, 0, video_url)
                     stream = eServiceReference(4097, 0, video_url)
-                    stream.setName(title)
+                    stream.setName(str(title))
                     self.session.open(MoviePlayer, stream)
 
             elif "videoId:" in content:
@@ -683,7 +678,7 @@ class Webcam6(Screen):
                     # try:
                         video_url = 'https://www.youtube.com/watch?v=' + id
                         stream = self.openYTID(video_url)
-                        stream.setName(name)
+                        stream.setName(str(name))
                         print('direct open ytl: ', stream)
                         self.session.open(MoviePlayer, stream)
                     # except:
@@ -723,7 +718,7 @@ class Webcam6(Screen):
         # else:
             # stream = eServiceReference(4097, 0, video_url)
         # stream = eServiceReference(4097, 0, video_url)
-        stream.setName(title)
+        stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
     def crea_bouquet(self, answer=None):
@@ -799,7 +794,7 @@ class Webcam7(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
@@ -843,7 +838,7 @@ class Webcam7(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -865,7 +860,7 @@ class Webcam8(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self.name = name
@@ -939,7 +934,7 @@ class Webcam8(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url)
         showlist(self.names, self['list'])
 
@@ -975,7 +970,7 @@ class Webcam8(Screen):
                     # else:
                         # stream = eServiceReference(4097, 0, video_url)
                     stream = eServiceReference(4097, 0, video_url)
-                    stream.setName(title)
+                    stream.setName(str(title))
                     self.session.open(MoviePlayer, stream)
 
             elif "videoId:" in content:
@@ -1015,7 +1010,7 @@ class Webcam8(Screen):
         # else:
             # stream = eServiceReference(4097, 0, video_url)
         # stream = eServiceReference(4097, 0, video_url)
-        stream.setName(title)
+        stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
     # def crea_bouquet(self, answer=None):
@@ -1085,7 +1080,7 @@ class Webcam10(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self['list'] = webcamList([])
@@ -1138,7 +1133,7 @@ class Webcam10(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -1160,7 +1155,7 @@ class Webcam11(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self.name = name
@@ -1220,7 +1215,7 @@ class Webcam11(Screen):
             # else:
                 # name = name.encode("utf-8")
 
-            self.names.append(name)
+            self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -1243,7 +1238,7 @@ class Webcam12(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
         self.name = name
@@ -1357,7 +1352,7 @@ class Webcam12(Screen):
                     # else:
                         # name = name.encode("utf-8")
 
-                    self.names.append(name)
+                    self.names.append(str(name))
                     self.urls.append(url1)
 
                 # for export
@@ -1398,7 +1393,7 @@ class Webcam12(Screen):
         # else:
             # stream = eServiceReference(4097, 0, video_url)
         # stream = eServiceReference(4097, 0, video_url)
-        stream.setName(title)
+        stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
     def openYTID(self, video_url):
@@ -1430,7 +1425,7 @@ class Webcam12(Screen):
                 # stream = eServiceReference(4097, 0, video_url)
         # stream = eServiceReference(4097, 0, video_url)
         # stream = stream.replace('%25', '%')
-        stream.setName(name)
+        stream.setName(str(name))
         self.session.open(MoviePlayer, stream)
 
     def cancel(self):
@@ -1588,34 +1583,34 @@ class MoviePlayer(
         self.onClose.append(self.cancel)
 
     def getAspect(self):
-        return eAVSwitch().getAspectRatioSetting()
+        try:
+            aspect = iAVSwitch.getAspectRatioSetting()
+        except:
+            aspect = eAVSwitch.getAspectRatioSetting()
+        return aspect
 
     def getAspectString(self, aspectnum):
-        return {
-            0: '4:3 Letterbox',
-            1: '4:3 PanScan',
-            2: '16:9',
-            3: '16:9 always',
-            4: '16:10 Letterbox',
-            5: '16:10 PanScan',
-            6: '16:9 Letterbox'
-        }[aspectnum]
+        return {0: '4:3 Letterbox',
+                1: '4:3 PanScan',
+                2: '16:9',
+                3: '16:9 always',
+                4: '16:10 Letterbox',
+                5: '16:10 PanScan',
+                6: '16:9 Letterbox'}[aspectnum]
 
     def setAspect(self, aspect):
-        map = {
-            0: '4_3_letterbox',
-            1: '4_3_panscan',
-            2: '16_9',
-            3: '16_9_always',
-            4: '16_10_letterbox',
-            5: '16_10_panscan',
-            6: '16_9_letterbox'
-        }
+        map = {0: '4_3_letterbox',
+               1: '4_3_panscan',
+               2: '16_9',
+               3: '16_9_always',
+               4: '16_10_letterbox',
+               5: '16_10_panscan',
+               6: '16_9_letterbox'}
         config.av.aspectratio.setValue(map[aspect])
         try:
-            eAVSwitch().setAspectRatio(aspect)
+            iAVSwitch.setAspectRatio(aspect)
         except:
-            pass
+            eAVSwitch.setAspectRatio(aspect)
 
     def av(self):
         temp = int(self.getAspect())
