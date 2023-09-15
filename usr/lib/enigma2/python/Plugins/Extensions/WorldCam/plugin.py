@@ -12,7 +12,7 @@ from . import Utils
 from . import html_conv
 # from . import cvbq
 import codecs
-from Components.AVSwitch import AVSwitch
+# from Components.AVSwitch import AVSwitch
 try:
     from Components.AVSwitch import iAVSwitch
 except:
@@ -159,21 +159,21 @@ class Webcam1(Screen):
         self.urls.append('https://www.skylinewebcams.com/')
         self.names.append('skylinetop')
         self.urls.append('https://www.skylinewebcams.com/')  # {0}/top-live-cams.html'.format(language))
-        self.names.append('webcamhopper')
-        self.urls.append('https://www.webcamhopper.com/countries.html')
+        # self.names.append('webcamhopper')
+        # self.urls.append('https://www.webcamhopper.com/countries.html')
         showlist(self.names, self['list'])
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
-        if 'User' in name:
+        if 'user' in name.lower():
             self.session.open(Webcam2)
         elif 'skylinewebcams' in name:
             self.session.open(Webcam4)
         elif 'skylinetop' in name:
             self.session.open(Webcam7)
-        elif 'webcamhopper' in name:
-            self.session.open(Webcam10)
+        # elif 'webcamhopper' in name:
+            # self.session.open(Webcam10)
         else:
             return
 
@@ -271,7 +271,12 @@ class Webcam3(Screen):
         self.names = []
         self.urls = []
         items = []
-        f1 = open(file1, 'r')
+        f1 = ''
+        # f1 = open(file1, 'r')
+        if sys.version_info[0] == 3:
+            f1 = open(file1, 'r', encoding='UTF-8')
+        else:
+            f1 = open(file1, 'r')
         try:
             for line in f1.readlines():
                 if '###' not in line:
@@ -285,19 +290,25 @@ class Webcam3(Screen):
                 self.names.append(str(name))
                 self.urls.append(url)
 
-
                 # for export
                 item = name + "###" + url + '\n'
                 items.append(item)
             items.sort()
             self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-            with open(self.xxxname, 'w') as e:
-                for item in items:
-                    e.write(item)
-            e.close
+            # with open(self.xxxname, 'w') as e:
+                # for item in items:
+                    # e.write(item)
+                # e.close
             # end for exp
+            clist = ''
+            if sys.version_info[0] == 3:
+                clist = open(self.xxxname, 'w', encoding='UTF-8')
+            else:
+                clist = open(self.xxxname, 'w')
+            for item in items:
+                clist.write(item)
+            clist.close()
 
-                
                 # name = html_conv.html_unescape(name)
                 # self.names.append(str(name))
                 # self.urls.append(url)
@@ -312,16 +323,6 @@ class Webcam3(Screen):
         idx = self['list'].getSelectionIndex()
         title = self.names[idx]
         video_url = self.urls[idx]
-        # self.session.open(PlayWorldcam, title, video_url, title)
-        # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
-            # if os.path.exists('/usr/bin/exteplayer3'):
-                # stream = eServiceReference(5002, 0, video_url)
-            # elif os.path.exists('/usr/bin/gstplayer'):
-                # stream = eServiceReference(5001, 0, video_url)
-            # else:
-                # stream = eServiceReference(4097, 0, video_url)
-        # else:
-            # stream = eServiceReference(4097, 0, video_url)
         stream = eServiceReference(4097, 0, video_url)
         stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
@@ -377,12 +378,6 @@ class Webcam4(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
-
             self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -454,12 +449,6 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
-
             self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -532,11 +521,6 @@ class Webcam5a(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
 
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
-
             self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -607,25 +591,26 @@ class Webcam6(Screen):
             item = name + "###" + url1 + '\n'
             items.append(item)
         items.sort()
-
+        # exper
         self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-        with open(self.xxxname, 'w') as e:
-            for item in items:
-                e.write(item)
-        e.close
+        clist = ''
+        if sys.version_info[0] == 3:
+            clist = open(self.xxxname, 'w', encoding='UTF-8')
+        else:
+            clist = open(self.xxxname, 'w')
+        for item in items:
+            clist.write(item)
+        clist.close()
+        # with open(self.xxxname, 'w') as e:
+            # for item in items:
+                # e.write(item)
+        # e.close
 
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
-
             self.names.append(str(name))
             self.urls.append(url1)
-
         showlist(self.names, self['list'])
 
     def okClicked(self):
@@ -708,16 +693,6 @@ class Webcam6(Screen):
             video_url = 'streamlink://' + video_url
             stream = eServiceReference(4097, 0, video_url)
 
-        # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
-            # if os.path.exists('/usr/bin/exteplayer3'):
-                # stream = eServiceReference(5002, 0, video_url)
-            # elif os.path.exists('/usr/bin/gstplayer'):
-                # stream = eServiceReference(5001, 0, video_url)
-            # else:
-                # stream = eServiceReference(4097, 0, video_url)
-        # else:
-            # stream = eServiceReference(4097, 0, video_url)
-        # stream = eServiceReference(4097, 0, video_url)
         stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
@@ -725,7 +700,7 @@ class Webcam6(Screen):
         if answer is None:
             self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
         elif answer:
-            if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:        
+            if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
                 # service = '4097'
                 # ch = 0
                 # ch = cvbq.convert_bouquet(url, name, service)
@@ -745,7 +720,15 @@ class Webcam6(Screen):
                 self.tmplist.append('#SERVICE 1:64:0:0:0:0:0:0:0:0::%s CHANNELS' % name_file)
                 self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
                 tag = '1'
-                for line in open(self.xxxname):
+
+                clist = ''
+                if sys.version_info[0] == 3:
+                    clist = open(self.xxxname, 'r', encoding='UTF-8')
+                else:
+                    clist = open(self.xxxname, 'r')
+                for line in clist:
+
+                # for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
                     ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
@@ -758,6 +741,8 @@ class Webcam6(Screen):
                     print(servicez)
                     self.tmplist.append(servicez)
                     self.tmplist.append(descriptionz)
+
+                clist.close()
 
                 with open(path1, 'w+') as s:
                     for item in self.tmplist:
@@ -832,11 +817,6 @@ class Webcam7(Screen):
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
             name = html_conv.html_unescape(name)
-
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
 
             self.names.append(str(name))
             self.urls.append(url1)
@@ -921,19 +901,21 @@ class Webcam8(Screen):
         items.sort()
 
         self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-        with open(self.xxxname, 'w') as e:
-            for item in items:
-                e.write(item)
+
+        e = ''
+        if sys.version_info[0] == 3:
+            e = open(self.xxxname, 'w', encoding='UTF-8')
+        else:
+            e = open(self.xxxname, 'w')
+
+        # with open(self.xxxname, 'w') as e:
+        for item in items:
+            e.write(item)
         e.close
+
         for item in items:
             name = item.split('###')[0]
             url = item.split('###')[1]
-
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
-
             self.names.append(str(name))
             self.urls.append(url)
         showlist(self.names, self['list'])
@@ -960,15 +942,7 @@ class Webcam8(Screen):
                 if id or id != '':
                     video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
                     title = name
-                    # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
-                        # if os.path.exists('/usr/bin/exteplayer3'):
-                            # stream = eServiceReference(5002, 0, video_url)
-                        # elif os.path.exists('/usr/bin/gstplayer'):
-                            # stream = eServiceReference(5001, 0, video_url)
-                        # else:
-                            # stream = eServiceReference(4097, 0, video_url)
-                    # else:
-                        # stream = eServiceReference(4097, 0, video_url)
+
                     stream = eServiceReference(4097, 0, video_url)
                     stream.setName(str(title))
                     self.session.open(MoviePlayer, stream)
@@ -1000,16 +974,6 @@ class Webcam8(Screen):
             video_url = 'streamlink://' + video_url
             stream = eServiceReference(4097, 0, video_url)
 
-        # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
-            # if os.path.exists('/usr/bin/exteplayer3'):
-                # stream = eServiceReference(5002, 0, video_url)
-            # elif os.path.exists('/usr/bin/gstplayer'):
-                # stream = eServiceReference(5001, 0, video_url)
-            # else:
-                # stream = eServiceReference(4097, 0, video_url)
-        # else:
-            # stream = eServiceReference(4097, 0, video_url)
-        # stream = eServiceReference(4097, 0, video_url)
         stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
@@ -1127,12 +1091,6 @@ class Webcam10(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
-
             self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -1209,12 +1167,6 @@ class Webcam11(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-
-            # if PY3:
-                # name = name.decode("utf-8")
-            # else:
-                # name = name.encode("utf-8")
-
             self.names.append(str(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -1297,18 +1249,7 @@ class Webcam12(Screen):
                     id = id.replace('?a=', '')
                     if id or id != '':
                         video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
-                        # video_url = video_url.replace(":", "%3a").replace("\\", "/")
-                        # self.session.open(PlayWorldcam2, self.name, video_url, self.name)
 
-                        # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
-                            # if os.path.exists('/usr/bin/exteplayer3'):
-                                # stream = eServiceReference(5002, 0, video_url)
-                            # elif os.path.exists('/usr/bin/gstplayer'):
-                                # stream = eServiceReference(5001, 0, video_url)
-                            # else:
-                                # stream = eServiceReference(4097, 0, video_url)
-                        # else:
-                            # stream = eServiceReference(4097, 0, video_url)
                         stream = eServiceReference(4097, 0, video_url)
                         stream.setName(self.name)
                         self.session.open(MoviePlayer, stream)
@@ -1347,22 +1288,26 @@ class Webcam12(Screen):
                     name = item.split('###')[0]
                     url1 = item.split('###')[1]
 
-                    # if PY3:
-                        # name = name.decode("utf-8")
-                    # else:
-                        # name = name.encode("utf-8")
-
                     self.names.append(str(name))
                     self.urls.append(url1)
 
                 # for export
                 self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-                with open(self.xxxname, 'w') as e:
-                    for item in items:
-                        e.write(item)
-                e.close                
-                # end for exp                    
-                    
+                # with open(self.xxxname, 'w') as e:
+                    # for item in items:
+                        # e.write(item)
+                # e.close
+                # # end for exp
+                e = ''
+                if sys.version_info[0] == 3:
+                    e = open(self.xxxname, 'w', encoding='UTF-8')
+                else:
+                    e = open(self.xxxname, 'w')
+
+                for item in items:
+                    e.write(item)
+                e.close
+
                 showlist(self.names, self['list'])
         except Exception as e:
             print('openTest ', e)
