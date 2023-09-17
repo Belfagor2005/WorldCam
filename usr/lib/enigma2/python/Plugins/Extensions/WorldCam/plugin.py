@@ -82,19 +82,27 @@ language = leng2[:-3]
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
+        # if screenwidth.width() == 2560:
+            # self.l.setItemHeight(64)
+            # textfont = int(42)
+            # self.l.setFont(0, gFont('Regular', textfont))
+        # elif screenwidth.width() == 1920:
+            # self.l.setItemHeight(50)
+            # textfont = int(30)
+            # self.l.setFont(0, gFont('Regular', textfont))
+        # else:
+            # self.l.setItemHeight(40)
+            # textfont = int(24)
+            # self.l.setFont(0, gFont('Regular', textfont))
         if screenwidth.width() == 2560:
-            self.l.setItemHeight(64)
-            textfont = int(42)
-            self.l.setFont(0, gFont('Regular', textfont))
+            self.l.setFont(0, gFont('Regular', 48))
+            self.l.setItemHeight(56)
         elif screenwidth.width() == 1920:
+            self.l.setFont(0, gFont('Regular', 30))
             self.l.setItemHeight(50)
-            textfont = int(30)
-            self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(40)
-            textfont = int(24)
-            self.l.setFont(0, gFont('Regular', textfont))
-
+            self.l.setFont(0, gFont('Regular', 24))
+            self.l.setItemHeight(45)
 
 def wcListEntry(name):
     pngx = ico_path1
@@ -294,6 +302,7 @@ class Webcam3(Screen):
                 item = name + "###" + url + '\n'
                 items.append(item)
             items.sort()
+            
             self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
             # with open(self.xxxname, 'w') as e:
                 # for item in items:
@@ -308,7 +317,6 @@ class Webcam3(Screen):
             for item in items:
                 clist.write(item)
             clist.close()
-
                 # name = html_conv.html_unescape(name)
                 # self.names.append(str(name))
                 # self.urls.append(url)
@@ -636,7 +644,6 @@ class Webcam6(Screen):
                     video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
                     title = name
                     # self.session.open(PlayWorldcam2, title, video_url, title)
-
                     # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
                         # if os.path.exists('/usr/bin/exteplayer3'):
                             # stream = eServiceReference(5002, 0, video_url)
@@ -659,7 +666,6 @@ class Webcam6(Screen):
                 print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
                 if str(nid) == '11':
                     # self.getYTID(name, str(id))
-
                     # try:
                         video_url = 'https://www.youtube.com/watch?v=' + id
                         stream = self.openYTID(video_url)
@@ -977,64 +983,6 @@ class Webcam8(Screen):
         stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
-    # def crea_bouquet(self, answer=None):
-        # if answer is None:
-            # self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
-        # elif answer:
-            # if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
-                # name_clean = Utils.cleanName(self.name)
-                # name_file = name_clean.replace('.m3u', '')
-                # bouquetname = 'userbouquet.%s.tv' % (name_file.lower())
-                # print("Converting Bouquet %s" % name_file)
-                # path1 = '/etc/enigma2/' + str(bouquetname)
-                # path2 = '/etc/enigma2/bouquets.tv'
-                # name = ''
-                # servicez = ''
-                # descriptionz = ''
-                # self.tmplist = []
-                # self.tmplist.append('#NAME %s Worldcam by Lululla' % name_file)
-                # self.tmplist.append('#SERVICE 1:64:0:0:0:0:0:0:0:0::%s CHANNELS' % name_file)
-                # self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
-                # tag = '1'
-                # for line in open(self.xxxname):
-                    # name = line.split('###')[0]
-                    # ref = line.split('###')[1]
-                    # ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
-                    # descriptiona = ('#DESCRIPTION %s' % name).splitlines()
-                    # descriptionz = ''.join(descriptiona)
-                    # servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
-                    # servicex = (servicea + ':' + name).splitlines()
-                    # servicez = ''.join(servicex)
-                    # print(descriptionz)
-                    # print(servicez)
-                    # self.tmplist.append(servicez)
-                    # self.tmplist.append(descriptionz)
-
-                # with open(path1, 'w+') as s:
-                    # for item in self.tmplist:
-                        # s.write("%s\n" % item)
-                        # print('item  -> ', item)
-                # in_bouquets = 0
-                # for line in open('/etc/enigma2/bouquets.tv'):
-                    # if bouquetname in line:
-                        # in_bouquets = 1
-                # if in_bouquets == 0:
-                    # with open(path2, 'a+') as f:
-                        # bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(bouquetname) + '" ORDER BY bouquet\n'
-                        # f.write(str(bouquetTvString))
-                # try:
-                    # from enigma import eDVBDB
-                    # eDVBDB.getInstance().reloadServicelist()
-                    # eDVBDB.getInstance().reloadBouquets()
-                    # print('all bouquets reloaded...')
-                # except:
-                    # eDVBDB = None
-                    # os.system('wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &')
-                    # print('bouquets reloaded...')
-                # message = self.session.open(MessageBox, _('bouquets reloaded..'), MessageBox.TYPE_INFO, timeout=5)
-                # message.setTitle(_("Reload Bouquet"))
-            # return
-
     def cancel(self):
         self.close()
 
@@ -1284,12 +1232,7 @@ class Webcam12(Screen):
                     item = name + "###" + url
                     items.append(item)
                 items.sort()
-                for item in items:
-                    name = item.split('###')[0]
-                    url1 = item.split('###')[1]
 
-                    self.names.append(str(name))
-                    self.urls.append(url1)
 
                 # for export
                 self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
@@ -1307,7 +1250,13 @@ class Webcam12(Screen):
                 for item in items:
                     e.write(item)
                 e.close
+                
+                for item in items:
+                    name = item.split('###')[0]
+                    url1 = item.split('###')[1]
 
+                    self.names.append(str(name))
+                    self.urls.append(url1)
                 showlist(self.names, self['list'])
         except Exception as e:
             print('openTest ', e)
