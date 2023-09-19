@@ -333,7 +333,7 @@ class Webcam3(Screen):
                 # name = html_conv.html_unescape(name)
                 # self.names.append(str(name))
                 # self.urls.append(url)
-           showlist(self.names, self['list'])     
+            showlist(self.names, self['list'])     
         except Exception as e:
             print(e)
         
