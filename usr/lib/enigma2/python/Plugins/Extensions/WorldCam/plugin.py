@@ -10,7 +10,6 @@ from __future__ import print_function
 from . import _, paypal
 from . import Utils
 from . import html_conv
-# from . import cvbq
 import codecs
 # from Components.AVSwitch import AVSwitch
 try:
@@ -52,6 +51,7 @@ setup_title = ('WORLDCAM v.' + version)
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = os.path.join(THISPLUG, 'pics/webcam.png')
 iconpic = 'plugin.png'
+enigma_path = '/etc/enigma2'
 refer = 'https://www.skylinewebcams.com/'
 _firstStartwrd = True
 SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
@@ -104,6 +104,7 @@ class webcamList(MenuList):
             self.l.setFont(0, gFont('Regular', 24))
             self.l.setItemHeight(45)
 
+
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
@@ -142,12 +143,15 @@ class Webcam1(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('')
+        self['key_blue'] = Button('Remove')
+        self['key_yellow'].hide()
         self['info'] = Label('HOME VIEW')
         self["paypal"] = Label()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
+                                                       'blue': self.removeb,
                                                        'cancel': self.cancel,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
@@ -157,6 +161,10 @@ class Webcam1(Screen):
     def layoutFinished(self):
         payp = paypal()
         self["paypal"].setText(payp)
+
+    def removeb(self):
+        conv = Webcam3(self.session, None)
+        conv.removeb()
 
     def openTest(self):
         self.names = []
@@ -203,6 +211,9 @@ class Webcam2(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('')
+        self['key_blue'] = Button('')
+        self['key_yellow'].hide()
+        self['key_blue'].hide()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -254,12 +265,14 @@ class Webcam3(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Export')
+        self['key_blue'] = Button('Remove')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
                                                        'yellow': self.export,
+                                                       'blue': self.removeb,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
         self.onFirstExecBegin.append(self.openTest)
@@ -293,7 +306,7 @@ class Webcam3(Screen):
                 itemx = line.split('###')
                 name = itemx[0]
                 url = itemx[1]
-
+                name = name.replace('.txt', '')
                 name = html_conv.html_unescape(name)
                 self.names.append(str(name))
                 self.urls.append(url)
@@ -302,27 +315,28 @@ class Webcam3(Screen):
                 item = name + "###" + url + '\n'
                 items.append(item)
             items.sort()
-            
+
             self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-            # with open(self.xxxname, 'w') as e:
-                # for item in items:
-                    # e.write(item)
-                # e.close
-            # end for exp
-            clist = ''
-            if sys.version_info[0] == 3:
-                clist = open(self.xxxname, 'w', encoding='UTF-8')
-            else:
-                clist = open(self.xxxname, 'w')
-            for item in items:
-                clist.write(item)
-            clist.close()
+            with open(self.xxxname, 'w') as e:
+                for item in items:
+                    e.write(item)
+                e.close
+            # # end for exp
+            # clist = ''
+            # if sys.version_info[0] == 3:
+                # clist = open(self.xxxname, 'w', encoding='UTF-8')
+            # else:
+                # clist = open(self.xxxname, 'w')
+            # for item in items:
+                # clist.write(item)
+            # clist.close()
                 # name = html_conv.html_unescape(name)
                 # self.names.append(str(name))
                 # self.urls.append(url)
+           showlist(self.names, self['list'])     
         except Exception as e:
             print(e)
-        showlist(self.names, self['list'])
+        
 
     def okClicked(self):
         i = len(self.names)
@@ -337,6 +351,44 @@ class Webcam3(Screen):
 
     def cancel(self):
         self.close()
+
+# remove bouquet
+    def removeb(self):
+        self.session.openWithCallback(self.deleteBouquets, MessageBox, _("Remove all Worldcam Favorite Bouquet ?"), MessageBox.TYPE_YESNO, timeout=5, default=True)
+
+    def deleteBouquets(self, result):
+        """
+        Clean up routine to remove any previously made changes
+        """
+        if result:
+            try:
+                for fname in os.listdir(enigma_path):
+                    if 'userbouquet.wrd_' in fname:
+                        # os.remove(os.path.join(enigma_path, fname))
+                        Utils.purge(enigma_path, fname)
+                    elif 'bouquets.tv.bak' in fname:
+                        # os.remove(os.path.join(enigma_path, fname))
+                        Utils.purge(enigma_path, fname)
+                """
+                # if os.path.isdir(epgimport_path):
+                    # for fname in os.listdir(epgimport_path):
+                        # if 'hbc_' in fname:
+                            # os.remove(os.path.join(epgimport_path, fname))
+                            """
+                os.rename(os.path.join(enigma_path, 'bouquets.tv'), os.path.join(enigma_path, 'bouquets.tv.bak'))
+                tvfile = open(os.path.join(enigma_path, 'bouquets.tv'), 'w+')
+                bakfile = open(os.path.join(enigma_path, 'bouquets.tv.bak'))
+                for line in bakfile:
+                    if '.wrd_' not in line:
+                        tvfile.write(line)
+                bakfile.close()
+                tvfile.close()
+                self.session.open(MessageBox, _('Worldcam Favorites List have been removed'), MessageBox.TYPE_INFO, timeout=5)
+                Utils.ReloadBouquets()
+            except Exception as ex:
+                print(str(ex))
+                raise
+        return
 
 
 class Webcam4(Screen):
@@ -353,6 +405,9 @@ class Webcam4(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('')
+        self['key_blue'] = Button('')
+        self['key_yellow'].hide()
+        self['key_blue'].hide()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -417,6 +472,9 @@ class Webcam5(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('')
+        self['key_blue'] = Button('')
+        self['key_yellow'].hide()
+        self['key_blue'].hide()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -488,6 +546,9 @@ class Webcam5a(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('')
+        self['key_blue'] = Button('')
+        self['key_yellow'].hide()
+        self['key_blue'].hide()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -564,12 +625,14 @@ class Webcam6(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Export')
+        self['key_blue'] = Button('Remove')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'cancel': self.cancel,
                                                        'yellow': self.crea_bouquet,
+                                                       'blue': self.removeb,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
         self.onFirstExecBegin.append(self.openTest)
@@ -578,6 +641,10 @@ class Webcam6(Screen):
     def layoutFinished(self):
         payp = paypal()
         self["paypal"].setText(payp)
+
+    def removeb(self):
+        conv = Webcam3(self.session, self.name)
+        conv.remove()
 
     def openTest(self):
         self.names = []
@@ -601,18 +668,18 @@ class Webcam6(Screen):
         items.sort()
         # exper
         self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-        clist = ''
-        if sys.version_info[0] == 3:
-            clist = open(self.xxxname, 'w', encoding='UTF-8')
-        else:
-            clist = open(self.xxxname, 'w')
-        for item in items:
-            clist.write(item)
-        clist.close()
-        # with open(self.xxxname, 'w') as e:
-            # for item in items:
-                # e.write(item)
-        # e.close
+        # clist = ''
+        # if sys.version_info[0] == 3:
+            # clist = open(self.xxxname, 'w', encoding='UTF-8')
+        # else:
+            # clist = open(self.xxxname, 'w')
+        # for item in items:
+            # clist.write(item)
+        # clist.close()
+        with open(self.xxxname, 'w') as e:
+            for item in items:
+                e.write(item)
+        e.close
 
         for item in items:
             name = item.split('###')[0]
@@ -714,7 +781,7 @@ class Webcam6(Screen):
                     # _session.open(MessageBox, _('bouquets reloaded..\nWith %s channel' % ch), MessageBox.TYPE_INFO, timeout=5)
                 name_clean = Utils.cleanName(self.name)
                 name_file = name_clean.replace('.m3u', '')
-                bouquetname = 'userbouquet.%s.tv' % (name_file.lower())
+                bouquetname = 'userbouquet.wrd_%s.tv' % (name_file.lower())
                 print("Converting Bouquet %s" % name_file)
                 path1 = '/etc/enigma2/' + str(bouquetname)
                 path2 = '/etc/enigma2/bouquets.tv'
@@ -727,14 +794,14 @@ class Webcam6(Screen):
                 self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
                 tag = '1'
 
-                clist = ''
-                if sys.version_info[0] == 3:
-                    clist = open(self.xxxname, 'r', encoding='UTF-8')
-                else:
-                    clist = open(self.xxxname, 'r')
-                for line in clist:
+                # clist = ''
+                # if sys.version_info[0] == 3:
+                    # clist = open(self.xxxname, 'r', encoding='UTF-8')
+                # else:
+                    # clist = open(self.xxxname, 'r')
+                # for line in clist:
 
-                # for line in open(self.xxxname):
+                for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
                     ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
@@ -748,7 +815,7 @@ class Webcam6(Screen):
                     self.tmplist.append(servicez)
                     self.tmplist.append(descriptionz)
 
-                clist.close()
+                # clist.close()
 
                 with open(path1, 'w+') as s:
                     for item in self.tmplist:
@@ -794,6 +861,9 @@ class Webcam7(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('')
+        self['key_blue'] = Button('')
+        self['key_yellow'].hide()
+        self['key_blue'].hide()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
@@ -859,11 +929,13 @@ class Webcam8(Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Export')
+        self['key_blue'] = Button('Remove')
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ButtonSetupActions',
                                      'ColorActions'], {'red': self.close,
                                                        'green': self.okClicked,
                                                        'yellow': self.export,
+                                                       'blue': self.removeb,
                                                        'cancel': self.cancel,
                                                        'back': self.cancel,
                                                        'ok': self.okClicked}, -2)
@@ -873,6 +945,10 @@ class Webcam8(Screen):
     def layoutFinished(self):
         payp = paypal()
         self["paypal"].setText(payp)
+
+    def removeb(self):
+        conv = Webcam3(self.session, self.name)
+        conv.remove()
 
     def export(self):
         conv = Webcam6(self.session, self.name, None)
@@ -908,15 +984,15 @@ class Webcam8(Screen):
 
         self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
 
-        e = ''
-        if sys.version_info[0] == 3:
-            e = open(self.xxxname, 'w', encoding='UTF-8')
-        else:
-            e = open(self.xxxname, 'w')
+        # e = ''
+        # if sys.version_info[0] == 3:
+            # e = open(self.xxxname, 'w', encoding='UTF-8')
+        # else:
+            # e = open(self.xxxname, 'w')
 
-        # with open(self.xxxname, 'w') as e:
-        for item in items:
-            e.write(item)
+        with open(self.xxxname, 'w') as e:
+            for item in items:
+                e.write(item)
         e.close
 
         for item in items:
@@ -987,343 +1063,354 @@ class Webcam8(Screen):
         self.close()
 
 
-class Webcam10(Screen):
-    def __init__(self, session):
-        Screen.__init__(self, session)
-        self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
-        self.list = []
-        self['list'] = webcamList([])
-        self['info'] = Label('Webcam Hopper Cams')
-        self["paypal"] = Label()
-        self['key_red'] = Button('Exit')
-        self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('')
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
-        self.onFirstExecBegin.append(self.openTest)
-        self.onLayoutFinish.append(self.layoutFinished)
+# class Webcam10(Screen):
+    # def __init__(self, session):
+        # Screen.__init__(self, session)
+        # self.session = session
+        # skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        # with codecs.open(skin, "r", encoding="utf-8") as f:
+            # self.skin = f.read()
+        # self.list = []
+        # self['list'] = webcamList([])
+        # self['info'] = Label('Webcam Hopper Cams')
+        # self["paypal"] = Label()
+        # self['key_red'] = Button('Exit')
+        # self['key_green'] = Button('Select')
+        # self['key_yellow'] = Button('')
+        # self['key_blue'] = Button('')
+        # self['key_yellow'].hide()
+        # self['key_blue'].hide()
+        # self['actions'] = ActionMap(['OkCancelActions',
+                                     # 'ButtonSetupActions',
+                                     # 'ColorActions'], {'red': self.close,
+                                                       # 'green': self.okClicked,
+                                                       # 'cancel': self.cancel,
+                                                       # 'back': self.cancel,
+                                                       # 'ok': self.okClicked}, -2)
+        # self.onFirstExecBegin.append(self.openTest)
+        # self.onLayoutFinish.append(self.layoutFinished)
 
-    def layoutFinished(self):
-        payp = paypal()
-        self["paypal"].setText(payp)
+    # def layoutFinished(self):
+        # payp = paypal()
+        # self["paypal"].setText(payp)
 
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.webcamhopper.com/'
-        from . import client
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request('https://www.webcamhopper.com/countries.html', headers=headers))
-        n1 = content.find('Webcams by Country', 0)
-        n2 = content.find('</a></li></ul>', n1)
-        content2 = content[n1:n2]
-        print('content2 ', content2)
-        regexvideo = '<li><a tabindex="-1" href="(.+?)">(.+?)<span'
-        match = re.compile(regexvideo, re.DOTALL).findall(content2)
-        print('match2 ', match)
-        items = []
-        for url, name in match:
-            url1 = '{}/{}'.format('https://www.webcamhopper.com', url)
-            name = html_conv.html_unescape(name)
-            item = name + "###" + url1
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            self.names.append(str(name))
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-
-    def okClicked(self):
-        i = len(self.names)
-        if i < 0:
-            return
-        idx = self['list'].getSelectionIndex()
-        name = self.names[idx]
-        url = self.urls[idx]
-        self.session.open(Webcam11, name, url)
-
-    def cancel(self):
-        self.close()
-
-
-class Webcam11(Screen):
-    def __init__(self, session, name, url):
-        Screen.__init__(self, session)
-        self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
-        self.list = []
-        self.name = name
-        self.url = url
-        self['list'] = webcamList([])
-        self['info'] = Label(name)
-        self["paypal"] = Label()
-        self['key_red'] = Button('Exit')
-        self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('')
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
-        self.onFirstExecBegin.append(self.openTest)
-        self.onLayoutFinish.append(self.layoutFinished)
-
-    def layoutFinished(self):
-        payp = paypal()
-        self["paypal"].setText(payp)
-
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.webcamhopper.com/'
-        from . import client
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request(self.url, headers=headers))
-        n1 = content.find('"mc-top-left"', 0)
-        n2 = content.find('mc-top-right', n1)
-        content2 = content[n1:n2]
-        print('content2 ', content2)
-        regexvideo = '<div class="rank-section"><div class="rank-pic"><a href="(.+?)".*?img src="(.+?)".*?alt="(.+?)".*?">(.+?)</a></div></div><div '  # width="'
-        match = re.compile(regexvideo, re.DOTALL).findall(content2)
-        print('match2 ', match)
-
-        items = []
-        for url, pic, name, name2 in match:
+    # def openTest(self):
+        # self.names = []
+        # self.urls = []
+        # BASEURL = 'https://www.webcamhopper.com/'
+        # from . import client
+        # headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        # content = six.ensure_str(client.request('https://www.webcamhopper.com/countries.html', headers=headers))
+        # n1 = content.find('Webcams by Country', 0)
+        # n2 = content.find('</a></li></ul>', n1)
+        # content2 = content[n1:n2]
+        # print('content2 ', content2)
+        # regexvideo = '<li><a tabindex="-1" href="(.+?)">(.+?)<span'
+        # match = re.compile(regexvideo, re.DOTALL).findall(content2)
+        # print('match2 ', match)
+        # items = []
+        # for url, name in match:
             # url1 = '{}/{}'.format('https://www.webcamhopper.com', url)
-            name = html_conv.html_unescape(name)
-            pic = 'https://www.webcamhopper.com/' + pic
-            url = url
-            name2 = name2
-            print(name + '\n' + pic + '\n' + url + '\n' + '\n' + name2 + '\n')
-            item = name + "###" + url
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            self.names.append(str(name))
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
+            # name = html_conv.html_unescape(name)
+            # item = name + "###" + url1
+            # items.append(item)
+        # items.sort()
+        # for item in items:
+            # name = item.split('###')[0]
+            # url1 = item.split('###')[1]
+            # self.names.append(str(name))
+            # self.urls.append(url1)
+        # showlist(self.names, self['list'])
 
-    def okClicked(self):
-        i = len(self.names)
-        if i < 0:
-            return
-        idx = self['list'].getSelectionIndex()
-        name = self.names[idx]
-        url = self.urls[idx]
-        print(name + '\n' + url + '\n')
-        self.session.open(Webcam12, name, url)
+    # def okClicked(self):
+        # i = len(self.names)
+        # if i < 0:
+            # return
+        # idx = self['list'].getSelectionIndex()
+        # name = self.names[idx]
+        # url = self.urls[idx]
+        # self.session.open(Webcam11, name, url)
 
-    def cancel(self):
-        self.close()
+    # def cancel(self):
+        # self.close()
 
 
-class Webcam12(Screen):
-    def __init__(self, session, name, url):
-        Screen.__init__(self, session)
-        self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
-        self.list = []
-        self.name = name
-        self.url = url
-        self.xxxname = '/tmp/' + str(name) + '_conv.m3u'
-        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
-        self['list'] = webcamList([])
-        self['info'] = Label('Skyline Webcams')
-        self["paypal"] = Label()
-        self['key_red'] = Button('Exit')
-        self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('Export')
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'yellow': self.export,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+# class Webcam11(Screen):
+    # def __init__(self, session, name, url):
+        # Screen.__init__(self, session)
+        # self.session = session
+        # skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        # with codecs.open(skin, "r", encoding="utf-8") as f:
+            # self.skin = f.read()
+        # self.list = []
+        # self.name = name
+        # self.url = url
+        # self['list'] = webcamList([])
+        # self['info'] = Label(name)
+        # self["paypal"] = Label()
+        # self['key_red'] = Button('Exit')
+        # self['key_green'] = Button('Select')
+        # self['key_yellow'] = Button('')
+        # self['key_blue'] = Button('')
+        # self['key_yellow'].hide()
+        # self['key_blue'].hide()
+        # self['actions'] = ActionMap(['OkCancelActions',
+                                     # 'ButtonSetupActions',
+                                     # 'ColorActions'], {'red': self.close,
+                                                       # 'green': self.okClicked,
+                                                       # 'cancel': self.cancel,
+                                                       # 'back': self.cancel,
+                                                       # 'ok': self.okClicked}, -2)
+        # self.onFirstExecBegin.append(self.openTest)
+        # self.onLayoutFinish.append(self.layoutFinished)
 
-        self.onFirstExecBegin.append(self.openTest)
-        self.onLayoutFinish.append(self.layoutFinished)
+    # def layoutFinished(self):
+        # payp = paypal()
+        # self["paypal"].setText(payp)
 
-    def export(self):
-        conv = Webcam6(self.session, self.name, None)
-        conv.crea_bouquet()
+    # def openTest(self):
+        # self.names = []
+        # self.urls = []
+        # BASEURL = 'https://www.webcamhopper.com/'
+        # from . import client
+        # headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        # content = six.ensure_str(client.request(self.url, headers=headers))
+        # n1 = content.find('"mc-top-left"', 0)
+        # n2 = content.find('mc-top-right', n1)
+        # content2 = content[n1:n2]
+        # print('content2 ', content2)
+        # regexvideo = '<div class="rank-section"><div class="rank-pic"><a href="(.+?)".*?img src="(.+?)".*?alt="(.+?)".*?">(.+?)</a></div></div><div '  # width="'
+        # match = re.compile(regexvideo, re.DOTALL).findall(content2)
+        # print('match2 ', match)
 
-    def layoutFinished(self):
-        payp = paypal()
-        self["paypal"].setText(payp)
+        # items = []
+        # for url, pic, name, name2 in match:
+            # # url1 = '{}/{}'.format('https://www.webcamhopper.com', url)
+            # name = html_conv.html_unescape(name)
+            # pic = 'https://www.webcamhopper.com/' + pic
+            # url = url
+            # name2 = name2
+            # print(name + '\n' + pic + '\n' + url + '\n' + '\n' + name2 + '\n')
+            # item = name + "###" + url
+            # items.append(item)
+        # items.sort()
+        # for item in items:
+            # name = item.split('###')[0]
+            # url1 = item.split('###')[1]
+            # self.names.append(str(name))
+            # self.urls.append(url1)
+        # showlist(self.names, self['list'])
 
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.webcamhopper.com/'
-        from . import client
-        try:
-            headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-            content = six.ensure_str(client.request(self.url, headers=headers))
-            print('content: ', content)
-            n0 = content.find('skylinewebcams')
-            print('n0 skiline ', n0)
-            if n0 != -1:  # if 'skylinewebcams' in content:
-                regexvideo = 'href="https://www.skylinewebcams.com/(.+?)"'
-                match = re.compile(regexvideo, re.DOTALL).findall(content)
-                url = 'https://www.skylinewebcams.com/' + match[0]
-                print(url)
-                content = Utils.ReadUrl2(url, refer)
-                if PY3:
-                    content = six.ensure_str(content)
-                if "source:'livee.m3u8" in content:
-                    regexvideo = "source:'livee.m3u8(.+?)'"
-                    match = re.compile(regexvideo, re.DOTALL).findall(content)
-                    id = match[0]
-                    id = id.replace('?a=', '')
-                    if id or id != '':
-                        video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+    # def okClicked(self):
+        # i = len(self.names)
+        # if i < 0:
+            # return
+        # idx = self['list'].getSelectionIndex()
+        # name = self.names[idx]
+        # url = self.urls[idx]
+        # print(name + '\n' + url + '\n')
+        # self.session.open(Webcam12, name, url)
 
-                        stream = eServiceReference(4097, 0, video_url)
-                        stream.setName(self.name)
-                        self.session.open(MoviePlayer, stream)
-
-                elif "videoId:" in content:
-                    regexvideo = "videoId.*?'(.*?)'"
-                    match = re.compile(regexvideo, re.DOTALL).findall(content)
-                    id = match[0]
-                    nid = len(str(id))
-                    print(nid)
-                    print('name: %s\nid: %s\nLenYTL: %s' % (str(self.name), str(id), nid))
-                    if str(nid) == '11':
-                        self.getYTID(self.name, str(id))
-                else:
-                    return 'http://patbuweb.com/iptv/e2liste/startend.avi'
-                self.close()
-            else:
-                n1 = content.find('class="map-data-host">', 0)
-                n2 = content.find('View Webcam</a></div></div>', n1)
-                content2 = content[n1:n2]
-                print('content2 ', content2)
-
-                regexvideo = 'image"><a href="(.+?)".*?img src="(.+?)".*?alt="(.+?)"'
-                match = re.compile(regexvideo, re.DOTALL).findall(content)
-                items = []
-                for url, pic, name in match:
-                    # url1 = '{}/{}'.format('https://www.webcamhopper.com', url)
-                    url = url
-                    pic = 'https://www.webcamhopper.com/' + pic
-                    name = html_conv.html_unescape(name)
-                    print(name + '\n' + pic + '\n' + url + '\n')
-                    item = name + "###" + url
-                    items.append(item)
-                items.sort()
+    # def cancel(self):
+        # self.close()
 
 
-                # for export
-                self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
+# class Webcam12(Screen):
+    # def __init__(self, session, name, url):
+        # Screen.__init__(self, session)
+        # self.session = session
+        # skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        # with codecs.open(skin, "r", encoding="utf-8") as f:
+            # self.skin = f.read()
+        # self.list = []
+        # self.name = name
+        # self.url = url
+        # self.xxxname = '/tmp/' + str(name) + '_conv.m3u'
+        # self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+        # self['list'] = webcamList([])
+        # self['info'] = Label('Skyline Webcams')
+        # self["paypal"] = Label()
+        # self['key_red'] = Button('Exit')
+        # self['key_green'] = Button('Select')
+        # self['key_yellow'] = Button('Export')
+        # self['key_blue'] = Button('Remove')
+        # self['actions'] = ActionMap(['OkCancelActions',
+                                     # 'ButtonSetupActions',
+                                     # 'ColorActions'], {'red': self.close,
+                                                       # 'green': self.okClicked,
+                                                       # 'cancel': self.cancel,
+                                                       # 'yellow': self.export,
+                                                       # 'blue': self.removeb,
+                                                       # 'back': self.cancel,
+                                                       # 'ok': self.okClicked}, -2)
+
+        # self.onFirstExecBegin.append(self.openTest)
+        # self.onLayoutFinish.append(self.layoutFinished)
+
+    # def export(self):
+        # conv = Webcam6(self.session, self.name, None)
+        # conv.crea_bouquet()
+
+    # def removeb(self):
+        # conv = Webcam3(self.session, self.name)
+        # conv.remove()
+
+    # def layoutFinished(self):
+        # payp = paypal()
+        # self["paypal"].setText(payp)
+
+    # def openTest(self):
+        # self.names = []
+        # self.urls = []
+        # BASEURL = 'https://www.webcamhopper.com/'
+        # from . import client
+        # try:
+            # headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+            # content = six.ensure_str(client.request(self.url, headers=headers))
+            # print('content: ', content)
+            # n0 = content.find('skylinewebcams')
+            # print('n0 skiline ', n0)
+            # if n0 != -1:  # if 'skylinewebcams' in content:
+                # regexvideo = 'href="https://www.skylinewebcams.com/(.+?)"'
+                # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                # url = 'https://www.skylinewebcams.com/' + match[0]
+                # print(url)
+                # content = Utils.ReadUrl2(url, refer)
+                # if PY3:
+                    # content = six.ensure_str(content)
+                # if "source:'livee.m3u8" in content:
+                    # regexvideo = "source:'livee.m3u8(.+?)'"
+                    # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                    # id = match[0]
+                    # id = id.replace('?a=', '')
+                    # if id or id != '':
+                        # video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+
+                        # stream = eServiceReference(4097, 0, video_url)
+                        # stream.setName(self.name)
+                        # self.session.open(MoviePlayer, stream)
+
+                # elif "videoId:" in content:
+                    # regexvideo = "videoId.*?'(.*?)'"
+                    # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                    # id = match[0]
+                    # nid = len(str(id))
+                    # print(nid)
+                    # print('name: %s\nid: %s\nLenYTL: %s' % (str(self.name), str(id), nid))
+                    # if str(nid) == '11':
+                        # self.getYTID(self.name, str(id))
+                # else:
+                    # return 'http://patbuweb.com/iptv/e2liste/startend.avi'
+                # self.close()
+            # else:
+                # n1 = content.find('class="map-data-host">', 0)
+                # n2 = content.find('View Webcam</a></div></div>', n1)
+                # content2 = content[n1:n2]
+                # print('content2 ', content2)
+
+                # regexvideo = 'image"><a href="(.+?)".*?img src="(.+?)".*?alt="(.+?)"'
+                # match = re.compile(regexvideo, re.DOTALL).findall(content)
+                # items = []
+                # for url, pic, name in match:
+                    # # url1 = '{}/{}'.format('https://www.webcamhopper.com', url)
+                    # url = url
+                    # pic = 'https://www.webcamhopper.com/' + pic
+                    # name = html_conv.html_unescape(name)
+                    # print(name + '\n' + pic + '\n' + url + '\n')
+                    # item = name + "###" + url
+                    # items.append(item)
+                # items.sort()
+
+                # # for export
+                # self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
                 # with open(self.xxxname, 'w') as e:
                     # for item in items:
                         # e.write(item)
                 # e.close
-                # # end for exp
-                e = ''
-                if sys.version_info[0] == 3:
-                    e = open(self.xxxname, 'w', encoding='UTF-8')
-                else:
-                    e = open(self.xxxname, 'w')
+                # # # end for exp
+                # # e = ''
+                # # if sys.version_info[0] == 3:
+                    # # e = open(self.xxxname, 'w', encoding='UTF-8')
+                # # else:
+                    # # e = open(self.xxxname, 'w')
 
-                for item in items:
-                    e.write(item)
-                e.close
-                
-                for item in items:
-                    name = item.split('###')[0]
-                    url1 = item.split('###')[1]
+                # # for item in items:
+                    # # e.write(item)
+                # # e.close
 
-                    self.names.append(str(name))
-                    self.urls.append(url1)
-                showlist(self.names, self['list'])
-        except Exception as e:
-            print('openTest ', e)
+                # for item in items:
+                    # name = item.split('###')[0]
+                    # url1 = item.split('###')[1]
 
-    def getYTID(self, title, id):
-        yttitle = title  # .encode('ascii', 'replace')
-        video_url = 'https://www.youtube.com/watch?v=' + id
+                    # self.names.append(str(name))
+                    # self.urls.append(url1)
+                # showlist(self.names, self['list'])
+        # except Exception as e:
+            # print('openTest ', e)
 
-        print('video_url: %s ' % (video_url))
-        self.playYTID(video_url, yttitle)
+    # def getYTID(self, title, id):
+        # yttitle = title  # .encode('ascii', 'replace')
+        # video_url = 'https://www.youtube.com/watch?v=' + id
 
-    def playYTID(self, video_url, yttitle):
-        title = yttitle
-        stream = eServiceReference(4097, 0, video_url)
-        if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
-            video_url = 'streamlink://' + video_url
-            stream = eServiceReference(4097, 0, video_url)
+        # print('video_url: %s ' % (video_url))
+        # self.playYTID(video_url, yttitle)
 
-            # stream ='4097:0:1:1:0:0:0:0:0:0:streamlink%3a//' + video_url
-
-        # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
-            # if os.path.exists('/usr/bin/exteplayer3'):
-                # stream = eServiceReference(5002, 0, video_url)
-            # elif os.path.exists('/usr/bin/gstplayer'):
-                # stream = eServiceReference(5001, 0, video_url)
-            # else:
-                # stream = eServiceReference(4097, 0, video_url)
-        # else:
+    # def playYTID(self, video_url, yttitle):
+        # title = yttitle
+        # stream = eServiceReference(4097, 0, video_url)
+        # if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
+            # video_url = 'streamlink://' + video_url
             # stream = eServiceReference(4097, 0, video_url)
+
+            # # stream ='4097:0:1:1:0:0:0:0:0:0:streamlink%3a//' + video_url
+
+        # # elif os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+            # # if os.path.exists('/usr/bin/exteplayer3'):
+                # # stream = eServiceReference(5002, 0, video_url)
+            # # elif os.path.exists('/usr/bin/gstplayer'):
+                # # stream = eServiceReference(5001, 0, video_url)
+            # # else:
+                # # stream = eServiceReference(4097, 0, video_url)
+        # # else:
+            # # stream = eServiceReference(4097, 0, video_url)
+        # # stream = eServiceReference(4097, 0, video_url)
+        # stream.setName(str(title))
+        # self.session.open(MoviePlayer, stream)
+
+    # def openYTID(self, video_url):
+        # url = 'streamlink://' + video_url
+        # print('reference vistalive:   ', url)
         # stream = eServiceReference(4097, 0, video_url)
-        stream.setName(str(title))
-        self.session.open(MoviePlayer, stream)
+        # return stream
 
-    def openYTID(self, video_url):
-        url = 'streamlink://' + video_url
-        print('reference vistalive:   ', url)
-        stream = eServiceReference(4097, 0, video_url)
-        return stream
-
-    def okClicked(self):
-        i = len(self.names)
-        if i < 0:
-            return
-        idx = self['list'].getSelectionIndex()
-        name = self.names[idx]
-        video_url = self.urls[idx]
-        print(name + '\n' + video_url + '\n')
-        stream = eServiceReference(4097, 0, video_url)
-        if "vistalive" in video_url:
-            stream = self.openYTID(video_url)
-        # else:
-            # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
-                # if os.path.exists('/usr/bin/exteplayer3'):
-                    # stream = eServiceReference(5002, 0, video_url)
-                # elif os.path.exists('/usr/bin/gstplayer'):
-                    # stream = eServiceReference(5001, 0, video_url)
-                # else:
-                    # stream = eServiceReference(4097, 0, video_url)
-            # else:
-                # stream = eServiceReference(4097, 0, video_url)
+    # def okClicked(self):
+        # i = len(self.names)
+        # if i < 0:
+            # return
+        # idx = self['list'].getSelectionIndex()
+        # name = self.names[idx]
+        # video_url = self.urls[idx]
+        # print(name + '\n' + video_url + '\n')
         # stream = eServiceReference(4097, 0, video_url)
-        # stream = stream.replace('%25', '%')
-        stream.setName(str(name))
-        self.session.open(MoviePlayer, stream)
+        # if "vistalive" in video_url:
+            # stream = self.openYTID(video_url)
+        # # else:
+            # # if os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/SystemPlugins/ServiceApp/plugin.pyc'):
+                # # if os.path.exists('/usr/bin/exteplayer3'):
+                    # # stream = eServiceReference(5002, 0, video_url)
+                # # elif os.path.exists('/usr/bin/gstplayer'):
+                    # # stream = eServiceReference(5001, 0, video_url)
+                # # else:
+                    # # stream = eServiceReference(4097, 0, video_url)
+            # # else:
+                # # stream = eServiceReference(4097, 0, video_url)
+        # # stream = eServiceReference(4097, 0, video_url)
+        # # stream = stream.replace('%25', '%')
+        # stream.setName(str(name))
+        # self.session.open(MoviePlayer, stream)
 
-    def cancel(self):
-        self.close()
+    # def cancel(self):
+        # self.close()
 
 
 class TvInfoBarShowHide():
@@ -1478,9 +1565,9 @@ class MoviePlayer(
 
     def getAspect(self):
         try:
-            aspect = iAVSwitch.getAspectRatioSetting()
+            aspect = iAVSwitch().getAspectRatioSetting()
         except:
-            aspect = eAVSwitch.getAspectRatioSetting()
+            aspect = eAVSwitch().getAspectRatioSetting()
         return aspect
 
     def getAspectString(self, aspectnum):

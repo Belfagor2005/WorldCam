@@ -6,7 +6,7 @@
     <eLabel position="1387,154" size="450,450" backgroundColor="#30000000" zPosition="1" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/main1.png" position="0,0" size="1920,1080" zPosition="1" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" scale="strech" alphatest="blend" position="223,10" size="191,67" zPosition="5" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" scale="strech" position="225,917" size="156,75" zPosition="5" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" scale="strech" position="544,956" size="156,75" zPosition="5" alphatest="on" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" scale="strech" position="890,760" size="150,150" zPosition="2" alphatest="on" />
     <widget name="paypal" position="220,760" size="833,153" font="Regular; 34" foregroundColor="#ffb75b" backgroundColor="#101010" halign="left" transparent="1" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" scale="strech" position="975,90" size="80,35" zPosition="3" />
@@ -20,4 +20,6 @@
     <widget name="key_green" position="835,1001" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
     <ePixmap name="yellow" position="839,926" zPosition="3" size="210,60" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
     <widget name="key_yellow" position="835,926" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
+    <ePixmap name="blue" position="227,926" zPosition="3" size="210,60" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
+    <widget name="key_blue" position="227,926" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
 </screen>
