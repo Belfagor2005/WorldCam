@@ -14,8 +14,13 @@ import codecs
 from Components.AVSwitch import AVSwitch
 try:
     from Components.AVSwitch import iAVSwitch
-except:
+except Exception as e:
+    print(e)
+
+try:
     from enigma import eAVSwitch
+except Exception as e:
+    print(e)
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
