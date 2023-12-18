@@ -10,6 +10,12 @@ import os
 import re
 import base64
 from random import choice
+import unicodedata
+from Components.config import config
+try:
+    from os.path import isdir
+except ImportError:
+    from os import isdir
 # Added for support of wqhd detection
 from enigma import getDesktop
 screenwidth = getDesktop(0).size()
@@ -32,28 +38,16 @@ PY39 = sys.version_info[0:2] >= (3, 9)
 PY3 = sys.version_info.major >= 3
 if PY3:
     bytes = bytes
-    str = unicode = basestring = str
+    unicode = str
     range = range
-    zip = zip
-    def iteritems(d, **kw):
-        return iter(d.items(**kw))
     from urllib.parse import quote
     from urllib.request import urlopen
     from urllib.request import Request
     from urllib.error import HTTPError, URLError
 
 if PY2:
-    _str = str
-    str = unicode
+    str = str
     range = xrange
-    from itertools import izip
-    zip = izip
-    unicode = unicode
-    basestring = basestring
-    def bytes(b, encoding="ascii"):
-        return _str(b)
-    def iteritems(d, **kw):
-        return d.iteritems(**kw)
     from urllib import quote
     from urllib2 import urlopen
     from urllib2 import Request
@@ -77,7 +71,7 @@ def ensure_str(text, encoding='utf-8', errors='strict'):
                 return text.encode(encoding, errors)
             except Exception:
                 return text.encode(encoding, 'ignore')
-    else: #PY3
+    else:  # PY3
         if isinstance(text, bytes):
             try:
                 return text.decode(encoding, errors)
@@ -132,16 +126,20 @@ def isUHD():
     if screenwidth.width() == 2560:
         UHD = True
         return UHD
+
+
 def isFHD():
     if screenwidth.width() == 1920:
         FHD = True
         return FHD
+
 
 def isHD():
     if screenwidth.width() == 1280:
         HD = True
         return HD
 # End of code change
+
 
 def DreamOS():
     DreamOS = False
@@ -323,12 +321,14 @@ def downloadFile(url, target):
     import socket
     try:
         from urllib.error import HTTPError, URLError
+        from urllib.request import urlopen
     except:
         from urllib2 import HTTPError, URLError
+        from urllib2 import urlopen
     try:
-        response = urlopen(url, None, 5)
+        response = urlopen(url, None, 15)
         with open(target, 'wb') as output:
-            # print('response: ', response)
+            print('response: ', response)
             if PY3:
                 output.write(response.read().decode('utf-8'))
             else:
@@ -366,7 +366,29 @@ def downloadFilest(url, target):
         print('URL Error: ', e.reason)
 
 
+
+def defaultMoviePath():
+    result = config.usage.default_path.value
+    if not isdir(result):
+        from Tools import Directories
+        return Directories.defaultRecordingLocation(config.usage.default_path.value)
+    return result
+
+
+if not isdir(config.movielist.last_videodir.value):
+    try:
+        config.movielist.last_videodir.value = defaultMoviePath()
+        config.movielist.last_videodir.save()
+    except:
+        pass
+
+
+downloadm3u = config.movielist.last_videodir.value
+
+
 # this def returns the current playing service name and stream_url from give sref
+
+
 def getserviceinfo(sref):
     try:
         from ServiceReference import ServiceReference
@@ -442,7 +464,7 @@ def check(url):
     except:
         from urllib2 import HTTPError, URLError
     try:
-        response = checkStr(urlopen(url, None, 5))
+        response = checkStr(urlopen(url, None, 15))
         response.close()
         return True
     except HTTPError:
@@ -511,7 +533,6 @@ def checkRedirect(url):
     # import ssl
     # from urllib3 import poolmanager
     # class TLSAdapter(requests.adapters.HTTPAdapter):
-
 
         # def init_poolmanager(self, connections, maxsize, block=False):
             # """Create and initialize the urllib3 PoolManager."""
@@ -917,6 +938,23 @@ def RequestAgent():
     return RandomAgent
 
 
+def make_request(url):
+    try:
+        import requests
+        response = requests.get(url, verify=False)
+        if response.status_code == 200:
+            link = requests.get(url, headers={'User-Agent': RequestAgent()}, timeout=15, verify=False, stream=True ).text
+        return link
+    except ImportError:
+        req = Request(url)
+        req.add_header('User-Agent', 'E2 Plugin Lululla')
+        response = urlopen(req, None, 10)
+        link = response.read().decode('utf-8')
+        response.close()
+        return link
+    return
+
+
 def ReadUrl2(url, referer):
     if sys.version_info.major == 3:
         import urllib.request as urllib2
@@ -1197,6 +1235,17 @@ def decodeUrl(text):
         # except ValueError:
             # return "&#%s;" % m.group(2)
     # return _UNICODE_MAP.get(m.group(2), "&%s;" % m.group(2))
+
+def normalize(title):
+    try:
+        try:
+            return title.decode('ascii').encode("utf-8")
+        except:
+            pass
+
+        return str(''.join(c for c in unicodedata.normalize('NFKD', unicode(title.decode('utf-8'))) if unicodedata.category(c) != 'Mn'))
+    except:
+        return unicode(title)
 
 
 def decodeHtml(text):
