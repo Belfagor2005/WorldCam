@@ -44,6 +44,7 @@ from enigma import eServiceReference
 from enigma import loadPNG, gFont
 from enigma import eTimer
 from enigma import getDesktop
+import unicodedata
 import os
 import re
 import sys
@@ -72,6 +73,12 @@ else:
 PY3 = False
 PY3 = sys.version_info.major >= 3
 
+if PY3:
+    PY3 = True
+    unidecode = str
+else:
+    str = str
+
 if sys.version_info >= (2, 7, 9):
     try:
         import ssl
@@ -82,6 +89,31 @@ if sys.version_info >= (2, 7, 9):
 leng = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
 leng2 = leng.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
 language = leng2[:-3]
+
+
+def normalize(title):
+    try:
+        try:
+            return title.decode('ascii').encode("utf-8")
+        except:
+            pass
+
+        return str(''.join(c for c in unicodedata.normalize('NFKD', unidecode(title.decode('utf-8'))) if unicodedata.category(c) != 'Mn'))
+    except:
+        return unidecode(title)
+
+# def get_safe_filename(filename, fallback=''):
+    # '''Convert filename to safe filename'''
+    # import unicodedata
+    # import six
+    # name = filename.replace(' ', '_').replace('/', '_')
+    # if isinstance(name, six.text_type):
+        # name = name.encode('utf-8')
+    # name = unicodedata.normalize('NFKD', six.text_type(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
+    # name = re.sub(b'[^a-z0-9-_]', b'', name.lower())
+    # if not name:
+        # name = fallback
+    # return six.ensure_str(name)
 
 
 class webcamList(MenuList):
@@ -310,18 +342,6 @@ class Webcam3(Screen):
                 for item in items:
                     e.write(item)
                 e.close
-            # # end for exp
-            # clist = ''
-            # if sys.version_info[0] == 3:
-                # clist = open(self.xxxname, 'w', encoding='UTF-8')
-            # else:
-                # clist = open(self.xxxname, 'w')
-            # for item in items:
-                # clist.write(item)
-            # clist.close()
-                # name = html_conv.html_unescape(name)
-                # self.names.append(str(name))
-                # self.urls.append(url)
             showlist(self.names, self['list'])     
         except Exception as e:
             print(e)
@@ -421,14 +441,15 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
-            name = html_conv.html_unescape(name)
+            # name = html_conv.html_unescape(name)
             item = name + "###" + url1
             items.append(item)
         items.sort()
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(str(name))
+            self.names.append(normalize(name))
+            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -502,7 +523,8 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(str(name))
+            self.names.append(normalize(name))
+            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -569,15 +591,15 @@ class Webcam5a(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            name = html_conv.html_unescape(name)
+            # name = html_conv.html_unescape(name)
             item = name + "###" + url1
             items.append(item)
         items.sort()
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-
-            self.names.append(str(name))
+            self.names.append(normalize(name))
+            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -649,7 +671,7 @@ class Webcam6(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            name = html_conv.html_unescape(name)
+            # name = html_conv.html_unescape(name)
             item = name + "###" + url1 + '\n'
             items.append(item)
         items.sort()
@@ -671,7 +693,8 @@ class Webcam6(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(str(name))
+            self.names.append(normalize(name))
+            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -710,14 +733,16 @@ class Webcam6(Screen):
                 print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
                 if str(nid) == '11':
                     video_url = 'https://www.youtube.com/watch?v=' + id
-                    stream = self.openYTID(video_url)
-                    stream.setName(str(name))
-                    print('direct open ytl: ', stream)
-                    self.session.open(MoviePlayer, stream)
+                    # stream = self.openYTID(video_url)
+                    # stream.setName(str(name))
+                    # print('direct open ytl: ', stream)
+                    # self.session.open(MoviePlayer, stream)
+                    self.playYTID(video_url, str(name))
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
             print(e)
+
 
     def openYTID(self, video_url):
         video_url = 'streamlink://' + video_url
@@ -736,8 +761,26 @@ class Webcam6(Screen):
         stream = eServiceReference(4097, 0, video_url)
         if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
-            stream = eServiceReference(4097, 0, video_url)
+            # stream = eServiceReference(4097, 0, video_url)
+        else:
+            from Plugins.Extensions.WorldCam import youtube_dl
+            from youtube_dl import YoutubeDL
+            '''
+            ydl_opts = {'format': 'best'}
+            ydl_opts = {'format': 'bestaudio/best'}
+            
+            ydl_opts = {'format': 'best',
+                        'no_check_certificate': True,
+                        }
+            '''
+            ydl_opts = {'format': 'best'}
+            ydl = YoutubeDL(ydl_opts)
+            ydl.add_default_info_extractors()
+            result = ydl.extract_info(video_url, download=False)
+            video_url = result["url"]
+            print("Here in Test url =", video_url)
 
+        stream = eServiceReference(4097, 0, video_url)
         stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
@@ -1001,7 +1044,12 @@ class Webcam8(Screen):
                 print(nid)
                 print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
                 if str(nid) == '11':
-                    self.getYTID(name, str(id))
+                    video_url = 'https://www.youtube.com/watch?v=' + id
+                    # stream = self.openYTID(video_url)
+                    # stream.setName(str(name))
+                    # print('direct open ytl: ', stream)
+                    # self.session.open(MoviePlayer, stream)
+                    self.playYTID(video_url, str(name))
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
@@ -1018,8 +1066,26 @@ class Webcam8(Screen):
         stream = eServiceReference(4097, 0, video_url)
         if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
-            stream = eServiceReference(4097, 0, video_url)
+            # stream = eServiceReference(4097, 0, video_url)
+        else:
+            from Plugins.Extensions.WorldCam import youtube_dl
+            from youtube_dl import YoutubeDL
+            '''
+            ydl_opts = {'format': 'best'}
+            ydl_opts = {'format': 'bestaudio/best'}
+            
+            ydl_opts = {'format': 'best',
+                        'no_check_certificate': True,
+                        }
+            '''
+            ydl_opts = {'format': 'best'}
+            ydl = YoutubeDL(ydl_opts)
+            ydl.add_default_info_extractors()
+            result = ydl.extract_info(video_url, download=False)
+            video_url = result["url"]
+            print("Here in Test url =", video_url)
 
+        stream = eServiceReference(4097, 0, video_url)
         stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
 
