@@ -102,18 +102,15 @@ def normalize(title):
     except:
         return unidecode(title)
 
-# def get_safe_filename(filename, fallback=''):
-    # '''Convert filename to safe filename'''
-    # import unicodedata
-    # import six
-    # name = filename.replace(' ', '_').replace('/', '_')
-    # if isinstance(name, six.text_type):
-        # name = name.encode('utf-8')
-    # name = unicodedata.normalize('NFKD', six.text_type(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
-    # name = re.sub(b'[^a-z0-9-_]', b'', name.lower())
-    # if not name:
-        # name = fallback
-    # return six.ensure_str(name)
+
+def str_encode(text, encoding="utf8"):
+	if not PY3:
+		if isinstance(text, unicode):
+			return text.encode(encoding)
+		else:
+			return text
+	else:
+		return text
 
 
 class webcamList(MenuList):
@@ -448,7 +445,8 @@ class Webcam4(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(normalize(name))
+            self.names.append(str_encode(name))
+            # self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -523,7 +521,7 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(normalize(name))
+            self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -598,7 +596,7 @@ class Webcam5a(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(normalize(name))
+            self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -693,7 +691,7 @@ class Webcam6(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(normalize(name))
+            self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -817,7 +815,12 @@ class Webcam6(Screen):
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
-                    ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
+                    
+                    if 'youtube' in ref:
+                        ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
+                    else:
+                        ref = ref.replace(":", "%3a").replace("\\", "/")
+                    
                     descriptiona = ('#DESCRIPTION %s' % name).splitlines()
                     descriptionz = ''.join(descriptiona)
                     servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))

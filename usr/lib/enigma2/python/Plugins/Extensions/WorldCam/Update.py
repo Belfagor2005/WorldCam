@@ -8,9 +8,10 @@ print("Update.py")
 
 def upd_done():
     from os import popen, system
-    cmd01 = "wget http://patbuweb.com/worldcam/worldcam.tar -O /tmp/worldcam.tar ; tar -xvf /tmp/worldcam.tar -C /"
-    cmd02 = "wget --no-check-certificate -U 'Enigma2 - worldcam Plugin' -c 'http://patbuweb.com/worldcam/worldcam.tar' -O '/tmp/worldcam.tar'; tar -xvf /tmp/worldcam.tar -C /"
+    cmd01 = "wget --no-cache --no-dns-cache  http://patbuweb.com/worldcam/worldcam.tar -O /tmp/worldcam.tar --post-data='action=purge';tar -xvf /tmp/worldcam.tar -C /;rm -rf /tmp/worldcam.tar"
+    cmd02 = "wget --no-check-certificate --no-cache --no-dns-cache  -U 'Enigma2 - worldcam Plugin' -c 'http://patbuweb.com/worldcam/worldcam.tar' -O '/tmp/worldcam.tar' --post-data='action=purge';tar -xvf /tmp/worldcam.tar -C /;rm -rf /tmp/worldcam.tar"
     cmd22 = 'find /usr/bin -name "wget"'
+    cmd10 = 'rm -rf /tmp/worldcam.tar'
     res = popen(cmd22).read()
     if 'wget' not in res.lower():
         if os.path.exists('/etc/opkg'):
@@ -22,7 +23,9 @@ def upd_done():
         popen(cmd02)
     except:
         popen(cmd01)
-    system('rm -rf /tmp/worldcam.tar')
+    popen(cmd10)
+    
+    # system('rm -rf /tmp/worldcam.tar')
     return
 
 '''

@@ -4,5 +4,4 @@ if [ -d /usr/lib/enigma2/python/Plugins/Extensions/WorldCam ]; then
   rm -rf /usr/lib/enigma2/python/Plugins/Extensions/WorldCam > /dev/null 2>&1
 fi
 
-
 exit 0

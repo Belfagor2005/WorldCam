@@ -495,6 +495,14 @@ def checkStr(text, encoding='utf8'):
             text = text.encode(encoding)
     return text
 
+def str_encode(text, encoding="utf8"):
+	if not PY3:
+		if isinstance(text, unicode):
+			return text.encode(encoding)
+		else:
+			return text
+	else:
+		return text
 
 def checkRedirect(url):
     # print("*** check redirect ***")
@@ -947,7 +955,7 @@ def make_request(url):
         return link
     except ImportError:
         req = Request(url)
-        req.add_header('User-Agent', 'E2 Plugin Lululla')
+        req.add_header('User-Agent', 'E2 Plugin')
         response = urlopen(req, None, 10)
         link = response.read().decode('utf-8')
         response.close()
