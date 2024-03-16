@@ -1,16 +1,16 @@
-<screen name="Webcam1" position="0,0" size="1280,720" title="::WORLDCAM::.." backgroundColor="#ff000000" flags="wfNoBorder">
+<screen name="Webcam1" position="0,0" size="1280,720" title="::WORLDCAM::.." backgroundColor="#ff000000" flags="wfNoBorder" zPosition="1">
 	<widget name="info" position="146,86" size="543,33" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/main1.png" position="0,0" scale="strech" size="1280,720" zPosition="-1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/main11.png" position="0,0" scale="1" size="1280,720" zPosition="-1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/sep.png" position="140,70" size="560,5" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/sep.png" position="140,470" size="560,20" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/sep.png" position="146,653" size="560,20" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" position="599,21" size="96,39" alphatest="blend" zPosition="5" />
-    <ePixmap position="151,7" size="145,50" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" scale="strech" transparent="1" alphatest="blend" zPosition="5" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="892,19" size="156,75" scale="strech" zPosition="2" alphatest="on" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="845,119" size="250,250" scale="strech" zPosition="2" alphatest="on" />
-    <widget name="paypal" position="763,403" size="402,131" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
-    <eLabel position="758,12" size="418,692" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />
-    <ePixmap position="538,496" size="150,150" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="strech" alphatest="blend" />
+    <ePixmap position="151,7" size="145,50" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" scale="1" transparent="1" alphatest="blend" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="887,24" size="156,75" scale="1" zPosition="2" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="845,119" size="250,250" scale="1" zPosition="2" alphatest="on" />
+    <widget name="paypal" position="773,403" size="402,131" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
+    <eLabel position="765,12" size="418,692" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />
+    <ePixmap position="538,496" size="150,150" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="1" alphatest="blend" />
     <eLabel position="535,495" size="150,150" backgroundColor="#30000000" zPosition="1" />
 	<!-- Menu List -->
 	<widget name="list" position="146,126" size="543,340" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider.png" />
