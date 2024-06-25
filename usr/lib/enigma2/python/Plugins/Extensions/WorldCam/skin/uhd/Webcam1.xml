@@ -1,26 +1,26 @@
-<screen name="Webcam1" position="0,0" size="2560,1440" title="..::WORLDCAM::.." backgroundColor="#20000000" flags="wfNoBorder">
-    <widget name="info" position="297,117" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
-    <ePixmap position="1847,200" size="600,600" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="stretch" alphatest="blend" />
-    <eLabel position="296,1022" size="895,200" backgroundColor="#30000000" zPosition="1" />
-    <eLabel position="1850,206" size="600,600" backgroundColor="#30000000" zPosition="1" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" alphatest="blend" position="294,23" size="243,81" scale="stretch" zPosition="5" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="769,1275" size="208,100" scale="stretch" zPosition="5" alphatest="on" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" scale="stretch" position="1199,1022" size="200,200" zPosition="2" alphatest="on" />
-    <widget name="paypal" position="295,1036" size="1111,180" font="Regular; 46" foregroundColor="#ffb75b" backgroundColor="#101010" halign="left" transparent="1" zPosition="6" />
+<screen name="Webcam1" position="0,0" size="2560,1440" title="..::WORLDCAM::.." flags="wfNoBorder">
+    <widget name="info" position="1232,46" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
+    <ePixmap position="860,975" size="250,250" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="1" alphatest="blend" />
+    
+    <eLabel position="862,981" size="250,250" backgroundColor="#30000000" zPosition="1" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" alphatest="blend" position="867,1245" size="243,81" scale="stretch" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="80,1222" size="208,100" scale="stretch" zPosition="5" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" scale="stretch" position="82,1002" size="200,200" zPosition="2" alphatest="on" />
+    <widget name="paypal" position="1242,1066" size="1200,209" font="Regular; 46" foregroundColor="#ffb75b" backgroundColor="#101010" halign="left" transparent="1" zPosition="6" />
 
     <!-- Graph -->
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/main1.png" position="0,0" size="2560,1440" zPosition="1" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" scale="strech" position="1236,97" size="164,68" zPosition="3" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/sep.png" position="294,187" size="1107,11" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" scale="strech" position="2402,1338" size="164,68" zPosition="3" />
+    <ePixmap position="1252,1050" size="1192,7" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" alphatest="blend" />
+    <ePixmap position="0,2" size="2558,1438" zPosition="-1" scale="stretch" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/RSS_FEED+1.png" transparent="1" alphatest="blend" />
+    <widget source="session.VideoPicture" render="Pig" position="122,211" zPosition="20" size="950,550" backgroundColor="transparent" transparent="0" />
+    <widget font="Regular; 48" halign="center" position="108,98" render="Label" size="972,70" source="global.CurrentTime" transparent="1">
+        <convert type="ClockToText">Format:%a %d.%m. %Y | %H:%M</convert>
+    </widget>
     <!-- Menu List -->
-    <widget name="list" position="292,204" size="1107,800" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider.png" />
+    <widget name="list" position="1234,153" size="1215,873" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" />
     <!-- Colors -->
-    <ePixmap name="red" position="303,1335" zPosition="3" size="280,80" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-    <widget name="key_red" position="300,1335" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
-    <ePixmap name="green" position="1124,1335" zPosition="3" size="280,80" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-    <widget name="key_green" position="1124,1335" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
-    <ePixmap name="yellow" position="1124,1240" zPosition="3" size="280,80" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
-    <widget name="key_yellow" position="1124,1240" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
-    <ePixmap name="blue" position="300,1240" zPosition="3" size="280,80" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
-    <widget name="key_blue" position="300,1240" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
+    <widget name="key_red" position="1292,1339" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
+    <widget name="key_green" position="1579,1341" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
+    <widget name="key_yellow" position="1844,1338" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
+    <widget name="key_blue" position="2126,1334" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 42" transparent="1" />
 </screen>

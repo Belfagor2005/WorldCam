@@ -16,7 +16,7 @@ try:
     from Components.AVSwitch import iAVSwitch as AVSwitch
 except Exception as e:
     print(e)
-    
+
 try:
     from enigma import eAVSwitch as AVSwitch
 except Exception:
@@ -82,7 +82,6 @@ else:
 
 if sys.version_info >= (2, 7, 9):
     try:
-        import ssl
         sslContext = ssl._create_unverified_context()
     except:
         sslContext = None
@@ -105,13 +104,13 @@ def normalize(title):
 
 
 def str_encode(text, encoding="utf8"):
-	if not PY3:
-		if isinstance(text, unicode):
-			return text.encode(encoding)
-		else:
-			return text
-	else:
-		return text
+    if not PY3:
+        if isinstance(text, unicode):
+            return text.encode(encoding)
+        else:
+            return text
+    else:
+        return text
 
 
 class webcamList(MenuList):
@@ -340,10 +339,9 @@ class Webcam3(Screen):
                 for item in items:
                     e.write(item)
                 e.close
-            showlist(self.names, self['list'])     
+            showlist(self.names, self['list'])
         except Exception as e:
             print(e)
-        
 
     def okClicked(self):
         i = len(self.names)
@@ -742,7 +740,6 @@ class Webcam6(Screen):
         except Exception as e:
             print(e)
 
-
     def openYTID(self, video_url):
         video_url = 'streamlink://' + video_url
         print('reference Youtube 1:   ', )
@@ -767,7 +764,7 @@ class Webcam6(Screen):
             '''
             ydl_opts = {'format': 'best'}
             ydl_opts = {'format': 'bestaudio/best'}
-            
+
             ydl_opts = {'format': 'best',
                         'no_check_certificate': True,
                         }
@@ -816,12 +813,12 @@ class Webcam6(Screen):
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
-                    
+
                     if 'youtube' in ref:
                         ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
                     else:
                         ref = ref.replace(":", "%3a").replace("\\", "/")
-                    
+
                     descriptiona = ('#DESCRIPTION %s' % name).splitlines()
                     descriptionz = ''.join(descriptiona)
                     servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
@@ -1077,7 +1074,6 @@ class Webcam8(Screen):
             '''
             ydl_opts = {'format': 'best'}
             ydl_opts = {'format': 'bestaudio/best'}
-            
             ydl_opts = {'format': 'best',
                         'no_check_certificate': True,
                         }
@@ -1353,7 +1349,7 @@ class AutoStartTimerwrd:
 
     def __init__(self, session):
         self.session = session
-        global _firstStartwrd
+
         print("*** running AutoStartTimerwrd ***")
         if _firstStartwrd:
             self.runUpdate()
@@ -1362,6 +1358,7 @@ class AutoStartTimerwrd:
         print("*** running update ***")
         try:
             from . import Update
+            global _firstStartwrd
             Update.upd_done()
             _firstStartwrd = False
         except Exception as e:
