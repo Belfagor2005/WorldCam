@@ -103,10 +103,9 @@ def str_encode(text, encoding="utf8"):
         if isinstance(text, unicode):
             return text.encode(encoding)
         else:
-            return text
+            return str(text)
     else:
-        return text
-
+        return str(text)
 
 class webcamList(MenuList):
     def __init__(self, list):
@@ -439,8 +438,10 @@ class Webcam4(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+            # self.names.append(Utils.decodeHtml(name))
+            print('name1=', name)
             self.names.append(str_encode(name))
-            # self.names.append(str_encode(name))
+            print('name2=', str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -515,6 +516,7 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+            # self.names.append(Utils.decodeHtml(name))
             self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
@@ -590,6 +592,7 @@ class Webcam5a(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+            # self.names.append(Utils.decodeHtml(name))
             self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
@@ -685,6 +688,7 @@ class Webcam6(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
+            # self.names.append(Utils.decodeHtml(name))
             self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
