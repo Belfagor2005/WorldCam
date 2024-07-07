@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+# -*- coding: utf-8 -*-
 
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
