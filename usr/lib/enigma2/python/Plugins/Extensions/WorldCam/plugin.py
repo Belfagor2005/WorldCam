@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+
 
 """
 Plugin Worldcam is developed by Linuxsat-Support Team
@@ -99,13 +99,22 @@ def normalize(title):
 
 
 def str_encode(text, encoding="utf8"):
+
+    # return chr(int(text[2:], 16))
     if not PY3:
         if isinstance(text, unicode):
             return text.encode(encoding)
-        else:
-            return str(text)
-    else:
-        return str(text)
+    return str(text)
+
+
+def unicodify(s, encoding='utf-8', norm=None):
+    if not isinstance(s, unicode):
+        s = unicode(s, encoding)
+    if norm:
+        from unicodedata import normalize
+        s = normalize(norm, s)
+    return s
+
 
 class webcamList(MenuList):
     def __init__(self, list):
@@ -440,8 +449,9 @@ class Webcam4(Screen):
             url1 = item.split('###')[1]
             # self.names.append(Utils.decodeHtml(name))
             print('name1=', name)
+            # self.names.append(str(name))
             self.names.append(str_encode(name))
-            print('name2=', str_encode(name))
+            print('name2=', str(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
@@ -517,6 +527,7 @@ class Webcam5(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
             # self.names.append(Utils.decodeHtml(name))
+            # self.names.append(str(name))
             self.names.append(str_encode(name))
             # self.names.append(unicodify(name))
             self.urls.append(url1)
