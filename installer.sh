@@ -22,7 +22,7 @@ fi
 [ -r $FILEPATH ] && rm -f $FILEPATH > /dev/null 2>&1
 
 ## Remove old plugin directory
-[ -r $PLUGINPATH ] && rm -rf $PLUGINPATH
+# [ -r $PLUGINPATH ] && rm -rf $PLUGINPATH
 
 # check depends packges
 if [ -f /var/lib/dpkg/status ]; then
