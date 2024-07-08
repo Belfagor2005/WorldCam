@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     parse_duration,
@@ -35,11 +30,11 @@ class SnotrIE(InfoExtractor):
             'filesize_approx': 8500000,
             'description': 'The top 10 George W. Bush moments, brought to you by David Letterman!',
             'thumbnail': r're:^https?://.*\.jpg$',
-        }
+        },
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
 
         webpage = self._download_webpage(url, video_id)

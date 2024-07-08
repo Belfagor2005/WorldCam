@@ -1,22 +1,23 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
+    base_url,
     determine_ext,
     int_or_none,
+    url_basename,
+    urljoin,
 )
 
 
 class GediDigitalIE(InfoExtractor):
-    _VALID_URL = r'''(?x)https?://video\.
+    _VALID_URL = r'''(?x:(?P<base_url>(?:https?:)//video\.
         (?:
             (?:
                 (?:espresso\.)?repubblica
                 |lastampa
                 |ilsecoloxix
+                |huffingtonpost
             )|
             (?:
                 iltirreno
@@ -32,18 +33,27 @@ class GediDigitalIE(InfoExtractor):
                 |corrierealpi
                 |lasentinella
             )\.gelocal
-        )\.it(?:/[^/]+){2,3}?/(?P<id>\d+)(?:[/?&#]|$)'''
+        )\.it(?:/[^/]+){2,4}/(?P<id>\d+))(?:$|[?&].*))'''
+    _EMBED_REGEX = [rf'''(?x)
+            (?:
+                data-frame-src=|
+                <iframe[^\n]+src=
+            )
+            (["'])(?P<url>{_VALID_URL})\1''']
     _TESTS = [{
         'url': 'https://video.lastampa.it/politica/il-paradosso-delle-regionali-la-lega-vince-ma-sembra-aver-perso/121559/121683',
         'md5': '84658d7fb9e55a6e57ecc77b73137494',
         'info_dict': {
-            'id': '121559',
+            'id': '121683',
             'ext': 'mp4',
             'title': 'Il paradosso delle Regionali: ecco perché la Lega vince ma sembra aver perso',
             'description': 'md5:de7f4d6eaaaf36c153b599b10f8ce7ca',
             'thumbnail': r're:^https://www\.repstatic\.it/video/photo/.+?-thumb-full-.+?\.jpg$',
             'duration': 125,
         },
+    }, {
+        'url': 'https://video.huffingtonpost.it/embed/politica/cotticelli-non-so-cosa-mi-sia-successo-sto-cercando-di-capire-se-ho-avuto-un-malore/29312/29276?responsive=true&el=video971040871621586700',
+        'only_matching': True,
     }, {
         'url': 'https://video.espresso.repubblica.it/embed/tutti-i-video/01-ted-villa/14772/14870&width=640&height=360',
         'only_matching': True,
@@ -94,9 +104,35 @@ class GediDigitalIE(InfoExtractor):
         'only_matching': True,
     }]
 
-    def _real_extract(self, url):
-        video_id = self._match_id(url)
+    @staticmethod
+    def _sanitize_urls(urls):
+        # add protocol if missing
+        for i, e in enumerate(urls):
+            if e.startswith('//'):
+                urls[i] = f'https:{e}'
+        # clean iframes urls
+        for i, e in enumerate(urls):
+            urls[i] = urljoin(base_url(e), url_basename(e))
+        return urls
 
+    @classmethod
+    def _extract_embed_urls(cls, url, webpage):
+        return cls._sanitize_urls(tuple(super()._extract_embed_urls(url, webpage)))
+
+    @staticmethod
+    def _clean_formats(formats):
+        format_urls = set()
+        clean_formats = []
+        for f in formats:
+            if f['url'] not in format_urls:
+                if f.get('audio_ext') != 'none' and not f.get('acodec'):
+                    continue
+                format_urls.add(f['url'])
+                clean_formats.append(f)
+        formats[:] = clean_formats
+
+    def _real_extract(self, url):
+        video_id, url = self._match_valid_url(url).group('id', 'base_url')
         webpage = self._download_webpage(url, video_id)
         title = self._html_search_meta(
             ['twitter:title', 'og:title'], webpage, fatal=True)
@@ -129,7 +165,8 @@ class GediDigitalIE(InfoExtractor):
                         f.update({
                             'abr': abr,
                             'tbr': abr,
-                            'vcodec': 'none'
+                            'acodec': ext,
+                            'vcodec': 'none',
                         })
                     else:
                         mobj = re.match(r'^video-rrtv-(\d+)(?:-(\d+))?$', n)
@@ -148,7 +185,7 @@ class GediDigitalIE(InfoExtractor):
                 elif n == 'videoDuration':
                     duration = int_or_none(v)
 
-        self._sort_formats(formats)
+        self._clean_formats(formats)
 
         return {
             'id': video_id,

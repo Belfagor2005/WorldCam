@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -19,6 +17,7 @@ class HuffPostIE(InfoExtractor):
             HPLEmbedPlayer/\?segmentId=
         )
         (?P<id>[0-9a-f]+)'''
+    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>https?://embed\.live\.huffingtonpost\.com/.+?)\1']
 
     _TEST = {
         'url': 'http://live.huffingtonpost.com/r/segment/legalese-it/52dd3e4b02a7602131000677',
@@ -41,7 +40,7 @@ class HuffPostIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        api_url = 'http://embed.live.huffingtonpost.com/api/segments/%s.json' % video_id
+        api_url = f'http://embed.live.huffingtonpost.com/api/segments/{video_id}.json'
         data = self._download_json(api_url, video_id)['data']
 
         video_title = data['title']
@@ -79,11 +78,6 @@ class HuffPostIE(InfoExtractor):
                     'url': url,
                     'vcodec': 'none' if key.startswith('audio/') else None,
                 })
-
-        if not formats and data.get('fivemin_id'):
-            return self.url_result('5min:%s' % data['fivemin_id'])
-
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

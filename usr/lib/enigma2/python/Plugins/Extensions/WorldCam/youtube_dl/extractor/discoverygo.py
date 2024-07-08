@@ -1,12 +1,10 @@
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
+    ExtractorError,
     determine_ext,
     extract_attributes,
-    ExtractorError,
     int_or_none,
     parse_age_limit,
     remove_end,
@@ -42,7 +40,7 @@ class DiscoveryGoBaseIE(InfoExtractor):
         formats = []
         for stream_kind in ('', 'hds'):
             suffix = STREAM_URL_SUFFIX.capitalize() if stream_kind else STREAM_URL_SUFFIX
-            stream_url = stream.get('%s%s' % (stream_kind, suffix))
+            stream_url = stream.get(f'{stream_kind}{suffix}')
             if not stream_url:
                 continue
             if stream_kind == '':
@@ -52,7 +50,6 @@ class DiscoveryGoBaseIE(InfoExtractor):
             elif stream_kind == 'hds':
                 formats.extend(self._extract_f4m_formats(
                     stream_url, display_id, f4m_id=stream_kind, fatal=False))
-        self._sort_formats(formats)
 
         video_id = video.get('id') or display_id
         description = video.get('description', {}).get('detailed')
@@ -146,8 +143,7 @@ class DiscoveryGoPlaylistIE(DiscoveryGoBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if DiscoveryGoIE.suitable(url) else super(
-            DiscoveryGoPlaylistIE, cls).suitable(url)
+        return False if DiscoveryGoIE.suitable(url) else super().suitable(url)
 
     def _real_extract(self, url):
         display_id = self._match_id(url)

@@ -1,13 +1,8 @@
-from __future__ import unicode_literals
-
 import json
 import re
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_parse_qs,
-    compat_urlparse,
-)
+from ..utils import parse_qs
 
 
 class InternetVideoArchiveIE(InfoExtractor):
@@ -32,7 +27,7 @@ class InternetVideoArchiveIE(InfoExtractor):
         return 'http://video.internetvideoarchive.net/player/6/configuration.ashx?' + query
 
     def _real_extract(self, url):
-        query = compat_parse_qs(compat_urlparse.urlparse(url).query)
+        query = parse_qs(url)
         video_id = query['publishedid'][0]
         data = self._download_json(
             'https://video.internetvideoarchive.net/videojs7/videojs7.ivasettings.ashx',
@@ -53,7 +48,6 @@ class InternetVideoArchiveIE(InfoExtractor):
                 replace_url('.mpd'), video_id, mpd_id='dash', fatal=False))
             formats.extend(self._extract_ism_formats(
                 replace_url('Manifest'), video_id, ism_id='mss', fatal=False))
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

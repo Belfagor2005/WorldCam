@@ -1,6 +1,3 @@
-from __future__ import unicode_literals
-
-import re
 import json
 
 from .common import InfoExtractor
@@ -25,14 +22,14 @@ class GiantBombIE(InfoExtractor):
             'description': 'md5:0aa3aaf2772a41b91d44c63f30dfad24',
             'duration': 2399,
             'thumbnail': r're:^https?://.*\.jpg$',
-        }
+        },
     }, {
         'url': 'https://www.giantbomb.com/shows/ben-stranding/2970-20212',
         'only_matching': True,
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         display_id = mobj.group('display_id')
 
@@ -76,8 +73,6 @@ class GiantBombIE(InfoExtractor):
             youtube_id = video.get('youtubeID')
             if youtube_id:
                 return self.url_result(youtube_id, 'Youtube')
-
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

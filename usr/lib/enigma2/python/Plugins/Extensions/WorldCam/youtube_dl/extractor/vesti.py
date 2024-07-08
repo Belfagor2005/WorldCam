@@ -1,14 +1,12 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
-from ..utils import ExtractorError
 from .rutv import RUTVIE
+from ..utils import ExtractorError
 
 
 class VestiIE(InfoExtractor):
+    _WORKING = False
     IE_DESC = 'Вести.Ru'
     _VALID_URL = r'https?://(?:.+?\.)?vesti\.ru/(?P<id>.+)'
 
@@ -96,12 +94,12 @@ class VestiIE(InfoExtractor):
                 # rtmp download
                 'skip_download': True,
             },
-            'skip': 'Translation has finished'
+            'skip': 'Translation has finished',
         },
     ]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
 
         page = self._download_webpage(url, video_id, 'Downloading page')
@@ -111,7 +109,7 @@ class VestiIE(InfoExtractor):
             page)
         if mobj:
             video_id = mobj.group('id')
-            page = self._download_webpage('http://www.vesti.ru/only_video.html?vid=%s' % video_id, video_id,
+            page = self._download_webpage(f'http://www.vesti.ru/only_video.html?vid={video_id}', video_id,
                                           'Downloading video page')
 
         rutv_url = RUTVIE._extract_url(page)

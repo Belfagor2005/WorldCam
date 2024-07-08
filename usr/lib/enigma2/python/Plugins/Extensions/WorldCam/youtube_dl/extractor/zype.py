@@ -1,13 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
-from ..compat import compat_HTTPError
+from ..networking.exceptions import HTTPError
 from ..utils import (
-    dict_get,
     ExtractorError,
+    dict_get,
     int_or_none,
     js_to_json,
     parse_iso8601,
@@ -17,7 +14,8 @@ from ..utils import (
 class ZypeIE(InfoExtractor):
     _ID_RE = r'[\da-fA-F]+'
     _COMMON_RE = r'//player\.zype\.com/embed/%s\.(?:js|json|html)\?.*?(?:access_token|(?:ap[ip]|player)_key)='
-    _VALID_URL = r'https?:%s[^&]+' % (_COMMON_RE % ('(?P<id>%s)' % _ID_RE))
+    _VALID_URL = r'https?:%s[^&]+' % (_COMMON_RE % (f'(?P<id>{_ID_RE})'))
+    _EMBED_REGEX = [fr'<script[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?{_COMMON_RE % _ID_RE}.+?)\1']
     _TEST = {
         'url': 'https://player.zype.com/embed/5b400b834b32992a310622b9.js?api_key=jZ9GUhRmxcPvX7M3SlfejB6Hle9jyHTdk2jVxG7wOHPLODgncEKVdPYBhuz9iWXQ&autoplay=false&controls=true&da=false',
         'md5': 'eaee31d474c76a955bdaba02a505c595',
@@ -32,14 +30,6 @@ class ZypeIE(InfoExtractor):
         },
     }
 
-    @staticmethod
-    def _extract_urls(webpage):
-        return [
-            mobj.group('url')
-            for mobj in re.finditer(
-                r'<script[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?%s.+?)\1' % (ZypeIE._COMMON_RE % ZypeIE._ID_RE),
-                webpage)]
-
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
@@ -47,14 +37,16 @@ class ZypeIE(InfoExtractor):
             response = self._download_json(re.sub(
                 r'\.(?:js|html)\?', '.json?', url), video_id)['response']
         except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError) and e.cause.code in (400, 401, 403):
+            if isinstance(e.cause, HTTPError) and e.cause.status in (400, 401, 403):
                 raise ExtractorError(self._parse_json(
-                    e.cause.read().decode(), video_id)['message'], expected=True)
+                    e.cause.response.read().decode(), video_id)['message'], expected=True)
             raise
 
         body = response['body']
         video = response['video']
         title = video['title']
+
+        subtitles = {}
 
         if isinstance(body, dict):
             formats = []
@@ -64,7 +56,7 @@ class ZypeIE(InfoExtractor):
                     continue
                 name = output.get('name')
                 if name == 'm3u8':
-                    formats = self._extract_m3u8_formats(
+                    formats, subtitles = self._extract_m3u8_formats_and_subtitles(
                         output_url, video_id, 'mp4',
                         'm3u8_native', m3u8_id='hls', fatal=False)
                 else:
@@ -92,12 +84,12 @@ class ZypeIE(InfoExtractor):
 
                 def get_attr(key):
                     return self._search_regex(
-                        r'\b%s\s*:\s*([\'"])(?P<val>(?:(?!\1).)+)\1' % key,
+                        rf'\b{key}\s*:\s*([\'"])(?P<val>(?:(?!\1).)+)\1',
                         source, key, group='val')
 
                 if get_attr('integration') == 'verizon-media':
-                    m3u8_url = 'https://content.uplynk.com/%s.m3u8' % get_attr('id')
-            formats = self._extract_m3u8_formats(
+                    m3u8_url = 'https://content.uplynk.com/{}.m3u8'.format(get_attr('id'))
+            formats, subtitles = self._extract_m3u8_formats_and_subtitles(
                 m3u8_url, video_id, 'mp4', 'm3u8_native', m3u8_id='hls')
             text_tracks = self._search_regex(
                 r'textTracks\s*:\s*(\[[^]]+\])',
@@ -105,9 +97,7 @@ class ZypeIE(InfoExtractor):
             if text_tracks:
                 text_tracks = self._parse_json(
                     text_tracks, video_id, js_to_json, False)
-        self._sort_formats(formats)
 
-        subtitles = {}
         if text_tracks:
             for text_track in text_tracks:
                 tt_url = dict_get(text_track, ('file', 'src'))

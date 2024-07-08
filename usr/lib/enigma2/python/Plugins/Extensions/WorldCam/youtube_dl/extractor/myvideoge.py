@@ -1,16 +1,13 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
+    MONTH_NAMES,
     clean_html,
-    get_element_by_id,
     get_element_by_class,
+    get_element_by_id,
     int_or_none,
     js_to_json,
-    MONTH_NAMES,
     qualities,
     unified_strdate,
 )
@@ -30,8 +27,6 @@ class MyVideoGeIE(InfoExtractor):
             'uploader': 'chixa33',
             'description': 'md5:5b067801318e33c2e6eea4ab90b1fdd3',
         },
-        # working from local dev system
-        'skip': 'site blocks CI servers',
     }
     _MONTH_NAMES_KA = ['იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი', 'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი']
 
@@ -54,8 +49,7 @@ class MyVideoGeIE(InfoExtractor):
 
         formats = self._parse_jwplayer_formats(jwplayer_sources or [], video_id)
         for f in formats or []:
-            f['preference'] = self._quality(f['format_id'])
-        self._sort_formats(formats)
+            f['quality'] = self._quality(f['format_id'])
 
         description = (
             self._og_search_description(webpage)
@@ -70,7 +64,7 @@ class MyVideoGeIE(InfoExtractor):
             # translate any ka month to an en one
             re.sub('|'.join(self._MONTH_NAMES_KA),
                    lambda m: MONTH_NAMES['en'][self._MONTH_NAMES_KA.index(m.group(0))],
-                   upload_date, re.I))
+                   upload_date, flags=re.I))
             if upload_date else None)
 
         return {

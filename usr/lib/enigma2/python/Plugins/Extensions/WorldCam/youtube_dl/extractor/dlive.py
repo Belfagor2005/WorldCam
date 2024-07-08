@@ -1,7 +1,4 @@
-from __future__ import unicode_literals
-
 import json
-import re
 
 from .common import InfoExtractor
 from ..utils import int_or_none
@@ -19,14 +16,14 @@ class DLiveVODIE(InfoExtractor):
             'upload_date': '20190701',
             'timestamp': 1562011015,
             'uploader_id': 'pdp',
-        }
+        },
     }, {
         'url': 'https://dlive.tv/p/pdpreplay+D-RD-xSZg',
         'only_matching': True,
     }]
 
     def _real_extract(self, url):
-        uploader_id, vod_id = re.match(self._VALID_URL, url).groups()
+        uploader_id, vod_id = self._match_valid_url(url).groups()
         broadcast = self._download_json(
             'https://graphigo.prd.dlive.tv/', vod_id,
             data=json.dumps({'query': '''query {
@@ -39,11 +36,10 @@ class DLiveVODIE(InfoExtractor):
     thumbnailUrl
     viewCount
   }
-}''' % (uploader_id, vod_id)}).encode())['data']['pastBroadcast']
+}''' % (uploader_id, vod_id)}).encode())['data']['pastBroadcast']  # noqa: UP031
         title = broadcast['title']
         formats = self._extract_m3u8_formats(
             broadcast['playbackUrl'], vod_id, 'mp4', 'm3u8_native')
-        self._sort_formats(formats)
         return {
             'id': vod_id,
             'title': title,
@@ -75,17 +71,16 @@ class DLiveStreamIE(InfoExtractor):
     }
     username
   }
-}''' % display_name}).encode())['data']['userByDisplayName']
+}''' % display_name}).encode())['data']['userByDisplayName']  # noqa: UP031
         livestream = user['livestream']
         title = livestream['title']
         username = user['username']
         formats = self._extract_m3u8_formats(
-            'https://live.prd.dlive.tv/hls/live/%s.m3u8' % username,
+            f'https://live.prd.dlive.tv/hls/live/{username}.m3u8',
             display_name, 'mp4')
-        self._sort_formats(formats)
         return {
             'id': display_name,
-            'title': self._live_title(title),
+            'title': title,
             'uploader': display_name,
             'uploader_id': username,
             'formats': formats,

@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     determine_ext,
@@ -12,9 +8,9 @@ from ..utils import (
 
 
 class BYUtvIE(InfoExtractor):
+    _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?byutv\.org/(?:watch|player)/(?!event/)(?P<id>[0-9a-f-]+)(?:/(?P<display_id>[^/?#&]+))?'
     _TESTS = [{
-        # ooyalaVOD
         'url': 'http://www.byutv.org/watch/6587b9a3-89d2-42a6-a7f7-fd2f81840a7d/studio-c-season-5-episode-5',
         'info_dict': {
             'id': 'ZvanRocTpW-G5_yZFeltTAMv6jxOU9KH',
@@ -28,7 +24,6 @@ class BYUtvIE(InfoExtractor):
         'params': {
             'skip_download': True,
         },
-        'add_ie': ['Ooyala'],
     }, {
         # dvr
         'url': 'https://www.byutv.org/player/8f1dab9b-b243-47c8-b525-3e2d021a3451/byu-softball-pacific-vs-byu-41219---game-2',
@@ -41,7 +36,7 @@ class BYUtvIE(InfoExtractor):
             'duration': 11645,
         },
         'params': {
-            'skip_download': True
+            'skip_download': True,
         },
     }, {
         'url': 'http://www.byutv.org/watch/6587b9a3-89d2-42a6-a7f7-fd2f81840a7d',
@@ -52,7 +47,7 @@ class BYUtvIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         display_id = mobj.group('display_id') or video_id
 
@@ -67,21 +62,9 @@ class BYUtvIE(InfoExtractor):
                 'x-byutv-platformkey': 'xsaaw9c7y5',
             })
 
-        ep = video.get('ooyalaVOD')
-        if ep:
-            return {
-                '_type': 'url_transparent',
-                'ie_key': 'Ooyala',
-                'url': 'ooyala:%s' % ep['providerId'],
-                'id': video_id,
-                'display_id': display_id,
-                'title': ep.get('title'),
-                'description': ep.get('description'),
-                'thumbnail': ep.get('imageThumbnail'),
-            }
-
         info = {}
         formats = []
+        subtitles = {}
         for format_id, ep in video.items():
             if not isinstance(ep, dict):
                 continue
@@ -90,12 +73,16 @@ class BYUtvIE(InfoExtractor):
                 continue
             ext = determine_ext(video_url)
             if ext == 'm3u8':
-                formats.extend(self._extract_m3u8_formats(
+                m3u8_fmts, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
                     video_url, video_id, 'mp4', entry_protocol='m3u8_native',
-                    m3u8_id='hls', fatal=False))
+                    m3u8_id='hls', fatal=False)
+                formats.extend(m3u8_fmts)
+                subtitles = self._merge_subtitles(subtitles, m3u8_subs)
             elif ext == 'mpd':
-                formats.extend(self._extract_mpd_formats(
-                    video_url, video_id, mpd_id='dash', fatal=False))
+                mpd_fmts, mpd_subs = self._extract_mpd_formats_and_subtitles(
+                    video_url, video_id, mpd_id='dash', fatal=False)
+                formats.extend(mpd_fmts)
+                subtitles = self._merge_subtitles(subtitles, mpd_subs)
             else:
                 formats.append({
                     'url': video_url,
@@ -107,11 +94,11 @@ class BYUtvIE(InfoExtractor):
                 'thumbnail': ep.get('imageThumbnail'),
                 'duration': parse_duration(ep.get('length')),
             })
-        self._sort_formats(formats)
 
         return merge_dicts(info, {
             'id': video_id,
             'display_id': display_id,
             'title': display_id,
             'formats': formats,
+            'subtitles': subtitles,
         })

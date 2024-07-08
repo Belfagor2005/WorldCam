@@ -1,8 +1,6 @@
-# coding: utf-8
-from __future__ import unicode_literals
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import compat_parse_qs
 from ..utils import (
     int_or_none,
     parse_duration,
@@ -45,7 +43,7 @@ class FolketingetIE(InfoExtractor):
             r'(?s)<div class="video-item-agenda"[^>]*>(.*?)<',
             webpage, 'description', fatal=False)
 
-        player_params = compat_parse_qs(self._search_regex(
+        player_params = urllib.parse.parse_qs(self._search_regex(
             r'<embed src="http://ft\.arkena\.tv/flash/ftplayer\.swf\?([^"]+)"',
             webpage, 'player params'))
         xml_url = player_params['xml'][0]
@@ -62,7 +60,6 @@ class FolketingetIE(InfoExtractor):
             'url': xpath_text(n, './url', fatal=True),
             'tbr': int_or_none(n.attrib['bitrate']),
         } for n in doc.findall('.//streams/stream')]
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

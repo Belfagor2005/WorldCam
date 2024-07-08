@@ -1,17 +1,11 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import itertools
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_parse_qs,
-    compat_urllib_parse_urlparse,
-)
 from ..utils import (
     clean_html,
     float_or_none,
     int_or_none,
+    parse_qs,
     try_get,
     urlencode_postdata,
 )
@@ -111,7 +105,7 @@ class CiscoLiveSearchIE(CiscoLiveBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if CiscoLiveSessionIE.suitable(url) else super(CiscoLiveSearchIE, cls).suitable(url)
+        return False if CiscoLiveSessionIE.suitable(url) else super().suitable(url)
 
     @staticmethod
     def _check_bc_id_exists(rf_item):
@@ -123,7 +117,7 @@ class CiscoLiveSearchIE(CiscoLiveBaseIE):
         for page_num in itertools.count(1):
             results = self._call_api(
                 'search', None, query, url,
-                'Downloading search JSON page %d' % page_num)
+                f'Downloading search JSON page {page_num}')
             sl = try_get(results, lambda x: x['sectionList'][0], dict)
             if sl:
                 results = sl
@@ -145,7 +139,7 @@ class CiscoLiveSearchIE(CiscoLiveBaseIE):
             query['from'] += query['size']
 
     def _real_extract(self, url):
-        query = compat_parse_qs(compat_urllib_parse_urlparse(url).query)
+        query = parse_qs(url)
         query['type'] = 'session'
         return self.playlist_result(
             self._entries(query, url), playlist_title='Search query')

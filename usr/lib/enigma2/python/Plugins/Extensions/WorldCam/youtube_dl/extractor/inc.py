@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from .kaltura import KalturaIE
 
@@ -56,4 +54,4 @@ class IncIE(InfoExtractor):
             display_id)['vid_kaltura_id']
 
         return self.url_result(
-            'kaltura:%s:%s' % (partner_id, kaltura_id), KalturaIE.ie_key())
+            f'kaltura:{partner_id}:{kaltura_id}', KalturaIE.ie_key())

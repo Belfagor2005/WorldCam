@@ -1,29 +1,13 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
-
 from ..utils import (
     int_or_none,
     traverse_obj,
     unified_timestamp,
 )
 
-if not callable(getattr(InfoExtractor, '_match_valid_url', None)):
-
-    BaseInfoExtractor = InfoExtractor
-
-    import re
-
-    class InfoExtractor(BaseInfoExtractor):
-
-        @classmethod
-        def _match_valid_url(cls, url):
-            return re.match(cls._VALID_URL, url)
-
 
 class FifaIE(InfoExtractor):
-    _VALID_URL = r'https?://www.fifa.com/fifaplus/(?P<locale>\w{2})/watch/([^#?]+/)?(?P<id>\w+)'
+    _VALID_URL = r'https?://www\.fifa\.com/fifaplus/(?P<locale>\w{2})/watch/([^#?]+/)?(?P<id>\w+)'
     _TESTS = [{
         'url': 'https://www.fifa.com/fifaplus/en/watch/7on10qPcnyLajDDU3ntg6y',
         'info_dict': {
@@ -34,6 +18,8 @@ class FifaIE(InfoExtractor):
             'categories': ['FIFA Tournaments'],
             'thumbnail': 'https://digitalhub.fifa.com/transform/135e2656-3a51-407b-8810-6c34bec5b59b/FMR_2006_Italy_France_Final_Hero',
             'duration': 8165,
+            'release_timestamp': 1152403200,
+            'release_date': '20060709',
         },
         'params': {'skip_download': 'm3u8'},
     }, {
@@ -72,25 +58,20 @@ class FifaIE(InfoExtractor):
             r'<link\b[^>]+\brel\s*=\s*"preconnect"[^>]+href\s*=\s*"([^"]+)"', webpage, 'Preconnect Link')
 
         video_details = self._download_json(
-            '{preconnect_link}/sections/videoDetails/{video_id}'.format(**locals()), video_id, 'Downloading Video Details', fatal=False)
+            f'{preconnect_link}/sections/videoDetails/{video_id}', video_id, 'Downloading Video Details', fatal=False)
 
         preplay_parameters = self._download_json(
-            '{preconnect_link}/videoPlayerData/{video_id}'.format(**locals()), video_id, 'Downloading Preplay Parameters')['preplayParameters']
+            f'{preconnect_link}/videoPlayerData/{video_id}', video_id, 'Downloading Preplay Parameters')['preplayParameters']
 
         content_data = self._download_json(
-            # 1. query string is expected to be sent as-is
-            # 2. `sig` must be appended
-            # 3. if absent, the call appears to work but the manifest is bad (404)
             'https://content.uplynk.com/preplay/{contentId}/multiple.json?{queryStr}&sig={signature}'.format(**preplay_parameters),
             video_id, 'Downloading Content Data')
 
-        # formats, subtitles = self._extract_m3u8_formats_and_subtitles(content_data['playURL'], video_id)
-        formats, subtitles = self._extract_m3u8_formats(content_data['playURL'], video_id, ext='mp4', entry_protocol='m3u8_native'), None
-        self._sort_formats(formats)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(content_data['playURL'], video_id)
 
         return {
             'id': video_id,
-            'title': video_details['title'],
+            'title': video_details.get('title'),
             'description': video_details.get('description'),
             'duration': int_or_none(video_details.get('duration')),
             'release_timestamp': unified_timestamp(video_details.get('dateOfRelease')),

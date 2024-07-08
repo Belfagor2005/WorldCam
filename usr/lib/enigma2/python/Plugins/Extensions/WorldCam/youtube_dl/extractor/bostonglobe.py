@@ -1,10 +1,6 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
-
 from ..utils import (
     extract_attributes,
 )
@@ -61,8 +57,7 @@ class BostonGlobeIE(InfoExtractor):
 
             if video_id and account_id and player_id and embed:
                 entries.append(
-                    'http://players.brightcove.net/%s/%s_%s/index.html?videoId=%s'
-                    % (account_id, player_id, embed, video_id))
+                    f'http://players.brightcove.net/{account_id}/{player_id}_{embed}/index.html?videoId={video_id}')
 
         if len(entries) == 0:
             return self.url_result(url, 'Generic')

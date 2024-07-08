@@ -1,11 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
-from ..utils import int_or_none
+from ..utils import int_or_none, join_nonempty
 
 
 class TOnlineIE(InfoExtractor):
+    _WORKING = False
+    _ENABLED = None  # XXX: pass through to GenericIE
     IE_NAME = 't-online.de'
     _VALID_URL = r'https?://(?:www\.)?t-online\.de/tv/(?:[^/]+/)*id_(?P<id>\d+)'
     _TEST = {
@@ -16,13 +15,13 @@ class TOnlineIE(InfoExtractor):
             'ext': 'mp4',
             'title': 'Drittes Remis! Zidane: "Es muss etwas passieren"',
             'description': 'Es läuft nicht rund bei Real Madrid. Das 1:1 gegen den SD Eibar war das dritte Unentschieden in Folge in der Liga.',
-        }
+        },
     }
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         video_data = self._download_json(
-            'http://www.t-online.de/tv/id_%s/tid_json_video' % video_id, video_id)
+            f'http://www.t-online.de/tv/id_{video_id}/tid_json_video', video_id)
         title = video_data['subtitle']
 
         formats = []
@@ -30,13 +29,8 @@ class TOnlineIE(InfoExtractor):
             asset_source = asset.get('source') or asset.get('source2')
             if not asset_source:
                 continue
-            formats_id = []
-            for field_key in ('type', 'profile'):
-                field_value = asset.get(field_key)
-                if field_value:
-                    formats_id.append(field_value)
             formats.append({
-                'format_id': '-'.join(formats_id),
+                'format_id': join_nonempty('type', 'profile', from_dict=asset),
                 'url': asset_source,
             })
 

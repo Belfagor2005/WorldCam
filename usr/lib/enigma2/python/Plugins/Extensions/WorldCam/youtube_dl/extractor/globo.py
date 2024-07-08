@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import base64
 import hashlib
 import json
@@ -8,16 +5,13 @@ import random
 import re
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_HTTPError,
-    compat_str,
-)
+from ..networking import HEADRequest
 from ..utils import (
     ExtractorError,
     float_or_none,
-    int_or_none,
     orderedSet,
     str_or_none,
+    try_get,
 )
 
 
@@ -26,18 +20,19 @@ class GloboIE(InfoExtractor):
     _NETRC_MACHINE = 'globo'
     _TESTS = [{
         'url': 'http://g1.globo.com/carros/autoesporte/videos/t/exclusivos-do-g1/v/mercedes-benz-gla-passa-por-teste-de-colisao-na-europa/3607726/',
-        'md5': 'b3ccc801f75cd04a914d51dadb83a78d',
         'info_dict': {
             'id': '3607726',
             'ext': 'mp4',
             'title': 'Mercedes-Benz GLA passa por teste de colisão na Europa',
             'duration': 103.204,
-            'uploader': 'Globo.com',
-            'uploader_id': '265',
+            'uploader': 'G1',
+            'uploader_id': '2015',
+        },
+        'params': {
+            'skip_download': True,
         },
     }, {
         'url': 'http://globoplay.globo.com/v/4581987/',
-        'md5': 'f36a1ecd6a50da1577eee6dd17f67eff',
         'info_dict': {
             'id': '4581987',
             'ext': 'mp4',
@@ -45,6 +40,9 @@ class GloboIE(InfoExtractor):
             'duration': 137.973,
             'uploader': 'Rede Globo',
             'uploader_id': '196',
+        },
+        'params': {
+            'skip_download': True,
         },
     }, {
         'url': 'http://canalbrasil.globo.com/programas/sangue-latino/videos/3928201.html',
@@ -64,110 +62,98 @@ class GloboIE(InfoExtractor):
     }, {
         'url': 'globo:3607726',
         'only_matching': True,
+    }, {
+        'url': 'https://globoplay.globo.com/v/10248083/',
+        'info_dict': {
+            'id': '10248083',
+            'ext': 'mp4',
+            'title': 'Melhores momentos: Equador 1 x 1 Brasil pelas Eliminatórias da Copa do Mundo 2022',
+            'duration': 530.964,
+            'uploader': 'SporTV',
+            'uploader_id': '698',
+        },
+        'params': {
+            'skip_download': True,
+        },
     }]
-
-    def _real_initialize(self):
-        email, password = self._get_login_info()
-        if email is None:
-            return
-
-        try:
-            glb_id = (self._download_json(
-                'https://login.globo.com/api/authentication', None, data=json.dumps({
-                    'payload': {
-                        'email': email,
-                        'password': password,
-                        'serviceId': 4654,
-                    },
-                }).encode(), headers={
-                    'Content-Type': 'application/json; charset=utf-8',
-                }) or {}).get('glbId')
-            if glb_id:
-                self._set_cookie('.globo.com', 'GLBID', glb_id)
-        except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError) and e.cause.code == 401:
-                resp = self._parse_json(e.cause.read(), None)
-                raise ExtractorError(resp.get('userMessage') or resp['id'], expected=True)
-            raise
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
+        self._request_webpage(
+            HEADRequest('https://globo-ab.globo.com/v2/selected-alternatives?experiments=player-isolated-experiment-02&skipImpressions=true'),
+            video_id, 'Getting cookies')
+
         video = self._download_json(
-            'http://api.globovideos.com/videos/%s/playlist' % video_id,
+            f'http://api.globovideos.com/videos/{video_id}/playlist',
             video_id)['videos'][0]
-        if video.get('encrypted') is True:
-            raise ExtractorError('This video is DRM protected.', expected=True)
+        if not self.get_param('allow_unplayable_formats') and video.get('encrypted') is True:
+            self.report_drm(video_id)
 
         title = video['title']
 
         formats = []
-        subtitles = {}
+        security = self._download_json(
+            'https://playback.video.globo.com/v2/video-session', video_id, f'Downloading security hash for {video_id}',
+            headers={'content-type': 'application/json'}, data=json.dumps({
+                'player_type': 'desktop',
+                'video_id': video_id,
+                'quality': 'max',
+                'content_protection': 'widevine',
+                'vsid': '581b986b-4c40-71f0-5a58-803e579d5fa2',
+                'tz': '-3.0:00',
+            }).encode())
+
+        self._request_webpage(HEADRequest(security['sources'][0]['url_template']), video_id, 'Getting locksession cookie')
+
+        security_hash = security['sources'][0]['token']
+        if not security_hash:
+            message = security.get('message')
+            if message:
+                raise ExtractorError(
+                    f'{self.IE_NAME} returned error: {message}', expected=True)
+
+        hash_code = security_hash[:2]
+        padding = '%010d' % random.randint(1, 10000000000)
+        if hash_code in ('04', '14'):
+            received_time = security_hash[3:13]
+            received_md5 = security_hash[24:]
+            hash_prefix = security_hash[:23]
+        elif hash_code in ('02', '12', '03', '13'):
+            received_time = security_hash[2:12]
+            received_md5 = security_hash[22:]
+            padding += '1'
+            hash_prefix = '05' + security_hash[:22]
+
+        padded_sign_time = str(int(received_time) + 86400) + padding
+        md5_data = (received_md5 + padded_sign_time + '0xAC10FD').encode()
+        signed_md5 = base64.urlsafe_b64encode(hashlib.md5(md5_data).digest()).decode().strip('=')
+        signed_hash = hash_prefix + padded_sign_time + signed_md5
+        source = security['sources'][0]['url_parts']
+        resource_url = source['scheme'] + '://' + source['domain'] + source['path']
+        signed_url = '{}?h={}&k=html5&a={}'.format(resource_url, signed_hash, 'F' if video.get('subscriber_only') else 'A')
+
+        fmts, subtitles = self._extract_m3u8_formats_and_subtitles(
+            signed_url, video_id, 'mp4', entry_protocol='m3u8_native', m3u8_id='hls', fatal=False)
+        formats.extend(fmts)
+
         for resource in video['resources']:
-            resource_id = resource.get('_id')
-            resource_url = resource.get('url')
-            resource_type = resource.get('type')
-            if not resource_url or (resource_type == 'media' and not resource_id) or resource_type not in ('subtitle', 'media'):
-                continue
-
-            if resource_type == 'subtitle':
+            if resource.get('type') == 'subtitle':
                 subtitles.setdefault(resource.get('language') or 'por', []).append({
-                    'url': resource_url,
+                    'url': resource.get('url'),
                 })
-                continue
-
-            security = self._download_json(
-                'http://security.video.globo.com/videos/%s/hash' % video_id,
-                video_id, 'Downloading security hash for %s' % resource_id, query={
-                    'player': 'desktop',
-                    'version': '5.19.1',
-                    'resource_id': resource_id,
+        subs = try_get(security, lambda x: x['source']['subtitles'], expected_type=dict) or {}
+        for sub_lang, sub_url in subs.items():
+            if sub_url:
+                subtitles.setdefault(sub_lang or 'por', []).append({
+                    'url': sub_url,
                 })
-
-            security_hash = security.get('hash')
-            if not security_hash:
-                message = security.get('message')
-                if message:
-                    raise ExtractorError(
-                        '%s returned error: %s' % (self.IE_NAME, message), expected=True)
-                continue
-
-            hash_code = security_hash[:2]
-            padding = '%010d' % random.randint(1, 10000000000)
-            if hash_code in ('04', '14'):
-                received_time = security_hash[3:13]
-                received_md5 = security_hash[24:]
-                hash_prefix = security_hash[:23]
-            elif hash_code in ('02', '12', '03', '13'):
-                received_time = security_hash[2:12]
-                received_md5 = security_hash[22:]
-                padding += '1'
-                hash_prefix = '05' + security_hash[:22]
-
-            padded_sign_time = compat_str(int(received_time) + 86400) + padding
-            md5_data = (received_md5 + padded_sign_time + '0xAC10FD').encode()
-            signed_md5 = base64.urlsafe_b64encode(hashlib.md5(md5_data).digest()).decode().strip('=')
-            signed_hash = hash_prefix + padded_sign_time + signed_md5
-            signed_url = '%s?h=%s&k=html5&a=%s&u=%s' % (resource_url, signed_hash, 'F' if video.get('subscriber_only') else 'A', security.get('user') or '')
-
-            if resource_id.endswith('m3u8') or resource_url.endswith('.m3u8'):
-                formats.extend(self._extract_m3u8_formats(
-                    signed_url, resource_id, 'mp4', entry_protocol='m3u8_native',
-                    m3u8_id='hls', fatal=False))
-            elif resource_id.endswith('mpd') or resource_url.endswith('.mpd'):
-                formats.extend(self._extract_mpd_formats(
-                    signed_url, resource_id, mpd_id='dash', fatal=False))
-            elif resource_id.endswith('manifest') or resource_url.endswith('/manifest'):
-                formats.extend(self._extract_ism_formats(
-                    signed_url, resource_id, ism_id='mss', fatal=False))
-            else:
-                formats.append({
-                    'url': signed_url,
-                    'format_id': 'http-%s' % resource_id,
-                    'height': int_or_none(resource.get('height')),
+        subs = try_get(security, lambda x: x['source']['subtitles_webvtt'], expected_type=dict) or {}
+        for sub_lang, sub_url in subs.items():
+            if sub_url:
+                subtitles.setdefault(sub_lang or 'por', []).append({
+                    'url': sub_url,
                 })
-
-        self._sort_formats(formats)
 
         duration = float_or_none(video.get('duration'), 1000)
         uploader = video.get('channel')
@@ -188,11 +174,12 @@ class GloboArticleIE(InfoExtractor):
     _VALID_URL = r'https?://.+?\.globo\.com/(?:[^/]+/)*(?P<id>[^/.]+)(?:\.html)?'
 
     _VIDEOID_REGEXES = [
-        r'\bdata-video-id=["\'](\d{7,})',
-        r'\bdata-player-videosids=["\'](\d{7,})',
+        r'\bdata-video-id=["\'](\d{7,})["\']',
+        r'\bdata-player-videosids=["\'](\d{7,})["\']',
         r'\bvideosIDs\s*:\s*["\']?(\d{7,})',
-        r'\bdata-id=["\'](\d{7,})',
-        r'<div[^>]+\bid=["\'](\d{7,})',
+        r'\bdata-id=["\'](\d{7,})["\']',
+        r'<div[^>]+\bid=["\'](\d{7,})["\']',
+        r'<bs-player[^>]+\bvideoid=["\'](\d{8,})["\']',
     ]
 
     _TESTS = [{
@@ -220,11 +207,27 @@ class GloboArticleIE(InfoExtractor):
     }, {
         'url': 'http://oglobo.globo.com/rio/a-amizade-entre-um-entregador-de-farmacia-um-piano-19946271',
         'only_matching': True,
+    }, {
+        'url': 'https://ge.globo.com/video/ta-na-area-como-foi-assistir-ao-jogo-do-palmeiras-que-a-globo-nao-passou-10287094.ghtml',
+        'info_dict': {
+            'id': 'ta-na-area-como-foi-assistir-ao-jogo-do-palmeiras-que-a-globo-nao-passou-10287094',
+            'title': 'Tá na Área: como foi assistir ao jogo do Palmeiras que a Globo não passou',
+            'description': 'md5:2d089d036c4c9675117d3a56f8c61739',
+        },
+        'playlist_count': 1,
+    }, {
+        'url': 'https://redeglobo.globo.com/rpc/meuparana/noticia/a-producao-de-chocolates-no-parana.ghtml',
+        'info_dict': {
+            'id': 'a-producao-de-chocolates-no-parana',
+            'title': 'A produção de chocolates no Paraná',
+            'description': 'md5:f2e3daf00ffd1dc0e9a8a6c7cfb0a89e',
+        },
+        'playlist_count': 2,
     }]
 
     @classmethod
     def suitable(cls, url):
-        return False if GloboIE.suitable(url) else super(GloboArticleIE, cls).suitable(url)
+        return False if GloboIE.suitable(url) else super().suitable(url)
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -233,8 +236,8 @@ class GloboArticleIE(InfoExtractor):
         for video_regex in self._VIDEOID_REGEXES:
             video_ids.extend(re.findall(video_regex, webpage))
         entries = [
-            self.url_result('globo:%s' % video_id, GloboIE.ie_key())
+            self.url_result(f'globo:{video_id}', GloboIE.ie_key())
             for video_id in orderedSet(video_ids)]
-        title = self._og_search_title(webpage, fatal=False)
+        title = self._og_search_title(webpage).strip()
         description = self._html_search_meta('description', webpage)
         return self.playlist_result(entries, display_id, title, description)

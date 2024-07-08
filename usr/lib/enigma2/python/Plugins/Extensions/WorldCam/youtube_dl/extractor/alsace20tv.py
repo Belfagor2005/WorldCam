@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from ..utils import (
     clean_html,
@@ -12,31 +9,12 @@ from ..utils import (
 )
 
 
-class Alsace20TVIE(InfoExtractor):
-    _VALID_URL = r'https?://(?:www\.)?alsace20\.tv/(?:[\w-]+/)+[\w-]+-(?P<id>[\w]+)'
-    _TESTS = [{
-        'url': 'https://www.alsace20.tv/VOD/Actu/JT/Votre-JT-jeudi-3-fevrier-lyNHCXpYJh.html',
-        # 'md5': 'd91851bf9af73c0ad9b2cdf76c127fbb',
-        'info_dict': {
-            'id': 'lyNHCXpYJh',
-            'ext': 'mp4',
-            'description': 'md5:fc0bc4a0692d3d2dba4524053de4c7b7',
-            'title': 'Votre JT du jeudi 3 février',
-            'upload_date': '20220203',
-            'thumbnail': r're:https?://.+\.jpg',
-            'duration': 1073,
-            'view_count': int,
-        },
-        'params': {
-            'format': 'bestvideo',
-        },
-    }]
-
+class Alsace20TVBaseIE(InfoExtractor):
     def _extract_video(self, video_id, url=None):
         info = self._download_json(
-            'https://www.alsace20.tv/visionneuse/visio_v9_js.php?key=%s&habillage=0&mode=html' % (video_id, ),
+            f'https://www.alsace20.tv/visionneuse/visio_v9_js.php?key={video_id}&habillage=0&mode=html',
             video_id) or {}
-        title = info['titre']
+        title = info.get('titre')
 
         formats = []
         for res, fmt_url in (info.get('files') or {}).items():
@@ -44,12 +22,11 @@ class Alsace20TVIE(InfoExtractor):
                 self._extract_smil_formats(fmt_url, video_id, fatal=False)
                 if '/smil:_' in fmt_url
                 else self._extract_mpd_formats(fmt_url, video_id, mpd_id=res, fatal=False))
-        self._sort_formats(formats)
 
         webpage = (url and self._download_webpage(url, video_id, fatal=False)) or ''
-        thumbnail = url_or_none(dict_get(info, ('image', 'preview', )) or self._og_search_thumbnail(webpage))
+        thumbnail = url_or_none(dict_get(info, ('image', 'preview')) or self._og_search_thumbnail(webpage))
         upload_date = self._search_regex(r'/(\d{6})_', thumbnail, 'upload_date', default=None)
-        upload_date = unified_strdate('20%s-%s-%s' % (upload_date[:2], upload_date[2:4], upload_date[4:])) if upload_date else None
+        upload_date = unified_strdate(f'20{upload_date[:2]}-{upload_date[2:4]}-{upload_date[4:]}') if upload_date else None
         return {
             'id': video_id,
             'title': title,
@@ -61,12 +38,29 @@ class Alsace20TVIE(InfoExtractor):
             'view_count': int_or_none(info.get('nb_vues')),
         }
 
+
+class Alsace20TVIE(Alsace20TVBaseIE):
+    _VALID_URL = r'https?://(?:www\.)?alsace20\.tv/(?:[\w-]+/)+[\w-]+-(?P<id>[\w]+)'
+    _TESTS = [{
+        'url': 'https://www.alsace20.tv/VOD/Actu/JT/Votre-JT-jeudi-3-fevrier-lyNHCXpYJh.html',
+        'info_dict': {
+            'id': 'lyNHCXpYJh',
+            'ext': 'mp4',
+            'description': 'md5:fc0bc4a0692d3d2dba4524053de4c7b7',
+            'title': 'Votre JT du jeudi 3 février',
+            'upload_date': '20220203',
+            'thumbnail': r're:https?://.+\.jpg',
+            'duration': 1073,
+            'view_count': int,
+        },
+    }]
+
     def _real_extract(self, url):
         video_id = self._match_id(url)
         return self._extract_video(video_id, url)
 
 
-class Alsace20TVEmbedIE(Alsace20TVIE):
+class Alsace20TVEmbedIE(Alsace20TVBaseIE):
     _VALID_URL = r'https?://(?:www\.)?alsace20\.tv/emb/(?P<id>[\w]+)'
     _TESTS = [{
         'url': 'https://www.alsace20.tv/emb/lyNHCXpYJh',

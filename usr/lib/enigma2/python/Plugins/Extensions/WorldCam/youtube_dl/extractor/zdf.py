@@ -1,21 +1,18 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
-from ..compat import compat_str
 from ..utils import (
-    determine_ext,
+    NO_DEFAULT,
     ExtractorError,
+    determine_ext,
     extract_attributes,
     float_or_none,
     int_or_none,
+    join_nonempty,
     merge_dicts,
-    NO_DEFAULT,
     parse_codecs,
     qualities,
-    str_or_none,
+    traverse_obj,
     try_get,
     unified_timestamp,
     update_url_query,
@@ -26,16 +23,16 @@ from ..utils import (
 
 class ZDFBaseIE(InfoExtractor):
     _GEO_COUNTRIES = ['DE']
-    _QUALITIES = ('auto', 'low', 'med', 'high', 'veryhigh', 'hd')
+    _QUALITIES = ('auto', 'low', 'med', 'high', 'veryhigh', 'hd', 'fhd', 'uhd')
 
     def _call_api(self, url, video_id, item, api_token=None, referrer=None):
         headers = {}
         if api_token:
-            headers['Api-Auth'] = 'Bearer %s' % api_token
+            headers['Api-Auth'] = f'Bearer {api_token}'
         if referrer:
             headers['Referer'] = referrer
         return self._download_json(
-            url, video_id, 'Downloading JSON %s' % item, headers=headers)
+            url, video_id, f'Downloading JSON {item}', headers=headers)
 
     @staticmethod
     def _extract_subtitles(src):
@@ -51,17 +48,11 @@ class ZDFBaseIE(InfoExtractor):
 
     def _extract_format(self, video_id, formats, format_urls, meta):
         format_url = url_or_none(meta.get('url'))
-        if not format_url:
-            return
-        if format_url in format_urls:
+        if not format_url or format_url in format_urls:
             return
         format_urls.add(format_url)
-        mime_type = meta.get('mimeType')
-        ext = determine_ext(format_url)
 
-        join_nonempty = lambda s, l: s.join(filter(None, l))
-        meta_map = lambda t: map(lambda x: str_or_none(meta.get(x)), t)
-
+        mime_type, ext = meta.get('mimeType'), determine_ext(format_url)
         if mime_type == 'application/x-mpegURL' or ext == 'm3u8':
             new_formats = self._extract_m3u8_formats(
                 format_url, video_id, 'mp4', m3u8_id='hls',
@@ -69,24 +60,23 @@ class ZDFBaseIE(InfoExtractor):
         elif mime_type == 'application/f4m+xml' or ext == 'f4m':
             new_formats = self._extract_f4m_formats(
                 update_url_query(format_url, {'hdcore': '3.7.0'}), video_id, f4m_id='hds', fatal=False)
+        elif ext == 'mpd':
+            new_formats = self._extract_mpd_formats(
+                format_url, video_id, mpd_id='dash', fatal=False)
         else:
             f = parse_codecs(meta.get('mimeCodec'))
-            if not f:
-                data = meta.get('type', '').split('_')
+            if not f and meta.get('type'):
+                data = meta['type'].split('_')
                 if try_get(data, lambda x: x[2]) == ext:
-                    f = dict(zip(('vcodec', 'acodec'), data[1]))
-
-            format_id = ['http']
-            format_id.extend(join_nonempty('-', meta_map(('type', 'quality'))))
+                    f = {'vcodec': data[0], 'acodec': data[1]}
             f.update({
                 'url': format_url,
-                'format_id': '-'.join(format_id),
-                'tbr': int_or_none(self._search_regex(r'_(\d+)k_', format_url, 'tbr', default=None))
+                'format_id': join_nonempty('http', meta.get('type'), meta.get('quality')),
+                'tbr': int_or_none(self._search_regex(r'_(\d+)k_', format_url, 'tbr', default=None)),
             })
             new_formats = [f]
-
         formats.extend(merge_dicts(f, {
-            'format_note': join_nonempty(',', meta_map(('quality', 'class'))),
+            'format_note': join_nonempty('quality', 'class', from_dict=meta, delim=', '),
             'language': meta.get('language'),
             'language_preference': 10 if meta.get('class') == 'main' else -10 if meta.get('class') == 'ad' else -1,
             'quality': qualities(self._QUALITIES)(meta.get('quality')),
@@ -122,7 +112,6 @@ class ZDFBaseIE(InfoExtractor):
                                 'class': track.get('class'),
                                 'language': track.get('language'),
                             })
-        self._sort_formats(formats)
 
         duration = float_or_none(try_get(
             ptmd, lambda x: x['attributes']['duration']['value']), scale=1000)
@@ -133,6 +122,7 @@ class ZDFBaseIE(InfoExtractor):
             'duration': duration,
             'formats': formats,
             'subtitles': self._extract_subtitles(ptmd),
+            '_format_sort_fields': ('tbr', 'res', 'quality', 'language_preference'),
         }
 
     def _extract_player(self, webpage, video_id, fatal=True):
@@ -175,6 +165,20 @@ class ZDFIE(ZDFBaseIE):
         },
         'skip': 'No longer available: "Diese Seite wurde leider nicht gefunden"',
     }, {
+        'url': 'https://www.zdf.de/nachrichten/heute-journal/heute-journal-vom-30-12-2021-100.html',
+        'info_dict': {
+            'id': '211230_sendung_hjo',
+            'ext': 'mp4',
+            'description': 'md5:47dff85977bde9fb8cba9e9c9b929839',
+            'duration': 1890.0,
+            'upload_date': '20211230',
+            'chapters': list,
+            'thumbnail': 'md5:e65f459f741be5455c952cd820eb188e',
+            'title': 'heute journal vom 30.12.2021',
+            'timestamp': 1640897100,
+        },
+        'skip': 'No longer available: "Diese Seite wurde leider nicht gefunden"',
+    }, {
         'url': 'https://www.zdf.de/dokumentation/terra-x/die-magie-der-farben-von-koenigspurpur-und-jeansblau-100.html',
         'info_dict': {
             'id': '151025_magie_farben2_tex',
@@ -188,7 +192,7 @@ class ZDFIE(ZDFBaseIE):
         },
     }, {
         'url': 'https://www.zdf.de/funk/druck-11790/funk-alles-ist-verzaubert-102.html',
-        'md5': '1b93bdec7d02fc0b703c5e7687461628',
+        'md5': '57af4423db0455a3975d2dc4578536bc',
         'info_dict': {
             'ext': 'mp4',
             'id': 'video_funk_1770473',
@@ -197,7 +201,7 @@ class ZDFIE(ZDFBaseIE):
             'title': 'Alles ist verzaubert',
             'timestamp': 1635520560,
             'upload_date': '20211029',
-            'thumbnail': 'https://www.zdf.de/assets/teaser-funk-alles-ist-verzaubert-100~1920x1080?cb=1636466431799',
+            'thumbnail': 'https://www.zdf.de/assets/teaser-funk-alles-ist-verzaubert-102~1920x1080?cb=1663848412907',
         },
     }, {
         # Same as https://www.phoenix.de/sendungen/dokumentationen/gesten-der-maechtigen-i-a-89468.html?ref=suche
@@ -231,7 +235,7 @@ class ZDFIE(ZDFBaseIE):
             'timestamp': 1641355200,
             'upload_date': '20220105',
         },
-        'skip': 'No longer available "Diese Seite wurde leider nicht gefunden"'
+        'skip': 'No longer available "Diese Seite wurde leider nicht gefunden"',
     }, {
         'url': 'https://www.zdf.de/serien/soko-stuttgart/das-geld-anderer-leute-100.html',
         'info_dict': {
@@ -240,9 +244,22 @@ class ZDFIE(ZDFBaseIE):
             'title': 'Das Geld anderer Leute',
             'description': 'md5:cb6f660850dc5eb7d1ab776ea094959d',
             'duration': 2581.0,
-            'timestamp': 1654790700,
-            'upload_date': '20220609',
+            'timestamp': 1675160100,
+            'upload_date': '20230131',
             'thumbnail': 'https://epg-image.zdf.de/fotobase-webdelivery/images/e2d7e55a-09f0-424e-ac73-6cac4dd65f35?layout=2400x1350',
+        },
+    }, {
+        'url': 'https://www.zdf.de/dokumentation/terra-x/unser-gruener-planet-wuesten-doku-100.html',
+        'info_dict': {
+            'id': '220605_dk_gruener_planet_wuesten_tex',
+            'ext': 'mp4',
+            'title': 'Unser grüner Planet - Wüsten',
+            'description': 'md5:4fc647b6f9c3796eea66f4a0baea2862',
+            'duration': 2613.0,
+            'timestamp': 1654450200,
+            'upload_date': '20220605',
+            'format_note': 'uhd, main',
+            'thumbnail': 'https://www.zdf.de/assets/saguaro-kakteen-102~3840x2160?cb=1655910690796',
         },
     }]
 
@@ -250,22 +267,15 @@ class ZDFIE(ZDFBaseIE):
         title = content.get('title') or content['teaserHeadline']
 
         t = content['mainVideoContent']['http://zdf.de/rels/target']
-
-        def get_ptmd_path(d):
-            return (
-                d.get('http://zdf.de/rels/streams/ptmd')
-                or d.get('http://zdf.de/rels/streams/ptmd-template',
-                         '').replace('{playerId}', 'ngplayer_2_4'))
-
-        ptmd_path = get_ptmd_path(try_get(t, lambda x: x['streams']['default'], dict) or {})
-        if not ptmd_path:
-            ptmd_path = get_ptmd_path(t)
-
+        ptmd_path = traverse_obj(t, (
+            (('streams', 'default'), None),
+            ('http://zdf.de/rels/streams/ptmd', 'http://zdf.de/rels/streams/ptmd-template'),
+        ), get_all=False)
         if not ptmd_path:
             raise ExtractorError('Could not extract ptmd_path')
 
         info = self._extract_ptmd(
-            urljoin(url, ptmd_path), video_id, player['apiToken'], url)
+            urljoin(url, ptmd_path.replace('{playerId}', 'android_native_5')), video_id, player['apiToken'], url)
 
         thumbnails = []
         layouts = try_get(
@@ -287,12 +297,21 @@ class ZDFIE(ZDFBaseIE):
                     })
                 thumbnails.append(thumbnail)
 
+        chapter_marks = t.get('streamAnchorTag') or []
+        chapter_marks.append({'anchorOffset': int_or_none(t.get('duration'))})
+        chapters = [{
+            'start_time': chap.get('anchorOffset'),
+            'end_time': next_chap.get('anchorOffset'),
+            'title': chap.get('anchorLabel'),
+        } for chap, next_chap in zip(chapter_marks, chapter_marks[1:])]
+
         return merge_dicts(info, {
             'title': title,
             'description': content.get('leadParagraph') or content.get('teasertext'),
             'duration': int_or_none(t.get('duration')),
             'timestamp': unified_timestamp(content.get('editorialDate')),
             'thumbnails': thumbnails,
+            'chapters': chapters or None,
         })
 
     def _extract_regular(self, url, player, video_id):
@@ -302,7 +321,7 @@ class ZDFIE(ZDFBaseIE):
 
     def _extract_mobile(self, video_id):
         video = self._download_json(
-            'https://zdf-cdn.live.cellular.de/mediathekV2/document/%s' % video_id,
+            f'https://zdf-cdn.live.cellular.de/mediathekV2/document/{video_id}',
             video_id)
 
         formats = []
@@ -315,14 +334,13 @@ class ZDFIE(ZDFBaseIE):
             format_urls = set()
             for f in formitaeten or []:
                 self._extract_format(content_id, formats, format_urls, f)
-        self._sort_formats(formats)
 
         thumbnails = []
         teaser_bild = document.get('teaserBild')
         if isinstance(teaser_bild, dict):
             for thumbnail_key, thumbnail in teaser_bild.items():
                 thumbnail_url = try_get(
-                    thumbnail, lambda x: x['url'], compat_str)
+                    thumbnail, lambda x: x['url'], str)
                 if thumbnail_url:
                     thumbnails.append({
                         'url': thumbnail_url,
@@ -337,7 +355,7 @@ class ZDFIE(ZDFBaseIE):
             'description': document.get('beschreibung'),
             'duration': int_or_none(document.get('length')),
             'timestamp': unified_timestamp(document.get('date')) or unified_timestamp(
-                try_get(video, lambda x: x['meta']['editorialDate'], compat_str)),
+                try_get(video, lambda x: x['meta']['editorialDate'], str)),
             'thumbnails': thumbnails,
             'subtitles': self._extract_subtitles(document),
             'formats': formats,
@@ -386,10 +404,10 @@ class ZDFChannelIE(ZDFBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if ZDFIE.suitable(url) else super(ZDFChannelIE, cls).suitable(url)
+        return False if ZDFIE.suitable(url) else super().suitable(url)
 
     def _og_search_title(self, webpage, fatal=False):
-        title = super(ZDFChannelIE, self)._og_search_title(webpage, fatal=fatal)
+        title = super()._og_search_title(webpage, fatal=fatal)
         return re.split(r'\s+[-|]\s+ZDF(?:mediathek)?$', title or '')[0] or None
 
     def _real_extract(self, url):
@@ -398,7 +416,7 @@ class ZDFChannelIE(ZDFBaseIE):
         webpage = self._download_webpage(url, channel_id)
 
         matches = re.finditer(
-            r'''<div\b[^>]*?\sdata-plusbar-id\s*=\s*(["'])(?P<p_id>[\w-]+)\1[^>]*?\sdata-plusbar-url=\1(?P<url>%s)\1''' % ZDFIE._VALID_URL,
+            rf'''<div\b[^>]*?\sdata-plusbar-id\s*=\s*(["'])(?P<p_id>[\w-]+)\1[^>]*?\sdata-plusbar-url=\1(?P<url>{ZDFIE._VALID_URL})\1''',
             webpage)
 
         if self._downloader.params.get('noplaylist', False):
@@ -409,11 +427,11 @@ class ZDFChannelIE(ZDFBaseIE):
             if entry:
                 return entry
         else:
-            self.to_screen('Downloading playlist %s - add --no-playlist to download just the main video' % (channel_id, ))
+            self.to_screen(f'Downloading playlist {channel_id} - add --no-playlist to download just the main video')
 
         def check_video(m):
             v_ref = self._search_regex(
-                r'''(<a\b[^>]*?\shref\s*=[^>]+?\sdata-target-id\s*=\s*(["'])%s\2[^>]*>)''' % (m.group('p_id'), ),
+                r'''(<a\b[^>]*?\shref\s*=[^>]+?\sdata-target-id\s*=\s*(["']){}\2[^>]*>)'''.format(m.group('p_id')),
                 webpage, 'check id', default='')
             v_ref = extract_attributes(v_ref)
             return v_ref.get('data-target-video-type') != 'novideo'

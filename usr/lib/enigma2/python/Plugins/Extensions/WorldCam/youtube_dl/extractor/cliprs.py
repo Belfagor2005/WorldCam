@@ -1,10 +1,8 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .onet import OnetBaseIE
 
 
 class ClipRsIE(OnetBaseIE):
+    _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?clip\.rs/(?P<id>[^/]+)/\d+'
     _TEST = {
         'url': 'http://www.clip.rs/premijera-frajle-predstavljaju-novi-spot-za-pesmu-moli-me-moli/3732',
@@ -17,7 +15,7 @@ class ClipRsIE(OnetBaseIE):
             'duration': 229,
             'timestamp': 1459850243,
             'upload_date': '20160405',
-        }
+        },
     }
 
     def _real_extract(self, url):

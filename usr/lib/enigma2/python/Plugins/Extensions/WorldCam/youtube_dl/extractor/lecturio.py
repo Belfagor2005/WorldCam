@@ -1,13 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
+    ExtractorError,
     clean_html,
     determine_ext,
-    ExtractorError,
     float_or_none,
     int_or_none,
     str_or_none,
@@ -22,20 +19,13 @@ class LecturioBaseIE(InfoExtractor):
     _LOGIN_URL = 'https://app.lecturio.com/en/login'
     _NETRC_MACHINE = 'lecturio'
 
-    def _real_initialize(self):
-        self._login()
-
-    def _login(self):
-        username, password = self._get_login_info()
-        if username is None:
-            return
-
+    def _perform_login(self, username, password):
         # Sets some cookies
         _, urlh = self._download_webpage_handle(
             self._LOGIN_URL, None, 'Downloading login popup')
 
         def is_logged(url_handle):
-            return self._LOGIN_URL not in url_handle.geturl()
+            return self._LOGIN_URL not in url_handle.url
 
         # Already logged in
         if is_logged(urlh):
@@ -59,7 +49,7 @@ class LecturioBaseIE(InfoExtractor):
             r'(?s)<ul[^>]+class=["\']error_list[^>]+>(.+?)</ul>', response,
             'errors', default=None)
         if errors:
-            raise ExtractorError('Unable to login: %s' % errors, expected=True)
+            raise ExtractorError(f'Unable to login: {errors}', expected=True)
         raise ExtractorError('Unable to log in')
 
 
@@ -67,8 +57,8 @@ class LecturioIE(LecturioBaseIE):
     _VALID_URL = r'''(?x)
                     https://
                         (?:
-                            app\.lecturio\.com/([^/]+/(?P<nt>[^/?#&]+)\.lecture|(?:\#/)?lecture/c/\d+/(?P<id>\d+))|
-                            (?:www\.)?lecturio\.de/[^/]+/(?P<nt_de>[^/?#&]+)\.vortrag
+                            app\.lecturio\.com/([^/?#]+/(?P<nt>[^/?#&]+)\.lecture|(?:\#/)?lecture/c/\d+/(?P<id>\d+))|
+                            (?:www\.)?lecturio\.de/(?:[^/?#]+/)+(?P<nt_de>[^/?#&]+)\.vortrag
                         )
                     '''
     _TESTS = [{
@@ -82,6 +72,9 @@ class LecturioIE(LecturioBaseIE):
         'skip': 'Requires lecturio account credentials',
     }, {
         'url': 'https://www.lecturio.de/jura/oeffentliches-recht-staatsexamen.vortrag',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.lecturio.de/jura/oeffentliches-recht-at-1-staatsexamen/oeffentliches-recht-staatsexamen.vortrag',
         'only_matching': True,
     }, {
         'url': 'https://app.lecturio.com/#/lecture/c/6434/39634',
@@ -103,7 +96,7 @@ class LecturioIE(LecturioBaseIE):
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         nt = mobj.group('nt') or mobj.group('nt_de')
         lecture_id = mobj.group('id')
         display_id = nt or lecture_id
@@ -137,7 +130,7 @@ class LecturioIE(LecturioBaseIE):
             f = {
                 'url': file_url,
                 'format_id': label,
-                'filesize': float_or_none(filesize, invscale=1000)
+                'filesize': float_or_none(filesize, invscale=1000),
             }
             if label:
                 mobj = re.match(r'(\d+)p\s*\(([^)]+)\)', label)
@@ -147,7 +140,6 @@ class LecturioIE(LecturioBaseIE):
                         'height': int(mobj.group(1)),
                     })
             formats.append(f)
-        self._sort_formats(formats)
 
         subtitles = {}
         automatic_captions = {}
@@ -180,7 +172,7 @@ class LecturioIE(LecturioBaseIE):
 
 
 class LecturioCourseIE(LecturioBaseIE):
-    _VALID_URL = r'https://app\.lecturio\.com/(?:[^/]+/(?P<nt>[^/?#&]+)\.course|(?:#/)?course/c/(?P<id>\d+))'
+    _VALID_URL = r'https?://app\.lecturio\.com/(?:[^/]+/(?P<nt>[^/?#&]+)\.course|(?:#/)?course/c/(?P<id>\d+))'
     _TESTS = [{
         'url': 'https://app.lecturio.com/medical-courses/microbiology-introduction.course#/',
         'info_dict': {
@@ -196,7 +188,7 @@ class LecturioCourseIE(LecturioBaseIE):
     }]
 
     def _real_extract(self, url):
-        nt, course_id = re.match(self._VALID_URL, url).groups()
+        nt, course_id = self._match_valid_url(url).groups()
         display_id = nt or course_id
         api_path = 'courses/' + course_id if course_id else 'course/content/' + nt + '.json'
         course = self._download_json(
@@ -208,7 +200,7 @@ class LecturioCourseIE(LecturioBaseIE):
             if lecture_url:
                 lecture_url = urljoin(url, lecture_url)
             else:
-                lecture_url = 'https://app.lecturio.com/#/lecture/c/%s/%s' % (course_id, lecture_id)
+                lecture_url = f'https://app.lecturio.com/#/lecture/c/{course_id}/{lecture_id}'
             entries.append(self.url_result(
                 lecture_url, ie=LecturioIE.ie_key(), video_id=lecture_id))
         return self.playlist_result(
@@ -217,7 +209,7 @@ class LecturioCourseIE(LecturioBaseIE):
 
 
 class LecturioDeCourseIE(LecturioBaseIE):
-    _VALID_URL = r'https://(?:www\.)?lecturio\.de/[^/]+/(?P<id>[^/?#&]+)\.kurs'
+    _VALID_URL = r'https?://(?:www\.)?lecturio\.de/[^/]+/(?P<id>[^/?#&]+)\.kurs'
     _TEST = {
         'url': 'https://www.lecturio.de/jura/grundrechte.kurs',
         'only_matching': True,

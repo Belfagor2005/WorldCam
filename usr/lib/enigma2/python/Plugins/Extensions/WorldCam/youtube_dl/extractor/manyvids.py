@@ -1,10 +1,6 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
-from ..compat import compat_str
 from ..utils import (
     determine_ext,
     extract_attributes,
@@ -16,6 +12,7 @@ from ..utils import (
 
 
 class ManyVidsIE(InfoExtractor):
+    _WORKING = False
     _VALID_URL = r'(?i)https?://(?:www\.)?manyvids\.com/video/(?P<id>\d+)'
     _TESTS = [{
         # preview video
@@ -47,7 +44,7 @@ class ManyVidsIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        real_url = 'https://www.manyvids.com/video/%s/gtm.js' % (video_id, )
+        real_url = f'https://www.manyvids.com/video/{video_id}/gtm.js'
         try:
             webpage = self._download_webpage(real_url, video_id)
         except Exception:
@@ -72,13 +69,13 @@ class ManyVidsIE(InfoExtractor):
         )
 
         def txt_or_none(s, default=None):
-            return (s.strip() or default) if isinstance(s, compat_str) else default
+            return (s.strip() or default) if isinstance(s, str) else default
 
         uploader = txt_or_none(info.get('data-meta-author'))
 
         def mung_title(s):
             if uploader:
-                s = re.sub(r'^\s*%s\s+[|-]' % (re.escape(uploader), ), '', s)
+                s = re.sub(rf'^\s*{re.escape(uploader)}\s+[|-]', '', s)
             return txt_or_none(s)
 
         title = (
@@ -109,7 +106,7 @@ class ManyVidsIE(InfoExtractor):
                     'vid': video_id,
                 }), headers={
                     'Referer': url,
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
                 })
 
         formats = []
@@ -139,11 +136,9 @@ class ManyVidsIE(InfoExtractor):
             if 'transcoded' in f['format_id']:
                 f['preference'] = f.get('preference', -1) - 1
 
-        self._sort_formats(formats)
-
         def get_likes():
             likes = self._search_regex(
-                r'''(<a\b[^>]*\bdata-id\s*=\s*(['"])%s\2[^>]*>)''' % (video_id, ),
+                rf'''(<a\b[^>]*\bdata-id\s*=\s*(['"]){video_id}\2[^>]*>)''',
                 webpage, 'likes', default='')
             likes = extract_attributes(likes)
             return int_or_none(likes.get('data-likes'))

@@ -1,21 +1,65 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
+import functools
 
 from .common import InfoExtractor
-from ..compat import compat_xpath
 from ..utils import (
-    determine_ext,
     ExtractorError,
+    OnDemandPagedList,
+    UserNotLive,
+    determine_ext,
+    filter_dict,
     int_or_none,
+    orderedSet,
+    unified_timestamp,
     url_or_none,
     urlencode_postdata,
-    xpath_text,
+    urljoin,
 )
+from ..utils.traversal import traverse_obj
 
 
-class AfreecaTVIE(InfoExtractor):
+class AfreecaTVBaseIE(InfoExtractor):
+    _NETRC_MACHINE = 'afreecatv'
+
+    def _perform_login(self, username, password):
+        login_form = {
+            'szWork': 'login',
+            'szType': 'json',
+            'szUid': username,
+            'szPassword': password,
+            'isSaveId': 'false',
+            'szScriptVar': 'oLoginRet',
+            'szAction': '',
+        }
+
+        response = self._download_json(
+            'https://login.afreecatv.com/app/LoginAction.php', None,
+            'Logging in', data=urlencode_postdata(login_form))
+
+        _ERRORS = {
+            -4: 'Your account has been suspended due to a violation of our terms and policies.',
+            -5: 'https://member.afreecatv.com/app/user_delete_progress.php',
+            -6: 'https://login.afreecatv.com/membership/changeMember.php',
+            -8: "Hello! AfreecaTV here.\nThe username you have entered belongs to \n an account that requires a legal guardian's consent. \nIf you wish to use our services without restriction, \nplease make sure to go through the necessary verification process.",
+            -9: 'https://member.afreecatv.com/app/pop_login_block.php',
+            -11: 'https://login.afreecatv.com/afreeca/second_login.php',
+            -12: 'https://member.afreecatv.com/app/user_security.php',
+            0: 'The username does not exist or you have entered the wrong password.',
+            -1: 'The username does not exist or you have entered the wrong password.',
+            -3: 'You have entered your username/password incorrectly.',
+            -7: 'You cannot use your Global AfreecaTV account to access Korean AfreecaTV.',
+            -10: 'Sorry for the inconvenience. \nYour account has been blocked due to an unauthorized access. \nPlease contact our Help Center for assistance.',
+            -32008: 'You have failed to log in. Please contact our Help Center.',
+        }
+
+        result = int_or_none(response.get('RESULT'))
+        if result != 1:
+            error = _ERRORS.get(result, 'You have failed to log in.')
+            raise ExtractorError(
+                f'Unable to login: {self.IE_NAME} said: {error}',
+                expected=True)
+
+
+class AfreecaTVIE(AfreecaTVBaseIE):
     IE_NAME = 'afreecatv'
     IE_DESC = 'afreecatv.com'
     _VALID_URL = r'''(?x)
@@ -26,11 +70,10 @@ class AfreecaTVIE(InfoExtractor):
                                 /app/(?:index|read_ucc_bbs)\.cgi|
                                 /player/[Pp]layer\.(?:swf|html)
                             )\?.*?\bnTitleNo=|
-                            vod\.afreecatv\.com/PLAYER/STATION/
+                            vod\.afreecatv\.com/(PLAYER/STATION|player)/
                         )
-                        (?P<id>\d+)
+                        (?P<id>\d+)/?(?:$|[?#&])
                     '''
-    _NETRC_MACHINE = 'afreecatv'
     _TESTS = [{
         'url': 'http://live.afreecatv.com:8079/app/index.cgi?szType=read_ucc_bbs&szBjId=dailyapril&nStationNo=16711924&nBbsNo=18605867&nTitleNo=36164052&szSkin=',
         'md5': 'f72c89fe7ecc14c1b5ce506c4996046e',
@@ -73,59 +116,6 @@ class AfreecaTVIE(InfoExtractor):
         }],
         'skip': 'Video is gone',
     }, {
-        'url': 'http://vod.afreecatv.com/PLAYER/STATION/18650793',
-        'info_dict': {
-            'id': '18650793',
-            'ext': 'mp4',
-            'title': '오늘은 다르다! 쏘님의 우월한 위아래~ 댄스리액션!',
-            'thumbnail': r're:^https?://.*\.jpg$',
-            'uploader': '윈아디',
-            'uploader_id': 'badkids',
-            'duration': 107,
-        },
-        'params': {
-            'skip_download': True,
-        },
-    }, {
-        'url': 'http://vod.afreecatv.com/PLAYER/STATION/10481652',
-        'info_dict': {
-            'id': '10481652',
-            'title': "BJ유트루와 함께하는 '팅커벨 메이크업!'",
-            'thumbnail': 're:^https?://(?:video|st)img.afreecatv.com/.*$',
-            'uploader': 'dailyapril',
-            'uploader_id': 'dailyapril',
-            'duration': 6492,
-        },
-        'playlist_count': 2,
-        'playlist': [{
-            'md5': 'd8b7c174568da61d774ef0203159bf97',
-            'info_dict': {
-                'id': '20160502_c4c62b9d_174361386_1',
-                'ext': 'mp4',
-                'title': "BJ유트루와 함께하는 '팅커벨 메이크업!' (part 1)",
-                'thumbnail': 're:^https?://(?:video|st)img.afreecatv.com/.*$',
-                'uploader': 'dailyapril',
-                'uploader_id': 'dailyapril',
-                'upload_date': '20160502',
-                'duration': 3601,
-            },
-        }, {
-            'md5': '58f2ce7f6044e34439ab2d50612ab02b',
-            'info_dict': {
-                'id': '20160502_39e739bb_174361386_2',
-                'ext': 'mp4',
-                'title': "BJ유트루와 함께하는 '팅커벨 메이크업!' (part 2)",
-                'thumbnail': 're:^https?://(?:video|st)img.afreecatv.com/.*$',
-                'uploader': 'dailyapril',
-                'uploader_id': 'dailyapril',
-                'upload_date': '20160502',
-                'duration': 2891,
-            },
-        }],
-        'params': {
-            'skip_download': True,
-        },
-    }, {
         # non standard key
         'url': 'http://vod.afreecatv.com/PLAYER/STATION/20515605',
         'info_dict': {
@@ -136,14 +126,15 @@ class AfreecaTVIE(InfoExtractor):
             'uploader': '♥이슬이',
             'uploader_id': 'dasl8121',
             'upload_date': '20170411',
+            'timestamp': 1491929865,
             'duration': 213,
         },
         'params': {
             'skip_download': True,
         },
     }, {
-        # PARTIAL_ADULT
-        'url': 'http://vod.afreecatv.com/PLAYER/STATION/32028439',
+        # adult content
+        'url': 'https://vod.afreecatv.com/player/97267690',
         'info_dict': {
             'id': '20180327_27901457_202289533_1',
             'ext': 'mp4',
@@ -157,211 +148,318 @@ class AfreecaTVIE(InfoExtractor):
         'params': {
             'skip_download': True,
         },
-        'expected_warnings': ['adult content'],
+        'skip': 'The VOD does not exist',
     }, {
         'url': 'http://www.afreecatv.com/player/Player.swf?szType=szBjId=djleegoon&nStationNo=11273158&nBbsNo=13161095&nTitleNo=36327652',
         'only_matching': True,
     }, {
-        'url': 'http://vod.afreecatv.com/PLAYER/STATION/15055030',
+        'url': 'https://vod.afreecatv.com/player/96753363',
+        'info_dict': {
+            'id': '20230108_9FF5BEE1_244432674_1',
+            'ext': 'mp4',
+            'uploader_id': 'rlantnghks',
+            'uploader': '페이즈으',
+            'duration': 10840,
+            'thumbnail': r're:https?://videoimg\.afreecatv\.com/.+',
+            'upload_date': '20230108',
+            'timestamp': 1673218805,
+            'title': '젠지 페이즈',
+        },
+        'params': {
+            'skip_download': True,
+        },
+    }, {
+        # adult content
+        'url': 'https://vod.afreecatv.com/player/70395877',
+        'only_matching': True,
+    }, {
+        # subscribers only
+        'url': 'https://vod.afreecatv.com/player/104647403',
+        'only_matching': True,
+    }, {
+        # private
+        'url': 'https://vod.afreecatv.com/player/81669846',
         'only_matching': True,
     }]
 
-    @staticmethod
-    def parse_video_key(key):
-        video_key = {}
-        m = re.match(r'^(?P<upload_date>\d{8})_\w+_(?P<part>\d+)$', key)
-        if m:
-            video_key['upload_date'] = m.group('upload_date')
-            video_key['part'] = int(m.group('part'))
-        return video_key
+    def _real_extract(self, url):
+        video_id = self._match_id(url)
+        data = self._download_json(
+            'https://api.m.afreecatv.com/station/video/a/view', video_id,
+            headers={'Referer': url}, data=urlencode_postdata({
+                'nTitleNo': video_id,
+                'nApiLevel': 10,
+            }), impersonate=True)['data']
 
-    def _real_initialize(self):
-        self._login()
+        error_code = traverse_obj(data, ('code', {int}))
+        if error_code == -6221:
+            raise ExtractorError('The VOD does not exist', expected=True)
+        elif error_code == -6205:
+            raise ExtractorError('This VOD is private', expected=True)
 
-    def _login(self):
-        username, password = self._get_login_info()
-        if username is None:
-            return
+        common_info = traverse_obj(data, {
+            'title': ('title', {str}),
+            'uploader': ('writer_nick', {str}),
+            'uploader_id': ('bj_id', {str}),
+            'duration': ('total_file_duration', {functools.partial(int_or_none, scale=1000)}),
+            'thumbnail': ('thumb', {url_or_none}),
+        })
 
-        login_form = {
-            'szWork': 'login',
-            'szType': 'json',
-            'szUid': username,
-            'szPassword': password,
-            'isSaveId': 'false',
-            'szScriptVar': 'oLoginRet',
-            'szAction': '',
-        }
+        entries = []
+        for file_num, file_element in enumerate(
+                traverse_obj(data, ('files', lambda _, v: url_or_none(v['file']))), start=1):
+            file_url = file_element['file']
+            if determine_ext(file_url) == 'm3u8':
+                formats = self._extract_m3u8_formats(
+                    file_url, video_id, 'mp4', m3u8_id='hls',
+                    note=f'Downloading part {file_num} m3u8 information')
+            else:
+                formats = [{
+                    'url': file_url,
+                    'format_id': 'http',
+                }]
 
-        response = self._download_json(
-            'https://login.afreecatv.com/app/LoginAction.php', None,
-            'Logging in', data=urlencode_postdata(login_form))
+            entries.append({
+                **common_info,
+                'id': file_element.get('file_info_key') or f'{video_id}_{file_num}',
+                'title': f'{common_info.get("title") or "Untitled"} (part {file_num})',
+                'formats': formats,
+                **traverse_obj(file_element, {
+                    'duration': ('duration', {functools.partial(int_or_none, scale=1000)}),
+                    'timestamp': ('file_start', {unified_timestamp}),
+                }),
+            })
 
-        _ERRORS = {
-            -4: 'Your account has been suspended due to a violation of our terms and policies.',
-            -5: 'https://member.afreecatv.com/app/user_delete_progress.php',
-            -6: 'https://login.afreecatv.com/membership/changeMember.php',
-            -8: "Hello! AfreecaTV here.\nThe username you have entered belongs to \n an account that requires a legal guardian's consent. \nIf you wish to use our services without restriction, \nplease make sure to go through the necessary verification process.",
-            -9: 'https://member.afreecatv.com/app/pop_login_block.php',
-            -11: 'https://login.afreecatv.com/afreeca/second_login.php',
-            -12: 'https://member.afreecatv.com/app/user_security.php',
-            0: 'The username does not exist or you have entered the wrong password.',
-            -1: 'The username does not exist or you have entered the wrong password.',
-            -3: 'You have entered your username/password incorrectly.',
-            -7: 'You cannot use your Global AfreecaTV account to access Korean AfreecaTV.',
-            -10: 'Sorry for the inconvenience. \nYour account has been blocked due to an unauthorized access. \nPlease contact our Help Center for assistance.',
-            -32008: 'You have failed to log in. Please contact our Help Center.',
-        }
+        if traverse_obj(data, ('adult_status', {str})) == 'notLogin':
+            if not entries:
+                self.raise_login_required(
+                    'Only users older than 19 are able to watch this video', method='password')
+            self.report_warning(
+                'In accordance with local laws and regulations, underage users are '
+                'restricted from watching adult content. Only content suitable for all '
+                f'ages will be downloaded. {self._login_hint("password")}')
 
-        result = int_or_none(response.get('RESULT'))
-        if result != 1:
-            error = _ERRORS.get(result, 'You have failed to log in.')
-            raise ExtractorError(
-                'Unable to login: %s said: %s' % (self.IE_NAME, error),
-                expected=True)
+        if not entries and traverse_obj(data, ('sub_upload_type', {str})):
+            self.raise_login_required('This VOD is for subscribers only', method='password')
+
+        if len(entries) == 1:
+            return {
+                **entries[0],
+                'title': common_info.get('title'),
+            }
+
+        common_info['timestamp'] = traverse_obj(entries, (..., 'timestamp'), get_all=False)
+
+        return self.playlist_result(entries, video_id, multi_video=True, **common_info)
+
+
+class AfreecaTVCatchStoryIE(AfreecaTVBaseIE):
+    IE_NAME = 'afreecatv:catchstory'
+    IE_DESC = 'afreecatv.com catch story'
+    _VALID_URL = r'https?://vod\.afreecatv\.com/player/(?P<id>\d+)/catchstory'
+    _TESTS = [{
+        'url': 'https://vod.afreecatv.com/player/103247/catchstory',
+        'info_dict': {
+            'id': '103247',
+        },
+        'playlist_count': 2,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
+        data = self._download_json(
+            'https://api.m.afreecatv.com/catchstory/a/view', video_id, headers={'Referer': url},
+            query={'aStoryListIdx': '', 'nStoryIdx': video_id}, impersonate=True)
 
-        webpage = self._download_webpage(url, video_id)
+        return self.playlist_result(self._entries(data), video_id)
 
-        if re.search(r'alert\(["\']This video has been deleted', webpage):
+    @staticmethod
+    def _entries(data):
+        # 'files' is always a list with 1 element
+        yield from traverse_obj(data, (
+            'data', lambda _, v: v['story_type'] == 'catch',
+            'catch_list', lambda _, v: v['files'][0]['file'], {
+                'id': ('files', 0, 'file_info_key', {str}),
+                'url': ('files', 0, 'file', {url_or_none}),
+                'duration': ('files', 0, 'duration', {functools.partial(int_or_none, scale=1000)}),
+                'title': ('title', {str}),
+                'uploader': ('writer_nick', {str}),
+                'uploader_id': ('writer_id', {str}),
+                'thumbnail': ('thumb', {url_or_none}),
+                'timestamp': ('write_timestamp', {int_or_none}),
+            }))
+
+
+class AfreecaTVLiveIE(AfreecaTVBaseIE):
+    IE_NAME = 'afreecatv:live'
+    IE_DESC = 'afreecatv.com livestreams'
+    _VALID_URL = r'https?://play\.afreeca(?:tv)?\.com/(?P<id>[^/]+)(?:/(?P<bno>\d+))?'
+    _TESTS = [{
+        'url': 'https://play.afreecatv.com/pyh3646/237852185',
+        'info_dict': {
+            'id': '237852185',
+            'ext': 'mp4',
+            'title': '【 우루과이 오늘은 무슨일이? 】',
+            'uploader': '박진우[JINU]',
+            'uploader_id': 'pyh3646',
+            'timestamp': 1640661495,
+            'is_live': True,
+        },
+        'skip': 'Livestream has ended',
+    }, {
+        'url': 'https://play.afreecatv.com/pyh3646/237852185',
+        'only_matching': True,
+    }, {
+        'url': 'https://play.afreecatv.com/pyh3646',
+        'only_matching': True,
+    }]
+
+    _LIVE_API_URL = 'https://live.afreecatv.com/afreeca/player_live_api.php'
+    _WORKING_CDNS = [
+        'gcp_cdn',  # live-global-cdn-v02.afreecatv.com
+        'gs_cdn_pc_app',  # pc-app.stream.afreecatv.com
+        'gs_cdn_mobile_web',  # mobile-web.stream.afreecatv.com
+        'gs_cdn_pc_web',  # pc-web.stream.afreecatv.com
+    ]
+    _BAD_CDNS = [
+        'gs_cdn',  # chromecast.afreeca.gscdn.com (cannot resolve)
+        'gs_cdn_chromecast',  # chromecast.stream.afreecatv.com (HTTP Error 400)
+        'azure_cdn',  # live-global-cdn-v01.afreecatv.com (cannot resolve)
+        'aws_cf',  # live-global-cdn-v03.afreecatv.com (cannot resolve)
+        'kt_cdn',  # kt.stream.afreecatv.com (HTTP Error 400)
+    ]
+
+    def _extract_formats(self, channel_info, broadcast_no, aid):
+        stream_base_url = channel_info.get('RMD') or 'https://livestream-manager.afreecatv.com'
+
+        # If user has not passed CDN IDs, try API-provided CDN ID followed by other working CDN IDs
+        default_cdn_ids = orderedSet([
+            *traverse_obj(channel_info, ('CDN', {str}, all, lambda _, v: v not in self._BAD_CDNS)),
+            *self._WORKING_CDNS,
+        ])
+        cdn_ids = self._configuration_arg('cdn', default_cdn_ids)
+
+        for attempt, cdn_id in enumerate(cdn_ids, start=1):
+            m3u8_url = traverse_obj(self._download_json(
+                urljoin(stream_base_url, 'broad_stream_assign.html'), broadcast_no,
+                f'Downloading {cdn_id} stream info', f'Unable to download {cdn_id} stream info',
+                fatal=False, query={
+                    'return_type': cdn_id,
+                    'broad_key': f'{broadcast_no}-common-master-hls',
+                }), ('view_url', {url_or_none}))
+            try:
+                return self._extract_m3u8_formats(
+                    m3u8_url, broadcast_no, 'mp4', m3u8_id='hls', query={'aid': aid},
+                    headers={'Referer': 'https://play.afreecatv.com/'})
+            except ExtractorError as e:
+                if attempt == len(cdn_ids):
+                    raise
+                self.report_warning(
+                    f'{e.cause or e.msg}. Retrying... (attempt {attempt} of {len(cdn_ids)})')
+
+    def _real_extract(self, url):
+        broadcaster_id, broadcast_no = self._match_valid_url(url).group('id', 'bno')
+        channel_info = traverse_obj(self._download_json(
+            self._LIVE_API_URL, broadcaster_id, data=urlencode_postdata({'bid': broadcaster_id})),
+            ('CHANNEL', {dict})) or {}
+
+        broadcaster_id = channel_info.get('BJID') or broadcaster_id
+        broadcast_no = channel_info.get('BNO') or broadcast_no
+        if not broadcast_no:
+            raise UserNotLive(video_id=broadcaster_id)
+
+        password = self.get_param('videopassword')
+        if channel_info.get('BPWD') == 'Y' and password is None:
             raise ExtractorError(
-                'Video %s has been deleted' % video_id, expected=True)
+                'This livestream is protected by a password, use the --video-password option',
+                expected=True)
 
-        station_id = self._search_regex(
-            r'nStationNo\s*=\s*(\d+)', webpage, 'station')
-        bbs_id = self._search_regex(
-            r'nBbsNo\s*=\s*(\d+)', webpage, 'bbs')
-        video_id = self._search_regex(
-            r'nTitleNo\s*=\s*(\d+)', webpage, 'title', default=video_id)
+        token_info = traverse_obj(self._download_json(
+            self._LIVE_API_URL, broadcast_no, 'Downloading access token for stream',
+            'Unable to download access token for stream', data=urlencode_postdata(filter_dict({
+                'bno': broadcast_no,
+                'stream_type': 'common',
+                'type': 'aid',
+                'quality': 'master',
+                'pwd': password,
+            }))), ('CHANNEL', {dict})) or {}
+        aid = token_info.get('AID')
+        if not aid:
+            result = token_info.get('RESULT')
+            if result == 0:
+                raise ExtractorError('This livestream has ended', expected=True)
+            elif result == -6:
+                self.raise_login_required('This livestream is for subscribers only', method='password')
+            raise ExtractorError('Unable to extract access token')
 
-        partial_view = False
-        for _ in range(2):
-            query = {
-                'nTitleNo': video_id,
-                'nStationNo': station_id,
-                'nBbsNo': bbs_id,
-            }
-            if partial_view:
-                query['partialView'] = 'SKIP_ADULT'
-            video_xml = self._download_xml(
-                'http://afbbs.afreecatv.com:8080/api/video/get_video_info.php',
-                video_id, 'Downloading video info XML%s'
-                % (' (skipping adult)' if partial_view else ''),
-                video_id, headers={
-                    'Referer': url,
-                }, query=query)
+        formats = self._extract_formats(channel_info, broadcast_no, aid)
 
-            flag = xpath_text(video_xml, './track/flag', 'flag', default=None)
-            if flag and flag == 'SUCCEED':
-                break
-            if flag == 'PARTIAL_ADULT':
-                self._downloader.report_warning(
-                    'In accordance with local laws and regulations, underage users are restricted from watching adult content. '
-                    'Only content suitable for all ages will be downloaded. '
-                    'Provide account credentials if you wish to download restricted content.')
-                partial_view = True
-                continue
-            elif flag == 'ADULT':
-                error = 'Only users older than 19 are able to watch this video. Provide account credentials to download this content.'
-            else:
-                error = flag
-            raise ExtractorError(
-                '%s said: %s' % (self.IE_NAME, error), expected=True)
-        else:
-            raise ExtractorError('Unable to download video info')
+        station_info = traverse_obj(self._download_json(
+            'https://st.afreecatv.com/api/get_station_status.php', broadcast_no,
+            'Downloading channel metadata', 'Unable to download channel metadata',
+            query={'szBjId': broadcaster_id}, fatal=False), {dict}) or {}
 
-        video_element = video_xml.findall(compat_xpath('./track/video'))[-1]
-        if video_element is None or video_element.text is None:
-            raise ExtractorError(
-                'Video %s does not exist' % video_id, expected=True)
-
-        video_url = video_element.text.strip()
-
-        title = xpath_text(video_xml, './track/title', 'title', fatal=True)
-
-        uploader = xpath_text(video_xml, './track/nickname', 'uploader')
-        uploader_id = xpath_text(video_xml, './track/bj_id', 'uploader id')
-        duration = int_or_none(xpath_text(
-            video_xml, './track/duration', 'duration'))
-        thumbnail = xpath_text(video_xml, './track/titleImage', 'thumbnail')
-
-        common_entry = {
-            'uploader': uploader,
-            'uploader_id': uploader_id,
-            'thumbnail': thumbnail,
+        return {
+            'id': broadcast_no,
+            'title': channel_info.get('TITLE') or station_info.get('station_title'),
+            'uploader': channel_info.get('BJNICK') or station_info.get('station_name'),
+            'uploader_id': broadcaster_id,
+            'timestamp': unified_timestamp(station_info.get('broad_start')),
+            'formats': formats,
+            'is_live': True,
+            'http_headers': {'Referer': url},
         }
 
-        info = common_entry.copy()
-        info.update({
-            'id': video_id,
-            'title': title,
-            'duration': duration,
-        })
 
-        if not video_url:
-            entries = []
-            file_elements = video_element.findall(compat_xpath('./file'))
-            one = len(file_elements) == 1
-            for file_num, file_element in enumerate(file_elements, start=1):
-                file_url = url_or_none(file_element.text)
-                if not file_url:
-                    continue
-                key = file_element.get('key', '')
-                upload_date = self._search_regex(
-                    r'^(\d{8})_', key, 'upload date', default=None)
-                file_duration = int_or_none(file_element.get('duration'))
-                format_id = key if key else '%s_%s' % (video_id, file_num)
-                if determine_ext(file_url) == 'm3u8':
-                    formats = self._extract_m3u8_formats(
-                        file_url, video_id, 'mp4', entry_protocol='m3u8_native',
-                        m3u8_id='hls',
-                        note='Downloading part %d m3u8 information' % file_num)
-                else:
-                    formats = [{
-                        'url': file_url,
-                        'format_id': 'http',
-                    }]
-                if not formats:
-                    continue
-                self._sort_formats(formats)
-                file_info = common_entry.copy()
-                file_info.update({
-                    'id': format_id,
-                    'title': title if one else '%s (part %d)' % (title, file_num),
-                    'upload_date': upload_date,
-                    'duration': file_duration,
-                    'formats': formats,
-                })
-                entries.append(file_info)
-            entries_info = info.copy()
-            entries_info.update({
-                '_type': 'multi_video',
-                'entries': entries,
-            })
-            return entries_info
+class AfreecaTVUserIE(InfoExtractor):
+    IE_NAME = 'afreecatv:user'
+    _VALID_URL = r'https?://bj\.afreeca(?:tv)?\.com/(?P<id>[^/]+)/vods/?(?P<slug_type>[^/]+)?'
+    _TESTS = [{
+        'url': 'https://bj.afreecatv.com/ryuryu24/vods/review',
+        'info_dict': {
+            '_type': 'playlist',
+            'id': 'ryuryu24',
+            'title': 'ryuryu24 - review',
+        },
+        'playlist_count': 218,
+    }, {
+        'url': 'https://bj.afreecatv.com/parang1995/vods/highlight',
+        'info_dict': {
+            '_type': 'playlist',
+            'id': 'parang1995',
+            'title': 'parang1995 - highlight',
+        },
+        'playlist_count': 997,
+    }, {
+        'url': 'https://bj.afreecatv.com/ryuryu24/vods',
+        'info_dict': {
+            '_type': 'playlist',
+            'id': 'ryuryu24',
+            'title': 'ryuryu24 - all',
+        },
+        'playlist_count': 221,
+    }, {
+        'url': 'https://bj.afreecatv.com/ryuryu24/vods/balloonclip',
+        'info_dict': {
+            '_type': 'playlist',
+            'id': 'ryuryu24',
+            'title': 'ryuryu24 - balloonclip',
+        },
+        'playlist_count': 0,
+    }]
+    _PER_PAGE = 60
 
-        info = {
-            'id': video_id,
-            'title': title,
-            'uploader': uploader,
-            'uploader_id': uploader_id,
-            'duration': duration,
-            'thumbnail': thumbnail,
-        }
+    def _fetch_page(self, user_id, user_type, page):
+        page += 1
+        info = self._download_json(f'https://bjapi.afreecatv.com/api/{user_id}/vods/{user_type}', user_id,
+                                   query={'page': page, 'per_page': self._PER_PAGE, 'orderby': 'reg_date'},
+                                   note=f'Downloading {user_type} video page {page}')
+        for item in info['data']:
+            yield self.url_result(
+                f'https://vod.afreecatv.com/player/{item["title_no"]}/', AfreecaTVIE, item['title_no'])
 
-        if determine_ext(video_url) == 'm3u8':
-            info['formats'] = self._extract_m3u8_formats(
-                video_url, video_id, 'mp4', entry_protocol='m3u8_native',
-                m3u8_id='hls')
-        else:
-            app, playpath = video_url.split('mp4:')
-            info.update({
-                'url': app,
-                'ext': 'flv',
-                'play_path': 'mp4:' + playpath,
-                'rtmp_live': True,  # downloading won't end without this
-            })
-
-        return info
+    def _real_extract(self, url):
+        user_id, user_type = self._match_valid_url(url).group('id', 'slug_type')
+        user_type = user_type or 'all'
+        entries = OnDemandPagedList(functools.partial(self._fetch_page, user_id, user_type), self._PER_PAGE)
+        return self.playlist_result(entries, user_id, f'{user_id} - {user_type}')

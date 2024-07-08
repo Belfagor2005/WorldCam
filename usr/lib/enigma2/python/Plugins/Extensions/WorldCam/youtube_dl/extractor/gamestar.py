@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     int_or_none,
@@ -24,7 +19,7 @@ class GameStarIE(InfoExtractor):
             'timestamp': 1406542380,
             'upload_date': '20140728',
             'duration': 17,
-        }
+        },
     }, {
         'url': 'http://www.gamepro.de/videos/top-10-indie-spiele-fuer-nintendo-switch-video-tolle-nindies-games-zum-download,95316.html',
         'only_matching': True,
@@ -34,7 +29,7 @@ class GameStarIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         site = mobj.group('site')
         video_id = mobj.group('id')
 
@@ -47,7 +42,7 @@ class GameStarIE(InfoExtractor):
             webpage, 'JSON-LD', group='json_ld'), video_id)
         info_dict = self._json_ld(json_ld, video_id)
         info_dict['title'] = remove_end(
-            info_dict['title'], ' - Game%s' % site.title())
+            info_dict['title'], f' - Game{site.title()}')
 
         view_count = int_or_none(json_ld.get('interactionCount'))
         comment_count = int_or_none(self._html_search_regex(
@@ -59,7 +54,7 @@ class GameStarIE(InfoExtractor):
             'url': 'http://gamestar.de/_misc/videos/portal/getVideoUrl.cfm?premium=0&videoId=' + video_id,
             'ext': 'mp4',
             'view_count': view_count,
-            'comment_count': comment_count
+            'comment_count': comment_count,
         })
 
         return info_dict

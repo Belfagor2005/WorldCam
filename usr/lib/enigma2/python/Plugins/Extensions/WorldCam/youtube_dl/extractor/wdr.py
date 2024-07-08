@@ -1,30 +1,28 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_str,
-    compat_urlparse,
-)
 from ..utils import (
+    ExtractorError,
     determine_ext,
     dict_get,
-    ExtractorError,
     js_to_json,
     strip_jsonp,
     try_get,
     unified_strdate,
     update_url_query,
-    urlhandle_detect_ext,
     url_or_none,
+    urlhandle_detect_ext,
 )
 
 
 class WDRIE(InfoExtractor):
     __API_URL_TPL = '//deviceids-medp.wdr.de/ondemand/%s/%s'
-    _VALID_URL = (r'(?:https?:' + __API_URL_TPL) % (r'\d+', r'(?=\d+\.js)|wdr:)(?P<id>\d{6,})')
+    _VALID_URL = r'''(?x)https?://
+        (?:deviceids-medp\.wdr\.de/ondemand/\d+/|
+           kinder\.wdr\.de/(?!mediathek/)[^#?]+-)
+        (?P<id>\d+)\.(?:js|assetjsonp)
+    '''
     _GEO_COUNTRIES = ['DE']
     _TESTS = [{
         'url': 'http://deviceids-medp.wdr.de/ondemand/155/1557833.js',
@@ -34,12 +32,11 @@ class WDRIE(InfoExtractor):
             'title': 'Biathlon-Staffel verpasst Podest bei Olympia-Generalprobe',
             'upload_date': '20180112',
         },
-    },
-    ]
+    }]
 
     def _asset_url(self, wdr_id):
         id_len = max(len(wdr_id), 5)
-        return ''.join(('https:', self.__API_URL_TPL % (wdr_id[:id_len - 4], wdr_id, ), '.js'))
+        return ''.join(('https:', self.__API_URL_TPL % (wdr_id[:id_len - 4], wdr_id), '.js'))
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -55,16 +52,24 @@ class WDRIE(InfoExtractor):
 
         tracker_data = metadata['trackerData']
         title = tracker_data['trackerClipTitle']
-
         media_resource = metadata['mediaResource']
 
         formats = []
+        subtitles = {}
 
         # check if the metadata contains a direct URL to a file
         for kind, media in media_resource.items():
-            if not isinstance(media, dict):
+            if kind == 'captionsHash':
+                for ext, url in media.items():
+                    subtitles.setdefault('de', []).append({
+                        'url': url,
+                        'ext': ext,
+                    })
                 continue
+
             if kind not in ('dflt', 'alt'):
+                continue
+            if not isinstance(media, dict):
                 continue
 
             for tag_name, medium_url in media.items():
@@ -86,7 +91,7 @@ class WDRIE(InfoExtractor):
                         medium_url, 'stream', fatal=False))
                 else:
                     a_format = {
-                        'url': medium_url
+                        'url': medium_url,
                     }
                     if ext == 'unknown_video':
                         urlh = self._request_webpage(
@@ -95,9 +100,6 @@ class WDRIE(InfoExtractor):
                         a_format['ext'] = ext
                     formats.append(a_format)
 
-        self._sort_formats(formats)
-
-        subtitles = {}
         caption_url = media_resource.get('captionURL')
         if caption_url:
             subtitles['de'] = [{
@@ -117,7 +119,7 @@ class WDRIE(InfoExtractor):
 
         return {
             'id': tracker_data.get('trackerClipId', video_id),
-            'title': self._live_title(title) if is_live else title,
+            'title': title,
             'alt_title': tracker_data.get('trackerClipSubcategory'),
             'formats': formats,
             'subtitles': subtitles,
@@ -126,7 +128,7 @@ class WDRIE(InfoExtractor):
         }
 
 
-class WDRPageIE(WDRIE):
+class WDRPageIE(WDRIE):  # XXX: Do not subclass from concrete IE
     _MAUS_REGEX = r'https?://(?:www\.)wdrmaus.de/(?:[^/]+/)*?(?P<maus_id>[^/?#.]+)(?:/?|/index\.php5|\.php5)$'
     _PAGE_REGEX = r'/(?:mediathek/)?(?:[^/]+/)*(?P<display_id>[^/]+)\.html'
     _VALID_URL = r'https?://(?:www\d?\.)?(?:(?:kinder\.)?wdr\d?|sportschau)\.de' + _PAGE_REGEX + '|' + _MAUS_REGEX
@@ -163,11 +165,12 @@ class WDRPageIE(WDRIE):
                 'upload_date': '20160312',
                 'description': 'md5:e127d320bc2b1f149be697ce044a3dd7',
                 'is_live': False,
-                'subtitles': {}
+                'subtitles': {},
             },
             'skip': 'HTTP Error 404: Not Found',
         },
         {
+            # FIXME: Asset JSON is directly embedded in webpage
             'url': 'http://www1.wdr.de/mediathek/video/live/index.html',
             'info_dict': {
                 'id': 'mdb-2296252',
@@ -196,7 +199,7 @@ class WDRPageIE(WDRIE):
                 'upload_date': 're:^[0-9]{8}$',
                 'title': 're:^Die Sendung (?:mit der Maus )?vom [0-9.]{10}$',
             },
-            'skip': 'The id changes from week to week because of the new episode'
+            'skip': 'The id changes from week to week because of the new episode',
         },
         {
             'url': 'http://www.wdrmaus.de/filme/sachgeschichten/achterbahn.php5',
@@ -216,11 +219,13 @@ class WDRPageIE(WDRIE):
                 'id': 'mdb-869971',
                 'ext': 'mp4',
                 'title': r're:^COSMO Livestream [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$',
+                'alt_title': 'COSMO Livestream',
+                'live_status': 'is_live',
                 'upload_date': '20160101',
             },
             'params': {
                 'skip_download': True,  # m3u8 download
-            }
+            },
         },
         {
             'url': 'http://www.sportschau.de/handballem2018/handball-nationalmannschaft-em-stolperstein-vorrunde-100.html',
@@ -243,10 +248,20 @@ class WDRPageIE(WDRIE):
             'url': 'https://kinder.wdr.de/tv/die-sendung-mit-dem-elefanten/av/video-folge---astronaut-100.html',
             'only_matching': True,
         },
+        {
+            'url': 'https://www1.wdr.de/mediathek/video/sendungen/rockpalast/video-baroness---freak-valley-festival--100.html',
+            'info_dict': {
+                'id': 'mdb-2741028',
+                'ext': 'mp4',
+                'title': 'Baroness - Freak Valley Festival 2022',
+                'alt_title': 'Rockpalast',
+                'upload_date': '20220725',
+            },
+        },
     ]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         display_id = dict_get(mobj.groupdict(), ('display_id', 'maus_id'), 'wdrmaus')
         webpage = self._download_webpage(url, display_id)
 
@@ -254,7 +269,7 @@ class WDRPageIE(WDRIE):
 
         # Article with several videos
 
-        # for wdr.de the data-extension is in a tag with the class "mediaLink"
+        # for wdr.de the data-extension-ard is in a tag with the class "mediaLink"
         # for wdr.de radio players, in a tag with the class "wdrrPlayerPlayBtn"
         # for wdrmaus, in a tag with the class "videoButton" (previously a link
         # to the page in a multiline "videoLink"-tag)
@@ -263,7 +278,7 @@ class WDRPageIE(WDRIE):
                     (?:
                         (["\'])(?:mediaLink|wdrrPlayerPlayBtn|videoButton)\b.*?\1[^>]+|
                         (["\'])videoLink\b.*?\2[\s]*>\n[^\n]*
-                    )data-extension=(["\'])(?P<data>(?:(?!\3).)+)\3
+                    )data-extension(?:-ard)?=(["\'])(?P<data>(?:(?!\3).)+)\3
                     ''', webpage):
             media_link_obj = self._parse_json(
                 mobj.group('data'), display_id, transform_source=js_to_json,
@@ -271,14 +286,14 @@ class WDRPageIE(WDRIE):
             if not media_link_obj:
                 continue
             jsonp_url = try_get(
-                media_link_obj, lambda x: x['mediaObj']['url'], compat_str)
+                media_link_obj, lambda x: x['mediaObj']['url'], str)
             if jsonp_url:
                 # metadata, or player JS with ['ref'] giving WDR id, or just media, perhaps
                 clip_id = media_link_obj['mediaObj'].get('ref')
                 if jsonp_url.endswith('.assetjsonp'):
                     asset = self._download_json(
                         jsonp_url, display_id, fatal=False, transform_source=strip_jsonp)
-                    clip_id = try_get(asset, lambda x: x['trackerData']['trackerClipId'], compat_str)
+                    clip_id = try_get(asset, lambda x: x['trackerData']['trackerClipId'], str)
                 if clip_id:
                     jsonp_url = self._asset_url(clip_id[4:])
                 entries.append(self.url_result(jsonp_url, ie=WDRIE.ie_key()))
@@ -287,10 +302,10 @@ class WDRPageIE(WDRIE):
         if not entries:
             entries = [
                 self.url_result(
-                    compat_urlparse.urljoin(url, mobj.group('href')),
+                    urllib.parse.urljoin(url, mobj.group('href')),
                     ie=WDRPageIE.ie_key())
                 for mobj in re.finditer(
-                    r'<a[^>]+\bhref=(["\'])(?P<href>(?:(?!\1).)+)\1[^>]+\bdata-extension=',
+                    r'<a[^>]+\bhref=(["\'])(?P<href>(?:(?!\1).)+)\1[^>]+\bdata-extension(?:-ard)?=',
                     webpage) if re.match(self._PAGE_REGEX, mobj.group('href'))
             ]
 
@@ -306,8 +321,7 @@ class WDRElefantIE(InfoExtractor):
             'title': 'Wippe',
             'id': 'mdb-1198320',
             'ext': 'mp4',
-            'age_limit': None,
-            'upload_date': '20071003'
+            'upload_date': '20071003',
         },
     }
 
@@ -331,7 +345,7 @@ class WDRElefantIE(InfoExtractor):
         zmdb_url_element = xml_metadata.find('./movie/zmdb_url')
         if zmdb_url_element is None:
             raise ExtractorError(
-                '%s is not a video' % display_id, expected=True)
+                f'{display_id} is not a video', expected=True)
         return self.url_result(zmdb_url_element.text, ie=WDRIE.ie_key())
 
 
@@ -351,11 +365,11 @@ class WDRMobileIE(InfoExtractor):
             'ext': 'mp4',
             'age_limit': 0,
         },
-        'skip': 'Problems with loading data.'
+        'skip': 'Problems with loading data.',
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         return {
             'id': mobj.group('id'),
             'title': mobj.group('title'),

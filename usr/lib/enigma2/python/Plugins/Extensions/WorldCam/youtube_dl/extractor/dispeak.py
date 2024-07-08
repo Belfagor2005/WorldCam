@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -57,7 +55,7 @@ class DigitallySpeakingIE(InfoExtractor):
         if video_root is None:
             http_host = xpath_text(metadata, 'httpHost', default=None)
             if http_host:
-                video_root = 'http://%s/' % http_host
+                video_root = f'http://{http_host}/'
         if video_root is None:
             # Hard-coded in http://evt.dispeak.com/ubm/gdc/sf16/custom/player2.js
             # Works for GPUTechConf, too
@@ -74,13 +72,11 @@ class DigitallySpeakingIE(InfoExtractor):
             tbr = int_or_none(bitrate)
             vbr = int_or_none(self._search_regex(
                 r'-(\d+)\.mp4', video_path, 'vbr', default=None))
-            abr = tbr - vbr if tbr and vbr else None
             video_formats.append({
                 'format_id': bitrate,
                 'url': url,
                 'tbr': tbr,
                 'vbr': vbr,
-                'abr': abr,
             })
         return video_formats
 
@@ -90,24 +86,24 @@ class DigitallySpeakingIE(InfoExtractor):
         audios = metadata.findall('./audios/audio')
         for audio in audios:
             formats.append({
-                'url': 'rtmp://%s/ondemand?ovpfv=1.1' % akamai_url,
+                'url': f'rtmp://{akamai_url}/ondemand?ovpfv=1.1',
                 'play_path': remove_end(audio.get('url'), '.flv'),
                 'ext': 'flv',
                 'vcodec': 'none',
+                'quality': 1,
                 'format_id': audio.get('code'),
             })
         for video_key, format_id, preference in (
                 ('slide', 'slides', -2), ('speaker', 'speaker', -1)):
-            video_path = xpath_text(metadata, './%sVideo' % video_key)
+            video_path = xpath_text(metadata, f'./{video_key}Video')
             if not video_path:
                 continue
             formats.append({
-                'url': 'rtmp://%s/ondemand?ovpfv=1.1' % akamai_url,
+                'url': f'rtmp://{akamai_url}/ondemand?ovpfv=1.1',
                 'play_path': remove_end(video_path, '.flv'),
                 'ext': 'flv',
-                'format_note': '%s video' % video_key,
+                'format_note': f'{video_key} video',
                 'quality': preference,
-                'preference': preference,
                 'format_id': format_id,
             })
         return formats

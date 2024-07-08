@@ -1,14 +1,11 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import json
-import re
 
 from .common import InfoExtractor
 from ..utils import (
     determine_ext,
     float_or_none,
     int_or_none,
+    join_nonempty,
     mimetype2ext,
     try_get,
     urljoin,
@@ -57,7 +54,7 @@ class YandexDiskIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        domain, video_id = re.match(self._VALID_URL, url).groups()
+        domain, video_id = self._match_valid_url(url).groups()
 
         webpage = self._download_webpage(url, video_id)
         store = self._parse_json(self._search_regex(
@@ -106,7 +103,7 @@ class YandexDiskIE(InfoExtractor):
                 'format_id': 'source',
                 'ext': determine_ext(title, meta.get('ext') or mimetype2ext(meta.get('mime_type')) or 'mp4'),
                 'quality': 1,
-                'filesize': int_or_none(meta.get('size'))
+                'filesize': int_or_none(meta.get('size')),
             })
 
         for video in (video_streams.get('videos') or []):
@@ -120,18 +117,14 @@ class YandexDiskIE(InfoExtractor):
             else:
                 size = video.get('size') or {}
                 height = int_or_none(size.get('height'))
-                format_id = 'hls'
-                if height:
-                    format_id += '-%dp' % height
                 formats.append({
                     'ext': 'mp4',
-                    'format_id': format_id,
+                    'format_id': join_nonempty('hls', height and f'{height}p'),
                     'height': height,
                     'protocol': 'm3u8_native',
                     'url': format_url,
                     'width': int_or_none(size.get('width')),
                 })
-        self._sort_formats(formats)
 
         uid = resource.get('uid')
         display_name = try_get(store, lambda x: x['users'][uid]['displayName'])

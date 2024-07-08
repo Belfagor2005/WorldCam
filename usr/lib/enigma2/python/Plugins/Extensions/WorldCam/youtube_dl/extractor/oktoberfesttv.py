@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 
 
@@ -18,15 +15,15 @@ class OktoberfestTVIE(InfoExtractor):
         },
         'params': {
             'skip_download': True,
-        }
+        },
     }
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        title = self._live_title(self._html_search_regex(
-            r'<h1><strong>.*?</strong>(.*?)</h1>', webpage, 'title'))
+        title = self._html_search_regex(
+            r'<h1><strong>.*?</strong>(.*?)</h1>', webpage, 'title')
 
         clip = self._search_regex(
             r"clip:\s*\{\s*url:\s*'([^']+)'", webpage, 'clip')

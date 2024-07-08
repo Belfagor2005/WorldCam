@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -31,10 +28,10 @@ class SampleFocusIE(InfoExtractor):
         },
     }, {
         'url': 'https://samplefocus.com/samples/dababy-style-bass-808',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'https://samplefocus.com/samples/young-chop-kick',
-        'only_matching': True
+        'only_matching': True,
     }]
 
     def _real_extract(self, url):
@@ -79,7 +76,7 @@ class SampleFocusIE(InfoExtractor):
 
         def extract_count(klass):
             return int_or_none(self._html_search_regex(
-                r'<span[^>]+class=(?:["\'])?%s-count[^>]*>(\d+)' % klass,
+                rf'<span[^>]+class=(?:["\'])?{klass}-count[^>]*>(\d+)',
                 webpage, klass, fatal=False))
 
         return {
@@ -93,7 +90,7 @@ class SampleFocusIE(InfoExtractor):
                 r'<a[^>]+href=(["\'])/license\1[^>]*>(?P<license>[^<]+)<',
                 webpage, 'license', fatal=False, group='license'),
             'uploader_id': uploader_id,
-            'like_count': extract_count('sample-%s-favorites' % sample_id),
+            'like_count': extract_count(f'sample-{sample_id}-favorites'),
             'comment_count': extract_count('comments'),
             'comments': comments,
             'categories': categories,

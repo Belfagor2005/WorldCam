@@ -1,12 +1,9 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from .youtube import YoutubeIE
 from ..utils import (
+    determine_ext,
     js_to_json,
     qualities,
-    determine_ext,
 )
 
 
@@ -39,7 +36,7 @@ class Tele13IE(InfoExtractor):
                 'uploader_id': 'UCnLY_3ezwNcDSC_Wc6suZxw',
             },
             'add_ie': ['Youtube'],
-        }
+        },
     ]
 
     def _real_extract(self, url):
@@ -70,11 +67,10 @@ class Tele13IE(InfoExtractor):
                     formats.append({
                         'url': format_url,
                         'format_id': f.get('label'),
-                        'preference': preference(f.get('label')),
+                        'quality': preference(f.get('label')),
                         'ext': ext,
                     })
                 urls.append(format_url)
-        self._sort_formats(formats)
 
         return {
             'id': display_id,

@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     determine_ext,
@@ -22,7 +18,7 @@ class YouJizzIE(InfoExtractor):
             'title': 'Zeichentrick 1',
             'age_limit': 18,
             'duration': 2874,
-        }
+        },
     }, {
         'url': 'http://www.youjizz.com/videos/-2189178.html',
         'only_matching': True,
@@ -32,13 +28,12 @@ class YouJizzIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id') or mobj.group('embed_id')
 
         webpage = self._download_webpage(url, video_id)
 
-        title = self._html_search_regex(
-            r'<title>(.+?)</title>', webpage, 'title')
+        title = self._html_extract_title(webpage)
 
         formats = []
 

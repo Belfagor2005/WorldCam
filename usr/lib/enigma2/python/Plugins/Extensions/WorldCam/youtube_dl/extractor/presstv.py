@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import remove_start
 
@@ -20,12 +15,12 @@ class PressTVIE(InfoExtractor):
             'title': 'Organic mattresses used to clean waste water',
             'upload_date': '20160409',
             'thumbnail': r're:^https?://.*\.jpg',
-            'description': 'md5:20002e654bbafb6908395a5c0cfcd125'
-        }
+            'description': 'md5:20002e654bbafb6908395a5c0cfcd125',
+        },
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         display_id = mobj.group('display_id') or video_id
 
@@ -41,12 +36,12 @@ class PressTVIE(InfoExtractor):
             (180, '_low200.mp4'),
             (360, '_low400.mp4'),
             (720, '_low800.mp4'),
-            (1080, '.mp4')
+            (1080, '.mp4'),
         ]
 
         formats = [{
             'url': base_url + video_url[:-4] + extension,
-            'format_id': '%dp' % height,
+            'format_id': f'{height}p',
             'height': height,
         } for height, extension in _formats]
 
@@ -70,5 +65,5 @@ class PressTVIE(InfoExtractor):
             'formats': formats,
             'thumbnail': thumbnail,
             'upload_date': upload_date,
-            'description': description
+            'description': description,
         }

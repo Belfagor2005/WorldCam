@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -63,11 +60,11 @@ class SapoIE(InfoExtractor):
     ]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
 
         item = self._download_xml(
-            'http://rd3.videos.sapo.pt/%s/rss2' % video_id, video_id).find('./channel/item')
+            f'http://rd3.videos.sapo.pt/{video_id}/rss2', video_id).find('./channel/item')
 
         title = item.find('./title').text
         description = item.find('./{http://videos.sapo.pt/mrss/}synopse').text
@@ -100,8 +97,6 @@ class SapoIE(InfoExtractor):
                 'width': 1280,
                 'height': 720,
             })
-
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

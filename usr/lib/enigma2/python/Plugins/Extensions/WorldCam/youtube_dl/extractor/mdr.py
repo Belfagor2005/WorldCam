@@ -1,14 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_str,
-    compat_urlparse,
-)
 from ..utils import (
     determine_ext,
     int_or_none,
+    join_nonempty,
     parse_duration,
     parse_iso8601,
     url_or_none,
@@ -109,7 +105,7 @@ class MDRIE(InfoExtractor):
             webpage, 'data url', group='url').replace(r'\/', '/')
 
         doc = self._download_xml(
-            compat_urlparse.urljoin(url, data_url), video_id)
+            urllib.parse.urljoin(url, data_url), video_id)
 
         title = xpath_text(doc, ['./title', './broadcast/broadcastName'], 'title', fatal=True)
 
@@ -123,7 +119,7 @@ class MDRIE(InfoExtractor):
                     'progressiveDownload',
                     'dynamicHttpStreamingRedirector',
                     'adaptiveHttpStreamingRedirector'):
-                url_el = asset.find('./%sUrl' % source)
+                url_el = asset.find(f'./{source}Url')
                 if url_el is None:
                     continue
 
@@ -137,24 +133,20 @@ class MDRIE(InfoExtractor):
                 if ext == 'm3u8':
                     formats.extend(self._extract_m3u8_formats(
                         video_url, video_id, 'mp4', entry_protocol='m3u8_native',
-                        preference=0, m3u8_id='HLS', fatal=False))
+                        quality=1, m3u8_id='HLS', fatal=False))
                 elif ext == 'f4m':
                     formats.extend(self._extract_f4m_formats(
                         video_url + '?hdcore=3.7.0&plugin=aasp-3.7.0.39.44', video_id,
-                        preference=0, f4m_id='HDS', fatal=False))
+                        quality=1, f4m_id='HDS', fatal=False))
                 else:
                     media_type = xpath_text(asset, './mediaType', 'media type', default='MP4')
                     vbr = int_or_none(xpath_text(asset, './bitrateVideo', 'vbr'), 1000)
                     abr = int_or_none(xpath_text(asset, './bitrateAudio', 'abr'), 1000)
                     filesize = int_or_none(xpath_text(asset, './fileSize', 'file size'))
 
-                    format_id = [media_type]
-                    if vbr or abr:
-                        format_id.append(compat_str(vbr or abr))
-
                     f = {
                         'url': video_url,
-                        'format_id': '-'.join(format_id),
+                        'format_id': join_nonempty(media_type, vbr or abr),
                         'filesize': filesize,
                         'abr': abr,
                         'vbr': vbr,
@@ -170,8 +162,6 @@ class MDRIE(InfoExtractor):
                         f['vcodec'] = 'none'
 
                     formats.append(f)
-
-        self._sort_formats(formats)
 
         description = xpath_text(doc, './broadcast/broadcastDescription', 'description')
         timestamp = parse_iso8601(

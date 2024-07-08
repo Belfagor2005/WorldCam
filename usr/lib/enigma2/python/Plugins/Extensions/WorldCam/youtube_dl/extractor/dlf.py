@@ -1,20 +1,12 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_str,
-)
 from ..utils import (
     determine_ext,
     extract_attributes,
     int_or_none,
-    merge_dicts,
     traverse_obj,
     url_or_none,
-    variadic,
 )
 
 
@@ -30,32 +22,23 @@ class DLFBaseIE(InfoExtractor):
             attrs, 'data-audio-download-src', 'data-audio', 'data-audioreference',
             'data-audio-src', expected_type=url_or_none)
         ext = determine_ext(url)
-        formats = (self._extract_m3u8_formats(url, audio_id, fatal=False)
-                   if ext == 'm3u8' else [{'url': url, 'ext': ext, 'vcodec': 'none'}])
-        self._sort_formats(formats)
 
-        def traverse_attrs(path):
-            path = list(variadic(path))
-            t = path.pop() if callable(path[-1]) else None
-            return traverse_obj(attrs, path, expected_type=t, get_all=False)
-
-        def txt_or_none(v, default=None):
-            return default if v is None else (compat_str(v).strip() or default)
-
-        return merge_dicts(*reversed([{
+        return {
             'id': audio_id,
-            # 'extractor_key': DLFIE.ie_key(),
-            # 'extractor': DLFIE.IE_NAME,
-            'formats': formats,
-        }, dict((k, traverse_attrs(v)) for k, v in {
-            'title': (('data-audiotitle', 'data-audio-title', 'data-audio-download-tracking-title'), txt_or_none),
-            'duration': (('data-audioduration', 'data-audio-duration'), int_or_none),
-            'thumbnail': ('data-audioimage', url_or_none),
-            'uploader': 'data-audio-producer',
-            'series': 'data-audio-series',
-            'channel': 'data-audio-origin-site-name',
-            'webpage_url': ('data-audio-download-tracking-path', url_or_none),
-        }.items())]))
+            'extractor_key': DLFIE.ie_key(),
+            'extractor': DLFIE.IE_NAME,
+            **traverse_obj(attrs, {
+                'title': (('data-audiotitle', 'data-audio-title', 'data-audio-download-tracking-title'), {str}),
+                'duration': (('data-audioduration', 'data-audio-duration'), {int_or_none}),
+                'thumbnail': ('data-audioimage', {url_or_none}),
+                'uploader': 'data-audio-producer',
+                'series': 'data-audio-series',
+                'channel': 'data-audio-origin-site-name',
+                'webpage_url': ('data-audio-download-tracking-path', {url_or_none}),
+            }, get_all=False),
+            'formats': (self._extract_m3u8_formats(url, audio_id, fatal=False)
+                        if ext == 'm3u8' else [{'url': url, 'ext': ext, 'vcodec': 'none'}]),
+        }
 
 
 class DLFIE(DLFBaseIE):
@@ -73,12 +56,12 @@ class DLFIE(DLFBaseIE):
                 'thumbnail': 'https://assets.deutschlandfunk.de/FALLBACK-IMAGE-AUDIO/512x512.png?t=1603714364673',
                 'uploader': 'Deutschlandfunk',
                 'series': 'On Stage',
-                'channel': 'deutschlandfunk'
+                'channel': 'deutschlandfunk',
             },
             'params': {
-                'skip_download': 'm3u8'
+                'skip_download': 'm3u8',
             },
-            'skip': 'This webpage no longer exists'
+            'skip': 'This webpage no longer exists',
         }, {
             'url': 'https://www.deutschlandfunk.de/russische-athleten-kehren-zurueck-auf-die-sportbuehne-ein-gefaehrlicher-tueroeffner-dlf-d9cc1856-100.html',
             'info_dict': {
@@ -89,8 +72,8 @@ class DLFIE(DLFBaseIE):
                 'thumbnail': 'https://assets.deutschlandfunk.de/FALLBACK-IMAGE-AUDIO/512x512.png?t=1603714364673',
                 'uploader': 'Deutschlandfunk',
                 'series': 'Kommentare und Themen der Woche',
-                'channel': 'deutschlandfunk'
-            }
+                'channel': 'deutschlandfunk',
+            },
         },
     ]
 
@@ -113,7 +96,7 @@ class DLFCorpusIE(DLFBaseIE):
             'info_dict': {
                 'id': 'fechten-russland-belarus-ukraine-protest-100',
                 'title': r're:Wiederzulassung als neutrale Athleten [-/] Was die Rückkehr russischer und belarussischer Sportler beim Fechten bedeutet',
-                'description': 'md5:91340aab29c71aa7518ad5be13d1e8ad'
+                'description': 'md5:91340aab29c71aa7518ad5be13d1e8ad',
             },
             'playlist_mincount': 5,
             'playlist': [{
@@ -125,8 +108,8 @@ class DLFCorpusIE(DLFBaseIE):
                     'thumbnail': 'https://assets.deutschlandfunk.de/aad16241-6b76-4a09-958b-96d0ee1d6f57/512x512.jpg?t=1679480020313',
                     'uploader': 'Deutschlandfunk',
                     'series': 'Sport',
-                    'channel': 'deutschlandfunk'
-                }
+                    'channel': 'deutschlandfunk',
+                },
             }, {
                 'info_dict': {
                     'id': '2ada145f',
@@ -136,8 +119,8 @@ class DLFCorpusIE(DLFBaseIE):
                     'thumbnail': 'https://assets.deutschlandfunk.de/FILE_93982766f7317df30409b8a184ac044a/512x512.jpg?t=1678547581005',
                     'uploader': 'Deutschlandfunk',
                     'series': 'Deutschlandfunk Nova',
-                    'channel': 'deutschlandfunk-nova'
-                }
+                    'channel': 'deutschlandfunk-nova',
+                },
             }, {
                 'info_dict': {
                     'id': '5e55e8c9',
@@ -147,8 +130,8 @@ class DLFCorpusIE(DLFBaseIE):
                     'thumbnail': 'https://assets.deutschlandfunk.de/a595989d-1ed1-4a2e-8370-b64d7f11d757/512x512.jpg?t=1679173825412',
                     'uploader': 'Deutschlandfunk',
                     'series': 'Sport am Samstag',
-                    'channel': 'deutschlandfunk'
-                }
+                    'channel': 'deutschlandfunk',
+                },
             }, {
                 'info_dict': {
                     'id': '47e1a096',
@@ -158,8 +141,8 @@ class DLFCorpusIE(DLFBaseIE):
                     'thumbnail': 'https://assets.deutschlandfunk.de/da4c494a-21cc-48b4-9cc7-40e09fd442c2/512x512.jpg?t=1678562155770',
                     'uploader': 'Deutschlandfunk',
                     'series': 'Sport am Samstag',
-                    'channel': 'deutschlandfunk'
-                }
+                    'channel': 'deutschlandfunk',
+                },
             }, {
                 'info_dict': {
                     'id': '5e55e8c9',
@@ -169,9 +152,9 @@ class DLFCorpusIE(DLFBaseIE):
                     'thumbnail': 'https://assets.deutschlandfunk.de/a595989d-1ed1-4a2e-8370-b64d7f11d757/512x512.jpg?t=1679173825412',
                     'uploader': 'Deutschlandfunk',
                     'series': 'Sport am Samstag',
-                    'channel': 'deutschlandfunk'
-                }
-            }]
+                    'channel': 'deutschlandfunk',
+                },
+            }],
         },
         # Podcast feed with tag buttons, playlist count fluctuates
         {
@@ -198,7 +181,12 @@ class DLFCorpusIE(DLFBaseIE):
         playlist_id = self._match_id(url)
         webpage = self._download_webpage(url, playlist_id)
 
-        return self.playlist_result(
-            map(self._parse_button_attrs, re.findall(self._BUTTON_REGEX, webpage)),
-            playlist_id, self._html_search_meta(['og:title', 'twitter:title'], webpage, default=None),
-            self._html_search_meta(['description', 'og:description', 'twitter:description'], webpage, default=None))
+        return {
+            '_type': 'playlist',
+            'id': playlist_id,
+            'description': self._html_search_meta(
+                ['description', 'og:description', 'twitter:description'], webpage, default=None),
+            'title': self._html_search_meta(
+                ['og:title', 'twitter:title'], webpage, default=None),
+            'entries': map(self._parse_button_attrs, re.findall(self._BUTTON_REGEX, webpage)),
+        }

@@ -1,10 +1,4 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
-from ..compat import compat_str
 from ..utils import (
     int_or_none,
     str_or_none,
@@ -35,7 +29,7 @@ class PalcoMP3BaseIE(InfoExtractor):
             })['data']
 
     def _parse_music(self, music):
-        music_id = compat_str(music['musicID'])
+        music_id = str(music['musicID'])
         title = music['title']
 
         formats = []
@@ -64,7 +58,7 @@ class PalcoMP3BaseIE(InfoExtractor):
         self._ARTIST_FIELDS_TMPL = self._ARTIST_FIELDS_TMPL % self._MUSIC_FIELDS
 
     def _real_extract(self, url):
-        artist_slug, music_slug = re.match(self._VALID_URL, url).groups()
+        artist_slug, music_slug = self._match_valid_url(url).groups()
         artist_fields = self._ARTIST_FIELDS_TMPL % music_slug
         music = self._call_api(artist_slug, artist_fields)['artist']['music']
         return self._parse_music(music)
@@ -82,12 +76,12 @@ class PalcoMP3IE(PalcoMP3BaseIE):
             'title': 'Nossas Composições - CUIDA BEM DELA',
             'duration': 210,
             'view_count': int,
-        }
+        },
     }]
 
     @classmethod
     def suitable(cls, url):
-        return False if PalcoMP3VideoIE.suitable(url) else super(PalcoMP3IE, cls).suitable(url)
+        return False if PalcoMP3VideoIE.suitable(url) else super().suitable(url)
 
 
 class PalcoMP3ArtistIE(PalcoMP3BaseIE):
@@ -109,9 +103,9 @@ class PalcoMP3ArtistIE(PalcoMP3BaseIE):
     }
     name'''
 
-    @ classmethod
+    @classmethod
     def suitable(cls, url):
-        return False if re.match(PalcoMP3IE._VALID_URL, url) else super(PalcoMP3ArtistIE, cls).suitable(url)
+        return False if PalcoMP3IE._match_valid_url(url) else super().suitable(url)
 
     def _real_extract(self, url):
         artist_slug = self._match_id(url)
@@ -139,7 +133,7 @@ class PalcoMP3VideoIE(PalcoMP3BaseIE):
             'upload_date': '20161107',
             'uploader_id': 'maiaramaraisaoficial',
             'uploader': 'Maiara e Maraisa',
-        }
+        },
     }]
     _MUSIC_FIELDS = 'youtubeID'
 

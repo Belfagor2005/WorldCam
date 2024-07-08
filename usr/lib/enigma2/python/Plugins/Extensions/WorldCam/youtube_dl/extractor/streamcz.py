@@ -1,15 +1,11 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import json
-import re
 
 from .common import InfoExtractor
 from ..utils import (
     float_or_none,
     int_or_none,
-    merge_dicts,
     parse_codecs,
+    traverse_obj,
     urljoin,
 )
 
@@ -27,7 +23,7 @@ class StreamCZIE(InfoExtractor):
             'description': 'md5:8f5f09b9b7bc67df910486cdd88f7165',
             'duration': 1369.6,
             'view_count': int,
-        }
+        },
     }, {
         'url': 'https://www.stream.cz/kdo-to-mluvi/kdo-to-mluvi-velke-odhaleni-prinasi-novy-porad-uz-od-25-srpna-64087937',
         'md5': '41fd358000086a1ccdb068c77809b158',
@@ -39,7 +35,7 @@ class StreamCZIE(InfoExtractor):
             'description': 'md5:97a811000a6460266029d6c1c2ebcd59',
             'duration': 50.2,
             'view_count': int,
-        }
+        },
     }, {
         'url': 'https://www.stream.cz/tajemno/znicehonic-jim-skrz-strechu-prolitnul-zahadny-predmet-badatele-vse-objasnili-64147267',
         'md5': '3ee4d0be040e8f4a543e67e509d55e3f',
@@ -51,29 +47,30 @@ class StreamCZIE(InfoExtractor):
             'description': 'md5:4b8ada6718d34bb011c4e04ca4bc19bf',
             'duration': 442.84,
             'view_count': int,
-        }
+        },
     }]
 
     def _extract_formats(self, spl_url, video):
         for ext, pref, streams in (
-                ('ts', -1, video.get('http_stream', {}).get('qualities', {})),
-                ('mp4', 1, video.get('mp4'))):
+                ('ts', -1, traverse_obj(video, ('http_stream', 'qualities')) or {}),
+                ('mp4', 1, video.get('mp4') or {})):
             for format_id, stream in streams.items():
                 if not stream.get('url'):
                     continue
-                yield merge_dicts({
-                    'format_id': '-'.join((format_id, ext)),
+                yield {
+                    'format_id': f'{format_id}-{ext}',
                     'ext': ext,
                     'source_preference': pref,
                     'url': urljoin(spl_url, stream['url']),
                     'tbr': float_or_none(stream.get('bandwidth'), scale=1000),
                     'duration': float_or_none(stream.get('duration'), scale=1000),
-                    'width': stream.get('resolution', 2 * [0])[0] or None,
-                    'height': stream.get('resolution', 2 * [0])[1] or int_or_none(format_id.replace('p', '')),
-                }, parse_codecs(stream.get('codec')))
+                    'width': traverse_obj(stream, ('resolution', 0)),
+                    'height': traverse_obj(stream, ('resolution', 1)) or int_or_none(format_id.replace('p', '')),
+                    **parse_codecs(stream.get('codec')),
+                }
 
     def _real_extract(self, url):
-        display_id, video_id = re.match(self._VALID_URL, url).groups()
+        display_id, video_id = self._match_valid_url(url).groups()
 
         data = self._download_json(
             'https://www.televizeseznam.cz/api/graphql', video_id, 'Downloading GraphQL result',
@@ -89,9 +86,9 @@ class StreamCZIE(InfoExtractor):
                         perex
                         duration
                         views
-                    }'''
-            }).encode('utf-8'),
-            headers={'Content-Type': 'application/json;charset=UTF-8'}
+                    }''',
+            }).encode(),
+            headers={'Content-Type': 'application/json;charset=UTF-8'},
         )['data']['episode']
 
         spl_url = data['spl'] + 'spl2,3'
@@ -108,11 +105,10 @@ class StreamCZIE(InfoExtractor):
             for ext, sub_url in subs.get('urls').items():
                 subtitles.setdefault(subs['language'], []).append({
                     'ext': ext,
-                    'url': urljoin(spl_url, sub_url)
+                    'url': urljoin(spl_url, sub_url),
                 })
 
         formats = list(self._extract_formats(spl_url, video))
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

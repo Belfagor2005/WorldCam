@@ -1,9 +1,10 @@
-from __future__ import unicode_literals
-
 from .mtv import MTVIE
 
+# TODO: Remove - Reason: Outdated Site
 
-class CMTIE(MTVIE):
+
+class CMTIE(MTVIE):  # XXX: Do not subclass from concrete IE
+    _WORKING = False
     IE_NAME = 'cmt.com'
     _VALID_URL = r'https?://(?:www\.)?cmt\.com/(?:videos|shows|(?:full-)?episodes|video-clips)/(?P<id>[^/]+)'
 
@@ -39,7 +40,7 @@ class CMTIE(MTVIE):
         'only_matching': True,
     }]
 
-    def _extract_mgid(self, webpage):
+    def _extract_mgid(self, webpage, url):
         mgid = self._search_regex(
             r'MTVN\.VIDEO\.contentUri\s*=\s*([\'"])(?P<mgid>.+?)\1',
             webpage, 'mgid', group='mgid', default=None)
@@ -50,5 +51,5 @@ class CMTIE(MTVIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        mgid = self._extract_mgid(webpage)
-        return self.url_result('http://media.mtvnservices.com/embed/%s' % mgid)
+        mgid = self._extract_mgid(webpage, url)
+        return self.url_result(f'http://media.mtvnservices.com/embed/{mgid}')

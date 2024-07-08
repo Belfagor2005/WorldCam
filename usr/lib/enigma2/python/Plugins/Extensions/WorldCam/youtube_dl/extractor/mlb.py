@@ -1,15 +1,18 @@
-from __future__ import unicode_literals
-
 import re
+import urllib.parse
+import uuid
 
 from .common import InfoExtractor
 from ..utils import (
     determine_ext,
     int_or_none,
+    join_nonempty,
     parse_duration,
     parse_iso8601,
     try_get,
+    url_or_none,
 )
+from ..utils.traversal import traverse_obj
 
 
 class MLBBaseIE(InfoExtractor):
@@ -52,7 +55,6 @@ class MLBBaseIE(InfoExtractor):
                         'width': int(mobj.group(1)),
                     })
                 formats.append(f)
-        self._sort_formats(formats)
 
         thumbnails = []
         for cut in (try_get(feed, lambda x: x['image']['cuts'], list) or []):
@@ -94,6 +96,10 @@ class MLBIE(MLBBaseIE):
                             (?P<id>\d+)
                         )
                     '''
+    _EMBED_REGEX = [
+        r'<iframe[^>]+?src=(["\'])(?P<url>https?://m(?:lb)?\.mlb\.com/shared/video/embed/embed\.html\?.+?)\1',
+        r'data-video-link=["\'](?P<url>http://m\.mlb\.com/video/[^"\']+)',
+    ]
     _TESTS = [
         {
             'url': 'https://www.mlb.com/mariners/video/ackleys-spectacular-catch/c-34698933',
@@ -198,7 +204,7 @@ class MLBIE(MLBBaseIE):
 
     def _download_video_data(self, display_id):
         return self._download_json(
-            'http://content.mlb.com/mlb/item/id/v1/%s/details/web-v1.json' % display_id,
+            f'http://content.mlb.com/mlb/item/id/v1/{display_id}/details/web-v1.json',
             display_id)
 
 
@@ -222,7 +228,7 @@ class MLBVideoIE(MLBBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if MLBIE.suitable(url) else super(MLBVideoIE, cls).suitable(url)
+        return False if MLBIE.suitable(url) else super().suitable(url)
 
     @staticmethod
     def _get_feed(video):
@@ -263,5 +269,117 @@ class MLBVideoIE(MLBBaseIE):
     timestamp
     title
   }
-}''' % display_id,
+}''' % display_id,  # noqa: UP031
             })['data']['mediaPlayback'][0]
+
+
+class MLBTVIE(InfoExtractor):
+    _VALID_URL = r'https?://(?:www\.)?mlb\.com/tv/g(?P<id>\d{6})'
+    _NETRC_MACHINE = 'mlb'
+
+    _TESTS = [{
+        'url': 'https://www.mlb.com/tv/g661581/vee2eff5f-a7df-4c20-bdb4-7b926fa12638',
+        'info_dict': {
+            'id': '661581',
+            'ext': 'mp4',
+            'title': '2022-07-02 - St. Louis Cardinals @ Philadelphia Phillies',
+        },
+        'params': {
+            'skip_download': True,
+        },
+    }]
+    _access_token = None
+
+    def _real_initialize(self):
+        if not self._access_token:
+            self.raise_login_required(
+                'All videos are only available to registered users', method='password')
+
+    def _perform_login(self, username, password):
+        data = f'grant_type=password&username={urllib.parse.quote(username)}&password={urllib.parse.quote(password)}&scope=openid offline_access&client_id=0oa3e1nutA1HLzAKG356'
+        access_token = self._download_json(
+            'https://ids.mlb.com/oauth2/aus1m088yK07noBfh356/v1/token', None,
+            headers={
+                'User-Agent': 'okhttp/3.12.1',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }, data=data.encode())['access_token']
+
+        entitlement = self._download_webpage(
+            f'https://media-entitlement.mlb.com/api/v3/jwt?os=Android&appname=AtBat&did={uuid.uuid4()}', None,
+            headers={
+                'User-Agent': 'okhttp/3.12.1',
+                'Authorization': f'Bearer {access_token}',
+            })
+
+        data = f'grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token={entitlement}&subject_token_type=urn:ietf:params:oauth:token-type:jwt&platform=android-tv'
+        self._access_token = self._download_json(
+            'https://us.edge.bamgrid.com/token', None,
+            headers={
+                'Accept': 'application/json',
+                'Authorization': 'Bearer bWxidHYmYW5kcm9pZCYxLjAuMA.6LZMbH2r--rbXcgEabaDdIslpo4RyZrlVfWZhsAgXIk',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }, data=data.encode())['access_token']
+
+    def _real_extract(self, url):
+        video_id = self._match_id(url)
+        airings = self._download_json(
+            f'https://search-api-mlbtv.mlb.com/svc/search/v2/graphql/persisted/query/core/Airings?variables=%7B%22partnerProgramIds%22%3A%5B%22{video_id}%22%5D%2C%22applyEsniMediaRightsLabels%22%3Atrue%7D',
+            video_id)['data']['Airings']
+
+        formats, subtitles = [], {}
+        for airing in traverse_obj(airings, lambda _, v: v['playbackUrls'][0]['href']):
+            format_id = join_nonempty('feedType', 'feedLanguage', from_dict=airing)
+            m3u8_url = traverse_obj(self._download_json(
+                airing['playbackUrls'][0]['href'].format(scenario='browser~csai'), video_id,
+                note=f'Downloading {format_id} stream info JSON',
+                errnote=f'Failed to download {format_id} stream info, skipping',
+                fatal=False, headers={
+                    'Authorization': self._access_token,
+                    'Accept': 'application/vnd.media-service+json; version=2',
+                }), ('stream', 'complete', {url_or_none}))
+            if not m3u8_url:
+                continue
+            f, s = self._extract_m3u8_formats_and_subtitles(
+                m3u8_url, video_id, 'mp4', m3u8_id=format_id, fatal=False)
+            formats.extend(f)
+            self._merge_subtitles(s, target=subtitles)
+
+        return {
+            'id': video_id,
+            'title': traverse_obj(airings, (..., 'titles', 0, 'episodeName'), get_all=False),
+            'is_live': traverse_obj(airings, (..., 'mediaConfig', 'productType'), get_all=False) == 'LIVE',
+            'formats': formats,
+            'subtitles': subtitles,
+            'http_headers': {'Authorization': f'Bearer {self._access_token}'},
+        }
+
+
+class MLBArticleIE(InfoExtractor):
+    _VALID_URL = r'https?://www\.mlb\.com/news/(?P<id>[\w-]+)'
+    _TESTS = [{
+        'url': 'https://www.mlb.com/news/manny-machado-robs-guillermo-heredia-reacts',
+        'info_dict': {
+            'id': '36db7394-343c-4ea3-b8ca-ead2e61bca9a',
+            'title': 'Machado\'s grab draws hilarious irate reaction',
+            'modified_timestamp': 1675888370,
+            'description': 'md5:a19d4eb0487b2cb304e9a176f6b67676',
+            'modified_date': '20230208',
+        },
+        'playlist_mincount': 2,
+    }]
+
+    def _real_extract(self, url):
+        display_id = self._match_id(url)
+        webpage = self._download_webpage(url, display_id)
+        apollo_cache_json = self._search_json(r'window\.initState\s*=', webpage, 'window.initState', display_id)['apolloCache']
+
+        content_real_info = traverse_obj(
+            apollo_cache_json, ('ROOT_QUERY', lambda k, _: k.startswith('getArticle')), get_all=False)
+
+        return self.playlist_from_matches(
+            traverse_obj(content_real_info, ('parts', lambda _, v: v['__typename'] == 'Video' or v['type'] == 'video')),
+            getter=lambda x: f'https://www.mlb.com/video/{x["slug"]}',
+            ie=MLBVideoIE, playlist_id=content_real_info.get('translationId'),
+            title=self._html_search_meta('og:title', webpage),
+            description=content_real_info.get('summary'),
+            modified_timestamp=parse_iso8601(content_real_info.get('lastUpdatedDate')))

@@ -1,18 +1,5 @@
-# coding: utf-8
-
-from __future__ import unicode_literals
-
-from functools import partial as partial_f
-
 from .common import InfoExtractor
-from ..utils import (
-    float_or_none,
-    merge_dicts,
-    T,
-    traverse_obj,
-    txt_or_none,
-    url_or_none,
-)
+from ..utils import traverse_obj, url_or_none
 
 
 class S4CIE(InfoExtractor):
@@ -42,11 +29,8 @@ class S4CIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         details = self._download_json(
-            'https://www.s4c.cymru/df/full_prog_details',
-            video_id, query={
-                'lang': 'e',
-                'programme_id': video_id,
-            }, fatal=False)
+            f'https://www.s4c.cymru/df/full_prog_details?lang=e&programme_id={video_id}',
+            video_id, fatal=False)
 
         player_config = self._download_json(
             'https://player-api.s4c-cdn.co.uk/player-configuration/prod', video_id, query={
@@ -57,7 +41,12 @@ class S4CIE(InfoExtractor):
                 'appId': 'clic',
                 'streamName': '',
             }, note='Downloading player config JSON')
-
+        subtitles = {}
+        for sub in traverse_obj(player_config, ('subtitles', lambda _, v: url_or_none(v['0']))):
+            subtitles.setdefault(sub.get('3', 'en'), []).append({
+                'url': sub['0'],
+                'name': sub.get('1'),
+            })
         m3u8_url = self._download_json(
             'https://player-api.s4c-cdn.co.uk/streaming-urls/prod', video_id, query={
                 'mode': 'od',
@@ -67,27 +56,18 @@ class S4CIE(InfoExtractor):
                 'thirdParty': 'false',
                 'filename': player_config['filename'],
             }, note='Downloading streaming urls JSON')['hls']
-        formats = self._extract_m3u8_formats(m3u8_url, video_id, 'mp4', m3u8_id='hls', entry_protocol='m3u8_native')
-        self._sort_formats(formats)
 
-        subtitles = {}
-        for sub in traverse_obj(player_config, ('subtitles', lambda _, v: url_or_none(v['0']))):
-            subtitles.setdefault(sub.get('3', 'en'), []).append({
-                'url': sub['0'],
-                'name': sub.get('1'),
-            })
-
-        return merge_dicts({
+        return {
             'id': video_id,
-            'formats': formats,
+            'formats': self._extract_m3u8_formats(m3u8_url, video_id, 'mp4', m3u8_id='hls'),
             'subtitles': subtitles,
             'thumbnail': url_or_none(player_config.get('poster')),
-        }, traverse_obj(details, ('full_prog_details', 0, {
-            'title': (('programme_title', 'series_title'), T(txt_or_none)),
-            'description': ('full_billing', T(txt_or_none)),
-            'duration': ('duration', T(partial_f(float_or_none, invscale=60))),
-        }), get_all=False),
-            rev=True)
+            **traverse_obj(details, ('full_prog_details', 0, {
+                'title': (('programme_title', 'series_title'), {str}),
+                'description': ('full_billing', {str.strip}),
+                'duration': ('duration', {lambda x: int(x) * 60}),
+            }), get_all=False),
+        }
 
 
 class S4CSeriesIE(InfoExtractor):
@@ -114,11 +94,10 @@ class S4CSeriesIE(InfoExtractor):
             'https://www.s4c.cymru/df/series_details', series_id, query={
                 'lang': 'e',
                 'series_id': series_id,
-                'show_prog_in_series': 'Y'
+                'show_prog_in_series': 'Y',
             }, note='Downloading series details JSON')
 
         return self.playlist_result(
-            (self.url_result('https://www.s4c.cymru/clic/programme/' + episode_id, S4CIE, episode_id)
-             for episode_id in traverse_obj(series_details, ('other_progs_in_series', Ellipsis, 'id'))),
-            playlist_id=series_id, playlist_title=traverse_obj(
-                series_details, ('full_prog_details', 0, 'series_title', T(txt_or_none))))
+            [self.url_result(f'https://www.s4c.cymru/clic/programme/{episode_id}', S4CIE, episode_id)
+             for episode_id in traverse_obj(series_details, ('other_progs_in_series', ..., 'id'))],
+            series_id, traverse_obj(series_details, ('full_prog_details', 0, 'series_title', {str})))

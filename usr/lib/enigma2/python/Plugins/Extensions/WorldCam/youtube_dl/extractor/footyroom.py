@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from .streamable import StreamableIE
 
@@ -22,7 +19,7 @@ class FootyRoomIE(InfoExtractor):
             'title': 'VIDEO Georgia 0 - 2 Germany',
         },
         'playlist_count': 1,
-        'add_ie': ['Playwire']
+        'add_ie': ['Playwire'],
     }]
 
     def _real_extract(self, url):

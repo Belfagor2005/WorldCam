@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -19,7 +16,7 @@ class CTVNewsIE(InfoExtractor):
             'description': 'md5:958dd3b4f5bbbf0ed4d045c790d89285',
             'timestamp': 1467286284,
             'upload_date': '20160630',
-        }
+        },
     }, {
         'url': 'http://www.ctvnews.ca/video?playlistId=1.2966224',
         'info_dict':
@@ -52,17 +49,22 @@ class CTVNewsIE(InfoExtractor):
             return {
                 '_type': 'url_transparent',
                 'id': clip_id,
-                'url': '9c9media:ctvnews_web:%s' % clip_id,
+                'url': f'9c9media:ctvnews_web:{clip_id}',
                 'ie_key': 'NineCNineMedia',
             }
 
         if page_id.isdigit():
             return ninecninemedia_url_result(page_id)
         else:
-            webpage = self._download_webpage('http://www.ctvnews.ca/%s' % page_id, page_id, query={
+            webpage = self._download_webpage(f'http://www.ctvnews.ca/{page_id}', page_id, query={
                 'ot': 'example.AjaxPageLayout.ot',
                 'maxItemsPerPage': 1000000,
             })
             entries = [ninecninemedia_url_result(clip_id) for clip_id in orderedSet(
                 re.findall(r'clip\.id\s*=\s*(\d+);', webpage))]
+            if not entries:
+                webpage = self._download_webpage(url, page_id)
+                if 'getAuthStates("' in webpage:
+                    entries = [ninecninemedia_url_result(clip_id) for clip_id in
+                               self._search_regex(r'getAuthStates\("([\d+,]+)"', webpage, 'clip ids').split(',')]
             return self.playlist_result(entries, page_id)

@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -21,7 +19,7 @@ class CrackedIE(InfoExtractor):
             'title': 'If Animal Actors Got E! True Hollywood Stories',
             'timestamp': 1404954000,
             'upload_date': '20140710',
-        }
+        },
     }, {
         # youtube embed
         'url': 'http://www.cracked.com/video_19006_4-plot-holes-you-didnt-notice-in-your-favorite-movies.html',
@@ -34,7 +32,7 @@ class CrackedIE(InfoExtractor):
             'upload_date': '20140725',
             'uploader_id': 'Cracked',
             'uploader': 'Cracked',
-        }
+        },
     }]
 
     def _real_extract(self, url):

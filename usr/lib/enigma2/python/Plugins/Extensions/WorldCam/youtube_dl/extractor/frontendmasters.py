@@ -1,13 +1,7 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_str,
-    compat_urlparse,
-)
 from ..utils import (
     ExtractorError,
     parse_duration,
@@ -25,17 +19,10 @@ class FrontendMastersBaseIE(InfoExtractor):
     _QUALITIES = {
         'low': {'width': 480, 'height': 360},
         'mid': {'width': 1280, 'height': 720},
-        'high': {'width': 1920, 'height': 1080}
+        'high': {'width': 1920, 'height': 1080},
     }
 
-    def _real_initialize(self):
-        self._login()
-
-    def _login(self):
-        (username, password) = self._get_login_info()
-        if username is None:
-            return
-
+    def _perform_login(self, username, password):
         login_page = self._download_webpage(
             self._LOGIN_URL, None, 'Downloading login page')
 
@@ -43,7 +30,7 @@ class FrontendMastersBaseIE(InfoExtractor):
 
         login_form.update({
             'username': username,
-            'password': password
+            'password': password,
         })
 
         post_url = self._search_regex(
@@ -51,7 +38,7 @@ class FrontendMastersBaseIE(InfoExtractor):
             'post_url', default=self._LOGIN_URL, group='url')
 
         if not post_url.startswith('http'):
-            post_url = compat_urlparse.urljoin(self._LOGIN_URL, post_url)
+            post_url = urllib.parse.urljoin(self._LOGIN_URL, post_url)
 
         response = self._download_webpage(
             post_url, None, 'Logging in', data=urlencode_postdata(login_form),
@@ -66,14 +53,14 @@ class FrontendMastersBaseIE(InfoExtractor):
             r'class=(["\'])(?:(?!\1).)*\bMessageAlert\b(?:(?!\1).)*\1[^>]*>(?P<error>[^<]+)<',
             response, 'error message', default=None, group='error')
         if error:
-            raise ExtractorError('Unable to login: %s' % error, expected=True)
+            raise ExtractorError(f'Unable to login: {error}', expected=True)
         raise ExtractorError('Unable to log in')
 
 
 class FrontendMastersPageBaseIE(FrontendMastersBaseIE):
     def _download_course(self, course_name, url):
         return self._download_json(
-            '%s/courses/%s' % (self._API_BASE, course_name), course_name,
+            f'{self._API_BASE}/courses/{course_name}', course_name,
             'Downloading course JSON', headers={'Referer': url})
 
     @staticmethod
@@ -102,7 +89,7 @@ class FrontendMastersPageBaseIE(FrontendMastersBaseIE):
 
         duration = None
         timestamp = lesson.get('timestamp')
-        if isinstance(timestamp, compat_str):
+        if isinstance(timestamp, str):
             mobj = re.search(
                 r'(?P<start>\d{1,2}:\d{1,2}:\d{1,2})\s*-(?P<end>\s*\d{1,2}:\d{1,2}:\d{1,2})',
                 timestamp)
@@ -112,7 +99,7 @@ class FrontendMastersPageBaseIE(FrontendMastersBaseIE):
 
         return {
             '_type': 'url_transparent',
-            'url': 'frontendmasters:%s' % lesson_id,
+            'url': f'frontendmasters:{lesson_id}',
             'ie_key': FrontendMastersIE.ie_key(),
             'id': lesson_id,
             'display_id': display_id,
@@ -144,16 +131,16 @@ class FrontendMastersIE(FrontendMastersBaseIE):
     def _real_extract(self, url):
         lesson_id = self._match_id(url)
 
-        source_url = '%s/video/%s/source' % (self._API_BASE, lesson_id)
+        source_url = f'{self._API_BASE}/video/{lesson_id}/source'
 
         formats = []
         for ext in ('webm', 'mp4'):
             for quality in ('low', 'mid', 'high'):
                 resolution = self._QUALITIES[quality].copy()
-                format_id = '%s-%s' % (ext, quality)
+                format_id = f'{ext}-{quality}'
                 format_url = self._download_json(
                     source_url, lesson_id,
-                    'Downloading %s source JSON' % format_id, query={
+                    f'Downloading {format_id} source JSON', query={
                         'f': ext,
                         'r': resolution['height'],
                     }, headers={
@@ -170,19 +157,18 @@ class FrontendMastersIE(FrontendMastersBaseIE):
                     'format_id': format_id,
                 })
                 formats.append(f)
-        self._sort_formats(formats)
 
         subtitles = {
             'en': [{
-                'url': '%s/transcripts/%s.vtt' % (self._API_BASE, lesson_id),
-            }]
+                'url': f'{self._API_BASE}/transcripts/{lesson_id}.vtt',
+            }],
         }
 
         return {
             'id': lesson_id,
             'title': lesson_id,
             'formats': formats,
-            'subtitles': subtitles
+            'subtitles': subtitles,
         }
 
 
@@ -207,7 +193,7 @@ class FrontendMastersLessonIE(FrontendMastersPageBaseIE):
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         course_name, lesson_name = mobj.group('course_name', 'lesson_name')
 
         course = self._download_course(course_name, url)
@@ -252,9 +238,9 @@ class FrontendMastersCourseIE(FrontendMastersPageBaseIE):
         entries = []
         for lesson in lessons:
             lesson_name = lesson.get('slug')
-            if not lesson_name:
-                continue
             lesson_id = lesson.get('hash') or lesson.get('statsId')
+            if not lesson_id or not lesson_name:
+                continue
             entries.append(self._extract_lesson(chapters, lesson_id, lesson))
 
         title = course.get('title')

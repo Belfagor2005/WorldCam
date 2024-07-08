@@ -1,15 +1,11 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
-    int_or_none,
-    unified_strdate,
-    compat_str,
     determine_ext,
-    ExtractorError,
+    int_or_none,
+    join_nonempty,
+    unified_strdate,
     update_url_query,
 )
 
@@ -30,7 +26,7 @@ class DisneyIE(InfoExtractor):
         'params': {
             # m3u8 download
             'skip_download': True,
-        }
+        },
     }, {
         # Grill.burger
         'url': 'http://www.starwars.com/video/rogue-one-a-star-wars-story-intro-featurette',
@@ -44,7 +40,7 @@ class DisneyIE(InfoExtractor):
         'params': {
             # m3u8 download
             'skip_download': True,
-        }
+        },
     }, {
         'url': 'http://videos.disneylatino.com/ver/spider-man-de-regreso-a-casa-primer-adelanto-543a33a1850bdcfcca13bae2',
         'only_matching': True,
@@ -78,7 +74,7 @@ class DisneyIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        domain, video_id, display_id = re.match(self._VALID_URL, url).groups()
+        domain, video_id, display_id = self._match_valid_url(url).groups()
         if not video_id:
             webpage = self._download_webpage(url, display_id)
             grill = re.sub(r'"\s*\+\s*"', '', self._search_regex(
@@ -88,7 +84,7 @@ class DisneyIE(InfoExtractor):
             video_data = page_data['data'][0]
         else:
             webpage = self._download_webpage(
-                'http://%s/embed/%s' % (domain, video_id), video_id)
+                f'http://{domain}/embed/{video_id}', video_id)
             page_data = self._parse_json(self._search_regex(
                 r'Disney\.EmbedVideo\s*=\s*({.+});',
                 webpage, 'embed data'), video_id)
@@ -120,18 +116,13 @@ class DisneyIE(InfoExtractor):
                         continue
                     formats.append(f)
                 continue
-            format_id = []
-            if flavor_format:
-                format_id.append(flavor_format)
-            if tbr:
-                format_id.append(compat_str(tbr))
             ext = determine_ext(flavor_url)
             if flavor_format == 'applehttp' or ext == 'm3u8':
                 ext = 'mp4'
             width = int_or_none(flavor.get('width'))
             height = int_or_none(flavor.get('height'))
             formats.append({
-                'format_id': '-'.join(format_id),
+                'format_id': join_nonempty(flavor_format, tbr),
                 'url': flavor_url,
                 'width': width,
                 'height': height,
@@ -140,10 +131,9 @@ class DisneyIE(InfoExtractor):
                 'vcodec': 'none' if (width == 0 and height == 0) else None,
             })
         if not formats and video_data.get('expired'):
-            raise ExtractorError(
-                '%s said: %s' % (self.IE_NAME, page_data['translations']['video_expired']),
+            self.raise_no_formats(
+                '{} said: {}'.format(self.IE_NAME, page_data['translations']['video_expired']),
                 expected=True)
-        self._sort_formats(formats)
 
         subtitles = {}
         for caption in video_data.get('captions', []):

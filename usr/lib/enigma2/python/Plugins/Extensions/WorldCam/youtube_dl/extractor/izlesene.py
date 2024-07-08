@@ -1,11 +1,6 @@
-# coding: utf-8
-from __future__ import unicode_literals
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_str,
-    compat_urllib_parse_unquote,
-)
 from ..utils import (
     determine_ext,
     float_or_none,
@@ -36,7 +31,7 @@ class IzleseneIE(InfoExtractor):
                 'upload_date': '20140702',
                 'duration': 95.395,
                 'age_limit': 0,
-            }
+            },
         },
         {
             'url': 'http://www.izlesene.com/video/tarkan-dortmund-2006-konseri/17997',
@@ -51,14 +46,14 @@ class IzleseneIE(InfoExtractor):
                 'upload_date': '20061112',
                 'duration': 253.666,
                 'age_limit': 0,
-            }
+            },
         },
     ]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        webpage = self._download_webpage('http://www.izlesene.com/video/%s' % video_id, video_id)
+        webpage = self._download_webpage(f'http://www.izlesene.com/video/{video_id}', video_id)
 
         video = self._parse_json(
             self._search_regex(
@@ -70,18 +65,17 @@ class IzleseneIE(InfoExtractor):
         formats = []
         for stream in video['media']['level']:
             source_url = stream.get('source')
-            if not source_url or not isinstance(source_url, compat_str):
+            if not source_url or not isinstance(source_url, str):
                 continue
             ext = determine_ext(url, 'mp4')
             quality = stream.get('value')
             height = int_or_none(quality)
             formats.append({
-                'format_id': '%sp' % quality if quality else 'sd',
-                'url': compat_urllib_parse_unquote(source_url),
+                'format_id': f'{quality}p' if quality else 'sd',
+                'url': urllib.parse.unquote(source_url),
                 'ext': ext,
                 'height': height,
             })
-        self._sort_formats(formats)
 
         description = self._og_search_description(webpage, default=None)
         thumbnail = video.get('posterURL') or self._proto_relative_url(

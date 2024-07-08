@@ -1,16 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
-from ..compat import (
-    compat_HTTPError,
-    compat_str,
-)
+from ..networking.exceptions import HTTPError
 from ..utils import (
+    ExtractorError,
     extract_attributes,
     try_get,
     urlencode_postdata,
-    ExtractorError,
 )
 
 
@@ -26,7 +20,7 @@ class TVPlayerIE(InfoExtractor):
         'params': {
             # m3u8 download
             'skip_download': True,
-        }
+        },
     }
 
     def _real_extract(self, url):
@@ -53,7 +47,7 @@ class TVPlayerIE(InfoExtractor):
 
         validate = context['validate']
         platform = try_get(
-            context, lambda x: x['platform']['key'], compat_str) or 'firefox'
+            context, lambda x: x['platform']['key'], str) or 'firefox'
 
         try:
             response = self._download_json(
@@ -67,20 +61,19 @@ class TVPlayerIE(InfoExtractor):
                     'validate': validate,
                 }))['tvplayer']['response']
         except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError):
+            if isinstance(e.cause, HTTPError):
                 response = self._parse_json(
-                    e.cause.read().decode(), resource_id)['tvplayer']['response']
+                    e.cause.response.read().decode(), resource_id)['tvplayer']['response']
                 raise ExtractorError(
-                    '%s said: %s' % (self.IE_NAME, response['error']), expected=True)
+                    '{} said: {}'.format(self.IE_NAME, response['error']), expected=True)
             raise
 
         formats = self._extract_m3u8_formats(response['stream'], display_id, 'mp4')
-        self._sort_formats(formats)
 
         return {
             'id': resource_id,
             'display_id': display_id,
-            'title': self._live_title(title),
+            'title': title,
             'formats': formats,
             'is_live': True,
         }

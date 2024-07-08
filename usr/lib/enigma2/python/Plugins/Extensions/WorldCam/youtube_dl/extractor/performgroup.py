@@ -1,10 +1,5 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
-from ..utils import int_or_none
+from ..utils import int_or_none, join_nonempty
 
 
 class PerformGroupIE(InfoExtractor):
@@ -20,12 +15,12 @@ class PerformGroupIE(InfoExtractor):
             'description': 'md5:7cd3b459c82725b021e046ab10bf1c5b',
             'timestamp': 1511533477,
             'upload_date': '20171124',
-        }
+        },
     }]
 
     def _call_api(self, service, auth_token, content_id, referer_url):
         return self._download_json(
-            'http://ep3.performfeeds.com/ep%s/%s/%s/' % (service, auth_token, content_id),
+            f'http://ep3.performfeeds.com/ep{service}/{auth_token}/{content_id}/',
             content_id, headers={
                 'Referer': referer_url,
                 'Origin': 'http://player.performgroup.com',
@@ -34,7 +29,7 @@ class PerformGroupIE(InfoExtractor):
             })
 
     def _real_extract(self, url):
-        player_id, auth_token = re.search(self._VALID_URL, url).groups()
+        player_id, auth_token = self._match_valid_url(url).groups()
         bootstrap = self._call_api('bootstrap', auth_token, player_id, url)
         video = bootstrap['config']['dataSource']['sourceItems'][0]['videos'][0]
         video_id = video['uuid']
@@ -55,11 +50,8 @@ class PerformGroupIE(InfoExtractor):
             if not c_url:
                 continue
             tbr = int_or_none(c.get('bitrate'), 1000)
-            format_id = 'http'
-            if tbr:
-                format_id += '-%d' % tbr
             formats.append({
-                'format_id': format_id,
+                'format_id': join_nonempty('http', tbr),
                 'url': c_url,
                 'tbr': tbr,
                 'width': int_or_none(c.get('width')),
@@ -70,7 +62,6 @@ class PerformGroupIE(InfoExtractor):
                 'vbr': int_or_none(c.get('videoRate'), 1000),
                 'abr': int_or_none(c.get('audioRate'), 1000),
             })
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

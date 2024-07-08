@@ -1,16 +1,13 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import json
 import math
 import re
 
 from .aws import AWSIE
-from ..compat import compat_HTTPError
+from ..networking.exceptions import HTTPError
 from ..utils import (
-    clean_html,
     ExtractorError,
     InAdvancePagedList,
+    clean_html,
     int_or_none,
     parse_iso8601,
     str_or_none,
@@ -25,7 +22,7 @@ class ShahidBaseIE(AWSIE):
 
     def _handle_error(self, e):
         fail_data = self._parse_json(
-            e.cause.read().decode('utf-8'), None, fatal=False)
+            e.cause.response.read().decode('utf-8'), None, fatal=False)
         if fail_data:
             faults = fail_data.get('faults', [])
             faults_message = ', '.join([clean_html(fault['userMessage']) for fault in faults if fault.get('userMessage')])
@@ -43,7 +40,7 @@ class ShahidBaseIE(AWSIE):
                 'secret_key': '4WUUJWuFvtTkXbhaWTDv7MhO+0LqoYDWfEnUXoWn',
             }, video_id, query)
         except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError):
+            if isinstance(e.cause, HTTPError):
                 self._handle_error(e)
             raise
 
@@ -66,36 +63,32 @@ class ShahidIE(ShahidBaseIE):
         'params': {
             # m3u8 download
             'skip_download': True,
-        }
+        },
     }, {
         'url': 'https://shahid.mbc.net/ar/movies/%D8%A7%D9%84%D9%82%D9%86%D8%A7%D8%B5%D8%A9/movie-151746',
-        'only_matching': True
+        'only_matching': True,
     }, {
         # shahid plus subscriber only
         'url': 'https://shahid.mbc.net/ar/series/%D9%85%D8%B1%D8%A7%D9%8A%D8%A7-2011-%D8%A7%D9%84%D9%85%D9%88%D8%B3%D9%85-1-%D8%A7%D9%84%D8%AD%D9%84%D9%82%D8%A9-1/episode-90511',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'https://shahid.mbc.net/en/shows/Ramez-Fi-Al-Shallal-season-1-episode-1/episode-359319',
-        'only_matching': True
+        'only_matching': True,
     }]
 
-    def _real_initialize(self):
-        email, password = self._get_login_info()
-        if email is None:
-            return
-
+    def _perform_login(self, username, password):
         try:
             user_data = self._download_json(
                 'https://shahid.mbc.net/wd/service/users/login',
                 None, 'Logging in', data=json.dumps({
-                    'email': email,
+                    'email': username,
                     'password': password,
                     'basic': 'false',
-                }).encode('utf-8'), headers={
+                }).encode(), headers={
                     'Content-Type': 'application/json; charset=UTF-8',
                 })['user']
         except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError):
+            if isinstance(e.cause, HTTPError):
                 self._handle_error(e)
             raise
 
@@ -111,21 +104,20 @@ class ShahidIE(ShahidBaseIE):
             }))
 
     def _real_extract(self, url):
-        page_type, video_id = re.match(self._VALID_URL, url).groups()
+        page_type, video_id = self._match_valid_url(url).groups()
         if page_type == 'clip':
             page_type = 'episode'
 
         playout = self._call_api(
             'playout/new/url/' + video_id, video_id)['playout']
 
-        if playout.get('drm'):
-            raise ExtractorError('This video is DRM protected.', expected=True)
+        if not self.get_param('allow_unplayable_formats') and playout.get('drm'):
+            self.report_drm(video_id)
 
         formats = self._extract_m3u8_formats(re.sub(
             # https://docs.aws.amazon.com/mediapackage/latest/ug/manifest-filtering.html
             r'aws\.manifestfilter=[\w:;,-]+&?',
             '', playout['url']), video_id, 'mp4')
-        self._sort_formats(formats)
 
         # video = self._call_api(
         #     'product/id', video_id, {
@@ -135,7 +127,7 @@ class ShahidIE(ShahidBaseIE):
         #     })['productModel']
 
         response = self._download_json(
-            'http://api.shahid.net/api/v1_1/%s/%s' % (page_type, video_id),
+            f'http://api.shahid.net/api/v1_1/{page_type}/{video_id}',
             video_id, 'Downloading video JSON', query={
                 'apiKey': 'sh@hid0nlin3',
                 'hash': 'b2wMCTHpSmyxGqQjJFOycRmLSex+BpTK/ooxy6vHaqs=',
@@ -144,7 +136,7 @@ class ShahidIE(ShahidBaseIE):
         error = data.get('error')
         if error:
             raise ExtractorError(
-                '%s returned error: %s' % (self.IE_NAME, '\n'.join(error.values())),
+                '{} returned error: {}'.format(self.IE_NAME, '\n'.join(error.values())),
                 expected=True)
 
         video = data[page_type]
@@ -183,7 +175,7 @@ class ShahidShowIE(ShahidBaseIE):
         'playlist_mincount': 32,
     }, {
         'url': 'https://shahid.mbc.net/ar/series/How-to-live-Longer-(The-Big-Think)/series-291861',
-        'only_matching': True
+        'only_matching': True,
     }]
     _PAGE_SIZE = 30
 
@@ -204,7 +196,7 @@ class ShahidShowIE(ShahidBaseIE):
                     'pageSize': 30,
                     'sorts': [{
                         'order': 'DESC',
-                        'type': 'SORTDATE'
+                        'type': 'SORTDATE',
                     }],
                 })
             for product in playlist.get('productList', {}).get('products', []):

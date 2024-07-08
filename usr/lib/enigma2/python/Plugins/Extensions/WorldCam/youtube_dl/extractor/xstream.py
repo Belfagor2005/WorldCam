@@ -1,15 +1,12 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
+    find_xpath_attr,
     int_or_none,
     parse_iso8601,
-    xpath_with_ns,
     xpath_text,
-    find_xpath_attr,
+    xpath_with_ns,
 )
 
 
@@ -44,8 +41,7 @@ class XstreamIE(InfoExtractor):
 
     def _extract_video_info(self, partner_id, video_id):
         data = self._download_xml(
-            'http://frontend.xstream.dk/%s/feed/video/?platform=web&id=%s'
-            % (partner_id, video_id),
+            f'http://frontend.xstream.dk/{partner_id}/feed/video/?platform=web&id={video_id}',
             video_id)
 
         NS_MAP = {
@@ -74,7 +70,7 @@ class XstreamIE(InfoExtractor):
             if mobj:
                 formats.append({
                     'url': mobj.group('url'),
-                    'play_path': 'mp4:%s' % mobj.group('playpath'),
+                    'play_path': 'mp4:{}'.format(mobj.group('playpath')),
                     'app': mobj.group('app'),
                     'ext': 'flv',
                     'tbr': tbr,
@@ -85,7 +81,6 @@ class XstreamIE(InfoExtractor):
                     'url': media_url,
                     'tbr': tbr,
                 })
-        self._sort_formats(formats)
 
         link = find_xpath_attr(
             entry, xpath_with_ns('./atom:link', NS_MAP), 'rel', 'original')
@@ -93,7 +88,7 @@ class XstreamIE(InfoExtractor):
             formats.append({
                 'url': link.get('href'),
                 'format_id': link.get('rel'),
-                'preference': 1,
+                'quality': 1,
             })
 
         thumbnails = [{
@@ -112,7 +107,7 @@ class XstreamIE(InfoExtractor):
         }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         partner_id = mobj.group('partner_id')
         video_id = mobj.group('id')
 

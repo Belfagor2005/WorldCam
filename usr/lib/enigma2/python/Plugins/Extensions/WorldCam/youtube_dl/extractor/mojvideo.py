@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     ExtractorError,
@@ -22,25 +17,24 @@ class MojvideoIE(InfoExtractor):
             'title': 'V avtu pred mano rdečelaska - Alfi Nipič',
             'thumbnail': r're:^http://.*\.jpg$',
             'duration': 242,
-        }
+        },
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         display_id = mobj.group('display_id')
 
         # XML is malformed
         playerapi = self._download_webpage(
-            'http://www.mojvideo.com/playerapi.php?v=%s&t=1' % video_id, display_id)
+            f'http://www.mojvideo.com/playerapi.php?v={video_id}&t=1', display_id)
 
         if '<error>true</error>' in playerapi:
             error_desc = self._html_search_regex(
                 r'<errordesc>([^<]*)</errordesc>', playerapi, 'error description', fatal=False)
-            raise ExtractorError('%s said: %s' % (self.IE_NAME, error_desc), expected=True)
+            raise ExtractorError(f'{self.IE_NAME} said: {error_desc}', expected=True)
 
-        title = self._html_search_regex(
-            r'<title>([^<]+)</title>', playerapi, 'title')
+        title = self._html_extract_title(playerapi)
         video_url = self._html_search_regex(
             r'<file>([^<]+)</file>', playerapi, 'video URL')
         thumbnail = self._html_search_regex(

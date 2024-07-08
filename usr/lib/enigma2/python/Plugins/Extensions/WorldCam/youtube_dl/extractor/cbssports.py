@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-
-import re
-
 # from .cbs import CBSBaseIE
 from .common import InfoExtractor
 from ..utils import (
@@ -12,6 +8,7 @@ from ..utils import (
 
 # class CBSSportsEmbedIE(CBSBaseIE):
 class CBSSportsEmbedIE(InfoExtractor):
+    _WORKING = False
     IE_NAME = 'cbssports:embed'
     _VALID_URL = r'''(?ix)https?://(?:(?:www\.)?cbs|embed\.247)sports\.com/player/embed.+?
         (?:
@@ -30,7 +27,7 @@ class CBSSportsEmbedIE(InfoExtractor):
     #     return self._extract_feed_info('dJ5BDC', 'VxxJg8Ymh8sE', filter_query, video_id)
 
     def _real_extract(self, url):
-        uuid, pcid = re.match(self._VALID_URL, url).groups()
+        uuid, pcid = self._match_valid_url(url).groups()
         query = {'id': uuid} if uuid else {'pcid': pcid}
         video = self._download_json(
             'https://www.cbssports.com/api/content/video/',
@@ -44,7 +41,6 @@ class CBSSportsEmbedIE(InfoExtractor):
         formats = self._extract_m3u8_formats(
             metadata['files'][0]['url'], video_id, 'mp4',
             'm3u8_native', m3u8_id='hls', fatal=False)
-        self._sort_formats(formats)
 
         image = video.get('image')
         thumbnails = None
@@ -80,6 +76,7 @@ class CBSSportsBaseIE(InfoExtractor):
 
 
 class CBSSportsIE(CBSSportsBaseIE):
+    _WORKING = False
     IE_NAME = 'cbssports'
     _VALID_URL = r'https?://(?:www\.)?cbssports\.com/[^/]+/video/(?P<id>[^/?#&]+)'
     _TESTS = [{
@@ -97,6 +94,7 @@ class CBSSportsIE(CBSSportsBaseIE):
 
 
 class TwentyFourSevenSportsIE(CBSSportsBaseIE):
+    _WORKING = False
     IE_NAME = '247sports'
     _VALID_URL = r'https?://(?:www\.)?247sports\.com/Video/(?:[^/?#&]+-)?(?P<id>\d+)'
     _TESTS = [{

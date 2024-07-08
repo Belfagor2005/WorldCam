@@ -1,10 +1,9 @@
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from ..utils import parse_duration
 
 
 class DHMIE(InfoExtractor):
+    _WORKING = False
     IE_DESC = 'Filmarchiv - Deutsches Historisches Museum'
     _VALID_URL = r'https?://(?:www\.)?dhm\.de/filmarchiv/(?:[^/]+/)+(?P<id>[^/]+)'
 

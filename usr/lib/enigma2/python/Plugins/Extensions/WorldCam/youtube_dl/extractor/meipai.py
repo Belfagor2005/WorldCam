@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from ..utils import (
     int_or_none,
@@ -28,7 +25,7 @@ class MeipaiIE(InfoExtractor):
             'view_count': 35511,
             'creator': '她她-TATA',
             'tags': ['葉子', '阿桑', '余姿昀', '超級女聲'],
-        }
+        },
     }, {
         # record of live streaming
         'url': 'http://www.meipai.com/media/585526361',
@@ -44,16 +41,14 @@ class MeipaiIE(InfoExtractor):
             'upload_date': '20160919',
             'view_count': 1215,
             'creator': '她她-TATA',
-        }
+        },
     }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        title = self._og_search_title(
-            webpage, default=None) or self._html_search_regex(
-            r'<title[^>]*>([^<]+)</title>', webpage, 'title')
+        title = self._generic_title('', webpage)
 
         formats = []
 

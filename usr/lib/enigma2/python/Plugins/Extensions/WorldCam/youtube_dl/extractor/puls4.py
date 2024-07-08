@@ -1,12 +1,5 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .prosiebensat1 import ProSiebenSat1BaseIE
-from ..utils import (
-    unified_strdate,
-    parse_duration,
-    compat_str,
-)
+from ..utils import parse_duration, unified_strdate
 
 
 class Puls4IE(ProSiebenSat1BaseIE):
@@ -43,7 +36,7 @@ class Puls4IE(ProSiebenSat1BaseIE):
         player_content = media['playerContent']
         info = self._extract_video_info(url, player_content['id'])
         info.update({
-            'id': compat_str(media['objectId']),
+            'id': str(media['objectId']),
             'title': player_content['title'],
             'description': media.get('description'),
             'thumbnail': media.get('previewLink'),

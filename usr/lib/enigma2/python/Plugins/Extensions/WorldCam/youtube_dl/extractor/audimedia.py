@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from ..utils import (
     int_or_none,
@@ -22,7 +19,7 @@ class AudiMediaIE(InfoExtractor):
             'timestamp': 1448354940,
             'duration': 74022,
             'view_count': int,
-        }
+        },
     }, {
         'url': 'https://www.audi-mediacenter.com/en/audimediatv/video/60-seconds-of-audi-sport-104-2015-wec-bahrain-rookie-test-2991',
         'only_matching': True,
@@ -76,10 +73,9 @@ class AudiMediaIE(InfoExtractor):
                 bitrate = self._search_regex(r'(\d+)k', video_version_url, 'bitrate', default=None)
                 if bitrate:
                     f.update({
-                        'format_id': 'http-%s' % bitrate,
+                        'format_id': f'http-{bitrate}',
                     })
                 formats.append(f)
-            self._sort_formats(formats)
 
             return {
                 'id': video_id,

@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     determine_ext,
@@ -30,9 +25,9 @@ class CJSWIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         program, episode_id = mobj.group('program', 'id')
-        audio_id = '%s/%s' % (program, episode_id)
+        audio_id = f'{program}/{episode_id}'
 
         webpage = self._download_webpage(url, episode_id)
 

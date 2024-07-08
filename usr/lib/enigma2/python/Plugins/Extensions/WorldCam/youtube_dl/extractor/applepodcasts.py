@@ -1,13 +1,9 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from ..utils import (
     clean_html,
     clean_podcast_url,
     get_element_by_class,
     int_or_none,
-    parse_codecs,
     parse_iso8601,
     try_get,
 )
@@ -28,7 +24,7 @@ class ApplePodcastsIE(InfoExtractor):
             'duration': 6454,
             'series': 'The Tim Dillon Show',
             'thumbnail': 're:.+[.](png|jpe?g|webp)',
-        }
+        },
     }, {
         'url': 'https://podcasts.apple.com/podcast/207-whitney-webb-returns/id1135137367?i=1000482637777',
         'only_matching': True,
@@ -76,18 +72,14 @@ class ApplePodcastsIE(InfoExtractor):
                 series = try_get(inc, lambda x: x['attributes']['name'])
         series = series or clean_html(get_element_by_class('podcast-header__identity', webpage))
 
-        info = [{
+        return {
             'id': episode_id,
-            'title': episode['name'],
+            'title': episode.get('name'),
             'url': clean_podcast_url(episode['assetUrl']),
             'description': description.get('standard') or description.get('short'),
             'timestamp': parse_iso8601(episode.get('releaseDateTime')),
             'duration': int_or_none(episode.get('durationInMilliseconds'), 1000),
             'series': series,
             'thumbnail': self._og_search_thumbnail(webpage),
-        }]
-        self._sort_formats(info)
-        info = info[0]
-        codecs = parse_codecs(info.get('ext', 'mp3'))
-        info.update(codecs)
-        return info
+            'vcodec': 'none',
+        }

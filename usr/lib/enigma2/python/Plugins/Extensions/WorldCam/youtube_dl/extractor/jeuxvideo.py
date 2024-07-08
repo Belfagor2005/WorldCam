@@ -1,13 +1,9 @@
-# coding: utf-8
-
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 
 
 class JeuxVideoIE(InfoExtractor):
+    _WORKING = False
+    _ENABLED = None  # XXX: pass through to GenericIE
     _VALID_URL = r'https?://.*?\.jeuxvideo\.com/.*/(.*?)\.htm'
 
     _TESTS = [{
@@ -25,7 +21,7 @@ class JeuxVideoIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         title = mobj.group(1)
         webpage = self._download_webpage(url, title)
         title = self._html_search_meta('name', webpage) or self._og_search_title(webpage)

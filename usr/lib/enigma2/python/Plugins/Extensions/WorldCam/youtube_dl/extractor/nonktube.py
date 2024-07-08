@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from .nuevo import NuevoBaseIE
 
 
@@ -16,7 +14,7 @@ class NonkTubeIE(NuevoBaseIE):
         },
         'params': {
             'skip_download': True,
-        }
+        },
     }, {
         'url': 'https://www.nonktube.com/embed/118636',
         'only_matching': True,

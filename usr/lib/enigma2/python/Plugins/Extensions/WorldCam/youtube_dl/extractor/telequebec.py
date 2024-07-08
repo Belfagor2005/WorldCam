@@ -1,8 +1,4 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
-from ..compat import compat_str
 from ..utils import (
     int_or_none,
     smuggle_url,
@@ -43,9 +39,6 @@ class TeleQuebecIE(TeleQuebecBaseIE):
             'uploader_id': '6150020952001',
             'upload_date': '20200512',
         },
-        'params': {
-            'format': 'bestvideo',
-        },
         'add_ie': ['BrightcoveNew'],
     }, {
         'url': 'https://zonevideo.telequebec.tv/media/55267/le-soleil/passe-partout',
@@ -57,9 +50,6 @@ class TeleQuebecIE(TeleQuebecBaseIE):
             'uploader_id': '6150020952001',
             'upload_date': '20200625',
             'timestamp': 1593090307,
-        },
-        'params': {
-            'format': 'bestvideo',
         },
         'add_ie': ['BrightcoveNew'],
     }, {
@@ -81,7 +71,7 @@ class TeleQuebecIE(TeleQuebecBaseIE):
         product = media.get('product') or {}
         season = product.get('season') or {}
         info.update({
-            'description': try_get(media, lambda x: x['descriptions'][-1]['text'], compat_str),
+            'description': try_get(media, lambda x: x['descriptions'][-1]['text'], str),
             'series': try_get(season, lambda x: x['serie']['titre']),
             'season': season.get('name'),
             'season_number': int_or_none(season.get('seasonNo')),
@@ -92,7 +82,7 @@ class TeleQuebecIE(TeleQuebecBaseIE):
 
 
 class TeleQuebecSquatIE(InfoExtractor):
-    _VALID_URL = r'https://squat\.telequebec\.tv/videos/(?P<id>\d+)'
+    _VALID_URL = r'https?://squat\.telequebec\.tv/videos/(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://squat.telequebec.tv/videos/9314',
         'info_dict': {
@@ -117,14 +107,14 @@ class TeleQuebecSquatIE(InfoExtractor):
         video_id = self._match_id(url)
 
         video = self._download_json(
-            'https://squat.api.telequebec.tv/v1/videos/%s' % video_id,
+            f'https://squat.api.telequebec.tv/v1/videos/{video_id}',
             video_id)
 
         media_id = video['sourceId']
 
         return {
             '_type': 'url_transparent',
-            'url': 'http://zonevideo.telequebec.tv/media/%s' % media_id,
+            'url': f'http://zonevideo.telequebec.tv/media/{media_id}',
             'ie_key': TeleQuebecIE.ie_key(),
             'id': media_id,
             'title': video.get('titre'),
@@ -156,9 +146,6 @@ class TeleQuebecEmissionIE(InfoExtractor):
             'upload_date': '20200505',
             'timestamp': 1588713424,
             'uploader_id': '6150020952001',
-        },
-        'params': {
-            'format': 'bestvideo',
         },
     }, {
         'url': 'http://bancpublic.telequebec.tv/emissions/emission-49/31986/jeunes-meres-sous-pression',
@@ -219,9 +206,6 @@ class TeleQuebecVideoIE(TeleQuebecBaseIE):
             'upload_date': '20201019',
             'timestamp': 1603115930,
             'uploader_id': '6101674910001',
-        },
-        'params': {
-            'format': 'bestvideo',
         },
     }, {
         'url': 'https://video.telequebec.tv/player-live/28527',

@@ -1,10 +1,6 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import hashlib
 import random
 
-from ..compat import compat_str
 from .common import InfoExtractor
 from ..utils import (
     clean_html,
@@ -31,10 +27,11 @@ class JamendoIE(InfoExtractor):
             'ext': 'flac',
             # 'title': 'Maya Filipič - Stories from Emona I',
             'title': 'Stories from Emona I',
-            # 'artist': 'Maya Filipič',
+            'artist': 'Maya Filipič',
+            'album': 'Between two worlds',
             'track': 'Stories from Emona I',
             'duration': 210,
-            'thumbnail': r're:^https?://.*\.jpg',
+            'thumbnail': 'https://usercontent.jamendo.com?type=album&id=29279&width=300&trackid=196219',
             'timestamp': 1217438117,
             'upload_date': '20080730',
             'license': 'by-nc-nd',
@@ -42,24 +39,24 @@ class JamendoIE(InfoExtractor):
             'like_count': int,
             'average_rating': int,
             'tags': ['piano', 'peaceful', 'newage', 'strings', 'upbeat'],
-        }
+        },
     }, {
         'url': 'https://licensing.jamendo.com/en/track/1496667/energetic-rock',
         'only_matching': True,
     }]
 
-    def _call_api(self, resource, resource_id):
-        path = '/api/%ss' % resource
-        rand = compat_str(random.random())
+    def _call_api(self, resource, resource_id, fatal=True):
+        path = f'/api/{resource}s'
+        rand = str(random.random())
         return self._download_json(
-            'https://www.jamendo.com' + path, resource_id, query={
+            'https://www.jamendo.com' + path, resource_id, fatal=fatal, query={
                 'id[]': resource_id,
             }, headers={
-                'X-Jam-Call': '$%s*%s~' % (hashlib.sha1((path + rand).encode()).hexdigest(), rand)
+                'X-Jam-Call': f'${hashlib.sha1((path + rand).encode()).hexdigest()}*{rand}~',
             })[0]
 
     def _real_extract(self, url):
-        track_id, display_id = self._VALID_URL_RE.match(url).groups()
+        track_id, display_id = self._match_valid_url(url).groups()
         # webpage = self._download_webpage(
         #     'https://www.jamendo.com/track/' + track_id, track_id)
         # models = self._parse_json(self._html_search_regex(
@@ -74,10 +71,11 @@ class JamendoIE(InfoExtractor):
         # if artist_name:
         #     title = '%s - %s' % (artist_name, title)
         # album = get_model('album')
+        artist = self._call_api('artist', track.get('artistId'), fatal=False)
+        album = self._call_api('album', track.get('albumId'), fatal=False)
 
         formats = [{
-            'url': 'https://%s.jamendo.com/?trackid=%s&format=%s&from=app-97dab294'
-                   % (sub_domain, track_id, format_id),
+            'url': f'https://{sub_domain}.jamendo.com/?trackid={track_id}&format={format_id}&from=app-97dab294',
             'format_id': format_id,
             'ext': ext,
             'quality': quality,
@@ -87,7 +85,6 @@ class JamendoIE(InfoExtractor):
             ('ogg1', 'ogg', 'ogg'),
             ('flac', 'flac', 'flac'),
         ))]
-        self._sort_formats(formats)
 
         urls = []
         thumbnails = []
@@ -112,7 +109,7 @@ class JamendoIE(InfoExtractor):
             tags.append(tag_name)
 
         stats = track.get('stats') or {}
-        license = track.get('licenseCC') or []
+        video_license = track.get('licenseCC') or []
 
         return {
             'id': track_id,
@@ -121,11 +118,11 @@ class JamendoIE(InfoExtractor):
             'title': title,
             'description': track.get('description'),
             'duration': int_or_none(track.get('duration')),
-            # 'artist': artist_name,
+            'artist': artist.get('name'),
             'track': track_name,
-            # 'album': album.get('name'),
+            'album': album.get('name'),
             'formats': formats,
-            'license': '-'.join(license) if license else None,
+            'license': '-'.join(video_license) if video_license else None,
             'timestamp': int_or_none(track.get('dateCreated')),
             'view_count': int_or_none(stats.get('listenedAll')),
             'like_count': int_or_none(stats.get('favorited')),
@@ -134,7 +131,7 @@ class JamendoIE(InfoExtractor):
         }
 
 
-class JamendoAlbumIE(JamendoIE):
+class JamendoAlbumIE(JamendoIE):  # XXX: Do not subclass from concrete IE
     _VALID_URL = r'https?://(?:www\.)?jamendo\.com/album/(?P<id>[0-9]+)'
     _TESTS = [{
         'url': 'https://www.jamendo.com/album/121486/duck-on-cover',
@@ -148,27 +145,43 @@ class JamendoAlbumIE(JamendoIE):
             'info_dict': {
                 'id': '1032333',
                 'ext': 'flac',
-                'title': 'Shearer - Warmachine',
+                'title': 'Warmachine',
                 'artist': 'Shearer',
                 'track': 'Warmachine',
                 'timestamp': 1368089771,
                 'upload_date': '20130509',
-            }
+                'view_count': int,
+                'thumbnail': 'https://usercontent.jamendo.com?type=album&id=121486&width=300&trackid=1032333',
+                'duration': 190,
+                'license': 'by',
+                'album': 'Duck On Cover',
+                'average_rating': 4,
+                'tags': ['rock', 'drums', 'bass', 'world', 'punk', 'neutral'],
+                'like_count': int,
+            },
         }, {
             'md5': '1f358d7b2f98edfe90fd55dac0799d50',
             'info_dict': {
                 'id': '1032330',
                 'ext': 'flac',
-                'title': 'Shearer - Without Your Ghost',
+                'title': 'Without Your Ghost',
                 'artist': 'Shearer',
                 'track': 'Without Your Ghost',
                 'timestamp': 1368089771,
                 'upload_date': '20130509',
-            }
+                'duration': 192,
+                'tags': ['rock', 'drums', 'bass', 'world', 'punk'],
+                'album': 'Duck On Cover',
+                'thumbnail': 'https://usercontent.jamendo.com?type=album&id=121486&width=300&trackid=1032330',
+                'view_count': int,
+                'average_rating': 4,
+                'license': 'by',
+                'like_count': int,
+            },
         }],
         'params': {
-            'playlistend': 2
-        }
+            'playlistend': 2,
+        },
     }]
 
     def _real_extract(self, url):
@@ -181,7 +194,7 @@ class JamendoAlbumIE(JamendoIE):
             track_id = track.get('id')
             if not track_id:
                 continue
-            track_id = compat_str(track_id)
+            track_id = str(track_id)
             entries.append({
                 '_type': 'url_transparent',
                 'url': 'https://www.jamendo.com/track/' + track_id,
@@ -192,4 +205,4 @@ class JamendoAlbumIE(JamendoIE):
 
         return self.playlist_result(
             entries, album_id, album_name,
-            clean_html(try_get(album, lambda x: x['description']['en'], compat_str)))
+            clean_html(try_get(album, lambda x: x['description']['en'], str)))

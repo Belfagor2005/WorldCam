@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from ..utils import (
     ExtractorError,
@@ -47,17 +44,17 @@ class CoubIE(InfoExtractor):
         video_id = self._match_id(url)
 
         coub = self._download_json(
-            'http://coub.com/api/v2/coubs/%s.json' % video_id, video_id)
+            f'http://coub.com/api/v2/coubs/{video_id}.json', video_id)
 
         if coub.get('error'):
             raise ExtractorError(
-                '%s said: %s' % (self.IE_NAME, coub['error']), expected=True)
+                '{} said: {}'.format(self.IE_NAME, coub['error']), expected=True)
 
         title = coub['title']
 
         file_versions = coub['file_versions']
 
-        QUALITIES = ('low', 'med', 'high')
+        QUALITIES = ('low', 'med', 'high', 'higher')
 
         MOBILE = 'mobile'
         IPHONE = 'iphone'
@@ -83,11 +80,12 @@ class CoubIE(InfoExtractor):
                     continue
                 formats.append({
                     'url': item_url,
-                    'format_id': '%s-%s-%s' % (HTML5, kind, quality),
+                    'format_id': f'{HTML5}-{kind}-{quality}',
                     'filesize': int_or_none(item.get('size')),
                     'vcodec': 'none' if kind == 'audio' else None,
+                    'acodec': 'none' if kind == 'video' else None,
                     'quality': quality_key(quality),
-                    'preference': preference_key(HTML5),
+                    'source_preference': preference_key(HTML5),
                 })
 
         iphone_url = file_versions.get(IPHONE, {}).get('url')
@@ -95,18 +93,16 @@ class CoubIE(InfoExtractor):
             formats.append({
                 'url': iphone_url,
                 'format_id': IPHONE,
-                'preference': preference_key(IPHONE),
+                'source_preference': preference_key(IPHONE),
             })
 
         mobile_url = file_versions.get(MOBILE, {}).get('audio_url')
         if mobile_url:
             formats.append({
                 'url': mobile_url,
-                'format_id': '%s-audio' % MOBILE,
-                'preference': preference_key(MOBILE),
+                'format_id': f'{MOBILE}-audio',
+                'source_preference': preference_key(MOBILE),
             })
-
-        self._sort_formats(formats)
 
         thumbnail = coub.get('picture')
         duration = float_or_none(coub.get('duration'))

@@ -1,12 +1,7 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
 from ..utils import (
     float_or_none,
-    merge_dicts,
     str_or_none,
-    T,
     traverse_obj,
     url_or_none,
 )
@@ -21,7 +16,7 @@ class WhypIE(InfoExtractor):
             'url': 'https://cdn.whyp.it/50eb17cc-e9ff-4e18-b89b-dc9206a95cb1.mp3',
             'id': '18337',
             'title': 'Home Page Example Track',
-            'description': r're:(?s).+\bexample track\b',
+            'description': 'md5:bd758000fb93f3159339c852b5b9133c',
             'ext': 'mp3',
             'duration': 52.82,
             'uploader': 'Brad',
@@ -38,18 +33,18 @@ class WhypIE(InfoExtractor):
         webpage = self._download_webpage(url, unique_id)
         data = self._search_nuxt_data(webpage, unique_id)['rawTrack']
 
-        return merge_dicts({
+        return {
             'url': data['audio_url'],
             'id': unique_id,
-        }, traverse_obj(data, {
-            'title': 'title',
-            'description': 'description',
-            'duration': ('duration', T(float_or_none)),
-            'uploader': ('user', 'username'),
-            'uploader_id': ('user', 'id', T(str_or_none)),
-            'thumbnail': ('artwork_url', T(url_or_none)),
-        }), {
+            **traverse_obj(data, {
+                'title': 'title',
+                'description': 'description',
+                'duration': ('duration', {float_or_none}),
+                'uploader': ('user', 'username'),
+                'uploader_id': ('user', 'id', {str_or_none}),
+                'thumbnail': ('artwork_url', {url_or_none}),
+            }),
             'ext': 'mp3',
             'vcodec': 'none',
             'http_headers': {'Referer': 'https://whyp.it/'},
-        }, rev=True)
+        }

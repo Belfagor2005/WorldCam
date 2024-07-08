@@ -1,11 +1,5 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
-from ..utils import (
-    int_or_none,
-    url_or_none,
-)
+from ..utils import int_or_none, url_or_none
 
 
 class CamModelsIE(InfoExtractor):
@@ -13,14 +7,14 @@ class CamModelsIE(InfoExtractor):
     _TESTS = [{
         'url': 'https://www.cammodels.com/cam/AutumnKnight/',
         'only_matching': True,
-        'age_limit': 18
+        'age_limit': 18,
     }]
 
     def _real_extract(self, url):
         user_id = self._match_id(url)
 
         manifest = self._download_json(
-            'https://manifest-server.naiadsystems.com/live/s:%s.json' % user_id, user_id)
+            f'https://manifest-server.naiadsystems.com/live/s:{user_id}.json', user_id)
 
         formats = []
         thumbnails = []
@@ -42,7 +36,7 @@ class CamModelsIE(InfoExtractor):
                 format_id_list = [format_id]
                 height = int_or_none(media.get('videoHeight'))
                 if height is not None:
-                    format_id_list.append('%dp' % height)
+                    format_id_list.append(f'{height}p')
                 f = {
                     'url': media_url,
                     'format_id': '-'.join(format_id_list),
@@ -60,7 +54,7 @@ class CamModelsIE(InfoExtractor):
                     f.update({
                         'ext': 'mp4',
                         # hls skips fragments, preferring rtmp
-                        'preference': -1,
+                        'quality': -10,
                     })
                 else:
                     if format_id == 'jpeg':
@@ -72,13 +66,12 @@ class CamModelsIE(InfoExtractor):
                         })
                     continue
                 formats.append(f)
-        self._sort_formats(formats)
 
         return {
             'id': user_id,
-            'title': self._live_title(user_id),
+            'title': user_id,
             'thumbnails': thumbnails,
             'is_live': True,
             'formats': formats,
-            'age_limit': 18
+            'age_limit': 18,
         }

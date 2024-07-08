@@ -1,9 +1,7 @@
-from __future__ import unicode_literals
-
 import re
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import compat_urllib_parse_urlencode
 from ..utils import (
     ExtractorError,
     merge_dicts,
@@ -39,12 +37,8 @@ class EroProfileIE(InfoExtractor):
         'skip': 'Requires login',
     }]
 
-    def _login(self):
-        (username, password) = self._get_login_info()
-        if username is None:
-            return
-
-        query = compat_urllib_parse_urlencode({
+    def _perform_login(self, username, password):
+        query = urllib.parse.urlencode({
             'username': username,
             'password': password,
             'url': 'http://www.eroprofile.com/',
@@ -61,9 +55,6 @@ class EroProfileIE(InfoExtractor):
         redirect_url = self._search_regex(
             r'<script[^>]+?src="([^"]+)"', login_page, 'login redirect url')
         self._download_webpage(redirect_url, None, False)
-
-    def _real_initialize(self):
-        self._login()
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -90,3 +81,42 @@ class EroProfileIE(InfoExtractor):
             'title': title,
             'age_limit': 18,
         })
+
+
+class EroProfileAlbumIE(InfoExtractor):
+    _VALID_URL = r'https?://(?:www\.)?eroprofile\.com/m/videos/album/(?P<id>[^/]+)'
+    IE_NAME = 'EroProfile:album'
+
+    _TESTS = [{
+        'url': 'https://www.eroprofile.com/m/videos/album/BBW-2-893',
+        'info_dict': {
+            'id': 'BBW-2-893',
+            'title': 'BBW 2',
+        },
+        'playlist_mincount': 486,
+    },
+    ]
+
+    def _extract_from_page(self, page):
+        for url in re.findall(r'href=".*?(/m/videos/view/[^"]+)"', page):
+            yield self.url_result(f'https://www.eroprofile.com{url}', EroProfileIE.ie_key())
+
+    def _entries(self, playlist_id, first_page):
+        yield from self._extract_from_page(first_page)
+
+        page_urls = re.findall(rf'href=".*?(/m/videos/album/{playlist_id}\?pnum=(\d+))"', first_page)
+        max_page = max(int(n) for _, n in page_urls)
+
+        for n in range(2, max_page + 1):
+            url = f'https://www.eroprofile.com/m/videos/album/{playlist_id}?pnum={n}'
+            yield from self._extract_from_page(
+                self._download_webpage(url, playlist_id,
+                                       note=f'Downloading playlist page {int(n) - 1}'))
+
+    def _real_extract(self, url):
+        playlist_id = self._match_id(url)
+        first_page = self._download_webpage(url, playlist_id, note='Downloading playlist')
+        playlist_title = self._search_regex(
+            r'<title>Album: (.*) - EroProfile</title>', first_page, 'playlist_title')
+
+        return self.playlist_result(self._entries(playlist_id, first_page), playlist_id, playlist_title)

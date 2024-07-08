@@ -1,9 +1,5 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import json
-import re
-from socket import timeout
+import socket
 
 from .common import InfoExtractor
 from ..utils import (
@@ -13,6 +9,7 @@ from ..utils import (
 
 
 class DTubeIE(InfoExtractor):
+    _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?d\.tube/(?:#!/)?v/(?P<uploader_id>[0-9a-z.-]+)/(?P<id>[0-9a-z]{8})'
     _TEST = {
         'url': 'https://d.tube/#!/v/broncnutz/x380jtr1',
@@ -32,7 +29,7 @@ class DTubeIE(InfoExtractor):
     }
 
     def _real_extract(self, url):
-        uploader_id, video_id = re.match(self._VALID_URL, url).groups()
+        uploader_id, video_id = self._match_valid_url(url).groups()
         result = self._download_json('https://api.steemit.com/', video_id, data=json.dumps({
             'jsonrpc': '2.0',
             'method': 'get_content',
@@ -52,16 +49,16 @@ class DTubeIE(InfoExtractor):
 
         formats = []
         for q in ('240', '480', '720', '1080', ''):
-            video_url = canonical_url(content.get('video%shash' % q))
+            video_url = canonical_url(content.get(f'video{q}hash'))
             if not video_url:
                 continue
             format_id = (q + 'p') if q else 'Source'
             try:
-                self.to_screen('%s: Checking %s video format URL' % (video_id, format_id))
+                self.to_screen(f'{video_id}: Checking {format_id} video format URL')
                 self._downloader._opener.open(video_url, timeout=5).close()
-            except timeout:
+            except socket.timeout:
                 self.to_screen(
-                    '%s: %s URL is invalid, skipping' % (video_id, format_id))
+                    f'{video_id}: {format_id} URL is invalid, skipping')
                 continue
             formats.append({
                 'format_id': format_id,

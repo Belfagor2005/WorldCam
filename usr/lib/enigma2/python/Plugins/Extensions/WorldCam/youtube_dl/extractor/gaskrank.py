@@ -1,7 +1,5 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
+
 from .common import InfoExtractor
 from ..utils import (
     float_or_none,
@@ -24,8 +22,7 @@ class GaskrankIE(InfoExtractor):
             'display_id': 'strike-einparken-durch-anfaenger-crash-mit-groesserem-flurschaden',
             'uploader_id': 'Bikefun',
             'upload_date': '20170110',
-            'uploader_url': None,
-        }
+        },
     }, {
         'url': 'http://www.gaskrank.tv/tv/racing/isle-of-man-tt-2011-michael-du-15920.htm',
         'md5': 'c33ee32c711bc6c8224bfcbe62b23095',
@@ -39,7 +36,7 @@ class GaskrankIE(InfoExtractor):
             'uploader_id': 'IOM',
             'upload_date': '20170523',
             'uploader_url': 'www.iomtt.com',
-        }
+        },
     }]
 
     def _real_extract(self, url):
@@ -51,7 +48,7 @@ class GaskrankIE(InfoExtractor):
             webpage, default=None) or self._html_search_meta(
             'title', webpage, fatal=True)
 
-        categories = [re.match(self._VALID_URL, url).group('categories')]
+        categories = [self._match_valid_url(url).group('categories')]
 
         mobj = re.search(
             r'Video von:\s*(?P<uploader_id>[^|]*?)\s*\|\s*vom:\s*(?P<upload_date>[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9][0-9][0-9])',
@@ -96,6 +93,5 @@ class GaskrankIE(InfoExtractor):
             'view_count': view_count,
             'average_rating': average_rating,
         })
-        self._sort_formats(entry['formats'])
 
         return entry

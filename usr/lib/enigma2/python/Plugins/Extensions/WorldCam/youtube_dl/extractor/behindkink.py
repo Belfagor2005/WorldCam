@@ -1,13 +1,9 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import url_basename
 
 
 class BehindKinkIE(InfoExtractor):
+    _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?behindkink\.com/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2})/(?P<id>[^/#?_]+)'
     _TEST = {
         'url': 'http://www.behindkink.com/2014/12/05/what-are-you-passionate-about-marley-blaze/',
@@ -20,11 +16,11 @@ class BehindKinkIE(InfoExtractor):
             'upload_date': '20141205',
             'thumbnail': 'http://www.behindkink.com/wp-content/uploads/2014/12/blaze-1.jpg',
             'age_limit': 18,
-        }
+        },
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         display_id = mobj.group('id')
 
         webpage = self._download_webpage(url, display_id)

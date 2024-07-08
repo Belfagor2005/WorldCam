@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     parse_duration,
@@ -10,6 +6,7 @@ from ..utils import (
 
 
 class GodTubeIE(InfoExtractor):
+    _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?godtube\.com/watch/\?v=(?P<id>[\da-zA-Z]+)'
     _TESTS = [
         {
@@ -29,11 +26,11 @@ class GodTubeIE(InfoExtractor):
     ]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
 
         config = self._download_xml(
-            'http://www.godtube.com/resource/mediaplayer/%s.xml' % video_id.lower(),
+            f'http://www.godtube.com/resource/mediaplayer/{video_id.lower()}.xml',
             video_id, 'Downloading player config XML')
 
         video_url = config.find('file').text
@@ -43,7 +40,7 @@ class GodTubeIE(InfoExtractor):
         thumbnail = config.find('image').text
 
         media = self._download_xml(
-            'http://www.godtube.com/media/xml/?v=%s' % video_id, video_id, 'Downloading media XML')
+            f'http://www.godtube.com/media/xml/?v={video_id}', video_id, 'Downloading media XML')
 
         title = media.find('title').text
 

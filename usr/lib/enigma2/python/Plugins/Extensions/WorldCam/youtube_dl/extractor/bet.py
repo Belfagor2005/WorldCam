@@ -1,10 +1,9 @@
-from __future__ import unicode_literals
-
 from .mtv import MTVServicesInfoExtractor
 from ..utils import unified_strdate
 
 
 class BetIE(MTVServicesInfoExtractor):
+    _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?bet\.com/(?:[^/]+/)+(?P<id>.+?)\.html'
     _TESTS = [
         {
@@ -20,7 +19,7 @@ class BetIE(MTVServicesInfoExtractor):
                 'thumbnail': r're:(?i)^https?://.*\.jpg$',
                 'subtitles': {
                     'en': 'mincount:2',
-                }
+                },
             },
             'params': {
                 # rtmp download
@@ -40,16 +39,16 @@ class BetIE(MTVServicesInfoExtractor):
                 'thumbnail': r're:(?i)^https?://.*\.jpg$',
                 'subtitles': {
                     'en': 'mincount:2',
-                }
+                },
             },
             'params': {
                 # rtmp download
                 'skip_download': True,
             },
-        }
+        },
     ]
 
-    _FEED_URL = "http://feeds.mtvnservices.com/od/feed/bet-mrss-player"
+    _FEED_URL = 'http://feeds.mtvnservices.com/od/feed/bet-mrss-player'
 
     def _get_feed_query(self, uri):
         return {

@@ -1,13 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import compat_urllib_parse_urlparse
 from ..utils import (
-    determine_ext,
     ExtractorError,
+    determine_ext,
     int_or_none,
     merge_dicts,
     parse_iso8601,
@@ -19,7 +16,7 @@ from ..utils import (
 
 class NDRBaseIE(InfoExtractor):
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         display_id = next(group for group in mobj.groups() if group)
         webpage = self._download_webpage(url, display_id)
         return self._extract_embed(webpage, display_id, url)
@@ -128,13 +125,13 @@ class NDRIE(NDRBaseIE):
         # some more work needed if we only found sophoraID
         if re.match(r'^[a-z]+\d+$', embed_url):
             # get the initial part of the url path,. eg /panorama/archiv/2022/
-            parsed_url = compat_urllib_parse_urlparse(url)
-            path = self._search_regex(r'(.+/)%s' % display_id, parsed_url.path or '', 'embed URL', default='')
+            parsed_url = urllib.parse.urlparse(url)
+            path = self._search_regex(rf'(.+/){display_id}', parsed_url.path or '', 'embed URL', default='')
             # find tell-tale image with the actual ID
-            ndr_id = self._search_regex(r'%s([a-z]+\d+)(?!\.)\b' % (path, ), webpage, 'embed URL', default=None)
+            ndr_id = self._search_regex(rf'{path}([a-z]+\d+)(?!\.)\b', webpage, 'embed URL', default=None)
             # or try to use special knowledge!
             NDR_INFO_URL_TPL = 'https://www.ndr.de/info/%s-player.html'
-            embed_url = 'ndr:%s' % (ndr_id, ) if ndr_id else NDR_INFO_URL_TPL % (embed_url, )
+            embed_url = f'ndr:{ndr_id}' if ndr_id else NDR_INFO_URL_TPL % (embed_url, )
         if not embed_url:
             raise ExtractorError('Unable to extract embedUrl')
 
@@ -144,7 +141,7 @@ class NDRIE(NDRBaseIE):
         timestamp = parse_iso8601(
             self._search_regex(
                 (r'<span[^>]+itemprop="(?:datePublished|uploadDate)"[^>]+content="(?P<cont>[^"]+)"',
-                 r'\bvar\s*pdt\s*=\s*(?P<q>["\'])(?P<cont>(?:(?!(?P=q)).)+)(?P=q)', ),
+                 r'\bvar\s*pdt\s*=\s*(?P<q>["\'])(?P<cont>(?:(?!(?P=q)).)+)(?P=q)'),
                 webpage, 'upload date', group='cont', default=None))
         info = self._search_json_ld(webpage, display_id, default={})
         return merge_dicts({
@@ -203,7 +200,7 @@ class NJoyIE(NDRBaseIE):
         # find tell-tale URL with the actual ID, or ...
         video_id = self._search_regex(
             (r'''\bsrc\s*=\s*["']?(?:/\w+)+/([a-z]+\d+)(?!\.)\b''',
-             r'<iframe[^>]+id="pp_([\da-z]+)"', ),
+             r'<iframe[^>]+id="pp_([\da-z]+)"'),
             webpage, 'NDR id', default=None)
 
         description = (
@@ -214,14 +211,14 @@ class NJoyIE(NDRBaseIE):
         return {
             '_type': 'url_transparent',
             'ie_key': 'NDREmbedBase',
-            'url': 'ndr:%s' % video_id,
+            'url': f'ndr:{video_id}',
             'display_id': display_id,
             'description': description,
             'title': display_id.replace('-', ' ').strip(),
         }
 
 
-class NDREmbedBaseIE(InfoExtractor):
+class NDREmbedBaseIE(InfoExtractor):  # XXX: Conventionally, Concrete class names do not end in BaseIE
     IE_NAME = 'ndr:embed:base'
     _VALID_URL = r'(?:ndr:(?P<id_s>[\da-z]+)|https?://www\.ndr\.de/(?P<id>[\da-z]+)-ppjson\.json)'
     _TESTS = [{
@@ -233,11 +230,11 @@ class NDREmbedBaseIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id') or mobj.group('id_s')
 
         ppjson = self._download_json(
-            'http://www.ndr.de/%s-ppjson.json' % video_id, video_id)
+            f'http://www.ndr.de/{video_id}-ppjson.json', video_id)
 
         playlist = ppjson['playlist']
 
@@ -269,14 +266,11 @@ class NDREmbedBaseIE(InfoExtractor):
                     ff['vcodec'] = 'none'
                     ff['ext'] = ext or 'mp3'
                 formats.append(ff)
-        self._sort_formats(formats)
 
         config = playlist['config']
 
         live = playlist.get('config', {}).get('streamType') in ['httpVideoLive', 'httpAudioLive']
         title = config['title']
-        if live:
-            title = self._live_title(title)
         uploader = ppjson.get('config', {}).get('branding')
         upload_date = ppjson.get('config', {}).get('publicationDate')
         duration = int_or_none(config.get('duration'))
@@ -320,7 +314,7 @@ class NDREmbedBaseIE(InfoExtractor):
         }
 
 
-class NDREmbedIE(NDREmbedBaseIE):
+class NDREmbedIE(NDREmbedBaseIE):  # XXX: Do not subclass from concrete IE
     IE_NAME = 'ndr:embed'
     _VALID_URL = r'https?://(?:\w+\.)*ndr\.de/(?:[^/]+/)*(?P<id>[\da-z]+)-(?:(?:ard)?player|externalPlayer)\.html'
     _TESTS = [{
@@ -418,7 +412,7 @@ class NDREmbedIE(NDREmbedBaseIE):
     }]
 
 
-class NJoyEmbedIE(NDREmbedBaseIE):
+class NJoyEmbedIE(NDREmbedBaseIE):  # XXX: Do not subclass from concrete IE
     IE_NAME = 'njoy:embed'
     _VALID_URL = r'https?://(?:www\.)?n-joy\.de/(?:[^/]+/)*(?P<id>[\da-z]+)-(?:player|externalPlayer)_[^/]+\.html'
     _TESTS = [{

@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import unescapeHTML
 
@@ -29,11 +24,12 @@ class BaiduVideoIE(InfoExtractor):
     }]
 
     def _call_api(self, path, category, playlist_id, note):
-        return self._download_json('http://app.video.baidu.com/%s/?worktype=adnative%s&id=%s' % (
-            path, category, playlist_id), playlist_id, note)
+        return self._download_json(
+            f'http://app.video.baidu.com/{path}/?worktype=adnative{category}&id={playlist_id}',
+            playlist_id, note)
 
     def _real_extract(self, url):
-        category, playlist_id = re.match(self._VALID_URL, url).groups()
+        category, playlist_id = self._match_valid_url(url).groups()
         if category == 'show':
             category = 'tvshow'
         if category == 'tv':
@@ -49,7 +45,7 @@ class BaiduVideoIE(InfoExtractor):
             'xqsingle', category, playlist_id, 'Download episodes JSON metadata')
 
         entries = [self.url_result(
-            episode['url'], video_title=episode['title']
+            episode['url'], video_title=episode['title'],
         ) for episode in episodes_detail['videos']]
 
         return self.playlist_result(

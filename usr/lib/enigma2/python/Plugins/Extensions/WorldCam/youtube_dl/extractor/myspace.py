@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -46,18 +43,6 @@ class MySpaceIE(InfoExtractor):
             'uploader_id': 'killsorrow',
         },
     }, {
-        'add_ie': ['Youtube'],
-        'url': 'https://myspace.com/threedaysgrace/music/song/animal-i-have-become-28400208-28218041',
-        'info_dict': {
-            'id': 'xqds0B_meys',
-            'ext': 'webm',
-            'title': 'Three Days Grace - Animal I Have Become',
-            'description': 'md5:8bd86b3693e72a077cf863a8530c54bb',
-            'uploader': 'ThreeDaysGraceVEVO',
-            'uploader_id': 'ThreeDaysGraceVEVO',
-            'upload_date': '20091002',
-        },
-    }, {
         'url': 'https://myspace.com/starset2/music/song/first-light-95799905-106964426',
         'only_matching': True,
     }, {
@@ -66,7 +51,7 @@ class MySpaceIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('video_id') or mobj.group('song_id')
         is_song = mobj.group('mediatype').startswith('music/song')
         webpage = self._download_webpage(url, video_id)
@@ -110,17 +95,17 @@ class MySpaceIE(InfoExtractor):
         if is_song:
             # songs don't store any useful info in the 'context' variable
             song_data = self._search_regex(
-                r'''<button.*data-song-id=(["\'])%s\1.*''' % video_id,
+                rf'''<button.*data-song-id=(["\']){video_id}\1.*''',
                 webpage, 'song_data', default=None, group=0)
             if song_data is None:
                 # some songs in an album are not playable
                 self.report_warning(
-                    '%s: No downloadable song on this page' % video_id)
+                    f'{video_id}: No downloadable song on this page')
                 return
 
             def search_data(name):
                 return self._search_regex(
-                    r'''data-%s=([\'"])(?P<data>.*?)\1''' % name,
+                    rf'''data-{name}=([\'"])(?P<data>.*?)\1''',
                     song_data, name, default='', group='data')
             formats = formats_from_stream_urls(
                 search_data('stream-url'), search_data('hls-stream-url'),
@@ -129,15 +114,14 @@ class MySpaceIE(InfoExtractor):
                 vevo_id = search_data('vevo-id')
                 youtube_id = search_data('youtube-id')
                 if vevo_id:
-                    self.to_screen('Vevo video detected: %s' % vevo_id)
-                    return self.url_result('vevo:%s' % vevo_id, ie='Vevo')
+                    self.to_screen(f'Vevo video detected: {vevo_id}')
+                    return self.url_result(f'vevo:{vevo_id}', ie='Vevo')
                 elif youtube_id:
-                    self.to_screen('Youtube video detected: %s' % youtube_id)
+                    self.to_screen(f'Youtube video detected: {youtube_id}')
                     return self.url_result(youtube_id, ie='Youtube')
                 else:
                     raise ExtractorError(
                         'Found song but don\'t know how to download it')
-            self._sort_formats(formats)
             return {
                 'id': video_id,
                 'title': self._og_search_title(webpage),
@@ -155,7 +139,6 @@ class MySpaceIE(InfoExtractor):
                 video.get('streamUrl'), video.get('hlsStreamUrl'),
                 video.get('mp4StreamUrl'), int_or_none(video.get('width')),
                 int_or_none(video.get('height')))
-            self._sort_formats(formats)
             return {
                 'id': video_id,
                 'title': video['title'],
@@ -191,14 +174,14 @@ class MySpaceAlbumIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         playlist_id = mobj.group('id')
         display_id = mobj.group('title') + playlist_id
         webpage = self._download_webpage(url, display_id)
         tracks_paths = re.findall(r'"music:song" content="(.*?)"', webpage)
         if not tracks_paths:
             raise ExtractorError(
-                '%s: No songs found, try using proxy' % display_id,
+                f'{display_id}: No songs found, try using proxy',
                 expected=True)
         entries = [
             self.url_result(t_path, ie=MySpaceIE.ie_key())

@@ -1,10 +1,9 @@
-# coding: utf-8
-from __future__ import unicode_literals
+from .mtv import MTVServicesInfoExtractor
 
-from .spike import ParamountNetworkIE
+# TODO: Remove - Reason not used anymore - Service moved to youtube
 
 
-class TVLandIE(ParamountNetworkIE):
+class TVLandIE(MTVServicesInfoExtractor):
     IE_NAME = 'tvland.com'
     _VALID_URL = r'https?://(?:www\.)?tvland\.com/(?:video-clips|(?:full-)?episodes)/(?P<id>[^/?#.]+)'
     _FEED_URL = 'http://www.tvland.com/feeds/mrss/'
@@ -17,6 +16,7 @@ class TVLandIE(ParamountNetworkIE):
             'title': 'The Dog',
         },
         'playlist_mincount': 5,
+        'skip': '404 Not found',
     }, {
         'url': 'https://www.tvland.com/video-clips/4n87f2/younger-a-first-look-at-younger-season-6',
         'md5': 'e2c6389401cf485df26c79c247b08713',

@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
@@ -33,7 +31,7 @@ class MetacriticIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         webpage = self._download_webpage(url, video_id)
         # The xml is not well formatted, there are raw '&'
@@ -42,16 +40,15 @@ class MetacriticIE(InfoExtractor):
 
         clip = next(c for c in info.findall('playList/clip') if c.find('id').text == video_id)
         formats = []
-        for videoFile in clip.findall('httpURI/videoFile'):
-            rate_str = videoFile.find('rate').text
-            video_url = videoFile.find('filePath').text
+        for video_file in clip.findall('httpURI/videoFile'):
+            rate_str = video_file.find('rate').text
+            video_url = video_file.find('filePath').text
             formats.append({
                 'url': video_url,
                 'ext': 'mp4',
                 'format_id': rate_str,
                 'tbr': int(rate_str),
             })
-        self._sort_formats(formats)
 
         description = self._html_search_regex(r'<b>Description:</b>(.*?)</p>',
                                               webpage, 'description', flags=re.DOTALL)

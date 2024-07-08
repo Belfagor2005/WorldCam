@@ -1,11 +1,8 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .nbc import NBCIE
 
 
-class USANetworkIE(NBCIE):
-    _VALID_URL = r'https?(?P<permalink>://(?:www\.)?usanetwork\.com/[^/]+/video/[^/]+/(?P<id>\d+))'
+class USANetworkIE(NBCIE):  # XXX: Do not subclass from concrete IE
+    _VALID_URL = r'https?(?P<permalink>://(?:www\.)?usanetwork\.com/(?:[^/]+/videos?|movies?)/(?:[^/]+/)?(?P<id>\d+))'
     _TESTS = [{
         'url': 'https://www.usanetwork.com/peacock-trailers/video/intelligence-trailer/4185302',
         'info_dict': {

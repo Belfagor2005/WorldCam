@@ -1,17 +1,13 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import json
-import re
 
 from .common import InfoExtractor
-from ..compat import compat_HTTPError
+from ..networking import Request
+from ..networking.exceptions import HTTPError
 from ..utils import (
-    clean_html,
     ExtractorError,
+    clean_html,
     int_or_none,
     parse_age_limit,
-    sanitized_Request,
     try_get,
 )
 
@@ -28,24 +24,25 @@ class HRTiBaseIE(InfoExtractor):
     _APP_VERSION = '1.1'
     _APP_PUBLICATION_ID = 'all_in_one'
     _API_URL = 'http://clientapi.hrt.hr/client_api.php/config/identify/format/json'
+    _token = None
 
-    def _initialize_api(self):
+    def _initialize_pre_login(self):
         init_data = {
-            'application_publication_id': self._APP_PUBLICATION_ID
+            'application_publication_id': self._APP_PUBLICATION_ID,
         }
 
         uuid = self._download_json(
             self._API_URL, None, note='Downloading uuid',
             errnote='Unable to download uuid',
-            data=json.dumps(init_data).encode('utf-8'))['uuid']
+            data=json.dumps(init_data).encode())['uuid']
 
         app_data = {
             'uuid': uuid,
             'application_publication_id': self._APP_PUBLICATION_ID,
-            'application_version': self._APP_VERSION
+            'application_version': self._APP_VERSION,
         }
 
-        req = sanitized_Request(self._API_URL, data=json.dumps(app_data).encode('utf-8'))
+        req = Request(self._API_URL, data=json.dumps(app_data).encode())
         req.get_method = lambda: 'PUT'
 
         resources = self._download_json(
@@ -65,12 +62,7 @@ class HRTiBaseIE(InfoExtractor):
 
         self._logout_url = modules['user']['resources']['logout']['uri']
 
-    def _login(self):
-        username, password = self._get_login_info()
-        # TODO: figure out authentication with cookies
-        if username is None or password is None:
-            self.raise_login_required()
-
+    def _perform_login(self, username, password):
         auth_data = {
             'username': username,
             'password': password,
@@ -79,24 +71,25 @@ class HRTiBaseIE(InfoExtractor):
         try:
             auth_info = self._download_json(
                 self._login_url, None, note='Logging in', errnote='Unable to log in',
-                data=json.dumps(auth_data).encode('utf-8'))
+                data=json.dumps(auth_data).encode())
         except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError) and e.cause.code == 406:
-                auth_info = self._parse_json(e.cause.read().encode('utf-8'), None)
+            if isinstance(e.cause, HTTPError) and e.cause.status == 406:
+                auth_info = self._parse_json(e.cause.response.read().encode(), None)
             else:
                 raise
 
         error_message = auth_info.get('error', {}).get('message')
         if error_message:
             raise ExtractorError(
-                '%s said: %s' % (self.IE_NAME, error_message),
+                f'{self.IE_NAME} said: {error_message}',
                 expected=True)
 
         self._token = auth_info['secure_streaming_token']
 
     def _real_initialize(self):
-        self._initialize_api()
-        self._login()
+        if not self._token:
+            # TODO: figure out authentication with cookies
+            self.raise_login_required(method='password')
 
 
 class HRTiIE(HRTiBaseIE):
@@ -135,12 +128,12 @@ class HRTiIE(HRTiBaseIE):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('short_id') or mobj.group('id')
         display_id = mobj.group('display_id') or video_id
 
         video = self._download_json(
-            '%s/video_id/%s/format/json' % (self._search_url, video_id),
+            f'{self._search_url}/video_id/{video_id}/format/json',
             display_id, 'Downloading video metadata JSON')['video'][0]
 
         title_info = video['title']
@@ -151,7 +144,6 @@ class HRTiIE(HRTiBaseIE):
         formats = self._extract_m3u8_formats(
             m3u8_url, display_id, 'mp4', entry_protocol='m3u8_native',
             m3u8_id='hls')
-        self._sort_formats(formats)
 
         description = clean_html(title_info.get('summary_long'))
         age_limit = parse_age_limit(video.get('parental_control', {}).get('rating'))
@@ -191,18 +183,18 @@ class HRTiPlaylistIE(HRTiBaseIE):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         category_id = mobj.group('id')
         display_id = mobj.group('display_id') or category_id
 
         response = self._download_json(
-            '%s/category_id/%s/format/json' % (self._search_url, category_id),
+            f'{self._search_url}/category_id/{category_id}/format/json',
             display_id, 'Downloading video metadata JSON')
 
         video_ids = try_get(
             response, lambda x: x['video_listings'][0]['alternatives'][0]['list'],
             list) or [video['id'] for video in response.get('videos', []) if video.get('id')]
 
-        entries = [self.url_result('hrti:%s' % video_id) for video_id in video_ids]
+        entries = [self.url_result(f'hrti:{video_id}') for video_id in video_ids]
 
         return self.playlist_result(entries, category_id, display_id)

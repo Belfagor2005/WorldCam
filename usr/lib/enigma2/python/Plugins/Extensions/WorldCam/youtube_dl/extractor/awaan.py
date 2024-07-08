@@ -1,15 +1,9 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
 import base64
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_urllib_parse_urlencode,
-    compat_str,
-)
 from ..utils import (
+    format_field,
     int_or_none,
     parse_iso8601,
     smuggle_url,
@@ -19,20 +13,20 @@ from ..utils import (
 
 
 class AWAANIE(InfoExtractor):
-    _VALID_URL = r'https?://(?:www\.)?(?:awaan|dcndigital)\.ae/(?:#/)?show/(?P<show_id>\d+)/[^/]+(?:/(?P<video_id>\d+)/(?P<season_id>\d+))?'
+    _VALID_URL = r'https?://(?:www\.)?(?:awaan|dcndigital)\.ae/(?:#/)?show/(?P<show_id>\d+)/[^/]+(?:/(?P<id>\d+)/(?P<season_id>\d+))?'
 
     def _real_extract(self, url):
-        show_id, video_id, season_id = re.match(self._VALID_URL, url).groups()
+        show_id, video_id, season_id = self._match_valid_url(url).groups()
         if video_id and int(video_id) > 0:
             return self.url_result(
-                'http://awaan.ae/media/%s' % video_id, 'AWAANVideo')
+                f'http://awaan.ae/media/{video_id}', 'AWAANVideo')
         elif season_id and int(season_id) > 0:
             return self.url_result(smuggle_url(
-                'http://awaan.ae/program/season/%s' % season_id,
+                f'http://awaan.ae/program/season/{season_id}',
                 {'show_id': show_id}), 'AWAANSeason')
         else:
             return self.url_result(
-                'http://awaan.ae/program/%s' % show_id, 'AWAANSeason')
+                f'http://awaan.ae/program/{show_id}', 'AWAANSeason')
 
 
 class AWAANBaseIE(InfoExtractor):
@@ -42,9 +36,9 @@ class AWAANBaseIE(InfoExtractor):
 
         return {
             'id': video_id,
-            'title': self._live_title(title) if is_live else title,
+            'title': title,
             'description': video_data.get('description_en') or video_data.get('description_ar'),
-            'thumbnail': 'http://admin.mangomolo.com/analytics/%s' % img if img else None,
+            'thumbnail': format_field(img, None, 'http://admin.mangomolo.com/analytics/%s'),
             'duration': int_or_none(video_data.get('duration')),
             'timestamp': parse_iso8601(video_data.get('create_time'), ' '),
             'is_live': is_live,
@@ -78,11 +72,11 @@ class AWAANVideoIE(AWAANBaseIE):
         video_id = self._match_id(url)
 
         video_data = self._download_json(
-            'http://admin.mangomolo.com/analytics/index.php/plus/video?id=%s' % video_id,
+            f'http://admin.mangomolo.com/analytics/index.php/plus/video?id={video_id}',
             video_id, headers={'Origin': 'http://awaan.ae'})
         info = self._parse_video_data(video_data, video_id, False)
 
-        embed_url = 'http://admin.mangomolo.com/analytics/index.php/customers/embed/video?' + compat_urllib_parse_urlencode({
+        embed_url = 'http://admin.mangomolo.com/analytics/index.php/customers/embed/video?' + urllib.parse.urlencode({
             'id': video_data['id'],
             'user_id': video_data['user_id'],
             'signature': video_data['signature'],
@@ -120,11 +114,11 @@ class AWAANLiveIE(AWAANBaseIE):
         channel_id = self._match_id(url)
 
         channel_data = self._download_json(
-            'http://admin.mangomolo.com/analytics/index.php/plus/getchanneldetails?channel_id=%s' % channel_id,
+            f'http://admin.mangomolo.com/analytics/index.php/plus/getchanneldetails?channel_id={channel_id}',
             channel_id, headers={'Origin': 'http://awaan.ae'})
         info = self._parse_video_data(channel_data, channel_id, True)
 
-        embed_url = 'http://admin.mangomolo.com/analytics/index.php/customers/embed/index?' + compat_urllib_parse_urlencode({
+        embed_url = 'http://admin.mangomolo.com/analytics/index.php/customers/embed/index?' + urllib.parse.urlencode({
             'id': base64.b64encode(channel_data['user_id'].encode()).decode(),
             'channelid': base64.b64encode(channel_data['id'].encode()).decode(),
             'signature': channel_data['signature'],
@@ -154,7 +148,7 @@ class AWAANSeasonIE(InfoExtractor):
 
     def _real_extract(self, url):
         url, smuggled_data = unsmuggle_url(url, {})
-        show_id, season_id = re.match(self._VALID_URL, url).groups()
+        show_id, season_id = self._match_valid_url(url).groups()
 
         data = {}
         if season_id:
@@ -162,7 +156,7 @@ class AWAANSeasonIE(InfoExtractor):
             show_id = smuggled_data.get('show_id')
             if show_id is None:
                 season = self._download_json(
-                    'http://admin.mangomolo.com/analytics/index.php/plus/season_info?id=%s' % season_id,
+                    f'http://admin.mangomolo.com/analytics/index.php/plus/season_info?id={season_id}',
                     season_id, headers={'Origin': 'http://awaan.ae'})
                 show_id = season['id']
         data['show_id'] = show_id
@@ -170,7 +164,7 @@ class AWAANSeasonIE(InfoExtractor):
             'http://admin.mangomolo.com/analytics/index.php/plus/show',
             show_id, data=urlencode_postdata(data), headers={
                 'Origin': 'http://awaan.ae',
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
             })
         if not season_id:
             season_id = show['default_season']
@@ -180,8 +174,8 @@ class AWAANSeasonIE(InfoExtractor):
 
                 entries = []
                 for video in show['videos']:
-                    video_id = compat_str(video['id'])
+                    video_id = str(video['id'])
                     entries.append(self.url_result(
-                        'http://awaan.ae/media/%s' % video_id, 'AWAANVideo', video_id))
+                        f'http://awaan.ae/media/{video_id}', 'AWAANVideo', video_id))
 
                 return self.playlist_result(entries, season_id, title)

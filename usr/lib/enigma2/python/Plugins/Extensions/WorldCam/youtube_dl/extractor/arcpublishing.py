@@ -1,12 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
     extract_attributes,
     int_or_none,
+    join_nonempty,
     parse_iso8601,
     try_get,
 )
@@ -14,7 +12,7 @@ from ..utils import (
 
 class ArcPublishingIE(InfoExtractor):
     _UUID_REGEX = r'[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}'
-    _VALID_URL = r'arcpublishing:(?P<org>[a-z]+):(?P<id>%s)' % _UUID_REGEX
+    _VALID_URL = rf'arcpublishing:(?P<org>[a-z]+):(?P<id>{_UUID_REGEX})'
     _TESTS = [{
         # https://www.adn.com/politics/2020/11/02/video-senate-candidates-campaign-in-anchorage-on-eve-of-election-day/
         'url': 'arcpublishing:adn:8c99cb6e-b29c-4bc9-9173-7bf9979225ab',
@@ -73,20 +71,20 @@ class ArcPublishingIE(InfoExtractor):
         ], 'video-api-cdn.%s.arcpublishing.com/api'),
     ]
 
-    @staticmethod
-    def _extract_urls(webpage):
+    @classmethod
+    def _extract_embed_urls(cls, url, webpage):
         entries = []
         # https://arcpublishing.atlassian.net/wiki/spaces/POWA/overview
-        for powa_el in re.findall(r'(<div[^>]+class="[^"]*\bpowa\b[^"]*"[^>]+data-uuid="%s"[^>]*>)' % ArcPublishingIE._UUID_REGEX, webpage):
+        for powa_el in re.findall(rf'(<div[^>]+class="[^"]*\bpowa\b[^"]*"[^>]+data-uuid="{ArcPublishingIE._UUID_REGEX}"[^>]*>)', webpage):
             powa = extract_attributes(powa_el) or {}
             org = powa.get('data-org')
             uuid = powa.get('data-uuid')
             if org and uuid:
-                entries.append('arcpublishing:%s:%s' % (org, uuid))
+                entries.append(f'arcpublishing:{org}:{uuid}')
         return entries
 
     def _real_extract(self, url):
-        org, uuid = re.match(self._VALID_URL, url).groups()
+        org, uuid = self._match_valid_url(url).groups()
         for orgs, tmpl in self._POWA_DEFAULTS:
             if org in orgs:
                 base_api_tmpl = tmpl
@@ -124,15 +122,10 @@ class ArcPublishingIE(InfoExtractor):
                 formats.extend(smil_formats)
             elif stream_type in ('ts', 'hls'):
                 m3u8_formats = self._extract_m3u8_formats(
-                    s_url, uuid, 'mp4', 'm3u8' if is_live else 'm3u8_native',
-                    m3u8_id='hls', fatal=False)
-                if all([f.get('acodec') == 'none' for f in m3u8_formats]):
+                    s_url, uuid, 'mp4', live=is_live, m3u8_id='hls', fatal=False)
+                if all(f.get('acodec') == 'none' for f in m3u8_formats):
                     continue
                 for f in m3u8_formats:
-                    if f.get('acodec') == 'none':
-                        f['preference'] = -40
-                    elif f.get('vcodec') == 'none':
-                        f['preference'] = -50
                     height = f.get('height')
                     if not height:
                         continue
@@ -144,16 +137,14 @@ class ArcPublishingIE(InfoExtractor):
             else:
                 vbr = int_or_none(s.get('bitrate'))
                 formats.append({
-                    'format_id': '%s-%d' % (stream_type, vbr) if vbr else stream_type,
+                    'format_id': join_nonempty(stream_type, vbr),
                     'vbr': vbr,
                     'width': int_or_none(s.get('width')),
                     'height': int_or_none(s.get('height')),
                     'filesize': int_or_none(s.get('filesize')),
                     'url': s_url,
-                    'preference': -1,
+                    'quality': -10,
                 })
-        self._sort_formats(
-            formats, ('preference', 'width', 'height', 'vbr', 'filesize', 'tbr', 'ext', 'format_id'))
 
         subtitles = {}
         for subtitle in (try_get(video, lambda x: x['subtitles']['urls'], list) or []):
@@ -163,7 +154,7 @@ class ArcPublishingIE(InfoExtractor):
 
         return {
             'id': uuid,
-            'title': self._live_title(title) if is_live else title,
+            'title': title,
             'thumbnail': try_get(video, lambda x: x['promo_image']['url']),
             'description': try_get(video, lambda x: x['subheadlines']['basic']),
             'formats': formats,

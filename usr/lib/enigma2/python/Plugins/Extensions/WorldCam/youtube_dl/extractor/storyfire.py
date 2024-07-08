@@ -1,13 +1,10 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import functools
 
 from .common import InfoExtractor
 from ..utils import (
-    # HEADRequest,
-    int_or_none,
     OnDemandPagedList,
+    format_field,
+    int_or_none,
     smuggle_url,
 )
 
@@ -17,26 +14,14 @@ class StoryFireBaseIE(InfoExtractor):
 
     def _call_api(self, path, video_id, resource, query=None):
         return self._download_json(
-            'https://storyfire.com/app/%s/%s' % (path, video_id), video_id,
-            'Downloading %s JSON metadata' % resource, query=query)
+            f'https://storyfire.com/app/{path}/{video_id}', video_id,
+            f'Downloading {resource} JSON metadata', query=query)
 
     def _parse_video(self, video):
         title = video['title']
         vimeo_id = self._search_regex(
             r'https?://player\.vimeo\.com/external/(\d+)',
             video['vimeoVideoURL'], 'vimeo id')
-
-        # video_url = self._request_webpage(
-        #    HEADRequest(video['vimeoVideoURL']), video_id).geturl()
-        # formats = []
-        # for v_url, suffix in [(video_url, '_sep'), (video_url.replace('/sep/video/', '/video/'), '')]:
-        #    formats.extend(self._extract_m3u8_formats(
-        #        v_url, video_id, 'mp4', 'm3u8_native',
-        #        m3u8_id='hls' + suffix, fatal=False))
-        #    formats.extend(self._extract_mpd_formats(
-        #        v_url.replace('.m3u8', '.mpd'), video_id,
-        #        mpd_id='dash' + suffix, fatal=False))
-        # self._sort_formats(formats)
 
         uploader_id = video.get('hostID')
 
@@ -47,11 +32,8 @@ class StoryFireBaseIE(InfoExtractor):
             'description': video.get('description'),
             'url': smuggle_url(
                 'https://player.vimeo.com/video/' + vimeo_id, {
-                    'http_headers': {
-                        'Referer': 'https://storyfire.com/',
-                    }
+                    'referer': 'https://storyfire.com/',
                 }),
-            # 'formats': formats,
             'thumbnail': video.get('storyImage'),
             'view_count': int_or_none(video.get('views')),
             'like_count': int_or_none(video.get('likesCount')),
@@ -60,7 +42,7 @@ class StoryFireBaseIE(InfoExtractor):
             'timestamp': int_or_none(video.get('publishDate')),
             'uploader': video.get('username'),
             'uploader_id': uploader_id,
-            'uploader_url': 'https://storyfire.com/user/%s/video' % uploader_id if uploader_id else None,
+            'uploader_url': format_field(uploader_id, None, 'https://storyfire.com/user/%s/video'),
             'episode_number': int_or_none(video.get('episodeNumber') or video.get('episode_number')),
         }
 
@@ -87,7 +69,7 @@ class StoryFireIE(StoryFireBaseIE):
         'params': {
             'skip_download': True,
         },
-        'expected_warnings': ['Unable to download JSON metadata']
+        'expected_warnings': ['Unable to download JSON metadata'],
     }
 
     def _real_extract(self, url):
@@ -110,7 +92,7 @@ class StoryFireUserIE(StoryFireBaseIE):
 
     def _fetch_page(self, user_id, page):
         videos = self._call_api(
-            'publicVideos', user_id, 'page %d' % (page + 1), {
+            'publicVideos', user_id, f'page {page + 1}', {
                 'skip': page * self._PAGE_SIZE,
             })['videos']
         for video in videos:

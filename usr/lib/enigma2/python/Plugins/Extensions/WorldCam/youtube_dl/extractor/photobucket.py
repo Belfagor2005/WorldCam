@@ -1,10 +1,7 @@
-from __future__ import unicode_literals
-
 import json
-import re
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import compat_urllib_parse_unquote
 
 
 class PhotobucketIE(InfoExtractor):
@@ -19,11 +16,11 @@ class PhotobucketIE(InfoExtractor):
             'upload_date': '20130504',
             'uploader': 'rachaneronas',
             'title': 'Tired of Link Building? Try BacklinkMyDomain.com!',
-        }
+        },
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         video_extension = mobj.group('ext')
 
@@ -34,7 +31,7 @@ class PhotobucketIE(InfoExtractor):
         info_json = self._search_regex(r'Pb\.Data\.Shared\.put\(Pb\.Data\.Shared\.MEDIA, (.*?)\);',
                                        webpage, 'info json')
         info = json.loads(info_json)
-        url = compat_urllib_parse_unquote(self._html_search_regex(r'file=(.+\.mp4)', info['linkcodes']['html'], 'url'))
+        url = urllib.parse.unquote(self._html_search_regex(r'file=(.+\.mp4)', info['linkcodes']['html'], 'url'))
         return {
             'id': video_id,
             'url': url,

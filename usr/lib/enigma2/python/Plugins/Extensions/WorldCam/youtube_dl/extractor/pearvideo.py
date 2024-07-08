@@ -1,11 +1,9 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
     qualities,
+    traverse_obj,
     unified_timestamp,
 )
 
@@ -21,7 +19,7 @@ class PearVideoIE(InfoExtractor):
             'description': 'md5:01d576b747de71be0ee85eb7cac25f9d',
             'timestamp': 1494275280,
             'upload_date': '20170508',
-        }
+        },
     }
 
     def _real_extract(self, url):
@@ -39,7 +37,14 @@ class PearVideoIE(InfoExtractor):
         } for mobj in re.finditer(
             r'(?P<id>[a-zA-Z]+)Url\s*=\s*(["\'])(?P<url>(?:https?:)?//.+?)\2',
             webpage)]
-        self._sort_formats(formats)
+        if not formats:
+            info = self._download_json(
+                'https://www.pearvideo.com/videoStatus.jsp', video_id=video_id,
+                query={'contId': video_id}, headers={'Referer': url})
+            formats = [{
+                'format_id': k,
+                'url': v.replace(info['systemTime'], f'cont-{video_id}') if k == 'srcUrl' else v,
+            } for k, v in traverse_obj(info, ('videoInfo', 'videos'), default={}).items() if v]
 
         title = self._search_regex(
             (r'<h1[^>]+\bclass=(["\'])video-tt\1[^>]*>(?P<value>[^<]+)',

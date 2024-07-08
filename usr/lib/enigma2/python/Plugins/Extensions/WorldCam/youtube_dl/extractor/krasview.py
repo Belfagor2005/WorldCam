@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import json
 
 from .common import InfoExtractor
@@ -11,6 +8,7 @@ from ..utils import (
 
 
 class KrasViewIE(InfoExtractor):
+    _WORKING = False
     IE_DESC = 'Красвью'
     _VALID_URL = r'https?://krasview\.ru/(?:video|embed)/(?P<id>\d+)'
 

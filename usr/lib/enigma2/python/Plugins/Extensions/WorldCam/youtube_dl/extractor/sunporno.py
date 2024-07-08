@@ -1,13 +1,11 @@
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
-    parse_duration,
-    int_or_none,
-    qualities,
     determine_ext,
+    int_or_none,
+    parse_duration,
+    qualities,
 )
 
 
@@ -24,7 +22,7 @@ class SunPornoIE(InfoExtractor):
             'thumbnail': r're:^https?://.*\.jpg$',
             'duration': 302,
             'age_limit': 18,
-        }
+        },
     }, {
         'url': 'http://embeds.sunporno.com/embed/807778',
         'only_matching': True,
@@ -34,10 +32,9 @@ class SunPornoIE(InfoExtractor):
         video_id = self._match_id(url)
 
         webpage = self._download_webpage(
-            'http://www.sunporno.com/videos/%s' % video_id, video_id)
+            f'http://www.sunporno.com/videos/{video_id}', video_id)
 
-        title = self._html_search_regex(
-            r'<title>([^<]+)</title>', webpage, 'title')
+        title = self._html_extract_title(webpage)
         description = self._html_search_meta(
             'description', webpage, 'description')
         thumbnail = self._html_search_regex(
@@ -64,7 +61,6 @@ class SunPornoIE(InfoExtractor):
                 'format_id': video_ext,
                 'quality': quality(video_ext),
             })
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

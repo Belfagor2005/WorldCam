@@ -1,18 +1,12 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import calendar
-import datetime
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     clean_html,
-    extract_timezone,
+    determine_ext,
     int_or_none,
     parse_duration,
     parse_resolution,
     try_get,
+    unified_timestamp,
     url_or_none,
 )
 
@@ -30,7 +24,7 @@ class CCMAIE(InfoExtractor):
             'timestamp': 1478608140,
             'upload_date': '20161108',
             'age_limit': 0,
-        }
+        },
     }, {
         'url': 'http://www.ccma.cat/catradio/alacarta/programa/el-consell-de-savis-analitza-el-derbi/audio/943685/',
         'md5': 'fa3e38f269329a278271276330261425',
@@ -43,7 +37,7 @@ class CCMAIE(InfoExtractor):
             'timestamp': 1494622500,
             'vcodec': 'none',
             'categories': ['Esports'],
-        }
+        },
     }, {
         'url': 'http://www.ccma.cat/tv3/alacarta/crims/crims-josep-tallada-lespereu-me-capitol-1/video/6031387/',
         'md5': 'b43c3d3486f430f3032b5b160d80cbc3',
@@ -57,16 +51,17 @@ class CCMAIE(InfoExtractor):
             'subtitles': 'mincount:4',
             'age_limit': 16,
             'series': 'Crims',
-        }
+        },
     }]
 
     def _real_extract(self, url):
-        media_type, media_id = re.match(self._VALID_URL, url).groups()
+        media_type, media_id = self._match_valid_url(url).groups()
 
         media = self._download_json(
             'http://dinamics.ccma.cat/pvideo/media.jsp', media_id, query={
                 'media': media_type,
                 'idint': media_id,
+                'format': 'dm',
             })
 
         formats = []
@@ -75,6 +70,10 @@ class CCMAIE(InfoExtractor):
             for format_ in media_url:
                 format_url = url_or_none(format_.get('file'))
                 if not format_url:
+                    continue
+                if determine_ext(format_url) == 'mpd':
+                    formats.extend(self._extract_mpd_formats(
+                        format_url, media_id, mpd_id='dash', fatal=False))
                     continue
                 label = format_.get('label')
                 f = parse_resolution(label)
@@ -88,7 +87,6 @@ class CCMAIE(InfoExtractor):
                 'url': media_url,
                 'vcodec': 'none' if media_type == 'audio' else None,
             })
-        self._sort_formats(formats)
 
         informacio = media['informacio']
         title = informacio['titol']
@@ -96,14 +94,8 @@ class CCMAIE(InfoExtractor):
         duration = int_or_none(durada.get('milisegons'), 1000) or parse_duration(durada.get('text'))
         tematica = try_get(informacio, lambda x: x['tematica']['text'])
 
-        timestamp = None
         data_utc = try_get(informacio, lambda x: x['data_emissio']['utc'])
-        try:
-            timezone, data_utc = extract_timezone(data_utc)
-            timestamp = calendar.timegm((datetime.datetime.strptime(
-                data_utc, '%Y-%d-%mT%H:%M:%S') - timezone).timetuple())
-        except TypeError:
-            pass
+        timestamp = unified_timestamp(data_utc)
 
         subtitles = {}
         subtitols = media.get('subtitols') or []

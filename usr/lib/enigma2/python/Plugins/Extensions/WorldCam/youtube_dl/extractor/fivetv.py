@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import int_or_none
 
@@ -66,7 +61,7 @@ class FiveTVIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id') or mobj.group('path')
 
         webpage = self._download_webpage(url, video_id)
@@ -76,8 +71,7 @@ class FiveTVIE(InfoExtractor):
              r'<a[^>]+?href="([^"]+)"[^>]+?class="videoplayer"'],
             webpage, 'video url')
 
-        title = self._og_search_title(webpage, default=None) or self._search_regex(
-            r'<title>([^<]+)</title>', webpage, 'title')
+        title = self._generic_title('', webpage)
         duration = int_or_none(self._og_search_property(
             'video:duration', webpage, 'duration', default=None))
 

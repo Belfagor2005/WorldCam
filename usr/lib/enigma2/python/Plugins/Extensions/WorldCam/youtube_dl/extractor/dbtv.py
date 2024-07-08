@@ -1,13 +1,9 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 
 
 class DBTVIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?dagbladet\.no/video/(?:(?:embed|(?P<display_id>[^/]+))/)?(?P<id>[0-9A-Za-z_-]{11}|[a-zA-Z0-9]{8})'
+    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//(?:www\.)?dagbladet\.no/video/embed/(?:[0-9A-Za-z_-]{11}|[a-zA-Z0-9]{8}).*?)\1']
     _TESTS = [{
         'url': 'https://www.dagbladet.no/video/PynxJnNWChE/',
         'md5': 'b8f850ba1860adbda668d367f9b77699',
@@ -22,7 +18,7 @@ class DBTVIE(InfoExtractor):
             'uploader_id': 'UCk5pvsyZJoYJBd7_oFPTlRQ',
             'uploader': 'Dagbladet',
         },
-        'add_ie': ['Youtube']
+        'add_ie': ['Youtube'],
     }, {
         'url': 'https://www.dagbladet.no/video/embed/xlGmyIeN9Jo/?autoplay=false',
         'only_matching': True,
@@ -31,14 +27,8 @@ class DBTVIE(InfoExtractor):
         'only_matching': True,
     }]
 
-    @staticmethod
-    def _extract_urls(webpage):
-        return [url for _, url in re.findall(
-            r'<iframe[^>]+src=(["\'])((?:https?:)?//(?:www\.)?dagbladet\.no/video/embed/(?:[0-9A-Za-z_-]{11}|[a-zA-Z0-9]{8}).*?)\1',
-            webpage)]
-
     def _real_extract(self, url):
-        display_id, video_id = re.match(self._VALID_URL, url).groups()
+        display_id, video_id = self._match_valid_url(url).groups()
         info = {
             '_type': 'url_transparent',
             'id': video_id,

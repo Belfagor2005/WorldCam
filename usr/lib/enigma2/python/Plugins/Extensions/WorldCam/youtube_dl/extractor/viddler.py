@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     float_or_none,
@@ -11,6 +7,8 @@ from ..utils import (
 
 class ViddlerIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?viddler\.com/(?:v|embed|player)/(?P<id>[a-z0-9]+)(?:.+?\bsecret=(\d+))?'
+    _EMBED_REGEX = [r'<(?:iframe[^>]+?src|param[^>]+?value)=(["\'])(?P<url>(?:https?:)?//(?:www\.)?viddler\.com/(?:embed|player)/.+?)\1']
+
     _TESTS = [{
         'url': 'http://www.viddler.com/v/43903784',
         'md5': '9eee21161d2c7f5b39690c3e325fab2f',
@@ -27,7 +25,7 @@ class ViddlerIE(InfoExtractor):
             'view_count': int,
             'comment_count': int,
             'categories': ['video content', 'high quality video', 'video made easy', 'how to produce video with limited resources', 'viddler'],
-        }
+        },
     }, {
         'url': 'http://www.viddler.com/v/4d03aad9/',
         'md5': 'f12c5a7fa839c47a79363bfdf69404fb',
@@ -40,7 +38,7 @@ class ViddlerIE(InfoExtractor):
             'timestamp': 1422285291,
             'view_count': int,
             'comment_count': int,
-        }
+        },
     }, {
         'url': 'http://www.viddler.com/player/221ebbbd/0/',
         'md5': '740511f61d3d1bb71dc14a0fe01a1c10',
@@ -54,7 +52,7 @@ class ViddlerIE(InfoExtractor):
             'timestamp': 1411997190,
             'view_count': int,
             'comment_count': int,
-        }
+        },
     }, {
         # secret protected
         'url': 'http://www.viddler.com/v/890c0985?secret=34051570',
@@ -75,7 +73,7 @@ class ViddlerIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_id, secret = re.match(self._VALID_URL, url).groups()
+        video_id, secret = self._match_valid_url(url).groups()
 
         query = {
             'video_id': video_id,
@@ -118,7 +116,6 @@ class ViddlerIE(InfoExtractor):
                 f['format_id'] = format_id + '-html5'
                 f['source_preference'] = 0
                 formats.append(f)
-        self._sort_formats(formats)
 
         categories = [
             t.get('text') for t in data.get('tags', []) if 'text' in t]

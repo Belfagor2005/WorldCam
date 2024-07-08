@@ -1,11 +1,9 @@
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
 from ..utils import (
-    decode_packed_codes,
     ExtractorError,
+    decode_packed_codes,
     urlencode_postdata,
 )
 
@@ -14,14 +12,7 @@ class SCTEBaseIE(InfoExtractor):
     _LOGIN_URL = 'https://www.scte.org/SCTE/Sign_In.aspx'
     _NETRC_MACHINE = 'scte'
 
-    def _real_initialize(self):
-        self._login()
-
-    def _login(self):
-        username, password = self._get_login_info()
-        if username is None:
-            return
-
+    def _perform_login(self, username, password):
         login_popup = self._download_webpage(
             self._LOGIN_URL, None, 'Downloading login popup')
 
@@ -50,11 +41,12 @@ class SCTEBaseIE(InfoExtractor):
                 r'(?s)<[^>]+class=["\']AsiError["\'][^>]*>(.+?)</',
                 response, 'error message', default=None)
             if error:
-                raise ExtractorError('Unable to login: %s' % error, expected=True)
+                raise ExtractorError(f'Unable to login: {error}', expected=True)
             raise ExtractorError('Unable to log in')
 
 
 class SCTEIE(SCTEBaseIE):
+    _WORKING = False
     _VALID_URL = r'https?://learning\.scte\.org/mod/scorm/view\.php?.*?\bid=(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://learning.scte.org/mod/scorm/view.php?id=31484',
@@ -74,9 +66,9 @@ class SCTEIE(SCTEBaseIE):
         title = self._search_regex(r'<h1>(.+?)</h1>', webpage, 'title')
 
         context_id = self._search_regex(r'context-(\d+)', webpage, video_id)
-        content_base = 'https://learning.scte.org/pluginfile.php/%s/mod_scorm/content/8/' % context_id
+        content_base = f'https://learning.scte.org/pluginfile.php/{context_id}/mod_scorm/content/8/'
         context = decode_packed_codes(self._download_webpage(
-            '%smobile/data.js' % content_base, video_id))
+            f'{content_base}mobile/data.js', video_id))
 
         data = self._parse_xml(
             self._search_regex(
@@ -102,6 +94,7 @@ class SCTEIE(SCTEBaseIE):
 
 
 class SCTECourseIE(SCTEBaseIE):
+    _WORKING = False
     _VALID_URL = r'https?://learning\.scte\.org/(?:mod/sub)?course/view\.php?.*?\bid=(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://learning.scte.org/mod/subcourse/view.php?id=31491',

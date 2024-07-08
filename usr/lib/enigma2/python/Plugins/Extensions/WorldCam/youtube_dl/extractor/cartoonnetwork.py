@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 from .turner import TurnerBaseIE
 from ..utils import int_or_none
 
@@ -30,7 +27,7 @@ class CartoonNetworkIE(TurnerBaseIE):
             if content_re:
                 metadata_re = r'|video_metadata\.content_' + content_re
             return self._search_regex(
-                r'(?:_cnglobal\.currentVideo\.%s%s)\s*=\s*"(%s)";' % (global_re, metadata_re, value_re),
+                rf'(?:_cnglobal\.currentVideo\.{global_re}{metadata_re})\s*=\s*"({value_re})";',
                 webpage, name, fatal=fatal)
 
         media_id = find_field('mediaId', 'media id', 'id', '[0-9a-f]{40}', True)

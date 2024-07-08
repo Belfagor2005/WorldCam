@@ -1,23 +1,19 @@
-# coding: utf-8
-
-from __future__ import unicode_literals
-
 from .common import InfoExtractor
-from ..compat import compat_HTTPError
+from ..networking.exceptions import HTTPError
 from ..utils import (
     ExtractorError,
     int_or_none,
     str_or_none,
     strip_or_none,
-    try_get,
+    traverse_obj,
     unified_timestamp,
-    update_url_query,
 )
 
 
 class KakaoIE(InfoExtractor):
     _VALID_URL = r'https?://(?:play-)?tv\.kakao\.com/(?:channel/\d+|embed/player)/cliplink/(?P<id>\d+|[^?#&]+@my)'
-    _API_BASE_TMPL = 'http://tv.kakao.com/api/v1/ft/cliplinks/%s/'
+    _API_BASE_TMPL = 'http://tv.kakao.com/api/v1/ft/playmeta/cliplink/%s/'
+    _CDN_API = 'https://tv.kakao.com/katz/v1/ft/cliplink/%s/readyNplay?'
 
     _TESTS = [{
         'url': 'http://tv.kakao.com/channel/2671005/cliplink/301965083',
@@ -26,11 +22,18 @@ class KakaoIE(InfoExtractor):
             'id': '301965083',
             'ext': 'mp4',
             'title': '乃木坂46 バナナマン 「3期生紹介コーナーが始動！顔高低差GPも！」 『乃木坂工事中』',
+            'description': '',
             'uploader_id': '2671005',
             'uploader': '그랑그랑이',
             'timestamp': 1488160199,
             'upload_date': '20170227',
-        }
+            'like_count': int,
+            'thumbnail': r're:http://.+/thumb\.png',
+            'tags': ['乃木坂'],
+            'view_count': int,
+            'duration': 1503,
+            'comment_count': int,
+        },
     }, {
         'url': 'http://tv.kakao.com/channel/2653210/cliplink/300103180',
         'md5': 'a8917742069a4dd442516b86e7d66529',
@@ -43,7 +46,13 @@ class KakaoIE(InfoExtractor):
             'uploader': '쇼! 음악중심',
             'timestamp': 1485684628,
             'upload_date': '20170129',
-        }
+            'like_count': int,
+            'thumbnail': r're:http://.+/thumb\.png',
+            'tags': 'count:28',
+            'view_count': int,
+            'duration': 184,
+            'comment_count': int,
+        },
     }, {
         # geo restricted
         'url': 'https://tv.kakao.com/channel/3643855/cliplink/412069491',
@@ -52,18 +61,8 @@ class KakaoIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        display_id = video_id.rstrip('@my')
         api_base = self._API_BASE_TMPL % video_id
-
-        player_header = {
-            'Referer': update_url_query(
-                'http://tv.kakao.com/embed/player/cliplink/%s' % video_id, {
-                    'service': 'kakao_tv',
-                    'autoplay': '1',
-                    'profile': 'HIGH',
-                    'wmode': 'transparent',
-                })
-        }
+        cdn_api_base = self._CDN_API % video_id
 
         query = {
             'player': 'monet_html5',
@@ -75,64 +74,74 @@ class KakaoIE(InfoExtractor):
             'fields': ','.join([
                 '-*', 'tid', 'clipLink', 'displayTitle', 'clip', 'title',
                 'description', 'channelId', 'createTime', 'duration', 'playCount',
-                'likeCount', 'commentCount', 'tagList', 'channel', 'name', 'thumbnailUrl',
-                'videoOutputList', 'width', 'height', 'kbps', 'profile', 'label'])
+                'likeCount', 'commentCount', 'tagList', 'channel', 'name',
+                'clipChapterThumbnailList', 'thumbnailUrl', 'timeInSec', 'isDefault',
+                'videoOutputList', 'width', 'height', 'kbps', 'profile', 'label']),
         }
 
-        impress = self._download_json(
-            api_base + 'impress', display_id, 'Downloading video info',
-            query=query, headers=player_header)
+        api_json = self._download_json(
+            api_base, video_id, 'Downloading video info')
 
-        clip_link = impress['clipLink']
+        clip_link = api_json['clipLink']
         clip = clip_link['clip']
 
         title = clip.get('title') or clip_link.get('displayTitle')
 
-        query.update({
-            'fields': '-*,code,message,url',
-            'tid': impress.get('tid') or '',
-        })
-
         formats = []
-        for fmt in (clip.get('videoOutputList') or []):
+        for fmt in clip.get('videoOutputList') or []:
+            profile_name = fmt.get('profile')
+            if not profile_name or profile_name == 'AUDIO':
+                continue
+            query.update({
+                'profile': profile_name,
+                'fields': '-*,code,message,url',
+            })
             try:
-                profile_name = fmt['profile']
-                if profile_name == 'AUDIO':
-                    continue
-                query['profile'] = profile_name
-                try:
-                    fmt_url_json = self._download_json(
-                        api_base + 'raw/videolocation', display_id,
-                        'Downloading video URL for profile %s' % profile_name,
-                        query=query, headers=player_header)
-                except ExtractorError as e:
-                    if isinstance(e.cause, compat_HTTPError) and e.cause.code == 403:
-                        resp = self._parse_json(e.cause.read().decode(), video_id)
-                        if resp.get('code') == 'GeoBlocked':
-                            self.raise_geo_restricted()
-                    continue
+                fmt_url_json = self._download_json(
+                    cdn_api_base, video_id, query=query,
+                    note=f'Downloading video URL for profile {profile_name}')
+            except ExtractorError as e:
+                if isinstance(e.cause, HTTPError) and e.cause.status == 403:
+                    resp = self._parse_json(e.cause.response.read().decode(), video_id)
+                    if resp.get('code') == 'GeoBlocked':
+                        self.raise_geo_restricted()
+                raise
 
-                fmt_url = fmt_url_json['url']
-                formats.append({
-                    'url': fmt_url,
-                    'format_id': profile_name,
-                    'width': int_or_none(fmt.get('width')),
-                    'height': int_or_none(fmt.get('height')),
-                    'format_note': fmt.get('label'),
-                    'filesize': int_or_none(fmt.get('filesize')),
-                    'tbr': int_or_none(fmt.get('kbps')),
-                })
-            except KeyError:
-                pass
-        self._sort_formats(formats)
+            fmt_url = traverse_obj(fmt_url_json, ('videoLocation', 'url'))
+            if not fmt_url:
+                continue
+
+            formats.append({
+                'url': fmt_url,
+                'format_id': profile_name,
+                'width': int_or_none(fmt.get('width')),
+                'height': int_or_none(fmt.get('height')),
+                'format_note': fmt.get('label'),
+                'filesize': int_or_none(fmt.get('filesize')),
+                'tbr': int_or_none(fmt.get('kbps')),
+            })
+
+        thumbs = []
+        for thumb in clip.get('clipChapterThumbnailList') or []:
+            thumbs.append({
+                'url': thumb.get('thumbnailUrl'),
+                'id': str(thumb.get('timeInSec')),
+                'preference': -1 if thumb.get('isDefault') else 0,
+            })
+        top_thumbnail = clip.get('thumbnailUrl')
+        if top_thumbnail:
+            thumbs.append({
+                'url': top_thumbnail,
+                'preference': 10,
+            })
 
         return {
-            'id': display_id,
+            'id': video_id,
             'title': title,
             'description': strip_or_none(clip.get('description')),
-            'uploader': try_get(clip_link, lambda x: x['channel']['name']),
+            'uploader': traverse_obj(clip_link, ('channel', 'name')),
             'uploader_id': str_or_none(clip_link.get('channelId')),
-            'thumbnail': clip.get('thumbnailUrl'),
+            'thumbnails': thumbs,
             'timestamp': unified_timestamp(clip_link.get('createTime')),
             'duration': int_or_none(clip.get('duration')),
             'view_count': int_or_none(clip.get('playCount')),

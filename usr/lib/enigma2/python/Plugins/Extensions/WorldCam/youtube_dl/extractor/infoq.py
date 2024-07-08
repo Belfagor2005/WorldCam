@@ -1,20 +1,13 @@
-# coding: utf-8
+import base64
+import urllib.parse
 
-from __future__ import unicode_literals
+from .bokecc import BokeCCBaseIE
 from ..utils import (
     ExtractorError,
-)
-
-from ..compat import (
-    compat_b64decode,
-    compat_urllib_parse_unquote,
-    compat_urlparse,
-)
-from ..utils import (
     determine_ext,
+    traverse_obj,
     update_url_query,
 )
-from .bokecc import BokeCCBaseIE
 
 
 class InfoQIE(BokeCCBaseIE):
@@ -41,6 +34,7 @@ class InfoQIE(BokeCCBaseIE):
             'ext': 'flv',
             'description': 'md5:308d981fb28fa42f49f9568322c683ff',
         },
+        'skip': 'Sorry, the page you visited does not exist',
     }, {
         'url': 'https://www.infoq.com/presentations/Simple-Made-Easy',
         'md5': '0e34642d4d9ef44bf86f66f6399672db',
@@ -63,7 +57,7 @@ class InfoQIE(BokeCCBaseIE):
         encoded_id = self._search_regex(
             r"jsclassref\s*=\s*'([^']*)'", webpage, 'encoded id', default=None)
 
-        real_id = compat_urllib_parse_unquote(compat_b64decode(encoded_id).decode('utf-8'))
+        real_id = urllib.parse.unquote(base64.b64decode(encoded_id).decode('utf-8'))
         playpath = 'mp4:' + real_id
 
         return [{
@@ -94,17 +88,15 @@ class InfoQIE(BokeCCBaseIE):
 
     def _extract_http_audio(self, webpage, video_id):
         try:
-            fields = self._form_hidden_inputs('mp3Form', webpage)
+            http_audio_url = traverse_obj(self._form_hidden_inputs('mp3Form', webpage), 'filename')
         except ExtractorError:
-            fields = {}
-
-        http_audio_url = fields.get('filename')
+            http_audio_url = None
         if not http_audio_url:
             return []
 
         # base URL is found in the Location header in the response returned by
         # GET https://www.infoq.com/mp3download.action?filename=... when logged in.
-        http_audio_url = compat_urlparse.urljoin('http://ress.infoq.com/downloads/mp3downloads/', http_audio_url)
+        http_audio_url = urllib.parse.urljoin('http://ress.infoq.com/downloads/mp3downloads/', http_audio_url)
         http_audio_url = update_url_query(http_audio_url, self._extract_cf_auth(webpage))
 
         # audio file seem to be missing some times even if there is a download link
@@ -122,7 +114,7 @@ class InfoQIE(BokeCCBaseIE):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        video_title = self._html_search_regex(r'<title>(.*?)</title>', webpage, 'title')
+        video_title = self._html_extract_title(webpage)
         video_description = self._html_search_meta('description', webpage, 'description')
 
         if '/cn/' in url:
@@ -133,8 +125,6 @@ class InfoQIE(BokeCCBaseIE):
                 self._extract_rtmp_video(webpage)
                 + self._extract_http_video(webpage)
                 + self._extract_http_audio(webpage, video_id))
-
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

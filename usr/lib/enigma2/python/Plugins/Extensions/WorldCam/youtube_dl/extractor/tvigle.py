@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     ExtractorError,
@@ -18,6 +13,7 @@ class TvigleIE(InfoExtractor):
     IE_NAME = 'tvigle'
     IE_DESC = 'Интернет-телевидение Tvigle.ru'
     _VALID_URL = r'https?://(?:www\.)?(?:tvigle\.ru/(?:[^/]+/)+(?P<display_id>[^/]+)/$|cloud\.tvigle\.ru/video/(?P<id>\d+))'
+    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//cloud\.tvigle\.ru/video/.+?)\1']
 
     _GEO_BYPASS = False
     _GEO_COUNTRIES = ['RU']
@@ -50,11 +46,11 @@ class TvigleIE(InfoExtractor):
         }, {
             'url': 'https://cloud.tvigle.ru/video/5267604/',
             'only_matching': True,
-        }
+        },
     ]
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         display_id = mobj.group('display_id')
 
@@ -67,7 +63,7 @@ class TvigleIE(InfoExtractor):
                 webpage, 'video id')
 
         video_data = self._download_json(
-            'http://cloud.tvigle.ru/api/play/video/%s/' % video_id, display_id)
+            f'http://cloud.tvigle.ru/api/play/video/{video_id}/', display_id)
 
         item = video_data['playlist']['items'][0]
 
@@ -80,7 +76,7 @@ class TvigleIE(InfoExtractor):
                     msg=error_message, countries=self._GEO_COUNTRIES)
             else:
                 raise ExtractorError(
-                    '%s returned error: %s' % (self.IE_NAME, error_message),
+                    f'{self.IE_NAME} returned error: {error_message}',
                     expected=True)
 
         title = item['title']
@@ -119,12 +115,11 @@ class TvigleIE(InfoExtractor):
                         item, lambda x: x['video_files_size'][vcodec][format_id]))
                     formats.append({
                         'url': video_url,
-                        'format_id': '%s-%s' % (vcodec, format_id),
+                        'format_id': f'{vcodec}-{format_id}',
                         'vcodec': vcodec,
                         'height': int_or_none(height),
                         'filesize': filesize,
                     })
-        self._sort_formats(formats)
 
         return {
             'id': video_id,

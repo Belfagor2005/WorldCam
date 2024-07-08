@@ -1,13 +1,10 @@
-from __future__ import unicode_literals
-
 import random
-import re
 import string
+import urllib.parse
 
 from .discoverygo import DiscoveryGoBaseIE
-from ..compat import compat_urllib_parse_unquote
+from ..networking.exceptions import HTTPError
 from ..utils import ExtractorError
-from ..compat import compat_HTTPError
 
 
 class DiscoveryIE(DiscoveryGoBaseIE):
@@ -45,7 +42,7 @@ class DiscoveryIE(DiscoveryGoBaseIE):
         },
         'params': {
             'skip_download': True,  # requires ffmpeg
-        }
+        },
     }, {
         'url': 'https://www.investigationdiscovery.com/tv-shows/final-vision/full-episodes/final-vision',
         'only_matching': True,
@@ -62,7 +59,7 @@ class DiscoveryIE(DiscoveryGoBaseIE):
     _API_BASE_URL = 'https://api.discovery.com/v1/'
 
     def _real_extract(self, url):
-        site, show_slug, display_id = re.match(self._VALID_URL, url).groups()
+        site, show_slug, display_id = self._match_valid_url(url).groups()
 
         access_token = None
         cookies = self._get_cookies(url)
@@ -70,18 +67,18 @@ class DiscoveryIE(DiscoveryGoBaseIE):
         # prefer Affiliate Auth Token over Anonymous Auth Token
         auth_storage_cookie = cookies.get('eosAf') or cookies.get('eosAn')
         if auth_storage_cookie and auth_storage_cookie.value:
-            auth_storage = self._parse_json(compat_urllib_parse_unquote(
-                compat_urllib_parse_unquote(auth_storage_cookie.value)),
+            auth_storage = self._parse_json(urllib.parse.unquote(
+                urllib.parse.unquote(auth_storage_cookie.value)),
                 display_id, fatal=False) or {}
             access_token = auth_storage.get('a') or auth_storage.get('access_token')
 
         if not access_token:
             access_token = self._download_json(
-                'https://%s.com/anonymous' % site, display_id,
+                f'https://{site}.com/anonymous', display_id,
                 'Downloading token JSON metadata', query={
                     'authRel': 'authorization',
                     'client_id': '3020a40c2356a645b4b4',
-                    'nonce': ''.join([random.choice(string.ascii_letters) for _ in range(32)]),
+                    'nonce': ''.join(random.choices(string.ascii_letters, k=32)),
                     'redirectUri': 'https://www.discovery.com/',
                 })['access_token']
 
@@ -103,9 +100,9 @@ class DiscoveryIE(DiscoveryGoBaseIE):
                 self._API_BASE_URL + 'streaming/video/' + video_id,
                 display_id, 'Downloading streaming JSON metadata', headers=headers)
         except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError) and e.cause.code in (401, 403):
+            if isinstance(e.cause, HTTPError) and e.cause.status in (401, 403):
                 e_description = self._parse_json(
-                    e.cause.read().decode(), display_id)['description']
+                    e.cause.response.read().decode(), display_id)['description']
                 if 'resource not available for country' in e_description:
                     self.raise_geo_restricted(countries=self._GEO_COUNTRIES)
                 if 'Authorized Networks' in e_description:

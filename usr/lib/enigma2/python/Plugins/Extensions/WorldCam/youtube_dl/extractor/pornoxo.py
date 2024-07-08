@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     str_to_int,
@@ -9,6 +5,7 @@ from ..utils import (
 
 
 class PornoXOIE(InfoExtractor):
+    _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?pornoxo\.com/videos/(?P<id>\d+)/(?P<display_id>[^/]+)\.html'
     _TEST = {
         'url': 'http://www.pornoxo.com/videos/7564/striptease-from-sexy-secretary.html',
@@ -22,11 +19,11 @@ class PornoXOIE(InfoExtractor):
             'categories': list,  # NSFW
             'thumbnail': r're:https?://.*\.jpg$',
             'age_limit': 18,
-        }
+        },
     }
 
     def _real_extract(self, url):
-        mobj = re.match(self._VALID_URL, url)
+        mobj = self._match_valid_url(url)
         video_id, display_id = mobj.groups()
 
         webpage = self._download_webpage(url, video_id)

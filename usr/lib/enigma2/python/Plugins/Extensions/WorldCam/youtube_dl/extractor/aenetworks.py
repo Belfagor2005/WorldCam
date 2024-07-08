@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .theplatform import ThePlatformIE
 from ..utils import (
     ExtractorError,
@@ -15,7 +10,7 @@ from ..utils import (
 )
 
 
-class AENetworksBaseIE(ThePlatformIE):
+class AENetworksBaseIE(ThePlatformIE):  # XXX: Do not subclass from concrete IE
     _BASE_URL_REGEX = r'''(?x)https?://
         (?:(?:www|play|watch)\.)?
         (?P<domain>
@@ -69,7 +64,6 @@ class AENetworksBaseIE(ThePlatformIE):
             subtitles = self._merge_subtitles(subtitles, tp_subtitles)
         if last_e and not formats:
             raise last_e
-        self._sort_formats(formats)
         return {
             'id': video_id,
             'formats': formats,
@@ -79,8 +73,8 @@ class AENetworksBaseIE(ThePlatformIE):
     def _extract_aetn_info(self, domain, filter_key, filter_value, url):
         requestor_id, brand = self._DOMAIN_MAP[domain]
         result = self._download_json(
-            'https://feeds.video.aetnd.com/api/v2/%s/videos' % brand,
-            filter_value, query={'filter[%s]' % filter_key: filter_value})
+            f'https://feeds.video.aetnd.com/api/v2/{brand}/videos',
+            filter_value, query={f'filter[{filter_key}]': filter_value})
         result = traverse_obj(
             result, ('results',
                      lambda k, v: k == 0 and v[filter_key] == filter_value),
@@ -99,7 +93,7 @@ class AENetworksBaseIE(ThePlatformIE):
             resource = self._get_mvpd_resource(
                 requestor_id, theplatform_metadata['title'],
                 theplatform_metadata.get('AETN$PPL_pplProgramId') or theplatform_metadata.get('AETN$PPL_pplProgramId_OLD'),
-                theplatform_metadata['ratings'][0]['rating'])
+                traverse_obj(theplatform_metadata, ('ratings', 0, 'rating')))
             auth = self._extract_mvpd_auth(
                 url, video_id, requestor_id, resource)
         info.update(self._extract_aen_smil(media_url, video_id, auth))
@@ -127,18 +121,28 @@ class AENetworksIE(AENetworksBaseIE):
         'info_dict': {
             'id': '22253814',
             'ext': 'mp4',
-            'title': 'Winter is Coming',
-            'description': 'md5:641f424b7a19d8e24f26dea22cf59d74',
+            'title': 'Winter Is Coming',
+            'description': 'md5:a40e370925074260b1c8a633c632c63a',
             'timestamp': 1338306241,
             'upload_date': '20120529',
             'uploader': 'AENE-NEW',
+            'duration': 2592.0,
+            'thumbnail': r're:^https?://.*\.jpe?g$',
+            'chapters': 'count:5',
+            'tags': 'count:14',
+            'categories': ['Mountain Men'],
+            'episode_number': 1,
+            'episode': 'Episode 1',
+            'season': 'Season 1',
+            'season_number': 1,
+            'series': 'Mountain Men',
         },
         'params': {
             # m3u8 download
             'skip_download': True,
         },
         'add_ie': ['ThePlatform'],
-        'skip': 'Geo-restricted - This content is not available in your location.'
+        'skip': 'Geo-restricted - This content is not available in your location.',
     }, {
         'url': 'http://www.aetv.com/shows/duck-dynasty/season-9/episode-1',
         'info_dict': {
@@ -149,6 +153,15 @@ class AENetworksIE(AENetworksBaseIE):
             'timestamp': 1452634428,
             'upload_date': '20160112',
             'uploader': 'AENE-NEW',
+            'duration': 1277.695,
+            'thumbnail': r're:^https?://.*\.jpe?g$',
+            'chapters': 'count:4',
+            'tags': 'count:23',
+            'episode': 'Episode 1',
+            'episode_number': 1,
+            'season': 'Season 9',
+            'season_number': 9,
+            'series': 'Duck Dynasty',
         },
         'params': {
             # m3u8 download
@@ -158,32 +171,32 @@ class AENetworksIE(AENetworksBaseIE):
         'skip': 'This video is only available for users of participating TV providers.',
     }, {
         'url': 'http://www.fyi.tv/shows/tiny-house-nation/season-1/episode-8',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'http://www.mylifetime.com/shows/project-runway-junior/season-1/episode-6',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'http://www.mylifetime.com/movies/center-stage-on-pointe/full-movie',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'https://watch.lifetimemovieclub.com/movies/10-year-reunion/full-movie',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'http://www.history.com/specials/sniper-into-the-kill-zone/full-special',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'https://www.aetv.com/specials/hunting-jonbenets-killer-the-untold-story/preview-hunting-jonbenets-killer-the-untold-story',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'http://www.history.com/videos/history-of-valentines-day',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'https://play.aetv.com/shows/duck-dynasty/videos/best-of-duck-dynasty-getting-quack-in-shape',
-        'only_matching': True
+        'only_matching': True,
     }]
 
     def _real_extract(self, url):
-        domain, canonical = re.match(self._VALID_URL, url).groups()
+        domain, canonical = self._match_valid_url(url).groups()
         return self._extract_aetn_info(domain, 'canonical', '/' + canonical, url)
 
 
@@ -196,14 +209,14 @@ class AENetworksListBaseIE(AENetworksBaseIE):
   %s(slug: "%s") {
     %s
   }
-}''' % (resource, slug, fields),
+}''' % (resource, slug, fields),  # noqa: UP031
             }))['data'][resource]
 
     def _real_extract(self, url):
-        domain, slug = re.match(self._VALID_URL, url).groups()
+        domain, slug = self._match_valid_url(url).groups()
         _, brand = self._DOMAIN_MAP[domain]
         playlist = self._call_api(self._RESOURCE, slug, brand, self._FIELDS)
-        base_url = 'http://watch.%s' % domain
+        base_url = f'http://watch.{domain}'
 
         entries = []
         for item in (playlist.get(self._ITEMS_KEY) or []):
@@ -235,10 +248,10 @@ class AENetworksCollectionIE(AENetworksListBaseIE):
         'playlist_mincount': 12,
     }, {
         'url': 'https://watch.historyvault.com/shows/america-the-story-of-us-2/season-1/list/america-the-story-of-us',
-        'only_matching': True
+        'only_matching': True,
     }, {
         'url': 'https://www.historyvault.com/collections/mysteryquest',
-        'only_matching': True
+        'only_matching': True,
     }]
     _RESOURCE = 'list'
     _ITEMS_KEY = 'items'
@@ -296,7 +309,7 @@ class HistoryTopicIE(AENetworksBaseIE):
         'info_dict': {
             'id': '40700995724',
             'ext': 'mp4',
-            'title': "History of Valentine’s Day",
+            'title': 'History of Valentine’s Day',
             'description': 'md5:7b57ea4829b391995b405fa60bd7b5f7',
             'timestamp': 1375819729,
             'upload_date': '20130806',
@@ -322,7 +335,7 @@ class HistoryPlayerIE(AENetworksBaseIE):
     _TESTS = []
 
     def _real_extract(self, url):
-        domain, video_id = re.match(self._VALID_URL, url).groups()
+        domain, video_id = self._match_valid_url(url).groups()
         return self._extract_aetn_info(domain, 'id', video_id, url)
 
 
@@ -344,12 +357,13 @@ class BiographyIE(AENetworksBaseIE):
             'skip_download': True,
         },
         'add_ie': ['ThePlatform'],
+        'skip': '404 Not Found',
     }]
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
         player_url = self._search_regex(
-            r'<phoenix-iframe[^>]+src="(%s)' % HistoryPlayerIE._VALID_URL,
+            rf'<phoenix-iframe[^>]+src="({HistoryPlayerIE._VALID_URL})',
             webpage, 'player URL')
         return self.url_result(player_url, HistoryPlayerIE.ie_key())

@@ -1,19 +1,16 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import re
 
 from .common import InfoExtractor
-from ..compat import compat_str
 from ..utils import (
-    determine_ext,
     ExtractorError,
+    determine_ext,
     int_or_none,
     unescapeHTML,
 )
 
 
 class MSNIE(InfoExtractor):
+    _WORKING = False
     _VALID_URL = r'https?://(?:(?:www|preview)\.)?msn\.com/(?:[^/]+/)+(?P<display_id>[^/]+)/[a-z]{2}-(?P<id>[\da-zA-Z]+)'
     _TESTS = [{
         'url': 'https://www.msn.com/en-in/money/video/7-ways-to-get-rid-of-chest-congestion/vi-BBPxU6d',
@@ -67,7 +64,7 @@ class MSNIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        display_id, page_id = re.match(self._VALID_URL, url).groups()
+        display_id, page_id = self._match_valid_url(url).groups()
 
         webpage = self._download_webpage(url, display_id)
 
@@ -132,9 +129,8 @@ class MSNIE(InfoExtractor):
                         'width': int_or_none(file_.get('width')),
                         'height': int_or_none(file_.get('height')),
                         'vbr': int_or_none(self._search_regex(r'_(\d+)\.mp4', format_url, 'vbr', default=None)),
-                        'preference': 1 if format_id == '1001' else None,
+                        'quality': 1 if format_id == '1001' else None,
                     })
-            self._sort_formats(formats)
 
             subtitles = {}
             for file_ in video.get('files', []):
@@ -142,7 +138,7 @@ class MSNIE(InfoExtractor):
                 format_code = file_.get('formatCode')
                 if not format_url or not format_code:
                     continue
-                if compat_str(format_code) == '3100':
+                if str(format_code) == '3100':
                     subtitles.setdefault(file_.get('culture', 'en'), []).append({
                         'ext': determine_ext(format_url, 'ttml'),
                         'url': format_url,
@@ -166,6 +162,6 @@ class MSNIE(InfoExtractor):
             error = unescapeHTML(self._search_regex(
                 r'data-error=(["\'])(?P<error>.+?)\1',
                 webpage, 'error', group='error'))
-            raise ExtractorError('%s said: %s' % (self.IE_NAME, error), expected=True)
+            raise ExtractorError(f'{self.IE_NAME} said: {error}', expected=True)
 
         return self.playlist_result(entries, page_id)

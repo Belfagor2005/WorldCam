@@ -1,9 +1,6 @@
-from __future__ import unicode_literals
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_urlparse,
-)
 
 
 class RtmpIE(InfoExtractor):
@@ -27,7 +24,7 @@ class RtmpIE(InfoExtractor):
             'formats': [{
                 'url': url,
                 'ext': 'flv',
-                'format_id': compat_urlparse.urlparse(url).scheme,
+                'format_id': urllib.parse.urlparse(url).scheme,
             }],
         }
 
@@ -58,3 +55,16 @@ class MmsIE(InfoExtractor):
             'title': title,
             'url': url,
         }
+
+
+class ViewSourceIE(InfoExtractor):
+    IE_DESC = False
+    _VALID_URL = r'view-source:(?P<url>.+)'
+
+    _TEST = {
+        'url': 'view-source:https://www.youtube.com/watch?v=BaW_jenozKc',
+        'only_matching': True,
+    }
+
+    def _real_extract(self, url):
+        return self.url_result(self._match_valid_url(url).group('url'))

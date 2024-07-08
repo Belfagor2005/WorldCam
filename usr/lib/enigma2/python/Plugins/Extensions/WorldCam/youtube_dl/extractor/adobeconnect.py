@@ -1,11 +1,6 @@
-# coding: utf-8
-from __future__ import unicode_literals
+import urllib.parse
 
 from .common import InfoExtractor
-from ..compat import (
-    compat_parse_qs,
-    compat_urlparse,
-)
 
 
 class AdobeConnectIE(InfoExtractor):
@@ -14,14 +9,14 @@ class AdobeConnectIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        title = self._html_search_regex(r'<title>(.+?)</title>', webpage, 'title')
-        qs = compat_parse_qs(self._search_regex(r"swfUrl\s*=\s*'([^']+)'", webpage, 'swf url').split('?')[1])
+        title = self._html_extract_title(webpage)
+        qs = urllib.parse.parse_qs(self._search_regex(r"swfUrl\s*=\s*'([^']+)'", webpage, 'swf url').split('?')[1])
         is_live = qs.get('isLive', ['false'])[0] == 'true'
         formats = []
         for con_string in qs['conStrings'][0].split(','):
             formats.append({
                 'format_id': con_string.split('://')[0],
-                'app': compat_urlparse.quote('?' + con_string.split('?')[1] + 'flvplayerapp/' + qs['appInstance'][0]),
+                'app': urllib.parse.quote('?' + con_string.split('?')[1] + 'flvplayerapp/' + qs['appInstance'][0]),
                 'ext': 'flv',
                 'play_path': 'mp4:' + qs['streamName'][0],
                 'rtmp_conn': 'S:' + qs['ticket'][0],
@@ -31,7 +26,7 @@ class AdobeConnectIE(InfoExtractor):
 
         return {
             'id': video_id,
-            'title': self._live_title(title) if is_live else title,
+            'title': title,
             'formats': formats,
             'is_live': is_live,
         }

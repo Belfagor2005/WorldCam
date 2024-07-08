@@ -1,8 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
-import re
-
 from .common import InfoExtractor
 from ..utils import (
     clean_html,
@@ -15,6 +10,7 @@ from ..utils import (
 
 class LibsynIE(InfoExtractor):
     _VALID_URL = r'(?P<mainurl>https?://html5-player\.libsyn\.com/embed/episode/id/(?P<id>[0-9]+))'
+    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//html5-player\.libsyn\.com/embed/.+?)\1']
 
     _TESTS = [{
         'url': 'http://html5-player.libsyn.com/embed/episode/id/6385796/',
@@ -22,7 +18,7 @@ class LibsynIE(InfoExtractor):
         'info_dict': {
             'id': '6385796',
             'ext': 'mp3',
-            'title': "Champion Minded - Developing a Growth Mindset",
+            'title': 'Champion Minded - Developing a Growth Mindset',
             # description fetched using another request:
             # http://html5-player.libsyn.com/embed/getitemdetails?item_id=6385796
             # 'description': 'In this episode, Allistair talks about the importance of developing a growth mindset, not only in sports, but in life too.',
@@ -38,11 +34,11 @@ class LibsynIE(InfoExtractor):
             'title': 'Clients From Hell Podcast - How a Sex Toy Company Kickstarted my Freelance Career',
             'upload_date': '20150818',
             'thumbnail': 're:^https?://.*',
-        }
+        },
     }]
 
     def _real_extract(self, url):
-        url, video_id = re.match(self._VALID_URL, url).groups()
+        url, video_id = self._match_valid_url(url).groups()
         webpage = self._download_webpage(url, video_id)
 
         data = self._parse_json(self._search_regex(
@@ -60,7 +56,7 @@ class LibsynIE(InfoExtractor):
             r'<h3>([^<]+)</h3>', webpage, 'podcast title',
             default=None) or get_element_by_class('podcast-title', webpage)))
 
-        title = '%s - %s' % (podcast_title, episode_title) if podcast_title else episode_title
+        title = f'{podcast_title} - {episode_title}' if podcast_title else episode_title
 
         formats = []
         for k, format_id in (('media_url_libsyn', 'libsyn'), ('media_url', 'main'), ('download_link', 'download')):
