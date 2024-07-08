@@ -2,9 +2,7 @@
     <widget name="info" position="946,32" size="820,50" font="Regular;30" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
     <!-- Graph -->
     <ePixmap position="659,759" size="150,150" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="1" alphatest="blend" />
-    
     <eLabel position="656,758" size="150,150" backgroundColor="#30000000" zPosition="1" />
-    
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" scale="strech" alphatest="blend" position="638,924" size="191,67" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" scale="strech" position="91,951" size="156,75" zPosition="5" alphatest="on" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" scale="strech" position="72,746" size="200,200" zPosition="2" alphatest="on" />

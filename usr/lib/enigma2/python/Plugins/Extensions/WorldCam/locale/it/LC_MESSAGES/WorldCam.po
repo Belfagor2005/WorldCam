@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WorldCam\n"
-"POT-Creation-Date: 2023-09-19 14:17+0200\n"
+"POT-Creation-Date: 2024-07-08 18:30+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -9,19 +9,52 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:356
+#: plugin.py:235
+#, python-format
+msgid ""
+"New version %s is available\n"
+"\n"
+"Changelog: %s\n"
+"\n"
+"Press info_long or yellow_long button to start force updating."
+msgstr ""
+
+#: plugin.py:240
+#, python-format
+msgid ""
+"New version %s is available.\n"
+"\n"
+"Changelog: %s \n"
+"\n"
+"Do you want to install it now?"
+msgstr ""
+
+#: plugin.py:242
+msgid "Congrats! You already have the latest version..."
+msgstr ""
+
+#: plugin.py:251
+#, python-format
+msgid "Do you want to install update ( %s ) now?"
+msgstr ""
+
+#: plugin.py:257
+msgid "Update Aborted!"
+msgstr ""
+
+#: plugin.py:442
 msgid "Remove all Worldcam Favorite Bouquet ?"
 msgstr "Rimuovere tutte le liste Bouquet Favorite Worldcam?"
 
-#: plugin.py:385
+#: plugin.py:469
 msgid "Worldcam Favorites List have been removed"
 msgstr "Le liste Favorite Worldcam sono state rimosse dal Bouquet"
 
-#: plugin.py:773
+#: plugin.py:864
 msgid ""
 "Do you want to Convert to Favorite Bouquet ?\n"
 "\n"
@@ -31,10 +64,10 @@ msgstr ""
 "\n"
 "Attenzione attendi che finisca..."
 
-#: plugin.py:841
+#: plugin.py:931
 msgid "bouquets reloaded.."
 msgstr "bouquet ricaricati..."
 
-#: plugin.py:842
+#: plugin.py:932
 msgid "Reload Bouquet"
 msgstr "Ricaria Bouquet"

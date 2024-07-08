@@ -10,13 +10,13 @@ from __future__ import print_function
 from . import _, paypal
 from . import Utils
 from . import html_conv
+from . import Console
 import codecs
 from Components.AVSwitch import AVSwitch
 # try:
     # from enigma import eAVSwitch as AVSwitch
 # except Exception:
     # from enigma import eAVControl as AVSwitch
-
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
@@ -41,15 +41,18 @@ from enigma import loadPNG, gFont
 from enigma import eTimer
 from enigma import getDesktop
 import unicodedata
+import json
+from datetime import datetime
 import os
 import re
 import sys
 import six
 import ssl
+
 global SKIN_PATH
 
-version = '4.3'  # edit lululla 07/11/2022
-setup_title = ('WORLDCAM v.' + version)
+currversion = '4.5'  # edit lululla 07/11/2022
+setup_title = ('WORLDCAM v.' + currversion)
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = os.path.join(THISPLUG, 'pics/webcam.png')
 iconpic = 'plugin.png'
@@ -57,6 +60,8 @@ enigma_path = '/etc/enigma2'
 refer = 'https://www.skylinewebcams.com/'
 _firstStartwrd = True
 SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
+installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9Xb3JsZENhbS9tYWluL2luc3RhbGxlci5zaA=='
+developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGRDYW0='
 
 screenwidth = getDesktop(0).size()
 if screenwidth.width() == 2560:
@@ -72,8 +77,6 @@ PY3 = sys.version_info.major >= 3
 if PY3:
     PY3 = True
     unidecode = str
-else:
-    str = str
 
 if sys.version_info >= (2, 7, 9):
     try:
@@ -99,12 +102,13 @@ def normalize(title):
 
 
 def str_encode(text, encoding="utf8"):
-
-    # return chr(int(text[2:], 16))
     if not PY3:
         if isinstance(text, unicode):
             return text.encode(encoding)
-    return str(text)
+        else:
+            return text
+    else:
+        return text
 
 
 def unicodify(s, encoding='utf-8', norm=None):
@@ -165,23 +169,95 @@ class Webcam1(Screen):
         self.list = []
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = webcamList([])
-        self['key_red'] = Button('Exit')
-        self['key_green'] = Button('Select')
-        self['key_yellow'] = Button('')
-        self['key_blue'] = Button('Remove')
-        self['key_yellow'].hide()
         self['info'] = Label('HOME VIEW')
         self["paypal"] = Label()
+        self['key_red'] = Button('Exit')
+        self['key_green'] = Button('Select')
+        self['key_yellow'] = Button('Update')
+        self['key_blue'] = Button('Remove')
+        self['key_yellow'].hide()
+        self['key_green'].hide()
+        self.Update = False
         self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'blue': self.removeb,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+                                     'ColorActions',
+                                     'DirectionActions',
+                                     'HotkeyActions',
+                                     'InfobarEPGActions',
+                                     'ChannelSelectBaseActions'], {'ok': self.okClicked,
+                                                                   'back': self.cancel,
+                                                                   'cancel': self.cancel,
+                                                                   'yellow': self.update_me,
+                                                                   'green': self.okClicked,
+                                                                   'blue': self.removeb,
+                                                                   'yellow_long': self.update_dev,
+                                                                   'info_long': self.update_dev,
+                                                                   'infolong': self.update_dev,
+                                                                   'showEventInfoPlugin': self.update_dev,
+                                                                   'red': self.close}, -1)
+
         self.onFirstExecBegin.append(self.openTest)
+
+        self.timer = eTimer()
+        if os.path.exists('/var/lib/dpkg/status'):
+            self.timer_conn = self.timer.timeout.connect(self.check_vers)
+        else:
+            self.timer.callback.append(self.check_vers)
+        self.timer.start(500, 1)
         self.onLayoutFinish.append(self.layoutFinished)
+
+    def check_vers(self):
+        remote_version = '0.0'
+        remote_changelog = ''
+        req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
+        page = Utils.urlopen(req).read()
+        if PY3:
+            data = page.decode("utf-8")
+        else:
+            data = page.encode("utf-8")
+        if data:
+            lines = data.split("\n")
+            for line in lines:
+                if line.startswith("version"):
+                    remote_version = line.split("=")
+                    remote_version = line.split("'")[1]
+                if line.startswith("changelog"):
+                    remote_changelog = line.split("=")
+                    remote_changelog = line.split("'")[1]
+                    break
+        self.new_version = remote_version
+        self.new_changelog = remote_changelog
+        # if float(currversion) < float(remote_version):
+        if currversion < remote_version:
+            self.Update = True
+            self['key_yellow'].show()
+            self['key_green'].show()
+            self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
+        # self.update_me()
+
+    def update_me(self):
+        if self.Update is True:
+            self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?") % (self.new_version, self.new_changelog), MessageBox.TYPE_YESNO)
+        else:
+            self.session.open(MessageBox, _("Congrats! You already have the latest version..."),  MessageBox.TYPE_INFO, timeout=4)
+
+    def update_dev(self):
+        req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
+        page = Utils.urlopen(req).read()
+        data = json.loads(page)
+        remote_date = data['pushed_at']
+        strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+        remote_date = strp_remote_date.strftime('%Y-%m-%d')
+        self.session.openWithCallback(self.install_update, MessageBox, _("Do you want to install update ( %s ) now?") % (remote_date), MessageBox.TYPE_YESNO)
+
+    def install_update(self, answer=False):
+        if answer:
+            self.session.open(Console, 'Upgrading...', cmdlist=('wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'), finishedCallback=self.myCallback, closeOnSuccess=False)
+        else:
+            self.session.open(MessageBox, _("Update Aborted!"),  MessageBox.TYPE_INFO, timeout=3)
+
+    def myCallback(self, result=None):
+        print('result:', result)
+        return
 
     def layoutFinished(self):
         payp = paypal()
@@ -448,11 +524,11 @@ class Webcam4(Screen):
             name = item.split('###')[0]
             url1 = item.split('###')[1]
             # self.names.append(Utils.decodeHtml(name))
-            print('name1=', name)
             # self.names.append(str(name))
+            # self.names.append(unicodify(name))
+            print('name1=', name)
             self.names.append(str_encode(name))
             print('name2=', str(name))
-            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -526,10 +602,7 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # self.names.append(Utils.decodeHtml(name))
-            # self.names.append(str(name))
             self.names.append(str_encode(name))
-            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -603,9 +676,7 @@ class Webcam5a(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # self.names.append(Utils.decodeHtml(name))
             self.names.append(str_encode(name))
-            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -699,9 +770,7 @@ class Webcam6(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # self.names.append(Utils.decodeHtml(name))
             self.names.append(str_encode(name))
-            # self.names.append(unicodify(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -774,7 +843,6 @@ class Webcam6(Screen):
             '''
             ydl_opts = {'format': 'best'}
             ydl_opts = {'format': 'bestaudio/best'}
-
             ydl_opts = {'format': 'best',
                         'no_check_certificate': True,
                         }
@@ -823,12 +891,10 @@ class Webcam6(Screen):
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
-
                     if 'youtube' in ref:
                         ref = 'streamlink://' + ref.replace(":", "%3a").replace("\\", "/")
                     else:
                         ref = ref.replace(":", "%3a").replace("\\", "/")
-
                     descriptiona = ('#DESCRIPTION %s' % name).splitlines()
                     descriptionz = ''.join(descriptiona)
                     servicea = ('#SERVICE 4097:0:%s:0:0:0:0:0:0:0:%s' % (tag, ref))
@@ -1355,35 +1421,35 @@ class MoviePlayer(
         self.close()
 
 
-class AutoStartTimerwrd:
+# class AutoStartTimerwrd:
 
-    def __init__(self, session):
-        self.session = session
+    # def __init__(self, session):
+        # self.session = session
 
-        print("*** running AutoStartTimerwrd ***")
-        if _firstStartwrd:
-            self.runUpdate()
+        # print("*** running AutoStartTimerwrd ***")
+        # if _firstStartwrd:
+            # self.runUpdate()
 
-    def runUpdate(self):
-        print("*** running update ***")
-        try:
-            from . import Update
-            global _firstStartwrd
-            Update.upd_done()
-            _firstStartwrd = False
-        except Exception as e:
-            print('error Fxy', e)
+    # def runUpdate(self):
+        # print("*** running update ***")
+        # try:
+            # from . import Update
+            # global _firstStartwrd
+            # Update.upd_done()
+            # _firstStartwrd = False
+        # except Exception as e:
+            # print('error Fxy', e)
 
 
-def autostart(reason, session=None, **kwargs):
-    print("*** running autostart ***")
-    global autoStartTimerwrd
-    global _firstStartwrd
-    if reason == 0:
-        if session is not None:
-            _firstStartwrd = True
-            autoStartTimerwrd = AutoStartTimerwrd(session)
-    return
+# def autostart(reason, session=None, **kwargs):
+    # print("*** running autostart ***")
+    # global autoStartTimerwrd
+    # global _firstStartwrd
+    # if reason == 0:
+        # if session is not None:
+            # _firstStartwrd = True
+            # autoStartTimerwrd = AutoStartTimerwrd(session)
+    # return
 
 
 def main(session, **kwargs):
@@ -1398,6 +1464,7 @@ def main(session, **kwargs):
 
 
 def Plugins(**kwargs):
-    result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
-              PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
+    result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + str(currversion), where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
     return result
+# PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
+
