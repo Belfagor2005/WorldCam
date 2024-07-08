@@ -10,7 +10,7 @@ from __future__ import print_function
 from . import _, paypal
 from . import Utils
 from . import html_conv
-from . import Console
+from .Console import Console as xConsole
 import codecs
 from Components.AVSwitch import AVSwitch
 # try:
@@ -175,7 +175,7 @@ class Webcam1(Screen):
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Update')
         self['key_blue'] = Button('Remove')
-        self['key_yellow'].hide()
+        # self['key_yellow'].hide()
         self['key_green'].hide()
         self.Update = False
         self['actions'] = ActionMap(['OkCancelActions',
@@ -184,9 +184,9 @@ class Webcam1(Screen):
                                      'HotkeyActions',
                                      'InfobarEPGActions',
                                      'ChannelSelectBaseActions'], {'ok': self.okClicked,
-                                                                   'back': self.cancel,
-                                                                   'cancel': self.cancel,
-                                                                   'yellow': self.update_me,
+                                                                   'back': self.close,
+                                                                   'cancel': self.close,
+                                                                   'yellow': self.update_me,  # update_me,
                                                                    'green': self.okClicked,
                                                                    'blue': self.removeb,
                                                                    'yellow_long': self.update_dev,
@@ -194,15 +194,13 @@ class Webcam1(Screen):
                                                                    'infolong': self.update_dev,
                                                                    'showEventInfoPlugin': self.update_dev,
                                                                    'red': self.close}, -1)
-
-        self.onFirstExecBegin.append(self.openTest)
-
         self.timer = eTimer()
         if os.path.exists('/var/lib/dpkg/status'):
             self.timer_conn = self.timer.timeout.connect(self.check_vers)
         else:
             self.timer.callback.append(self.check_vers)
         self.timer.start(500, 1)
+        self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
     def check_vers(self):
@@ -229,7 +227,7 @@ class Webcam1(Screen):
         # if float(currversion) < float(remote_version):
         if currversion < remote_version:
             self.Update = True
-            self['key_yellow'].show()
+            # self['key_yellow'].show()
             self['key_green'].show()
             self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
         # self.update_me()
@@ -241,17 +239,21 @@ class Webcam1(Screen):
             self.session.open(MessageBox, _("Congrats! You already have the latest version..."),  MessageBox.TYPE_INFO, timeout=4)
 
     def update_dev(self):
-        req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
-        page = Utils.urlopen(req).read()
-        data = json.loads(page)
-        remote_date = data['pushed_at']
-        strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
-        remote_date = strp_remote_date.strftime('%Y-%m-%d')
-        self.session.openWithCallback(self.install_update, MessageBox, _("Do you want to install update ( %s ) now?") % (remote_date), MessageBox.TYPE_YESNO)
+        try:
+            req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
+            page = Utils.urlopen(req).read()
+            data = json.loads(page)
+            remote_date = data['pushed_at']
+            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+            remote_date = strp_remote_date.strftime('%Y-%m-%d')
+            self.session.openWithCallback(self.install_update, MessageBox, _("Do you want to install update ( %s ) now?") % (remote_date), MessageBox.TYPE_YESNO)
+        except Exception as e:
+            print('error xcons:', e)
 
     def install_update(self, answer=False):
         if answer:
-            self.session.open(Console, 'Upgrading...', cmdlist=('wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'), finishedCallback=self.myCallback, closeOnSuccess=False)
+            cmd1 = 'wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'
+            self.session.open(xConsole, 'Upgrading...', cmdlist=[cmd1], finishedCallback=self.myCallback, closeOnSuccess=False)
         else:
             self.session.open(MessageBox, _("Update Aborted!"),  MessageBox.TYPE_INFO, timeout=3)
 
@@ -1467,4 +1469,3 @@ def Plugins(**kwargs):
     result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + str(currversion), where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
     return result
 # PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
-
