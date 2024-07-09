@@ -9,8 +9,8 @@ import datetime
 import os
 import re
 import base64
+import chardet
 from random import choice
-import unicodedata
 from Components.config import config
 try:
     from os.path import isdir
@@ -58,6 +58,15 @@ if sys.version_info >= (2, 7, 9):
         sslContext = ssl._create_unverified_context()
     except:
         sslContext = None
+
+
+def unicodify(s, encoding='utf-8', norm=None):
+    if not isinstance(s, unicode):
+        s = unicode(s, encoding)
+    if norm:
+        from unicodedata import normalize
+        s = normalize(norm, s)
+    return s
 
 
 def getEncodedString(value):
@@ -584,10 +593,7 @@ def str_encode(text, encoding="utf8"):
     if not PY3:
         if isinstance(text, unicode):
             return text.encode(encoding)
-        else:
-            return text
-    else:
-        return text
+    return str(text)
 
 
 def checkRedirect(url):
@@ -930,11 +936,11 @@ def AdultUrl(url):
 
 
 std_headers = {
-               'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100627 Firefox/3.6.6',
-               'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-               'Accept-Language': 'en-us,en;q=0.5',
-              }
+    'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100627 Firefox/3.6.6',
+    'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-us,en;q=0.5',
+}
 
 
 ListAgent = [
@@ -1246,6 +1252,7 @@ def decodeUrl(text):
 
 def normalize(title):
     try:
+        import unicodedata
         try:
             return title.decode('ascii').encode("utf-8")
         except:
@@ -1254,6 +1261,20 @@ def normalize(title):
         return str(''.join(c for c in unicodedata.normalize('NFKD', unicode(title.decode('utf-8'))) if unicodedata.category(c) != 'Mn'))
     except:
         return unicode(title)
+
+
+def get_safe_filename(filename, fallback=''):
+    '''Convert filename to safe filename'''
+    import unicodedata
+    import six
+    name = filename.replace(' ', '_').replace('/', '_')
+    if isinstance(name, six.text_type):
+        name = name.encode('utf-8')
+    name = unicodedata.normalize('NFKD', six.text_type(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
+    name = re.sub(b'[^a-z0-9-_]', b'', name.lower())
+    if not name:
+        name = fallback
+    return six.ensure_str(name)
 
 
 def decodeHtml(text):
@@ -1606,6 +1627,39 @@ def charRemove(text):
     return myreplace
 
 
+def decodecs(data):
+    # codecs = [
+        # "ascii", "big5", "big5hkscs", "cp037", "cp273", "cp424", "cp437", "cp500", "cp720",
+        # "cp737", "cp775", "cp850", "cp852", "cp855", "cp856", "cp857", "cp858", "cp860",
+        # "cp861", "cp862", "cp863", "cp864", "cp865", "cp866", "cp869", "cp874", "cp875",
+        # "cp932", "cp949", "cp950", "cp1006", "cp1026", "cp1125", "cp1140", "cp1250",
+        # "cp1251", "cp1252", "cp1253", "cp1254", "cp1255", "cp1256", "cp1257",
+        # "cp1258", "cp65001", "euc_jp", "euc_jis_2004", "euc_jisx0213", "euc_kr", "gb2312",
+        # "gbk", "gb18030", "hz", "iso2022_jp", "iso2022_jp_1", "iso2022_jp_2",
+        # "iso2022_jp_2004", "iso2022_jp_3", "iso2022_jp_ext", "iso2022_kr", "latin_1",
+        # "iso8859_2", "iso8859_3", "iso8859_4", "iso8859_5", "iso8859_6", "iso8859_7",
+        # "iso8859_8", "iso8859_9", "iso8859_10", "iso8859_11", "iso8859_13", "iso8859_14",
+        # "iso8859_15", "iso8859_16", "johab", "koi8_r", "koi8_t", "koi8_u", "kz1048",
+        # "mac_cyrillic", "mac_greek", "mac_iceland", "mac_latin2", "mac_roman",
+        # "mac_turkish", "ptcp154", "shift_jis", "shift_jis_2004", "shift_jisx0213",
+        # "utf_32", "utf_32_be", "utf_32_le", "utf_16", "utf_16_be", "utf_16_le", "utf_7",
+        # "utf_8", "utf_8_sig",
+    # ]
+    # for codec in codecs:
+        # try:
+            # print(f"{codec}, {data.decode(codec)}")
+            # data = data.decode(codec)
+        # except UnicodeDecodeError:
+            # continue
+    try:
+        detected = chardet.detect(data)
+        data = data.decode(detected["encoding"])
+        print('data: dec: ', data)
+    except UnicodeDecodeError:
+        print('error')  # continue
+    return str(data)
+
+
 def clean_html(html):
     '''Clean an HTML snippet into a readable string'''
     import xml.sax.saxutils as saxutils
@@ -1676,20 +1730,6 @@ def cleanTitle(x):
     x = x.replace('\\', '')
     x = x.replace('--', '-')
     return x
-
-
-def get_safe_filename(filename, fallback=''):
-    '''Convert filename to safe filename'''
-    import unicodedata
-    import six
-    name = filename.replace(' ', '_').replace('/', '_')
-    if isinstance(name, six.text_type):
-        name = name.encode('utf-8')
-    name = unicodedata.normalize('NFKD', six.text_type(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
-    name = re.sub(b'[^a-z0-9-_]', b'', name.lower())
-    if not name:
-        name = fallback
-    return six.ensure_str(name)
 
 
 def remove_line(filename, what):

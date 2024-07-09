@@ -48,7 +48,6 @@ import re
 import sys
 import six
 import ssl
-
 global SKIN_PATH
 
 currversion = '4.5'  # edit lululla 07/11/2022
@@ -87,37 +86,6 @@ if sys.version_info >= (2, 7, 9):
 leng = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
 leng2 = leng.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
 language = leng2[:-3]
-
-
-def normalize(title):
-    try:
-        try:
-            return title.decode('ascii').encode("utf-8")
-        except:
-            pass
-
-        return str(''.join(c for c in unicodedata.normalize('NFKD', unidecode(title.decode('utf-8'))) if unicodedata.category(c) != 'Mn'))
-    except:
-        return unidecode(title)
-
-
-def str_encode(text, encoding="utf8"):
-    if not PY3:
-        if isinstance(text, unicode):
-            return text.encode(encoding)
-        else:
-            return text
-    else:
-        return text
-
-
-def unicodify(s, encoding='utf-8', norm=None):
-    if not isinstance(s, unicode):
-        s = unicode(s, encoding)
-    if norm:
-        from unicodedata import normalize
-        s = normalize(norm, s)
-    return s
 
 
 class webcamList(MenuList):
@@ -409,7 +377,6 @@ class Webcam3(Screen):
                 name = html_conv.html_unescape(name)
                 self.names.append(str(name))
                 self.urls.append(url)
-
                 # for export
                 item = name + "###" + url + '\n'
                 items.append(item)
@@ -525,12 +492,10 @@ class Webcam4(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # self.names.append(Utils.decodeHtml(name))
-            # self.names.append(str(name))
-            # self.names.append(unicodify(name))
-            print('name1=', name)
-            self.names.append(str_encode(name))
-            print('name2=', str(name))
+            # print('name1=', name)
+            name = Utils.getEncodedString(name)
+            # print('name2=', name)
+            self.names.append(Utils.decodecs(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -604,7 +569,10 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(str_encode(name))
+            # print('name1=', name)
+            name = Utils.getEncodedString(name)
+            # print('name2=', name)
+            self.names.append(Utils.decodecs(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -678,7 +646,10 @@ class Webcam5a(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(str_encode(name))
+            # print('name1=', name)
+            name = Utils.getEncodedString(name)
+            # print('name2=', name)
+            self.names.append(Utils.decodecs(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -772,7 +743,10 @@ class Webcam6(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            self.names.append(str_encode(name))
+            # print('name1=', name)
+            name = Utils.getEncodedString(name)
+            # print('name2=', name)
+            self.names.append(Utils.decodecs(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -982,9 +956,11 @@ class Webcam7(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
-            name = html_conv.html_unescape(name)
-
-            self.names.append(str(name))
+            # name = html_conv.html_unescape(name)
+            # print('name1=', name)
+            name = Utils.getEncodedString(name)
+            # print('name2=', name)
+            self.names.append(Utils.decodecs(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -1084,7 +1060,10 @@ class Webcam8(Screen):
         for item in items:
             name = item.split('###')[0]
             url = item.split('###')[1]
-            self.names.append(str(name))
+            # print('name1=', name)
+            name = Utils.getEncodedString(name)
+            # print('name2=', name)
+            self.names.append(Utils.decodecs(name))
             self.urls.append(url)
         showlist(self.names, self['list'])
 
@@ -1423,37 +1402,6 @@ class MoviePlayer(
         self.close()
 
 
-# class AutoStartTimerwrd:
-
-    # def __init__(self, session):
-        # self.session = session
-
-        # print("*** running AutoStartTimerwrd ***")
-        # if _firstStartwrd:
-            # self.runUpdate()
-
-    # def runUpdate(self):
-        # print("*** running update ***")
-        # try:
-            # from . import Update
-            # global _firstStartwrd
-            # Update.upd_done()
-            # _firstStartwrd = False
-        # except Exception as e:
-            # print('error Fxy', e)
-
-
-# def autostart(reason, session=None, **kwargs):
-    # print("*** running autostart ***")
-    # global autoStartTimerwrd
-    # global _firstStartwrd
-    # if reason == 0:
-        # if session is not None:
-            # _firstStartwrd = True
-            # autoStartTimerwrd = AutoStartTimerwrd(session)
-    # return
-
-
 def main(session, **kwargs):
     global _session
     _session = session
@@ -1468,4 +1416,3 @@ def main(session, **kwargs):
 def Plugins(**kwargs):
     result = [PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + str(currversion), where=PluginDescriptor.WHERE_PLUGINMENU, icon='plugin.png', fnc=main)]
     return result
-# PluginDescriptor(name='WorldCam', description='Webcams from around the world V. ' + version, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),

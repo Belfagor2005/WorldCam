@@ -3,7 +3,7 @@
 
 ######### Only This 2 lines to edit with new version ######
 version='4.5'
-changelog='\nAdd Locale Language\nFix Upgrade'
+changelog='\nAdd Locale Language\nFix Upgrade\nfix chinese text'
 ##############################################################
 
 TMPPATH=/tmp/WorldCam-main
