@@ -52,6 +52,11 @@ if PY2:
     from urllib2 import HTTPError, URLError
 
 
+import requests
+requests.packages.urllib3.disable_warnings(
+    requests.packages.urllib3.exceptions.InsecureRequestWarning)
+
+
 if sys.version_info >= (2, 7, 9):
     try:
         import ssl
@@ -67,6 +72,15 @@ def unicodify(s, encoding='utf-8', norm=None):
         from unicodedata import normalize
         s = normalize(norm, s)
     return s
+
+
+def checktoken(token):
+    import base64
+    import zlib
+    result = base64.b64decode(token)
+    result = zlib.decompress(base64.b64decode(result))
+    result = base64.b64decode(result).decode()
+    return result
 
 
 def getEncodedString(value):
@@ -1008,6 +1022,7 @@ def RequestAgent():
 
 def make_request(url):
     try:
+        link = url
         import requests
         response = requests.get(url, verify=False)
         if response.status_code == 200:
@@ -1033,7 +1048,7 @@ def ReadUrl2(url, referer):
     TIMEOUT_URL = 30
     print('ReadUrl1:\n  url = %s' % url)
     try:
-
+        link = url
         req = Request(url)
         req.add_header('User-Agent', RequestAgent())
         req.add_header('Referer', referer)
@@ -1091,7 +1106,7 @@ def ReadUrl(url):
         CONTEXT = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     except:
         CONTEXT = None
-
+    link = url
     TIMEOUT_URL = 30
     print('ReadUrl1:\n  url = %s' % url)
     try:
@@ -1146,7 +1161,7 @@ def ReadUrl(url):
 def getUrl(url):
     req = Request(url)
     req.add_header('User-Agent', RequestAgent())
-
+    link = url
     try:
         response = urlopen(req, timeout=20)
         if pythonVer == 3:
@@ -1175,6 +1190,7 @@ def getUrl(url):
 
 
 def getUrl2(url, referer):
+    link = url
     req = Request(url)
     req.add_header('User-Agent', RequestAgent())
     req.add_header('Referer', referer)
@@ -1266,7 +1282,7 @@ def normalize(title):
 def get_safe_filename(filename, fallback=''):
     '''Convert filename to safe filename'''
     import unicodedata
-    import six
+    import six, re
     name = filename.replace(' ', '_').replace('/', '_')
     if isinstance(name, six.text_type):
         name = name.encode('utf-8')

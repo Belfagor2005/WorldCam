@@ -21,25 +21,32 @@ from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
 from Components.MenuList import MenuList
-from Components.MultiContent import MultiContentEntryText
-from Components.MultiContent import MultiContentEntryPixmapAlphaTest
+from Components.MultiContent import (MultiContentEntryPixmapAlphaTest, MultiContentEntryText)
+
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
 from Plugins.Plugin import PluginDescriptor
-from Screens.InfoBarGenerics import InfoBarMenu, InfoBarSeek
-from Screens.InfoBarGenerics import InfoBarAudioSelection
-from Screens.InfoBarGenerics import InfoBarSubtitleSupport
-from Screens.InfoBarGenerics import InfoBarNotifications
+from Screens.InfoBarGenerics import (
+    InfoBarSeek,
+    InfoBarAudioSelection,
+    InfoBarSubtitleSupport,
+    InfoBarMenu,
+    InfoBarNotifications,
+)                
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
-from enigma import RT_VALIGN_CENTER
-from enigma import RT_HALIGN_LEFT
-from enigma import iPlayableService
-from enigma import eListboxPythonMultiContent
-from enigma import eServiceReference
-from enigma import loadPNG, gFont
-from enigma import eTimer
-from enigma import getDesktop
+from enigma import (
+    eListboxPythonMultiContent,
+    loadPNG,
+    gFont,
+    gPixmapPtr,
+    eServiceReference,
+    eTimer,
+    iPlayableService,
+    getDesktop,
+    RT_VALIGN_CENTER,
+    RT_HALIGN_LEFT,
+)
 import unicodedata
 import json
 from datetime import datetime
@@ -57,7 +64,7 @@ ico_path1 = os.path.join(THISPLUG, 'pics/webcam.png')
 iconpic = 'plugin.png'
 enigma_path = '/etc/enigma2'
 refer = 'https://www.skylinewebcams.com/'
-_firstStartwrd = True
+# _firstStartwrd = True
 SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
 installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9Xb3JsZENhbS9tYWluL2luc3RhbGxlci5zaA=='
 developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGRDYW0='
