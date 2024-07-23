@@ -11,12 +11,8 @@ from . import _, paypal
 from . import Utils
 from . import html_conv
 from .Console import Console as xConsole
-import codecs
+
 from Components.AVSwitch import AVSwitch
-# try:
-    # from enigma import eAVSwitch as AVSwitch
-# except Exception:
-    # from enigma import eAVControl as AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
@@ -32,7 +28,7 @@ from Screens.InfoBarGenerics import (
     InfoBarSubtitleSupport,
     InfoBarMenu,
     InfoBarNotifications,
-)                
+)
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from enigma import (
@@ -47,14 +43,16 @@ from enigma import (
     RT_VALIGN_CENTER,
     RT_HALIGN_LEFT,
 )
-import unicodedata
-import json
 from datetime import datetime
+import codecs
+import json
 import os
 import re
-import sys
 import six
 import ssl
+import sys
+import unicodedata
+
 global SKIN_PATH
 
 currversion = '4.5'  # edit lululla 07/11/2022
