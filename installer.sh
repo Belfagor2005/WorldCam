@@ -87,7 +87,7 @@ if [ $OSTYPE != "DreamOs" ]; then
 fi
 sleep 2
 
-wget --no-check-certificate --no-cache --no-dns-cache 'https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz'
+wget --no-check-certificate 'https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz'
 tar -xzf main.tar.gz
 cp -r 'WorldCam-main/usr' '/'
 set +e
