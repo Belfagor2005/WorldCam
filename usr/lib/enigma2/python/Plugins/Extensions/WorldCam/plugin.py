@@ -152,7 +152,6 @@ class Webcam1(Screen):
         self['key_green'].hide()
         self.Update = False
         self['actions'] = ActionMap(['OkCancelActions',
-                                     'ColorActions',
                                      'DirectionActions',
                                      'HotkeyActions',
                                      'InfobarEPGActions',
