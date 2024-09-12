@@ -12,8 +12,8 @@ def upd_done():
     installUrl = 'https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh'
     cmd00 = 'wget -q "--no-check-certificate" ' + installUrl + ' -O - | /bin/sh'
     popen(cmd00)
-    # cmd01 = "wget  http://patbuweb.com/worldcam/worldcam.tar -O /tmp/worldcam.tar --post-data='action=purge';tar -xvf /tmp/worldcam.tar -C /;rm -rf /tmp/worldcam.tar"
-    # cmd02 = "wget --no-check-certificate  -U 'Enigma2 - worldcam Plugin' -c 'http://patbuweb.com/worldcam/worldcam.tar' -O '/tmp/worldcam.tar' --post-data='action=purge';tar -xvf /tmp/worldcam.tar -C /;rm -rf /tmp/worldcam.tar"
+    # cmd01 = "wget --no-cache --no-dns-cache  http://patbuweb.com/worldcam/worldcam.tar -O /tmp/worldcam.tar --post-data='action=purge';tar -xvf /tmp/worldcam.tar -C /;rm -rf /tmp/worldcam.tar"
+    # cmd02 = "wget --no-check-certificate --no-cache --no-dns-cache  -U 'Enigma2 - worldcam Plugin' -c 'http://patbuweb.com/worldcam/worldcam.tar' -O '/tmp/worldcam.tar' --post-data='action=purge';tar -xvf /tmp/worldcam.tar -C /;rm -rf /tmp/worldcam.tar"
     # cmd22 = 'find /usr/bin -name "wget"'
     # cmd10 = 'rm -rf /tmp/worldcam.tar'
     # res = popen(cmd22).read()
