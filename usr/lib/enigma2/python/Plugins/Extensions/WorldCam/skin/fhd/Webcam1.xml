@@ -3,9 +3,9 @@
     <!-- Graph -->
     <ePixmap position="659,759" size="150,150" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="1" alphatest="blend" />
     <eLabel position="656,758" size="150,150" backgroundColor="#30000000" zPosition="1" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" scale="strech" alphatest="blend" position="638,924" size="191,67" zPosition="5" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" scale="strech" position="91,951" size="156,75" zPosition="5" alphatest="on" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" scale="strech" position="72,746" size="200,200" zPosition="2" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" position="638,924" size="191,67" scale="strech" zPosition="5" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="91,951" size="156,75" scale="strech" zPosition="5" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="72,746" size="200,200" scale="strech" zPosition="2" alphatest="on" />
     
     <eLabel backgroundGradient="blue,red,vertical" cornerRadius="10" position="75,746" size="200,200" />
     <ePixmap position="938,784" size="896,5" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" alphatest="blend" />

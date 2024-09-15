@@ -1,17 +1,16 @@
 <screen name="Webcam1" position="0,0" size="2560,1440" title="..::WORLDCAM::.." flags="wfNoBorder">
     <widget name="info" position="1232,46" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
-    <ePixmap position="860,975" size="250,250" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="1" alphatest="blend" />
-    
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" position="860,975" size="250,250" scale="strech" zPosition="5" alphatest="blend" />
     <eLabel position="862,981" size="250,250" backgroundColor="#30000000" zPosition="1" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" alphatest="blend" position="867,1245" size="243,81" scale="stretch" zPosition="5" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="80,1222" size="208,100" scale="stretch" zPosition="5" alphatest="on" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" scale="stretch" position="82,1002" size="200,200" zPosition="2" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" position="867,1245" size="243,81" scale="strech" zPosition="5" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="80,1222" size="208,100" scale="strech" zPosition="5" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="82,1002" size="200,200" scale="strech" zPosition="5" alphatest="blend" />
     <widget name="paypal" position="1242,1066" size="1200,209" font="Regular; 46" foregroundColor="#ffb75b" backgroundColor="#101010" halign="left" transparent="1" zPosition="6" />
 
     <!-- Graph -->
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" scale="strech" position="2402,1338" size="164,68" zPosition="3" />
-    <ePixmap position="1252,1050" size="1192,7" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" alphatest="blend" />
-    <ePixmap position="0,2" size="2558,1438" zPosition="-1" scale="stretch" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/RSS_FEED+1.png" transparent="1" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" position="2402,1338" size="164,68" scale="strech" zPosition="3" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" position="1252,1050" size="1192,7" alphatest="blend" />
+    <ePixmap  pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/RSS_FEED+1.png" position="0,2" size="2558,1438" zPosition="-1" scale="stretch" transparent="1" alphatest="blend" />
     <widget source="session.VideoPicture" render="Pig" position="122,211" zPosition="20" size="950,550" backgroundColor="transparent" transparent="0" />
     <widget font="Regular; 48" halign="center" position="108,98" render="Label" size="972,70" source="global.CurrentTime" transparent="1">
         <convert type="ClockToText">Format:%a %d.%m. %Y | %H:%M</convert>
