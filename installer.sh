@@ -1,8 +1,7 @@
 #!/bin/bash
 
 ## setup command=wget -q "--no-check-certificate" https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
-exec > >(tee -a /tmp/WorldCam_debug.txt) 2>&1
-set -x
+
 ## Only This 2 lines to edit with new version ######
 version='4.5'
 changelog='\nAdd Locale Language\nFix Upgrade'
