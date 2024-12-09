@@ -69,11 +69,11 @@ developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGR
 
 screenwidth = getDesktop(0).size()
 if screenwidth.width() == 2560:
-    SKIN_PATH = os.path.join(THISPLUG, 'skin/uhd/')
+    SKIN_PATH = os.path.join(THISPLUG, 'skin/uhd')
 elif screenwidth.width() == 1920:
-    SKIN_PATH = os.path.join(THISPLUG, 'skin/fhd/')
+    SKIN_PATH = os.path.join(THISPLUG, 'skin/fhd')
 else:
-    SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
+    SKIN_PATH = os.path.join(THISPLUG, 'skin/hd')
 
 PY3 = False
 PY3 = sys.version_info.major >= 3
@@ -499,7 +499,7 @@ class Webcam4(Screen):
             # print('name1=', name)
             name = Utils.getEncodedString(name)
             # print('name2=', name)
-            self.names.append(Utils.decodecs(name))
+            self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -576,7 +576,7 @@ class Webcam5(Screen):
             # print('name1=', name)
             name = Utils.getEncodedString(name)
             # print('name2=', name)
-            self.names.append(Utils.decodecs(name))
+            self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -653,7 +653,7 @@ class Webcam5a(Screen):
             # print('name1=', name)
             name = Utils.getEncodedString(name)
             # print('name2=', name)
-            self.names.append(Utils.decodecs(name))
+            self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -750,7 +750,7 @@ class Webcam6(Screen):
             # print('name1=', name)
             name = Utils.getEncodedString(name)
             # print('name2=', name)
-            self.names.append(Utils.decodecs(name))
+            self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -964,7 +964,7 @@ class Webcam7(Screen):
             # print('name1=', name)
             name = Utils.getEncodedString(name)
             # print('name2=', name)
-            self.names.append(Utils.decodecs(name))
+            self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
 
@@ -1067,7 +1067,7 @@ class Webcam8(Screen):
             # print('name1=', name)
             name = Utils.getEncodedString(name)
             # print('name2=', name)
-            self.names.append(Utils.decodecs(name))
+            self.names.append(Utils.decodeHtml(name))
             self.urls.append(url)
         showlist(self.names, self['list'])
 
