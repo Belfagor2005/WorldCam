@@ -7,20 +7,34 @@ last update 01 09 2023
 edited from Lululla: updated to 20220113
 """
 from __future__ import print_function
+
 from . import _, paypal
-from . import Utils
-from . import html_conv
-from .Console import Console as xConsole
+from .lib import Utils
+from .lib import html_conv
+from .lib import client
+from .lib.Console import Console as xConsole
 
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
 from Components.MenuList import MenuList
-from Components.MultiContent import (MultiContentEntryPixmapAlphaTest, MultiContentEntryText)
-
+from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.config import config
+from datetime import datetime
+from enigma import (
+    eListboxPythonMultiContent,
+    loadPNG,
+    gFont,
+    # gPixmapPtr,
+    eServiceReference,
+    eTimer,
+    iPlayableService,
+    getDesktop,
+    RT_VALIGN_CENTER,
+    RT_HALIGN_LEFT,
+)
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBarGenerics import (
     InfoBarSeek,
@@ -31,19 +45,7 @@ from Screens.InfoBarGenerics import (
 )
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
-from enigma import (
-    eListboxPythonMultiContent,
-    loadPNG,
-    gFont,
-    gPixmapPtr,
-    eServiceReference,
-    eTimer,
-    iPlayableService,
-    getDesktop,
-    RT_VALIGN_CENTER,
-    RT_HALIGN_LEFT,
-)
-from datetime import datetime
+
 import codecs
 import json
 import os
@@ -51,18 +53,18 @@ import re
 import six
 import ssl
 import sys
-import unicodedata
+# import unicodedata
 
 global SKIN_PATH
 
-currversion = '4.5'  # edit lululla 07/11/2022
-setup_title = ('WORLDCAM v.' + currversion)
+currversion = '4.6'
+setup_title = ('WORLDCAM V.' + currversion)
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = os.path.join(THISPLUG, 'pics/webcam.png')
 iconpic = 'plugin.png'
 enigma_path = '/etc/enigma2'
 refer = 'https://www.skylinewebcams.com/'
-# _firstStartwrd = True
+
 SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
 installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9Xb3JsZENhbS9tYWluL2luc3RhbGxlci5zaA=='
 developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGRDYW0='
@@ -80,7 +82,8 @@ PY3 = sys.version_info.major >= 3
 
 if PY3:
     PY3 = True
-    unidecode = str
+    unicode = str
+
 
 if sys.version_info >= (2, 7, 9):
     try:
@@ -96,10 +99,11 @@ language = leng2[:-3]
 class webcamList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if screenwidth.width() == 2560:
+        screen_width = screenwidth.width()
+        if screen_width == 2560:
             self.l.setFont(0, gFont('Regular', 48))
             self.l.setItemHeight(56)
-        elif screenwidth.width() == 1920:
+        elif screen_width == 1920:
             self.l.setFont(0, gFont('Regular', 30))
             self.l.setItemHeight(50)
         else:
@@ -110,10 +114,11 @@ class webcamList(MenuList):
 def wcListEntry(name):
     pngx = ico_path1
     res = [name]
-    if screenwidth.width() == 2560:
+    screen_width = screenwidth.width()
+    if screen_width == 2560:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(60, 60), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(90, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
-    elif screenwidth.width() == 1920:
+    elif screen_width == 1920:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
@@ -122,14 +127,9 @@ def wcListEntry(name):
     return res
 
 
-def showlist(data, list):
-    icount = 0
-    plist = []
-    for line in data:
-        name = data[icount]
-        plist.append(wcListEntry(name))
-        icount += 1
-        list.setList(plist)
+def showlist(data, list_widget):
+    plist = [wcListEntry(name) for name in data]
+    list_widget.setList(plist)
 
 
 class Webcam1(Screen):
@@ -148,7 +148,6 @@ class Webcam1(Screen):
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Update')
         self['key_blue'] = Button('Remove')
-        # self['key_yellow'].hide()
         self['key_green'].hide()
         self.Update = False
         self['actions'] = ActionMap(['OkCancelActions',
@@ -167,7 +166,7 @@ class Webcam1(Screen):
                                                                    'showEventInfoPlugin': self.update_dev,
                                                                    'red': self.close}, -1)
         self.timer = eTimer()
-        if os.path.exists('/var/lib/dpkg/status'):
+        if os.path.exists("/usr/bin/apt-get"):
             self.timer_conn = self.timer.timeout.connect(self.check_vers)
         else:
             self.timer.callback.append(self.check_vers)
@@ -199,10 +198,8 @@ class Webcam1(Screen):
         # if float(currversion) < float(remote_version):
         if currversion < remote_version:
             self.Update = True
-            # self['key_yellow'].show()
             self['key_green'].show()
             self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
-        # self.update_me()
 
     def update_me(self):
         if self.Update is True:
@@ -245,11 +242,14 @@ class Webcam1(Screen):
         self.names = []
         self.urls = []
         self.names.append('User Lists')
-        self.urls.append('http://worldcam.eu/')  # THISPLUG + '/Playlists'
+        self.urls.append('http://worldcam.eu/')
+
         self.names.append('skylinewebcams')
         self.urls.append('https://www.skylinewebcams.com/')
+
         self.names.append('skylinetop')
-        self.urls.append('https://www.skylinewebcams.com/')  # {0}/top-live-cams.html'.format(language))
+        self.urls.append('https://www.skylinewebcams.com/')
+
         showlist(self.names, self['list'])
 
     def okClicked(self):
@@ -364,7 +364,6 @@ class Webcam3(Screen):
         self.urls = []
         items = []
         f1 = ''
-        # f1 = open(file1, 'r')
         if sys.version_info[0] == 3:
             f1 = open(file1, 'r', encoding='UTF-8')
         else:
@@ -381,7 +380,6 @@ class Webcam3(Screen):
                 name = html_conv.html_unescape(name)
                 self.names.append(str(name))
                 self.urls.append(url)
-                # for export
                 item = name + "###" + url + '\n'
                 items.append(item)
             items.sort()
@@ -390,7 +388,6 @@ class Webcam3(Screen):
             with open(self.xxxname, 'w') as e:
                 for item in items:
                     e.write(item)
-                e.close
             showlist(self.names, self['list'])
         except Exception as e:
             print(e)
@@ -409,7 +406,6 @@ class Webcam3(Screen):
     def cancel(self):
         self.close()
 
-# remove bouquet
     def removeb(self):
         self.session.openWithCallback(self.deleteBouquets, MessageBox, _("Remove all Worldcam Favorite Bouquet ?"), MessageBox.TYPE_YESNO, timeout=5, default=True)
 
@@ -481,7 +477,37 @@ class Webcam4(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        from . import client
+        # from . import client
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        content = six.ensure_text(client.request(BASEURL, headers=headers), encoding='utf-8')
+
+        regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
+        match = re.compile(regexvideo, re.DOTALL).findall(content)
+        items = []
+
+        for url, name in match:
+            url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
+            item = name + "###" + url1
+            items.append(item)
+
+        items.sort()
+        for item in items:
+            name = item.split('###')[0]
+            url1 = item.split('###')[1]
+            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name = Utils.decodeHtml(name)
+
+            self.names.append(name)
+            self.urls.append(url1)
+
+        showlist(self.names, self['list'])
+
+    """
+    def openTest(self):
+        self.names = []
+        self.urls = []
+        BASEURL = 'https://www.skylinewebcams.com/'
+        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
         regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
@@ -489,19 +515,17 @@ class Webcam4(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
-            # name = html_conv.html_unescape(name)
             item = name + "###" + url1
             items.append(item)
         items.sort()
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # print('name1=', name)
             name = Utils.getEncodedString(name)
-            # print('name2=', name)
             self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
+    """
 
     def okClicked(self):
         i = len(self.names)
@@ -553,7 +577,44 @@ class Webcam5(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        from . import client
+        # # from . import client
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        content = six.ensure_text(client.request(self.url, headers=headers), encoding='utf-8')
+
+        start = 0
+        n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
+        n2 = content.find('div class="collapse navbar-collapse', n1)
+        content2 = content[n1:n2]
+
+        ctry = self.url.replace('https://www.skylinewebcams.com/', '')
+        ctry = ctry.replace('.html', '')
+
+        regexvideo = '<a href="/' + ctry + '/webcam(.+?)">(.+?)</a>'
+        match = re.compile(regexvideo, re.DOTALL).findall(content2)
+        items = []
+
+        for url, name in match:
+            url1 = '{}/{}/webcam{}'.format('https://www.skylinewebcams.com', ctry, url)
+            item = name + "###" + url1
+            items.append(item)
+
+        items.sort()
+        for item in items:
+            name = item.split('###')[0]
+            url1 = item.split('###')[1]
+            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name = Utils.decodeHtml(name)
+            self.names.append(name)
+            self.urls.append(url1)
+
+        showlist(self.names, self['list'])
+
+    """
+    def openTest(self):
+        self.names = []
+        self.urls = []
+        BASEURL = 'https://www.skylinewebcams.com/'
+        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         start = 0
@@ -573,12 +634,11 @@ class Webcam5(Screen):
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # print('name1=', name)
             name = Utils.getEncodedString(name)
-            # print('name2=', name)
             self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
+    """
 
     def okClicked(self):
         i = len(self.names)
@@ -630,7 +690,43 @@ class Webcam5a(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        from . import client
+        # from . import client
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        content = six.ensure_text(client.request(self.url, headers=headers), encoding='utf-8')
+
+        n1 = content.find('col-xs-12"><h1>', 0)
+        n2 = content.find('</div>', n1)
+        content2 = content[n1:n2]
+
+        ctry = self.url.replace('https://www.skylinewebcams.com/', '')
+        ctry = ctry.replace('.html', '')
+
+        regexvideo = '<a href="/' + ctry + '/(.+?)".*?tag">(.+?)</a>'
+        match = re.compile(regexvideo, re.DOTALL).findall(content2)
+        items = []
+
+        for url, name in match:
+            url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
+            item = name + "###" + url1
+            items.append(item)
+
+        items.sort()
+        for item in items:
+            name = item.split('###')[0]
+            url1 = item.split('###')[1]
+            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name = Utils.decodeHtml(name)
+            self.names.append(name)
+            self.urls.append(url1)
+
+        showlist(self.names, self['list'])
+
+    """
+    def openTest(self):
+        self.names = []
+        self.urls = []
+        BASEURL = 'https://www.skylinewebcams.com/'
+        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         n1 = content.find('col-xs-12"><h1>', 0)
@@ -643,19 +739,17 @@ class Webcam5a(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            # name = html_conv.html_unescape(name)
             item = name + "###" + url1
             items.append(item)
         items.sort()
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # print('name1=', name)
             name = Utils.getEncodedString(name)
-            # print('name2=', name)
             self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
+    """
 
     def okClicked(self):
         i = len(self.names)
@@ -713,7 +807,45 @@ class Webcam6(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        from . import client
+        # from . import client
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        content = six.ensure_text(client.request(self.url, headers=headers), encoding='utf-8')
+        stext = self.url.replace('https://www.skylinewebcams.com/', '')
+        stext = stext.replace('.html', '')
+        stext = stext + '/'
+
+        regexvideo = '><a href="' + stext + '(.+?)".*?alt="(.+?)"'
+        match = re.compile(regexvideo, re.DOTALL).findall(content)
+
+        items = []
+        for url, name in match:
+            url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
+            item = name + "###" + url1 + '\n'
+            items.append(item)
+
+        items.sort()
+        self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
+
+        with open(self.xxxname, 'w', encoding='utf-8') as e:
+            for item in items:
+                e.write(item)
+
+        for item in items:
+            name = item.split('###')[0]
+            url1 = item.split('###')[1]
+            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name = Utils.decodeHtml(name)
+            self.names.append(name)
+            self.urls.append(url1)
+
+        showlist(self.names, self['list'])
+
+    """
+    def openTest(self):
+        self.names = []
+        self.urls = []
+        BASEURL = 'https://www.skylinewebcams.com/'
+        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
@@ -725,34 +857,22 @@ class Webcam6(Screen):
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            # name = html_conv.html_unescape(name)
             item = name + "###" + url1 + '\n'
             items.append(item)
         items.sort()
-        # exper
         self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-        # clist = ''
-        # if sys.version_info[0] == 3:
-            # clist = open(self.xxxname, 'w', encoding='UTF-8')
-        # else:
-            # clist = open(self.xxxname, 'w')
-        # for item in items:
-            # clist.write(item)
-        # clist.close()
         with open(self.xxxname, 'w') as e:
             for item in items:
                 e.write(item)
-        e.close
 
         for item in items:
             name = item.split('###')[0]
             url1 = item.split('###')[1]
-            # print('name1=', name)
             name = Utils.getEncodedString(name)
-            # print('name2=', name)
             self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
+    """
 
     def okClicked(self):
         i = len(self.names)
@@ -789,10 +909,6 @@ class Webcam6(Screen):
                 print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
                 if str(nid) == '11':
                     video_url = 'https://www.youtube.com/watch?v=' + id
-                    # stream = self.openYTID(video_url)
-                    # stream.setName(str(name))
-                    # print('direct open ytl: ', stream)
-                    # self.session.open(MoviePlayer, stream)
                     self.playYTID(video_url, str(name))
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
@@ -806,7 +922,7 @@ class Webcam6(Screen):
         return stream
 
     def getYTID(self, title, id):
-        yttitle = title  # .encode('ascii', 'replace')
+        yttitle = title
         video_url = 'https://www.youtube.com/watch?v=' + id
         print('video_url: %s ' % (video_url))
         self.playYTID(video_url, yttitle)
@@ -816,10 +932,8 @@ class Webcam6(Screen):
         stream = eServiceReference(4097, 0, video_url)
         if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
-            # stream = eServiceReference(4097, 0, video_url)
         else:
-            from Plugins.Extensions.WorldCam import youtube_dl
-            from youtube_dl import YoutubeDL
+            from .youtube_dl import YoutubeDL
             '''
             ydl_opts = {'format': 'best'}
             ydl_opts = {'format': 'bestaudio/best'}
@@ -843,11 +957,6 @@ class Webcam6(Screen):
             self.session.openWithCallback(self.crea_bouquet, MessageBox, _("Do you want to Convert to Favorite Bouquet ?\n\nAttention!! Wait while converting !!!"))
         elif answer:
             if os.path.exists(self.xxxname) and os.stat(self.xxxname).st_size > 0:
-                # service = '4097'
-                # ch = 0
-                # ch = cvbq.convert_bouquet(url, name, service)
-                # if ch:
-                    # _session.open(MessageBox, _('bouquets reloaded..\nWith %s channel' % ch), MessageBox.TYPE_INFO, timeout=5)
                 name_clean = Utils.cleanName(self.name)
                 name_file = name_clean.replace('.m3u', '')
                 bouquetname = 'userbouquet.wrd_%s.tv' % (name_file.lower())
@@ -862,12 +971,7 @@ class Webcam6(Screen):
                 self.tmplist.append('#SERVICE 1:64:0:0:0:0:0:0:0:0::%s CHANNELS' % name_file)
                 self.tmplist.append('#DESCRIPTION --- %s ---' % name_file)
                 tag = '1'
-                # clist = ''
-                # if sys.version_info[0] == 3:
-                    # clist = open(self.xxxname, 'r', encoding='UTF-8')
-                # else:
-                    # clist = open(self.xxxname, 'r')
-                # for line in clist:
+
                 for line in open(self.xxxname):
                     name = line.split('###')[0]
                     ref = line.split('###')[1]
@@ -884,7 +988,6 @@ class Webcam6(Screen):
                     print(servicez)
                     self.tmplist.append(servicez)
                     self.tmplist.append(descriptionz)
-                # clist.close()
                 with open(path1, 'w+') as s:
                     for item in self.tmplist:
                         s.write("%s\n" % item)
@@ -950,7 +1053,31 @@ class Webcam7(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        from . import client
+        # from . import client
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        content = six.ensure_text(client.request(BASEURL, headers=headers), encoding='utf-8')
+        n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
+        n2 = content.find('</div></div>', n1)
+        content2 = content[n1:n2]
+
+        regexvideo = 'href="(.+?)".*?tcam">(.+?)</p>'
+        match = re.compile(regexvideo, re.DOTALL).findall(content2)
+
+        for url, name in match:
+            url1 = 'https://www.skylinewebcams.com' + url
+            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name = Utils.decodeHtml(name)
+            self.names.append(name)
+            self.urls.append(url1)
+
+        showlist(self.names, self['list'])
+
+    """
+    def openTest(self):
+        self.names = []
+        self.urls = []
+        BASEURL = 'https://www.skylinewebcams.com/'
+        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(BASEURL, headers=headers))
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
@@ -960,13 +1087,11 @@ class Webcam7(Screen):
         match = re.compile(regexvideo, re.DOTALL).findall(content2)
         for url, name, in match:
             url1 = 'https://www.skylinewebcams.com' + url
-            # name = html_conv.html_unescape(name)
-            # print('name1=', name)
             name = Utils.getEncodedString(name)
-            # print('name2=', name)
             self.names.append(Utils.decodeHtml(name))
             self.urls.append(url1)
         showlist(self.names, self['list'])
+    """
 
     def okClicked(self):
         i = len(self.names)
@@ -975,7 +1100,7 @@ class Webcam7(Screen):
         idx = self['list'].getSelectionIndex()
         name = self.names[idx]
         url = self.urls[idx]
-        self.session.open(Webcam8, name, url)  # Webcam5
+        self.session.open(Webcam8, name, url)
 
     def cancel(self):
         self.close()
@@ -1029,7 +1154,54 @@ class Webcam8(Screen):
         self.urls = []
         items = []
         BASEURL = 'https://www.skylinewebcams.com/{0}/webcam.html'
-        from . import client, dom_parser as dom   # ,control
+        from .lib import client, dom_parser as dom
+        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
+        content = six.ensure_text(client.request(self.url, headers=headers), encoding='utf-8')
+
+        data = client.parseDOM(content, 'div', attrs={'class': 'container'})[0]
+        data = dom.parse_dom(data, 'a', req='href')
+        data = [i for i in data if 'subt' in i.content]
+
+        for item in data:
+            link = item.attrs['href']
+            if link == '#':
+                continue
+
+            link = html_conv.html_unescape(link)
+            name = client.parseDOM(item.content, 'img', ret='alt')[0]
+            name = html_conv.html_unescape(name)
+            if not PY3:
+                link = link.encode('utf-8')
+                name = name.encode('utf-8')
+
+            base_url = 'https://www.skylinewebcams.com'
+            url = '{}/{}'.format(base_url, link)
+            name = html_conv.html_unescape(name)
+            item = name + "###" + url + '\n'
+            items.append(item)
+        items.sort()
+
+        self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
+        with open(self.xxxname, 'w', encoding='utf-8') as e:
+            for item in items:
+                e.write(item)
+        for item in items:
+            name = item.split('###')[0]
+            url = item.split('###')[1]
+            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name = Utils.decodeHtml(name)
+            self.names.append(name)
+            self.urls.append(url)
+
+        showlist(self.names, self['list'])
+
+    """
+    def openTest(self):
+        self.names = []
+        self.urls = []
+        items = []
+        BASEURL = 'https://www.skylinewebcams.com/{0}/webcam.html'
+        from .lib import client, dom_parser as dom   # ,control
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_str(client.request(self.url, headers=headers))
         data = client.parseDOM(content, 'div', attrs={'class': 'container'})[0]
@@ -1042,7 +1214,7 @@ class Webcam8(Screen):
             link = html_conv.html_unescape(link)
             name = client.parseDOM(item.content, 'img', ret='alt')[0]
             name = html_conv.html_unescape(name)
-            if six.PY2:
+            if not PY3:
                 link = link.encode('utf-8')
                 name = name.encode('utf-8')
             base_url = 'https://www.skylinewebcams.com'
@@ -1052,24 +1224,17 @@ class Webcam8(Screen):
             items.append(item)
         items.sort()
         self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-        # e = ''
-        # if sys.version_info[0] == 3:
-            # e = open(self.xxxname, 'w', encoding='UTF-8')
-        # else:
-            # e = open(self.xxxname, 'w')
         with open(self.xxxname, 'w') as e:
             for item in items:
                 e.write(item)
-        e.close
         for item in items:
             name = item.split('###')[0]
             url = item.split('###')[1]
-            # print('name1=', name)
             name = Utils.getEncodedString(name)
-            # print('name2=', name)
             self.names.append(Utils.decodeHtml(name))
             self.urls.append(url)
         showlist(self.names, self['list'])
+    """
 
     def okClicked(self):
         i = len(self.names)
@@ -1107,10 +1272,6 @@ class Webcam8(Screen):
                 print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
                 if str(nid) == '11':
                     video_url = 'https://www.youtube.com/watch?v=' + id
-                    # stream = self.openYTID(video_url)
-                    # stream.setName(str(name))
-                    # print('direct open ytl: ', stream)
-                    # self.session.open(MoviePlayer, stream)
                     self.playYTID(video_url, str(name))
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
@@ -1128,10 +1289,8 @@ class Webcam8(Screen):
         stream = eServiceReference(4097, 0, video_url)
         if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyo') or os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper/plugin.pyc'):
             video_url = 'streamlink://' + video_url
-            # stream = eServiceReference(4097, 0, video_url)
         else:
-            from Plugins.Extensions.WorldCam import youtube_dl
-            from youtube_dl import YoutubeDL
+            from .youtube_dl import YoutubeDL
             '''
             ydl_opts = {'format': 'best'}
             ydl_opts = {'format': 'bestaudio/best'}
@@ -1399,7 +1558,7 @@ class MoviePlayer(
                 self.setAspect(self.init_aspect)
             except:
                 pass
-        streaml = False
+        # streaml = False
         self.leavePlayer()
 
     def leavePlayer(self):

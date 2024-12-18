@@ -2,14 +2,14 @@
 	<widget name="info" position="641,21" size="543,33" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="1" zPosition="5" />
     <ePixmap position="610,487" size="620,5" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" alphatest="blend" />
     <ePixmap position="center,center" size="1280,720" zPosition="-1" scale="stretch" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/RSS_FEED+1.png" transparent="1" alphatest="blend" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" position="1185,668" size="96,39"  scale="strech" zPosition="5" alphatest="blend" transparent="0" />
-    <ePixmap position="212,563" size="145,50" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" scale="strech" zPosition="5" alphatest="blend" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/menu.png" position="1185,668" size="96,39" scale="strech" zPosition="5" alphatest="blend" transparent="0" />
+    <ePixmap position="707,509" size="380,120" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" scale="1" zPosition="5" alphatest="blend" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="37,624" size="125,50" scale="strech" zPosition="5" alphatest="blend" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="40,495" size="120,120" scale="strech" zPosition="5" alphatest="blend" />
-    <widget name="paypal" position="609,506" size="625,131" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
-    <ePixmap  pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" position="397,497" size="150,150" scale="strech" zPosition="4" alphatest="blend" />
+    <widget name="paypal" position="166,496" size="399,181" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" position="1087,494" size="150,150" scale="strech" zPosition="4" alphatest="blend" />
     <widget source="session.VideoPicture" render="Pig" position="58,106" zPosition="20" size="480,280" backgroundColor="transparent" transparent="0" />
-    <eLabel position="402,496" size="150,150" backgroundColor="#30000000" zPosition="1" />
+    <eLabel position="1099,729" size="150,150" backgroundColor="#30000000" zPosition="1" />
     <widget font="Regular; 34" halign="center" position="44,16" render="Label" size="505,70" source="global.CurrentTime" transparent="1">
         <convert type="ClockToText">Format:%a %d.%m. %Y | %H:%M</convert>
     </widget>
