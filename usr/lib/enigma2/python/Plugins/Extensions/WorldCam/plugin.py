@@ -55,7 +55,8 @@ import ssl
 import sys
 # import unicodedata
 
-global SKIN_PATH
+
+global worldcam_path
 
 currversion = '4.6'
 setup_title = ('WORLDCAM V.' + currversion)
@@ -65,17 +66,17 @@ iconpic = 'plugin.png'
 enigma_path = '/etc/enigma2'
 refer = 'https://www.skylinewebcams.com/'
 
-SKIN_PATH = os.path.join(THISPLUG, 'skin/hd/')
+worldcam_path = os.path.join(THISPLUG, 'skin/hd/')
 installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9Xb3JsZENhbS9tYWluL2luc3RhbGxlci5zaA=='
 developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGRDYW0='
 
-screenwidth = getDesktop(0).size()
-if screenwidth.width() == 2560:
-    SKIN_PATH = os.path.join(THISPLUG, 'skin/uhd')
-elif screenwidth.width() == 1920:
-    SKIN_PATH = os.path.join(THISPLUG, 'skin/fhd')
+screen_width = getDesktop(0).size()
+if screen_width.width() == 2560:
+    worldcam_path = os.path.join(THISPLUG, 'skin/uhd')
+elif screen_width.width() == 1920:
+    worldcam_path = os.path.join(THISPLUG, 'skin/fhd')
 else:
-    SKIN_PATH = os.path.join(THISPLUG, 'skin/hd')
+    worldcam_path = os.path.join(THISPLUG, 'skin/hd')
 
 PY3 = False
 PY3 = sys.version_info.major >= 3
@@ -91,20 +92,34 @@ if sys.version_info >= (2, 7, 9):
     except:
         sslContext = None
 
-leng = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
-leng2 = leng.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
-language = leng2[:-3]
+# leng = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
+# leng2 = leng.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
+# language = leng2[:-3]
+with open('/etc/enigma2/settings', 'r') as settings_file:
+    for line in settings_file:
+        if 'config.osd.language=' in line:
+            language = line.split('=')[1].strip().replace('_', '-')
+            break
 
 
 class webcamList(MenuList):
-    def __init__(self, list):
-        MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        screen_width = screenwidth.width()
+    def __init__(self, items):
+        """
+        Initialize the webcam list with appropriate font size and item height based on screen width.
+        """
+        MenuList.__init__(self, items, True, eListboxPythonMultiContent)
+        self.configureList()
+
+    def configureList(self):
+        """
+        Configure font size and item height based on the screen width.
+        """
+        # screen_width = screen_width.width()
         if screen_width == 2560:
             self.l.setFont(0, gFont('Regular', 48))
             self.l.setItemHeight(56)
         elif screen_width == 1920:
-            self.l.setFont(0, gFont('Regular', 30))
+            self.l.setFont(0, gFont('Regular', 36))
             self.l.setItemHeight(50)
         else:
             self.l.setFont(0, gFont('Regular', 24))
@@ -112,9 +127,14 @@ class webcamList(MenuList):
 
 
 def wcListEntry(name):
+    """
+    Create an entry for the webcam list with text and icon based on screen width.
+
+    :param name: Name of the webcam.
+    :return: List representing the entry.
+    """
     pngx = ico_path1
     res = [name]
-    screen_width = screenwidth.width()
     if screen_width == 2560:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(60, 60), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(90, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
@@ -124,10 +144,17 @@ def wcListEntry(name):
     else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 2), size=(40, 40), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+
     return res
 
 
 def showlist(data, list_widget):
+    """
+    Populate the list widget with webcam entries.
+
+    :param data: List of webcam names.
+    :param list_widget: The MenuList widget to populate.
+    """
     plist = [wcListEntry(name) for name in data]
     list_widget.setList(plist)
 
@@ -136,7 +163,7 @@ class Webcam1(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -150,21 +177,27 @@ class Webcam1(Screen):
         self['key_blue'] = Button('Remove')
         self['key_green'].hide()
         self.Update = False
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'DirectionActions',
-                                     'HotkeyActions',
-                                     'InfobarEPGActions',
-                                     'ChannelSelectBaseActions'], {'ok': self.okClicked,
-                                                                   'back': self.close,
-                                                                   'cancel': self.close,
-                                                                   'yellow': self.update_me,  # update_me,
-                                                                   'green': self.okClicked,
-                                                                   'blue': self.removeb,
-                                                                   'yellow_long': self.update_dev,
-                                                                   'info_long': self.update_dev,
-                                                                   'infolong': self.update_dev,
-                                                                   'showEventInfoPlugin': self.update_dev,
-                                                                   'red': self.close}, -1)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'DirectionActions',
+             'HotkeyActions',
+             'InfobarEPGActions',
+             'ChannelSelectBaseActions'],
+            {
+                'ok': self.okClicked,
+                'back': self.close,
+                'cancel': self.close,
+                'yellow': self.update_me,
+                'green': self.okClicked,
+                'blue': self.removeb,
+                'yellow_long': self.update_dev,
+                'info_long': self.update_dev,
+                'infolong': self.update_dev,
+                'showEventInfoPlugin': self.update_dev,
+                'red': self.close
+            },
+            -1
+        )
         self.timer = eTimer()
         if os.path.exists("/usr/bin/apt-get"):
             self.timer_conn = self.timer.timeout.connect(self.check_vers)
@@ -175,31 +208,40 @@ class Webcam1(Screen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def check_vers(self):
+        """
+        Check the latest version and changelog from the remote installer URL.
+        If a new version is available, notify the user.
+        """
         remote_version = '0.0'
         remote_changelog = ''
-        req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
-        page = Utils.urlopen(req).read()
-        if PY3:
-            data = page.decode("utf-8")
-        else:
-            data = page.encode("utf-8")
-        if data:
-            lines = data.split("\n")
-            for line in lines:
-                if line.startswith("version"):
-                    remote_version = line.split("=")
-                    remote_version = line.split("'")[1]
-                if line.startswith("changelog"):
-                    remote_changelog = line.split("=")
-                    remote_changelog = line.split("'")[1]
-                    break
+
+        try:
+            req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
+            page = Utils.urlopen(req).read()
+            data = page.decode("utf-8") if PY3 else page.encode("utf-8")
+            if data:
+                lines = data.split("\n")
+                for line in lines:
+                    if line.startswith("version"):
+                        remote_version = line.split("'")[1] if "'" in line else '0.0'
+                    elif line.startswith("changelog"):
+                        remote_changelog = line.split("'")[1] if "'" in line else ''
+                        break
+        except Exception as e:
+            self.session.open(MessageBox, _('Error checking version: %s') % str(e), MessageBox.TYPE_ERROR, timeout=5)
+            return
         self.new_version = remote_version
         self.new_changelog = remote_changelog
         # if float(currversion) < float(remote_version):
         if currversion < remote_version:
             self.Update = True
             self['key_green'].show()
-            self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog),
+                MessageBox.TYPE_INFO,
+                timeout=5
+            )
 
     def update_me(self):
         if self.Update is True:
@@ -208,6 +250,9 @@ class Webcam1(Screen):
             self.session.open(MessageBox, _("Congrats! You already have the latest version..."),  MessageBox.TYPE_INFO, timeout=4)
 
     def update_dev(self):
+        """
+        Check for updates from the developer's URL and prompt the user to install the latest update.
+        """
         try:
             req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
             page = Utils.urlopen(req).read()
@@ -239,17 +284,21 @@ class Webcam1(Screen):
         conv.removeb()
 
     def openTest(self):
+        """
+        Populate the list with predefined names and URLs, and display them using the 'showlist' function.
+        """
         self.names = []
         self.urls = []
-        self.names.append('User Lists')
-        self.urls.append('http://worldcam.eu/')
 
-        self.names.append('skylinewebcams')
-        self.urls.append('https://www.skylinewebcams.com/')
+        predefined_entries = [
+            ('User Lists', 'http://worldcam.eu/'),
+            ('skylinewebcams', 'https://www.skylinewebcams.com/'),
+            ('skylinetop', 'https://www.skylinewebcams.com/')
+        ]
 
-        self.names.append('skylinetop')
-        self.urls.append('https://www.skylinewebcams.com/')
-
+        for name, url in predefined_entries:
+            self.names.append(name)
+            self.urls.append(url)
         showlist(self.names, self['list'])
 
     def okClicked(self):
@@ -272,7 +321,7 @@ class Webcam2(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -285,13 +334,19 @@ class Webcam2(Screen):
         self['key_blue'] = Button('')
         self['key_yellow'].hide()
         self['key_blue'].hide()
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'cancel': self.cancel,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -323,7 +378,7 @@ class Webcam3(Screen):
     def __init__(self, session, name):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -337,15 +392,22 @@ class Webcam3(Screen):
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Export')
         self['key_blue'] = Button('Remove')
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'yellow': self.export,
-                                                       'blue': self.removeb,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'cancel': self.cancel,
+                'yellow': self.export,
+                'blue': self.removeb,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
+
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -359,7 +421,7 @@ class Webcam3(Screen):
 
     def openTest(self):
         uLists = os.path.join(THISPLUG, 'Playlists')
-        file1 = uLists + '/' + self.name
+        file1 = os.path.join(uLists, self.name)
         self.names = []
         self.urls = []
         items = []
@@ -384,13 +446,13 @@ class Webcam3(Screen):
                 items.append(item)
             items.sort()
 
-            self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
+            self.xxxname = os.path.join('/tmp', str(self.name) + '_conv.m3u')
             with open(self.xxxname, 'w') as e:
                 for item in items:
                     e.write(item)
             showlist(self.names, self['list'])
         except Exception as e:
-            print(e)
+            print("Error occurred:", e)
 
     def okClicked(self):
         i = len(self.names)
@@ -416,24 +478,14 @@ class Webcam3(Screen):
         if result:
             try:
                 for fname in os.listdir(enigma_path):
-                    if 'userbouquet.wrd_' in fname:
+                    if 'userbouquet.wrd_' in fname or 'bouquets.tv.bak' in fname:
                         Utils.purge(enigma_path, fname)
-                    elif 'bouquets.tv.bak' in fname:
-                        Utils.purge(enigma_path, fname)
-                """
-                # if os.path.isdir(epgimport_path):
-                    # for fname in os.listdir(epgimport_path):
-                        # if 'hbc_' in fname:
-                            # os.remove(os.path.join(epgimport_path, fname))
-                            """
                 os.rename(os.path.join(enigma_path, 'bouquets.tv'), os.path.join(enigma_path, 'bouquets.tv.bak'))
-                tvfile = open(os.path.join(enigma_path, 'bouquets.tv'), 'w+')
-                bakfile = open(os.path.join(enigma_path, 'bouquets.tv.bak'))
-                for line in bakfile:
-                    if '.wrd_' not in line:
-                        tvfile.write(line)
-                bakfile.close()
-                tvfile.close()
+                with open(os.path.join(enigma_path, 'bouquets.tv.bak'), 'r') as bakfile:
+                    with open(os.path.join(enigma_path, 'bouquets.tv'), 'w+') as tvfile:
+                        for line in bakfile:
+                            if '.wrd_' not in line:
+                                tvfile.write(line)
                 self.session.open(MessageBox, _('Worldcam Favorites List have been removed'), MessageBox.TYPE_INFO, timeout=5)
                 Utils.ReloadBouquets()
             except Exception as ex:
@@ -446,7 +498,7 @@ class Webcam4(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -459,13 +511,19 @@ class Webcam4(Screen):
         self['key_blue'] = Button('')
         self['key_yellow'].hide()
         self['key_blue'].hide()
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'cancel': self.cancel,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -477,10 +535,8 @@ class Webcam4(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_text(client.request(BASEURL, headers=headers), encoding='utf-8')
-
         regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
         items = []
@@ -496,36 +552,18 @@ class Webcam4(Screen):
             url1 = item.split('###')[1]
             name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
             name = Utils.decodeHtml(name)
+            """
+            # name, url1 = item.split('###')
+            # # Gestione delle stringhe per compatibilità con Python 2 e 3
+            # if not isinstance(name, str):
+                # name = Utils.getEncodedString(name)
+            # name = Utils.decodeHtml(name)
+            """
 
             self.names.append(name)
             self.urls.append(url1)
 
         showlist(self.names, self['list'])
-
-    """
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request(BASEURL, headers=headers))
-        regexvideo = 'class="ln_css ln-(.+?)" alt="(.+?)"'
-        match = re.compile(regexvideo, re.DOTALL).findall(content)
-        items = []
-        for url, name in match:
-            url1 = '{}/{}.html'.format('https://www.skylinewebcams.com', url)
-            item = name + "###" + url1
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            name = Utils.getEncodedString(name)
-            self.names.append(Utils.decodeHtml(name))
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-    """
 
     def okClicked(self):
         i = len(self.names)
@@ -544,7 +582,7 @@ class Webcam5(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -557,13 +595,19 @@ class Webcam5(Screen):
         self['key_blue'] = Button('')
         self['key_yellow'].hide()
         self['key_blue'].hide()
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'cancel': self.cancel,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
         self.name = name
         self.url = url
         self.onFirstExecBegin.append(self.openTest)
@@ -609,37 +653,6 @@ class Webcam5(Screen):
 
         showlist(self.names, self['list'])
 
-    """
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request(self.url, headers=headers))
-        start = 0
-        n1 = content.find('div class="dropdown-menu mega-dropdown-menu', start)
-        n2 = content.find('div class="collapse navbar-collapse', n1)
-        content2 = content[n1:n2]
-        ctry = self.url.replace('https://www.skylinewebcams.com/', '')
-        ctry = ctry.replace('.html', '')
-        regexvideo = '<a href="/' + ctry + '/webcam(.+?)">(.+?)</a>'
-        match = re.compile(regexvideo, re.DOTALL).findall(content2)
-        items = []
-        for url, name in match:
-            url1 = '{}/{}/webcam{}'.format('https://www.skylinewebcams.com', ctry, url)
-            item = name + "###" + url1
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            name = Utils.getEncodedString(name)
-            self.names.append(Utils.decodeHtml(name))
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-    """
-
     def okClicked(self):
         i = len(self.names)
         if i < 0:
@@ -657,7 +670,7 @@ class Webcam5a(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -670,13 +683,19 @@ class Webcam5a(Screen):
         self['key_blue'] = Button('')
         self['key_yellow'].hide()
         self['key_blue'].hide()
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'cancel': self.cancel,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
         self.name = name
         self.url = url
         self.onFirstExecBegin.append(self.openTest)
@@ -690,7 +709,6 @@ class Webcam5a(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_text(client.request(self.url, headers=headers), encoding='utf-8')
 
@@ -707,49 +725,20 @@ class Webcam5a(Screen):
 
         for url, name in match:
             url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            item = name + "###" + url1
+            item = "{}###{}".format(name, url1)
             items.append(item)
 
         items.sort()
         for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name, url1 = item.split('###')
+            if not isinstance(name, str):
+                name = Utils.getEncodedString(name)
             name = Utils.decodeHtml(name)
+
             self.names.append(name)
             self.urls.append(url1)
 
         showlist(self.names, self['list'])
-
-    """
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request(self.url, headers=headers))
-        n1 = content.find('col-xs-12"><h1>', 0)
-        n2 = content.find('</div>', n1)
-        content2 = content[n1:n2]
-        ctry = self.url.replace('https://www.skylinewebcams.com/', '')
-        ctry = ctry.replace('.html', '')
-        regexvideo = '<a href="/' + ctry + '/(.+?)".*?tag">(.+?)</a>'
-        match = re.compile(regexvideo, re.DOTALL).findall(content2)
-        items = []
-        for url, name in match:
-            url1 = '{}/{}/{}'.format('https://www.skylinewebcams.com', ctry, url)
-            item = name + "###" + url1
-            items.append(item)
-        items.sort()
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            name = Utils.getEncodedString(name)
-            self.names.append(Utils.decodeHtml(name))
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-    """
 
     def okClicked(self):
         i = len(self.names)
@@ -768,7 +757,7 @@ class Webcam6(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -783,15 +772,21 @@ class Webcam6(Screen):
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Export')
         self['key_blue'] = Button('Remove')
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'yellow': self.crea_bouquet,
-                                                       'blue': self.removeb,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'cancel': self.cancel,
+                'yellow': self.crea_bouquet,
+                'blue': self.removeb,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -807,72 +802,35 @@ class Webcam6(Screen):
         self.names = []
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
         content = six.ensure_text(client.request(self.url, headers=headers), encoding='utf-8')
         stext = self.url.replace('https://www.skylinewebcams.com/', '')
         stext = stext.replace('.html', '')
         stext = stext + '/'
-
         regexvideo = '><a href="' + stext + '(.+?)".*?alt="(.+?)"'
         match = re.compile(regexvideo, re.DOTALL).findall(content)
 
         items = []
         for url, name in match:
             url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            item = name + "###" + url1 + '\n'
+            item = "{}###{}{}".format(name, url1, '\n')
             items.append(item)
 
         items.sort()
         self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-
         with open(self.xxxname, 'w', encoding='utf-8') as e:
             for item in items:
                 e.write(item)
 
         for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            name = Utils.getEncodedString(name) if not isinstance(name, unicode) else name
+            name, url1 = item.split('###')
+            if not isinstance(name, str):
+                name = Utils.getEncodedString(name)
             name = Utils.decodeHtml(name)
             self.names.append(name)
             self.urls.append(url1)
 
         showlist(self.names, self['list'])
-
-    """
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request(self.url, headers=headers))
-        stext = self.url.replace('https://www.skylinewebcams.com/', '')
-        stext = stext.replace('.html', '')
-        stext = stext + '/'
-        regexvideo = '><a href="' + stext + '(.+?)".*?alt="(.+?)"'
-        match = re.compile(regexvideo, re.DOTALL).findall(content)
-
-        items = []
-        for url, name in match:
-            url1 = '{}/{}{}'.format('https://www.skylinewebcams.com', stext, url)
-            item = name + "###" + url1 + '\n'
-            items.append(item)
-        items.sort()
-        self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-        with open(self.xxxname, 'w') as e:
-            for item in items:
-                e.write(item)
-
-        for item in items:
-            name = item.split('###')[0]
-            url1 = item.split('###')[1]
-            name = Utils.getEncodedString(name)
-            self.names.append(Utils.decodeHtml(name))
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-    """
 
     def okClicked(self):
         i = len(self.names)
@@ -893,23 +851,23 @@ class Webcam6(Screen):
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
                 id = match[0]
                 id = id.replace('?a=', '')
-                if id or id != '':
-                    video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + id
+                if id:
+                    video_url = "https://hd-auth.skylinewebcams.com/live.m3u8?a={}".format(id)
                     title = name
                     stream = eServiceReference(4097, 0, video_url)
                     stream.setName(str(title))
                     self.session.open(MoviePlayer, stream)
-
             elif "videoId:" in content:
                 regexvideo = "videoId.*?'(.*?)'"
                 match = re.compile(regexvideo, re.DOTALL).findall(content)
                 id = match[0]
                 nid = len(str(id))
                 print(nid)
-                print('name: %s\nid: %s\nLenYTL: %s' % (str(name), str(id), nid))
+                print('name: {0}\nid: {1}\nLenYTL: {2}'.format(str(name), str(id), nid))
                 if str(nid) == '11':
-                    video_url = 'https://www.youtube.com/watch?v=' + id
+                    video_url = 'https://www.youtube.com/watch?v={}'.format(id)
                     self.playYTID(video_url, str(name))
+
             else:
                 return 'http://patbuweb.com/iptv/e2liste/startend.avi'
         except Exception as e:
@@ -946,8 +904,7 @@ class Webcam6(Screen):
             ydl.add_default_info_extractors()
             result = ydl.extract_info(video_url, download=False)
             video_url = result["url"]
-            print("Here in Test url =", video_url)
-
+            print("Here in Test url = {}".format(video_url))
         stream = eServiceReference(4097, 0, video_url)
         stream.setName(str(title))
         self.session.open(MoviePlayer, stream)
@@ -998,7 +955,7 @@ class Webcam6(Screen):
                         in_bouquets = 1
                 if in_bouquets == 0:
                     with open(path2, 'a+') as f:
-                        bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(bouquetname) + '" ORDER BY bouquet\n'
+                        bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "%s" ORDER BY bouquet\n' % str(bouquetname)
                         f.write(str(bouquetTvString))
                 try:
                     from enigma import eDVBDB
@@ -1022,7 +979,7 @@ class Webcam7(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -1035,13 +992,19 @@ class Webcam7(Screen):
         self['key_blue'] = Button('')
         self['key_yellow'].hide()
         self['key_blue'].hide()
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'cancel': self.cancel,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -1072,27 +1035,6 @@ class Webcam7(Screen):
 
         showlist(self.names, self['list'])
 
-    """
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        BASEURL = 'https://www.skylinewebcams.com/'
-        # from . import client
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request(BASEURL, headers=headers))
-        n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
-        n2 = content.find('</div></div>', n1)
-        content2 = content[n1:n2]
-        regexvideo = 'href="(.+?)".*?tcam">(.+?)</p>'
-        match = re.compile(regexvideo, re.DOTALL).findall(content2)
-        for url, name, in match:
-            url1 = 'https://www.skylinewebcams.com' + url
-            name = Utils.getEncodedString(name)
-            self.names.append(Utils.decodeHtml(name))
-            self.urls.append(url1)
-        showlist(self.names, self['list'])
-    """
-
     def okClicked(self):
         i = len(self.names)
         if i < 0:
@@ -1110,7 +1052,7 @@ class Webcam8(Screen):
     def __init__(self, session, name, url):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(SKIN_PATH, 'Webcam1.xml')
+        skin = os.path.join(worldcam_path, 'Webcam1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.list = []
@@ -1125,15 +1067,21 @@ class Webcam8(Screen):
         self['key_green'] = Button('Select')
         self['key_yellow'] = Button('Export')
         self['key_blue'] = Button('Remove')
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ButtonSetupActions',
-                                     'ColorActions'], {'red': self.close,
-                                                       'green': self.okClicked,
-                                                       'yellow': self.export,
-                                                       'blue': self.removeb,
-                                                       'cancel': self.cancel,
-                                                       'back': self.cancel,
-                                                       'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(
+            ['OkCancelActions',
+             'ButtonSetupActions',
+             'ColorActions'],
+            {
+                'red': self.close,
+                'green': self.okClicked,
+                'yellow': self.export,
+                'blue': self.removeb,
+                'cancel': self.cancel,
+                'back': self.cancel,
+                'ok': self.okClicked
+            },
+            -2
+        )
         self.onFirstExecBegin.append(self.openTest)
         self.onLayoutFinish.append(self.layoutFinished)
 
@@ -1194,47 +1142,6 @@ class Webcam8(Screen):
             self.urls.append(url)
 
         showlist(self.names, self['list'])
-
-    """
-    def openTest(self):
-        self.names = []
-        self.urls = []
-        items = []
-        BASEURL = 'https://www.skylinewebcams.com/{0}/webcam.html'
-        from .lib import client, dom_parser as dom   # ,control
-        headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = six.ensure_str(client.request(self.url, headers=headers))
-        data = client.parseDOM(content, 'div', attrs={'class': 'container'})[0]
-        data = dom.parse_dom(data, 'a', req='href')
-        data = [i for i in data if 'subt' in i.content]
-        for item in data:
-            link = item.attrs['href']
-            if link == '#':
-                continue
-            link = html_conv.html_unescape(link)
-            name = client.parseDOM(item.content, 'img', ret='alt')[0]
-            name = html_conv.html_unescape(name)
-            if not PY3:
-                link = link.encode('utf-8')
-                name = name.encode('utf-8')
-            base_url = 'https://www.skylinewebcams.com'
-            url = '{}/{}'.format(base_url, link)
-            name = html_conv.html_unescape(name)
-            item = name + "###" + url + '\n'
-            items.append(item)
-        items.sort()
-        self.xxxname = '/tmp/' + str(self.name) + '_conv.m3u'
-        with open(self.xxxname, 'w') as e:
-            for item in items:
-                e.write(item)
-        for item in items:
-            name = item.split('###')[0]
-            url = item.split('###')[1]
-            name = Utils.getEncodedString(name)
-            self.names.append(Utils.decodeHtml(name))
-            self.urls.append(url)
-        showlist(self.names, self['list'])
-    """
 
     def okClicked(self):
         i = len(self.names)
@@ -1303,7 +1210,7 @@ class Webcam8(Screen):
             ydl.add_default_info_extractors()
             result = ydl.extract_info(video_url, download=False)
             video_url = result["url"]
-            print("Here in Test url =", video_url)
+            print("Here in Test url = %s" % video_url)
 
         stream = eServiceReference(4097, 0, video_url)
         stream.setName(str(title))
@@ -1398,7 +1305,7 @@ class TvInfoBarShowHide():
         if self.execing:
             self.startHideTimer()
 
-    def debug(obj, text=""):
+    def debug(self, obj, text=""):
         print(text + " %s\n" % obj)
 
 
@@ -1453,41 +1360,53 @@ class MoviePlayer(
                                      'OkCancelActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
-                                     'InfobarSeekActions'], {'stop': self.cancel,
-                                                             'leavePlayer': self.cancel,
-                                                             'playpauseService': self.playpauseService,
-                                                             'yellow': self.subtitles,
-                                                             'cancel': self.cancel,
-                                                             'back': self.leavePlayer,
-                                                             'down': self.av}, -1)
+                                     'InfobarSeekActions'],
+                                    {'stop': self.cancel,
+                                     'leavePlayer': self.cancel,
+                                     'playpauseService': self.playpauseService,
+                                     'yellow': self.subtitles,
+                                     'cancel': self.cancel,
+                                     'back': self.leavePlayer,
+                                     'down': self.av}, -1)
+        # Avvio della riproduzione al primo caricamento
         self.onFirstExecBegin.append(self.openPlay)
         self.onClose.append(self.cancel)
 
     def getAspect(self):
+        """Ottiene l'attuale impostazione del rapporto d'aspetto."""
         return AVSwitch().getAspectRatioSetting()
 
     def getAspectString(self, aspectnum):
-        return {0: '4:3 Letterbox',
-                1: '4:3 PanScan',
-                2: '16:9',
-                3: '16:9 always',
-                4: '16:10 Letterbox',
-                5: '16:10 PanScan',
-                6: '16:9 Letterbox'}[aspectnum]
+        """Restituisce la stringa corrispondente al valore numerico del rapporto d'aspetto."""
+        aspect_map = {
+            0: '4:3 Letterbox',
+            1: '4:3 PanScan',
+            2: '16:9',
+            3: '16:9 always',
+            4: '16:10 Letterbox',
+            5: '16:10 PanScan',
+            6: '16:9 Letterbox'
+        }
+        return aspect_map.get(aspectnum, "Unknown Aspect")
 
     def setAspect(self, aspect):
-        map = {0: '4_3_letterbox',
-               1: '4_3_panscan',
-               2: '16_9',
-               3: '16_9_always',
-               4: '16_10_letterbox',
-               5: '16_10_panscan',
-               6: '16_9_letterbox'}
-        config.av.aspectratio.setValue(map[aspect])
-        try:
-            AVSwitch().setAspectRatio(aspect)
-        except:
-            pass
+        """Imposta un nuovo rapporto d'aspetto, se valido."""
+        aspect_map = {
+            0: '4_3_letterbox',
+            1: '4_3_panscan',
+            2: '16_9',
+            3: '16_9_always',
+            4: '16_10_letterbox',
+            5: '16_10_panscan',
+            6: '16_9_letterbox'
+        }
+        # Verifica se l'aspect fornito è valido
+        if aspect in aspect_map:
+            config.av.aspectratio.setValue(aspect_map[aspect])
+            try:
+                AVSwitch().setAspectRatio(aspect)
+            except Exception as e:
+                print("Errore nell'impostare il rapporto d'aspetto: %s" % str(e))
 
     def av(self):
         temp = int(self.getAspect())
@@ -1558,7 +1477,6 @@ class MoviePlayer(
                 self.setAspect(self.init_aspect)
             except:
                 pass
-        # streaml = False
         self.leavePlayer()
 
     def leavePlayer(self):

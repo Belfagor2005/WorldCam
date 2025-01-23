@@ -9,7 +9,10 @@ import platform
 import re
 import subprocess
 import sys
-from dataclasses import dataclass
+try:
+    from dataclasses import dataclass
+except ImportError:
+    print(e)
 from zipimport import zipimporter
 
 from .compat import functools  # isort: split
