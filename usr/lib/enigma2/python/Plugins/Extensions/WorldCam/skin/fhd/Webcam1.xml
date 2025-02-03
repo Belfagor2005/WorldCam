@@ -1,5 +1,5 @@
 <screen name="Webcam1" position="0,0" size="1920,1080" title="..::WORLDCAM::.." flags="wfNoBorder">
-    <widget name="info" position="946,32" size="904,50" font="Regular;30" halign="center" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
+    <widget name="info" position="946,32" size="904,50" font="Regular; 42" halign="center" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
     <!-- Graph -->
     <ePixmap position="1668,798" size="150,150" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" zPosition="4" scale="1" alphatest="blend" />
     <eLabel position="1639,1096" size="150,150" backgroundColor="#30000000" zPosition="1" />

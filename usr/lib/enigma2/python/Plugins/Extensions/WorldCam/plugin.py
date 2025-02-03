@@ -74,7 +74,7 @@ ico_path1 = os_path.join(THISPLUG, 'pics/webcam.png')
 iconpic = 'plugin.png'
 enigma_path = '/etc/enigma2'
 refer = 'https://www.skylinewebcams.com/'
-
+json_path = os_path.join(THISPLUG, 'cowntry_code.json')
 worldcam_path = os_path.join(THISPLUG, 'skin/hd/')
 installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9Xb3JsZENhbS9tYWluL2luc3RhbGxlci5zaA=='
 developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGRDYW0='
@@ -115,157 +115,12 @@ with open('/etc/enigma2/settings', 'r') as settings_file:
             break
 
 
-country_codes = {
-    "User Lists": "User Lists",
-    "skylinewebcams": "skylinewebcams",
-    "skylinetop": "skylinetop",
-    "Albania": "al",
-    "Arabia": "sa",
-    "Arabic": "sa",
-    "Argentina": "ar",
-    "Australia": "au",
-    "Austria": "at",
-    "Azerbaijani": "az",
-    "Balkans": "bk",
-    "Barbados": "bb",
-    "Belgium": "be",
-    "Belgio": "be",
-    "Bolivia": "bo",
-    "Bosnia and Herzegovina": "ba",
-    "Bosnia ed Erzegovina": "ba",
-    "Brasile": "br",
-    "Brazil": "br",
-    "Brazilian": "br",
-    "Bulgaria": "bg",
-    "Bulgarian": "bg",
-    "Canada": "ca",
-    "Chile": "cl",
-    "China": "cn",
-    "Chinese": "cn",
-    "Cile": "cl",
-    "Cina": "cn",
-    "Cipro": "cy",
-    "Costa Rica": "cr",
-    "Croatia": "hr",
-    "Croazia": "hr",
-    "Cyprus": "cy",
-    "Czech Republic": "cz",
-    "Czech": "cz",
-    "Danish": "da",
-    "Deutsch": "de",
-    "Dominican Republic": "do",
-    "Dutch": "nl",
-    "Ecuador": "ec",
-    "Egitto": "eg",
-    "Egypt": "eg",
-    "El Salvador": "sv",
-    "Emirati Arabi Uniti": "ae",
-    "English": "gb",
-    "Español": "es",
-    "Faroe Islands": "fo",
-    "Filippine": "ph",
-    "Finish": "fi",
-    "France": "fr",
-    "Francia": "fr",
-    "Français": "fr",
-    "French": "fr",
-    "German": "de",
-    "Germania": "de",
-    "Germany": "de",
-    "Giordania": "jo",
-    "Grecia": "gr",
-    "Greece": "el",
-    "Greek": "el",
-    "Grenada": "gd",
-    "Guadalupa": "gp",
-    "Hebrew": "he",
-    "Hindi": "hi",
-    "Honduras": "hn",
-    "Hrvatski": "hr",
-    "Hungarian": "hu",
-    "Hungary": "hu",
-    "Iceland": "is",
-    "Ireland": "ie",
-    "Irlanda": "ie",
-    "Islanda": "is",
-    "Isole Faroe": "da",
-    "Isole Vergini Americane": "vi",
-    "Israel": "il",
-    "Israele": "il",
-    "Italia": "it",
-    "Italian": "it",
-    "Italiano": "it",
-    "Italy": "it",
-    "Japanese": "jp",
-    "Jordan": "jo",
-    "Kenya": "ke",
-    "Korean": "ko",
-    "Malay": "ml",
-    "Maldive": "mv",
-    "Maldives": "mv",
-    "Malta": "mt",
-    "Mauritius": "mu",
-    "Messico": "mx",
-    "Mexico": "mx",
-    "Netherlands": "nl",
-    "Norvegia": "no",
-    "Norway": "no",
-    "Norwegian": "no",
-    "Paesi Bassi": "nl",
-    "Panama": "pa",
-    "Persian": "fa",
-    "Peru": "pe",
-    "Perù": "pe",
-    "Philippines": "ph",
-    "Poland": "pl",
-    "Polish": "pl",
-    "Polonia": "pl",
-    "Portogallo": "pt",
-    "Portugal": "pt",
-    "Portuguese": "pt",
-    "Regno Unito": "gb",
-    "Repubblica Ceca": "cz",
-    "Repubblica Dominicana": "do",
-    "Repubblica di San Marino": "sm",
-    "Republic of San Marino": "sm",
-    "Romania": "ro",
-    "Romanian": "ro",
-    "Russia": "ru",
-    "Seychelles": "sc",
-    "Sint Maarten": "sx",
-    "Slovak": "sk",
-    "Slovenia": "sl",
-    "Slovenian": "sl",
-    "Slovenski": "sl",
-    "South Africa": "za",
-    "Spagna": "es",
-    "Spain": "es",
-    "Spanish": "es",
-    "Sri Lanka": "lk",
-    "Stati Uniti": "us",
-    "Sudafrica": "za",
-    "Svizzera": "ch",
-    "Swedish": "sv",
-    "Switzerland": "ch",
-    "Thai": "th",
-    "Thailand": "th",
-    "Thailandia": "th",
-    "Turkey": "tr",
-    "Turkish": "tr",
-    "US Virgin Islands": "vi",
-    "Ungheria": "hu",
-    "United Arab Emirates": "ae",
-    "United Kingdom": "gb",
-    "United States": "us",
-    "Venezuela": "ve",
-    "Vietnam": "vi",
-    "Vietnamese": "vi",
-    "Zambia": "zm",
-    "Zanzibar": "tz",
-    "Ελληνικά": "el",
-    "Русский": "ru",
-    "简体中文（中国）": "cn",
-}
+def load_country_codes():
+    with open(json_path, "r") as file:
+        return json.load(file)
+
+
+country_codes = load_country_codes()
 
 
 class webcamList(MenuList):
@@ -412,11 +267,13 @@ class Webcam1(Screen):
         self['key_green'].hide()
         self.Update = False
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'DirectionActions',
-             'HotkeyActions',
-             'InfobarEPGActions',
-             'ChannelSelectBaseActions'],
+            [
+                'OkCancelActions',
+                'DirectionActions',
+                'HotkeyActions',
+                'InfobarEPGActions',
+                'ChannelSelectBaseActions'
+            ],
             {
                 'ok': self.okClicked,
                 'back': self.close,
@@ -569,9 +426,11 @@ class Webcam2(Screen):
         self['key_yellow'].hide()
         self['key_blue'].hide()
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'
+            ],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -627,9 +486,11 @@ class Webcam3(Screen):
         self['key_yellow'] = Button('Export')
         self['key_blue'] = Button('Remove')
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'
+            ],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -746,9 +607,10 @@ class Webcam4(Screen):
         self['key_yellow'].hide()
         self['key_blue'].hide()
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -832,9 +694,11 @@ class Webcam5(Screen):
         self['key_blue'].hide()
 
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'
+            ],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -923,9 +787,11 @@ class Webcam5a(Screen):
         self['key_yellow'].hide()
         self['key_blue'].hide()
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'
+            ],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -1012,9 +878,11 @@ class Webcam6(Screen):
         self['key_yellow'] = Button('Export')
         self['key_blue'] = Button('Remove')
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'
+            ],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -1232,9 +1100,11 @@ class Webcam7(Screen):
         self['key_yellow'].hide()
         self['key_blue'].hide()
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'
+            ],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -1307,9 +1177,11 @@ class Webcam8(Screen):
         self['key_yellow'] = Button('Export')
         self['key_blue'] = Button('Remove')
         self['actions'] = ActionMap(
-            ['OkCancelActions',
-             'ButtonSetupActions',
-             'ColorActions'],
+            [
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'ColorActions'
+            ],
             {
                 'red': self.close,
                 'green': self.okClicked,
@@ -1589,25 +1461,33 @@ class MoviePlayer(
         self.service = None
         self.stream = stream
         self.state = self.STATE_PLAYING
-        self['actions'] = ActionMap(['MoviePlayerActions',
-                                     'MovieSelectionActions',
-                                     'MediaPlayerActions',
-                                     'EPGSelectActions',
-                                     'MediaPlayerSeekActions',
-                                     'ColorActions',
-                                     'ButtonSetupActions',
-                                     'OkCancelActions',
-                                     'InfobarShowHideActions',
-                                     'InfobarActions',
-                                     'InfobarSeekActions'], {'leavePlayer': self.cancel,
-                                                             'stop': self.leavePlayer,
-                                                             'playpauseService': self.playpauseService,
-                                                             # 'red': self.cicleStreamType,
-                                                             'cancel': self.cancel,
-                                                             'exit': self.leavePlayer,
-                                                             'yellow': self.subtitles,
-                                                             'back': self.cancel,
-                                                             'down': self.av}, -1)
+        self['actions'] = ActionMap(
+            [
+                'MoviePlayerActions',
+                'MovieSelectionActions',
+                'MediaPlayerActions',
+                'EPGSelectActions',
+                'MediaPlayerSeekActions',
+                'ColorActions',
+                'ButtonSetupActions',
+                'OkCancelActions',
+                'InfobarShowHideActions',
+                'InfobarActions',
+                'InfobarSeekActions'
+            ],
+            {
+                'leavePlayer': self.cancel,
+                'stop': self.leavePlayer,
+                'playpauseService': self.playpauseService,
+                # 'red': self.cicleStreamType,
+                'cancel': self.cancel,
+                'exit': self.leavePlayer,
+                'yellow': self.subtitles,
+                'back': self.cancel,
+                'down': self.av
+            },
+            -1
+        )
         self.onFirstExecBegin.append(self.openPlay)
         self.onClose.append(self.cancel)
 
