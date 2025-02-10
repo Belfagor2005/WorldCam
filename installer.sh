@@ -3,8 +3,8 @@
 ## setup command=wget -q --no-check-certificate https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
 
 ## Only This 2 lines to edit with new version ######
-version='4.7'
-changelog='\nAdd flag to state'
+version='4.8'
+changelog='\nFix Cowntry'
 ##
 TMPPATH=/tmp/WorldCam-main
 FILEPATH=/tmp/main.tar.gz

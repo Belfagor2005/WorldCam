@@ -67,7 +67,7 @@ import sys
 
 global worldcam_path
 
-currversion = '4.7'
+currversion = '4.8'
 setup_title = ('WORLDCAM V.' + currversion)
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/WorldCam'
 ico_path1 = os_path.join(THISPLUG, 'pics/webcam.png')
@@ -105,9 +105,14 @@ if sys.version_info >= (2, 7, 9):
     except:
         sslContext = None
 
-# leng = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
-# leng2 = leng.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
-# language = leng2[:-3]
+
+"""
+leng = os.popen("cat /etc/enigma2/settings | grep config.osd.language|sed '/^config.osd.language=/!d'").read()
+leng2 = leng.replace('config.osd.language=', '').replace('_', '-').replace('\n', '')
+language = leng2[:-3]
+"""
+
+
 with open('/etc/enigma2/settings', 'r') as settings_file:
     for line in settings_file:
         if 'config.osd.language=' in line:
@@ -150,7 +155,6 @@ class webcamList(MenuList):
 def wcListEntry(name, idx):
     """
     Create an entry for the webcam list with text and icon based on screen width.
-
     :param name: Name of the webcam.
     :return: List representing the entry.
     """
