@@ -1,20 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # RAED & mfaraj57 &  (c) 2018
-# mod Lululla 20240720
 
 from __future__ import print_function
-# from . import _
+
 from enigma import eConsoleAppContainer
 from Screens.Screen import Screen
-from Components.Label import Label
 from Components.ActionMap import ActionMap
 from Components.ScrollLabel import ScrollLabel
-
+from Components.Sources.StaticText import StaticText
 from Screens.MessageBox import MessageBox
 from enigma import getDesktop
 import sys
-
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -63,23 +60,20 @@ class Console(Screen):
             self.skinName = [skin, 'Console']
         self.errorOcurred = False
         self['text'] = ScrollLabel('')
-        self['key_red'] = Label(_('Cancel'))
-        self['key_green'] = Label(_('Hide/Show'))
-        self['key_blue'] = Label(_('Restart'))
-
+        self['key_red'] = StaticText(_('Cancel'))
+        self['key_green'] = StaticText(_('Hide'))
         self["actions"] = ActionMap(["WizardActions", "DirectionActions", 'ColorActions'],
                                     {
-                                    "ok": self.cancel,
-                                    "up": self["text"].pageUp,
-                                    "down": self["text"].pageDown,
-                                    "red": self.cancel,
-                                    "green": self.toggleHideShow,
-                                    "blue": self.restartenigma,
-                                    "exit": self.cancel,
+                                        "ok": self.cancel if not self.finished else None,
+                                        "up": self["text"].pageUp,
+                                        "down": self["text"].pageDown,
+                                        "red": self.cancel,
+                                        "green": self.toggleHideShow,
+                                        "blue": self.restartenigma,
+                                        "exit": self.cancel,
                                     }, -1)
-
-        self.newtitle = title == 'Console' and _('Console') or title
         self.cmdlist = isinstance(cmdlist, list) and cmdlist or [cmdlist]
+        self.newtitle = title == 'Console' and _('Console') or title
         self.cancel_msg = None
         self.onShown.append(self.updateTitle)
         self.container = eConsoleAppContainer()
@@ -98,12 +92,13 @@ class Console(Screen):
 
     def startRun(self):
         if self.showStartStopText:
-            self['text'].setText(_('Execution progress\n\n'))
-        print('[Console] executing in run', self.run, ' the command:', self.cmdlist[self.run])
-        print("[Console] Executing command:", self.cmdlist[self.run])  # Aggiungi questo print
+            self['text'].setText(_('Execution progress') + '\n\n')
+        print('[Console] executing in run', self.run, 'the command:', self.cmdlist[self.run])
         if self.container.execute(self.cmdlist[self.run]):
-            self['text'].setText(self.cmdlist[self.run])
+            print('[Console] Command executed successfully')
             self.runFinished(-1)
+        else:
+            print('[Console] Command failed to execute')
 
     def runFinished(self, retval):
         if retval:
@@ -116,20 +111,20 @@ class Console(Screen):
         else:
             self.show()
             self.finished = True
-            # try:
-                # lastpage = self['text'].isAtLastPage()
-            # except:
-                # lastpage = self['text']
+            try:
+                lastpage = self['text'].isAtLastPage()
+            except:
+                lastpage = self['text']
             if self.cancel_msg:
                 self.cancel_msg.close()
             if self.showStartStopText:
-                self['text'].appendText('Execution finished!!')
+                self['text'].appendText(_('Execution finished!!'))
             if self.finishedCallback is not None:
                 self.finishedCallback()
             if not self.errorOcurred and self.closeOnSuccess:
                 self.closeConsole()
             else:
-                self['text'].appendText('\nPress OK or Exit to abort!')
+                self['text'].appendText(_('\nPress OK or Exit to abort!'))
                 self['key_red'].setText(_('Exit'))
                 self['key_green'].setText('')
 
@@ -145,7 +140,7 @@ class Console(Screen):
         if self.finished:
             self.closeConsole()
         else:
-            self.cancel_msg = self.session.openWithCallback(self.cancelCallback, MessageBox, 'Cancel execution?', type=MessageBox.TYPE_YESNO, default=False)
+            self.cancel_msg = self.session.openWithCallback(self.cancelCallback, MessageBox, _('Cancel execution?'), type=MessageBox.TYPE_YESNO, default=False)
 
     def cancelCallback(self, ret=None):
         self.cancel_msg = None
@@ -172,12 +167,11 @@ class Console(Screen):
             self.show()
 
     def dataAvail(self, str):
+        print("Received data:", str)
         if PY3:
-            data = str.decode()
+            self['text'].appendText(str.decode())
         else:
-            data = str
-        print("[Console] Data received: ", data)
-        self['text'].appendText(data)
+            self['text'].appendText(str)
 
     def restartenigma(self):
         from Screens.Standby import TryQuitMainloop
