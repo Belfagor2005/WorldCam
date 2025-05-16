@@ -2,31 +2,85 @@ msgid ""
 msgstr ""
 "Project-Id-Version: worldcam\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-14 22:00+0200\n"
+"POT-Creation-Date: 2024-09-10 22:23+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: ))^^(( <>\n"
+"Last-Translator: Masta2002\n"
 "Language-Team: *\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.8.7\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:732
+#: plugin.py:204
+#, python-format
+msgid ""
+"New version %s is available\n"
+"\n"
+"Changelog: %s\n"
+"\n"
+"Press info_long or yellow_long button to start force updating."
+msgstr ""
+"Neue Version %s ist verfügbar\n"
+"\n"
+"Changelog: %s\n"
+"\n"
+"Drücken Sie die Tasten info_lang oder gelb_lang, um die Aktualisierung zu erzwingen."
+
+#: plugin.py:209
+#, python-format
+msgid ""
+"New version %s is available.\n"
+"\n"
+"Changelog: %s \n"
+"\n"
+"Do you want to install it now?"
+msgstr ""
+"Neue Version %s ist verfügbar.\n"
+"\n"
+"Changelog: %s\n"
+"\n"
+"Möchten Sie sie jetzt installieren?"
+
+#: plugin.py:211
+msgid "Congrats! You already have the latest version..."
+msgstr "Herzlichen Glückwunsch! Sie haben bereits die neueste Version..."
+
+#: plugin.py:221
+#, python-format
+msgid "Do you want to install update ( %s ) now?"
+msgstr "Möchten Sie das Update ( %s ) jetzt installieren?"
+
+#: plugin.py:230
+msgid "Update Aborted!"
+msgstr "Update Abgebrochen!"
+
+#: plugin.py:414
+msgid "Remove all Worldcam Favorite Bouquet ?"
+msgstr "Alle Worldcam Favorite Bouquet entfernen ?"
+
+#: plugin.py:441
+msgid "Worldcam Favorites List have been removed"
+msgstr "Worldcam Favoritenliste wurde entfernt"
+
+#: plugin.py:843
 msgid ""
 "Do you want to Convert to Favorite Bouquet ?\n"
 "\n"
 "Attention!! Wait while converting !!!"
 msgstr ""
+"Möchten Sie zu Favoriten Bouquet umwandeln?\n"
+"\n"
+"Achtung!!! Warten Sie mit der Konvertierung !!!"
 
-#: plugin.py:790
+#: plugin.py:910
 msgid "bouquets reloaded.."
-msgstr ""
+msgstr "bouquets neugeladen.."
 
-#: plugin.py:791
+#: plugin.py:911
 msgid "Reload Bouquet"
-msgstr ""
+msgstr "Bouquet neuladen"
