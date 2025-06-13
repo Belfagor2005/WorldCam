@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WorldCam\n"
-"POT-Creation-Date: 2024-09-10 22:23+0200\n"
+"POT-Creation-Date: 2025-06-13 10:52+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -9,11 +9,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:204
+#: plugin.py:579
+#, python-format
+msgid "Error checking version: %s"
+msgstr "Errore nel controllo della versione: %s"
+
+#: plugin.py:588
 #, python-format
 msgid ""
 "New version %s is available\n"
@@ -22,8 +27,13 @@ msgid ""
 "\n"
 "Press info_long or yellow_long button to start force updating."
 msgstr ""
+"Nuova versione %s disponibile\n"
+"\n"
+"Registro modifiche: %s\n"
+"\n"
+"Premi il pulsante info_long o giallo_long per avviare l'aggiornamento forzato."
 
-#: plugin.py:209
+#: plugin.py:595
 #, python-format
 msgid ""
 "New version %s is available.\n"
@@ -32,42 +42,68 @@ msgid ""
 "\n"
 "Do you want to install it now?"
 msgstr ""
+"È disponibile la nuova versione %s.\n"
+"\n"
+"Changelog: %s\n"
+"\n"
+"Vuoi installarla ora?"
 
-#: plugin.py:211
+#: plugin.py:597
 msgid "Congrats! You already have the latest version..."
-msgstr ""
+msgstr "Congratulazioni! Hai già l'ultima versione..."
 
-#: plugin.py:221
+#: plugin.py:607
 #, python-format
 msgid "Do you want to install update ( %s ) now?"
-msgstr ""
+msgstr "Vuoi installare l'aggiornamento (%s) adesso?"
 
-#: plugin.py:230
+#: plugin.py:616
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Aggiornamento interrotto!"
 
-#: plugin.py:414
+#: plugin.py:648
+msgid "Select Language"
+msgstr "Seleziona la lingua"
+
+#: plugin.py:901 plugin.py:1301 plugin.py:1542
+msgid "Bouquet created successfully!"
+msgstr "Bouquet creato con successo!"
+
+#: plugin.py:946
 msgid "Remove all Worldcam Favorite Bouquet ?"
 msgstr "Rimuovere tutte le liste Bouquet Favorite Worldcam?"
 
-#: plugin.py:441
-msgid "Worldcam Favorites List have been removed"
+#: plugin.py:969
+msgid "WorldCam Favorites List have been removed"
 msgstr "Le liste Favorite Worldcam sono state rimosse dal Bouquet"
 
-#: plugin.py:843
-msgid ""
-"Do you want to Convert to Favorite Bouquet ?\n"
-"\n"
-"Attention!! Wait while converting !!!"
-msgstr ""
-"Vuoi convertire in lista nel bouquet enigma?\n"
-"\n"
-"Attenzione attendi che finisca..."
+#: plugin.py:1156 plugin.py:1467
+msgid "Remove this bouquet?"
+msgstr "Rimuovere questo bouquet?"
 
-#: plugin.py:910
-msgid "bouquets reloaded.."
-msgstr "bouquet ricaricati..."
+#: plugin.py:1182 plugin.py:1492
+msgid "Bouquet removed successfully!"
+msgstr "Script rimosso con successo!"
 
-#: plugin.py:911
-msgid "Reload Bouquet"
-msgstr "Ricaria Bouquet"
+#: plugin.py:1223
+msgid "Video URL not found!"
+msgstr "URL video non disponibile!"
+
+#: plugin.py:1246 plugin.py:1655
+msgid "Error playing YouTube video!"
+msgstr "Errore nella riproduzione del video di YouTube!"
+
+#~ msgid ""
+#~ "Do you want to Convert to Favorite Bouquet ?\n"
+#~ "\n"
+#~ "Attention!! Wait while converting !!!"
+#~ msgstr ""
+#~ "Vuoi convertire in lista nel bouquet enigma?\n"
+#~ "\n"
+#~ "Attenzione attendi che finisca..."
+
+#~ msgid "bouquets reloaded.."
+#~ msgstr "bouquet ricaricati..."
+
+#~ msgid "Reload Bouquet"
+#~ msgstr "Ricaria Bouquet"

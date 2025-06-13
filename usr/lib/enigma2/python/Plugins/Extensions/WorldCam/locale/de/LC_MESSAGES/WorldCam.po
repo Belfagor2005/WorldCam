@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: worldcam\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-10 22:23+0200\n"
+"POT-Creation-Date: 2025-06-13 10:55+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Masta2002\n"
 "Language-Team: *\n"
@@ -16,7 +16,12 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:204
+#: plugin.py:579
+#, python-format
+msgid "Error checking version: %s"
+msgstr ""
+
+#: plugin.py:588
 #, python-format
 msgid ""
 "New version %s is available\n"
@@ -29,9 +34,10 @@ msgstr ""
 "\n"
 "Changelog: %s\n"
 "\n"
-"Drücken Sie die Tasten info_lang oder gelb_lang, um die Aktualisierung zu erzwingen."
+"Drücken Sie die Tasten info_lang oder gelb_lang, um die Aktualisierung zu "
+"erzwingen."
 
-#: plugin.py:209
+#: plugin.py:595
 #, python-format
 msgid ""
 "New version %s is available.\n"
@@ -46,41 +52,64 @@ msgstr ""
 "\n"
 "Möchten Sie sie jetzt installieren?"
 
-#: plugin.py:211
+#: plugin.py:597
 msgid "Congrats! You already have the latest version..."
 msgstr "Herzlichen Glückwunsch! Sie haben bereits die neueste Version..."
 
-#: plugin.py:221
+#: plugin.py:607
 #, python-format
 msgid "Do you want to install update ( %s ) now?"
 msgstr "Möchten Sie das Update ( %s ) jetzt installieren?"
 
-#: plugin.py:230
+#: plugin.py:616
 msgid "Update Aborted!"
 msgstr "Update Abgebrochen!"
 
-#: plugin.py:414
+#: plugin.py:648
+msgid "Select Language"
+msgstr ""
+
+#: plugin.py:901 plugin.py:1301 plugin.py:1542
+msgid "Bouquet created successfully!"
+msgstr ""
+
+#: plugin.py:946
 msgid "Remove all Worldcam Favorite Bouquet ?"
 msgstr "Alle Worldcam Favorite Bouquet entfernen ?"
 
-#: plugin.py:441
-msgid "Worldcam Favorites List have been removed"
+#: plugin.py:969
+#, fuzzy
+#| msgid "Worldcam Favorites List have been removed"
+msgid "WorldCam Favorites List have been removed"
 msgstr "Worldcam Favoritenliste wurde entfernt"
 
-#: plugin.py:843
-msgid ""
-"Do you want to Convert to Favorite Bouquet ?\n"
-"\n"
-"Attention!! Wait while converting !!!"
+#: plugin.py:1156 plugin.py:1467
+msgid "Remove this bouquet?"
 msgstr ""
-"Möchten Sie zu Favoriten Bouquet umwandeln?\n"
-"\n"
-"Achtung!!! Warten Sie mit der Konvertierung !!!"
 
-#: plugin.py:910
-msgid "bouquets reloaded.."
-msgstr "bouquets neugeladen.."
+#: plugin.py:1182 plugin.py:1492
+msgid "Bouquet removed successfully!"
+msgstr ""
 
-#: plugin.py:911
-msgid "Reload Bouquet"
-msgstr "Bouquet neuladen"
+#: plugin.py:1223
+msgid "Video URL not found!"
+msgstr ""
+
+#: plugin.py:1246 plugin.py:1655
+msgid "Error playing YouTube video!"
+msgstr ""
+
+#~ msgid ""
+#~ "Do you want to Convert to Favorite Bouquet ?\n"
+#~ "\n"
+#~ "Attention!! Wait while converting !!!"
+#~ msgstr ""
+#~ "Möchten Sie zu Favoriten Bouquet umwandeln?\n"
+#~ "\n"
+#~ "Achtung!!! Warten Sie mit der Konvertierung !!!"
+
+#~ msgid "bouquets reloaded.."
+#~ msgstr "bouquets neugeladen.."
+
+#~ msgid "Reload Bouquet"
+#~ msgstr "Bouquet neuladen"

@@ -14,7 +14,7 @@
         <convert type="ClockToText">Format:%a %d.%m. %Y | %H:%M</convert>
     </widget>
 	<!-- Menu List -->
-	<widget name="list" position="617,78" size="623,392" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" />
+	<widget name="webcam" position="617,78" size="623,392" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" />
     <!-- Button -->
     <widget name="key_red" position="655,675" size="140,40" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;20" transparent="1" />
     <widget name="key_green" position="793,675" size="140,40" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;20" transparent="1" />
