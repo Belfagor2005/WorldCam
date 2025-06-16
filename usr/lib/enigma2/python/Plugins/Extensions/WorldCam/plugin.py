@@ -273,20 +273,10 @@ class SkylineWebcams:
     def get_menu(self):
         log_to_file("Fetching main menu for language: %s" % self.lang, "get_main_menu")
         return [
-            # {
-                # "title": "NEW",
-                # "url": self.get_full_url("/%s/new-livecams.html" % self.lang),
-                # "cat": "list_cams2"
-            # },
-            # {
-                # "title": "TOP live cams",
-                # "url": self.get_full_url("/%s/top-live-cams.html" % self.lang),
-                # "cat": "list_cams"
-            # },
             {
                 "title": "LANGUAGE",
                 "url": self.MAIN_URL,
-                "cat": "list_hreflang"
+                "cat": "get_languages"
             }
         ]
 
