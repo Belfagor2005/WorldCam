@@ -1,5 +1,8 @@
 WorldCam enjoy by @Pcd and @Lululla
 
+![](https://komarev.com/ghpvc/?username=Belfagor2005) [![Python package](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml)
+
+
 <img src="https://github.com/Belfagor2005/WorldCam/blob/main/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png?raw=true">
 
 Enigma2 project
