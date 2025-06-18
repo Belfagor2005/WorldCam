@@ -73,7 +73,10 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
             return self._downloader.report_warning(text, *args, **kwargs)
 
     def deprecation_warning(self, msg):
-        warn = getattr(self._downloader, 'deprecation_warning', deprecation_warning)
+        warn = getattr(
+            self._downloader,
+            'deprecation_warning',
+            deprecation_warning)
         return warn(msg, stacklevel=1)
 
     def deprecated_feature(self, msg):
@@ -82,8 +85,9 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
         return deprecation_warning(msg, stacklevel=1)
 
     def report_error(self, text, *args, **kwargs):
-        self.deprecation_warning('"yt_dlp.postprocessor.PostProcessor.report_error" is deprecated. '
-                                 'raise "yt_dlp.utils.PostProcessingError" instead')
+        self.deprecation_warning(
+            '"yt_dlp.postprocessor.PostProcessor.report_error" is deprecated. '
+            'raise "yt_dlp.utils.PostProcessingError" instead')
         if self._downloader:
             return self._downloader.report_error(text, *args, **kwargs)
 
@@ -93,7 +97,8 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
 
     def _delete_downloaded_files(self, *files_to_delete, **kwargs):
         if self._downloader:
-            return self._downloader._delete_downloaded_files(*files_to_delete, **kwargs)
+            return self._downloader._delete_downloaded_files(
+                *files_to_delete, **kwargs)
         for filename in set(filter(None, files_to_delete)):
             os.remove(filename)
 
@@ -118,7 +123,8 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
         def decorator(func):
             @functools.wraps(func)
             def wrapper(self, info):
-                if not simulated and (self.get_param('simulate') or self.get_param('skip_download')):
+                if not simulated and (
+                        self.get_param('simulate') or self.get_param('skip_download')):
                     return [], info
                 format_type = (
                     'video' if info.get('vcodec') != 'none'
@@ -149,7 +155,12 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
         """
         return [], information  # by default, keep file and do nothing
 
-    def try_utime(self, path, atime, mtime, errnote='Cannot update utime of file'):
+    def try_utime(
+            self,
+            path,
+            atime,
+            mtime,
+            errnote='Cannot update utime of file'):
         try:
             os.utime(encodeFilename(path), (atime, mtime))
         except Exception:
@@ -157,7 +168,11 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
 
     def _configuration_args(self, exe, *args, **kwargs):
         return _configuration_args(
-            self.pp_key(), self.get_param('postprocessor_args'), exe, *args, **kwargs)
+            self.pp_key(),
+            self.get_param('postprocessor_args'),
+            exe,
+            *args,
+            **kwargs)
 
     def _hook_progress(self, status, info_dict):
         if not self._progress_hooks:
@@ -170,7 +185,8 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
             ph(status)
 
     def add_progress_hook(self, ph):
-        # See YoutubeDl.py (search for postprocessor_hooks) for a description of this interface
+        # See YoutubeDl.py (search for postprocessor_hooks) for a description
+        # of this interface
         self._progress_hooks.append(ph)
 
     def report_progress(self, s):
@@ -186,29 +202,46 @@ class PostProcessor(metaclass=PostProcessorMetaClass):
         tmpl = progress_template.get('postprocess')
         if tmpl:
             self._downloader.to_screen(
-                self._downloader.evaluate_outtmpl(tmpl, progress_dict), quiet=False)
+                self._downloader.evaluate_outtmpl(
+                    tmpl, progress_dict), quiet=False)
 
-        self._downloader.to_console_title(self._downloader.evaluate_outtmpl(
-            progress_template.get('postprocess-title') or 'yt-dlp %(progress._default_template)s',
-            progress_dict))
+        self._downloader.to_console_title(
+            self._downloader.evaluate_outtmpl(
+                progress_template.get('postprocess-title') or 'yt-dlp %(progress._default_template)s',
+                progress_dict))
 
     def _retry_download(self, err, count, retries):
         # While this is not an extractor, it behaves similar to one and
         # so obey extractor_retries and "--retry-sleep extractor"
-        RetryManager.report_retry(err, count, retries, info=self.to_screen, warn=self.report_warning,
-                                  sleep_func=self.get_param('retry_sleep_functions', {}).get('extractor'))
+        RetryManager.report_retry(
+            err,
+            count,
+            retries,
+            info=self.to_screen,
+            warn=self.report_warning,
+            sleep_func=self.get_param(
+                'retry_sleep_functions',
+                {}).get('extractor'))
 
     def _download_json(self, url, *, expected_http_errors=(404,)):
         self.write_debug(f'{self.PP_NAME} query: {url}')
-        for retry in RetryManager(self.get_param('extractor_retries', 3), self._retry_download):
+        for retry in RetryManager(
+                self.get_param(
+                    'extractor_retries',
+                    3),
+                self._retry_download):
             try:
                 rsp = self._downloader.urlopen(Request(url))
             except network_exceptions as e:
-                if isinstance(e, HTTPError) and e.status in expected_http_errors:
+                if isinstance(
+                        e, HTTPError) and e.status in expected_http_errors:
                     return None
-                retry.error = PostProcessingError(f'Unable to communicate with {self.PP_NAME} API: {e}')
+                retry.error = PostProcessingError(
+                    f'Unable to communicate with {self.PP_NAME} API: {e}')
                 continue
-        return json.loads(rsp.read().decode(rsp.headers.get_param('charset') or 'utf-8'))
+        return json.loads(
+            rsp.read().decode(
+                rsp.headers.get_param('charset') or 'utf-8'))
 
 
 class AudioConversionError(PostProcessingError):  # Deprecated

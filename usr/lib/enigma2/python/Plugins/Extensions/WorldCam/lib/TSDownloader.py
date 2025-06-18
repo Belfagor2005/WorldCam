@@ -71,11 +71,11 @@ def getLastPTS(data, rpid, type="video"):
                 # print pid
                 # print 1/0
                 try:
-                    packet = bits.read((packsize-3)*8)
+                    packet = bits.read((packsize - 3) * 8)
                     scramblecontrol = packet.read(2).uint
                     adapt = packet.read(2).uint
                     concounter = packet.read(4).uint
-                except:
+                except BaseException:
                     # print 'error'
                     return None
                 decodedpts = None
@@ -91,15 +91,15 @@ def getLastPTS(data, rpid, type="video"):
                     splicingpoint = packet.read(1).uint
                     transportprivate = packet.read(1).uint
                     adaptation_ext = packet.read(1).uint
-                    restofadapt = (adaptation_size+3) - 1
+                    restofadapt = (adaptation_size + 3) - 1
                     if pcrpresent == 1:
                         pcr = packet.read(48)
                         restofadapt -= 6
                     if opcrpresent == 1:
                         opcr = packet.read(48)
                         restofadapt -= 6
-                    packet.pos += (restofadapt-3) * 8
-                    if ((packet.len - packet.pos)/8) > 5:
+                    packet.pos += (restofadapt - 3) * 8
+                    if ((packet.len - packet.pos) / 8) > 5:
                         pesync = packet.read(24)
                         if pesync == ('0x000001'):
                             pestype = packet.read(8).uint
@@ -107,7 +107,7 @@ def getLastPTS(data, rpid, type="video"):
                                 av = 'video'
                             if pestype < 223 and pestype > 191:
                                 av = 'audio'
-                            packet.pos += (3*8)
+                            packet.pos += (3 * 8)
                             ptspresent = packet.read(1).uint
                             dtspresent = packet.read(1).uint
                             if ptspresent:
@@ -120,7 +120,8 @@ def getLastPTS(data, rpid, type="video"):
                                 pts.pos += 1
                                 thirdpartpts = pts.read(15)
                                 # decodedpts = bitstring.ConstBitArray().join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]).uint
-                                decodedpts = int(''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
+                                decodedpts = int(
+                                    ''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
                             if dtspresent:
                                 dts = packet.read(40)
                                 dts.pos = 4
@@ -130,7 +131,8 @@ def getLastPTS(data, rpid, type="video"):
                                 dts.pos += 1
                                 thirdpartdts = dts.read(15)
                                 # decodeddts = bitstring.ConstBitArray().join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]).uint
-                                decodeddts = int(''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
+                                decodeddts = int(
+                                    ''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
                 elif adapt == 2:
                     # if adapt is 2 the packet is only an adaptation field
                     adaptation_size = packet.read(8).uint
@@ -142,7 +144,7 @@ def getLastPTS(data, rpid, type="video"):
                     splicingpoint = packet.read(1).uint
                     transportprivate = packet.read(1).uint
                     adaptation_ext = packet.read(1).uint
-                    restofadapt = (adaptation_size+3) - 1
+                    restofadapt = (adaptation_size + 3) - 1
                     if pcrpresent == 1:
                         pcr = packet.read(48)
                         restofadapt -= 6
@@ -172,7 +174,8 @@ def getLastPTS(data, rpid, type="video"):
                             pts.pos += 1
                             thirdpartpts = pts.read(15)
                             # decodedpts = bitstring.ConstBitArray().join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]).uint
-                            decodedpts = int(''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
+                            decodedpts = int(
+                                ''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
                         if dtspresent:
                             dts = packet.read(40)
                             dts.pos = 4
@@ -182,12 +185,13 @@ def getLastPTS(data, rpid, type="video"):
                             dts.pos += 1
                             thirdpartdts = dts.read(15)
                             # decodeddts = bitstring.ConstBitArray().join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]).uint
-                            decodeddts = int(''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
+                            decodeddts = int(
+                                ''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
                 if decodedpts and (type == "" or av == type) and len(av) > 0:
                     # print 'currentpost',currentpost,decodedpts
                     return decodedpts
 
-        currentpost = currentpost-packsize
+        currentpost = currentpost - packsize
         if currentpost < 10:
             # print 'came back to begin'
             found = True
@@ -219,7 +223,7 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
 
     while not found:
         if len(data) - currentpost >= 188:
-            bytes = data[currentpost:currentpost+188]
+            bytes = data[currentpost:currentpost + 188]
             bits = bitstring.ConstBitStream(bytes=bytes)
             sign = bits.read(8).uint
             tei = bits.read(1).uint
@@ -232,11 +236,11 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
             if rpid == pid or rpid == 0:
                 # print 'here pid is same'
                 try:
-                    packet = bits.read((packsize-3)*8)
+                    packet = bits.read((packsize - 3) * 8)
                     scramblecontrol = packet.read(2).uint
                     adapt = packet.read(2).uint
                     concounter = packet.read(4).uint
-                except:
+                except BaseException:
                     # print 'error'
                     return None
                 decodedpts = None
@@ -251,15 +255,15 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
                     splicingpoint = packet.read(1).uint
                     transportprivate = packet.read(1).uint
                     adaptation_ext = packet.read(1).uint
-                    restofadapt = (adaptation_size+3) - 1
+                    restofadapt = (adaptation_size + 3) - 1
                     if pcrpresent == 1:
                         pcr = packet.read(48)
                         restofadapt -= 6
                     if opcrpresent == 1:
                         opcr = packet.read(48)
                         restofadapt -= 6
-                    packet.pos += (restofadapt-3) * 8
-                    if ((packet.len - packet.pos)/8) > 5:
+                    packet.pos += (restofadapt - 3) * 8
+                    if ((packet.len - packet.pos) / 8) > 5:
                         pesync = packet.read(24)  # .hex
                         if pesync == ('0x000001'):
                             pestype = packet.read(8).uint
@@ -267,7 +271,7 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
                                 av = 'video'
                             if pestype < 223 and pestype > 191:
                                 av = 'audio'
-                            packet.pos += (3*8)
+                            packet.pos += (3 * 8)
                             ptspresent = packet.read(1).uint
                             dtspresent = packet.read(1).uint
                             if ptspresent:
@@ -280,7 +284,8 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
                                 pts.pos += 1
                                 thirdpartpts = pts.read(15)
                                 # decodedpts = bitstring.ConstBitArray().join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]).uint
-                                decodedpts = int(''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
+                                decodedpts = int(
+                                    ''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
                             if dtspresent:
                                 dts = packet.read(40)
                                 dts.pos = 4
@@ -290,7 +295,8 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
                                 dts.pos += 1
                                 thirdpartdts = dts.read(15)
                                 # decodeddts = bitstring.ConstBitArray().join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]).uint
-                                decodeddts = int(''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
+                                decodeddts = int(
+                                    ''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
                 elif adapt == 2:
                     # if adapt is 2 the packet is only an adaptation field
                     adaptation_size = packet.read(8).uint
@@ -302,7 +308,7 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
                     splicingpoint = packet.read(1).uint
                     transportprivate = packet.read(1).uint
                     adaptation_ext = packet.read(1).uint
-                    restofadapt = (adaptation_size+3) - 1
+                    restofadapt = (adaptation_size + 3) - 1
                     if pcrpresent == 1:
                         pcr = packet.read(48)
                         restofadapt -= 6
@@ -332,7 +338,8 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
                             pts.pos += 1
                             thirdpartpts = pts.read(15)
                             # decodedpts = bitstring.ConstBitArray().join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]).uint
-                            decodedpts = int(''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
+                            decodedpts = int(
+                                ''.join([firstpartpts.bin, secondpartpts.bin, thirdpartpts.bin]), 2)
                         if dtspresent:
                             dts = packet.read(40)
                             dts.pos = 4
@@ -342,14 +349,15 @@ def getFirstPTSFrom(data, rpid, initpts, type="video"):
                             dts.pos += 1
                             thirdpartdts = dts.read(15)
                             # decodeddts = bitstring.ConstBitArray().join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]).uint
-                            decodeddts = int(''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
+                            decodeddts = int(
+                                ''.join([firstpartdts.bin, secondpartdts.bin, thirdpartdts.bin]), 2)
                 if decodedpts and (type == "" or av == type) and len(av) > 0:
                     # print decodedpts
                     if decodedpts > initpts:
                         return decodedpts, currentpost
         else:
             found = True
-        currentpost = currentpost+188
+        currentpost = currentpost + 188
         if currentpost >= len(data):
             # print 'came back to begin'
             found = True
@@ -371,9 +379,11 @@ class TSDownloader():
         try:
             post = None
             if PY3:
-                openner = urllib.request.build_opener(urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
+                openner = urllib.request.build_opener(
+                    urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
             else:
-                openner = urllib2.build_opener(urllib2.HTTPHandler, urllib2.HTTPSHandler)
+                openner = urllib2.build_opener(
+                    urllib2.HTTPHandler, urllib2.HTTPSHandler)
 
             if post:
                 req = Request(url, post)
@@ -396,18 +406,20 @@ class TSDownloader():
             response = openner.open(req)
 
             return response
-        except:
+        except BaseException:
             # print 'Error in getUrl'
             traceback.print_exc()
         return None
 
     def getUrl(self, url, ischunkDownloading=False):
         try:
-            post=None
+            post = None
             if PY3:
-                openner = urllib.request.build_opener(urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
+                openner = urllib.request.build_opener(
+                    urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
             else:
-                openner = urllib2.build_opener(urllib2.HTTPHandler, urllib2.HTTPSHandler)
+                openner = urllib2.build_opener(
+                    urllib2.HTTPHandler, urllib2.HTTPSHandler)
             if post:
                 req = Request(url, post)
             else:
@@ -421,19 +433,28 @@ class TSDownloader():
                         ua_header = True
 
             if not ua_header:
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
+                req.add_header(
+                    'User-Agent',
+                    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
             # response = urllib2.urlopen(req)
-            if self.proxy and ((not ischunkDownloading) or self.use_proxy_for_chunks):
+            if self.proxy and ((not ischunkDownloading)
+                               or self.use_proxy_for_chunks):
                 req.set_proxy(self.proxy, 'http')
             response = openner.open(req)
             data = response.read()
             return data
-        except:
+        except BaseException:
             # print 'Error in getUrl'
             traceback.print_exc()
         return None
 
-    def init(self, out_stream, url, proxy=None, g_stopEvent=None, maxbitRate=0):
+    def init(
+            self,
+            out_stream,
+            url,
+            proxy=None,
+            g_stopEvent=None,
+            maxbitRate=0):
         try:
             self.init_done = False
             self.init_url = url
@@ -450,26 +471,32 @@ class TSDownloader():
                 url = sp[0]
                 self.clientHeader = sp[1]
                 if PY3:
-                    self.clientHeader = urllib.parse.parse_qsl(self.clientHeader)
+                    self.clientHeader = urllib.parse.parse_qsl(
+                        self.clientHeader)
                 else:
                     self.clientHeader = urlparse.parse_qsl(self.clientHeader)
 
-            # print 'header recieved now url and headers are',url, self.clientHeader
+            # print 'header recieved now url and headers are',url,
+            # self.clientHeader
             self.status = 'init done'
             self.url = url
             return True
             # return self.downloadInternal(testurl=True)
             # os.remove(self.outputfile)
-        except:
+        except BaseException:
             traceback.print_exc()
             self.status = 'finished'
         return False
 
-    def keep_sending_video(self, dest_stream, segmentToStart=None, totalSegmentToSend=0):
+    def keep_sending_video(
+            self,
+            dest_stream,
+            segmentToStart=None,
+            totalSegmentToSend=0):
         try:
             self.status = 'download Starting'
             self.downloadInternal(dest_stream=dest_stream)
-        except:
+        except BaseException:
             traceback.print_exc()
         self.status = 'finished'
 
@@ -506,7 +533,8 @@ class TSDownloader():
                 try:
                     if self.g_stopEvent and self.g_stopEvent.isSet():
                         return
-                    while (buf is not None and len(buf) > 0 and lastdataread > 0):
+                    while (buf is not None and len(buf)
+                           > 0 and lastdataread > 0):
 
                         if self.g_stopEvent and self.g_stopEvent.isSet():
                             return
@@ -522,7 +550,7 @@ class TSDownloader():
                                 print('test complete true')
                                 response.close()
                                 return True
-                        except:
+                        except BaseException:
                             traceback.print_exc(file=sys.stdout)
                             print('testurl', testurl, lost)
                             if testurl:
@@ -543,22 +571,32 @@ class TSDownloader():
                         if not First:
                             # print 'second ite',wrotesomething
                             if wrotesomething is False:
-                                # print 'second ite wrote something false'#, len(lastbuf)
+                                # print 'second ite wrote something false'#,
+                                # len(lastbuf)
                                 if lastpts:
                                     # buffertofind=lastbuf#[lastbuf.rfind('G',len(lastbuf)-170):]
                                     # print 'buffertofind',len(buffertofind),buffertofind.encode("hex")
                                     # print 'pts to find',lastpts
-                                    lastforcurrent = getLastPTS(buf, fixpid, defualtype)
-                                    # print 'last pts in new data',lastforcurrent
+                                    lastforcurrent = getLastPTS(
+                                        buf, fixpid, defualtype)
+                                    # print 'last pts in new
+                                    # data',lastforcurrent
                                     if lastpts < lastforcurrent:  # we have data
-                                        # print 'we have data', lastpts,lastforcurrent, (lastforcurrent-lastpts)/90000
+                                        # print 'we have data',
+                                        # lastpts,lastforcurrent,
+                                        # (lastforcurrent-lastpts)/90000
 
                                         try:
-                                            firstpts, pos = getFirstPTSFrom(buf, fixpid, lastpts, defualtype)
-                                        except:
-                                            traceback.print_exc(file=sys.stdout)
-                                            print('getFirstPTSFrom error, using, last -1', end=' ')  # buf.encode("hex"), lastpts,
-                                            firstpts, pos = getFirstPTSFrom(buf, fixpid, lastpts - 1, defualtype)
+                                            firstpts, pos = getFirstPTSFrom(
+                                                buf, fixpid, lastpts, defualtype)
+                                        except BaseException:
+                                            traceback.print_exc(
+                                                file=sys.stdout)
+                                            print(
+                                                'getFirstPTSFrom error, using, last -1',
+                                                end=' ')  # buf.encode("hex"), lastpts,
+                                            firstpts, pos = getFirstPTSFrom(
+                                                buf, fixpid, lastpts - 1, defualtype)
                                         # if ignoredblock and (lastpts-firstpts)<0:
                                         #    print 'ignored last block yet the new block loosing data'
                                         #    print lastpts,firstpts,lastpts-firstpts
@@ -571,7 +609,8 @@ class TSDownloader():
                                         #    print 'xxxxxxxxxxxxxxxxxx',buf.encode("hex")
                                         # print 'last pst new',lastforcurrent
                                         if firstpts > lastforcurrent:
-                                            print('bad pts? ignore')  # , buf.encode("hex")
+                                            # , buf.encode("hex")
+                                            print('bad pts? ignore')
                                         # print 'auto pos',pos
                                         if pos is None:
                                             pos = 0
@@ -582,18 +621,22 @@ class TSDownloader():
                                                 # print 'overridin 1'
                                             else:
                                                 # print 'rawpos',rawpos,lastbuf[-5000:].encode("hex")
-                                                # print 'buff',buf.encode("hex")
-                                                rawpos = (ignoredblock+buf).find((lastbuf)[-5000:])
+                                                # print
+                                                # 'buff',buf.encode("hex")
+                                                rawpos = (
+                                                    ignoredblock + buf).find((lastbuf)[-5000:])
                                                 if rawpos > len(ignoredblock):
-                                                    pos = rawpos - len(ignoredblock)
+                                                    pos = rawpos - \
+                                                        len(ignoredblock)
                                                     # print 'overridin 2'
                                         # else:
-                                        #    print 'using next PTS', pos, firstpts
+                                        # print 'using next PTS', pos, firstpts
                                         ignoredblock = None
                                         # else: pos=0
                                         # print firstpts,pos,(firstpts-lastpts)/90000
                                         # fn=buf.find(buffertofind[:188])
-                                        # print 'BUFFER FOUND!!', (pos*100)/len(buf)
+                                        # print 'BUFFER FOUND!!',
+                                        # (pos*100)/len(buf)
                                         if (pos * 100) / len(buf) > 70:
                                             sleeptime = 0
                                         buf = buf[pos:]
@@ -602,24 +645,30 @@ class TSDownloader():
                                         wrotesomething = True
                                     else:
                                         # if lastforcurrent==None:
-                                        #    print 'NONE ISSUE', buf.encode("hex")
-                                        print('problembytes', 'diff', lastpts, lastforcurrent, lastpts, lastforcurrent)
+                                        # print 'NONE ISSUE', buf.encode("hex")
+                                        print(
+                                            'problembytes',
+                                            'diff',
+                                            lastpts,
+                                            lastforcurrent,
+                                            lastpts,
+                                            lastforcurrent)
                                         # buf.encode("hex")
                                         ignoredblock = writebuf
                                         ignorefind += 1  # same or old data?
                                         writebuf = None
                                         # if lastpts-lastforcurrent>(90000*10):
 
-                                            # lastdataread=0 # read again we are buffering
-                                            # response.close()
-                                            # xbmc.sleep(1000)
-                                           # print 'reconnect'
+                                        # lastdataread=0 # read again we are buffering
+                                        # response.close()
+                                        # xbmc.sleep(1000)
+                                        # print 'reconnect'
                                         # if ignorefind>5:
-                                           # ignorefind=0
-                                           # #print 'not ignoring so write data'
+                                        # ignorefind=0
+                                        # #print 'not ignoring so write data'
                                         # else:
-                                           # #print 'ignoring at the m'
-                                           # writebuf=None
+                                        # #print 'ignoring at the m'
+                                        # writebuf=None
                                         # print 'Buffer NOT FOUND!!ignoring'
                                 # else:
                                    # writebuf=None
@@ -649,31 +698,35 @@ class TSDownloader():
                             fileout.flush()
                             lastpts1 = getLastPTS(lastbuf, fixpid, defualtype)
                             if lastpts and lastpts1 and lastpts1 - lastpts < 0:
-                                print('too small?', lastpts, lastpts1, lastpts1 - lastpts)
+                                print(
+                                    'too small?', lastpts, lastpts1, lastpts1 - lastpts)
                                 # print lastbuf.encode("hex")
                             if lastpts1 is not None:
                                 lastpts = lastpts1
 
                             try:
-                                firsttime, pos=getFirstPTSFrom(lastbuf, fixpid, 0, defualtype)
+                                firsttime, pos = getFirstPTSFrom(
+                                    lastbuf, fixpid, 0, defualtype)
                                 # print lastpts,firsttime
-                                currentduration += (lastpts-firsttime) / 90000
+                                currentduration += (lastpts -
+                                                    firsttime) / 90000
                                 # print 'currentduration',currentduration
                                 # currentduration-=2
                                 # f currentduration<=2:
                                 #    currentduration=0
                                 # if currentduration>10: currentduration=2
                                 # print 'sleeping for',currentduration
-                            except:
+                            except BaseException:
                                 pass
                     try:
                         print('finished', byteread)
                         if byteread > 0:
-                            print('Percent Used' + str(((bytesent * 100) / byteread)))
+                            print('Percent Used' +
+                                  str(((bytesent * 100) / byteread)))
                         response.close()
 
                         print('response closed')
-                    except:
+                    except BaseException:
                         print('close error')
                         traceback.print_exc(file=sys.stdout)
                     if wrotesomething is False:
@@ -690,10 +743,10 @@ class TSDownloader():
                         # print 'finish writing',len(lastbuf)
                         # print lastbuf[-188:].encode("hex")
                         endtime = time.time()
-                        timetaken = int((endtime-starttime))
+                        timetaken = int((endtime - starttime))
                         # print 'video time',currentduration
                         # print 'processing time',timetaken
-                        sleeptime = currentduration-timetaken-2
+                        sleeptime = currentduration - timetaken - 2
                         # print 'sleep time',sleeptime
                         # if sleeptime>0:
                         #    xbmc.sleep(sleeptime*1000)#len(buf)/1024/1024*5000)
@@ -712,6 +765,6 @@ class TSDownloader():
                     response.close()
                     fileout.close()
                     return
-        except:
+        except BaseException:
             traceback.print_exc()
             return

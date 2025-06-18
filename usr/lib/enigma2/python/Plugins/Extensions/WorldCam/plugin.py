@@ -115,7 +115,7 @@ if version_info >= (2, 7, 9):
     try:
         sslContext = ssl._create_unverified_context()
 
-    except:
+    except BaseException:
         sslContext = None
 
 
@@ -235,14 +235,59 @@ def wcListEntry(name, idx):
     # Usa il percorso corretto per la bandiera
     pngx = get_flag_path(country_code)
     if screen_width == 2560:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(60, 50), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(90, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(
+            MultiContentEntryPixmapAlphaTest(
+                pos=(
+                    5, 5), size=(
+                    60, 50), png=loadPNG(pngx)))
+        res.append(
+            MultiContentEntryText(
+                pos=(
+                    90,
+                    0),
+                size=(
+                    1200,
+                    60),
+                font=0,
+                text=name,
+                color=0xa6d1fe,
+                flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     elif screen_width == 1920:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(50, 40), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(80, 0), size=(950, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(
+            MultiContentEntryPixmapAlphaTest(
+                pos=(
+                    5, 5), size=(
+                    50, 40), png=loadPNG(pngx)))
+        res.append(
+            MultiContentEntryText(
+                pos=(
+                    80,
+                    0),
+                size=(
+                    950,
+                    50),
+                font=0,
+                text=name,
+                color=0xa6d1fe,
+                flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 2), size=(50, 40), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(70, 0), size=(500, 45), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(
+            MultiContentEntryPixmapAlphaTest(
+                pos=(
+                    3, 2), size=(
+                    50, 40), png=loadPNG(pngx)))
+        res.append(
+            MultiContentEntryText(
+                pos=(
+                    70,
+                    0),
+                size=(
+                    500,
+                    45),
+                font=0,
+                text=name,
+                color=0xa6d1fe,
+                flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 
@@ -266,12 +311,17 @@ class SkylineWebcams:
         self.lang = language
 
     def get_full_url(self, url):
-        full_url = url if url.startswith("http") else self.MAIN_URL + url.lstrip("/")
-        log_to_file("Input: %s -> Full URL: %s" % (url, full_url), "get_full_url")
+        full_url = url if url.startswith(
+            "http") else self.MAIN_URL + url.lstrip("/")
+        log_to_file(
+            "Input: %s -> Full URL: %s" %
+            (url, full_url), "get_full_url")
         return full_url
 
     def get_menu(self):
-        log_to_file("Fetching main menu for language: %s" % self.lang, "get_main_menu")
+        log_to_file(
+            "Fetching main menu for language: %s" %
+            self.lang, "get_main_menu")
         return [
             {
                 "title": "LANGUAGE",
@@ -281,10 +331,16 @@ class SkylineWebcams:
         ]
 
     def get_main_menu(self):
-        log_to_file("Fetching main menu for language: %s" % self.lang, "get_main_menu")
+        log_to_file(
+            "Fetching main menu for language: %s" %
+            self.lang, "get_main_menu")
         menu = self.get_menu()
         headers = {"User-Agent": client.agent(), "Referer": self.MAIN_URL}
-        content = ensure_text(client.request(self.MAIN_URL, headers=headers), encoding='utf-8')
+        content = ensure_text(
+            client.request(
+                self.MAIN_URL,
+                headers=headers),
+            encoding='utf-8')
 
         if not content:
             log_to_file("Failed to load main page content.", "get_main_menu")
@@ -293,7 +349,9 @@ class SkylineWebcams:
         if isinstance(content, bytes):
             content = content.decode("utf-8", errors="ignore")
 
-        content = client.request(self.get_full_url(f"/{self.lang}.html"), headers=headers)
+        content = client.request(
+            self.get_full_url(f"/{self.lang}.html"),
+            headers=headers)
         if not content:
             log_to_file("Failed to load main page content.", "get_main_menu")
             return menu
@@ -302,16 +360,25 @@ class SkylineWebcams:
             content = content.decode("utf-8", errors="ignore")
 
         # Continenti
-        continent_part = search(r'class="dropdown-menu mega-dropdown-menu"(.*?)<div class="collapse navbar', content, DOTALL)
+        continent_part = search(
+            r'class="dropdown-menu mega-dropdown-menu"(.*?)<div class="collapse navbar',
+            content,
+            DOTALL)
         if continent_part:
             log_to_file("Extracting continents...", "get_main_menu")
-            continents = findall(r'class="continent(.*?)(?=<div class="col|</div>)', continent_part.group(1), DOTALL)
-            log_to_file("Found continents: %d" % len(continents), "get_main_menu")
+            continents = findall(
+                r'class="continent(.*?)(?=<div class="col|</div>)',
+                continent_part.group(1),
+                DOTALL)
+            log_to_file(
+                "Found continents: %d" %
+                len(continents), "get_main_menu")
             for continent in continents:
                 continent_name = search(r"<strong>(.*?)</strong>", continent)
                 if continent_name:
                     continent_name = continent_name.group(1).strip()
-                    links = findall(r'<a href="([^"]+)"[^>]*>([^<]+)</a>', continent)
+                    links = findall(
+                        r'<a href="([^"]+)"[^>]*>([^<]+)</a>', continent)
                     for url, name in links:
                         title = f"{continent_name}: {name.strip()}"
                         menu.append({
@@ -321,8 +388,11 @@ class SkylineWebcams:
                         })
 
             # Categorie
-            categories = findall(r'<a href="([^"]+)"[^>]*>.*?class="tcam">([^<]+)<', content)
-            log_to_file("Found categories: %d" % len(categories), "get_main_menu")
+            categories = findall(
+                r'<a href="([^"]+)"[^>]*>.*?class="tcam">([^<]+)<', content)
+            log_to_file(
+                "Found categories: %d" %
+                len(categories), "get_main_menu")
             for url, name in categories:
                 menu.append({
                     "title": f"Category: {name.strip()}",
@@ -350,7 +420,9 @@ class SkylineWebcams:
             pattern = r'<a href="(%s/webcam/[^"]+)"[^>]*>.*?<img src="([^"]+)"[^>]*alt="([^"]+)"' % self.lang
             matches = findall(pattern, content, DOTALL)
         else:
-            log_to_file("Parsing for CATEGORIES or TOP webcams...", "list_cams")
+            log_to_file(
+                "Parsing for CATEGORIES or TOP webcams...",
+                "list_cams")
             pattern = r'<a href="([^"]+)"[^>]*>.*?<img src="([^"]+)"[^>]*alt="([^"]+)"'
             matches = findall(pattern, content, DOTALL)
 
@@ -505,7 +577,11 @@ class Webcam1(Screen):
 
     def startup(self):
         log_to_file("Webcam1 startup", "Webcam1")
-        self.names = ['User Lists', 'Skyline Webcams', 'Skyline Top', 'Language']
+        self.names = [
+            'User Lists',
+            'Skyline Webcams',
+            'Skyline Top',
+            'Language']
         self.urls = [
             "http://worldcam.eu/",
             "https://www.skylinewebcams.com/",
@@ -554,19 +630,25 @@ class Webcam1(Screen):
         remote_version = '0.0'
         remote_changelog = ''
         try:
-            req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
+            req = Utils.Request(
+                Utils.b64decoder(installer_url), headers={
+                    'User-Agent': 'Mozilla/5.0'})
             page = Utils.urlopen(req).read()
             data = page.decode("utf-8") if PY3 else page.encode("utf-8")
             if data:
                 lines = data.split("\n")
                 for line in lines:
                     if line.startswith("version"):
-                        remote_version = line.split("'")[1] if "'" in line else '0.0'
+                        remote_version = line.split(
+                            "'")[1] if "'" in line else '0.0'
                     elif line.startswith("changelog"):
-                        remote_changelog = line.split("'")[1] if "'" in line else ''
+                        remote_changelog = line.split(
+                            "'")[1] if "'" in line else ''
                         break
         except Exception as e:
-            self.session.open(MessageBox, _('Error checking version: %s') % str(e), MessageBox.TYPE_ERROR, timeout=5)
+            self.session.open(
+                MessageBox, _('Error checking version: %s') %
+                str(e), MessageBox.TYPE_ERROR, timeout=5)
             return
         self.new_version = remote_version
         self.new_changelog = remote_changelog
@@ -575,35 +657,64 @@ class Webcam1(Screen):
             self['key_green'].show()
             self.session.open(
                 MessageBox,
-                _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog),
+                _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') %
+                (self.new_version,
+                 self.new_changelog),
                 MessageBox.TYPE_INFO,
-                timeout=5
-            )
+                timeout=5)
 
     def update_me(self):
         if self.Update is True:
-            self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?") % (self.new_version, self.new_changelog), MessageBox.TYPE_YESNO)
+            self.session.openWithCallback(
+                self.install_update,
+                MessageBox,
+                _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?") %
+                (self.new_version,
+                 self.new_changelog),
+                MessageBox.TYPE_YESNO)
         else:
-            self.session.open(MessageBox, _("Congrats! You already have the latest version..."),  MessageBox.TYPE_INFO, timeout=4)
+            self.session.open(
+                MessageBox,
+                _("Congrats! You already have the latest version..."),
+                MessageBox.TYPE_INFO,
+                timeout=4)
 
     def update_dev(self):
         try:
-            req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
+            req = Utils.Request(
+                Utils.b64decoder(developer_url), headers={
+                    'User-Agent': 'Mozilla/5.0'})
             page = Utils.urlopen(req).read()
             data = json.loads(page)
             remote_date = data['pushed_at']
-            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+            strp_remote_date = datetime.strptime(
+                remote_date, '%Y-%m-%dT%H:%M:%SZ')
             remote_date = strp_remote_date.strftime('%Y-%m-%d')
-            self.session.openWithCallback(self.install_update, MessageBox, _("Do you want to install update ( %s ) now?") % (remote_date), MessageBox.TYPE_YESNO)
+            self.session.openWithCallback(
+                self.install_update,
+                MessageBox,
+                _("Do you want to install update ( %s ) now?") %
+                (remote_date),
+                MessageBox.TYPE_YESNO)
         except Exception as e:
             print('error xcons:', e)
 
     def install_update(self, answer=False):
         if answer:
-            cmd1 = 'wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'
-            self.session.open(xConsole, 'Upgrading...', cmdlist=[cmd1], finishedCallback=self.myCallback, closeOnSuccess=False)
+            cmd1 = 'wget -q "--no-check-certificate" ' + \
+                Utils.b64decoder(installer_url) + ' -O - | /bin/sh'
+            self.session.open(
+                xConsole,
+                'Upgrading...',
+                cmdlist=[cmd1],
+                finishedCallback=self.myCallback,
+                closeOnSuccess=False)
         else:
-            self.session.open(MessageBox, _("Update Aborted!"),  MessageBox.TYPE_INFO, timeout=3)
+            self.session.open(
+                MessageBox,
+                _("Update Aborted!"),
+                MessageBox.TYPE_INFO,
+                timeout=3)
 
     def myCallback(self, result=None):
         print('result:', result)
@@ -670,7 +781,11 @@ class WebcamLanguage(Screen):
     def get_languages(self):
         BASEURL = 'https://www.skylinewebcams.com/'
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = ensure_text(client.request(BASEURL, headers=headers), encoding='utf-8')
+        content = ensure_text(
+            client.request(
+                BASEURL,
+                headers=headers),
+            encoding='utf-8')
 
         languages = []
         # Extract available languages from HTML
@@ -855,10 +970,10 @@ class Webcam3(Screen):
         path1 = os_path.join(enigma_path, bouquetname)
         path2 = os_path.join(enigma_path, "bouquets.tv")
         tmplist = [
-            "#NAME {} Worldcam by Lululla\n".format(name_file if name_file else bouquetname),
+            "#NAME {} Worldcam by Lululla\n".format(
+                name_file if name_file else bouquetname),
             f"#SERVICE 1:64:0:0:0:0:0:0:0:0::{name_file} CHANNELS",
-            f"#DESCRIPTION --- {name_file} ---"
-        ]
+            f"#DESCRIPTION --- {name_file} ---"]
 
         for idx in range(len(self.names)):
             title = self.names[idx]
@@ -884,11 +999,16 @@ class Webcam3(Screen):
 
         if not bouquet_found:
             with open(path2, "a") as f:
-                f.write(f'#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "{bouquetname}" ORDER BY bouquet\n')
+                f.write(
+                    f'#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "{bouquetname}" ORDER BY bouquet\n')
             log_to_file(f"Appended to bouquets.tv: {bouquetname}")
 
         Utils.ReloadBouquets()
-        self.session.open(MessageBox, _("Bouquet created successfully!"), MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(
+            MessageBox,
+            _("Bouquet created successfully!"),
+            MessageBox.TYPE_INFO,
+            timeout=5)
 
     def openTest(self):
         log_to_file(f"openTest() reading playlist {self.name}")
@@ -903,7 +1023,8 @@ class Webcam3(Screen):
                     if "###" not in line:
                         continue
                     name_part, url = line.strip().split("###", 1)
-                    name_clean = html_conv.html_unescape(name_part.replace(".txt", ""))
+                    name_clean = html_conv.html_unescape(
+                        name_part.replace(".txt", ""))
                     self.names.append(name_clean)
                     self.urls.append(url)
                     items.append(f"{name_clean}###{url}\n")
@@ -911,11 +1032,15 @@ class Webcam3(Screen):
             with open(self.xxxname, "w") as e:
                 for item in items:
                     e.write(item)
-            log_to_file(f"Loaded {len(self.names)} entries, playlist converted to {self.xxxname}")
+            log_to_file(
+                f"Loaded {len(self.names)} entries, playlist converted to {self.xxxname}")
             showlist(self.names, self["webcam"])
         except Exception as e:
             log_to_file(f"Error in openTest: {e}")
-            self.session.open(MessageBox, f"Error loading playlist: {e}", MessageBox.TYPE_ERROR)
+            self.session.open(
+                MessageBox,
+                f"Error loading playlist: {e}",
+                MessageBox.TYPE_ERROR)
 
     def okClicked(self):
         if not getattr(self, "names", []):
@@ -931,12 +1056,13 @@ class Webcam3(Screen):
 
     def removeb(self):
         log_to_file("removeb() called")
-        self.session.openWithCallback(self.deleteBouquets,
-                                      MessageBox,
-                                      _("Remove all Worldcam Favorite Bouquet ?"),
-                                      MessageBox.TYPE_YESNO,
-                                      timeout=5,
-                                      default=True)
+        self.session.openWithCallback(
+            self.deleteBouquets,
+            MessageBox,
+            _("Remove all Worldcam Favorite Bouquet ?"),
+            MessageBox.TYPE_YESNO,
+            timeout=5,
+            default=True)
 
     def deleteBouquets(self, result):
         log_to_file(f"deleteBouquets() result={result}")
@@ -956,11 +1082,17 @@ class Webcam3(Screen):
                                 tvfile.write(line)
                     log_to_file("Updated bouquets.tv from backup")
                 Utils.ReloadBouquets()
-                self.session.open(MessageBox, _('WorldCam Favorites List have been removed'),
-                                  MessageBox.TYPE_INFO, timeout=5)
+                self.session.open(
+                    MessageBox,
+                    _('WorldCam Favorites List have been removed'),
+                    MessageBox.TYPE_INFO,
+                    timeout=5)
             except Exception as ex:
                 log_to_file(f"Error in deleteBouquets: {ex}")
-                self.session.open(MessageBox, f"Error removing bouquets: {ex}", MessageBox.TYPE_ERROR)
+                self.session.open(
+                    MessageBox,
+                    f"Error removing bouquets: {ex}",
+                    MessageBox.TYPE_ERROR)
 
     def cancel(self):
         try:
@@ -1012,7 +1144,9 @@ class Webcam4(Screen):
         self.names = []
         self.items = self.skyline.get_main_menu()
         for item in self.items:
-            log_to_file(f"Menu item: {item['title']} - {item['url']}", "Webcam4")
+            log_to_file(
+                f"Menu item: {item['title']} - {item['url']}",
+                "Webcam4")
             self.names.append(item['title'])
         showlist(self.names, self['webcam'])
 
@@ -1032,7 +1166,8 @@ class Webcam4(Screen):
         if 0 <= idx < len(self.items):
             item = self.items[idx]
             log_to_file(f"Opening item: {item['title']}", "Webcam4")
-            self.session.openWithCallback(self.onWebcam5ListClosed, Webcam5List, item)
+            self.session.openWithCallback(
+                self.onWebcam5ListClosed, Webcam5List, item)
 
     def onWebcam5ListClosed(self, result=None):
         log_to_file("Returned from Webcam5List to Webcam4", "Webcam4")
@@ -1119,7 +1254,9 @@ class Webcam5List(Screen):
         self.names = []
         self.cams = self.skyline.list_cams(self.item['url'], self.item['cat'])
 
-        log_to_file(f"Loaded {len(self.cams)} cameras for category: {self.item['title']}", "Webcam5List")
+        log_to_file(
+            f"Loaded {len(self.cams)} cameras for category: {self.item['title']}",
+            "Webcam5List")
 
         self.display_names = []
         for cam in self.cams:
@@ -1143,7 +1280,11 @@ class Webcam5List(Screen):
         self["paypal"].setText(paypal())
 
     def removeb(self):
-        self.session.openWithCallback(self.deleteBouquet, MessageBox, _("Remove this bouquet?"), MessageBox.TYPE_YESNO)
+        self.session.openWithCallback(
+            self.deleteBouquet,
+            MessageBox,
+            _("Remove this bouquet?"),
+            MessageBox.TYPE_YESNO)
 
     def deleteBouquet(self, result):
         if result:
@@ -1169,15 +1310,24 @@ class Webcam5List(Screen):
                                     tvfile.write(line)
 
                 Utils.ReloadBouquets()
-                self.session.open(MessageBox, _('Bouquet removed successfully!'), MessageBox.TYPE_INFO, timeout=5)
+                self.session.open(
+                    MessageBox,
+                    _('Bouquet removed successfully!'),
+                    MessageBox.TYPE_INFO,
+                    timeout=5)
             except Exception as e:
                 log_to_file(f"Error removing bouquet: {str(e)}", "Webcam5List")
-                self.session.open(MessageBox, f"Error removing bouquet: {str(e)}", MessageBox.TYPE_ERROR)
+                self.session.open(
+                    MessageBox,
+                    f"Error removing bouquet: {str(e)}",
+                    MessageBox.TYPE_ERROR)
 
     def openTest(self):
         self.names = []
         self.cams = self.skyline.list_cams(self.item['url'], self.item['cat'])
-        log_to_file(f"Loaded {len(self.cams)} cameras for category: {self.item['title']}", "Webcam5List")
+        log_to_file(
+            f"Loaded {len(self.cams)} cameras for category: {self.item['title']}",
+            "Webcam5List")
 
         # Create display names with country codes when available
         self.display_names = []
@@ -1199,7 +1349,9 @@ class Webcam5List(Screen):
         idx = self["webcam"].getSelectionIndex()
         if 0 <= idx < len(self.cams):
             cam = self.cams[idx]
-            log_to_file(f"Selected camera title: {cam['title']}", "Webcam5List")
+            log_to_file(
+                f"Selected camera title: {cam['title']}",
+                "Webcam5List")
             video_url = self.skyline.get_video_url(cam['url'])
 
             if video_url:
@@ -1210,7 +1362,10 @@ class Webcam5List(Screen):
                     self.play_hls(video_url, cam['title'])
             else:
                 log_to_file("Video URL not found", "Webcam5List")
-                self.session.open(MessageBox, _('Video URL not found!'), MessageBox.TYPE_ERROR)
+                self.session.open(
+                    MessageBox,
+                    _('Video URL not found!'),
+                    MessageBox.TYPE_ERROR)
 
     def play_hls(self, url, title):
         log_to_file(f"Playing HLS: {url} [{title}]", "Webcam5List")
@@ -1219,7 +1374,8 @@ class Webcam5List(Screen):
         self.session.open(MoviePlayer, stream)
 
     def play_youtube(self, url, title):
-        if os_path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper'):
+        if os_path.exists(
+                '/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper'):
             url = 'streamlink://' + url
             stream = eServiceReference(4097, 0, url)
         else:
@@ -1233,7 +1389,10 @@ class Webcam5List(Screen):
                 stream = eServiceReference(4097, 0, url)
             except Exception as e:
                 log_to_file(f"YouTube-DL error: {e}", "Webcam5List")
-                self.session.open(MessageBox, _('Error playing YouTube video!'), MessageBox.TYPE_ERROR)
+                self.session.open(
+                    MessageBox,
+                    _('Error playing YouTube video!'),
+                    MessageBox.TYPE_ERROR)
                 return
 
         log_to_file(f"Playing YouTube stream: {url} [{title}]", "Webcam5List")
@@ -1271,7 +1430,9 @@ class Webcam5List(Screen):
         with open(path1, 'w') as s:
             for item in tmplist:
                 s.write(f"{item}\n")
-        log_to_file(f"Wrote bouquet to {path1} with {count_exported} items", "Webcam5List")
+        log_to_file(
+            f"Wrote bouquet to {path1} with {count_exported} items",
+            "Webcam5List")
 
         bouquet_found = False
         if os_path.exists(path2):
@@ -1284,11 +1445,18 @@ class Webcam5List(Screen):
 
         if not bouquet_found:
             with open(path2, 'a') as f:
-                f.write(f'#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "{bouquetname}" ORDER BY bouquet\n')
-            log_to_file(f"Appended new bouquet entry to bouquets.tv: {bouquetname}", "Webcam5List")
+                f.write(
+                    f'#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "{bouquetname}" ORDER BY bouquet\n')
+            log_to_file(
+                f"Appended new bouquet entry to bouquets.tv: {bouquetname}",
+                "Webcam5List")
 
         Utils.ReloadBouquets()
-        self.session.open(MessageBox, _('Bouquet created successfully!'), MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(
+            MessageBox,
+            _('Bouquet created successfully!'),
+            MessageBox.TYPE_INFO,
+            timeout=5)
 
     def cancel(self):
         try:
@@ -1351,13 +1519,18 @@ class Webcam7(Screen):
         self.urls = []
         BASEURL = 'https://www.skylinewebcams.com/'
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = ensure_text(client.request(BASEURL, headers=headers), encoding='utf-8')
+        content = ensure_text(
+            client.request(
+                BASEURL,
+                headers=headers),
+            encoding='utf-8')
 
         n1 = content.find('dropdown-menu mega-dropdown-menu cat', 0)
         n2 = content.find('</div></div>', n1)
 
         if n1 == -1 or n2 == -1:
-            log_to_file("[Webcam7] HTML parsing error: dropdown menu block not found")
+            log_to_file(
+                "[Webcam7] HTML parsing error: dropdown menu block not found")
             return
 
         content2 = content[n1:n2]
@@ -1454,7 +1627,11 @@ class Webcam8(Screen):
         self["paypal"].setText(paypal())
 
     def removeb(self):
-        self.session.openWithCallback(self.deleteBouquet, MessageBox, _("Remove this bouquet?"), MessageBox.TYPE_YESNO)
+        self.session.openWithCallback(
+            self.deleteBouquet,
+            MessageBox,
+            _("Remove this bouquet?"),
+            MessageBox.TYPE_YESNO)
 
     def deleteBouquet(self, result):
         if result:
@@ -1479,9 +1656,16 @@ class Webcam8(Screen):
                                     tvfile.write(line)
 
                 Utils.ReloadBouquets()
-                self.session.open(MessageBox, _('Bouquet removed successfully!'), MessageBox.TYPE_INFO, timeout=5)
+                self.session.open(
+                    MessageBox,
+                    _('Bouquet removed successfully!'),
+                    MessageBox.TYPE_INFO,
+                    timeout=5)
             except Exception as e:
-                self.session.open(MessageBox, f"Error removing bouquet: {str(e)}", MessageBox.TYPE_ERROR)
+                self.session.open(
+                    MessageBox,
+                    f"Error removing bouquet: {str(e)}",
+                    MessageBox.TYPE_ERROR)
                 log_to_file("Error removing bouquet: {}".format(e))
 
     def export(self):
@@ -1526,10 +1710,15 @@ class Webcam8(Screen):
 
         if not bouquet_found:
             with open(path2, 'a') as f:
-                f.write(f'#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "{bouquetname}" ORDER BY bouquet\n')
+                f.write(
+                    f'#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "{bouquetname}" ORDER BY bouquet\n')
 
         Utils.ReloadBouquets()
-        self.session.open(MessageBox, _('Bouquet created successfully!'), MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(
+            MessageBox,
+            _('Bouquet created successfully!'),
+            MessageBox.TYPE_INFO,
+            timeout=5)
 
     def openTest(self):
         log_to_file("Opening test for: {}".format(self.name))
@@ -1539,7 +1728,11 @@ class Webcam8(Screen):
         BASEURL = 'https://www.skylinewebcams.com/{0}/webcam.html'
         from .lib import client, dom_parser as dom
         headers = {'User-Agent': client.agent(), 'Referer': BASEURL}
-        content = ensure_text(client.request(self.url, headers=headers), encoding='utf-8')
+        content = ensure_text(
+            client.request(
+                self.url,
+                headers=headers),
+            encoding='utf-8')
 
         data = client.parseDOM(content, 'div', attrs={'class': 'container'})[0]
         data = dom.parse_dom(data, 'a', req='href')
@@ -1551,7 +1744,9 @@ class Webcam8(Screen):
                 continue
 
             link = html_conv.html_unescape(link)
-            name = html_conv.html_unescape(client.parseDOM(item.content, 'img', ret='alt')[0])
+            name = html_conv.html_unescape(
+                client.parseDOM(
+                    item.content, 'img', ret='alt')[0])
 
             link = ensure_str(link)
             name = ensure_str(name)
@@ -1622,11 +1817,15 @@ class Webcam8(Screen):
             self.session.open(MoviePlayer, stream)
         except Exception as e:
             log_to_file("Error in getVid: {}".format(e))
-            self.session.open(MessageBox, f"Error playing video: {str(e)}", MessageBox.TYPE_ERROR)
+            self.session.open(
+                MessageBox,
+                f"Error playing video: {str(e)}",
+                MessageBox.TYPE_ERROR)
 
     def play_youtube(self, url, title):
         try:
-            if os_path.exists('/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper'):
+            if os_path.exists(
+                    '/usr/lib/enigma2/python/Plugins/Extensions/YTDLWrapper'):
                 url = 'streamlink://' + url
                 stream = eServiceReference(4097, 0, url)
             else:
@@ -1642,7 +1841,10 @@ class Webcam8(Screen):
             self.session.open(MoviePlayer, stream)
         except Exception as e:
             log_to_file("YouTube error: {}".format(e))
-            self.session.open(MessageBox, _('Error playing YouTube video!'), MessageBox.TYPE_ERROR)
+            self.session.open(
+                MessageBox,
+                _('Error playing YouTube video!'),
+                MessageBox.TYPE_ERROR)
 
     def cancel(self):
         try:
@@ -1662,14 +1864,19 @@ class TvInfoBarShowHide():
     skipToggleShow = False
 
     def __init__(self):
-        self["ShowHideActions"] = ActionMap(["InfobarShowHideActions"], {"toggleShow": self.OkPressed, "hide": self.hide}, 0)
-        self.__event_tracker = ServiceEventTracker(screen=self, eventmap={iPlayableService.evStart: self.serviceStarted})
+        self["ShowHideActions"] = ActionMap(
+            ["InfobarShowHideActions"], {
+                "toggleShow": self.OkPressed, "hide": self.hide}, 0)
+        self.__event_tracker = ServiceEventTracker(
+            screen=self, eventmap={
+                iPlayableService.evStart: self.serviceStarted})
         self.__state = self.STATE_SHOWN
         self.__locked = 0
         self.hideTimer = eTimer()
         try:
-            self.hideTimer_conn = self.hideTimer.timeout.connect(self.doTimerHide)
-        except:
+            self.hideTimer_conn = self.hideTimer.timeout.connect(
+                self.doTimerHide)
+        except BaseException:
             self.hideTimer.callback.append(self.doTimerHide)
         self.hideTimer.start(5000, True)
         self.onShow.append(self.__onShow)
@@ -1721,7 +1928,7 @@ class TvInfoBarShowHide():
     def lockShow(self):
         try:
             self.__locked += 1
-        except:
+        except BaseException:
             self.__locked = 0
         if self.execing:
             self.show()
@@ -1731,7 +1938,7 @@ class TvInfoBarShowHide():
     def unlockShow(self):
         try:
             self.__locked -= 1
-        except:
+        except BaseException:
             self.__locked = 0
         if self.__locked < 0:
             self.__locked = 0
@@ -1804,7 +2011,10 @@ class MoviePlayer(
             self.session.nav.playService(self.stream)
         except Exception as e:
             log_to_file("Player error: {}".format(e))
-            self.session.open(MessageBox, f"Player error: {str(e)}", MessageBox.TYPE_ERROR)
+            self.session.open(
+                MessageBox,
+                f"Player error: {str(e)}",
+                MessageBox.TYPE_ERROR)
 
     def playpauseService(self):
         if self.state == self.STATE_PLAYING:
@@ -1843,7 +2053,7 @@ class MoviePlayer(
         if os_path.exists('/tmp/hls.avi'):
             try:
                 remove('/tmp/hls.avi')
-            except:
+            except BaseException:
                 pass
         self.session.nav.stopService()
         if self.srefInit:

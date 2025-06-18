@@ -29,17 +29,17 @@ def get(function, timeout=10, *args, **table):
         response = None
 
         f = repr(function)
-        f = re.sub('.+\smethod\s|.+function\s|\sat\s.+|\sof\s.+', '', f)
+        f = re.sub('.+\\smethod\\s|.+function\\s|\\sat\\s.+|\\sof\\s.+', '', f)
         a = hashlib.md5()
         for i in args:
             a.update(str(i))
         a = str(a.hexdigest())
-    except:
+    except BaseException:
         pass
 
     try:
         table = table['table']
-    except:
+    except BaseException:
         table = 'rel_list'
 
     try:
@@ -48,10 +48,10 @@ def get(function, timeout=10, *args, **table):
             return response
         elif (r is None or r == []):
             return r
-    except:
+    except BaseException:
         return
 
     try:
         return eval(r.encode('utf-8'))
-    except:
+    except BaseException:
         pass

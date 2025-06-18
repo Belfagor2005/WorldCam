@@ -1,15 +1,40 @@
+from .youtube_live_chat import YoutubeLiveChatFD
+from .websocket import WebSocketFragmentFD
+from .rtsp import RtspFD
+from .rtmp import RtmpFD
+from .niconico import NiconicoDmcFD, NiconicoLiveFD
+from .mhtml import MhtmlFD
+from .ism import IsmFD
+from .http import HttpFD
+from .hls import HlsFD
+from .fc2 import FC2LiveFD
+from .f4m import F4mFD
+from .external import FFmpegFD, get_external_downloader
+from .dash import DashSegmentsFD
+from .common import FileDownloader
 from ..utils import NO_DEFAULT, determine_protocol
 
 
-def get_suitable_downloader(info_dict, params={}, default=NO_DEFAULT, protocol=None, to_stdout=False):
+def get_suitable_downloader(
+        info_dict,
+        params={},
+        default=NO_DEFAULT,
+        protocol=None,
+        to_stdout=False):
     info_dict['protocol'] = determine_protocol(info_dict)
     info_copy = info_dict.copy()
     info_copy['to_stdout'] = to_stdout
 
     protocols = (protocol or info_copy['protocol']).split('+')
-    downloaders = [_get_suitable_downloader(info_copy, proto, params, default) for proto in protocols]
+    downloaders = [
+        _get_suitable_downloader(
+            info_copy,
+            proto,
+            params,
+            default) for proto in protocols]
 
-    if set(downloaders) == {FFmpegFD} and FFmpegFD.can_merge_formats(info_copy, params):
+    if set(downloaders) == {FFmpegFD} and FFmpegFD.can_merge_formats(
+            info_copy, params):
         return FFmpegFD
     elif (set(downloaders) == {DashSegmentsFD}
           and not (to_stdout and len(protocols) > 1)
@@ -21,20 +46,6 @@ def get_suitable_downloader(info_dict, params={}, default=NO_DEFAULT, protocol=N
 
 
 # Some of these require get_suitable_downloader
-from .common import FileDownloader
-from .dash import DashSegmentsFD
-from .external import FFmpegFD, get_external_downloader
-from .f4m import F4mFD
-from .fc2 import FC2LiveFD
-from .hls import HlsFD
-from .http import HttpFD
-from .ism import IsmFD
-from .mhtml import MhtmlFD
-from .niconico import NiconicoDmcFD, NiconicoLiveFD
-from .rtmp import RtmpFD
-from .rtsp import RtspFD
-from .websocket import WebSocketFragmentFD
-from .youtube_live_chat import YoutubeLiveChatFD
 
 PROTOCOL_MAP = {
     'rtmp': RtmpFD,
@@ -87,17 +98,24 @@ def _get_suitable_downloader(info_dict, protocol, params, default):
     if default is NO_DEFAULT:
         default = HttpFD
 
-    if (info_dict.get('section_start') or info_dict.get('section_end')) and FFmpegFD.can_download(info_dict):
+    if (info_dict.get('section_start') or info_dict.get(
+            'section_end')) and FFmpegFD.can_download(info_dict):
         return FFmpegFD
 
     info_dict['protocol'] = protocol
     downloaders = params.get('external_downloader')
     external_downloader = (
-        downloaders if isinstance(downloaders, str) or downloaders is None
-        else downloaders.get(shorten_protocol_name(protocol, True), downloaders.get('default')))
+        downloaders if isinstance(
+            downloaders,
+            str) or downloaders is None else downloaders.get(
+            shorten_protocol_name(
+                protocol,
+                True),
+            downloaders.get('default')))
 
     if external_downloader is None:
-        if info_dict['to_stdout'] and FFmpegFD.can_merge_formats(info_dict, params):
+        if info_dict['to_stdout'] and FFmpegFD.can_merge_formats(
+                info_dict, params):
             return FFmpegFD
     elif external_downloader.lower() != 'native':
         ed = get_external_downloader(external_downloader)
@@ -105,7 +123,8 @@ def _get_suitable_downloader(info_dict, protocol, params, default):
             return ed
 
     if protocol == 'http_dash_segments':
-        if info_dict.get('is_live') and (external_downloader or '').lower() != 'native':
+        if info_dict.get('is_live') and (
+                external_downloader or '').lower() != 'native':
             return FFmpegFD
 
     if protocol in ('m3u8', 'm3u8_native'):
