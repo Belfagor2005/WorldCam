@@ -35,8 +35,7 @@ class GooglePodcastsBaseIE(InfoExtractor):
 
 class GooglePodcastsIE(GooglePodcastsBaseIE):
     IE_NAME = 'google:podcasts'
-    _VALID_URL = GooglePodcastsBaseIE._VALID_URL_BASE + \
-        r'(?P<feed_url>[^/]+)/episode/(?P<id>[^/?&#]+)'
+    _VALID_URL = GooglePodcastsBaseIE._VALID_URL_BASE + r'(?P<feed_url>[^/]+)/episode/(?P<id>[^/?&#]+)'
     _TEST = {
         'url': 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5ucHIub3JnLzM0NDA5ODUzOS9wb2RjYXN0LnhtbA/episode/MzBlNWRlN2UtOWE4Yy00ODcwLTk2M2MtM2JlMmUyNmViOTRh',
         'md5': 'fa56b2ee8bd0703e27e42d4b104c4766',
@@ -61,8 +60,7 @@ class GooglePodcastsIE(GooglePodcastsBaseIE):
 
 class GooglePodcastsFeedIE(GooglePodcastsBaseIE):
     IE_NAME = 'google:podcasts:feed'
-    _VALID_URL = GooglePodcastsBaseIE._VALID_URL_BASE + \
-        r'(?P<id>[^/?&#]+)/?(?:[?#&]|$)'
+    _VALID_URL = GooglePodcastsBaseIE._VALID_URL_BASE + r'(?P<id>[^/?&#]+)/?(?:[?#&]|$)'
     _TEST = {
         'url': 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5ucHIub3JnLzM0NDA5ODUzOS9wb2RjYXN0LnhtbA',
         'info_dict': {

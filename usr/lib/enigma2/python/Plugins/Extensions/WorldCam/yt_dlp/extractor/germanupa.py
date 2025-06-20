@@ -82,18 +82,10 @@ class GermanupaIE(InfoExtractor):
 
         if not param_url:
             if self._search_regex(
-                r'<div[^>]+class\s*?=\s*?([\'"])(?:(?!\1).)*login-wrapper(?:(?!\1).)*\1',
-                webpage,
-                'login wrapper',
-                    default=None):
-                self.raise_login_required(
-                    'This video is only available for members')
-            # Fall back to generic to extract audio
-            return self.url_result(url, 'Generic')
+                    r'<div[^>]+class\s*?=\s*?([\'"])(?:(?!\1).)*login-wrapper(?:(?!\1).)*\1',
+                    webpage, 'login wrapper', default=None):
+                self.raise_login_required('This video is only available for members')
+            return self.url_result(url, 'Generic')  # Fall back to generic to extract audio
 
-        real_url = param_url.replace(
-            'https://vimeo.com/',
-            'https://player.vimeo.com/video/')
-        return self.url_result(
-            VimeoIE._smuggle_referrer(
-                real_url, url), VimeoIE, video_id)
+        real_url = param_url.replace('https://vimeo.com/', 'https://player.vimeo.com/video/')
+        return self.url_result(VimeoIE._smuggle_referrer(real_url, url), VimeoIE, video_id)

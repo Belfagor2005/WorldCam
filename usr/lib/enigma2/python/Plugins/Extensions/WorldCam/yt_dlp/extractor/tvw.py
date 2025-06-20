@@ -98,16 +98,13 @@ class TvwIE(InfoExtractor):
 
         formats = []
         subtitles = {}
-        for stream_url in traverse_obj(
-                video_data, ('streamingURIs', ..., {url_or_none})):
+        for stream_url in traverse_obj(video_data, ('streamingURIs', ..., {url_or_none})):
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 stream_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
-        if caption_url := traverse_obj(
-                video_data, ('captionPath', {url_or_none})):
-            subtitles.setdefault('en', []).append(
-                {'url': caption_url, 'ext': 'vtt'})
+        if caption_url := traverse_obj(video_data, ('captionPath', {url_or_none})):
+            subtitles.setdefault('en', []).append({'url': caption_url, 'ext': 'vtt'})
 
         return {
             'id': video_id,
@@ -155,34 +152,14 @@ class TvwTvChannelsIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        m3u8_url = traverse_obj(webpage,
-                                ({find_element(id='invintus-persistent-stream-frame',
-                                               html=True)},
-                                 {extract_attributes},
-                                    'src',
-                                    {parse_qs},
-                                    'encoder',
-                                    0,
-                                    {json.loads},
-                                    'live247URI',
-                                    {url_or_none},
-                                    {require('stream url')}))
+        m3u8_url = traverse_obj(webpage, (
+            {find_element(id='invintus-persistent-stream-frame', html=True)}, {extract_attributes},
+            'src', {parse_qs}, 'encoder', 0, {json.loads}, 'live247URI', {url_or_none}, {require('stream url')}))
 
         return {
             'id': video_id,
-            'formats': self._extract_m3u8_formats(
-                m3u8_url,
-                video_id,
-                'mp4',
-                m3u8_id='hls',
-                live=True),
-            'title': remove_end(
-                self._og_search_title(
-                    webpage,
-                    default=None),
-                ' - TVW'),
-            'thumbnail': self._og_search_thumbnail(
-                webpage,
-                default=None),
+            'formats': self._extract_m3u8_formats(m3u8_url, video_id, 'mp4', m3u8_id='hls', live=True),
+            'title': remove_end(self._og_search_title(webpage, default=None), ' - TVW'),
+            'thumbnail': self._og_search_thumbnail(webpage, default=None),
             'is_live': True,
         }

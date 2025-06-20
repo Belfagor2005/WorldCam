@@ -30,22 +30,14 @@ class SkyNewsAUIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        embedcode = self._search_regex(
-            r'embedcode\s?=\s?\"([^\"]+)\"', webpage, 'embedcode')
+        embedcode = self._search_regex(r'embedcode\s?=\s?\"([^\"]+)\"', webpage, 'embedcode')
         data_json = self._download_json(
-            f'https://content.api.news/v3/videos/brightcove/{embedcode}?api_key={self._API_KEY}',
-            video_id)['content']
+            f'https://content.api.news/v3/videos/brightcove/{embedcode}?api_key={self._API_KEY}', video_id)['content']
         return {
             'id': video_id,
             '_type': 'url_transparent',
-            'url': 'https://players.brightcove.net/{}/default_default/index.html?videoId={}'.format(
-                *
-                tuple(
-                    embedcode.split('-'))),
+            'url': 'https://players.brightcove.net/{}/default_default/index.html?videoId={}'.format(*tuple(embedcode.split('-'))),
             'ie_key': 'BrightcoveNew',
             'title': data_json.get('caption'),
-            'upload_date': unified_strdate(
-                try_get(
-                    data_json,
-                    lambda x: x['date']['created'])),
+            'upload_date': unified_strdate(try_get(data_json, lambda x: x['date']['created'])),
         }

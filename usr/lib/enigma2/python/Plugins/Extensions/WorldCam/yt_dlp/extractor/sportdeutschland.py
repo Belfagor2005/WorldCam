@@ -88,24 +88,20 @@ class SportDeutschlandIE(InfoExtractor):
         is_live = video['type'] == 'mux_live'
         token = self._download_json(
             f'https://api.sportdeutschland.tv/api/frontend/asset-token/{asset_id}',
-            video['id'],
-            query={
-                'type': video['type'],
-                'playback_id': video['src']})['token']
+            video['id'], query={'type': video['type'], 'playback_id': video['src']})['token']
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             f'https://stream.mux.com/{video["src"]}.m3u8?token={token}', video['id'], live=is_live)
 
-        return {'is_live': is_live,
-                'formats': formats,
-                'subtitles': subtitles,
-                **traverse_obj(video,
-                               {'id': 'id',
-                                'duration': ('duration',
-                                             {lambda x: float(x) > 0 and float(x)}),
-                                'timestamp': ('created_at',
-                                              {unified_timestamp}),
-                                }),
-                }
+        return {
+            'is_live': is_live,
+            'formats': formats,
+            'subtitles': subtitles,
+            **traverse_obj(video, {
+                'id': 'id',
+                'duration': ('duration', {lambda x: float(x) > 0 and float(x)}),
+                'timestamp': ('created_at', {unified_timestamp}),
+            }),
+        }
 
     def _real_extract(self, url):
         display_id = self._match_id(url)

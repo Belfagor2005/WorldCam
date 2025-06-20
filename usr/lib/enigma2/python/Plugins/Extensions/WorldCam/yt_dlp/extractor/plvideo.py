@@ -76,10 +76,7 @@ class PlVideoIE(InfoExtractor):
         formats = []
         subtitles = {}
         automatic_captions = {}
-        for quality, data in traverse_obj(
-            video_data, ('item', 'profiles', {
-                dict.items}, lambda _, v: url_or_none(
-                v[1]['hls']))):
+        for quality, data in traverse_obj(video_data, ('item', 'profiles', {dict.items}, lambda _, v: url_or_none(v[1]['hls']))):
             formats.append({
                 'format_id': quality,
                 'ext': 'mp4',
@@ -91,19 +88,10 @@ class PlVideoIE(InfoExtractor):
                 }),
                 **parse_resolution(quality),
             })
-        if livestream_url := traverse_obj(
-                video_data, ('item', 'livestream', 'url', {url_or_none})):
+        if livestream_url := traverse_obj(video_data, ('item', 'livestream', 'url', {url_or_none})):
             is_live = True
-            formats.extend(
-                self._extract_m3u8_formats(
-                    livestream_url,
-                    video_id,
-                    'mp4',
-                    live=True))
-        for lang, url in traverse_obj(
-            video_data, ('item', 'subtitles', {
-                dict.items}, lambda _, v: url_or_none(
-                v[1]))):
+            formats.extend(self._extract_m3u8_formats(livestream_url, video_id, 'mp4', live=True))
+        for lang, url in traverse_obj(video_data, ('item', 'subtitles', {dict.items}, lambda _, v: url_or_none(v[1]))):
             if lang.endswith('-auto'):
                 automatic_captions.setdefault(lang[:-5], []).append({
                     'url': url,

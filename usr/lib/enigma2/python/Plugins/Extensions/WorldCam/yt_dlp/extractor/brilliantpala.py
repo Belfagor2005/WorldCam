@@ -24,9 +24,7 @@ class BrilliantpalaBaseIE(InfoExtractor):
         if urlh.url.startswith(self._LOGIN_API):
             self.raise_login_required()
         return self._html_search_regex(
-            r'"username"\s*:\s*"(?P<username>[^"]+)"',
-            webpage,
-            'logged-in username')
+            r'"username"\s*:\s*"(?P<username>[^"]+)"', webpage, 'logged-in username')
 
     def _perform_login(self, username, password):
         login_page, urlh = self._download_webpage_handle(
@@ -36,70 +34,45 @@ class BrilliantpalaBaseIE(InfoExtractor):
             return
 
         if urlh.status == 401:
-            self.write_debug(
-                'Got HTTP Error 401; cookies have been invalidated')
-            login_page = self._download_webpage(
-                self._LOGIN_API, None, 'Re-downloading login page')
+            self.write_debug('Got HTTP Error 401; cookies have been invalidated')
+            login_page = self._download_webpage(self._LOGIN_API, None, 'Re-downloading login page')
 
         login_form = self._hidden_inputs(login_page)
         login_form.update({
             'username': username,
             'password': password,
         })
-        self._set_cookie(
-            self._DOMAIN,
-            'csrftoken',
-            login_form['csrfmiddlewaretoken'])
+        self._set_cookie(self._DOMAIN, 'csrftoken', login_form['csrfmiddlewaretoken'])
 
         logged_page = self._download_webpage(
-            self._LOGIN_API, None, note='Logging in', headers={
-                'Referer': self._LOGIN_API}, data=urlencode_postdata(login_form))
+            self._LOGIN_API, None, note='Logging in', headers={'Referer': self._LOGIN_API},
+            data=urlencode_postdata(login_form))
 
         if self._html_search_regex(
-            r'(Your username / email and password)',
-            logged_page,
-            'auth fail',
-                default=None):
+                r'(Your username / email and password)', logged_page, 'auth fail', default=None):
             raise ExtractorError('wrong username or password', expected=True)
 
         # the maximum number of logins is one
         if self._html_search_regex(
-            r'(Logout Other Devices)',
-            logged_page,
-            'logout devices button',
-                default=None):
+                r'(Logout Other Devices)', logged_page, 'logout devices button', default=None):
             logout_device_form = self._hidden_inputs(logged_page)
             self._download_webpage(
-                self._LOGOUT_DEVICES_API,
-                None,
-                headers={
-                    'Referer': self._LOGIN_API},
-                note='Logging out other devices',
-                data=urlencode_postdata(logout_device_form))
+                self._LOGOUT_DEVICES_API, None, headers={'Referer': self._LOGIN_API},
+                note='Logging out other devices', data=urlencode_postdata(logout_device_form))
 
     def _real_extract(self, url):
-        course_id, content_id = self._match_valid_url(
-            url).group('course_id', 'content_id')
+        course_id, content_id = self._match_valid_url(url).group('course_id', 'content_id')
         video_id = f'{course_id}-{content_id}'
 
         username = self._get_logged_in_username(url, video_id)
 
         content_json = self._download_json(
-            self._CONTENT_API.format(
-                content_id=content_id),
-            video_id,
-            note='Fetching content info',
-            errnote='Unable to fetch content info')
+            self._CONTENT_API.format(content_id=content_id), video_id,
+            note='Fetching content info', errnote='Unable to fetch content info')
 
         entries = []
-        for stream in traverse_obj(
-            content_json,
-            ('video',
-             'streams',
-             lambda _,
-             v: v['id'] and v['url'])):
-            formats = self._extract_m3u8_formats(
-                stream['url'], video_id, fatal=False)
+        for stream in traverse_obj(content_json, ('video', 'streams', lambda _, v: v['id'] and v['url'])):
+            formats = self._extract_m3u8_formats(stream['url'], video_id, fatal=False)
             if not formats:
                 continue
             entries.append({
@@ -112,9 +85,7 @@ class BrilliantpalaBaseIE(InfoExtractor):
             })
 
         return self.playlist_result(
-            entries,
-            playlist_id=video_id,
-            playlist_title=content_json.get('title'))
+            entries, playlist_id=video_id, playlist_title=content_json.get('title'))
 
 
 class BrilliantpalaElearnIE(BrilliantpalaBaseIE):

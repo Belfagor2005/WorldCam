@@ -60,12 +60,9 @@ class FrancaisFacileIE(InfoExtractor):
         display_id = urllib.parse.unquote(self._match_id(url))
 
         try:  # yt-dlp's default user-agents are too old and blocked by the site
-            webpage = self._download_webpage(
-                url,
-                display_id,
-                headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:136.0) Gecko/20100101 Firefox/136.0',
-                })
+            webpage = self._download_webpage(url, display_id, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:136.0) Gecko/20100101 Firefox/136.0',
+            })
         except ExtractorError as e:
             if not isinstance(e.cause, HTTPError) or e.cause.status != 403:
                 raise

@@ -82,8 +82,7 @@ def dirs_in_zip(archive):
 def default_plugin_paths():
     def _get_package_paths(*root_paths, containing_folder):
         for config_dir in orderedSet(map(Path, root_paths), lazy=True):
-            # We need to filter the base path added when running __main__.py
-            # directly
+            # We need to filter the base path added when running __main__.py directly
             if config_dir == _BASE_PACKAGE_PATH:
                 continue
             with contextlib.suppress(OSError):
@@ -145,8 +144,7 @@ class PluginFinder(importlib.abc.MetaPathFinder):
                     if parts in dirs_in_zip(path):
                         yield candidate
             except PermissionError as e:
-                write_string(
-                    f'Permission error while accessing modules in "{e.filename}"\n')
+                write_string(f'Permission error while accessing modules in "{e.filename}"\n')
 
     def find_spec(self, fullname, path=None, target=None):
         if fullname not in self.packages:
@@ -157,8 +155,7 @@ class PluginFinder(importlib.abc.MetaPathFinder):
             # Prevent using built-in meta finders for searching plugins.
             raise ModuleNotFoundError(fullname)
 
-        spec = importlib.machinery.ModuleSpec(
-            fullname, PluginLoader(), is_package=True)
+        spec = importlib.machinery.ModuleSpec(fullname, PluginLoader(), is_package=True)
         spec.submodule_search_locations = search_locations
         return spec
 
@@ -205,13 +202,10 @@ def load_plugins(plugin_spec: PluginSpec):
         if any(x.startswith('_') for x in module_name.split('.')):
             continue
         try:
-            if sys.version_info < (
-                    3, 10) and isinstance(
-                    finder, zipimport.zipimporter):
+            if sys.version_info < (3, 10) and isinstance(finder, zipimport.zipimporter):
                 # zipimporter.load_module() is deprecated in 3.10 and removed in 3.12
                 # The exec_module branch below is the replacement for >= 3.10
-                # See:
-                # https://docs.python.org/3/library/zipimport.html#zipimport.zipimporter.exec_module
+                # See: https://docs.python.org/3/library/zipimport.html#zipimport.zipimporter.exec_module
                 module = finder.load_module(module_name)
             else:
                 spec = finder.find_spec(module_name)
@@ -223,29 +217,26 @@ def load_plugins(plugin_spec: PluginSpec):
                 f'Error while importing module {module_name!r}\n{traceback.format_exc(limit=-1)}',
             )
             continue
-        regular_classes.update(
-            get_regular_classes(
-                module, module_name, suffix))
+        regular_classes.update(get_regular_classes(module, module_name, suffix))
 
     # Compat: old plugin system using __init__.py
     # Note: plugins imported this way do not show up in directories()
     # nor are considered part of the yt_dlp_plugins namespace package
     if 'default' in plugin_dirs.value:
         with contextlib.suppress(FileNotFoundError):
-            spec = importlib.util.spec_from_file_location(name, Path(
-                get_executable_path(), COMPAT_PACKAGE_NAME, name, '__init__.py'), )
+            spec = importlib.util.spec_from_file_location(
+                name,
+                Path(get_executable_path(), COMPAT_PACKAGE_NAME, name, '__init__.py'),
+            )
             plugins = importlib.util.module_from_spec(spec)
             sys.modules[spec.name] = plugins
             spec.loader.exec_module(plugins)
-            regular_classes.update(
-                get_regular_classes(
-                    plugins, spec.name, suffix))
+            regular_classes.update(get_regular_classes(plugins, spec.name, suffix))
 
     # Add the classes into the global plugin lookup for that type
     plugin_spec.plugin_destination.value = regular_classes
     # We want to prepend to the main lookup for that type
-    plugin_spec.destination.value = merge_dicts(
-        regular_classes, plugin_spec.destination.value)
+    plugin_spec.destination.value = merge_dicts(regular_classes, plugin_spec.destination.value)
 
     return regular_classes
 
@@ -257,9 +248,7 @@ def load_all_plugins():
 
 
 def register_plugin_spec(plugin_spec: PluginSpec):
-    # If the plugin spec for a module is already registered, it will not be
-    # added again
+    # If the plugin spec for a module is already registered, it will not be added again
     if plugin_spec.module_name not in plugin_specs.value:
         plugin_specs.value[plugin_spec.module_name] = plugin_spec
-        sys.meta_path.insert(0, PluginFinder(
-            f'{PACKAGE_NAME}.{plugin_spec.module_name}'))
+        sys.meta_path.insert(0, PluginFinder(f'{PACKAGE_NAME}.{plugin_spec.module_name}'))

@@ -61,25 +61,17 @@ class BeegIE(InfoExtractor):
         fc_facts = video.get('fc_facts')
         first_fact = {}
         for fact in fc_facts:
-            if not first_fact or try_get(
-                    fact, lambda x: x['id'] < first_fact['id']):
+            if not first_fact or try_get(fact, lambda x: x['id'] < first_fact['id']):
                 first_fact = fact
 
-        resources = traverse_obj(
-            video, ('file', 'hls_resources')) or first_fact.get('hls_resources')
+        resources = traverse_obj(video, ('file', 'hls_resources')) or first_fact.get('hls_resources')
 
         formats = []
         for format_id, video_uri in resources.items():
             if not video_uri:
                 continue
-            height = int_or_none(
-                self._search_regex(
-                    r'fl_cdn_(\d+)',
-                    format_id,
-                    'height',
-                    default=None))
-            current_formats = self._extract_m3u8_formats(
-                f'https://video.beeg.com/{video_uri}', video_id, ext='mp4', m3u8_id=str(height))
+            height = int_or_none(self._search_regex(r'fl_cdn_(\d+)', format_id, 'height', default=None))
+            current_formats = self._extract_m3u8_formats(f'https://video.beeg.com/{video_uri}', video_id, ext='mp4', m3u8_id=str(height))
             for f in current_formats:
                 f['height'] = height
             formats.extend(current_formats)

@@ -35,9 +35,7 @@ class VeoIE(InfoExtractor):
             f'https://app.veo.co/api/app/matches/{video_id}', video_id)
 
         video_data = self._download_json(
-            f'https://app.veo.co/api/app/matches/{video_id}/videos',
-            video_id,
-            'Downloading video data')
+            f'https://app.veo.co/api/app/matches/{video_id}/videos', video_id, 'Downloading video data')
 
         formats = []
         for fmt in video_data:

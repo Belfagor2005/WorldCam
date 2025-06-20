@@ -15,13 +15,9 @@ from ..utils.traversal import traverse_obj
 def is_dst(date):
     last_march = dt.datetime(date.year, 3, 31)
     last_october = dt.datetime(date.year, 10, 31)
-    last_sunday_march = last_march - \
-        dt.timedelta(days=last_march.isoweekday() % 7)
-    last_sunday_october = last_october - \
-        dt.timedelta(days=last_october.isoweekday() % 7)
-    return last_sunday_march.replace(
-        hour=2) <= date <= last_sunday_october.replace(
-        hour=3)
+    last_sunday_march = last_march - dt.timedelta(days=last_march.isoweekday() % 7)
+    last_sunday_october = last_october - dt.timedelta(days=last_october.isoweekday() % 7)
+    return last_sunday_march.replace(hour=2) <= date <= last_sunday_october.replace(hour=3)
 
 
 def rfc3339_to_atende(date):
@@ -174,8 +170,7 @@ class SejmIE(InfoExtractor):
                 file = update_url_query(file, {'startTime': start_time})
                 if stop_time is not None:
                     file = update_url_query(file, {'stopTime': stop_time})
-                stream_id = self._search_regex(
-                    r'/o2/sejm/([^/]+)/[^./]+\.livx', file, 'stream id')
+                stream_id = self._search_regex(r'/o2/sejm/([^/]+)/[^./]+\.livx', file, 'stream id')
             common_info = {
                 'url': file,
                 'duration': duration,
@@ -203,19 +198,13 @@ class SejmIE(InfoExtractor):
             if camera_file.get('flv'):
                 add_entry(camera_file['flv'])
             elif camera_file.get('mp4'):
-                # this is only a thing in 7th term. no streams before, and
-                # starting 8th it's redcdn livx
+                # this is only a thing in 7th term. no streams before, and starting 8th it's redcdn livx
                 add_entry(camera_file['mp4'], legacy_file=True)
             else:
                 self.report_warning('Unknown camera stream type found')
 
         if params.get('mig'):
-            add_entry(
-                self._search_regex(
-                    r"var sliUrl\s*=\s*'([^']+)'",
-                    frame,
-                    'sign language interpreter url',
-                    fatal=False))
+            add_entry(self._search_regex(r"var sliUrl\s*=\s*'([^']+)'", frame, 'sign language interpreter url', fatal=False))
 
         return {
             '_type': 'playlist',

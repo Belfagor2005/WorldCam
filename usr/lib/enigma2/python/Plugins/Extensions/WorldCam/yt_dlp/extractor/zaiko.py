@@ -21,9 +21,7 @@ class ZaikoBaseIE(InfoExtractor):
         if 'zaiko.io/login' in final_url:
             self.raise_login_required()
         elif '/_buy/' in final_url:
-            raise ExtractorError(
-                'Your account does not have tickets to this event',
-                expected=True)
+            raise ExtractorError('Your account does not have tickets to this event', expected=True)
         return webpage
 
     def _parse_vue_element_attr(self, name, string, video_id):
@@ -62,16 +60,13 @@ class ZaikoIE(ZaikoBaseIE):
         video_id = self._match_id(url)
 
         webpage = self._download_real_webpage(url, video_id)
-        stream_meta = self._parse_vue_element_attr(
-            'stream-page', webpage, video_id)
+        stream_meta = self._parse_vue_element_attr('stream-page', webpage, video_id)
 
         player_page = self._download_webpage(
             stream_meta['stream-access']['video_source'], video_id,
             'Downloading player page', headers={'referer': 'https://zaiko.io/'})
-        player_meta = self._parse_vue_element_attr(
-            'player', player_page, video_id)
-        initial_event_info = traverse_obj(
-            player_meta, ('initial_event_info', {dict})) or {}
+        player_meta = self._parse_vue_element_attr('player', player_page, video_id)
+        initial_event_info = traverse_obj(player_meta, ('initial_event_info', {dict})) or {}
 
         status = traverse_obj(initial_event_info, ('status', {str}))
         live_status, msg, expected = {
@@ -89,13 +84,10 @@ class ZaikoIE(ZaikoBaseIE):
 
         if traverse_obj(initial_event_info, ('is_jwt_protected', {bool})):
             stream_url = self._download_json(
-                initial_event_info['jwt_token_url'],
-                video_id,
-                'Downloading JWT-protected stream URL',
+                initial_event_info['jwt_token_url'], video_id, 'Downloading JWT-protected stream URL',
                 'Failed to download JWT-protected stream URL')['playback_url']
         else:
-            stream_url = traverse_obj(
-                initial_event_info, ('endpoint', {url_or_none}))
+            stream_url = traverse_obj(initial_event_info, ('endpoint', {url_or_none}))
 
         formats = self._extract_m3u8_formats(
             stream_url, video_id, live=True, fatal=False) if stream_url else []
@@ -103,16 +95,9 @@ class ZaikoIE(ZaikoBaseIE):
             self.raise_no_formats(msg, expected=expected)
 
         thumbnail_urls = [
-            traverse_obj(
-                initial_event_info,
-                ('poster_url',
-                 {url_or_none})),
-            self._og_search_thumbnail(
-                self._download_webpage(
-                    f'https://zaiko.io/event/{video_id}',
-                    video_id,
-                    'Downloading event page',
-                    fatal=False) or ''),
+            traverse_obj(initial_event_info, ('poster_url', {url_or_none})),
+            self._og_search_thumbnail(self._download_webpage(
+                f'https://zaiko.io/event/{video_id}', video_id, 'Downloading event page', fatal=False) or ''),
         ]
 
         return {
@@ -146,8 +131,8 @@ class ZaikoETicketIE(ZaikoBaseIE):
 
     def _real_extract(self, url):
         ticket_id = self._match_id(url)
-        ticket_id = try_call(lambda: base64.urlsafe_b64decode(
-            ticket_id[1:]).decode().replace('|', '-')) or ticket_id
+        ticket_id = try_call(
+            lambda: base64.urlsafe_b64decode(ticket_id[1:]).decode().replace('|', '-')) or ticket_id
 
         webpage = self._download_real_webpage(url, ticket_id)
         eticket = self._parse_vue_element_attr('eticket', webpage, ticket_id)

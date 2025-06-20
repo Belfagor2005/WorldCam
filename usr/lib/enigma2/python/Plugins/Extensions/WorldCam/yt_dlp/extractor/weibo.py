@@ -23,10 +23,7 @@ class WeiboBaseIE(InfoExtractor):
     def _update_visitor_cookies(self, visitor_url, video_id):
         headers = {'Referer': visitor_url}
         chrome_ver = self._search_regex(
-            r'Chrome/(\d+)',
-            self.get_param('http_headers')['User-Agent'],
-            'user agent version',
-            default='90')
+            r'Chrome/(\d+)', self.get_param('http_headers')['User-Agent'], 'user agent version', default='90')
         visitor_data = self._download_json(
             'https://passport.weibo.com/visitor/genvisitor', video_id,
             note='Generating first-visit guest request',
@@ -55,22 +52,12 @@ class WeiboBaseIE(InfoExtractor):
                 '_rand': random.random(),
             })
 
-    def _weibo_download_json(
-            self,
-            url,
-            video_id,
-            *args,
-            fatal=True,
-            note='Downloading JSON metadata',
-            **kwargs):
-        # XXX: Always fatal; _download_webpage_handle only returns False (not a
-        # tuple) on error
-        webpage, urlh = self._download_webpage_handle(
-            url, video_id, *args, fatal=fatal, note=note, **kwargs)
+    def _weibo_download_json(self, url, video_id, *args, fatal=True, note='Downloading JSON metadata', **kwargs):
+        # XXX: Always fatal; _download_webpage_handle only returns False (not a tuple) on error
+        webpage, urlh = self._download_webpage_handle(url, video_id, *args, fatal=fatal, note=note, **kwargs)
         if urllib.parse.urlparse(urlh.url).netloc == 'passport.weibo.com':
             self._update_visitor_cookies(urlh.url, video_id)
-            webpage = self._download_webpage(
-                url, video_id, *args, fatal=fatal, note=note, **kwargs)
+            webpage = self._download_webpage(url, video_id, *args, fatal=fatal, note=note, **kwargs)
         return self._parse_json(webpage, video_id, fatal=fatal)
 
     def _extract_formats(self, video_info):
@@ -97,26 +84,21 @@ class WeiboBaseIE(InfoExtractor):
                     format_id, resolution = self._search_regex(
                         r'label=(\w+)&template=(\d+x\d+)', url, 'format info',
                         group=(1, 2), default=(None, None))
-                    formats.append({'url': url,
-                                    'format_id': format_id,
-                                    **parse_resolution(resolution),
-                                    **traverse_obj(media_info,
-                                                   ('video_details',
-                                                    lambda _,
-                                                    v: v['label'].startswith(format_id),
-                                                       {'size': ('size',
-                                                                 {int_or_none}),
-                                                        'tbr': ('bitrate',
-                                                                {int_or_none}),
-                                                        },
-                                                    ),
-                                                   get_all=False),
-                                    })
+                    formats.append({
+                        'url': url,
+                        'format_id': format_id,
+                        **parse_resolution(resolution),
+                        **traverse_obj(media_info, (
+                            'video_details', lambda _, v: v['label'].startswith(format_id), {
+                                'size': ('size', {int_or_none}),
+                                'tbr': ('bitrate', {int_or_none}),
+                            },
+                        ), get_all=False),
+                    })
         return formats
 
     def _parse_video_info(self, video_info):
-        video_id = traverse_obj(
-            video_info, (('id', 'id_str', 'mid'), {str_or_none}, any))
+        video_id = traverse_obj(video_info, (('id', 'id_str', 'mid'), {str_or_none}, any))
         return {
             'id': video_id,
             'extractor_key': WeiboIE.ie_key(),
@@ -207,8 +189,7 @@ class WeiboIE(WeiboBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        meta = self._weibo_download_json(
-            f'https://weibo.com/ajax/statuses/show?id={video_id}', video_id)
+        meta = self._weibo_download_json(f'https://weibo.com/ajax/statuses/show?id={video_id}', video_id)
         mix_media_info = traverse_obj(meta, ('mix_media_info', 'items', ...))
         if not mix_media_info:
             return self._parse_video_info(meta)
@@ -216,10 +197,7 @@ class WeiboIE(WeiboBaseIE):
         return self.playlist_result(self._entries(mix_media_info), video_id)
 
     def _entries(self, mix_media_info):
-        for media_info in traverse_obj(
-                mix_media_info,
-                lambda _,
-                v: v['type'] != 'pic'):
+        for media_info in traverse_obj(mix_media_info, lambda _, v: v['type'] != 'pic'):
             yield self._parse_video_info(traverse_obj(media_info, {
                 'id': ('data', 'object_id'),
                 'page_info': {'media_info': ('data', 'media_info', {dict})},
@@ -254,13 +232,11 @@ class WeiboVideoIE(WeiboBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        post_data = f'data={{"Component_Play_Playinfo":{{"oid":"{video_id}"}}}}'.encode(
-        )
+        post_data = f'data={{"Component_Play_Playinfo":{{"oid":"{video_id}"}}}}'.encode()
         video_info = self._weibo_download_json(
             f'https://weibo.com/tv/api/component?page=%2Ftv%2Fshow%2F{video_id.replace(":", "%3A")}',
             video_id, headers={'Referer': url}, data=post_data)['data']['Component_Play_Playinfo']
-        return self.url_result(
-            f'https://weibo.com/0/{video_info["mid"]}', WeiboIE)
+        return self.url_result(f'https://weibo.com/0/{video_info["mid"]}', WeiboIE)
 
 
 class WeiboUserIE(WeiboBaseIE):
@@ -285,8 +261,7 @@ class WeiboUserIE(WeiboBaseIE):
     def _entries(self, uid, first_page):
         cursor = 0
         for page in itertools.count(1):
-            response = first_page if page == 1 else self._fetch_page(
-                uid, cursor, page)
+            response = first_page if page == 1 else self._fetch_page(uid, cursor, page)
             for video_info in traverse_obj(response, ('list', ..., {dict})):
                 yield self._parse_video_info(video_info)
             cursor = response.get('next_cursor')
@@ -296,17 +271,11 @@ class WeiboUserIE(WeiboBaseIE):
     def _real_extract(self, url):
         uid = self._match_id(url)
         first_page = self._fetch_page(uid)
-        uploader = traverse_obj(
-            first_page, ('list', ..., 'user', 'screen_name', {str}), get_all=False)
+        uploader = traverse_obj(first_page, ('list', ..., 'user', 'screen_name', {str}), get_all=False)
         metainfo = {
             'title': f'{uploader}的视频',
             'description': f'{uploader}的全部视频',
             'uploader': uploader,
         } if uploader else {}
 
-        return self.playlist_result(
-            self._entries(
-                uid,
-                first_page),
-            uid,
-            **metainfo)
+        return self.playlist_result(self._entries(uid, first_page), uid, **metainfo)

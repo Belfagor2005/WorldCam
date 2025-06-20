@@ -119,9 +119,7 @@ class LinkedInIE(LinkedInBaseIE):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        video_attrs = extract_attributes(
-            self._search_regex(
-                r'(<video[^>]+>)', webpage, 'video'))
+        video_attrs = extract_attributes(self._search_regex(r'(<video[^>]+>)', webpage, 'video'))
         sources = self._parse_json(video_attrs['data-sources'], video_id)
         formats = [{
             'url': source['src'],
@@ -136,29 +134,14 @@ class LinkedInIE(LinkedInBaseIE):
         return {
             'id': video_id,
             'formats': formats,
-            'title': self._og_search_title(
-                webpage,
-                default=None) or self._html_extract_title(webpage),
-            'like_count': int_or_none(
-                self._search_regex(
-                    r'\bdata-num-reactions="(\d+)"',
-                    webpage,
-                    'reactions',
-                    default=None)),
+            'title': self._og_search_title(webpage, default=None) or self._html_extract_title(webpage),
+            'like_count': int_or_none(self._search_regex(
+                r'\bdata-num-reactions="(\d+)"', webpage, 'reactions', default=None)),
             'uploader': traverse_obj(
-                self._yield_json_ld(
-                    webpage,
-                    video_id),
-                (lambda _,
-                 v: v['@type'] == 'SocialMediaPosting',
-                    'author',
-                    'name',
-                 {str}),
-                get_all=False),
+                self._yield_json_ld(webpage, video_id),
+                (lambda _, v: v['@type'] == 'SocialMediaPosting', 'author', 'name', {str}), get_all=False),
             'thumbnail': self._og_search_thumbnail(webpage),
-            'description': self._og_search_description(
-                webpage,
-                default=None),
+            'description': self._og_search_description(webpage, default=None),
             'subtitles': subtitles,
         }
 
@@ -180,12 +163,9 @@ class LinkedInLearningIE(LinkedInLearningBaseIE):
 
     def json2srt(self, transcript_lines, duration=None):
         srt_data = ''
-        for line, (line_dict, next_dict) in enumerate(
-                itertools.zip_longest(transcript_lines, transcript_lines[1:])):
-            start_time, caption = line_dict['transcriptStartAt'] / \
-                1000, line_dict['caption']
-            end_time = next_dict['transcriptStartAt'] / \
-                1000 if next_dict else duration or start_time + 1
+        for line, (line_dict, next_dict) in enumerate(itertools.zip_longest(transcript_lines, transcript_lines[1:])):
+            start_time, caption = line_dict['transcriptStartAt'] / 1000, line_dict['caption']
+            end_time = next_dict['transcriptStartAt'] / 1000 if next_dict else duration or start_time + 1
             srt_data += (
                 f'{line + 1}\n'
                 f'{srt_subtitles_timecode(start_time)} --> {srt_subtitles_timecode(end_time)}\n'
@@ -198,10 +178,7 @@ class LinkedInLearningIE(LinkedInLearningBaseIE):
         formats = []
         for width, height in ((640, 360), (960, 540), (1280, 720)):
             video_data = self._call_api(
-                course_slug,
-                'selectedVideo',
-                video_slug,
-                height)['selectedVideo']
+                course_slug, 'selectedVideo', video_slug, height)['selectedVideo']
 
             video_url_data = video_data.get('url') or {}
             progressive_url = video_url_data.get('progressiveUrl')
@@ -235,10 +212,7 @@ class LinkedInLearningIE(LinkedInLearningBaseIE):
 
         subtitles = {}
         duration = int_or_none(video_data.get('durationInSeconds'))
-        transcript_lines = try_get(
-            video_data,
-            lambda x: x['transcript']['lines'],
-            expected_type=list)
+        transcript_lines = try_get(video_data, lambda x: x['transcript']['lines'], expected_type=list)
         if transcript_lines:
             subtitles['en'] = [{
                 'ext': 'srt',
@@ -275,16 +249,14 @@ class LinkedInLearningCourseIE(LinkedInLearningBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if LinkedInLearningIE.suitable(
-            url) else super().suitable(url)
+        return False if LinkedInLearningIE.suitable(url) else super().suitable(url)
 
     def _real_extract(self, url):
         course_slug = self._match_id(url)
         course_data = self._call_api(course_slug, 'chapters,description,title')
 
         entries = []
-        for chapter_number, chapter in enumerate(
-                course_data.get('chapters', []), 1):
+        for chapter_number, chapter in enumerate(course_data.get('chapters', []), 1):
             chapter_title = chapter.get('title')
             chapter_id = self._get_urn_id(chapter)
             for video in chapter.get('videos', []):
@@ -349,16 +321,10 @@ class LinkedInEventsIE(LinkedInBaseIE):
         event_id = self._match_id(url)
         webpage = self._download_webpage(url, event_id)
 
-        base_data = traverse_obj(
-            webpage, ({
-                find_elements(
-                    tag='code', attr='style', value='display: none')}, ..., {
-                json.loads}, 'included', ...))
-        meta_data = traverse_obj(
-            base_data,
-            (lambda _,
-             v: v['$type'] == 'com.linkedin.voyager.dash.events.ProfessionalEvent',
-                any)) or {}
+        base_data = traverse_obj(webpage, (
+            {find_elements(tag='code', attr='style', value='display: none')}, ..., {json.loads}, 'included', ...))
+        meta_data = traverse_obj(base_data, (
+            lambda _, v: v['$type'] == 'com.linkedin.voyager.dash.events.ProfessionalEvent', any)) or {}
 
         live_status = {
             'PAST': 'was_live',
@@ -368,8 +334,7 @@ class LinkedInEventsIE(LinkedInBaseIE):
 
         if live_status == 'is_upcoming':
             player_data = {}
-            if event_time := traverse_obj(
-                    meta_data, ('displayEventTime', {str})):
+            if event_time := traverse_obj(meta_data, ('displayEventTime', {str})):
                 message = f'This live event is scheduled for {event_time}'
             else:
                 message = 'This live event has not yet started'
@@ -381,10 +346,8 @@ class LinkedInEventsIE(LinkedInBaseIE):
                 any, {require('video player data')}))
 
         formats, subtitles = [], {}
-        for prog_fmts in traverse_obj(
-                player_data, ('progressiveStreams', ..., {dict})):
-            for fmt_url in traverse_obj(
-                    prog_fmts, ('streamingLocations', ..., 'url', {url_or_none})):
+        for prog_fmts in traverse_obj(player_data, ('progressiveStreams', ..., {dict})):
+            for fmt_url in traverse_obj(prog_fmts, ('streamingLocations', ..., 'url', {url_or_none})):
                 formats.append({
                     'url': fmt_url,
                     **traverse_obj(prog_fmts, {
@@ -396,16 +359,9 @@ class LinkedInEventsIE(LinkedInBaseIE):
                     }),
                 })
 
-        for m3u8_url in traverse_obj(
-            player_data,
-            ('adaptiveStreams',
-             lambda _,
-             v: v['protocol'] == 'HLS',
-                'masterPlaylists',
-                ...,
-                'url',
-                {url_or_none},
-             )):
+        for m3u8_url in traverse_obj(player_data, (
+            'adaptiveStreams', lambda _, v: v['protocol'] == 'HLS', 'masterPlaylists', ..., 'url', {url_or_none},
+        )):
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 m3u8_url, event_id, 'mp4', m3u8_id='hls', fatal=False)
             formats.extend(fmts)
@@ -425,8 +381,7 @@ class LinkedInEventsIE(LinkedInBaseIE):
             }),
             **traverse_obj(player_data, {
                 'duration': ('duration', {int_or_none(scale=1000)}),
-                # liveStreamCreatedAt is only available when the stream is_live
-                # or was_live
+                # liveStreamCreatedAt is only available when the stream is_live or was_live
                 'release_timestamp': ('liveStreamCreatedAt', {int_or_none(scale=1000)}),
             }),
         }

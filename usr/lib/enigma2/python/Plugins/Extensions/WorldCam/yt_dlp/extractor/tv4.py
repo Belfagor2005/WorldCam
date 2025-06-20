@@ -98,9 +98,7 @@ class TV4IE(InfoExtractor):
         }), ('metadata', {dict})) or {}
 
         manifest_url = self._call_api(
-            'play',
-            video_id,
-            headers=self.geo_verification_headers())['playbackItem']['manifestUrl']
+            'play', video_id, headers=self.geo_verification_headers())['playbackItem']['manifestUrl']
 
         formats, subtitles = [], {}
 

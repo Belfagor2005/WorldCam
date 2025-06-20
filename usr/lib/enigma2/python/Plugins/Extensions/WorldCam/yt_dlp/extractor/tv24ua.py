@@ -52,20 +52,11 @@ class TV24UAVideoIE(InfoExtractor):
 
         formats = []
         subtitles = {}
-        for j in re.findall(
-            r'vPlayConfig\.sources\s*=\s*(?P<json>\[{\s*(?s:.+?)\s*}])',
-                webpage):
-            sources = self._parse_json(
-                j,
-                video_id,
-                fatal=False,
-                ignore_extra=True,
-                transform_source=js_to_json,
-                errnote='') or []
+        for j in re.findall(r'vPlayConfig\.sources\s*=\s*(?P<json>\[{\s*(?s:.+?)\s*}])', webpage):
+            sources = self._parse_json(j, video_id, fatal=False, ignore_extra=True, transform_source=js_to_json, errnote='') or []
             for source in sources:
                 if mimetype2ext(traverse_obj(source, 'type')) == 'm3u8':
-                    f, s = self._extract_m3u8_formats_and_subtitles(
-                        source['src'], video_id)
+                    f, s = self._extract_m3u8_formats_and_subtitles(source['src'], video_id)
                     formats.extend(f)
                     self._merge_subtitles(subtitles, s)
                 else:

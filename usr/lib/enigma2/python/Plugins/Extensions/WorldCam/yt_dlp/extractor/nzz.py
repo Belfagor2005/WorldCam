@@ -20,15 +20,8 @@ class NZZIE(InfoExtractor):
     }]
 
     def _entries(self, webpage, page_id):
-        for script in re.findall(
-            r'(?s)<script[^>]* data-hid="jw-video-jw[^>]+>(.+?)</script>',
-                webpage):
-            settings = self._search_json(
-                r'var\s+settings\s*=[^{]*',
-                script,
-                'settings',
-                page_id,
-                fatal=False)
+        for script in re.findall(r'(?s)<script[^>]* data-hid="jw-video-jw[^>]+>(.+?)</script>', webpage):
+            settings = self._search_json(r'var\s+settings\s*=[^{]*', script, 'settings', page_id, fatal=False)
             if entry := self._parse_jwplayer_data(settings, page_id):
                 yield entry
 

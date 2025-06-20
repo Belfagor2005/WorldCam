@@ -46,13 +46,9 @@ class HiDiveIE(InfoExtractor):
         })
         login_webpage = self._download_webpage(
             self._LOGIN_URL, None, 'Logging in', data=urlencode_postdata(data))
-        # If the user has multiple profiles on their account, select one. For
-        # now pick the first profile.
+        # If the user has multiple profiles on their account, select one. For now pick the first profile.
         profile_id = self._search_regex(
-            r'<button [^>]+?data-profile-id="(\w+)"',
-            login_webpage,
-            'profile id',
-            default=None)
+            r'<button [^>]+?data-profile-id="(\w+)"', login_webpage, 'profile id', default=None)
         if profile_id is None:
             return  # If only one profile, Hidive auto-selects it
         self._request_webpage(
@@ -76,8 +72,7 @@ class HiDiveIE(InfoExtractor):
             data=urlencode_postdata(data), **kwargs) or {}
 
     def _real_extract(self, url):
-        video_id, title, key = self._match_valid_url(
-            url).group('id', 'title', 'key')
+        video_id, title, key = self._match_valid_url(url).group('id', 'title', 'key')
         settings = self._call_api(video_id, title, key)
 
         restriction = settings.get('restrictionReason')
@@ -90,19 +85,11 @@ class HiDiveIE(InfoExtractor):
         formats, parsed_urls = [], {None}
         for rendition_id, rendition in settings['renditions'].items():
             audio, version, extra = rendition_id.split('_')
-            m3u8_url = url_or_none(
-                try_get(
-                    rendition,
-                    lambda x: x['bitrates']['hls']))
+            m3u8_url = url_or_none(try_get(rendition, lambda x: x['bitrates']['hls']))
             if m3u8_url not in parsed_urls:
                 parsed_urls.add(m3u8_url)
                 frmt = self._extract_m3u8_formats(
-                    m3u8_url,
-                    video_id,
-                    'mp4',
-                    entry_protocol='m3u8_native',
-                    m3u8_id=rendition_id,
-                    fatal=False)
+                    m3u8_url, video_id, 'mp4', entry_protocol='m3u8_native', m3u8_id=rendition_id, fatal=False)
                 for f in frmt:
                     f['language'] = audio
                     f['format_note'] = f'{version}, {extra}'
@@ -113,9 +100,7 @@ class HiDiveIE(InfoExtractor):
             audio, version, extra = rendition_id.split('_')
             for cc_file in rendition.get('ccFiles') or []:
                 cc_url = url_or_none(try_get(cc_file, lambda x: x[2]))
-                cc_lang = try_get(
-                    cc_file, (lambda x: x[1].replace(
-                        ' ', '-').lower(), lambda x: x[0]), str)
+                cc_lang = try_get(cc_file, (lambda x: x[1].replace(' ', '-').lower(), lambda x: x[0]), str)
                 if cc_url not in parsed_urls and cc_lang:
                     parsed_urls.add(cc_url)
                     subtitles.setdefault(cc_lang, []).append({'url': cc_url})
@@ -127,17 +112,8 @@ class HiDiveIE(InfoExtractor):
             'formats': formats,
             'series': title,
             'season_number': int_or_none(
-                self._search_regex(
-                    r's(\d+)',
-                    key,
-                    'season number',
-                    default=None)),
+                self._search_regex(r's(\d+)', key, 'season number', default=None)),
             'episode_number': int_or_none(
-                self._search_regex(
-                    r'e(\d+)',
-                    key,
-                    'episode number',
-                    default=None)),
-            'http_headers': {
-                'Referer': url},
+                self._search_regex(r'e(\d+)', key, 'episode number', default=None)),
+            'http_headers': {'Referer': url},
         }

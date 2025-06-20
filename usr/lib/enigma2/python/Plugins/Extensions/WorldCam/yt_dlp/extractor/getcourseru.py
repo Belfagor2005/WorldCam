@@ -177,22 +177,12 @@ class GetCourseRuIE(InfoExtractor):
                 expected=True)
 
         playlist_id = self._search_regex(
-            r'window\.(?:lessonId|gcsObjectId)\s*=\s*(\d+)',
-            webpage,
-            'playlist id',
-            default=display_id)
-        title = self._og_search_title(
-            webpage, default=None) or self._html_extract_title(webpage)
+            r'window\.(?:lessonId|gcsObjectId)\s*=\s*(\d+)', webpage, 'playlist id', default=display_id)
+        title = self._og_search_title(webpage, default=None) or self._html_extract_title(webpage)
 
         return self.playlist_from_matches(
-            re.findall(
-                GetCourseRuPlayerIE._EMBED_REGEX[0],
-                webpage),
-            playlist_id,
-            title,
-            display_id=display_id,
-            ie=GetCourseRuPlayerIE,
-            video_kwargs={
+            re.findall(GetCourseRuPlayerIE._EMBED_REGEX[0], webpage),
+            playlist_id, title, display_id=display_id, ie=GetCourseRuPlayerIE, video_kwargs={
                 'url_transparent': True,
                 'title': title,
             })

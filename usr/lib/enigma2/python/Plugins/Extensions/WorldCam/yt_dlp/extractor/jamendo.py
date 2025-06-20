@@ -51,14 +51,9 @@ class JamendoIE(InfoExtractor):
         path = f'/api/{resource}s'
         rand = str(random.random())
         return self._download_json(
-            'https://www.jamendo.com' +
-            path,
-            resource_id,
-            fatal=fatal,
-            query={
+            'https://www.jamendo.com' + path, resource_id, fatal=fatal, query={
                 'id[]': resource_id,
-            },
-            headers={
+            }, headers={
                 'X-Jam-Call': f'${hashlib.sha1((path + rand).encode()).hexdigest()}*{rand}~',
             })[0]
 
@@ -101,11 +96,8 @@ class JamendoIE(InfoExtractor):
                     continue
                 urls.append(cover_url)
                 urlh = self._request_webpage(
-                    HEADRequest(cover_url),
-                    track_id,
-                    'Checking thumbnail extension',
-                    errnote=False,
-                    fatal=False)
+                    HEADRequest(cover_url), track_id, 'Checking thumbnail extension',
+                    errnote=False, fatal=False)
                 if not urlh:
                     continue
                 size = int_or_none(cover_id.lstrip('size'))

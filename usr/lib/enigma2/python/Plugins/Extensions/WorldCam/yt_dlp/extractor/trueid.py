@@ -82,30 +82,18 @@ class TrueIDIE(InfoExtractor):
         domain, video_id = self._match_valid_url(url).group('domain', 'id')
         webpage = self._download_webpage(url, video_id)
         initial_data = traverse_obj(
-            self._search_nextjs_data(
-                webpage,
-                video_id,
-                fatal=False),
-            ('props',
-             'pageProps',
-             'initialContentData'),
-            default={})
+            self._search_nextjs_data(webpage, video_id, fatal=False), ('props', 'pageProps', 'initialContentData'), default={})
 
         try:
             stream_data = self._download_json(
-                f'https://{domain}/cmsPostProxy/contents/video/{video_id}/streamer?os=android',
-                video_id,
-                data=b'')['data']
+                f'https://{domain}/cmsPostProxy/contents/video/{video_id}/streamer?os=android', video_id, data=b'')['data']
         except ExtractorError as e:
             if not isinstance(e.cause, HTTPError):
                 raise e
-            errmsg = self._parse_json(
-                e.cause.response.read().decode(),
-                video_id)['meta']['message']
+            errmsg = self._parse_json(e.cause.response.read().decode(), video_id)['meta']['message']
             if 'country' in errmsg:
                 self.raise_geo_restricted(
-                    errmsg, [
-                        initial_data['display_country']] if initial_data.get('display_country') else None, True)
+                    errmsg, [initial_data['display_country']] if initial_data.get('display_country') else None, True)
             else:
                 self.raise_no_formats(errmsg, video_id=video_id)
 
@@ -113,11 +101,9 @@ class TrueIDIE(InfoExtractor):
             stream_url = stream_data['stream']['stream_url']
             stream_ext = determine_ext(stream_url)
             if stream_ext == 'm3u8':
-                formats, subs = self._extract_m3u8_formats_and_subtitles(
-                    stream_url, video_id, 'mp4')
+                formats, subs = self._extract_m3u8_formats_and_subtitles(stream_url, video_id, 'mp4')
             elif stream_ext == 'mpd':
-                formats, subs = self._extract_mpd_formats_and_subtitles(
-                    stream_url, video_id)
+                formats, subs = self._extract_mpd_formats_and_subtitles(stream_url, video_id)
             else:
                 formats = [{'url': stream_url}]
 

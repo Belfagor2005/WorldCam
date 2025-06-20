@@ -10,19 +10,23 @@ from ..utils import (
 class TassIE(InfoExtractor):
     _WORKING = False
     _VALID_URL = r'https?://(?:tass\.ru|itar-tass\.com)/[^/]+/(?P<id>\d+)'
-    _TESTS = [{'url': 'http://tass.ru/obschestvo/1586870',
-               'md5': '3b4cdd011bc59174596b6145cda474a4',
-               'info_dict': {'id': '1586870',
-                             'ext': 'mp4',
-                             'title': 'Посетителям московского зоопарка показали красную панду',
-                             'description': 'Приехавшую из Дублина Зейну можно увидеть в павильоне "Кошки тропиков"',
-                             'thumbnail': r're:^https?://.*\.jpg$',
-                             },
-               },
-              {'url': 'http://itar-tass.com/obschestvo/1600009',
-               'only_matching': True,
-               },
-              ]
+    _TESTS = [
+        {
+            'url': 'http://tass.ru/obschestvo/1586870',
+            'md5': '3b4cdd011bc59174596b6145cda474a4',
+            'info_dict': {
+                'id': '1586870',
+                'ext': 'mp4',
+                'title': 'Посетителям московского зоопарка показали красную панду',
+                'description': 'Приехавшую из Дублина Зейну можно увидеть в павильоне "Кошки тропиков"',
+                'thumbnail': r're:^https?://.*\.jpg$',
+            },
+        },
+        {
+            'url': 'http://itar-tass.com/obschestvo/1600009',
+            'only_matching': True,
+        },
+    ]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -37,8 +41,7 @@ class TassIE(InfoExtractor):
         formats = []
         for source in sources:
             video_url = source.get('file')
-            if not video_url or not video_url.startswith(
-                    'http') or not video_url.endswith('.mp4'):
+            if not video_url or not video_url.startswith('http') or not video_url.endswith('.mp4'):
                 continue
             label = source.get('label')
             formats.append({

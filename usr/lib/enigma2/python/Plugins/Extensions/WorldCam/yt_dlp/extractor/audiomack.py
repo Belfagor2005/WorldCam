@@ -47,11 +47,11 @@ class AudiomackIE(InfoExtractor):
         # the proper song title.  Real metadata is in the api response
         album_url_tag = self._match_id(url).replace('/song/', '/')
 
-        # Request the extended version of the api for extra fields like artist
-        # and title
+        # Request the extended version of the api for extra fields like artist and title
         api_response = self._download_json(
-            'http://www.audiomack.com/api/music/url/song/%s?extended=1&_=%d' %
-            (album_url_tag, time.time()), album_url_tag)
+            'http://www.audiomack.com/api/music/url/song/%s?extended=1&_=%d' % (
+                album_url_tag, time.time()),
+            album_url_tag)
 
         # API is inconsistent with errors
         if 'url' not in api_response or not api_response['url'] or 'error' in api_response:
@@ -116,31 +116,24 @@ class AudiomackAlbumIE(InfoExtractor):
         album_url_tag = self._match_id(url).replace('/album/', '/')
         result = {'_type': 'playlist', 'entries': []}
         # There is no one endpoint for album metadata - instead it is included/repeated in each song's metadata
-        # Therefore we don't know how many songs the album has and must
-        # infi-loop until failure
+        # Therefore we don't know how many songs the album has and must infi-loop until failure
         for track_no in itertools.count():
             # Get song's metadata
             api_response = self._download_json(
-                'http://www.audiomack.com/api/music/url/album/%s/%d?extended=1&_=%d' %
-                (album_url_tag,
-                 track_no,
-                 time.time()),
-                album_url_tag,
+                'http://www.audiomack.com/api/music/url/album/%s/%d?extended=1&_=%d'
+                % (album_url_tag, track_no, time.time()), album_url_tag,
                 note=f'Querying song information ({track_no + 1})')
 
             # Total failure, only occurs when url is totally wrong
             # Won't happen in middle of valid playlist (next case)
             if 'url' not in api_response or 'error' in api_response:
-                raise ExtractorError(
-                    f'Invalid url for track {track_no} of album url {url}')
-            # URL is good but song id doesn't exist - usually means end of
-            # playlist
+                raise ExtractorError(f'Invalid url for track {track_no} of album url {url}')
+            # URL is good but song id doesn't exist - usually means end of playlist
             elif not api_response['url']:
                 break
             else:
                 # Pull out the album metadata and add to result (if it exists)
-                for resultkey, apikey in [
-                        ('id', 'album_id'), ('title', 'album_title')]:
+                for resultkey, apikey in [('id', 'album_id'), ('title', 'album_title')]:
                     if apikey in api_response and resultkey not in result:
                         result[resultkey] = str(api_response[apikey])
                 song_id = url_basename(api_response['url']).rpartition('.')[0]

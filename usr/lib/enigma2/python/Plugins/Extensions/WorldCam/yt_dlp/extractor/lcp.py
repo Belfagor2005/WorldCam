@@ -72,8 +72,7 @@ class LcpIE(InfoExtractor):
         if not play_url:
             return self.url_result(url, 'Generic')
 
-        title = self._og_search_title(
-            webpage, default=None) or self._html_search_meta(
+        title = self._og_search_title(webpage, default=None) or self._html_search_meta(
             'twitter:title', webpage, fatal=True)
         description = self._html_search_meta(
             ('description', 'twitter:description'), webpage)

@@ -76,9 +76,7 @@ class SkebIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        nuxt_data = self._search_nuxt_data(
-            self._download_webpage(
-                url, video_id), video_id)
+        nuxt_data = self._search_nuxt_data(self._download_webpage(url, video_id), video_id)
 
         parent = {
             'id': video_id,
@@ -96,8 +94,7 @@ class SkebIE(InfoExtractor):
             given_ext = traverse_obj(item, ('information', 'extension'))
             preview_ext = determine_ext(vid_url, default_ext=None)
             if not preview_ext:
-                content_disposition = parse_qs(
-                    vid_url)['response-content-disposition'][0]
+                content_disposition = parse_qs(vid_url)['response-content-disposition'][0]
                 preview_ext = self._search_regex(
                     r'filename="[^"]+\.([^\.]+?)"', content_disposition,
                     'preview file extension', fatal=False, group=1)
@@ -105,9 +102,7 @@ class SkebIE(InfoExtractor):
                 continue
             if not vid_url or not item.get('id'):
                 continue
-            width, height = traverse_obj(
-                item, ('information', 'width')), traverse_obj(
-                item, ('information', 'height'))
+            width, height = traverse_obj(item, ('information', 'width')), traverse_obj(item, ('information', 'height'))
             if width is not None and height is not None:
                 # the longest side is at most 720px for non-client viewers
                 max_size = max(width, height)
@@ -134,9 +129,7 @@ class SkebIE(InfoExtractor):
             })
 
         if not entries:
-            raise ExtractorError(
-                'No video/audio attachment found in this commission.',
-                expected=True)
+            raise ExtractorError('No video/audio attachment found in this commission.', expected=True)
         elif len(entries) == 1:
             return entries[0]
         else:

@@ -28,13 +28,7 @@ class WykopBaseIE(InfoExtractor):
         self.cache.store('wykop', 'bearer', new_token)
         return new_token
 
-    def _do_call_api(
-            self,
-            path,
-            video_id,
-            note='Downloading JSON metadata',
-            data=None,
-            headers={}):
+    def _do_call_api(self, path, video_id, note='Downloading JSON metadata', data=None, headers={}):
         if data:
             data = json.dumps({'data': data}).encode()
             headers['Content-Type'] = 'application/json'
@@ -47,12 +41,9 @@ class WykopBaseIE(InfoExtractor):
         token = self._get_token()
         for retrying in range(2):
             try:
-                return self._do_call_api(
-                    path, video_id, note, headers={
-                        'Authorization': f'Bearer {token}'})
+                return self._do_call_api(path, video_id, note, headers={'Authorization': f'Bearer {token}'})
             except ExtractorError as e:
-                if not retrying and isinstance(
-                        e.cause, HTTPError) and e.cause.status == 403:
+                if not retrying and isinstance(e.cause, HTTPError) and e.cause.status == 403:
                     token = self._get_token(True)
                     continue
                 raise
@@ -64,8 +55,7 @@ class WykopBaseIE(InfoExtractor):
             '_type': 'url_transparent',
             'display_id': data.get('slug'),
             'url': traverse_obj(data,
-                                # what gets an iframe embed
-                                ('media', 'embed', 'url'),
+                                ('media', 'embed', 'url'),  # what gets an iframe embed
                                 ('source', 'url'),  # clickable url (dig only)
                                 expected_type=url_or_none),
             'thumbnail': traverse_obj(
@@ -73,8 +63,7 @@ class WykopBaseIE(InfoExtractor):
             'uploader': author,
             'uploader_id': author,
             'uploader_url': format_field(author, None, 'https://wykop.pl/ludzie/%s'),
-            # time it got submitted
-            'timestamp': parse_iso8601(data.get('created_at'), delimiter=' '),
+            'timestamp': parse_iso8601(data.get('created_at'), delimiter=' '),  # time it got submitted
             'like_count': traverse_obj(data, ('votes', 'up'), expected_type=int),
             'dislike_count': traverse_obj(data, ('votes', 'down'), expected_type=int),
             'comment_count': traverse_obj(data, ('comments', 'count'), expected_type=int),
@@ -123,8 +112,7 @@ class WykopDigIE(WykopBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return cls._match_valid_url(
-            url) and not WykopDigCommentIE.suitable(url)
+        return cls._match_valid_url(url) and not WykopDigCommentIE.suitable(url)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -178,12 +166,8 @@ class WykopDigCommentIE(WykopBaseIE):
     }]
 
     def _real_extract(self, url):
-        dig_id, comment_id = self._search_regex(
-            self._VALID_URL, url, 'dig and comment ids', group=(
-                'dig_id', 'id'))
-        data = self._call_api(
-            f'links/{dig_id}/comments/{comment_id}',
-            comment_id)['data']
+        dig_id, comment_id = self._search_regex(self._VALID_URL, url, 'dig and comment ids', group=('dig_id', 'id'))
+        data = self._call_api(f'links/{dig_id}/comments/{comment_id}', comment_id)['data']
 
         return {
             **self._common_data_extract(data),
@@ -230,8 +214,7 @@ class WykopPostIE(WykopBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return cls._match_valid_url(
-            url) and not WykopPostCommentIE.suitable(url)
+        return cls._match_valid_url(url) and not WykopPostCommentIE.suitable(url)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -274,12 +257,8 @@ class WykopPostCommentIE(WykopBaseIE):
     }]
 
     def _real_extract(self, url):
-        post_id, comment_id = self._search_regex(
-            self._VALID_URL, url, 'post and comment ids', group=(
-                'post_id', 'id'))
-        data = self._call_api(
-            f'entries/{post_id}/comments/{comment_id}',
-            comment_id)['data']
+        post_id, comment_id = self._search_regex(self._VALID_URL, url, 'post and comment ids', group=('post_id', 'id'))
+        data = self._call_api(f'entries/{post_id}/comments/{comment_id}', comment_id)['data']
 
         return {
             **self._common_data_extract(data),

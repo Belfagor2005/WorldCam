@@ -38,8 +38,7 @@ class PGATourIE(InfoExtractor):
     def _real_extract(self, url):
         video_id, is_tourcast = self._match_valid_url(url).group('id', 'tc')
 
-        # From
-        # https://www.pgatour.com/_next/static/chunks/pages/_app-8bcf849560daf38d.js
+        # From https://www.pgatour.com/_next/static/chunks/pages/_app-8bcf849560daf38d.js
         account_id = '6116716431001' if is_tourcast else '6082840763001'
         player_id = 'Vsd5Umu8r' if is_tourcast else 'FWIBYMBPj'
 

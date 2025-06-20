@@ -36,48 +36,46 @@ class MedialaanIE(InfoExtractor):
                         )
                         (?P<id>\d+)
                     '''
-    _TESTS = [{'url': 'https://www.bndestem.nl/video/de-terugkeer-van-ally-de-aap-en-wie-vertrekt-er-nog-bij-nac~p193993',
-               'info_dict': {'id': '193993',
-                             'ext': 'mp4',
-                             'title': 'De terugkeer van Ally de Aap en wie vertrekt er nog bij NAC?',
-                             'timestamp': 1611663540,
-                             'upload_date': '20210126',
-                             'duration': 238,
-                             },
-               'params': {'skip_download': True,
-                          },
-               },
-              {'url': 'https://www.gelderlander.nl/video/kanalen/degelderlander~c320/series/snel-nieuws~s984/noodbevel-in-doetinchem-politie-stuurt-mensen-centrum-uit~p194093',
-               'only_matching': True,
-               },
-              {'url': 'https://embed.mychannels.video/sdk/production/193993?options=TFTFF_default',
-               'only_matching': True,
-               },
-              {'url': 'https://embed.mychannels.video/script/production/193993',
-               'only_matching': True,
-               },
-              {'url': 'https://embed.mychannels.video/production/193993',
-               'only_matching': True,
-               },
-              {'url': 'https://mychannels.video/embed/193993',
-               'only_matching': True,
-               },
-              {'url': 'https://embed.mychannels.video/embed/193993',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://www.bndestem.nl/video/de-terugkeer-van-ally-de-aap-en-wie-vertrekt-er-nog-bij-nac~p193993',
+        'info_dict': {
+            'id': '193993',
+            'ext': 'mp4',
+            'title': 'De terugkeer van Ally de Aap en wie vertrekt er nog bij NAC?',
+            'timestamp': 1611663540,
+            'upload_date': '20210126',
+            'duration': 238,
+        },
+        'params': {
+            'skip_download': True,
+        },
+    }, {
+        'url': 'https://www.gelderlander.nl/video/kanalen/degelderlander~c320/series/snel-nieuws~s984/noodbevel-in-doetinchem-politie-stuurt-mensen-centrum-uit~p194093',
+        'only_matching': True,
+    }, {
+        'url': 'https://embed.mychannels.video/sdk/production/193993?options=TFTFF_default',
+        'only_matching': True,
+    }, {
+        'url': 'https://embed.mychannels.video/script/production/193993',
+        'only_matching': True,
+    }, {
+        'url': 'https://embed.mychannels.video/production/193993',
+        'only_matching': True,
+    }, {
+        'url': 'https://mychannels.video/embed/193993',
+        'only_matching': True,
+    }, {
+        'url': 'https://embed.mychannels.video/embed/193993',
+        'only_matching': True,
+    }]
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
         entries = []
-        for element in re.findall(
-            r'(<div[^>]+data-mychannels-type="video"[^>]*>)',
-                webpage):
-            mychannels_id = extract_attributes(
-                element).get('data-mychannels-id')
+        for element in re.findall(r'(<div[^>]+data-mychannels-type="video"[^>]*>)', webpage):
+            mychannels_id = extract_attributes(element).get('data-mychannels-id')
             if mychannels_id:
-                entries.append(
-                    'https://mychannels.video/embed/' +
-                    mychannels_id)
+                entries.append('https://mychannels.video/embed/' + mychannels_id)
         return entries
 
     def _real_extract(self, url):

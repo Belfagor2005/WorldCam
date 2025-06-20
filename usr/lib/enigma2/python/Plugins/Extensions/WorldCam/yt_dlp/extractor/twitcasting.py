@@ -116,14 +116,9 @@ class TwitCastingIE(InfoExtractor):
                 urlh.url, video_id, data=request_data,
                 headers={'Origin': 'https://twitcasting.tv'},
                 note='Retrying authentication')
-        # has to check here as the first request can contain password input
-        # form even if the password is correct
-        if re.search(
-            r'<form\s+method="POST">\s*<input\s+[^>]+?name="password"',
-                webpage):
-            raise ExtractorError(
-                'This video is protected by a password, use the --video-password option',
-                expected=True)
+        # has to check here as the first request can contain password input form even if the password is correct
+        if re.search(r'<form\s+method="POST">\s*<input\s+[^>]+?name="password"', webpage):
+            raise ExtractorError('This video is protected by a password, use the --video-password option', expected=True)
 
         title = (clean_html(get_element_by_id('movietitle', webpage))
                  or self._html_search_meta(['og:title', 'twitter:title'], webpage, fatal=True))
@@ -134,38 +129,19 @@ class TwitCastingIE(InfoExtractor):
                 r'data-movie-playlist=\'([^\']+?)\'',
                 x, 'movie playlist', default=None), video_id)['2'], list)
 
-        thumbnail = traverse_obj(
-            video_js_data, (0, 'thumbnailUrl')) or self._og_search_thumbnail(webpage)
+        thumbnail = traverse_obj(video_js_data, (0, 'thumbnailUrl')) or self._og_search_thumbnail(webpage)
         description = clean_html(get_element_by_id(
             'authorcomment', webpage)) or self._html_search_meta(
             ['description', 'og:description', 'twitter:description'], webpage)
-        duration = (
-            try_get(
-                video_js_data,
-                lambda x: sum(
-                    float_or_none(
-                        y.get('duration')) for y in x) /
-                1000) or parse_duration(
-                clean_html(
-                    get_element_by_class(
-                        'tw-player-duration-time',
-                        webpage))))
-        view_count = str_to_int(
-            self._search_regex(
-                (r'Total\s*:\s*Views\s*([\d,]+)',
-                 r'総視聴者\s*:\s*([\d,]+)\s*</'),
-                webpage,
-                'views',
-                None))
+        duration = (try_get(video_js_data, lambda x: sum(float_or_none(y.get('duration')) for y in x) / 1000)
+                    or parse_duration(clean_html(get_element_by_class('tw-player-duration-time', webpage))))
+        view_count = str_to_int(self._search_regex(
+            (r'Total\s*:\s*Views\s*([\d,]+)', r'総視聴者\s*:\s*([\d,]+)\s*</'), webpage, 'views', None))
         timestamp = unified_timestamp(self._search_regex(
             r'data-toggle="true"[^>]+datetime="([^"]+)"',
             webpage, 'datetime', None))
 
-        is_live = any(
-            f'data-{x}' in webpage for x in [
-                'is-onlive="true"',
-                'live-type="live"',
-                'status="online"'])
+        is_live = any(f'data-{x}' in webpage for x in ['is-onlive="true"', 'live-type="live"', 'status="online"'])
 
         base_dict = {
             'title': title,
@@ -218,10 +194,9 @@ class TwitCastingIE(InfoExtractor):
 
             if websockets:
                 qq = qualities(['base', 'mobilesource', 'main'])
-                for mode, ws_url in traverse_obj(
-                    stream_data, ('llfmp4', 'streams', {
-                        dict.items}, lambda _, v: url_or_none(
-                        v[1]), )):
+                for mode, ws_url in traverse_obj(stream_data, (
+                    'llfmp4', 'streams', {dict.items}, lambda _, v: url_or_none(v[1]),
+                )):
                     formats.append({
                         'url': update_url_query(ws_url, password_params),
                         'format_id': f'ws-{mode}',
@@ -287,24 +262,15 @@ class TwitCastingLiveIE(InfoExtractor):
             f'Downloading live video of user {uploader_id}. '
             f'Pass "https://twitcasting.tv/{uploader_id}/show" to download the history')
 
-        is_live = traverse_obj(
-            self._download_json(
-                f'https://frontendapi.twitcasting.tv/watch/user/{uploader_id}',
-                uploader_id,
-                'Checking live status',
-                data=b'',
-                fatal=False),
-            ('is_live',
-             {bool}))
+        is_live = traverse_obj(self._download_json(
+            f'https://frontendapi.twitcasting.tv/watch/user/{uploader_id}',
+            uploader_id, 'Checking live status', data=b'', fatal=False), ('is_live', {bool}))
         if is_live is False:  # only raise here if API response was as expected
             raise UserNotLive(video_id=uploader_id)
 
-        # Use /show/ page so that password-protected and members-only
-        # livestreams can be found
+        # Use /show/ page so that password-protected and members-only livestreams can be found
         webpage = self._download_webpage(
-            f'https://twitcasting.tv/{uploader_id}/show/',
-            uploader_id,
-            'Downloading live history')
+            f'https://twitcasting.tv/{uploader_id}/show/', uploader_id, 'Downloading live history')
         is_live = is_live or self._search_regex(
             r'(?s)(<span\s*class="tw-movie-thumbnail2-badge"\s*data-status="live">\s*LIVE)',
             webpage, 'is live?', default=False)
@@ -315,9 +281,7 @@ class TwitCastingLiveIE(InfoExtractor):
         if not is_live or not current_live:
             raise UserNotLive(video_id=uploader_id)
 
-        return self.url_result(
-            f'https://twitcasting.tv/{uploader_id}/movie/{current_live}',
-            TwitCastingIE)
+        return self.url_result(f'https://twitcasting.tv/{uploader_id}/movie/{current_live}', TwitCastingIE)
 
 
 class TwitCastingUserIE(InfoExtractor):
@@ -338,17 +302,15 @@ class TwitCastingUserIE(InfoExtractor):
         base_url = next_url = f'https://twitcasting.tv/{uploader_id}/show'
         for page_num in itertools.count(1):
             webpage = self._download_webpage(
-                next_url, uploader_id, query={
-                    'filter': 'watchable'}, note=f'Downloading page {page_num}')
+                next_url, uploader_id, query={'filter': 'watchable'}, note=f'Downloading page {page_num}')
             matches = re.finditer(
-                r'(?s)<a\s+class="tw-movie-thumbnail2"\s+href="(?P<url>/[^/"]+/movie/\d+)"',
-                webpage)
+                r'(?s)<a\s+class="tw-movie-thumbnail2"\s+href="(?P<url>/[^/"]+/movie/\d+)"', webpage)
             for mobj in matches:
                 yield self.url_result(urljoin(base_url, mobj.group('url')))
 
             next_url = self._search_regex(
-                r'<a href="(/%s/show/%d-\d+)[?"]' %
-                (re.escape(uploader_id), page_num), webpage, 'next url', default=None)
+                r'<a href="(/%s/show/%d-\d+)[?"]' % (re.escape(uploader_id), page_num),
+                webpage, 'next url', default=None)
             next_url = urljoin(base_url, next_url)
             if not next_url:
                 return
@@ -356,6 +318,4 @@ class TwitCastingUserIE(InfoExtractor):
     def _real_extract(self, url):
         uploader_id = self._match_id(url)
         return self.playlist_result(
-            self._entries(uploader_id),
-            uploader_id,
-            f'{uploader_id} - Live History')
+            self._entries(uploader_id), uploader_id, f'{uploader_id} - Live History')

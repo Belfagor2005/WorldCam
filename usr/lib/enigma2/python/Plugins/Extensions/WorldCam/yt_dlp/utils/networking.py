@@ -222,8 +222,7 @@ def clean_proxies(proxies: dict, headers: HTTPHeaderDict):
             except ValueError:
                 # Ignore invalid proxy URLs. Sometimes these may be introduced through environment
                 # variables unrelated to proxy settings - e.g. Colab `COLAB_LANGUAGE_SERVER_PROXY`.
-                # If the proxy is going to be used, the Request Handler proxy
-                # validation will handle it.
+                # If the proxy is going to be used, the Request Handler proxy validation will handle it.
                 continue
             if proxy_scheme is None:
                 proxies[proxy_key] = 'http://' + remove_start(proxy_url, '//')
@@ -234,8 +233,7 @@ def clean_proxies(proxies: dict, headers: HTTPHeaderDict):
             }
             if proxy_scheme in replace_scheme:
                 proxies[proxy_key] = urllib.parse.urlunparse(
-                    urllib.parse.urlparse(proxy_url)._replace(
-                        scheme=replace_scheme[proxy_scheme]))
+                    urllib.parse.urlparse(proxy_url)._replace(scheme=replace_scheme[proxy_scheme]))
 
 
 def clean_headers(headers: HTTPHeaderDict):
@@ -287,10 +285,8 @@ def select_proxy(url, proxies):
     """Unified proxy selector for all backends"""
     url_components = urllib.parse.urlparse(url)
     if 'no' in proxies:
-        hostport = url_components.hostname + \
-            format_field(url_components.port, None, ':%s')
-        if urllib.request.proxy_bypass_environment(
-                hostport, {'no': proxies['no']}):
+        hostport = url_components.hostname + format_field(url_components.port, None, ':%s')
+        if urllib.request.proxy_bypass_environment(hostport, {'no': proxies['no']}):
             return
         elif urllib.request.proxy_bypass(hostport):  # check system settings
             return

@@ -9,10 +9,8 @@ def pycryptodome_module():
     except ImportError:
         try:
             import Crypto  # noqa: F401
-            print(
-                'WARNING: Using Crypto since Cryptodome is not available. '
-                'Install with: python3 -m pip install pycryptodomex',
-                file=sys.stderr)
+            print('WARNING: Using Crypto since Cryptodome is not available. '
+                  'Install with: python3 -m pip install pycryptodomex', file=sys.stderr)
             return 'Crypto'
         except ImportError:
             pass
@@ -33,12 +31,6 @@ def get_hidden_imports():
 hiddenimports = list(get_hidden_imports())
 print(f'Adding imports: {hiddenimports}')
 
-excludedimports = [
-    'youtube_dl',
-    'youtube_dlc',
-    'test',
-    'ytdlp_plugins',
-    'devscripts',
-    'bundle']
+excludedimports = ['youtube_dl', 'youtube_dlc', 'test', 'ytdlp_plugins', 'devscripts', 'bundle']
 
 datas = collect_data_files('curl_cffi', includes=['cacert.pem'])

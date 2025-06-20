@@ -24,12 +24,7 @@ class N1InfoAssetIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         formats = self._extract_m3u8_formats(
-            url,
-            video_id,
-            'mp4',
-            entry_protocol='m3u8_native',
-            m3u8_id='hls',
-            fatal=False)
+            url, video_id, 'mp4', entry_protocol='m3u8_native', m3u8_id='hls', fatal=False)
 
         return {
             'id': video_id,
@@ -160,17 +155,12 @@ class N1InfoIIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        title = self._html_search_regex(
-            r'<h1[^>]+>(.+?)</h1>', webpage, 'title')
-        timestamp = unified_timestamp(
-            self._html_search_meta(
-                'article:published_time', webpage))
-        plugin_data = re.findall(
-            r'\$bp\("(?:Brid|TargetVideo)_\d+",\s(.+)\);', webpage)
+        title = self._html_search_regex(r'<h1[^>]+>(.+?)</h1>', webpage, 'title')
+        timestamp = unified_timestamp(self._html_search_meta('article:published_time', webpage))
+        plugin_data = re.findall(r'\$bp\("(?:Brid|TargetVideo)_\d+",\s(.+)\);', webpage)
         entries = []
         if plugin_data:
-            site_id = self._html_search_regex(
-                r'site:(\d+)', webpage, 'site id')
+            site_id = self._html_search_regex(r'site:(\d+)', webpage, 'site id')
             for video_data in plugin_data:
                 video_id = self._parse_json(video_data, title)['video']
                 entries.append({
@@ -187,18 +177,15 @@ class N1InfoIIE(InfoExtractor):
             videos = re.findall(r'(?m)(<video[^>]+>)', webpage)
             for video in videos:
                 video_data = extract_attributes(video)
-                entries.append({'_type': 'url_transparent',
-                                'url': video_data.get('data-url'),
-                                'id': video_data.get('id'),
-                                'title': title,
-                                'thumbnail': traverse_obj(video_data,
-                                                          (('data-thumbnail',
-                                                            'data-default_thumbnail'),
-                                                           {url_or_none},
-                                                              any)),
-                                'timestamp': timestamp,
-                                'ie_key': 'N1InfoAsset',
-                                })
+                entries.append({
+                    '_type': 'url_transparent',
+                    'url': video_data.get('data-url'),
+                    'id': video_data.get('id'),
+                    'title': title,
+                    'thumbnail': traverse_obj(video_data, (('data-thumbnail', 'data-default_thumbnail'), {url_or_none}, any)),
+                    'timestamp': timestamp,
+                    'ie_key': 'N1InfoAsset',
+                })
 
         embedded_videos = re.findall(r'(<iframe[^>]+>)', webpage)
         for embedded_video in embedded_videos:

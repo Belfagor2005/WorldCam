@@ -14,18 +14,15 @@ from ..utils import (
 
 
 class CineverseBaseIE(InfoExtractor):
-    _VALID_URL_BASE = r'https?://www\.(?P<host>{})'.format(
-        '|'.join(
-            map(
-                re.escape,
-                ('cineverse.com',
-                 'asiancrush.com',
-                 'dovechannel.com',
-                 'screambox.com',
-                 'midnightpulp.com',
-                 'fandor.com',
-                 'retrocrush.tv',
-                 ))))
+    _VALID_URL_BASE = r'https?://www\.(?P<host>{})'.format('|'.join(map(re.escape, (
+        'cineverse.com',
+        'asiancrush.com',
+        'dovechannel.com',
+        'screambox.com',
+        'midnightpulp.com',
+        'fandor.com',
+        'retrocrush.tv',
+    ))))
 
 
 class CineverseIE(CineverseBaseIE):
@@ -69,8 +66,7 @@ class CineverseIE(CineverseBaseIE):
         })
         video_id = self._match_id(url)
         html = self._download_webpage(url, video_id)
-        idetails = self._search_nextjs_data(
-            html, video_id)['props']['pageProps']['idetails']
+        idetails = self._search_nextjs_data(html, video_id)['props']['pageProps']['idetails']
 
         err_code = idetails.get('err_code')
         if err_code == 1002:
@@ -103,64 +99,42 @@ class CineverseIE(CineverseBaseIE):
 
 class CineverseDetailsIE(CineverseBaseIE):
     _VALID_URL = rf'{CineverseBaseIE._VALID_URL_BASE}/details/(?P<id>[A-Z0-9]+)'
-    _TESTS = [
-        {
-            'url': 'https://www.retrocrush.tv/details/1000000023012/Space-Adventure-COBRA-(Original-Japanese)',
-            'playlist_mincount': 30,
-            'info_dict': {
-                'title': 'Space Adventure COBRA (Original Japanese)',
-                'id': '1000000023012',
-            },
+    _TESTS = [{
+        'url': 'https://www.retrocrush.tv/details/1000000023012/Space-Adventure-COBRA-(Original-Japanese)',
+        'playlist_mincount': 30,
+        'info_dict': {
+            'title': 'Space Adventure COBRA (Original Japanese)',
+            'id': '1000000023012',
         },
-        {
-            'url': 'https://www.asiancrush.com/details/NNVG4938/Hansel-and-Gretel',
-            'info_dict': {
-                'id': 'NNVG4938',
-                'ext': 'mp4',
-                'title': 'Hansel and Gretel',
-                'description': 'md5:e3e4c35309c2e82aee044f972c2fb05d',
-                'cast': [
-                    'Jeong-myeong Cheon',
-                    'Eun Won-jae',
-                    'Shim Eun-gyeong',
-                    'Ji-hee Jin',
-                    'Hee-soon Park',
-                    'Lydia Park',
-                    'Kyeong-ik Kim'],
-                'duration': 7030.732,
-            },
-        }]
+    }, {
+        'url': 'https://www.asiancrush.com/details/NNVG4938/Hansel-and-Gretel',
+        'info_dict': {
+            'id': 'NNVG4938',
+            'ext': 'mp4',
+            'title': 'Hansel and Gretel',
+            'description': 'md5:e3e4c35309c2e82aee044f972c2fb05d',
+            'cast': ['Jeong-myeong Cheon', 'Eun Won-jae', 'Shim Eun-gyeong', 'Ji-hee Jin', 'Hee-soon Park', 'Lydia Park', 'Kyeong-ik Kim'],
+            'duration': 7030.732,
+        },
+    }]
 
     def _real_extract(self, url):
         host, series_id = self._match_valid_url(url).group('host', 'id')
         html = self._download_webpage(url, series_id)
-        pageprops = self._search_nextjs_data(
-            html, series_id)['props']['pageProps']
+        pageprops = self._search_nextjs_data(html, series_id)['props']['pageProps']
 
-        geo_countries = traverse_obj(
-            pageprops, ('itemDetailsData', 'geo_country', {
-                lambda x: x.split(', ')}))
-        geoblocked = traverse_obj(
-            pageprops,
-            ('itemDetailsData',
-             'playback_err_msg')) == 'This title is not available in your location.'
+        geo_countries = traverse_obj(pageprops, ('itemDetailsData', 'geo_country', {lambda x: x.split(', ')}))
+        geoblocked = traverse_obj(pageprops, (
+            'itemDetailsData', 'playback_err_msg')) == 'This title is not available in your location.'
 
         def item_result(item):
             item_url = f'https://www.{host}/watch/{item["item_id"]}/{item["title"]}'
             if geoblocked:
-                item_url = smuggle_url(
-                    item_url, {'geo_countries': geo_countries})
+                item_url = smuggle_url(item_url, {'geo_countries': geo_countries})
             return self.url_result(item_url, CineverseIE)
 
-        season = traverse_obj(pageprops, ('seasonEpisodes', ...,
-                              'episodes', lambda _, v: v['item_id'] and v['title']))
+        season = traverse_obj(pageprops, ('seasonEpisodes', ..., 'episodes', lambda _, v: v['item_id'] and v['title']))
         if season:
-            return self.playlist_result(
-                [
-                    item_result(ep) for ep in season],
-                playlist_id=series_id,
-                playlist_title=traverse_obj(
-                    pageprops,
-                    ('itemDetailsData',
-                     'title')))
+            return self.playlist_result([item_result(ep) for ep in season], playlist_id=series_id,
+                                        playlist_title=traverse_obj(pageprops, ('itemDetailsData', 'title')))
         return item_result(pageprops['itemDetailsData'])

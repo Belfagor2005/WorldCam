@@ -42,27 +42,16 @@ class BildIE(InfoExtractor):
             url.split('.bild.html')[0] + ',view=json.bild.html', video_id)
 
         formats = []
-        for src in traverse_obj(
-            video_data,
-            ('clipList',
-             0,
-             'srces',
-             lambda _,
-             v: v['src'])):
+        for src in traverse_obj(video_data, ('clipList', 0, 'srces', lambda _, v: v['src'])):
             src_type = src.get('type')
             if src_type == 'application/x-mpegURL':
                 formats.extend(
                     self._extract_m3u8_formats(
-                        src['src'],
-                        video_id,
-                        'mp4',
-                        m3u8_id='hls',
-                        fatal=False))
+                        src['src'], video_id, 'mp4', m3u8_id='hls', fatal=False))
             elif src_type == 'video/mp4':
                 formats.append({'url': src['src'], 'format_id': 'http-mp4'})
             else:
-                self.report_warning(
-                    f'Skipping unsupported format type: "{src_type}"')
+                self.report_warning(f'Skipping unsupported format type: "{src_type}"')
 
         return {
             'id': video_id,

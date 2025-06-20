@@ -68,10 +68,8 @@ class GoPlayIE(InfoExtractor):
 
     def _perform_login(self, username, password):
         self.report_login()
-        aws = AwsIdp(ie=self, pool_id='eu-west-1_dViSsKM5Y',
-                     client_id='6s1h851s8uplco5h6mqh1jac8m')
-        self._id_token, _ = aws.authenticate(
-            username=username, password=password)
+        aws = AwsIdp(ie=self, pool_id='eu-west-1_dViSsKM5Y', client_id='6s1h851s8uplco5h6mqh1jac8m')
+        self._id_token, _ = aws.authenticate(username=username, password=password)
 
     def _real_initialize(self):
         if not self._id_token:
@@ -80,12 +78,7 @@ class GoPlayIE(InfoExtractor):
     # XXX: For parsing next.js v15+ data; see also yt_dlp.extractor.francetv
     def _find_json(self, s):
         return self._search_json(
-            r'\w+\s*:\s*',
-            s,
-            'next js data',
-            None,
-            contains_pattern=r'\[(?s:.+)\]',
-            default=None)
+            r'\w+\s*:\s*', s, 'next js data', None, contains_pattern=r'\[(?s:.+)\]', default=None)
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -105,18 +98,14 @@ class GoPlayIE(InfoExtractor):
         })
 
         if traverse_obj(meta, ('program', 'subtype')) != 'movie':
-            for season_data in traverse_obj(
-                    nextjs_data, (..., 'children', ..., 'playlists', ...)):
+            for season_data in traverse_obj(nextjs_data, (..., 'children', ..., 'playlists', ...)):
                 episode_data = traverse_obj(
                     season_data, ('videos', lambda _, v: v['videoId'] == video_id, any))
                 if not episode_data:
                     continue
 
                 episode_title = traverse_obj(
-                    episode_data,
-                    'contextualTitle',
-                    'episodeTitle',
-                    expected_type=str)
+                    episode_data, 'contextualTitle', 'episodeTitle', expected_type=str)
                 info_dict.update({
                     'title': episode_title or info_dict.get('title'),
                     'series': remove_end(info_dict.get('title'), f' - {episode_title}'),
@@ -148,8 +137,7 @@ class GoPlayIE(InfoExtractor):
                 video_id, data=b'{"api-key":"null"}',
                 headers={'content-type': 'application/json'})
 
-            periods = self._extract_mpd_periods(
-                dai['stream_manifest'], video_id)
+            periods = self._extract_mpd_periods(dai['stream_manifest'], video_id)
 
             # skip pre-roll and mid-roll ads
             periods = [p for p in periods if '-ad-' not in p['id']]
@@ -190,8 +178,7 @@ class AwsIdp:
 
         self.pool_id = pool_id
         if '_' not in self.pool_id:
-            raise ValueError(
-                'Invalid pool_id format. Should be <region>_<poolid>.')
+            raise ValueError('Invalid pool_id format. Should be <region>_<poolid>.')
 
         self.client_id = client_id
         self.region = self.pool_id.split('_')[0]
@@ -223,12 +210,7 @@ class AwsIdp:
 
         self.big_n = self.__hex_to_long(self.n_hex)
         self.g = self.__hex_to_long(self.g_hex)
-        self.k = self.__hex_to_long(
-            self.__hex_hash(
-                '00' +
-                self.n_hex +
-                '0' +
-                self.g_hex))
+        self.k = self.__hex_to_long(self.__hex_hash('00' + self.n_hex + '0' + self.g_hex))
         self.small_a_value = self.__generate_random_small_a()
         self.large_a_value = self.__calculate_a()
 
@@ -251,8 +233,7 @@ class AwsIdp:
             raise AuthenticationException(auth_response_json['message'])
 
         # Step 2: Respond to the Challenge with a valid ChallengeResponse
-        challenge_request = self.__get_challenge_response_request(
-            challenge_parameters, password)
+        challenge_request = self.__get_challenge_response_request(challenge_parameters, password)
         challenge_data = json.dumps(challenge_request).encode()
         challenge_headers = {
             'X-Amz-Target': 'AWSCognitoIdentityProviderService.RespondToAuthChallenge',
@@ -312,16 +293,14 @@ class AwsIdp:
         )
         secret_block_bytes = base64.standard_b64decode(secret_block)
 
-        # the message is a combo of the pool_id, provided SRP userId, the
-        # Secret and Timestamp
+        # the message is a combo of the pool_id, provided SRP userId, the Secret and Timestamp
         msg = \
             bytearray(self.pool_id.split('_')[1], 'utf-8') + \
             bytearray(user_id_for_srp, 'utf-8') + \
             bytearray(secret_block_bytes) + \
             bytearray(timestamp, 'utf-8')
         hmac_obj = hmac.new(hkdf, msg, digestmod=hashlib.sha256)
-        signature_string = base64.standard_b64encode(
-            hmac_obj.digest()).decode('utf-8')
+        signature_string = base64.standard_b64encode(hmac_obj.digest()).decode('utf-8')
         return {
             'ChallengeResponses': {
                 'USERNAME': user_id,
@@ -333,12 +312,7 @@ class AwsIdp:
             'ClientId': self.client_id,
         }
 
-    def __get_hkdf_key_for_password(
-            self,
-            username,
-            password,
-            server_b_value,
-            salt):
+    def __get_hkdf_key_for_password(self, username, password, server_b_value, salt):
         """ Calculates the final hkdf based on computed S value, and computed U value and the key.
 
         :param str username:        Username.
@@ -353,22 +327,13 @@ class AwsIdp:
         u_value = self.__calculate_u(self.large_a_value, server_b_value)
         if u_value == 0:
             raise ValueError('U cannot be zero.')
-        username_password = '{}{}:{}'.format(
-            self.pool_id.split('_')[1], username, password)
+        username_password = '{}{}:{}'.format(self.pool_id.split('_')[1], username, password)
         username_password_hash = self.__hash_sha256(username_password.encode())
 
-        x_value = self.__hex_to_long(
-            self.__hex_hash(
-                self.__pad_hex(salt) +
-                username_password_hash))
+        x_value = self.__hex_to_long(self.__hex_hash(self.__pad_hex(salt) + username_password_hash))
         g_mod_pow_xn = pow(self.g, x_value, self.big_n)
         int_value2 = server_b_value - self.k * g_mod_pow_xn
-        s_value = pow(
-            int_value2,
-            self.small_a_value +
-            u_value *
-            x_value,
-            self.big_n)
+        s_value = pow(int_value2, self.small_a_value + u_value * x_value, self.big_n)
         return self.__compute_hkdf(
             bytearray.fromhex(self.__pad_hex(s_value)),
             bytearray.fromhex(self.__pad_hex(self.__long_to_hex(u_value))),
@@ -397,9 +362,7 @@ class AwsIdp:
         :rtype: int
         """
 
-        u_hex_hash = self.__hex_hash(
-            self.__pad_hex(big_a) +
-            self.__pad_hex(big_b))
+        u_hex_hash = self.__hex_hash(self.__pad_hex(big_a) + self.__pad_hex(big_b))
         return self.__hex_to_long(u_hex_hash)
 
     def __generate_random_small_a(self):
@@ -477,20 +440,7 @@ class AwsIdp:
 
         # We need US only data, so we cannot just do a strftime:
         # Sun Jan 27 19:00:04 UTC 2019
-        months = [
-            None,
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec']
+        months = [None, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
         time_now = dt.datetime.now(dt.timezone.utc)
@@ -499,4 +449,5 @@ class AwsIdp:
 
     def __str__(self):
         return 'AWS IDP Client for:\nRegion: {}\nPoolId: {}\nAppId:  {}'.format(
-            self.region, self.pool_id.split('_')[1], self.client_id, )
+            self.region, self.pool_id.split('_')[1], self.client_id,
+        )

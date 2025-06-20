@@ -114,11 +114,7 @@ class TagesschauIE(InfoExtractor):
 
         title = self._html_search_regex(
             r'<span[^>]*class="headline"[^>]*>(.+?)</span>',
-            webpage,
-            'title',
-            default=None) or self._og_search_title(
-            webpage,
-            fatal=False)
+            webpage, 'title', default=None) or self._og_search_title(webpage, fatal=False)
 
         entries = []
         videos = re.findall(r'<div[^>]+>', webpage)
@@ -127,13 +123,8 @@ class TagesschauIE(InfoExtractor):
             video = extract_attributes(video).get('data-config')
             if not video:
                 continue
-            video = self._parse_json(
-                video,
-                video_id,
-                transform_source=js_to_json,
-                fatal=False)
-            video_formats = try_get(
-                video, lambda x: x['mc']['_mediaArray'][0]['_mediaStreamArray'])
+            video = self._parse_json(video, video_id, transform_source=js_to_json, fatal=False)
+            video_formats = try_get(video, lambda x: x['mc']['_mediaArray'][0]['_mediaStreamArray'])
             if not video_formats:
                 continue
             num += 1
@@ -141,8 +132,7 @@ class TagesschauIE(InfoExtractor):
                 media_url = video_format.get('_stream') or ''
                 formats = []
                 if media_url.endswith('master.m3u8'):
-                    formats = self._extract_m3u8_formats(
-                        media_url, video_id, 'mp4', m3u8_id='hls')
+                    formats = self._extract_m3u8_formats(media_url, video_id, 'mp4', m3u8_id='hls')
                 elif media_url.endswith('.mp3'):
                     formats = [{
                         'url': media_url,
@@ -168,10 +158,7 @@ class TagesschauIE(InfoExtractor):
             'title': title,
             'thumbnail': self._og_search_thumbnail(webpage),
             'formats': entries[0]['formats'],
-            'timestamp': parse_iso8601(
-                self._html_search_meta(
-                    'date',
-                    webpage)),
+            'timestamp': parse_iso8601(self._html_search_meta('date', webpage)),
             'description': self._og_search_description(webpage),
             'duration': entries[0]['duration'],
         }

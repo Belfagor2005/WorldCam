@@ -19,67 +19,54 @@ class ImdbIE(InfoExtractor):
     IE_DESC = 'Internet Movie Database trailers'
     _VALID_URL = r'https?://(?:www|m)\.imdb\.com/(?:video|title|list).*?[/-]vi(?P<id>\d+)'
 
-    _TESTS = [{'url': 'http://www.imdb.com/video/imdb/vi2524815897',
-               'info_dict': {'id': '2524815897',
-                             'ext': 'mp4',
-                             'title': 'No. 2',
-                             'description': 'md5:87bd0bdc61e351f21f20d2d7441cb4e7',
-                             'duration': 152,
-                             'thumbnail': r're:^https?://.+\.jpg',
-                             },
-               },
-              {'url': 'https://www.imdb.com/video/vi3516832537',
-               'info_dict': {'id': '3516832537',
-                             'ext': 'mp4',
-                             'title': 'Paul: U.S. Trailer #1',
-                             'description': 'md5:17fcc4fe11ec29b4399be9d4c5ef126c',
-                             'duration': 153,
-                             'thumbnail': r're:^https?://.+\.jpg',
-                             },
-               },
-              {'url': 'http://www.imdb.com/video/_/vi2524815897',
-               'only_matching': True,
-               },
-              {'url': 'http://www.imdb.com/title/tt1667889/?ref_=ext_shr_eml_vi#lb-vi2524815897',
-               'only_matching': True,
-               },
-              {'url': 'http://www.imdb.com/title/tt1667889/#lb-vi2524815897',
-               'only_matching': True,
-               },
-              {'url': 'http://www.imdb.com/videoplayer/vi1562949145',
-               'only_matching': True,
-               },
-              {'url': 'http://www.imdb.com/title/tt4218696/videoplayer/vi2608641561',
-               'only_matching': True,
-               },
-              {'url': 'https://www.imdb.com/list/ls009921623/videoplayer/vi260482329',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://www.imdb.com/video/imdb/vi2524815897',
+        'info_dict': {
+            'id': '2524815897',
+            'ext': 'mp4',
+            'title': 'No. 2',
+            'description': 'md5:87bd0bdc61e351f21f20d2d7441cb4e7',
+            'duration': 152,
+            'thumbnail': r're:^https?://.+\.jpg',
+        },
+    }, {
+        'url': 'https://www.imdb.com/video/vi3516832537',
+        'info_dict': {
+            'id': '3516832537',
+            'ext': 'mp4',
+            'title': 'Paul: U.S. Trailer #1',
+            'description': 'md5:17fcc4fe11ec29b4399be9d4c5ef126c',
+            'duration': 153,
+            'thumbnail': r're:^https?://.+\.jpg',
+        },
+    }, {
+        'url': 'http://www.imdb.com/video/_/vi2524815897',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.imdb.com/title/tt1667889/?ref_=ext_shr_eml_vi#lb-vi2524815897',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.imdb.com/title/tt1667889/#lb-vi2524815897',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.imdb.com/videoplayer/vi1562949145',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.imdb.com/title/tt4218696/videoplayer/vi2608641561',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.imdb.com/list/ls009921623/videoplayer/vi260482329',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(
-            f'https://www.imdb.com/video/vi{video_id}', video_id)
+        webpage = self._download_webpage(f'https://www.imdb.com/video/vi{video_id}', video_id)
         info = self._search_nextjs_data(webpage, video_id)
-        video_info = traverse_obj(
-            info,
-            ('props',
-             'pageProps',
-             'videoPlaybackData',
-             'video'),
-            default={})
-        title = (
-            traverse_obj(
-                video_info,
-                ('name',
-                 'value'),
-                ('primaryTitle',
-                 'titleText',
-                 'text')) or self._html_search_meta(
-                ('og:title',
-                 'twitter:title'),
-                webpage,
-                default=None) or self._html_extract_title(webpage))
+        video_info = traverse_obj(info, ('props', 'pageProps', 'videoPlaybackData', 'video'), default={})
+        title = (traverse_obj(video_info, ('name', 'value'), ('primaryTitle', 'titleText', 'text'))
+                 or self._html_search_meta(('og:title', 'twitter:title'), webpage, default=None)
+                 or self._html_extract_title(webpage))
         data = video_info.get('playbackURLs') or try_get(self._download_json(
             'https://www.imdb.com/ve/data/VIDEO_PLAYBACK_DATA', video_id,
             query={
@@ -106,8 +93,7 @@ class ImdbIE(InfoExtractor):
                 subtitles = self._merge_subtitles(subtitles, subs)
                 formats.extend(fmts)
                 continue
-            format_id = traverse_obj(
-                encoding, ('displayName', 'value'), 'definition')
+            format_id = traverse_obj(encoding, ('displayName', 'value'), 'definition')
             formats.append({
                 'format_id': format_id,
                 'url': video_url,
@@ -120,17 +106,9 @@ class ImdbIE(InfoExtractor):
             'title': title,
             'alt_title': info.get('videoSubTitle'),
             'formats': formats,
-            'description': try_get(
-                video_info,
-                lambda x: x['description']['value']),
-            'thumbnail': url_or_none(
-                try_get(
-                    video_info,
-                    lambda x: x['thumbnail']['url'])),
-            'duration': int_or_none(
-                try_get(
-                    video_info,
-                    lambda x: x['runtime']['value'])),
+            'description': try_get(video_info, lambda x: x['description']['value']),
+            'thumbnail': url_or_none(try_get(video_info, lambda x: x['thumbnail']['url'])),
+            'duration': int_or_none(try_get(video_info, lambda x: x['runtime']['value'])),
             'subtitles': subtitles,
         }
 
@@ -153,11 +131,8 @@ class ImdbListIE(InfoExtractor):
         list_id = self._match_id(url)
         webpage = self._download_webpage(url, list_id)
         entries = [
-            self.url_result(
-                'http://www.imdb.com' + m,
-                'Imdb') for m in re.findall(
-                rf'href="(/list/ls{list_id}/videoplayer/vi[^"]+)"',
-                webpage)]
+            self.url_result('http://www.imdb.com' + m, 'Imdb')
+            for m in re.findall(rf'href="(/list/ls{list_id}/videoplayer/vi[^"]+)"', webpage)]
 
         list_title = self._html_search_regex(
             r'<h1[^>]+class="[^"]*header[^"]*"[^>]*>(.*?)</h1>',
@@ -166,5 +141,4 @@ class ImdbListIE(InfoExtractor):
             r'<div[^>]+class="[^"]*list-description[^"]*"[^>]*><p>(.*?)</p>',
             webpage, 'list description')
 
-        return self.playlist_result(
-            entries, list_id, list_title, list_description)
+        return self.playlist_result(entries, list_id, list_title, list_description)

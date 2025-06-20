@@ -28,8 +28,7 @@ class DeuxMIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         video = self._download_json(
-            f'https://2m.ma/api/watchDetail/{video_id}',
-            video_id)['response']['News']
+            f'https://2m.ma/api/watchDetail/{video_id}', video_id)['response']['News']
         return {
             'id': video_id,
             'title': video.get('titre'),
@@ -67,8 +66,7 @@ class DeuxMNewsIE(InfoExtractor):
     def _real_extract(self, url):
         article_name, lang = self._match_valid_url(url).group('id', 'lang')
         video = self._download_json(
-            f'https://2m.ma/api/articlesByUrl?lang={lang}&url=/news/{article_name}',
-            article_name)['response']['article'][0]
+            f'https://2m.ma/api/articlesByUrl?lang={lang}&url=/news/{article_name}', article_name)['response']['article'][0]
         return {
             'id': video['id'],
             'title': video.get('title'),

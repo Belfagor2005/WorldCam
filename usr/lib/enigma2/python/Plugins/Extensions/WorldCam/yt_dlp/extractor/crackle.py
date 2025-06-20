@@ -71,33 +71,18 @@ class CrackleIE(InfoExtractor):
         # Authorization generation algorithm is reverse engineered from:
         # https://www.sonycrackle.com/static/js/main.ea93451f.chunk.js
         timestamp = time.strftime('%Y%m%d%H%M', time.gmtime())
-        h = hmac.new(b'IGSLUQCBDFHEOIFM', '|'.join(
-            [url, timestamp]).encode(), hashlib.sha1).hexdigest().upper()
+        h = hmac.new(b'IGSLUQCBDFHEOIFM', '|'.join([url, timestamp]).encode(), hashlib.sha1).hexdigest().upper()
         headers = {
             'Accept': 'application/json',
             'Authorization': '|'.join([h, timestamp, '117', '1']),
         }
-        return InfoExtractor._download_json(
-            self, url, *args, headers=headers, **kwargs)
+        return InfoExtractor._download_json(self, url, *args, headers=headers, **kwargs)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
         geo_bypass_country = self.get_param('geo_bypass_country', None)
-        countries = orderedSet(
-            (geo_bypass_country,
-             'US',
-             'AU',
-             'CA',
-             'AS',
-             'FM',
-             'GU',
-             'MP',
-             'PR',
-             'PW',
-             'MH',
-             'VI',
-             ''))
+        countries = orderedSet((geo_bypass_country, 'US', 'AU', 'CA', 'AS', 'FM', 'GU', 'MP', 'PR', 'PW', 'MH', 'VI', ''))
         num_countries, num = len(countries) - 1, 0
 
         media = {}
@@ -109,18 +94,14 @@ class CrackleIE(InfoExtractor):
             elif num == num_countries:  # end of list
                 geo_info = self._download_json(
                     'https://web-api-us.crackle.com/Service.svc/geo/country',
-                    video_id,
-                    fatal=False,
-                    note='Downloading geo-location information from crackle API',
+                    video_id, fatal=False, note='Downloading geo-location information from crackle API',
                     errnote='Unable to fetch geo-location information from crackle') or {}
                 country = geo_info.get('CountryCode')
                 if country is None:
                     continue
-                self.to_screen(
-                    f'{self.IE_NAME} identified country as {country}')
+                self.to_screen(f'{self.IE_NAME} identified country as {country}')
                 if country in countries:
-                    self.to_screen(
-                        f'Downloading from {country} API was already attempted. Skipping...')
+                    self.to_screen(f'Downloading from {country} API was already attempted. Skipping...')
                     continue
 
             if country is None:
@@ -140,10 +121,7 @@ class CrackleIE(InfoExtractor):
             if status.get('messageCode') != '0':
                 raise ExtractorError(
                     '{} said: {} {} - {}'.format(
-                        self.IE_NAME,
-                        status.get('messageCodeDescription'),
-                        status.get('messageCode'),
-                        status.get('message')),
+                        self.IE_NAME, status.get('messageCodeDescription'), status.get('messageCode'), status.get('message')),
                     expected=True)
 
             # Found video formats

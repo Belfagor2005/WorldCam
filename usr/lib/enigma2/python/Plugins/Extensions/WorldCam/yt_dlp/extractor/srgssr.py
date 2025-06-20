@@ -90,8 +90,7 @@ class SRGSSRIE(InfoExtractor):
                 continue
             protocol = source.get('protocol')
             quality = source.get('quality')
-            format_id = join_nonempty(
-                protocol, source.get('encoding'), quality)
+            format_id = join_nonempty(protocol, source.get('encoding'), quality)
 
             if protocol in ('HDS', 'HLS'):
                 if source.get('tokenType') == 'AKAMAI':
@@ -103,7 +102,8 @@ class SRGSSRIE(InfoExtractor):
                     subtitles = self._merge_subtitles(subtitles, subs)
                 elif protocol == 'HLS':
                     m3u8_fmts, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
-                        format_url, media_id, 'mp4', 'm3u8_native', m3u8_id=format_id, fatal=False)
+                        format_url, media_id, 'mp4', 'm3u8_native',
+                        m3u8_id=format_id, fatal=False)
                     formats.extend(m3u8_fmts)
                     subtitles = self._merge_subtitles(subtitles, m3u8_subs)
             elif protocol in ('HTTP', 'HTTPS'):
@@ -243,5 +243,4 @@ class SRGSSRPlayIE(InfoExtractor):
         bu = mobj.group('bu')
         media_type = mobj.group('type') or mobj.group('type_2')
         media_id = mobj.group('id')
-        return self.url_result(
-            f'srgssr:{bu[:3]}:{media_type}:{media_id}', 'SRGSSR')
+        return self.url_result(f'srgssr:{bu[:3]}:{media_type}:{media_id}', 'SRGSSR')

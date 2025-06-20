@@ -25,8 +25,7 @@ class BanByeBaseIE(InfoExtractor):
             urllib.parse.urlparse(url).query).get(param, [None])[0]
 
     def _extract_playlist(self, playlist_id):
-        data = self._download_json(
-            f'{self._API_BASE}/playlists/{playlist_id}', playlist_id)
+        data = self._download_json(f'{self._API_BASE}/playlists/{playlist_id}', playlist_id)
         return self.playlist_result([
             self.url_result(f'{self._VIDEO_BASE}/{video_id}', BanByeIE)
             for video_id in data['videoIds']], playlist_id, data.get('name'))
@@ -135,25 +134,19 @@ class BanByeIE(BanByeBaseIE):
         if self._yes_playlist(playlist_id, video_id):
             return self._extract_playlist(playlist_id)
 
-        data = self._download_json(
-            f'{self._API_BASE}/videos/{video_id}', video_id)
+        data = self._download_json(f'{self._API_BASE}/videos/{video_id}', video_id)
         thumbnails = [{
             'id': f'{quality}p',
             'url': f'{self._CDN_BASE}/video/{video_id}/{quality}.webp',
         } for quality in [48, 96, 144, 240, 512, 1080]]
 
         formats = []
-        url_data = self._download_json(
-            f'{self._API_BASE}/videos/{video_id}/url', video_id, data=b'')
-        if master_url := traverse_obj(
-                url_data, ('src', 'hls', 'masterPlaylist', {url_or_none})):
-            formats = self._extract_m3u8_formats(
-                master_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
+        url_data = self._download_json(f'{self._API_BASE}/videos/{video_id}/url', video_id, data=b'')
+        if master_url := traverse_obj(url_data, ('src', 'hls', 'masterPlaylist', {url_or_none})):
+            formats = self._extract_m3u8_formats(master_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
 
-        for format_id, format_url in traverse_obj(
-            url_data, ('src', ('mp4', 'hls'), 'levels', {
-                dict.items}, lambda _, v: url_or_none(
-                v[1]))):
+        for format_id, format_url in traverse_obj(url_data, (
+                'src', ('mp4', 'hls'), 'levels', {dict.items}, lambda _, v: url_or_none(v[1]))):
             ext = determine_ext(format_url)
             is_hls = ext == 'm3u8'
             formats.append({
@@ -212,31 +205,22 @@ class BanByeChannelIE(BanByeBaseIE):
             return self._extract_playlist(playlist_id)
 
         def page_func(page_num):
-            data = self._download_json(
-                f'{self._API_BASE}/videos',
-                channel_id,
-                query={
-                    'channelId': channel_id,
-                    'sort': 'new',
-                    'limit': self._PAGE_SIZE,
-                    'offset': page_num *
-                    self._PAGE_SIZE,
-                },
-                note=f'Downloading page {page_num + 1}')
+            data = self._download_json(f'{self._API_BASE}/videos', channel_id, query={
+                'channelId': channel_id,
+                'sort': 'new',
+                'limit': self._PAGE_SIZE,
+                'offset': page_num * self._PAGE_SIZE,
+            }, note=f'Downloading page {page_num + 1}')
             return [
                 self.url_result(f"{self._VIDEO_BASE}/{video['_id']}", BanByeIE)
                 for video in data['items']
             ]
 
-        channel_data = self._download_json(
-            f'{self._API_BASE}/channels/{channel_id}', channel_id)
+        channel_data = self._download_json(f'{self._API_BASE}/channels/{channel_id}', channel_id)
         entries = InAdvancePagedList(
             page_func,
             math.ceil(channel_data['videoCount'] / self._PAGE_SIZE),
             self._PAGE_SIZE)
 
         return self.playlist_result(
-            entries,
-            channel_id,
-            channel_data.get('name'),
-            channel_data.get('description'))
+            entries, channel_id, channel_data.get('name'), channel_data.get('description'))

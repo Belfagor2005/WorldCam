@@ -74,8 +74,7 @@ class RequestDirector:
 
     def add_handler(self, handler: RequestHandler):
         """Add a handler. If a handler of the same RH_KEY exists, it will overwrite it"""
-        assert isinstance(
-            handler, RequestHandler), 'handler must be a RequestHandler'
+        assert isinstance(handler, RequestHandler), 'handler must be a RequestHandler'
         self.handlers[handler.RH_KEY] = handler
 
     def _get_handlers(self, request: Request) -> list[RequestHandler]:
@@ -84,12 +83,9 @@ class RequestDirector:
             rh: sum(pref(rh, request) for pref in self.preferences)
             for rh in self.handlers.values()
         }
-        self._print_verbose('Handler preferences for this request: {}'.format(
-            ', '.join(f'{rh.RH_NAME}={pref}' for rh, pref in preferences.items())))
-        return sorted(
-            self.handlers.values(),
-            key=preferences.get,
-            reverse=True)
+        self._print_verbose('Handler preferences for this request: {}'.format(', '.join(
+            f'{rh.RH_NAME}={pref}' for rh, pref in preferences.items())))
+        return sorted(self.handlers.values(), key=preferences.get, reverse=True)
 
     def _print_verbose(self, msg):
         if self.verbose:
@@ -107,8 +103,7 @@ class RequestDirector:
         unexpected_errors = []
         unsupported_errors = []
         for handler in self._get_handlers(request):
-            self._print_verbose(
-                f'Checking if "{handler.RH_NAME}" supports this request.')
+            self._print_verbose(f'Checking if "{handler.RH_NAME}" supports this request.')
             try:
                 handler.validate(request)
             except UnsupportedRequest as e:
@@ -140,8 +135,7 @@ _REQUEST_HANDLERS = {}
 
 def register_rh(handler):
     """Register a RequestHandler class"""
-    assert issubclass(
-        handler, RequestHandler), f'{handler} must be a subclass of RequestHandler'
+    assert issubclass(handler, RequestHandler), f'{handler} must be a subclass of RequestHandler'
     assert handler.RH_KEY not in _REQUEST_HANDLERS, f'RequestHandler {handler.RH_KEY} already registered'
     _REQUEST_HANDLERS[handler.RH_KEY] = handler
     return handler
@@ -316,10 +310,8 @@ class RequestHandler(abc.ABC):
 
             # Unlikely this handler will use this proxy, so ignore.
             # This is to allow a case where a proxy may be set for a protocol
-            # for one handler in which such protocol (and proxy) is not
-            # supported by another handler.
-            if self._SUPPORTED_URL_SCHEMES is not None and proxy_key not in (
-                    *self._SUPPORTED_URL_SCHEMES, 'all'):
+            # for one handler in which such protocol (and proxy) is not supported by another handler.
+            if self._SUPPORTED_URL_SCHEMES is not None and proxy_key not in (*self._SUPPORTED_URL_SCHEMES, 'all'):
                 continue
 
             if self._SUPPORTED_PROXY_SCHEMES is None:
@@ -329,13 +321,10 @@ class RequestHandler(abc.ABC):
             try:
                 if urllib.request._parse_proxy(proxy_url)[0] is None:
                     # Scheme-less proxies are not supported
-                    raise UnsupportedRequest(
-                        f'Proxy "{proxy_url}" missing scheme')
+                    raise UnsupportedRequest(f'Proxy "{proxy_url}" missing scheme')
             except ValueError as e:
-                # parse_proxy may raise on some invalid proxy urls such as
-                # "/a/b/c"
-                raise UnsupportedRequest(
-                    f'Invalid proxy url "{proxy_url}": {e}')
+                # parse_proxy may raise on some invalid proxy urls such as "/a/b/c"
+                raise UnsupportedRequest(f'Invalid proxy url "{proxy_url}": {e}')
 
             scheme = urllib.parse.urlparse(proxy_url).scheme.lower()
             if scheme not in self._SUPPORTED_PROXY_SCHEMES:
@@ -343,12 +332,10 @@ class RequestHandler(abc.ABC):
 
     def _check_extensions(self, extensions):
         """Check extensions for unsupported extensions. Subclasses should extend this."""
-        assert isinstance(extensions.get('cookiejar'),
-                          (YoutubeDLCookieJar, NoneType))
+        assert isinstance(extensions.get('cookiejar'), (YoutubeDLCookieJar, NoneType))
         assert isinstance(extensions.get('timeout'), (float, int, NoneType))
         assert isinstance(extensions.get('legacy_ssl'), (bool, NoneType))
-        assert isinstance(extensions.get(
-            'keep_header_casing'), (bool, NoneType))
+        assert isinstance(extensions.get('keep_header_casing'), (bool, NoneType))
 
     def _validate(self, request):
         self._check_url_scheme(request)
@@ -357,8 +344,7 @@ class RequestHandler(abc.ABC):
         self._check_extensions(extensions)
         if extensions:
             # TODO: add support for optional extensions
-            raise UnsupportedRequest(
-                f'Unsupported extensions: {", ".join(extensions.keys())}')
+            raise UnsupportedRequest(f'Unsupported extensions: {", ".join(extensions.keys())}')
 
     @wrap_request_errors
     def validate(self, request: Request):
@@ -386,8 +372,7 @@ class RequestHandler(abc.ABC):
 
     @classproperty
     def RH_KEY(cls):
-        assert cls.__name__.endswith(
-            'RH'), 'RequestHandler class names must end with "RH"'
+        assert cls.__name__.endswith('RH'), 'RequestHandler class names must end with "RH"'
         return cls.__name__[:-2]
 
     def __enter__(self):
@@ -469,11 +454,9 @@ class Request:
     def data(self, data: RequestData):
         # Try catch some common mistakes
         if data is not None and (
-            not isinstance(
-                data, (bytes, io.IOBase, Iterable)) or isinstance(
-                data, (str, Mapping))):
-            raise TypeError(
-                'data must be bytes, iterable of bytes, or a file-like object')
+            not isinstance(data, (bytes, io.IOBase, Iterable)) or isinstance(data, (str, Mapping))
+        ):
+            raise TypeError('data must be bytes, iterable of bytes, or a file-like object')
 
         if data == self._data and self._data is None:
             self.headers.pop('Content-Length', None)
@@ -504,13 +487,7 @@ class Request:
         else:
             raise TypeError('headers must be a mapping')
 
-    def update(
-            self,
-            url=None,
-            data=None,
-            headers=None,
-            query=None,
-            extensions=None):
+    def update(self, url=None, data=None, headers=None, query=None, extensions=None):
         self.data = data if data is not None else self.data
         self.headers.update(headers or {})
         self.extensions.update(extensions or {})
@@ -575,8 +552,7 @@ class Response(io.IOBase):
 
     def read(self, amt: int | None = None) -> bytes:
         # Expected errors raised here should be of type RequestError or subclasses.
-        # Subclasses should redefine this method with more precise error
-        # handling.
+        # Subclasses should redefine this method with more precise error handling.
         try:
             return self.fp.read(amt)
         except Exception as e:
@@ -601,33 +577,23 @@ class Response(io.IOBase):
     # The following methods are for compatability reasons and are deprecated
     @property
     def code(self):
-        deprecation_warning(
-            'Response.code is deprecated, use Response.status',
-            stacklevel=2)
+        deprecation_warning('Response.code is deprecated, use Response.status', stacklevel=2)
         return self.status
 
     def getcode(self):
-        deprecation_warning(
-            'Response.getcode() is deprecated, use Response.status',
-            stacklevel=2)
+        deprecation_warning('Response.getcode() is deprecated, use Response.status', stacklevel=2)
         return self.status
 
     def geturl(self):
-        deprecation_warning(
-            'Response.geturl() is deprecated, use Response.url',
-            stacklevel=2)
+        deprecation_warning('Response.geturl() is deprecated, use Response.url', stacklevel=2)
         return self.url
 
     def info(self):
-        deprecation_warning(
-            'Response.info() is deprecated, use Response.headers',
-            stacklevel=2)
+        deprecation_warning('Response.info() is deprecated, use Response.headers', stacklevel=2)
         return self.headers
 
     def getheader(self, name, default=None):
-        deprecation_warning(
-            'Response.getheader() is deprecated, use Response.get_header',
-            stacklevel=2)
+        deprecation_warning('Response.getheader() is deprecated, use Response.get_header', stacklevel=2)
         return self.get_header(name, default)
 
 

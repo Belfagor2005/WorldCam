@@ -145,16 +145,13 @@ class RTSIE(SRGSSRIE):  # XXX: Do not subclass from concrete IE
                     page)
                 if not videos:
                     videos = re.findall(
-                        r'(?s)<iframe[^>]+class="srg-player"[^>]+src="[^"]+urn:([^"]+)"', page)
+                        r'(?s)<iframe[^>]+class="srg-player"[^>]+src="[^"]+urn:([^"]+)"',
+                        page)
                 if videos:
-                    entries = [
-                        self.url_result(
-                            f'srgssr:{video_urn}',
-                            'SRGSSR') for video_urn in videos]
+                    entries = [self.url_result(f'srgssr:{video_urn}', 'SRGSSR') for video_urn in videos]
 
             if entries:
-                return self.playlist_result(
-                    entries, media_id, all_info.get('title'))
+                return self.playlist_result(entries, media_id, all_info.get('title'))
 
             internal_id = self._html_search_regex(
                 r'<(?:video|audio) data-id="([0-9]+)"', page,
@@ -183,21 +180,14 @@ class RTSIE(SRGSSRIE):  # XXX: Do not subclass from concrete IE
                 continue
             ext = determine_ext(format_url)
             if ext in ('m3u8', 'f4m'):
-                format_url = self._get_tokenized_src(
-                    format_url, media_id, format_id)
+                format_url = self._get_tokenized_src(format_url, media_id, format_id)
                 if ext == 'f4m':
                     formats.extend(self._extract_f4m_formats(
                         format_url + ('?' if '?' not in format_url else '&') + 'hdcore=3.4.0',
                         media_id, f4m_id=format_id, fatal=False))
                 else:
-                    formats.extend(
-                        self._extract_m3u8_formats(
-                            format_url,
-                            media_id,
-                            'mp4',
-                            'm3u8_native',
-                            m3u8_id=format_id,
-                            fatal=False))
+                    formats.extend(self._extract_m3u8_formats(
+                        format_url, media_id, 'mp4', 'm3u8_native', m3u8_id=format_id, fatal=False))
             else:
                 formats.append({
                     'format_id': format_id,
@@ -205,8 +195,7 @@ class RTSIE(SRGSSRIE):  # XXX: Do not subclass from concrete IE
                     'tbr': extract_bitrate(format_url),
                 })
 
-        download_base = 'http://rtsww{}-d.rts.ch/'.format(
-            '-a' if media_type == 'audio' else '')
+        download_base = 'http://rtsww{}-d.rts.ch/'.format('-a' if media_type == 'audio' else '')
         for media in info.get('media', []):
             media_url = media.get('url')
             if not media_url or re.match(r'https?://', media_url):
@@ -224,8 +213,7 @@ class RTSIE(SRGSSRIE):  # XXX: Do not subclass from concrete IE
 
         self._check_formats(formats, media_id)
 
-        duration = info.get('duration') or info.get(
-            'cutout') or info.get('cutduration')
+        duration = info.get('duration') or info.get('cutout') or info.get('cutduration')
         if isinstance(duration, str):
             duration = parse_duration(duration)
 
