@@ -63,7 +63,6 @@ from Screens.Screen import Screen
 from . import (
     _,
     AgentRequest,
-    # developer_url,
     installer_url,
     paypal,
 )
@@ -83,7 +82,6 @@ from .utils import (
     language_flag_mapping,
     set_current_language,
     urlopen,
-    # _sort_by_name,
 )
 
 # Global constants
@@ -153,8 +151,6 @@ class WebcamList(MenuList):
 def wcListEntry(name, idx, is_category=False, is_country=False):
     """
     Create an entry for the webcam list with text and icon based on screen width.
-    :param name: Name of the webcam.
-    :return: List representing the entry.
     """
     res = [name]
     lname = name.lower()
@@ -267,7 +263,7 @@ class WebcamBaseScreen(Screen):
 
     def load_skin(self):
         # skin_file = self.__class__.__name__ + ".xml"
-        skin_file = "WorldCamMainScreen.xml"
+        skin_file = "WorldCamMainScreen.xml"  # but one skin for all is better
         skin_path = join(self.skin_path, skin_file)
         try:
             with codecs.open(skin_path, "r", encoding="utf-8") as f:
@@ -1048,7 +1044,7 @@ class WorldCamCountryScreen(WebcamBaseScreen):
         disable_summary(self)
         self.logger.info("Initializing WorldCamCountryScreen")
         self.scraper = SkylineScraper(lang if lang else "en")
-        self["title"] = Label(_("Country"))  # Fixed typo
+        self["title"] = Label(_("Country"))
         self["list"] = WebcamList([])
         self["flag_icon"] = Pixmap()
         self["language_label"] = Label(self.lang.upper())
