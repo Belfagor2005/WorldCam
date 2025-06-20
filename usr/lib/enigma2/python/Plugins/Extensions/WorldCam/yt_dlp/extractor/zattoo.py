@@ -17,11 +17,14 @@ class ZattooPlatformBaseIE(InfoExtractor):
     _power_guide_hash = None
 
     def _host_url(self):
-        return 'https://%s' % (self._API_HOST if hasattr(self, '_API_HOST') else self._HOST)
+        return 'https://%s' % (self._API_HOST if hasattr(self,
+                               '_API_HOST') else self._HOST)
 
     def _real_initialize(self):
         if not self._power_guide_hash:
-            self.raise_login_required('An account is needed to access this media', method='password')
+            self.raise_login_required(
+                'An account is needed to access this media',
+                method='password')
 
     def _perform_login(self, username, password):
         try:
@@ -46,7 +49,9 @@ class ZattooPlatformBaseIE(InfoExtractor):
 
     def _initialize_pre_login(self):
         session_token = self._download_json(
-            f'{self._host_url()}/token.json', None, 'Downloading session token')['session_token']
+            f'{self._host_url()}/token.json',
+            None,
+            'Downloading session token')['session_token']
 
         # Will setup appropriate cookies
         self._request_webpage(
@@ -61,7 +66,9 @@ class ZattooPlatformBaseIE(InfoExtractor):
 
     def _extract_video_id_from_recording(self, recid):
         playlist = self._download_json(
-            f'{self._host_url()}/zapi/v2/playlist', recid, 'Downloading playlist')
+            f'{self._host_url()}/zapi/v2/playlist',
+            recid,
+            'Downloading playlist')
         try:
             return next(
                 str(item['program_id']) for item in playlist['recordings']
@@ -134,7 +141,15 @@ class ZattooPlatformBaseIE(InfoExtractor):
         }
         return data['terms_catalog'][0]['terms'][0]['token'], data['type'], info_dict
 
-    def _extract_formats(self, cid, video_id, record_id=None, ondemand_id=None, ondemand_termtoken=None, ondemand_type=None, is_live=False):
+    def _extract_formats(
+            self,
+            cid,
+            video_id,
+            record_id=None,
+            ondemand_id=None,
+            ondemand_termtoken=None,
+            ondemand_type=None,
+            is_live=False):
         postdata_common = {
             'https_watch_urls': True,
         }
@@ -178,7 +193,8 @@ class ZattooPlatformBaseIE(InfoExtractor):
                     continue
                 audio_channel = watch.get('audio_channel')
                 preference = 1 if audio_channel == 'A' else None
-                format_id = join_nonempty(stream_type, watch.get('maxrate'), audio_channel)
+                format_id = join_nonempty(
+                    stream_type, watch.get('maxrate'), audio_channel)
                 if stream_type.startswith('dash'):
                     this_formats, subs = self._extract_mpd_formats_and_subtitles(
                         watch_url, video_id, mpd_id=format_id, fatal=False)
@@ -204,7 +220,8 @@ class ZattooPlatformBaseIE(InfoExtractor):
 
     def _extract_video(self, video_id, record_id=None):
         cid, info_dict = self._extract_cid_and_video_info(video_id)
-        info_dict['formats'], info_dict['subtitles'] = self._extract_formats(cid, video_id, record_id=record_id)
+        info_dict['formats'], info_dict['subtitles'] = self._extract_formats(
+            cid, video_id, record_id=record_id)
         return info_dict
 
     def _extract_live(self, channel_name):
@@ -221,11 +238,13 @@ class ZattooPlatformBaseIE(InfoExtractor):
     def _extract_record(self, record_id):
         video_id = self._extract_video_id_from_recording(record_id)
         cid, info_dict = self._extract_cid_and_video_info(video_id)
-        info_dict['formats'], info_dict['subtitles'] = self._extract_formats(cid, video_id, record_id=record_id)
+        info_dict['formats'], info_dict['subtitles'] = self._extract_formats(
+            cid, video_id, record_id=record_id)
         return info_dict
 
     def _extract_ondemand(self, ondemand_id):
-        ondemand_termtoken, ondemand_type, info_dict = self._extract_ondemand_info(ondemand_id)
+        ondemand_termtoken, ondemand_type, info_dict = self._extract_ondemand_info(
+            ondemand_id)
         info_dict['formats'], info_dict['subtitles'] = self._extract_formats(
             None, ondemand_id, ondemand_id=ondemand_id,
             ondemand_termtoken=ondemand_termtoken, ondemand_type=ondemand_type)
@@ -250,34 +269,40 @@ class ZattooBaseIE(ZattooPlatformBaseIE):
 
 
 class ZattooIE(ZattooBaseIE):
-    _VALID_URL = _create_valid_url(ZattooBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        ZattooBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
-    _TESTS = [{
-        'url': 'https://zattoo.com/program/zdf/250170418',
-        'info_dict': {
-            'id': '250170418',
-            'ext': 'mp4',
-            'title': 'Markus Lanz',
-            'description': 'md5:e41cb1257de008ca62a73bb876ffa7fc',
-            'thumbnail': 're:http://images.zattic.com/cms/.+/format_480x360.jpg',
-            'creator': 'ZDF HD',
-            'release_year': 2022,
-            'episode': 'Folge 1655',
-            'categories': 'count:1',
-            'tags': 'count:2',
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://zattoo.com/program/daserste/210177916',
-        'only_matching': True,
-    }, {
-        'url': 'https://zattoo.com/guide/german?channel=srf1&program=169860555',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://zattoo.com/program/zdf/250170418',
+               'info_dict': {'id': '250170418',
+                             'ext': 'mp4',
+                             'title': 'Markus Lanz',
+                             'description': 'md5:e41cb1257de008ca62a73bb876ffa7fc',
+                             'thumbnail': 're:http://images.zattic.com/cms/.+/format_480x360.jpg',
+                             'creator': 'ZDF HD',
+                             'release_year': 2022,
+                             'episode': 'Folge 1655',
+                             'categories': 'count:1',
+                             'tags': 'count:2',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://zattoo.com/program/daserste/210177916',
+               'only_matching': True,
+               },
+              {'url': 'https://zattoo.com/guide/german?channel=srf1&program=169860555',
+               'only_matching': True,
+               }]
 
 
 class ZattooLiveIE(ZattooBaseIE):
-    _VALID_URL = _create_valid_url(ZattooBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        ZattooBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://zattoo.com/channels/german?channel=srf_zwei',
@@ -293,7 +318,11 @@ class ZattooLiveIE(ZattooBaseIE):
 
 
 class ZattooMoviesIE(ZattooBaseIE):
-    _VALID_URL = _create_valid_url(ZattooBaseIE._HOST, r'\w+', 'movie_id', 'vod/movies')
+    _VALID_URL = _create_valid_url(
+        ZattooBaseIE._HOST,
+        r'\w+',
+        'movie_id',
+        'vod/movies')
     _TYPE = 'ondemand'
     _TESTS = [{
         'url': 'https://zattoo.com/vod/movies/7521',
@@ -323,7 +352,11 @@ class NetPlusTVBaseIE(ZattooPlatformBaseIE):
 
 
 class NetPlusTVIE(NetPlusTVBaseIE):
-    _VALID_URL = _create_valid_url(NetPlusTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        NetPlusTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://netplus.tv/program/daserste/210177916',
@@ -335,7 +368,11 @@ class NetPlusTVIE(NetPlusTVBaseIE):
 
 
 class NetPlusTVLiveIE(NetPlusTVBaseIE):
-    _VALID_URL = _create_valid_url(NetPlusTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        NetPlusTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://netplus.tv/channels/german?channel=srf_zwei',
@@ -368,7 +405,11 @@ class MNetTVBaseIE(ZattooPlatformBaseIE):
 
 
 class MNetTVIE(MNetTVBaseIE):
-    _VALID_URL = _create_valid_url(MNetTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        MNetTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://tvplus.m-net.de/program/daserste/210177916',
@@ -380,7 +421,11 @@ class MNetTVIE(MNetTVBaseIE):
 
 
 class MNetTVLiveIE(MNetTVBaseIE):
-    _VALID_URL = _create_valid_url(MNetTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        MNetTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://tvplus.m-net.de/channels/german?channel=srf_zwei',
@@ -413,7 +458,11 @@ class WalyTVBaseIE(ZattooPlatformBaseIE):
 
 
 class WalyTVIE(WalyTVBaseIE):
-    _VALID_URL = _create_valid_url(WalyTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        WalyTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://player.waly.tv/program/daserste/210177916',
@@ -425,7 +474,11 @@ class WalyTVIE(WalyTVBaseIE):
 
 
 class WalyTVLiveIE(WalyTVBaseIE):
-    _VALID_URL = _create_valid_url(WalyTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        WalyTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://player.waly.tv/channels/german?channel=srf_zwei',
@@ -459,7 +512,11 @@ class BBVTVBaseIE(ZattooPlatformBaseIE):
 
 
 class BBVTVIE(BBVTVBaseIE):
-    _VALID_URL = _create_valid_url(BBVTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        BBVTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://bbv-tv.net/program/daserste/210177916',
@@ -471,7 +528,8 @@ class BBVTVIE(BBVTVBaseIE):
 
 
 class BBVTVLiveIE(BBVTVBaseIE):
-    _VALID_URL = _create_valid_url(BBVTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        BBVTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://bbv-tv.net/channels/german?channel=srf_zwei',
@@ -505,7 +563,11 @@ class VTXTVBaseIE(ZattooPlatformBaseIE):
 
 
 class VTXTVIE(VTXTVBaseIE):
-    _VALID_URL = _create_valid_url(VTXTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        VTXTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://vtxtv.ch/program/daserste/210177916',
@@ -517,7 +579,8 @@ class VTXTVIE(VTXTVBaseIE):
 
 
 class VTXTVLiveIE(VTXTVBaseIE):
-    _VALID_URL = _create_valid_url(VTXTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        VTXTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://vtxtv.ch/channels/german?channel=srf_zwei',
@@ -550,7 +613,11 @@ class GlattvisionTVBaseIE(ZattooPlatformBaseIE):
 
 
 class GlattvisionTVIE(GlattvisionTVBaseIE):
-    _VALID_URL = _create_valid_url(GlattvisionTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        GlattvisionTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://iptv.glattvision.ch/program/daserste/210177916',
@@ -562,7 +629,11 @@ class GlattvisionTVIE(GlattvisionTVBaseIE):
 
 
 class GlattvisionTVLiveIE(GlattvisionTVBaseIE):
-    _VALID_URL = _create_valid_url(GlattvisionTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        GlattvisionTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://iptv.glattvision.ch/channels/german?channel=srf_zwei',
@@ -574,11 +645,13 @@ class GlattvisionTVLiveIE(GlattvisionTVBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if GlattvisionTVIE.suitable(url) else super().suitable(url)
+        return False if GlattvisionTVIE.suitable(
+            url) else super().suitable(url)
 
 
 class GlattvisionTVRecordingsIE(GlattvisionTVBaseIE):
-    _VALID_URL = _create_valid_url(GlattvisionTVBaseIE._HOST, r'\d+', 'recording')
+    _VALID_URL = _create_valid_url(
+        GlattvisionTVBaseIE._HOST, r'\d+', 'recording')
     _TYPE = 'record'
     _TESTS = [{
         'url': 'https://iptv.glattvision.ch/recordings?recording=193615508',
@@ -596,7 +669,11 @@ class SAKTVBaseIE(ZattooPlatformBaseIE):
 
 
 class SAKTVIE(SAKTVBaseIE):
-    _VALID_URL = _create_valid_url(SAKTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        SAKTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://saktv.ch/program/daserste/210177916',
@@ -608,7 +685,8 @@ class SAKTVIE(SAKTVBaseIE):
 
 
 class SAKTVLiveIE(SAKTVBaseIE):
-    _VALID_URL = _create_valid_url(SAKTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        SAKTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://saktv.ch/channels/german?channel=srf_zwei',
@@ -641,7 +719,11 @@ class EWETVBaseIE(ZattooPlatformBaseIE):
 
 
 class EWETVIE(EWETVBaseIE):
-    _VALID_URL = _create_valid_url(EWETVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        EWETVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://tvonline.ewe.de/program/daserste/210177916',
@@ -653,7 +735,8 @@ class EWETVIE(EWETVBaseIE):
 
 
 class EWETVLiveIE(EWETVBaseIE):
-    _VALID_URL = _create_valid_url(EWETVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        EWETVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://tvonline.ewe.de/channels/german?channel=srf_zwei',
@@ -687,7 +770,11 @@ class QuantumTVBaseIE(ZattooPlatformBaseIE):
 
 
 class QuantumTVIE(QuantumTVBaseIE):
-    _VALID_URL = _create_valid_url(QuantumTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        QuantumTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://quantum-tv.com/program/daserste/210177916',
@@ -699,7 +786,11 @@ class QuantumTVIE(QuantumTVBaseIE):
 
 
 class QuantumTVLiveIE(QuantumTVBaseIE):
-    _VALID_URL = _create_valid_url(QuantumTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        QuantumTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://quantum-tv.com/channels/german?channel=srf_zwei',
@@ -732,7 +823,11 @@ class OsnatelTVBaseIE(ZattooPlatformBaseIE):
 
 
 class OsnatelTVIE(OsnatelTVBaseIE):
-    _VALID_URL = _create_valid_url(OsnatelTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        OsnatelTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://tvonline.osnatel.de/program/daserste/210177916',
@@ -744,7 +839,11 @@ class OsnatelTVIE(OsnatelTVBaseIE):
 
 
 class OsnatelTVLiveIE(OsnatelTVBaseIE):
-    _VALID_URL = _create_valid_url(OsnatelTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        OsnatelTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://tvonline.osnatel.de/channels/german?channel=srf_zwei',
@@ -778,7 +877,11 @@ class EinsUndEinsTVBaseIE(ZattooPlatformBaseIE):
 
 
 class EinsUndEinsTVIE(EinsUndEinsTVBaseIE):
-    _VALID_URL = _create_valid_url(EinsUndEinsTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        EinsUndEinsTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://1und1.tv/program/daserste/210177916',
@@ -790,7 +893,11 @@ class EinsUndEinsTVIE(EinsUndEinsTVBaseIE):
 
 
 class EinsUndEinsTVLiveIE(EinsUndEinsTVBaseIE):
-    _VALID_URL = _create_valid_url(EinsUndEinsTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        EinsUndEinsTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://1und1.tv/channels/german?channel=srf_zwei',
@@ -802,11 +909,13 @@ class EinsUndEinsTVLiveIE(EinsUndEinsTVBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if EinsUndEinsTVIE.suitable(url) else super().suitable(url)
+        return False if EinsUndEinsTVIE.suitable(
+            url) else super().suitable(url)
 
 
 class EinsUndEinsTVRecordingsIE(EinsUndEinsTVBaseIE):
-    _VALID_URL = _create_valid_url(EinsUndEinsTVBaseIE._HOST, r'\d+', 'recording')
+    _VALID_URL = _create_valid_url(
+        EinsUndEinsTVBaseIE._HOST, r'\d+', 'recording')
     _TYPE = 'record'
     _TESTS = [{
         'url': 'https://1und1.tv/recordings?recording=193615508',
@@ -823,7 +932,11 @@ class SaltTVBaseIE(ZattooPlatformBaseIE):
 
 
 class SaltTVIE(SaltTVBaseIE):
-    _VALID_URL = _create_valid_url(SaltTVBaseIE._HOST, r'\d+', 'program', '(?:program|watch)/[^/]+')
+    _VALID_URL = _create_valid_url(
+        SaltTVBaseIE._HOST,
+        r'\d+',
+        'program',
+        '(?:program|watch)/[^/]+')
     _TYPE = 'video'
     _TESTS = [{
         'url': 'https://tv.salt.ch/program/daserste/210177916',
@@ -835,7 +948,11 @@ class SaltTVIE(SaltTVBaseIE):
 
 
 class SaltTVLiveIE(SaltTVBaseIE):
-    _VALID_URL = _create_valid_url(SaltTVBaseIE._HOST, r'[^/?&#]+', 'channel', 'live')
+    _VALID_URL = _create_valid_url(
+        SaltTVBaseIE._HOST,
+        r'[^/?&#]+',
+        'channel',
+        'live')
     _TYPE = 'live'
     _TESTS = [{
         'url': 'https://tv.salt.ch/channels/german?channel=srf_zwei',

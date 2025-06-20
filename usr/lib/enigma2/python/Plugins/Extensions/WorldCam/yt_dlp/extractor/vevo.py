@@ -33,7 +33,8 @@ class VevoIE(VevoBaseIE):
            https?://tv\.vevo\.com/watch/artist/(?:[^/]+)/|
            vevo:)
         (?P<id>[^&?#]+)'''
-    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//(?:cache\.)?vevo\.com/.+?)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//(?:cache\.)?vevo\.com/.+?)\1']
 
     _TESTS = [{
         'url': 'http://www.vevo.com/watch/hurts/somebody-to-die-for/GB1101300280',
@@ -170,21 +171,29 @@ class VevoIE(VevoBaseIE):
                 'Content-Type': 'application/json',
             })
 
-        if re.search(r'(?i)THIS PAGE IS CURRENTLY UNAVAILABLE IN YOUR REGION', webpage):
+        if re.search(
+            r'(?i)THIS PAGE IS CURRENTLY UNAVAILABLE IN YOUR REGION',
+                webpage):
             self.raise_geo_restricted(
                 f'{self.IE_NAME} said: This page is currently unavailable in your region')
 
         auth_info = self._parse_json(webpage, video_id)
-        self._api_url_template = self.http_scheme() + '//apiv2.vevo.com/%s?token=' + auth_info['legacy_token']
+        self._api_url_template = self.http_scheme() + '//apiv2.vevo.com/%s?token=' + \
+            auth_info['legacy_token']
 
     def _call_api(self, path, *args, **kwargs):
         try:
-            data = self._download_json(self._api_url_template % path, *args, **kwargs)
+            data = self._download_json(
+                self._api_url_template %
+                path, *args, **kwargs)
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError):
-                errors = self._parse_json(e.cause.response.read().decode(), None)['errors']
-                error_message = ', '.join([error['message'] for error in errors])
-                raise ExtractorError(f'{self.IE_NAME} said: {error_message}', expected=True)
+                errors = self._parse_json(
+                    e.cause.response.read().decode(), None)['errors']
+                error_message = ', '.join(
+                    [error['message'] for error in errors])
+                raise ExtractorError(
+                    f'{self.IE_NAME} said: {error_message}', expected=True)
             raise
         return data
 
@@ -228,7 +237,8 @@ class VevoIE(VevoBaseIE):
 
         formats = []
         for video_version in video_versions:
-            version = self._VERSIONS.get(video_version.get('version'), 'generic')
+            version = self._VERSIONS.get(
+                video_version.get('version'), 'generic')
             version_url = video_version.get('url')
             if not version_url:
                 continue
@@ -295,10 +305,15 @@ class VevoIE(VevoBaseIE):
             'title': title,
             'formats': formats,
             'thumbnail': video_info.get('imageUrl') or video_info.get('thumbnailUrl'),
-            'timestamp': parse_iso8601(video_info.get('releaseDate')),
+            'timestamp': parse_iso8601(
+                video_info.get('releaseDate')),
             'uploader': uploader,
-            'duration': int_or_none(video_info.get('duration')),
-            'view_count': int_or_none(video_info.get('views', {}).get('total')),
+            'duration': int_or_none(
+                video_info.get('duration')),
+            'view_count': int_or_none(
+                video_info.get(
+                    'views',
+                    {}).get('total')),
             'age_limit': age_limit,
             'track': track,
             'artist': uploader,
@@ -338,7 +353,8 @@ class VevoPlaylistIE(VevoBaseIE):
             if video_id:
                 return self.url_result(f'vevo:{video_id}', VevoIE.ie_key())
 
-        playlists = self._extract_json(webpage, playlist_id)['default'][f'{playlist_kind}s']
+        playlists = self._extract_json(webpage, playlist_id)[
+            'default'][f'{playlist_kind}s']
 
         playlist = (next(iter(playlists.values()))
                     if playlist_kind == 'playlist' else playlists[playlist_id])

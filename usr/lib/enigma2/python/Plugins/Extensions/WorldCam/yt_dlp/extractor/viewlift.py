@@ -38,22 +38,31 @@ class ViewLiftBaseIE(InfoExtractor):
 
         cookies = self._get_cookies(url)
         if cookies and cookies.get('token'):
-            self._TOKENS[site] = self._search_regex(r'22authorizationToken\%22:\%22([^\%]+)\%22', cookies['token'].value, 'token')
+            self._TOKENS[site] = self._search_regex(
+                r'22authorizationToken\%22:\%22([^\%]+)\%22', cookies['token'].value, 'token')
         if not self._TOKENS.get(site):
-            self.raise_login_required('Cookies (not necessarily logged in) are needed to download from this website', method='cookies')
+            self.raise_login_required(
+                'Cookies (not necessarily logged in) are needed to download from this website',
+                method='cookies')
 
     def _call_api(self, site, path, video_id, url, query):
         self._fetch_token(site, url)
         try:
             return self._download_json(
-                self._API_BASE + path, video_id, headers={'Authorization': self._TOKENS.get(site)}, query=query)
+                self._API_BASE + path,
+                video_id,
+                headers={
+                    'Authorization': self._TOKENS.get(site)},
+                query=query)
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
                 webpage = e.cause.response.read().decode()
                 try:
-                    error_message = traverse_obj(json.loads(webpage), 'errorMessage', 'message')
+                    error_message = traverse_obj(
+                        json.loads(webpage), 'errorMessage', 'message')
                 except json.JSONDecodeError:
-                    raise ExtractorError(f'{site} said: {webpage}', cause=e.cause)
+                    raise ExtractorError(
+                        f'{site} said: {webpage}', cause=e.cause)
                 if error_message:
                     if 'has not purchased' in error_message:
                         self.raise_login_required(method='cookies')
@@ -64,7 +73,8 @@ class ViewLiftBaseIE(InfoExtractor):
 class ViewLiftEmbedIE(ViewLiftBaseIE):
     IE_NAME = 'viewlift:embed'
     _VALID_URL = rf'https?://(?:(?:www|embed)\.)?(?P<domain>{ViewLiftBaseIE._DOMAINS_REGEX})/embed/player\?.*\bfilmId=(?P<id>[\da-f]{{8}}-(?:[\da-f]{{4}}-){{3}}[\da-f]{{12}})'
-    _EMBED_REGEX = [rf'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//(?:embed\.)?(?:{ViewLiftBaseIE._DOMAINS_REGEX})/embed/player.+?)\1']
+    _EMBED_REGEX = [
+        rf'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//(?:embed\.)?(?:{ViewLiftBaseIE._DOMAINS_REGEX})/embed/player.+?)\1']
     _TESTS = [{
         'url': 'http://embed.snagfilms.com/embed/player?filmId=74849a00-85a9-11e1-9660-123139220831&w=500',
         'md5': '2924e9215c6eff7a55ed35b72276bd93',
@@ -128,7 +138,10 @@ class ViewLiftEmbedIE(ViewLiftBaseIE):
             })
 
         subs = {}
-        for sub in traverse_obj(content_data, ('contentDetails', 'closedCaptions')) or []:
+        for sub in traverse_obj(
+            content_data,
+            ('contentDetails',
+             'closedCaptions')) or []:
             sub_url = sub.get('url')
             if not sub_url:
                 continue
@@ -327,7 +340,8 @@ class ViewLiftIE(ViewLiftBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if ViewLiftEmbedIE.suitable(url) else super().suitable(url)
+        return False if ViewLiftEmbedIE.suitable(
+            url) else super().suitable(url)
 
     def _show_entries(self, domain, seasons):
         for season in seasons:
@@ -349,11 +363,15 @@ class ViewLiftIE(ViewLiftBaseIE):
                 'site': site,
             })['modules']
 
-        seasons = next((m['contentData'][0]['seasons'] for m in modules if m.get('moduleType') == 'ShowDetailModule'), None)
+        seasons = next((m['contentData'][0]['seasons'] for m in modules if m.get(
+            'moduleType') == 'ShowDetailModule'), None)
         if seasons:
-            return self.playlist_result(self._show_entries(domain, seasons), display_id)
+            return self.playlist_result(
+                self._show_entries(
+                    domain, seasons), display_id)
 
-        film_id = next(m['contentData'][0]['gist']['id'] for m in modules if m.get('moduleType') == 'VideoDetailModule')
+        film_id = next(m['contentData'][0]['gist']['id']
+                       for m in modules if m.get('moduleType') == 'VideoDetailModule')
         return {
             '_type': 'url_transparent',
             'url': f'http://{domain}/embed/player?filmId={film_id}',
