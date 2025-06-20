@@ -39,7 +39,8 @@ class HttpFD(FileDownloader):
         ctx.stream = None
 
         # Disable compression
-        headers = HTTPHeaderDict({'Accept-Encoding': 'identity'}, info_dict.get('http_headers'))
+        headers = HTTPHeaderDict(
+            {'Accept-Encoding': 'identity'}, info_dict.get('http_headers'))
 
         is_test = self.params.get('test', False)
         chunk_size = self._TEST_FILE_SIZE if is_test else (
@@ -73,8 +74,8 @@ class HttpFD(FileDownloader):
             pass
 
         def establish_connection():
-            ctx.chunk_size = (random.randint(int(chunk_size * 0.95), chunk_size)
-                              if not is_test and chunk_size else chunk_size)
+            ctx.chunk_size = (random.randint(int(chunk_size * 0.95),
+                                             chunk_size) if not is_test and chunk_size else chunk_size)
             if ctx.resume_len > 0:
                 range_start = ctx.resume_len
                 if req_start is not None:
@@ -94,9 +95,11 @@ class HttpFD(FileDownloader):
             if ctx.chunk_size:
                 chunk_aware_end = range_start + ctx.chunk_size - 1
                 # we're not allowed to download outside Range
-                range_end = chunk_aware_end if req_end is None else min(chunk_aware_end, req_end)
+                range_end = chunk_aware_end if req_end is None else min(
+                    chunk_aware_end, req_end)
             elif req_end is not None:
-                # there's no need for chunked downloads, so download until the end of Range
+                # there's no need for chunked downloads, so download until the
+                # end of Range
                 range_end = req_end
             else:
                 range_end = None
@@ -104,7 +107,8 @@ class HttpFD(FileDownloader):
             if try_call(lambda: range_start > range_end):
                 ctx.resume_len = 0
                 ctx.open_mode = 'wb'
-                raise RetryDownload(Exception(f'Conflicting range. (start={range_start} > end={range_end})'))
+                raise RetryDownload(
+                    Exception(f'Conflicting range. (start={range_start} > end={range_end})'))
 
             if try_call(lambda: range_end >= ctx.content_len):
                 range_end = ctx.content_len - 1
@@ -123,8 +127,10 @@ class HttpFD(FileDownloader):
                 # https://github.com/ytdl-org/youtube-dl/issues/6057#issuecomment-126129799)
                 if has_range:
                     content_range = ctx.data.headers.get('Content-Range')
-                    content_range_start, content_range_end, content_len = parse_http_range(content_range)
-                    # Content-Range is present and matches requested Range, resume is possible
+                    content_range_start, content_range_end, content_len = parse_http_range(
+                        content_range)
+                    # Content-Range is present and matches requested Range,
+                    # resume is possible
                     if range_start == content_range_start and (
                             # Non-chunked download
                             not ctx.chunk_size
@@ -134,7 +140,8 @@ class HttpFD(FileDownloader):
                             or content_len < range_end):
                         ctx.content_len = content_len
                         if content_len or req_end:
-                            ctx.data_len = min(content_len or req_end, req_end or content_len) - (req_start or 0)
+                            ctx.data_len = min(
+                                content_len or req_end, req_end or content_len) - (req_start or 0)
                         return
                     # Content-Range is either not present or invalid. Assuming remote webserver is
                     # trying to send the whole file, resume is not possible, so wiping the local file
@@ -143,7 +150,8 @@ class HttpFD(FileDownloader):
                         self.report_unable_to_resume()
                     ctx.resume_len = 0
                     ctx.open_mode = 'wb'
-                ctx.data_len = ctx.content_len = int_or_none(ctx.data.headers.get('Content-length', None))
+                ctx.data_len = ctx.content_len = int_or_none(
+                    ctx.data.headers.get('Content-length', None))
             except HTTPError as err:
                 if err.status == 416:
                     # Unable to resume (requested range not satisfiable)
@@ -157,8 +165,8 @@ class HttpFD(FileDownloader):
                             raise
                     else:
                         # Examine the reported length
-                        if (content_length is not None
-                                and (ctx.resume_len - 100 < int(content_length) < ctx.resume_len + 100)):
+                        if (content_length is not None and (ctx.resume_len -
+                                                            100 < int(content_length) < ctx.resume_len + 100)):
                             # The file had already been fully downloaded.
                             # Explanation to the above condition: in issue #175 it was revealed that
                             # YouTube sometimes adds or removes a few bytes from the end of the file,
@@ -176,7 +184,8 @@ class HttpFD(FileDownloader):
                             }, info_dict)
                             raise SucceedDownload
                         else:
-                            # The length does not match, we start the download over
+                            # The length does not match, we start the download
+                            # over
                             self.report_unable_to_resume()
                             ctx.resume_len = 0
                             ctx.open_mode = 'wb'
@@ -201,7 +210,8 @@ class HttpFD(FileDownloader):
 
             if ctx.data.headers.get('Content-encoding'):
                 # Content-encoding is present, Content-length is not reliable anymore as we are
-                # doing auto decompression. (See: https://github.com/yt-dlp/yt-dlp/pull/6176)
+                # doing auto decompression. (See:
+                # https://github.com/yt-dlp/yt-dlp/pull/6176)
                 data_len = None
 
             # Range HTTP header may be ignored/unsupported by a webserver
@@ -209,7 +219,8 @@ class HttpFD(FileDownloader):
             # However, for a test we still would like to download just a piece of a file.
             # To achieve this we limit data_len to _TEST_FILE_SIZE and manually control
             # block size when downloading a file.
-            if is_test and (data_len is None or int(data_len) > self._TEST_FILE_SIZE):
+            if is_test and (data_len is None or int(
+                    data_len) > self._TEST_FILE_SIZE):
                 data_len = self._TEST_FILE_SIZE
 
             if data_len is not None:
@@ -229,7 +240,8 @@ class HttpFD(FileDownloader):
             block_size = ctx.block_size
             start = time.time()
 
-            # measure time over whole while-loop, so slow_down() and best_block_size() work together properly
+            # measure time over whole while-loop, so slow_down() and
+            # best_block_size() work together properly
             now = None  # needed for slow_down() in the first loop run
             before = start  # start measuring
 
@@ -247,7 +259,9 @@ class HttpFD(FileDownloader):
             while True:
                 try:
                     # Download and write
-                    data_block = ctx.data.read(block_size if not is_test else min(block_size, data_len - byte_counter))
+                    data_block = ctx.data.read(
+                        block_size if not is_test else min(
+                            block_size, data_len - byte_counter))
                 except TransportError as err:
                     retry(err)
 
@@ -269,11 +283,17 @@ class HttpFD(FileDownloader):
                         self.report_error(f'unable to open for writing: {err}')
                         return False
 
-                    if self.params.get('xattr_set_filesize', False) and data_len is not None:
+                    if self.params.get(
+                        'xattr_set_filesize',
+                            False) and data_len is not None:
                         try:
-                            write_xattr(ctx.tmpfilename, 'user.ytdl.filesize', str(data_len).encode())
+                            write_xattr(
+                                ctx.tmpfilename,
+                                'user.ytdl.filesize',
+                                str(data_len).encode())
                         except (XAttrUnavailableError, XAttrMetadataError) as err:
-                            self.report_error(f'unable to set filesize xattr: {err}')
+                            self.report_error(
+                                f'unable to set filesize xattr: {err}')
 
                 try:
                     ctx.stream.write(data_block)
@@ -291,16 +311,24 @@ class HttpFD(FileDownloader):
 
                 # Adjust block size
                 if not self.params.get('noresizebuffer', False):
-                    block_size = self.best_block_size(after - before, len(data_block))
+                    block_size = self.best_block_size(
+                        after - before, len(data_block))
 
                 before = after
 
                 # Progress message
-                speed = self.calc_speed(start, now, byte_counter - ctx.resume_len)
+                speed = self.calc_speed(
+                    start, now, byte_counter - ctx.resume_len)
                 if ctx.data_len is None:
                     eta = None
                 else:
-                    eta = self.calc_eta(start, time.time(), ctx.data_len - ctx.resume_len, byte_counter - ctx.resume_len)
+                    eta = self.calc_eta(
+                        start,
+                        time.time(),
+                        ctx.data_len -
+                        ctx.resume_len,
+                        byte_counter -
+                        ctx.resume_len)
 
                 self._hook_progress({
                     'status': 'downloading',
@@ -317,9 +345,11 @@ class HttpFD(FileDownloader):
                 if data_len is not None and byte_counter == data_len:
                     break
 
-                if speed and speed < (self.params.get('throttledratelimit') or 0):
+                if speed and speed < (
+                        self.params.get('throttledratelimit') or 0):
                     # The speed must stay below the limit for 3 seconds
-                    # This prevents raising error when the speed temporarily goes down
+                    # This prevents raising error when the speed temporarily
+                    # goes down
                     if ctx.throttle_start is None:
                         ctx.throttle_start = now
                     elif now - ctx.throttle_start > 3:
@@ -349,7 +379,9 @@ class HttpFD(FileDownloader):
 
             # Update file modification time
             if self.params.get('updatetime', True):
-                info_dict['filetime'] = self.try_utime(ctx.filename, ctx.data.headers.get('last-modified', None))
+                info_dict['filetime'] = self.try_utime(
+                    ctx.filename, ctx.data.headers.get(
+                        'last-modified', None))
 
             self._hook_progress({
                 'downloaded_bytes': byte_counter,
@@ -362,7 +394,9 @@ class HttpFD(FileDownloader):
 
             return True
 
-        for retry in RetryManager(self.params.get('retries'), self.report_retry):
+        for retry in RetryManager(
+                self.params.get('retries'),
+                self.report_retry):
             try:
                 establish_connection()
                 return download()

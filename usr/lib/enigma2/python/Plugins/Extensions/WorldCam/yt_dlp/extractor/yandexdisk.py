@@ -32,26 +32,24 @@ class YandexDiskIE(InfoExtractor):
                 )
         )/(?:[di]/|public.*?\bhash=)(?P<id>[^/?#&]+)'''
 
-    _TESTS = [{
-        'url': 'https://yadi.sk/i/VdOeDou8eZs6Y',
-        'md5': 'a4a8d52958c8fddcf9845935070402ae',
-        'info_dict': {
-            'id': 'VdOeDou8eZs6Y',
-            'ext': 'mp4',
-            'title': '4.mp4',
-            'duration': 168.6,
-            'uploader': 'y.botova',
-            'uploader_id': '300043621',
-            'view_count': int,
-        },
-        'expected_warnings': ['Unable to download JSON metadata'],
-    }, {
-        'url': 'https://yadi.sk/d/h3WAXvDS3Li3Ce',
-        'only_matching': True,
-    }, {
-        'url': 'https://yadi.sk/public?hash=5DZ296JK9GWCLp02f6jrObjnctjRxMs8L6%2B%2FuhNqk38%3D',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://yadi.sk/i/VdOeDou8eZs6Y',
+               'md5': 'a4a8d52958c8fddcf9845935070402ae',
+               'info_dict': {'id': 'VdOeDou8eZs6Y',
+                             'ext': 'mp4',
+                             'title': '4.mp4',
+                             'duration': 168.6,
+                             'uploader': 'y.botova',
+                             'uploader_id': '300043621',
+                             'view_count': int,
+                             },
+               'expected_warnings': ['Unable to download JSON metadata'],
+               },
+              {'url': 'https://yadi.sk/d/h3WAXvDS3Li3Ce',
+               'only_matching': True,
+               },
+              {'url': 'https://yadi.sk/public?hash=5DZ296JK9GWCLp02f6jrObjnctjRxMs8L6%2B%2FuhNqk38%3D',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         domain, video_id = self._match_valid_url(url).groups()
@@ -69,9 +67,13 @@ class YandexDiskIE(InfoExtractor):
         if public_url:
             video_id = self._match_id(public_url)
 
-        source_url = (self._download_json(
-            'https://cloud-api.yandex.net/v1/disk/public/resources/download',
-            video_id, query={'public_key': url}, fatal=False) or {}).get('href')
+        source_url = (
+            self._download_json(
+                'https://cloud-api.yandex.net/v1/disk/public/resources/download',
+                video_id,
+                query={
+                    'public_key': url},
+                fatal=False) or {}).get('href')
         video_streams = resource.get('videoStreams') or {}
         video_hash = resource.get('hash') or url
         environment = store.get('environment') or {}
@@ -81,13 +83,21 @@ class YandexDiskIE(InfoExtractor):
             self._set_cookie(domain, 'yandexuid', yandexuid)
 
             def call_api(action):
-                return (self._download_json(
-                    urljoin(url, '/public/api/') + action, video_id, data=json.dumps({
-                        'hash': video_hash,
-                        'sk': sk,
-                    }).encode(), headers={
-                        'Content-Type': 'text/plain',
-                    }, fatal=False) or {}).get('data') or {}
+                return (
+                    self._download_json(
+                        urljoin(
+                            url,
+                            '/public/api/') + action,
+                        video_id,
+                        data=json.dumps(
+                            {
+                                'hash': video_hash,
+                                'sk': sk,
+                            }).encode(),
+                        headers={
+                            'Content-Type': 'text/plain',
+                        },
+                        fatal=False) or {}).get('data') or {}
             if not source_url:
                 # TODO: figure out how to detect if download limit has
                 # been reached and then avoid unnecessary source format
@@ -98,13 +108,18 @@ class YandexDiskIE(InfoExtractor):
 
         formats = []
         if source_url:
-            formats.append({
-                'url': source_url,
-                'format_id': 'source',
-                'ext': determine_ext(title, meta.get('ext') or mimetype2ext(meta.get('mime_type')) or 'mp4'),
-                'quality': 1,
-                'filesize': int_or_none(meta.get('size')),
-            })
+            formats.append(
+                {
+                    'url': source_url,
+                    'format_id': 'source',
+                    'ext': determine_ext(
+                        title,
+                        meta.get('ext') or mimetype2ext(
+                            meta.get('mime_type')) or 'mp4'),
+                    'quality': 1,
+                    'filesize': int_or_none(
+                        meta.get('size')),
+                })
 
         for video in (video_streams.get('videos') or []):
             format_url = video.get('url')

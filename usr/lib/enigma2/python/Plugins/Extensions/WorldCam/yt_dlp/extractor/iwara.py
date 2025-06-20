@@ -25,7 +25,8 @@ class IwaraBaseIE(InfoExtractor):
 
     def _is_token_expired(self, token, token_type):
         # User token TTL == ~3 weeks, Media token TTL == ~1 hour
-        if (try_call(lambda: jwt_decode_hs256(token)['exp']) or 0) <= int(time.time() - 120):
+        if (try_call(lambda: jwt_decode_hs256(token)
+                     ['exp']) or 0) <= int(time.time() - 120):
             self.to_screen(f'{token_type} token has expired')
             return True
 
@@ -34,7 +35,8 @@ class IwaraBaseIE(InfoExtractor):
         if not username or not password:
             return
 
-        user_token = IwaraBaseIE._USERTOKEN or self.cache.load(self._NETRC_MACHINE, username)
+        user_token = IwaraBaseIE._USERTOKEN or self.cache.load(
+            self._NETRC_MACHINE, username)
         if not user_token or self._is_token_expired(user_token, 'User'):
             response = self._download_json(
                 'https://api.iwara.tv/user/login', None, note='Logging in',
@@ -46,9 +48,11 @@ class IwaraBaseIE(InfoExtractor):
             if not user_token:
                 error = traverse_obj(response, ('message', {str}))
                 if 'invalidLogin' in error:
-                    raise ExtractorError('Invalid login credentials', expected=True)
+                    raise ExtractorError(
+                        'Invalid login credentials', expected=True)
                 else:
-                    raise ExtractorError(f'Iwara API said: {error or "nothing"}')
+                    raise ExtractorError(
+                        f'Iwara API said: {error or "nothing"}')
 
             self.cache.store(self._NETRC_MACHINE, username, user_token)
 
@@ -59,7 +63,8 @@ class IwaraBaseIE(InfoExtractor):
         if not IwaraBaseIE._USERTOKEN:
             return  # user has not passed credentials
 
-        if not IwaraBaseIE._MEDIATOKEN or self._is_token_expired(IwaraBaseIE._MEDIATOKEN, 'Media'):
+        if not IwaraBaseIE._MEDIATOKEN or self._is_token_expired(
+                IwaraBaseIE._MEDIATOKEN, 'Media'):
             IwaraBaseIE._MEDIATOKEN = self._download_json(
                 'https://api.iwara.tv/user/token', None, note='Fetching media token',
                 data=b'', headers={
@@ -147,11 +152,14 @@ class IwaraIE(IwaraBaseIE):
         q = urllib.parse.parse_qs(up.query)
         paths = up.path.rstrip('/').split('/')
         # https://github.com/yt-dlp/yt-dlp/issues/6549#issuecomment-1473771047
-        x_version = hashlib.sha1('_'.join((paths[-1], q['expires'][0], '5nFp9kmbNnHdAFhaqMvt')).encode()).hexdigest()
+        x_version = hashlib.sha1('_'.join(
+            (paths[-1], q['expires'][0], '5nFp9kmbNnHdAFhaqMvt')).encode()).hexdigest()
 
         preference = qualities(['preview', '360', '540', 'Source'])
 
-        files = self._download_json(fileurl, video_id, headers={'X-Version': x_version})
+        files = self._download_json(
+            fileurl, video_id, headers={
+                'X-Version': x_version})
         for fmt in files:
             yield traverse_obj(fmt, {
                 'format_id': 'name',
@@ -168,11 +176,16 @@ class IwaraIE(IwaraBaseIE):
             f'https://api.iwara.tv/video/{video_id}', video_id,
             expected_status=lambda x: True, headers=self._get_media_token())
         errmsg = video_data.get('message')
-        # at this point we can actually get uploaded user info, but do we need it?
+        # at this point we can actually get uploaded user info, but do we need
+        # it?
         if errmsg == 'errors.privateVideo':
-            self.raise_login_required('Private video. Login if you have permissions to watch', method='password')
+            self.raise_login_required(
+                'Private video. Login if you have permissions to watch',
+                method='password')
         elif errmsg == 'errors.notFound' and not username:
-            self.raise_login_required('Video may need login to view', method='password')
+            self.raise_login_required(
+                'Video may need login to view',
+                method='password')
         elif errmsg:  # None if success
             raise ExtractorError(f'Iwara says: {errmsg}')
 
@@ -183,7 +196,8 @@ class IwaraIE(IwaraBaseIE):
 
         return {
             'id': video_id,
-            'age_limit': 18 if video_data.get('rating') == 'ecchi' else 0,  # ecchi is 'sexy' in Japanese
+            # ecchi is 'sexy' in Japanese
+            'age_limit': 18 if video_data.get('rating') == 'ecchi' else 0,
             **traverse_obj(video_data, {
                 'title': 'title',
                 'description': 'body',
@@ -287,8 +301,10 @@ class IwaraPlaylistIE(IwaraBaseIE):
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
         page_0 = self._download_json(
-            f'https://api.iwara.tv/playlist/{playlist_id}?page=0&limit={self._PER_PAGE}', playlist_id,
-            note='Requesting playlist info', headers=self._get_media_token())
+            f'https://api.iwara.tv/playlist/{playlist_id}?page=0&limit={self._PER_PAGE}',
+            playlist_id,
+            note='Requesting playlist info',
+            headers=self._get_media_token())
 
         return self.playlist_result(
             OnDemandPagedList(

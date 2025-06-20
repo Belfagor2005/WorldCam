@@ -62,11 +62,15 @@ class GBNewsIE(InfoExtractor):
             return result
 
         json_data = self._download_json(
-            self._SSMP_URL, None, 'Downloading Simplestream JSON metadata', query={
+            self._SSMP_URL,
+            None,
+            'Downloading Simplestream JSON metadata',
+            query={
                 'id': data_id,
                 'env': data_env,
             })
-        meta_url = traverse_obj(json_data, ('response', 'api_hostname', {url_or_none}))
+        meta_url = traverse_obj(
+            json_data, ('response', 'api_hostname', {url_or_none}))
         if not meta_url:
             raise ExtractorError('No API host found')
 
@@ -86,7 +90,8 @@ class GBNewsIE(InfoExtractor):
         if not video_data:
             raise ExtractorError('Could not find video element', expected=True)
 
-        endpoint_url = self._get_ss_endpoint(video_data.get('data-id'), video_data.get('data-env'))
+        endpoint_url = self._get_ss_endpoint(
+            video_data.get('data-id'), video_data.get('data-env'))
 
         uvid = video_data['data-uvid']
         video_type = video_data.get('data-type')

@@ -6,7 +6,8 @@ import urllib.parse
 from .common import InfoExtractor
 
 
-class AWSIE(InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
+class AWSIE(
+        InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
     _AWS_ALGORITHM = 'AWS4-HMAC-SHA256'
     _AWS_REGION = 'us-east-1'
 
@@ -27,12 +28,14 @@ class AWSIE(InfoExtractor):  # XXX: Conventionally, base classes should end with
         def aws_hash(s):
             return hashlib.sha256(s.encode()).hexdigest()
 
-        # Task 1: http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
+        # Task 1:
+        # http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
         canonical_querystring = urllib.parse.urlencode(query)
         canonical_headers = ''
         for header_name, header_value in sorted(headers.items()):
             canonical_headers += f'{header_name.lower()}:{header_value}\n'
-        signed_headers = ';'.join([header.lower() for header in sorted(headers.keys())])
+        signed_headers = ';'.join([header.lower()
+                                  for header in sorted(headers.keys())])
         canonical_request = '\n'.join([
             'GET',
             aws_dict['uri'],
@@ -42,12 +45,19 @@ class AWSIE(InfoExtractor):  # XXX: Conventionally, base classes should end with
             aws_hash(''),
         ])
 
-        # Task 2: http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
-        credential_scope_list = [date, self._AWS_REGION, 'execute-api', 'aws4_request']
+        # Task 2:
+        # http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
+        credential_scope_list = [
+            date,
+            self._AWS_REGION,
+            'execute-api',
+            'aws4_request']
         credential_scope = '/'.join(credential_scope_list)
-        string_to_sign = '\n'.join([self._AWS_ALGORITHM, amz_date, credential_scope, aws_hash(canonical_request)])
+        string_to_sign = '\n'.join(
+            [self._AWS_ALGORITHM, amz_date, credential_scope, aws_hash(canonical_request)])
 
-        # Task 3: http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
+        # Task 3:
+        # http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
         def aws_hmac(key, msg):
             return hmac.new(key, msg.encode(), hashlib.sha256)
 
@@ -63,7 +73,8 @@ class AWSIE(InfoExtractor):  # XXX: Conventionally, base classes should end with
 
         signature = aws_hmac_hexdigest(k_signing, string_to_sign)
 
-        # Task 4: http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html
+        # Task 4:
+        # http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html
         headers['Authorization'] = ', '.join([
             '{} Credential={}/{}'.format(self._AWS_ALGORITHM, aws_dict['access_key'], credential_scope),
             f'SignedHeaders={signed_headers}',
@@ -71,5 +82,10 @@ class AWSIE(InfoExtractor):  # XXX: Conventionally, base classes should end with
         ])
 
         return self._download_json(
-            'https://{}{}{}'.format(self._AWS_PROXY_HOST, aws_dict['uri'], '?' + canonical_querystring if canonical_querystring else ''),
-            video_id, headers=headers)
+            'https://{}{}{}'.format(
+                self._AWS_PROXY_HOST,
+                aws_dict['uri'],
+                '?' +
+                canonical_querystring if canonical_querystring else ''),
+            video_id,
+            headers=headers)

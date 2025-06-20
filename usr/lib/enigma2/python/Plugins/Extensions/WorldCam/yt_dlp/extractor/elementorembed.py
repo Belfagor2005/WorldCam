@@ -55,16 +55,25 @@ class ElementorEmbedIE(InfoExtractor):
 
     def _extract_from_webpage(self, url, webpage):
         for data_settings in re.findall(self._WIDGET_REGEX, webpage):
-            data = self._parse_json(data_settings, None, fatal=False, transform_source=unescapeHTML)
-            if youtube_url := traverse_obj(data, ('youtube_url', {url_or_none})):
+            data = self._parse_json(
+                data_settings,
+                None,
+                fatal=False,
+                transform_source=unescapeHTML)
+            if youtube_url := traverse_obj(
+                    data, ('youtube_url', {url_or_none})):
                 yield self.url_result(youtube_url, ie=YoutubeIE)
 
-            for video in traverse_obj(data, ('tabs', lambda _, v: v['_id'], {dict})):
-                if youtube_url := traverse_obj(video, ('youtube_url', {url_or_none})):
+            for video in traverse_obj(
+                    data, ('tabs', lambda _, v: v['_id'], {dict})):
+                if youtube_url := traverse_obj(
+                        video, ('youtube_url', {url_or_none})):
                     yield self.url_result(youtube_url, ie=YoutubeIE)
-                if vimeo_url := traverse_obj(video, ('vimeo_url', {url_or_none})):
+                if vimeo_url := traverse_obj(
+                        video, ('vimeo_url', {url_or_none})):
                     yield self.url_result(vimeo_url, ie=VimeoIE)
-                for direct_url in traverse_obj(video, (('hosted_url', 'external_url'), 'url', {url_or_none})):
+                for direct_url in traverse_obj(
+                        video, (('hosted_url', 'external_url'), 'url', {url_or_none})):
                     yield {
                         'id': video['_id'],
                         'url': direct_url,

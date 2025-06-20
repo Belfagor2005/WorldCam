@@ -97,9 +97,14 @@ class LikeeIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
         info = self._parse_json(
-            self._search_regex(r'window\.data\s=\s({.+?});', webpage, 'video info'),
-            video_id, transform_source=js_to_json)
-        video_url = traverse_obj(info, 'video_url', ('originVideoInfo', 'video_url'))
+            self._search_regex(
+                r'window\.data\s=\s({.+?});',
+                webpage,
+                'video info'),
+            video_id,
+            transform_source=js_to_json)
+        video_url = traverse_obj(
+            info, 'video_url', ('originVideoInfo', 'video_url'))
         if not video_url:
             self.raise_no_formats('Video was deleted', expected=True)
         formats = [{
@@ -176,7 +181,14 @@ class LikeeUserIE(InfoExtractor):
         user_name = self._match_id(url)
         webpage = self._download_webpage(url, user_name)
         info = self._parse_json(
-            self._search_regex(r'window\.data\s*=\s*({.+?});', webpage, 'user info'),
-            user_name, transform_source=js_to_json)
+            self._search_regex(
+                r'window\.data\s*=\s*({.+?});',
+                webpage,
+                'user info'),
+            user_name,
+            transform_source=js_to_json)
         user_id = traverse_obj(info, ('userinfo', 'uid'))
-        return self.playlist_result(self._entries(user_name, user_id), user_id, traverse_obj(info, ('userinfo', 'user_name')))
+        return self.playlist_result(
+            self._entries(
+                user_name, user_id), user_id, traverse_obj(
+                info, ('userinfo', 'user_name')))

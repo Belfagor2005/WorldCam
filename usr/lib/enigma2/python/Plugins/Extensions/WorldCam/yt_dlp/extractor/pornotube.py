@@ -15,7 +15,9 @@ class PornotubeIE(InfoExtractor):
             'upload_date': '20141203',
             'title': 'Weird Hot and Wet Science',
             'description': 'md5:a8304bef7ef06cb4ab476ca6029b01b0',
-            'categories': ['Adult Humor', 'Blondes'],
+            'categories': [
+                'Adult Humor',
+                'Blondes'],
             'uploader': 'Alpha Blue Archives',
             'thumbnail': r're:^https?://.*\.jpg$',
             'timestamp': 1417582800,
@@ -41,14 +43,25 @@ class PornotubeIE(InfoExtractor):
             headers={'Authorization': token})['mediaUrl']
 
         FIELDS = (
-            'title', 'description', 'startSecond', 'endSecond', 'publishDate',
-            'studios{name}', 'categories{name}', 'movieId', 'primaryImageNumber',
+            'title',
+            'description',
+            'startSecond',
+            'endSecond',
+            'publishDate',
+            'studios{name}',
+            'categories{name}',
+            'movieId',
+            'primaryImageNumber',
         )
 
         info = self._download_json(
-            'https://api.aebn.net/content/v2/clips/{}?fields={}'.format(video_id, ','.join(FIELDS)), video_id,
+            'https://api.aebn.net/content/v2/clips/{}?fields={}'.format(
+                video_id,
+                ','.join(FIELDS)),
+            video_id,
             note='Downloading metadata',
-            headers={'Authorization': token})
+            headers={
+                'Authorization': token})
 
         if isinstance(info, list):
             info = info[0]
@@ -66,7 +79,8 @@ class PornotubeIE(InfoExtractor):
         start = int_or_none(info.get('startSecond'))
         end = int_or_none(info.get('endSecond'))
         duration = end - start if start and end else None
-        categories = [c['name'] for c in info.get('categories', []) if c.get('name')]
+        categories = [c['name']
+                      for c in info.get('categories', []) if c.get('name')]
 
         return {
             'id': video_id,

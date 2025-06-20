@@ -14,29 +14,27 @@ class R7IE(InfoExtractor):
                         )
                         (?P<id>[\da-f]{24})
                     '''
-    _TESTS = [{
-        'url': 'http://videos.r7.com/policiais-humilham-suspeito-a-beira-da-morte-morre-com-dignidade-/idmedia/54e7050b0cf2ff57e0279389.html',
-        'md5': '403c4e393617e8e8ddc748978ee8efde',
-        'info_dict': {
-            'id': '54e7050b0cf2ff57e0279389',
-            'ext': 'mp4',
-            'title': 'Policiais humilham suspeito à beira da morte: "Morre com dignidade"',
-            'description': 'md5:01812008664be76a6479aa58ec865b72',
-            'thumbnail': r're:^https?://.*\.jpg$',
-            'duration': 98,
-            'like_count': int,
-            'view_count': int,
-        },
-    }, {
-        'url': 'http://esportes.r7.com/videos/cigano-manda-recado-aos-fas/idmedia/4e176727b51a048ee6646a1b.html',
-        'only_matching': True,
-    }, {
-        'url': 'http://noticias.r7.com/record-news/video/representante-do-instituto-sou-da-paz-fala-sobre-fim-do-estatuto-do-desarmamento-5480fc580cf2285b117f438d/',
-        'only_matching': True,
-    }, {
-        'url': 'http://player.r7.com/video/i/54e7050b0cf2ff57e0279389?play=true&video=http://vsh.r7.com/54e7050b0cf2ff57e0279389/ER7_RE_BG_MORTE_JOVENS_570kbps_2015-02-2009f17818-cc82-4c8f-86dc-89a66934e633-ATOS_copy.mp4&linkCallback=http://videos.r7.com/policiais-humilham-suspeito-a-beira-da-morte-morre-com-dignidade-/idmedia/54e7050b0cf2ff57e0279389.html&thumbnail=http://vtb.r7.com/ER7_RE_BG_MORTE_JOVENS_570kbps_2015-02-2009f17818-cc82-4c8f-86dc-89a66934e633-thumb.jpg&idCategory=192&share=true&layout=full&full=true',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://videos.r7.com/policiais-humilham-suspeito-a-beira-da-morte-morre-com-dignidade-/idmedia/54e7050b0cf2ff57e0279389.html',
+               'md5': '403c4e393617e8e8ddc748978ee8efde',
+               'info_dict': {'id': '54e7050b0cf2ff57e0279389',
+                             'ext': 'mp4',
+                             'title': 'Policiais humilham suspeito à beira da morte: "Morre com dignidade"',
+                             'description': 'md5:01812008664be76a6479aa58ec865b72',
+                             'thumbnail': r're:^https?://.*\.jpg$',
+                             'duration': 98,
+                             'like_count': int,
+                             'view_count': int,
+                             },
+               },
+              {'url': 'http://esportes.r7.com/videos/cigano-manda-recado-aos-fas/idmedia/4e176727b51a048ee6646a1b.html',
+               'only_matching': True,
+               },
+              {'url': 'http://noticias.r7.com/record-news/video/representante-do-instituto-sou-da-paz-fala-sobre-fim-do-estatuto-do-desarmamento-5480fc580cf2285b117f438d/',
+               'only_matching': True,
+               },
+              {'url': 'http://player.r7.com/video/i/54e7050b0cf2ff57e0279389?play=true&video=http://vsh.r7.com/54e7050b0cf2ff57e0279389/ER7_RE_BG_MORTE_JOVENS_570kbps_2015-02-2009f17818-cc82-4c8f-86dc-89a66934e633-ATOS_copy.mp4&linkCallback=http://videos.r7.com/policiais-humilham-suspeito-a-beira-da-morte-morre-com-dignidade-/idmedia/54e7050b0cf2ff57e0279389.html&thumbnail=http://vtb.r7.com/ER7_RE_BG_MORTE_JOVENS_570kbps_2015-02-2009f17818-cc82-4c8f-86dc-89a66934e633-thumb.jpg&idCategory=192&share=true&layout=full&full=true',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -109,4 +107,6 @@ class R7ArticleIE(InfoExtractor):
             r'<div[^>]+(?:id=["\']player-|class=["\']embed["\'][^>]+id=["\'])([\da-f]{24})',
             webpage, 'video id')
 
-        return self.url_result(f'http://player.r7.com/video/i/{video_id}', R7IE.ie_key())
+        return self.url_result(
+            f'http://player.r7.com/video/i/{video_id}',
+            R7IE.ie_key())

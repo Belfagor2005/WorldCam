@@ -183,8 +183,12 @@ class YandexVideoPreviewIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        data_raw = self._search_regex(r'window.Ya.__inline_params__\s*=\s*JSON.parse\(\'([^"]+?\\u0022video\\u0022:[^"]+?})\'\);', webpage, 'data_raw')
-        data_json = self._parse_json(data_raw, video_id, transform_source=lowercase_escape)
+        data_raw = self._search_regex(
+            r'window.Ya.__inline_params__\s*=\s*JSON.parse\(\'([^"]+?\\u0022video\\u0022:[^"]+?})\'\);',
+            webpage,
+            'data_raw')
+        data_json = self._parse_json(
+            data_raw, video_id, transform_source=lowercase_escape)
         return self.url_result(data_json['video']['url'])
 
 
@@ -192,10 +196,15 @@ class ZenYandexBaseIE(InfoExtractor):
     def _fetch_ssr_data(self, url, video_id):
         webpage = self._download_webpage(url, video_id)
         redirect = self._search_json(
-            r'(?:var|let|const)\s+it\s*=', webpage, 'redirect', video_id, default={}).get('retpath')
+            r'(?:var|let|const)\s+it\s*=',
+            webpage,
+            'redirect',
+            video_id,
+            default={}).get('retpath')
         if redirect:
             video_id = self._match_id(redirect)
-            webpage = self._download_webpage(redirect, video_id, note='Redirecting')
+            webpage = self._download_webpage(
+                redirect, video_id, note='Redirecting')
         return video_id, self._search_json(
             r'(?:var|let|const)\s+_params\s*=\s*\(', webpage, 'metadata', video_id,
             contains_pattern=r'{["\']ssrData.+}')['ssrData']
@@ -205,74 +214,72 @@ class ZenYandexIE(ZenYandexBaseIE):
     IE_NAME = 'dzen.ru'
     IE_DESC = 'Дзен (dzen) formerly Яндекс.Дзен (Yandex Zen)'
     _VALID_URL = r'https?://(zen\.yandex|dzen)\.ru(?:/video)?/(media|watch)/(?:(?:id/[^/]+/|[^/]+/)(?:[a-z0-9-]+)-)?(?P<id>[a-z0-9-]+)'
-    _TESTS = [{
-        'url': 'https://zen.yandex.ru/media/id/606fd806cc13cb3c58c05cf5/vot-eto-focus-dedy-morozy-na-gidrociklah-60c7c443da18892ebfe85ed7',
-        'info_dict': {
-            'id': '60c7c443da18892ebfe85ed7',
-            'ext': 'mp4',
-            'title': 'ВОТ ЭТО Focus. Деды Морозы на гидроциклах',
-            'description': 'md5:8684912f6086f298f8078d4af0e8a600',
-            'thumbnail': 're:^https://avatars.dzeninfra.ru/',
-            'uploader': 'AcademeG DailyStream',
-        },
-        'params': {
-            'skip_download': 'm3u8',
-            'format': 'bestvideo',
-        },
-        'skip': 'The page does not exist',
-    }, {
-        'url': 'https://dzen.ru/media/id/606fd806cc13cb3c58c05cf5/vot-eto-focus-dedy-morozy-na-gidrociklah-60c7c443da18892ebfe85ed7',
-        'info_dict': {
-            'id': '60c7c443da18892ebfe85ed7',
-            'ext': 'mp4',
-            'title': 'ВОТ ЭТО Focus. Деды Морозы на гидроциклах',
-            'description': 'md5:8684912f6086f298f8078d4af0e8a600',
-            'thumbnail': r're:^https://avatars\.dzeninfra\.ru/',
-            'uploader': 'AcademeG DailyStream',
-            'upload_date': '20191111',
-            'timestamp': 1573465585,
-        },
-        'params': {'skip_download': 'm3u8'},
-        'skip': 'The page does not exist',
-    }, {
-        'url': 'https://zen.yandex.ru/video/watch/6002240ff8b1af50bb2da5e3',
-        'info_dict': {
-            'id': '6002240ff8b1af50bb2da5e3',
-            'ext': 'mp4',
-            'title': 'Извержение вулкана из спичек: зрелищный опыт',
-            'description': 'md5:053ad3c61b5596d510c9a199dc8ee633',
-            'thumbnail': r're:^https://avatars\.dzeninfra\.ru/',
-            'uploader': 'TechInsider',
-            'timestamp': 1611378221,
-            'upload_date': '20210123',
-            'view_count': int,
-            'duration': 243,
-            'tags': ['опыт', 'эксперимент', 'огонь'],
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://dzen.ru/video/watch/6002240ff8b1af50bb2da5e3',
-        'info_dict': {
-            'id': '6002240ff8b1af50bb2da5e3',
-            'ext': 'mp4',
-            'title': 'Извержение вулкана из спичек: зрелищный опыт',
-            'description': 'md5:053ad3c61b5596d510c9a199dc8ee633',
-            'thumbnail': 're:^https://avatars.dzeninfra.ru/',
-            'uploader': 'TechInsider',
-            'upload_date': '20210123',
-            'timestamp': 1611378221,
-            'view_count': int,
-            'duration': 243,
-            'tags': ['опыт', 'эксперимент', 'огонь'],
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://zen.yandex.ru/media/id/606fd806cc13cb3c58c05cf5/novyi-samsung-fold-3-moskvich-barahlit-612f93b7f8d48e7e945792a2?from=channel&rid=2286618386.482.1630817595976.42360',
-        'only_matching': True,
-    }, {
-        'url': 'https://dzen.ru/media/id/606fd806cc13cb3c58c05cf5/novyi-samsung-fold-3-moskvich-barahlit-612f93b7f8d48e7e945792a2?from=channel&rid=2286618386.482.1630817595976.42360',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://zen.yandex.ru/media/id/606fd806cc13cb3c58c05cf5/vot-eto-focus-dedy-morozy-na-gidrociklah-60c7c443da18892ebfe85ed7',
+               'info_dict': {'id': '60c7c443da18892ebfe85ed7',
+                             'ext': 'mp4',
+                             'title': 'ВОТ ЭТО Focus. Деды Морозы на гидроциклах',
+                             'description': 'md5:8684912f6086f298f8078d4af0e8a600',
+                             'thumbnail': 're:^https://avatars.dzeninfra.ru/',
+                             'uploader': 'AcademeG DailyStream',
+                             },
+               'params': {'skip_download': 'm3u8',
+                          'format': 'bestvideo',
+                          },
+               'skip': 'The page does not exist',
+               },
+              {'url': 'https://dzen.ru/media/id/606fd806cc13cb3c58c05cf5/vot-eto-focus-dedy-morozy-na-gidrociklah-60c7c443da18892ebfe85ed7',
+               'info_dict': {'id': '60c7c443da18892ebfe85ed7',
+                             'ext': 'mp4',
+                             'title': 'ВОТ ЭТО Focus. Деды Морозы на гидроциклах',
+                             'description': 'md5:8684912f6086f298f8078d4af0e8a600',
+                             'thumbnail': r're:^https://avatars\.dzeninfra\.ru/',
+                             'uploader': 'AcademeG DailyStream',
+                             'upload_date': '20191111',
+                             'timestamp': 1573465585,
+                             },
+               'params': {'skip_download': 'm3u8'},
+               'skip': 'The page does not exist',
+               },
+              {'url': 'https://zen.yandex.ru/video/watch/6002240ff8b1af50bb2da5e3',
+               'info_dict': {'id': '6002240ff8b1af50bb2da5e3',
+                             'ext': 'mp4',
+                             'title': 'Извержение вулкана из спичек: зрелищный опыт',
+                             'description': 'md5:053ad3c61b5596d510c9a199dc8ee633',
+                             'thumbnail': r're:^https://avatars\.dzeninfra\.ru/',
+                             'uploader': 'TechInsider',
+                             'timestamp': 1611378221,
+                             'upload_date': '20210123',
+                             'view_count': int,
+                             'duration': 243,
+                             'tags': ['опыт',
+                                      'эксперимент',
+                                      'огонь'],
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://dzen.ru/video/watch/6002240ff8b1af50bb2da5e3',
+               'info_dict': {'id': '6002240ff8b1af50bb2da5e3',
+                             'ext': 'mp4',
+                             'title': 'Извержение вулкана из спичек: зрелищный опыт',
+                             'description': 'md5:053ad3c61b5596d510c9a199dc8ee633',
+                             'thumbnail': 're:^https://avatars.dzeninfra.ru/',
+                             'uploader': 'TechInsider',
+                             'upload_date': '20210123',
+                             'timestamp': 1611378221,
+                             'view_count': int,
+                             'duration': 243,
+                             'tags': ['опыт',
+                                      'эксперимент',
+                                      'огонь'],
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://zen.yandex.ru/media/id/606fd806cc13cb3c58c05cf5/novyi-samsung-fold-3-moskvich-barahlit-612f93b7f8d48e7e945792a2?from=channel&rid=2286618386.482.1630817595976.42360',
+               'only_matching': True,
+               },
+              {'url': 'https://dzen.ru/media/id/606fd806cc13cb3c58c05cf5/novyi-samsung-fold-3-moskvich-barahlit-612f93b7f8d48e7e945792a2?from=channel&rid=2286618386.482.1630817595976.42360',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -281,7 +288,8 @@ class ZenYandexIE(ZenYandexBaseIE):
 
         formats, subtitles = [], {}
         quality = qualities(('4', '0', '1', '2', '3', '5', '6', '7'))
-        # Deduplicate stream URLs. The "dzen_dash" query parameter is present in some URLs but can be omitted
+        # Deduplicate stream URLs. The "dzen_dash" query parameter is present
+        # in some URLs but can be omitted
         stream_urls = set(traverse_obj(video_data, (
             'video', ('id', ('streams', ...), ('mp4Streams', ..., 'url'), ('oneVideoStreams', ..., 'url')),
             {url_or_none}, {update_url_query(query={'dzen_dash': []})})))
@@ -289,9 +297,11 @@ class ZenYandexIE(ZenYandexBaseIE):
             ext = determine_ext(s_url)
             content_type = traverse_obj(parse_qs(s_url), ('ct', 0))
             if ext == 'mpd' or content_type == '6':
-                fmts, subs = self._extract_mpd_formats_and_subtitles(s_url, video_id, mpd_id='dash', fatal=False)
+                fmts, subs = self._extract_mpd_formats_and_subtitles(
+                    s_url, video_id, mpd_id='dash', fatal=False)
             elif ext == 'm3u8' or content_type == '8':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(s_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                    s_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
             elif content_type == '0':
                 format_type = traverse_obj(parse_qs(s_url), ('type', 0))
                 formats.append({
@@ -302,7 +312,8 @@ class ZenYandexIE(ZenYandexBaseIE):
                 })
                 continue
             else:
-                self.report_warning(f'Unsupported stream URL: {s_url}{bug_reports_message()}')
+                self.report_warning(
+                    f'Unsupported stream URL: {s_url}{bug_reports_message()}')
                 continue
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
@@ -386,10 +397,10 @@ class ZenYandexChannelIE(ZenYandexBaseIE):
     def _entries(self, feed_data, channel_id):
         next_page_id = None
         for page in itertools.count(1):
-            for item in traverse_obj(feed_data, (
-                (None, ('items', lambda _, v: v['tab'] in ('shorts', 'longs'))),
-                'items', lambda _, v: url_or_none(v['link']),
-            )):
+            for item in traverse_obj(
+                feed_data, ((None, ('items', lambda _, v: v['tab'] in (
+                    'shorts', 'longs'))), 'items', lambda _, v: url_or_none(
+                    v['link']), )):
                 yield self.url_result(item['link'], ZenYandexIE, item.get('id'), title=item.get('title'))
 
             more = traverse_obj(feed_data, ('more', 'link', {url_or_none}))
@@ -398,7 +409,8 @@ class ZenYandexChannelIE(ZenYandexBaseIE):
             if not all((more, next_page_id, next_page_id != current_page_id)):
                 break
 
-            feed_data = self._download_json(more, channel_id, note=f'Downloading Page {page}')
+            feed_data = self._download_json(
+                more, channel_id, note=f'Downloading Page {page}')
 
     def _real_extract(self, url):
         channel_id = self._match_id(url)

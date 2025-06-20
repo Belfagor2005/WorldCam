@@ -50,7 +50,8 @@ class SmotrimIE(InfoExtractor):
         video_id, typ = self._match_valid_url(url).group('id', 'type')
         rutv_type = 'video'
         if typ not in ('video', 'live'):
-            webpage = self._download_webpage(url, video_id, f'Resolving {typ} link')
+            webpage = self._download_webpage(
+                url, video_id, f'Resolving {typ} link')
             # there are two cases matching regex:
             # 1. "embedUrl" in JSON LD (/brand/)
             # 2. "src" attribute from iframe (/article/)
@@ -58,8 +59,10 @@ class SmotrimIE(InfoExtractor):
                 r'"https://player.smotrim.ru/iframe/video/id/(?P<video_id>\d+)/',
                 webpage, 'video_id', default=None)
             if not video_id:
-                raise ExtractorError('There are no video in this page.', expected=True)
+                raise ExtractorError(
+                    'There are no video in this page.', expected=True)
         elif typ == 'live':
             rutv_type = 'live'
 
-        return self.url_result(f'https://player.vgtrk.com/iframe/{rutv_type}/id/{video_id}')
+        return self.url_result(
+            f'https://player.vgtrk.com/iframe/{rutv_type}/id/{video_id}')

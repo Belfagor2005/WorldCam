@@ -179,7 +179,8 @@ class NinaProtocolIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         release = self._download_json(
-            f'https://api.ninaprotocol.com/v1/releases/{video_id}', video_id)['release']
+            f'https://api.ninaprotocol.com/v1/releases/{video_id}',
+            video_id)['release']
 
         video_id = release.get('publicKey') or video_id
 
@@ -193,11 +194,14 @@ class NinaProtocolIE(InfoExtractor):
             'channel': ('hub', 'handle', {str}),
             'channel_id': ('hub', 'publicKey', {str}),
         }, get_all=False)
-        common_info['tags'] = traverse_obj(release, ('metadata', 'properties', 'tags', ..., {str}))
+        common_info['tags'] = traverse_obj(
+            release, ('metadata', 'properties', 'tags', ..., {str}))
 
         entries = []
-        for track_num, track in enumerate(traverse_obj(release, (
-                'metadata', 'properties', 'files', lambda _, v: url_or_none(v['uri']))), 1):
+        for track_num, track in enumerate(
+            traverse_obj(
+                release, ('metadata', 'properties', 'files', lambda _, v: url_or_none(
+                v['uri']))), 1):
             entries.append({
                 'id': f'{video_id}_{track_num}',
                 'url': track['uri'],

@@ -7,7 +7,8 @@ from ..utils import (
 
 class ViddlerIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?viddler\.com/(?:v|embed|player)/(?P<id>[a-z0-9]+)(?:.+?\bsecret=(\d+))?'
-    _EMBED_REGEX = [r'<(?:iframe[^>]+?src|param[^>]+?value)=(["\'])(?P<url>(?:https?:)?//(?:www\.)?viddler\.com/(?:embed|player)/.+?)\1']
+    _EMBED_REGEX = [
+        r'<(?:iframe[^>]+?src|param[^>]+?value)=(["\'])(?P<url>(?:https?:)?//(?:www\.)?viddler\.com/(?:embed|player)/.+?)\1']
 
     _TESTS = [{
         'url': 'http://www.viddler.com/v/43903784',
@@ -112,7 +113,8 @@ class ViddlerIE(InfoExtractor):
 
             if filed.get('html5_video_source'):
                 f = f.copy()
-                f['url'] = self._proto_relative_url(filed['html5_video_source'])
+                f['url'] = self._proto_relative_url(
+                    filed['html5_video_source'])
                 f['format_id'] = format_id + '-html5'
                 f['source_preference'] = 0
                 formats.append(f)

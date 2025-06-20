@@ -34,19 +34,23 @@ class CHZZKLiveIE(InfoExtractor):
     def _real_extract(self, url):
         channel_id = self._match_id(url)
         live_detail = self._download_json(
-            f'https://api.chzzk.naver.com/service/v3/channels/{channel_id}/live-detail', channel_id,
-            note='Downloading channel info', errnote='Unable to download channel info')['content']
+            f'https://api.chzzk.naver.com/service/v3/channels/{channel_id}/live-detail',
+            channel_id,
+            note='Downloading channel info',
+            errnote='Unable to download channel info')['content']
 
         if live_detail.get('status') == 'CLOSE':
             raise UserNotLive(video_id=channel_id)
 
-        live_playback = self._parse_json(live_detail['livePlaybackJson'], channel_id)
+        live_playback = self._parse_json(
+            live_detail['livePlaybackJson'], channel_id)
 
         thumbnails = []
         thumbnail_template = traverse_obj(
             live_playback, ('thumbnail', 'snapshotThumbnailTemplate', {url_or_none}))
         if thumbnail_template and '{type}' in thumbnail_template:
-            for width in traverse_obj(live_playback, ('thumbnail', 'types', ..., {str})):
+            for width in traverse_obj(
+                    live_playback, ('thumbnail', 'types', ..., {str})):
                 thumbnails.append({
                     'id': width,
                     'url': thumbnail_template.replace('{type}', width),
@@ -54,7 +58,12 @@ class CHZZKLiveIE(InfoExtractor):
                 })
 
         formats, subtitles = [], {}
-        for media in traverse_obj(live_playback, ('media', lambda _, v: url_or_none(v['path']))):
+        for media in traverse_obj(
+            live_playback,
+            ('media',
+             lambda _,
+             v: url_or_none(
+                 v['path']))):
             is_low_latency = media.get('mediaId') == 'LLHLS'
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 media['path'], channel_id, 'mp4', fatal=False, live=True,
@@ -160,10 +169,13 @@ class CHZZKVideoIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         video_meta = self._download_json(
-            f'https://api.chzzk.naver.com/service/v3/videos/{video_id}', video_id,
-            note='Downloading video info', errnote='Unable to download video info')['content']
+            f'https://api.chzzk.naver.com/service/v3/videos/{video_id}',
+            video_id,
+            note='Downloading video info',
+            errnote='Unable to download video info')['content']
 
-        live_status = 'was_live' if video_meta.get('liveOpenDate') else 'not_live'
+        live_status = 'was_live' if video_meta.get(
+            'liveOpenDate') else 'not_live'
         video_status = video_meta.get('vodStatus')
         if video_status == 'ABR_HLS':
             formats, subtitles = self._extract_mpd_formats_and_subtitles(
@@ -176,14 +188,17 @@ class CHZZKVideoIE(InfoExtractor):
                 })
         else:
             fatal = video_status == 'UPLOAD'
-            playback = self._parse_json(video_meta['liveRewindPlaybackJson'], video_id, fatal=fatal)
-            formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-                traverse_obj(playback, ('media', 0, 'path')), video_id, 'mp4', m3u8_id='hls', fatal=fatal)
+            playback = self._parse_json(
+                video_meta['liveRewindPlaybackJson'], video_id, fatal=fatal)
+            formats, subtitles = self._extract_m3u8_formats_and_subtitles(traverse_obj(
+                playback, ('media', 0, 'path')), video_id, 'mp4', m3u8_id='hls', fatal=fatal)
             if formats and video_status != 'UPLOAD':
                 self.write_debug(f'Video found with status: "{video_status}"')
             elif not formats:
                 self.raise_no_formats(
-                    f'Unknown video status detected: "{video_status}"', expected=True, video_id=video_id)
+                    f'Unknown video status detected: "{video_status}"',
+                    expected=True,
+                    video_id=video_id)
                 formats, subtitles = [], {}
                 live_status = 'post_live' if live_status == 'was_live' else None
 

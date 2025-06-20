@@ -18,14 +18,19 @@ class EbayIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        video_json = self._search_json(r'"video":', webpage, 'video json', video_id)
+        video_json = self._search_json(
+            r'"video":', webpage, 'video json', video_id)
 
         formats = []
         for key, url in video_json['playlistMap'].items():
             if key == 'HLS':
-                formats.extend(self._extract_m3u8_formats(url, video_id, fatal=False))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        url, video_id, fatal=False))
             elif key == 'DASH':
-                formats.extend(self._extract_mpd_formats(url, video_id, fatal=False))
+                formats.extend(
+                    self._extract_mpd_formats(
+                        url, video_id, fatal=False))
             else:
                 self.report_warning(f'Unsupported format {key}', video_id)
 

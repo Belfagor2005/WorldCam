@@ -12,14 +12,18 @@ from ..utils import (
 
 class AntennaBaseIE(InfoExtractor):
     def _download_and_extract_api_data(self, video_id, netloc, cid=None):
-        info = self._download_json(f'{self.http_scheme()}//{netloc}{self._API_PATH}',
-                                   video_id, query={'cid': cid or video_id})
+        info = self._download_json(
+            f'{self.http_scheme()}//{netloc}{self._API_PATH}',
+            video_id,
+            query={
+                'cid': cid or video_id})
         if not info.get('url'):
             raise ExtractorError(f'No source found for {video_id}')
 
         ext = determine_ext(info['url'])
         if ext == 'm3u8':
-            formats, subs = self._extract_m3u8_formats_and_subtitles(info['url'], video_id, 'mp4')
+            formats, subs = self._extract_m3u8_formats_and_subtitles(
+                info['url'], video_id, 'mp4')
         else:
             formats, subs = [{'url': info['url'], 'format_id': ext}], {}
 
@@ -66,8 +70,12 @@ class AntennaGrWatchIE(AntennaBaseIE):
         video_id, netloc = self._match_valid_url(url).group('id', 'netloc')
         webpage = self._download_webpage(url, video_id)
         info = self._download_and_extract_api_data(video_id, netloc)
-        info['description'] = self._og_search_description(webpage, default=None)
-        info['_old_archive_ids'] = [make_archive_id('Ant1NewsGrWatch', video_id)]
+        info['description'] = self._og_search_description(
+            webpage, default=None)
+        info['_old_archive_ids'] = [
+            make_archive_id(
+                'Ant1NewsGrWatch',
+                video_id)]
         return info
 
 
@@ -102,13 +110,21 @@ class Ant1NewsGrArticleIE(AntennaBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        info = self._search_json_ld(webpage, video_id, expected_type='NewsArticle')
+        info = self._search_json_ld(
+            webpage, video_id, expected_type='NewsArticle')
         embed_urls = list(Ant1NewsGrEmbedIE._extract_embed_urls(url, webpage))
         if not embed_urls:
-            raise ExtractorError(f'no videos found for {video_id}', expected=True)
+            raise ExtractorError(
+                f'no videos found for {video_id}',
+                expected=True)
         return self.playlist_from_matches(
-            embed_urls, video_id, info.get('title'), ie=Ant1NewsGrEmbedIE.ie_key(),
-            video_kwargs={'url_transparent': True, 'timestamp': info.get('timestamp')})
+            embed_urls,
+            video_id,
+            info.get('title'),
+            ie=Ant1NewsGrEmbedIE.ie_key(),
+            video_kwargs={
+                'url_transparent': True,
+                'timestamp': info.get('timestamp')})
 
 
 class Ant1NewsGrEmbedIE(AntennaBaseIE):
@@ -116,7 +132,8 @@ class Ant1NewsGrEmbedIE(AntennaBaseIE):
     IE_DESC = 'ant1news.gr embedded videos'
     _BASE_PLAYER_URL_RE = r'(?:https?:)?//(?:[a-zA-Z0-9\-]+\.)?(?:antenna|ant1news)\.gr/templates/pages/player'
     _VALID_URL = rf'{_BASE_PLAYER_URL_RE}\?([^#]+&)?cid=(?P<id>[^#&]+)'
-    _EMBED_REGEX = [rf'<iframe[^>]+?src=(?P<_q1>["\'])(?P<url>{_BASE_PLAYER_URL_RE}\?(?:(?!(?P=_q1)).)+)(?P=_q1)']
+    _EMBED_REGEX = [
+        rf'<iframe[^>]+?src=(?P<_q1>["\'])(?P<url>{_BASE_PLAYER_URL_RE}\?(?:(?!(?P=_q1)).)+)(?P=_q1)']
     _API_PATH = '/templates/data/jsonPlayer'
 
     _TESTS = [{

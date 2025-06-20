@@ -26,7 +26,8 @@ class HGTVComShowIE(InfoExtractor):
         config = self._parse_json(
             self._search_regex(
                 r'(?s)data-(?:deferred-)?module=["\']video["\'][^>]*>.*?<script[^>]+type=["\']text/x-config["\'][^>]*>(.+?)</script',
-                webpage, 'video config'),
+                webpage,
+                'video config'),
             display_id)['channels'][0]
 
         entries = [
@@ -34,4 +35,7 @@ class HGTVComShowIE(InfoExtractor):
             for video in config['videos'] if video.get('releaseUrl')]
 
         return self.playlist_result(
-            entries, display_id, config.get('title'), config.get('description'))
+            entries,
+            display_id,
+            config.get('title'),
+            config.get('description'))

@@ -25,7 +25,8 @@ class ShahidBaseIE(AWSIE):
             e.cause.response.read().decode('utf-8'), None, fatal=False)
         if fail_data:
             faults = fail_data.get('faults', [])
-            faults_message = ', '.join([clean_html(fault['userMessage']) for fault in faults if fault.get('userMessage')])
+            faults_message = ', '.join([clean_html(
+                fault['userMessage']) for fault in faults if fault.get('userMessage')])
             if faults_message:
                 raise ExtractorError(faults_message, expected=True)
 
@@ -47,7 +48,8 @@ class ShahidBaseIE(AWSIE):
 
 class ShahidIE(ShahidBaseIE):
     _NETRC_MACHINE = 'shahid'
-    _VALID_URL = ShahidBaseIE._VALID_URL_BASE + r'(?:serie|show|movie)s/[^/]+/(?P<type>episode|clip|movie)-(?P<id>\d+)'
+    _VALID_URL = ShahidBaseIE._VALID_URL_BASE + \
+        r'(?:serie|show|movie)s/[^/]+/(?P<type>episode|clip|movie)-(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://shahid.mbc.net/ar/shows/%D9%85%D8%AA%D8%AD%D9%81-%D8%A7%D9%84%D8%AF%D8%AD%D9%8A%D8%AD-%D8%A7%D9%84%D9%85%D9%88%D8%B3%D9%85-1-%D9%83%D9%84%D9%8A%D8%A8-1/clip-816924',
         'info_dict': {
@@ -111,7 +113,8 @@ class ShahidIE(ShahidBaseIE):
         playout = self._call_api(
             'playout/new/url/' + video_id, video_id)['playout']
 
-        if not self.get_param('allow_unplayable_formats') and playout.get('drm'):
+        if not self.get_param(
+                'allow_unplayable_formats') and playout.get('drm'):
             self.report_drm(video_id)
 
         formats = self._extract_m3u8_formats(re.sub(
@@ -136,8 +139,9 @@ class ShahidIE(ShahidBaseIE):
         error = data.get('error')
         if error:
             raise ExtractorError(
-                '{} returned error: {}'.format(self.IE_NAME, '\n'.join(error.values())),
-                expected=True)
+                '{} returned error: {}'.format(
+                    self.IE_NAME, '\n'.join(
+                        error.values())), expected=True)
 
         video = data[page_type]
         title = video['title']
@@ -164,7 +168,8 @@ class ShahidIE(ShahidBaseIE):
 
 
 class ShahidShowIE(ShahidBaseIE):
-    _VALID_URL = ShahidBaseIE._VALID_URL_BASE + r'(?:show|serie)s/[^/]+/(?:show|series)-(?P<id>\d+)'
+    _VALID_URL = ShahidBaseIE._VALID_URL_BASE + \
+        r'(?:show|serie)s/[^/]+/(?:show|series)-(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://shahid.mbc.net/ar/shows/%D8%B1%D8%A7%D9%85%D8%B2-%D9%82%D8%B1%D8%B4-%D8%A7%D9%84%D8%A8%D8%AD%D8%B1/show-79187',
         'info_dict': {

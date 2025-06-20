@@ -59,19 +59,26 @@ class MuseAIIE(InfoExtractor):
         },
         'params': {'allowed_extractors': ['all', '-html5']},
     }]
-    _EMBED_REGEX = [r'<iframe[^>]*\bsrc=["\'](?P<url>https://muse\.ai/embed/\w+)']
+    _EMBED_REGEX = [
+        r'<iframe[^>]*\bsrc=["\'](?P<url>https://muse\.ai/embed/\w+)']
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
         yield from super()._extract_embed_urls(url, webpage)
-        for embed_id in re.findall(r'<script>[^<]*\bMusePlayer\(\{[^}<]*\bvideo:\s*["\'](\w+)["\']', webpage):
+        for embed_id in re.findall(
+                r'<script>[^<]*\bMusePlayer\(\{[^}<]*\bvideo:\s*["\'](\w+)["\']', webpage):
             yield f'https://muse.ai/embed/{embed_id}'
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(f'https://muse.ai/embed/{video_id}', video_id)
+        webpage = self._download_webpage(
+            f'https://muse.ai/embed/{video_id}', video_id)
         data = self._search_json(
-            r'player\.setData\(', webpage, 'player data', video_id, transform_source=js_to_json)
+            r'player\.setData\(',
+            webpage,
+            'player data',
+            video_id,
+            transform_source=js_to_json)
 
         source_url = data['url']
         if not url_or_none(source_url):
@@ -96,17 +103,18 @@ class MuseAIIE(InfoExtractor):
                 f'{base_url}/dash.mpd', video_id, mpd_id='dash', fatal=False))
 
         return {
-            'id': video_id,
-            'formats': formats,
-            **traverse_obj(data, {
-                'title': ('title', {str}),
-                'description': ('description', {str}),
-                'duration': ('duration', {float_or_none}),
-                'timestamp': ('tcreated', {int_or_none}),
-                'uploader': ('owner_name', {str}),
-                'uploader_id': ('owner_username', {str}),
-                'view_count': ('views', {int_or_none}),
-                'age_limit': ('mature', {lambda x: 18 if x else None}),
-                'availability': ('visibility', {lambda x: x if x in ('private', 'unlisted') else 'public'}),
-            }),
-        }
+            'id': video_id, 'formats': formats, **traverse_obj(
+                data, {
+                    'title': (
+                        'title', {str}), 'description': (
+                        'description', {str}), 'duration': (
+                        'duration', {float_or_none}), 'timestamp': (
+                            'tcreated', {int_or_none}), 'uploader': (
+                                'owner_name', {str}), 'uploader_id': (
+                                    'owner_username', {str}), 'view_count': (
+                                        'views', {int_or_none}), 'age_limit': (
+                                            'mature', {
+                                                lambda x: 18 if x else None}), 'availability': (
+                                                    'visibility', {
+                                                        lambda x: x if x in (
+                                                            'private', 'unlisted') else 'public'}), }), }

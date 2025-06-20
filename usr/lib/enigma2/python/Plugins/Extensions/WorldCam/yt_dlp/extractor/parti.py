@@ -6,7 +6,9 @@ from ..utils.traversal import traverse_obj
 class PartiBaseIE(InfoExtractor):
     def _call_api(self, path, video_id, note=None):
         return self._download_json(
-            f'https://api-backend.parti.com/parti_v2/profile/{path}', video_id, note)
+            f'https://api-backend.parti.com/parti_v2/profile/{path}',
+            video_id,
+            note)
 
 
 class PartiVideoIE(PartiBaseIE):
@@ -29,7 +31,8 @@ class PartiVideoIE(PartiBaseIE):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        data = self._call_api(f'get_livestream_channel_info/recent/{video_id}', video_id)
+        data = self._call_api(
+            f'get_livestream_channel_info/recent/{video_id}', video_id)
 
         return {
             'id': video_id,
@@ -67,7 +70,8 @@ class PartiLivestreamIE(PartiBaseIE):
     }]
 
     def _real_extract(self, url):
-        service, creator_slug = self._match_valid_url(url).group('service', 'id')
+        service, creator_slug = self._match_valid_url(
+            url).group('service', 'id')
 
         encoded_creator_slug = creator_slug.replace('/', '%23')
         creator_id = self._call_api(

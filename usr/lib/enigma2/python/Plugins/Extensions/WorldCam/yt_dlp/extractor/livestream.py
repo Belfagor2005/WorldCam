@@ -26,65 +26,68 @@ class LivestreamIE(InfoExtractor):
         (?:/events/(?P<event_id>\d+)|/(?P<event_name>[^/]+))?
         (?:/videos/(?P<id>\d+))?
     '''
-    _EMBED_REGEX = [r'<iframe[^>]+src="(?P<url>https?://(?:new\.)?livestream\.com/[^"]+/player[^"]+)"']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src="(?P<url>https?://(?:new\.)?livestream\.com/[^"]+/player[^"]+)"']
 
-    _TESTS = [{
-        'url': 'http://new.livestream.com/CoheedandCambria/WebsterHall/videos/4719370',
-        'md5': '7876c5f5dc3e711b6b73acce4aac1527',
-        'info_dict': {
-            'id': '4719370',
-            'ext': 'mp4',
-            'title': 'Live from Webster Hall NYC',
-            'timestamp': 1350008072,
-            'upload_date': '20121012',
-            'duration': 5968.0,
-            'like_count': int,
-            'view_count': int,
-            'comment_count': int,
-            'thumbnail': r're:^http://.*\.jpg$',
-        },
-    }, {
-        'url': 'https://livestream.com/coheedandcambria/websterhall',
-        'info_dict': {
-            'id': '1585861',
-            'title': 'Live From Webster Hall',
-        },
-        'playlist_mincount': 1,
-    }, {
-        'url': 'https://livestream.com/dayananda/events/7954027',
-        'info_dict': {
-            'title': 'Live from Mevo',
-            'id': '7954027',
-        },
-        'playlist_mincount': 4,
-    }, {
-        'url': 'https://livestream.com/accounts/82',
-        'info_dict': {
-            'id': '253978',
-            'view_count': int,
-            'title': 'trsr',
-            'comment_count': int,
-            'like_count': int,
-            'upload_date': '20120306',
-            'timestamp': 1331042383,
-            'thumbnail': 'http://img.new.livestream.com/videos/0000000000000372/cacbeed6-fb68-4b5e-ad9c-e148124e68a9_640x427.jpg',
-            'duration': 15.332,
-            'ext': 'mp4',
-        },
-    }, {
-        'url': 'https://new.livestream.com/accounts/362/events/3557232/videos/67864563/player?autoPlay=false&height=360&mute=false&width=640',
-        'only_matching': True,
-    }, {
-        'url': 'http://livestream.com/bsww/concacafbeachsoccercampeonato2015',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://new.livestream.com/CoheedandCambria/WebsterHall/videos/4719370',
+               'md5': '7876c5f5dc3e711b6b73acce4aac1527',
+               'info_dict': {'id': '4719370',
+                             'ext': 'mp4',
+                             'title': 'Live from Webster Hall NYC',
+                             'timestamp': 1350008072,
+                             'upload_date': '20121012',
+                             'duration': 5968.0,
+                             'like_count': int,
+                             'view_count': int,
+                             'comment_count': int,
+                             'thumbnail': r're:^http://.*\.jpg$',
+                             },
+               },
+              {'url': 'https://livestream.com/coheedandcambria/websterhall',
+               'info_dict': {'id': '1585861',
+                             'title': 'Live From Webster Hall',
+                             },
+               'playlist_mincount': 1,
+               },
+              {'url': 'https://livestream.com/dayananda/events/7954027',
+               'info_dict': {'title': 'Live from Mevo',
+                             'id': '7954027',
+                             },
+               'playlist_mincount': 4,
+               },
+              {'url': 'https://livestream.com/accounts/82',
+               'info_dict': {'id': '253978',
+                             'view_count': int,
+                             'title': 'trsr',
+                             'comment_count': int,
+                             'like_count': int,
+                             'upload_date': '20120306',
+                             'timestamp': 1331042383,
+                             'thumbnail': 'http://img.new.livestream.com/videos/0000000000000372/cacbeed6-fb68-4b5e-ad9c-e148124e68a9_640x427.jpg',
+                             'duration': 15.332,
+                             'ext': 'mp4',
+                             },
+               },
+              {'url': 'https://new.livestream.com/accounts/362/events/3557232/videos/67864563/player?autoPlay=false&height=360&mute=false&width=640',
+               'only_matching': True,
+               },
+              {'url': 'http://livestream.com/bsww/concacafbeachsoccercampeonato2015',
+               'only_matching': True,
+               }]
     _API_URL_TEMPLATE = 'http://livestream.com/api/accounts/%s/events/%s'
 
     def _parse_smil_formats_and_subtitles(
-            self, smil, smil_url, video_id, namespace=None, f4m_params=None, transform_rtmp_url=None):
+            self,
+            smil,
+            smil_url,
+            video_id,
+            namespace=None,
+            f4m_params=None,
+            transform_rtmp_url=None):
         base_ele = find_xpath_attr(
             smil, self._xpath_ns('.//meta', namespace), 'name', 'httpBase')
-        base = base_ele.get('content') if base_ele is not None else 'http://livestreamvod-f.akamaihd.net/'
+        base = base_ele.get(
+            'content') if base_ele is not None else 'http://livestreamvod-f.akamaihd.net/'
 
         formats = []
         video_nodes = smil.findall(self._xpath_ns('.//video', namespace))
@@ -92,10 +95,10 @@ class LivestreamIE(InfoExtractor):
         for vn in video_nodes:
             tbr = int_or_none(vn.attrib.get('system-bitrate'), 1000)
             furl = (
-                update_url_query(urllib.parse.urljoin(base, vn.attrib['src']), {
-                    'v': '3.0.3',
-                    'fp': 'WIN% 14,0,0,145',
-                }))
+                update_url_query(
+                    urllib.parse.urljoin(
+                        base, vn.attrib['src']), {
+                        'v': '3.0.3', 'fp': 'WIN% 14,0,0,145', }))
             if 'clipBegin' in vn.attrib:
                 furl += '&ssek=' + vn.attrib['clipBegin']
             formats.append({
@@ -133,7 +136,9 @@ class LivestreamIE(InfoExtractor):
 
         smil_url = video_data.get('smil_url')
         if smil_url:
-            formats.extend(self._extract_smil_formats(smil_url, video_id, fatal=False))
+            formats.extend(
+                self._extract_smil_formats(
+                    smil_url, video_id, fatal=False))
 
         m3u8_url = video_data.get('m3u8_url')
         if m3u8_url:
@@ -201,7 +206,8 @@ class LivestreamIE(InfoExtractor):
     def _generate_event_playlist(self, event_data):
         event_id = str(event_data['id'])
         account_id = str(event_data['owner_account_id'])
-        feed_root_url = self._API_URL_TEMPLATE % (account_id, event_id) + '/feed.json'
+        feed_root_url = self._API_URL_TEMPLATE % (
+            account_id, event_id) + '/feed.json'
 
         stream_info = event_data.get('stream_info')
         if stream_info:
@@ -215,7 +221,8 @@ class LivestreamIE(InfoExtractor):
                 info_url = f'{feed_root_url}?&id={last_video}&newer=-1&type=video'
             videos_info = self._download_json(
                 info_url, event_id, f'Downloading page {i}')['data']
-            videos_info = [v['data'] for v in videos_info if v['type'] == 'video']
+            videos_info = [v['data']
+                           for v in videos_info if v['type'] == 'video']
             if not videos_info:
                 break
             for v in videos_info:
@@ -239,10 +246,12 @@ class LivestreamIE(InfoExtractor):
         elif event:
             event_data = self._download_json(f'{api_url}/events/{event}', None)
             return self.playlist_result(
-                self._generate_event_playlist(event_data), str(event_data['id']), event_data['full_name'])
+                self._generate_event_playlist(event_data), str(
+                    event_data['id']), event_data['full_name'])
 
         account_data = self._download_json(api_url, None)
-        items = traverse_obj(account_data, (('upcoming_events', 'past_events'), 'data', ...))
+        items = traverse_obj(
+            account_data, (('upcoming_events', 'past_events'), 'data', ...))
         return self.playlist_result(
             itertools.chain.from_iterable(map(self._generate_event_playlist, items)),
             account_data.get('id'), account_data.get('full_name'))
@@ -359,7 +368,11 @@ class LivestreamOriginalIE(InfoExtractor):
                 info = {
                     'title': self._og_search_title(webpage),
                     'description': self._og_search_description(webpage),
-                    'thumbnail': self._search_regex(r'channelLogo\.src\s*=\s*"([^"]+)"', webpage, 'thumbnail', None),
+                    'thumbnail': self._search_regex(
+                        r'channelLogo\.src\s*=\s*"([^"]+)"',
+                        webpage,
+                        'thumbnail',
+                        None),
                 }
             video_data = self._download_json(stream_url, content_id)
             is_live = video_data.get('isLive')

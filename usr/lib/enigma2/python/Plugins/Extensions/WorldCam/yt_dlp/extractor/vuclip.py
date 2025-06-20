@@ -50,13 +50,22 @@ class VuClipIE(InfoExtractor):
                 'url': video_url,
             }]
         else:
-            formats = self._parse_html5_media_entries(url, webpage, video_id)[0]['formats']
+            formats = self._parse_html5_media_entries(
+                url, webpage, video_id)[0]['formats']
 
-        title = remove_end(self._html_search_regex(
-            r'<title>(.*?)-\s*Vuclip</title>', webpage, 'title').strip(), ' - Video')
+        title = remove_end(
+            self._html_search_regex(
+                r'<title>(.*?)-\s*Vuclip</title>',
+                webpage,
+                'title').strip(),
+            ' - Video')
 
-        duration = parse_duration(self._html_search_regex(
-            r'[(>]([0-9]+:[0-9]+)(?:<span|\))', webpage, 'duration', fatal=False))
+        duration = parse_duration(
+            self._html_search_regex(
+                r'[(>]([0-9]+:[0-9]+)(?:<span|\))',
+                webpage,
+                'duration',
+                fatal=False))
 
         return {
             'id': video_id,

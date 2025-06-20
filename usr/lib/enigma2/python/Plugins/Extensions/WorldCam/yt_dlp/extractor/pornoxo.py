@@ -27,7 +27,8 @@ class PornoXOIE(InfoExtractor):
         video_id, display_id = mobj.groups()
 
         webpage = self._download_webpage(url, video_id)
-        video_data = self._extract_jwplayer_data(webpage, video_id, require_title=False)
+        video_data = self._extract_jwplayer_data(
+            webpage, video_id, require_title=False)
 
         title = self._html_search_regex(
             r'<title>([^<]+)\s*-\s*PornoXO', webpage, 'title')

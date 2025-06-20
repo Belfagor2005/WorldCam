@@ -122,15 +122,23 @@ class LSMLREmbedIE(InfoExtractor):
             webpage, 'player json', group=('player', 'media'))
 
         player_json = self._parse_json(
-            player_data, video_id, transform_source=js_to_json, fatal=False) or {}
-        media_json = self._parse_json(media_data, video_id, transform_source=js_to_json)
+            player_data,
+            video_id,
+            transform_source=js_to_json,
+            fatal=False) or {}
+        media_json = self._parse_json(
+            media_data, video_id, transform_source=js_to_json)
 
         entries = []
-        for item in traverse_obj(media_json, (('audio', 'video'), lambda _, v: v['id'])):
+        for item in traverse_obj(
+                media_json, (('audio', 'video'), lambda _, v: v['id'])):
             formats = []
-            for source_url in traverse_obj(item, ('sources', ..., 'file', {url_or_none})):
+            for source_url in traverse_obj(
+                    item, ('sources', ..., 'file', {url_or_none})):
                 if determine_ext(source_url) == 'm3u8':
-                    formats.extend(self._extract_m3u8_formats(source_url, video_id, fatal=False))
+                    formats.extend(
+                        self._extract_m3u8_formats(
+                            source_url, video_id, fatal=False))
                 else:
                     formats.append({'url': source_url})
 
@@ -210,7 +218,8 @@ class LSMLTVEmbedIE(InfoExtractor):
 
         if embed_type == 'telia':
             ie_key = 'CloudyCDN'
-            embed_url = traverse_obj(data, ('source', 'embed_url', {url_or_none}))
+            embed_url = traverse_obj(
+                data, ('source', 'embed_url', {url_or_none}))
         elif embed_type == 'youtube':
             ie_key = 'Youtube'
             embed_url = traverse_obj(data, ('source', 'id', {str}))
@@ -259,7 +268,10 @@ class LSMReplayIE(InfoExtractor):
     }]
 
     def _fix_nuxt_data(self, webpage):
-        return re.sub(r'Object\.create\(null(?:,(\{.+\}))?\)', lambda m: m.group(1) or 'null', webpage)
+        return re.sub(
+            r'Object\.create\(null(?:,(\{.+\}))?\)',
+            lambda m: m.group(1) or 'null',
+            webpage)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)

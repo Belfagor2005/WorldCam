@@ -29,7 +29,8 @@ class VideaIE(InfoExtractor):
                         )
                         (?P<id>[^?#&]+)
                     '''
-    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//videa\.hu/player\?.*?\bv=.+?)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//videa\.hu/player\?.*?\bv=.+?)\1']
     _TESTS = [{
         'url': 'http://videa.hu/videok/allatok/az-orult-kigyasz-285-kigyot-kigyo-8YfIAjxwWGwT8HVQ',
         'md5': '97a7af41faeaffd9f1fc864a7c7e7603',
@@ -123,7 +124,11 @@ class VideaIE(InfoExtractor):
             result += s[i - (self._STATIC_SECRET.index(l[i]) - 31)]
 
         query = parse_qs(player_url)
-        random_seed = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+        random_seed = ''.join(
+            random.choices(
+                string.ascii_letters +
+                string.digits,
+                k=8))
         query['_s'] = random_seed
         query['_t'] = result[:16]
 

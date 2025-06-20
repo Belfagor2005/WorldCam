@@ -75,7 +75,10 @@ class ClypIE(InfoExtractor):
 
         page = self._download_webpage(url, video_id=audio_id)
         wav_url = self._html_search_regex(
-            r'var\s*wavStreamUrl\s*=\s*["\'](?P<url>https?://[^\'"]+)', page, 'url', default=None)
+            r'var\s*wavStreamUrl\s*=\s*["\'](?P<url>https?://[^\'"]+)',
+            page,
+            'url',
+            default=None)
         if wav_url:
             formats.append({
                 'url': wav_url,

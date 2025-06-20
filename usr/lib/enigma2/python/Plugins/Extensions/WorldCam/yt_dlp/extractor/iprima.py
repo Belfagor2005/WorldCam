@@ -99,13 +99,18 @@ class IPrimaIE(InfoExtractor):
 
     def _real_initialize(self):
         if not self.access_token:
-            self.raise_login_required('Login is required to access any iPrima content', method='password')
+            self.raise_login_required(
+                'Login is required to access any iPrima content',
+                method='password')
 
     def _raise_access_error(self, error_code):
         if error_code == 'PLAY_GEOIP_DENIED':
-            self.raise_geo_restricted(countries=['CZ'], metadata_available=True)
+            self.raise_geo_restricted(
+                countries=['CZ'], metadata_available=True)
         elif error_code is not None:
-            self.raise_no_formats('Access to stream infos forbidden', expected=True)
+            self.raise_no_formats(
+                'Access to stream infos forbidden',
+                expected=True)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -123,24 +128,40 @@ class IPrimaIE(InfoExtractor):
         ), webpage, 'real id', group='id', default=None)
 
         if not video_id:
-            nuxt_data = self._search_nuxt_data(webpage, video_id, traverse='data', fatal=False)
+            nuxt_data = self._search_nuxt_data(
+                webpage, video_id, traverse='data', fatal=False)
             video_id = traverse_obj(
-                nuxt_data, (..., 'content', 'additionals', 'videoPlayId', {str}), get_all=False)
+                nuxt_data,
+                (...,
+                 'content',
+                 'additionals',
+                 'videoPlayId',
+                 {str}),
+                get_all=False)
 
         if not video_id:
             nuxt_data = self._search_json(
                 r'<script[^>]+\bid=["\']__NUXT_DATA__["\'][^>]*>',
-                webpage, 'nuxt data', None, end_pattern=r'</script>', contains_pattern=r'\[(?s:.+)\]')
+                webpage,
+                'nuxt data',
+                None,
+                end_pattern=r'</script>',
+                contains_pattern=r'\[(?s:.+)\]')
 
-            video_id = traverse_obj(nuxt_data, lambda _, v: re.fullmatch(r'p\d+', v), get_all=False)
+            video_id = traverse_obj(
+                nuxt_data, lambda _, v: re.fullmatch(
+                    r'p\d+', v), get_all=False)
 
         if not video_id:
             self.raise_no_formats('Unable to extract video ID from webpage')
 
         metadata = self._download_json(
             f'https://api.play-backend.iprima.cz/api/v1//products/id-{video_id}/play',
-            video_id, note='Getting manifest URLs', errnote='Failed to get manifest URLs',
-            headers={'X-OTT-Access-Token': self.access_token},
+            video_id,
+            note='Getting manifest URLs',
+            errnote='Failed to get manifest URLs',
+            headers={
+                'X-OTT-Access-Token': self.access_token},
             expected_status=403)
 
         self._raise_access_error(metadata.get('errorCode'))
@@ -242,8 +263,12 @@ class IPrimaCNNIE(InfoExtractor):
         options = self._parse_json(
             self._search_regex(
                 r'(?s)(?:TDIPlayerOptions|playerOptions)\s*=\s*({.+?});\s*\]\]',
-                playerpage, 'player options', default='{}'),
-            video_id, transform_source=js_to_json, fatal=False)
+                playerpage,
+                'player options',
+                default='{}'),
+            video_id,
+            transform_source=js_to_json,
+            fatal=False)
         if options:
             for key, tracks in options.get('tracks', {}).items():
                 if not isinstance(tracks, list):
@@ -254,11 +279,13 @@ class IPrimaCNNIE(InfoExtractor):
                         extract_formats(src, key.lower(), track.get('lang'))
 
         if not formats:
-            for _, src in re.findall(r'src["\']\s*:\s*(["\'])(.+?)\1', playerpage):
+            for _, src in re.findall(
+                    r'src["\']\s*:\s*(["\'])(.+?)\1', playerpage):
                 extract_formats(src)
 
         if not formats and '>GEO_IP_NOT_ALLOWED<' in playerpage:
-            self.raise_geo_restricted(countries=['CZ'], metadata_available=True)
+            self.raise_geo_restricted(
+                countries=['CZ'], metadata_available=True)
 
         return {
             'id': video_id,

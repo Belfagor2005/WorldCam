@@ -77,7 +77,8 @@ class FOXIE(InfoExtractor):
                         raise ExtractorError(
                             'This video is only available via cable service provider '
                             'subscription. You may want to use --cookies.', expected=True)
-                messages = ', '.join([e['message'] for e in entitlement_issues])
+                messages = ', '.join([e['message']
+                                     for e in entitlement_issues])
                 raise ExtractorError(messages, expected=True)
             raise
 
@@ -85,8 +86,12 @@ class FOXIE(InfoExtractor):
         if not self._access_token:
             mvpd_auth = self._get_cookies(self._HOME_PAGE_URL).get('mvpd-auth')
             if mvpd_auth:
-                self._access_token = (self._parse_json(urllib.parse.unquote(
-                    mvpd_auth.value), None, fatal=False) or {}).get('accessToken')
+                self._access_token = (
+                    self._parse_json(
+                        urllib.parse.unquote(
+                            mvpd_auth.value),
+                        None,
+                        fatal=False) or {}).get('accessToken')
             if not self._access_token:
                 self._access_token = self._call_api(
                     'login', None, json.dumps({
@@ -125,7 +130,8 @@ class FOXIE(InfoExtractor):
             m3u8_url = self._download_json(release_url, video_id)['playURL']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                error = self._parse_json(e.cause.response.read().decode(), video_id)
+                error = self._parse_json(
+                    e.cause.response.read().decode(), video_id)
                 if error.get('exception') == 'GeoLocationBlocked':
                     self.raise_geo_restricted(countries=['US'])
                 raise ExtractorError(error['description'], expected=True)
@@ -140,7 +146,8 @@ class FOXIE(InfoExtractor):
         duration = int_or_none(video.get('durationInSeconds')) or int_or_none(
             video.get('duration')) or parse_duration(video.get('duration'))
         timestamp = unified_timestamp(video.get('datePublished'))
-        creator = data.get('brand') or data.get('network') or video.get('network')
+        creator = data.get('brand') or data.get(
+            'network') or video.get('network')
         series = video.get('seriesName') or data.get(
             'seriesName') or data.get('show')
 
@@ -162,13 +169,22 @@ class FOXIE(InfoExtractor):
             'description': video.get('description'),
             'duration': duration,
             'timestamp': timestamp,
-            'age_limit': parse_age_limit(video.get('contentRating')),
+            'age_limit': parse_age_limit(
+                video.get('contentRating')),
             'creator': creator,
             'series': series,
-            'season_number': int_or_none(video.get('seasonNumber')),
+            'season_number': int_or_none(
+                video.get('seasonNumber')),
             'episode': video.get('name'),
-            'episode_number': int_or_none(video.get('episodeNumber')),
-            'thumbnail': traverse_obj(video, ('images', 'still', 'raw'), expected_type=url_or_none),
-            'release_year': int_or_none(video.get('releaseYear')),
+            'episode_number': int_or_none(
+                video.get('episodeNumber')),
+            'thumbnail': traverse_obj(
+                video,
+                ('images',
+                 'still',
+                 'raw'),
+                expected_type=url_or_none),
+            'release_year': int_or_none(
+                video.get('releaseYear')),
             'subtitles': subtitles,
         }

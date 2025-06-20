@@ -46,13 +46,17 @@ class CrowdBunkerIE(InfoExtractor):
                 'url': sub_url,
             })
 
-        if mpd_url := traverse_obj(video_json, ('dashManifest', 'url', {url_or_none})):
-            fmts, subs = self._extract_mpd_formats_and_subtitles(mpd_url, video_id, mpd_id='dash', fatal=False)
+        if mpd_url := traverse_obj(
+                video_json, ('dashManifest', 'url', {url_or_none})):
+            fmts, subs = self._extract_mpd_formats_and_subtitles(
+                mpd_url, video_id, mpd_id='dash', fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
 
-        if m3u8_url := traverse_obj(video_json, ('hlsManifest', 'url', {url_or_none})):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, m3u8_id='hls', fatal=False)
+        if m3u8_url := traverse_obj(
+                video_json, ('hlsManifest', 'url', {url_or_none})):
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                m3u8_url, video_id, m3u8_id='hls', fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
 
@@ -68,10 +72,15 @@ class CrowdBunkerIE(InfoExtractor):
             'description': video_json.get('description'),
             'view_count': video_json.get('viewCount'),
             'duration': video_json.get('duration'),
-            'uploader': try_get(data_json, lambda x: x['channel']['name']),
-            'uploader_id': try_get(data_json, lambda x: x['channel']['id']),
+            'uploader': try_get(
+                data_json,
+                lambda x: x['channel']['name']),
+            'uploader_id': try_get(
+                data_json,
+                lambda x: x['channel']['id']),
             'like_count': data_json.get('likesCount'),
-            'upload_date': unified_strdate(video_json.get('publishedAt') or video_json.get('createdAt')),
+            'upload_date': unified_strdate(
+                video_json.get('publishedAt') or video_json.get('createdAt')),
             'thumbnails': thumbnails,
             'formats': formats,
             'subtitles': subtitles,
@@ -109,4 +118,6 @@ class CrowdBunkerChannelIE(InfoExtractor):
 
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
-        return self.playlist_result(self._entries(playlist_id), playlist_id=playlist_id)
+        return self.playlist_result(
+            self._entries(playlist_id),
+            playlist_id=playlist_id)

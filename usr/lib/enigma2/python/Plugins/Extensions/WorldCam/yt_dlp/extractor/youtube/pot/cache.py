@@ -60,7 +60,9 @@ class PoTokenCacheSpecProvider(IEContentProvider, abc.ABC, suffix='PCSP'):
         return True
 
     @abc.abstractmethod
-    def generate_cache_spec(self, request: PoTokenRequest) -> PoTokenCacheSpec | None:
+    def generate_cache_spec(
+            self,
+            request: PoTokenRequest) -> PoTokenCacheSpec | None:
         """Generate a cache spec for the given request"""
         pass
 
@@ -83,8 +85,8 @@ def register_spec(provider: type[PoTokenCacheSpecProvider]):
     )
 
 
-def register_preference(
-        *providers: type[PoTokenCacheProvider]) -> typing.Callable[[CacheProviderPreference], CacheProviderPreference]:
+def register_preference(*providers: type[PoTokenCacheProvider]) -> typing.Callable[[
+        CacheProviderPreference], CacheProviderPreference]:
     """Register a preference for a PoTokenCacheProvider"""
     return register_preference_generic(
         PoTokenCacheProvider,
@@ -94,4 +96,5 @@ def register_preference(
 
 
 if typing.TYPE_CHECKING:
-    CacheProviderPreference = typing.Callable[[PoTokenCacheProvider, PoTokenRequest], int]
+    CacheProviderPreference = typing.Callable[[
+        PoTokenCacheProvider, PoTokenRequest], int]

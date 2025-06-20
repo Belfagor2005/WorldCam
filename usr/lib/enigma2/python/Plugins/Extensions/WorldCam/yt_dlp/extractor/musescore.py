@@ -45,8 +45,11 @@ class MuseScoreIE(InfoExtractor):
         webpage = self._download_webpage(url, None)
         url = self._og_search_url(webpage) or url
         video_id = self._match_id(url)
-        mp3_url = self._download_json(f'https://musescore.com/api/jmuse?id={video_id}&index=0&type=mp3&v2=1', video_id,
-                                      headers={'authorization': '63794e5461e4cfa046edfbdddfccc1ac16daffd2'})['info']['url']
+        mp3_url = self._download_json(
+            f'https://musescore.com/api/jmuse?id={video_id}&index=0&type=mp3&v2=1',
+            video_id,
+            headers={
+                'authorization': '63794e5461e4cfa046edfbdddfccc1ac16daffd2'})['info']['url']
         formats = [{
             'url': mp3_url,
             'ext': 'mp3',
@@ -59,6 +62,12 @@ class MuseScoreIE(InfoExtractor):
             'title': self._og_search_title(webpage),
             'description': self._og_search_description(webpage),
             'thumbnail': self._og_search_thumbnail(webpage),
-            'uploader': self._html_search_meta('musescore:author', webpage, 'uploader'),
-            'creator': self._html_search_meta('musescore:composer', webpage, 'composer'),
+            'uploader': self._html_search_meta(
+                'musescore:author',
+                webpage,
+                'uploader'),
+            'creator': self._html_search_meta(
+                'musescore:composer',
+                webpage,
+                'composer'),
         }

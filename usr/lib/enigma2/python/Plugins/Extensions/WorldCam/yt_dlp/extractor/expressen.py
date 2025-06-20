@@ -15,40 +15,39 @@ class ExpressenIE(InfoExtractor):
                         (?:tv|nyheter)/(?:[^/?#]+/)*
                         (?P<id>[^/?#&]+)
                     '''
-    _EMBED_REGEX = [r'<iframe[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//(?:www\.)?(?:expressen|di)\.se/(?:tvspelare/video|videoplayer/embed)/tv/.+?)\1']
-    _TESTS = [{
-        'url': 'https://www.expressen.se/tv/ledare/ledarsnack/ledarsnack-om-arbetslosheten-bland-kvinnor-i-speciellt-utsatta-omraden/',
-        'md5': 'deb2ca62e7b1dcd19fa18ba37523f66e',
-        'info_dict': {
-            'id': 'ba90f5a9-78d1-4511-aa02-c177b9c99136',
-            'display_id': 'ledarsnack-om-arbetslosheten-bland-kvinnor-i-speciellt-utsatta-omraden',
-            'ext': 'mp4',
-            'title': 'Ledarsnack: Om arbetslösheten bland kvinnor i speciellt utsatta områden',
-            'description': 'md5:f38c81ff69f3de4d269bbda012fcbbba',
-            'thumbnail': r're:^https?://.*\.jpg$',
-            'duration': 788,
-            'timestamp': 1526639109,
-            'upload_date': '20180518',
-        },
-    }, {
-        'url': 'https://www.expressen.se/tv/kultur/kulturdebatt-med-expressens-karin-olsson/',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.expressen.se/tvspelare/video/tv/ditv/ekonomistudion/experterna-har-ar-fragorna-som-avgor-valet/?embed=true&external=true&autoplay=true&startVolume=0&partnerId=di',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.expressen.se/videoplayer/embed/tv/ditv/ekonomistudion/experterna-har-ar-fragorna-som-avgor-valet/?embed=true&external=true&autoplay=true&startVolume=0&partnerId=di',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.di.se/videoplayer/embed/tv/ditv/borsmorgon/implantica-rusar-70--under-borspremiaren-hor-styrelsemedlemmen/?embed=true&external=true&autoplay=true&startVolume=0&partnerId=di',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.expressen.se/video-player/embed/tv/nyheter/ekero-fodda-olof-gustafsson-forvaltar-knarkbaronen-pablo-escobars-namn',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.expressen.se/nyheter/efter-egna-telefonbluffen-escobar-stammer-klarna/',
-        'only_matching': True,
-    }]
+    _EMBED_REGEX = [
+        r'<iframe[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//(?:www\.)?(?:expressen|di)\.se/(?:tvspelare/video|videoplayer/embed)/tv/.+?)\1']
+    _TESTS = [{'url': 'https://www.expressen.se/tv/ledare/ledarsnack/ledarsnack-om-arbetslosheten-bland-kvinnor-i-speciellt-utsatta-omraden/',
+               'md5': 'deb2ca62e7b1dcd19fa18ba37523f66e',
+               'info_dict': {'id': 'ba90f5a9-78d1-4511-aa02-c177b9c99136',
+                             'display_id': 'ledarsnack-om-arbetslosheten-bland-kvinnor-i-speciellt-utsatta-omraden',
+                             'ext': 'mp4',
+                             'title': 'Ledarsnack: Om arbetslösheten bland kvinnor i speciellt utsatta områden',
+                             'description': 'md5:f38c81ff69f3de4d269bbda012fcbbba',
+                             'thumbnail': r're:^https?://.*\.jpg$',
+                             'duration': 788,
+                             'timestamp': 1526639109,
+                             'upload_date': '20180518',
+                             },
+               },
+              {'url': 'https://www.expressen.se/tv/kultur/kulturdebatt-med-expressens-karin-olsson/',
+               'only_matching': True,
+               },
+              {'url': 'https://www.expressen.se/tvspelare/video/tv/ditv/ekonomistudion/experterna-har-ar-fragorna-som-avgor-valet/?embed=true&external=true&autoplay=true&startVolume=0&partnerId=di',
+               'only_matching': True,
+               },
+              {'url': 'https://www.expressen.se/videoplayer/embed/tv/ditv/ekonomistudion/experterna-har-ar-fragorna-som-avgor-valet/?embed=true&external=true&autoplay=true&startVolume=0&partnerId=di',
+               'only_matching': True,
+               },
+              {'url': 'https://www.di.se/videoplayer/embed/tv/ditv/borsmorgon/implantica-rusar-70--under-borspremiaren-hor-styrelsemedlemmen/?embed=true&external=true&autoplay=true&startVolume=0&partnerId=di',
+               'only_matching': True,
+               },
+              {'url': 'https://www.expressen.se/video-player/embed/tv/nyheter/ekero-fodda-olof-gustafsson-forvaltar-knarkbaronen-pablo-escobars-namn',
+               'only_matching': True,
+               },
+              {'url': 'https://www.expressen.se/nyheter/efter-egna-telefonbluffen-escobar-stammer-klarna/',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         display_id = self._match_id(url)

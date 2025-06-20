@@ -24,7 +24,8 @@ class FoxNewsIE(AMPIE):
             'params': {'skip_download': 'm3u8'},
         },
         {
-            # From http://insider.foxnews.com/2016/08/25/univ-wisconsin-student-group-pushing-silence-certain-words
+            # From
+            # http://insider.foxnews.com/2016/08/25/univ-wisconsin-student-group-pushing-silence-certain-words
             'url': 'http://video.insider.foxnews.com/v/video-embed.html?video_id=5099377331001&autoplay=true&share_url=http://insider.foxnews.com/2016/08/25/univ-wisconsin-student-group-pushing-silence-certain-words&share_title=Student%20Group:%20Saying%20%27Politically%20Correct,%27%20%27Trash%27%20and%20%27Lame%27%20Is%20Offensive&share=true',
             'info_dict': {
                 'id': '5099377331001',
@@ -129,7 +130,10 @@ class FoxNewsVideoIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        return self.url_result(f'https://video.foxnews.com/v/{video_id}', FoxNewsIE, video_id)
+        return self.url_result(
+            f'https://video.foxnews.com/v/{video_id}',
+            FoxNewsIE,
+            video_id)
 
 
 class FoxNewsArticleIE(InfoExtractor):
@@ -182,4 +186,8 @@ class FoxNewsArticleIE(InfoExtractor):
                 'http://video.foxnews.com/v/' + video_id, FoxNewsIE.ie_key())
 
         return self.url_result(
-            next(FoxNewsIE._extract_embed_urls(url, webpage)), FoxNewsIE.ie_key())
+            next(
+                FoxNewsIE._extract_embed_urls(
+                    url,
+                    webpage)),
+            FoxNewsIE.ie_key())

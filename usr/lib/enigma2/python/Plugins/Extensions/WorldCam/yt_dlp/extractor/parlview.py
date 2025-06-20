@@ -34,18 +34,29 @@ class ParlviewIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        media = self._download_json(self._API_URL % video_id, video_id).get('media')
-        timestamp = try_get(media, lambda x: x['timeMap']['source']['timecode_offsets'][0], str) or '/'
+        media = self._download_json(
+            self._API_URL %
+            video_id, video_id).get('media')
+        timestamp = try_get(
+            media,
+            lambda x: x['timeMap']['source']['timecode_offsets'][0],
+            str) or '/'
 
         stream = try_get(media, lambda x: x['renditions'][0], dict)
         if not stream:
             self.raise_no_formats('No streams were detected')
         elif stream.get('streamType') != 'VOD':
-            self.raise_no_formats('Unknown type of stream was detected: "{}"'.format(str(stream.get('streamType'))))
-        formats = self._extract_m3u8_formats(stream['url'], video_id, 'mp4', 'm3u8_native')
+            self.raise_no_formats('Unknown type of stream was detected: "{}"'.format(
+                str(stream.get('streamType'))))
+        formats = self._extract_m3u8_formats(
+            stream['url'], video_id, 'mp4', 'm3u8_native')
 
         media_info = self._download_webpage(
-            self._MEDIA_INFO_URL % video_id, video_id, note='Downloading media info', fatal=False)
+            self._MEDIA_INFO_URL %
+            video_id,
+            video_id,
+            note='Downloading media info',
+            fatal=False)
 
         return {
             'id': video_id,

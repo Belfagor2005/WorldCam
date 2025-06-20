@@ -101,7 +101,9 @@ class LEGOIE(InfoExtractor):
             else:
                 video_source_quality = video_source.get('Quality')
                 f = {
-                    'format_id': join_nonempty(video_source_format, video_source_quality),
+                    'format_id': join_nonempty(
+                        video_source_format,
+                        video_source_quality),
                     'quality': q(video_source_quality),
                     'url': video_source_url,
                 }
@@ -131,11 +133,15 @@ class LEGOIE(InfoExtractor):
             'title': title,
             'description': video.get('Description'),
             'thumbnail': video.get('GeneratedCoverImage') or video.get('GeneratedThumbnail'),
-            'duration': int_or_none(video.get('Length')),
+            'duration': int_or_none(
+                video.get('Length')),
             'formats': formats,
             'subtitles': subtitles,
-            'age_limit': int_or_none(video.get('AgeFrom')),
+            'age_limit': int_or_none(
+                video.get('AgeFrom')),
             'season': video.get('SeasonTitle'),
-            'season_number': int_or_none(video.get('Season')) or None,
-            'episode_number': int_or_none(video.get('Episode')) or None,
+            'season_number': int_or_none(
+                video.get('Season')) or None,
+            'episode_number': int_or_none(
+                video.get('Episode')) or None,
         }

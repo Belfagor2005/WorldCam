@@ -94,19 +94,17 @@ class WWEIE(WWEBaseIE):
 
 class WWEPlaylistIE(WWEBaseIE):
     _VALID_URL = r'https?://(?:[^/]+\.)?wwe\.com/(?:[^/]+/)*(?P<id>[^/?#&]+)'
-    _TESTS = [{
-        'url': 'https://www.wwe.com/shows/raw/2018-11-12',
-        'info_dict': {
-            'id': '2018-11-12',
-        },
-        'playlist_mincount': 11,
-    }, {
-        'url': 'http://www.wwe.com/article/walk-the-prank-wwe-edition',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.wwe.com/shows/wwenxt/article/matt-riddle-interview',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://www.wwe.com/shows/raw/2018-11-12',
+               'info_dict': {'id': '2018-11-12',
+                             },
+               'playlist_mincount': 11,
+               },
+              {'url': 'http://www.wwe.com/article/walk-the-prank-wwe-edition',
+               'only_matching': True,
+               },
+              {'url': 'https://www.wwe.com/shows/wwenxt/article/matt-riddle-interview',
+               'only_matching': True,
+               }]
 
     @classmethod
     def suitable(cls, url):
