@@ -61,14 +61,18 @@ class LnkIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        video_json = self._download_json(f'https://lnk.lt/api/video/video-config/{video_id}', video_id)['videoInfo']
+        video_json = self._download_json(
+            f'https://lnk.lt/api/video/video-config/{video_id}',
+            video_id)['videoInfo']
         formats, subtitles = [], {}
         if video_json.get('videoUrl'):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(video_json['videoUrl'], video_id)
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                video_json['videoUrl'], video_id)
             formats.extend(fmts)
             subtitles = self._merge_subtitles(subtitles, subs)
         if video_json.get('videoFairplayUrl') and not video_json.get('drm'):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(video_json['videoFairplayUrl'], video_id)
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                video_json['videoFairplayUrl'], video_id)
             formats.extend(fmts)
             subtitles = self._merge_subtitles(subtitles, subs)
 
@@ -78,9 +82,14 @@ class LnkIE(InfoExtractor):
             'description': video_json.get('description'),
             'view_count': video_json.get('viewsCount'),
             'duration': video_json.get('duration'),
-            'upload_date': unified_strdate(video_json.get('airDate')),
-            'thumbnail': format_field(video_json, 'posterImage', 'https://lnk.lt/all-images/%s'),
-            'episode_number': int_or_none(video_json.get('episodeNumber')),
+            'upload_date': unified_strdate(
+                video_json.get('airDate')),
+            'thumbnail': format_field(
+                video_json,
+                'posterImage',
+                'https://lnk.lt/all-images/%s'),
+            'episode_number': int_or_none(
+                video_json.get('episodeNumber')),
             'series': video_json.get('programTitle'),
             'formats': formats,
             'subtitles': subtitles,

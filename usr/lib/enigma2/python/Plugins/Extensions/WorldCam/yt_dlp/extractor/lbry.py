@@ -31,7 +31,9 @@ class LBRYBaseIE(InfoExtractor):
 
     def _call_api_proxy(self, method, display_id, params, resource):
         headers = {'Content-Type': 'application/json-rpc'}
-        token = try_get(self._get_cookies('https://odysee.com'), lambda x: x['auth_token'].value)
+        token = try_get(
+            self._get_cookies('https://odysee.com'),
+            lambda x: x['auth_token'].value)
         if token:
             headers['x-lbry-auth-token'] = token
         response = self._download_json(
@@ -45,7 +47,8 @@ class LBRYBaseIE(InfoExtractor):
         err = response.get('error')
         if err:
             raise ExtractorError(
-                f'{self.IE_NAME} said: {err.get("code")} - {err.get("message")}', expected=True)
+                f'{self.IE_NAME} said: {err.get("code")} - {err.get("message")}',
+                expected=True)
         return response['result']
 
     def _resolve_url(self, url, display_id, resource):
@@ -75,7 +78,8 @@ class LBRYBaseIE(InfoExtractor):
         })
 
         if info.get('uploader_id') and info.get('channel_id'):
-            info['channel_url'] = self._permanent_url(url, info['uploader_id'], info['channel_id'])
+            info['channel_url'] = self._permanent_url(
+                url, info['uploader_id'], info['channel_id'])
 
         return info
 
@@ -89,7 +93,8 @@ class LBRYBaseIE(InfoExtractor):
         }
         result = self._call_api_proxy(
             'claim_search', display_id, page_params, f'page {page}')
-        for item in traverse_obj(result, ('items', lambda _, v: v['name'] and v['claim_id'])):
+        for item in traverse_obj(
+                result, ('items', lambda _, v: v['name'] and v['claim_id'])):
             yield {
                 **self._parse_stream(item, url),
                 '_type': 'url',
@@ -319,10 +324,15 @@ class LBRYIE(LBRYBaseIE):
                     }),
                 }, 'streaming url')['streaming_url']
 
-            # GET request to v3 API returns original video/audio file if available
+            # GET request to v3 API returns original video/audio file if
+            # available
             direct_url = re.sub(r'/api/v\d+/', '/api/v3/', streaming_url)
             urlh = self._request_webpage(
-                direct_url, display_id, 'Checking for original quality', headers=headers, fatal=False)
+                direct_url,
+                display_id,
+                'Checking for original quality',
+                headers=headers,
+                fatal=False)
             if urlh and urlhandle_detect_ext(urlh) != 'm3u8':
                 formats.append({
                     'url': direct_url,
@@ -355,14 +365,21 @@ class LBRYIE(LBRYBaseIE):
             # Upcoming videos may still give VideoURL
             if not live_data.get('Live'):
                 final_url = None
-                self.raise_no_formats('This stream is not live', True, claim_id)
+                self.raise_no_formats(
+                    'This stream is not live', True, claim_id)
 
         else:
             raise UnsupportedError(url)
 
         if determine_ext(final_url) == 'm3u8':
-            formats.extend(self._extract_m3u8_formats(
-                final_url, display_id, 'mp4', m3u8_id='hls', live=is_live, headers=headers))
+            formats.extend(
+                self._extract_m3u8_formats(
+                    final_url,
+                    display_id,
+                    'mp4',
+                    m3u8_id='hls',
+                    live=is_live,
+                    headers=headers))
 
         return {
             **self._parse_stream(result, url),
@@ -376,35 +393,38 @@ class LBRYIE(LBRYBaseIE):
 class LBRYChannelIE(LBRYBaseIE):
     IE_NAME = 'lbry:channel'
     IE_DESC = 'odysee.com channels'
-    _VALID_URL = LBRYBaseIE._BASE_URL_REGEX + rf'(?P<id>@{LBRYBaseIE._OPT_CLAIM_ID})/?(?:[?&]|$)'
-    _TESTS = [{
-        'url': 'https://lbry.tv/@LBRYFoundation:0',
-        'info_dict': {
-            'id': '0ed629d2b9c601300cacf7eabe9da0be79010212',
-            'title': 'The LBRY Foundation',
-            'description': 'Channel for the LBRY Foundation. Follow for updates and news.',
-        },
-        'playlist_mincount': 29,
-    }, {
-        'url': 'https://lbry.tv/@LBRYFoundation',
-        'only_matching': True,
-    }, {
-        'url': 'lbry://@lbry#3f',
-        'only_matching': True,
-    }]
+    _VALID_URL = LBRYBaseIE._BASE_URL_REGEX + \
+        rf'(?P<id>@{LBRYBaseIE._OPT_CLAIM_ID})/?(?:[?&]|$)'
+    _TESTS = [{'url': 'https://lbry.tv/@LBRYFoundation:0',
+               'info_dict': {'id': '0ed629d2b9c601300cacf7eabe9da0be79010212',
+                             'title': 'The LBRY Foundation',
+                             'description': 'Channel for the LBRY Foundation. Follow for updates and news.',
+                             },
+               'playlist_mincount': 29,
+               },
+              {'url': 'https://lbry.tv/@LBRYFoundation',
+               'only_matching': True,
+               },
+              {'url': 'lbry://@lbry#3f',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         display_id = self._match_id(url).replace(':', '#')
-        result = self._resolve_url(f'lbry://{display_id}', display_id, 'channel')
+        result = self._resolve_url(
+            f'lbry://{display_id}', display_id, 'channel')
         claim_id = result['claim_id']
 
-        return self._playlist_entries(url, claim_id, {'channel_ids': [claim_id]}, result)
+        return self._playlist_entries(
+            url, claim_id, {
+                'channel_ids': [claim_id]}, result)
 
 
 class LBRYPlaylistIE(LBRYBaseIE):
     IE_NAME = 'lbry:playlist'
     IE_DESC = 'odysee.com playlists'
-    _VALID_URL = LBRYBaseIE._BASE_URL_REGEX + r'\$/(?:play)?list/(?P<id>[0-9a-f-]+)'
+    _VALID_URL = LBRYBaseIE._BASE_URL_REGEX + \
+        r'\$/(?:play)?list/(?P<id>[0-9a-f-]+)'
     _TESTS = [{
         'url': 'https://odysee.com/$/playlist/ffef782f27486f0ac138bde8777f72ebdd0548c2',
         'info_dict': {
@@ -437,6 +457,8 @@ class LBRYPlaylistIE(LBRYBaseIE):
             'page': 1,
             'page_size': self._PAGE_SIZE,
         }, 'playlist'), ('items', 0))
-        claim_param = {'claim_ids': traverse_obj(result, ('value', 'claims', ..., {str}))}
+        claim_param = {
+            'claim_ids': traverse_obj(
+                result, ('value', 'claims', ..., {str}))}
 
         return self._playlist_entries(url, display_id, claim_param, result)
