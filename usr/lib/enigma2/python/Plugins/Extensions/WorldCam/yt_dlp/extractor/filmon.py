@@ -38,15 +38,22 @@ class FilmOnIE(InfoExtractor):
                 video_id)['response']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError):
-                errmsg = self._parse_json(e.cause.response.read().decode(), video_id)['reason']
-                raise ExtractorError(f'{self.IE_NAME} said: {errmsg}', expected=True)
+                errmsg = self._parse_json(
+                    e.cause.response.read().decode(), video_id)['reason']
+                raise ExtractorError(
+                    f'{self.IE_NAME} said: {errmsg}', expected=True)
             raise
 
         title = response['title']
         description = strip_or_none(response.get('description'))
 
         if response.get('type_id') == 1:
-            entries = [self.url_result('filmon:' + episode_id) for episode_id in response.get('episodes', [])]
+            entries = [
+                self.url_result(
+                    'filmon:' +
+                    episode_id) for episode_id in response.get(
+                    'episodes',
+                    [])]
             return self.playlist_result(entries, video_id, title, description)
 
         QUALITY = qualities(('low', 'high'))
@@ -119,15 +126,20 @@ class FilmOnChannelIE(InfoExtractor):
 
         try:
             channel_data = self._download_json(
-                'http://www.filmon.com/api-v2/channel/' + channel_id, channel_id)['data']
+                'http://www.filmon.com/api-v2/channel/' + channel_id,
+                channel_id)['data']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError):
-                errmsg = self._parse_json(e.cause.response.read().decode(), channel_id)['message']
-                raise ExtractorError(f'{self.IE_NAME} said: {errmsg}', expected=True)
+                errmsg = self._parse_json(
+                    e.cause.response.read().decode(),
+                    channel_id)['message']
+                raise ExtractorError(
+                    f'{self.IE_NAME} said: {errmsg}', expected=True)
             raise
 
         channel_id = str(channel_data['id'])
-        is_live = not channel_data.get('is_vod') and not channel_data.get('is_vox')
+        is_live = not channel_data.get(
+            'is_vod') and not channel_data.get('is_vox')
         title = channel_data['title']
 
         QUALITY = qualities(('low', 'high'))
@@ -137,8 +149,10 @@ class FilmOnChannelIE(InfoExtractor):
             if not stream_url:
                 continue
             if not is_live:
-                formats.extend(self._extract_wowza_formats(
-                    stream_url, channel_id, skip_protocols=['dash', 'rtmp', 'rtsp']))
+                formats.extend(
+                    self._extract_wowza_formats(
+                        stream_url, channel_id, skip_protocols=[
+                            'dash', 'rtmp', 'rtsp']))
                 continue
             quality = stream.get('quality')
             formats.append({
