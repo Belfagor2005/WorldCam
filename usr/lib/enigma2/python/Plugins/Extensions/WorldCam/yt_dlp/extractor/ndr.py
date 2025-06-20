@@ -114,30 +114,47 @@ class NDRIE(NDRBaseIE):
     def _extract_embed(self, webpage, display_id, url):
         embed_url = (
             self._html_search_meta(
-                'embedURL', webpage, 'embed URL',
-                default=None)
-            or self._search_regex(
-                r'\bembedUrl["\']\s*:\s*(["\'])(?P<url>(?:(?!\1).)+)\1', webpage,
-                'embed URL', group='url', default=None)
-            or self._search_regex(
-                r'\bvar\s*sophoraID\s*=\s*(["\'])(?P<url>(?:(?!\1).)+)\1', webpage,
-                'embed URL', group='url', default=''))
+                'embedURL',
+                webpage,
+                'embed URL',
+                default=None) or self._search_regex(
+                r'\bembedUrl["\']\s*:\s*(["\'])(?P<url>(?:(?!\1).)+)\1',
+                webpage,
+                'embed URL',
+                group='url',
+                default=None) or self._search_regex(
+                r'\bvar\s*sophoraID\s*=\s*(["\'])(?P<url>(?:(?!\1).)+)\1',
+                webpage,
+                'embed URL',
+                group='url',
+                default=''))
         # some more work needed if we only found sophoraID
         if re.match(r'^[a-z]+\d+$', embed_url):
             # get the initial part of the url path,. eg /panorama/archiv/2022/
             parsed_url = urllib.parse.urlparse(url)
-            path = self._search_regex(rf'(.+/){display_id}', parsed_url.path or '', 'embed URL', default='')
+            path = self._search_regex(
+                rf'(.+/){display_id}',
+                parsed_url.path or '',
+                'embed URL',
+                default='')
             # find tell-tale image with the actual ID
-            ndr_id = self._search_regex(rf'{path}([a-z]+\d+)(?!\.)\b', webpage, 'embed URL', default=None)
+            ndr_id = self._search_regex(
+                rf'{path}([a-z]+\d+)(?!\.)\b',
+                webpage,
+                'embed URL',
+                default=None)
             # or try to use special knowledge!
             NDR_INFO_URL_TPL = 'https://www.ndr.de/info/%s-player.html'
-            embed_url = f'ndr:{ndr_id}' if ndr_id else NDR_INFO_URL_TPL % (embed_url, )
+            embed_url = f'ndr:{ndr_id}' if ndr_id else NDR_INFO_URL_TPL % (
+                embed_url, )
         if not embed_url:
             raise ExtractorError('Unable to extract embedUrl')
 
         description = self._search_regex(
             r'<p[^>]+itemprop="description">([^<]+)</p>',
-            webpage, 'description', default=None) or self._og_search_description(webpage)
+            webpage,
+            'description',
+            default=None) or self._og_search_description(webpage)
         timestamp = parse_iso8601(
             self._search_regex(
                 (r'<span[^>]+itemprop="(?:datePublished|uploadDate)"[^>]+content="(?P<cont>[^"]+)"',
@@ -218,7 +235,8 @@ class NJoyIE(NDRBaseIE):
         }
 
 
-class NDREmbedBaseIE(InfoExtractor):  # XXX: Conventionally, Concrete class names do not end in BaseIE
+class NDREmbedBaseIE(
+        InfoExtractor):  # XXX: Conventionally, Concrete class names do not end in BaseIE
     IE_NAME = 'ndr:embed:base'
     _VALID_URL = r'(?:ndr:(?P<id_s>[\da-z]+)|https?://www\.ndr\.de/(?P<id>[\da-z]+)-ppjson\.json)'
     _TESTS = [{
@@ -269,7 +287,8 @@ class NDREmbedBaseIE(InfoExtractor):  # XXX: Conventionally, Concrete class name
 
         config = playlist['config']
 
-        live = playlist.get('config', {}).get('streamType') in ['httpVideoLive', 'httpAudioLive']
+        live = playlist.get('config', {}).get('streamType') in [
+            'httpVideoLive', 'httpAudioLive']
         title = config['title']
         uploader = ppjson.get('config', {}).get('branding')
         upload_date = ppjson.get('config', {}).get('publicationDate')

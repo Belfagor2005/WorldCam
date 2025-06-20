@@ -115,10 +115,14 @@ class MotherlessIE(InfoExtractor):
         if any(p in webpage for p in (
                 '<title>404 - MOTHERLESS.COM<',
                 ">The page you're looking for cannot be found.<")):
-            raise ExtractorError(f'Video {video_id} does not exist', expected=True)
+            raise ExtractorError(
+                f'Video {video_id} does not exist',
+                expected=True)
 
         if '>The content you are trying to view is for friends only.' in webpage:
-            raise ExtractorError(f'Video {video_id} is for friends only', expected=True)
+            raise ExtractorError(
+                f'Video {video_id} is for friends only',
+                expected=True)
 
         title = self._html_search_regex(
             (r'(?s)<div[^>]+\bclass=["\']media-meta-title[^>]+>(.+?)</div>',
@@ -151,15 +155,23 @@ class MotherlessIE(InfoExtractor):
                     'd': 'days',
                 }
                 kwargs = {_AGO_UNITS.get(uploaded_ago[-1]): delta}
-                upload_date = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(**kwargs)).strftime('%Y%m%d')
+                upload_date = (
+                    dt.datetime.now(
+                        dt.timezone.utc) -
+                    dt.timedelta(
+                        **kwargs)).strftime('%Y%m%d')
 
-        comment_count = len(re.findall(r'''class\s*=\s*['"]media-comment-contents\b''', webpage))
+        comment_count = len(
+            re.findall(
+                r'''class\s*=\s*['"]media-comment-contents\b''',
+                webpage))
         uploader_id = self._html_search_regex(
             (r'''<span\b[^>]+\bclass\s*=\s*["']username\b[^>]*>([^<]+)</span>''',
              r'''(?s)['"](?:media-meta-member|thumb-member-username)\b[^>]+>\s*<a\b[^>]+\bhref\s*=\s*['"]/m/([^"']+)'''),
             webpage, 'uploader_id', fatal=False)
         categories = self._html_search_meta('keywords', webpage, default='')
-        categories = [cat.strip() for cat in categories.split(',') if cat.strip()]
+        categories = [cat.strip()
+                      for cat in categories.split(',') if cat.strip()]
 
         return {
             'id': video_id,
@@ -181,11 +193,13 @@ class MotherlessPaginatedIE(InfoExtractor):
     _PAGE_SIZE = 60
 
     def _correct_path(self, url, item_id):
-        raise NotImplementedError('This method must be implemented by subclasses')
+        raise NotImplementedError(
+            'This method must be implemented by subclasses')
 
     def _extract_entries(self, webpage, base):
-        for mobj in re.finditer(r'href="[^"]*(?P<href>/[A-F0-9]+)"\s+title="(?P<title>[^"]+)',
-                                webpage):
+        for mobj in re.finditer(
+            r'href="[^"]*(?P<href>/[A-F0-9]+)"\s+title="(?P<title>[^"]+)',
+                webpage):
             video_url = urllib.parse.urljoin(base, mobj.group('href'))
             video_id = MotherlessIE.get_temp_id(video_url)
 
@@ -195,17 +209,20 @@ class MotherlessPaginatedIE(InfoExtractor):
     def _real_extract(self, url):
         item_id = self._match_id(url)
         real_url = self._correct_path(url, item_id)
-        webpage = self._download_webpage(real_url, item_id, 'Downloading page 1')
+        webpage = self._download_webpage(
+            real_url, item_id, 'Downloading page 1')
 
         def get_page(idx):
             page = idx + 1
             current_page = webpage if not idx else self._download_webpage(
-                real_url, item_id, note=f'Downloading page {page}', query={'page': page, **self._EXTRA_QUERY})
+                real_url, item_id, note=f'Downloading page {page}', query={
+                    'page': page, **self._EXTRA_QUERY})
             yield from self._extract_entries(current_page, real_url)
 
         return self.playlist_result(
-            OnDemandPagedList(get_page, self._PAGE_SIZE), item_id,
-            remove_end(self._html_extract_title(webpage), ' | MOTHERLESS.COM ™'))
+            OnDemandPagedList(
+                get_page, self._PAGE_SIZE), item_id, remove_end(
+                self._html_extract_title(webpage), ' | MOTHERLESS.COM ™'))
 
 
 class MotherlessGroupIE(MotherlessPaginatedIE):
