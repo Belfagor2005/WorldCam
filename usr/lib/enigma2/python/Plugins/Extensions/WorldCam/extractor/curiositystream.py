@@ -20,7 +20,8 @@ class CuriosityStreamBaseIE(InfoExtractor):
     def _call_api(self, path, video_id, query=None):
         headers = {}
         if not self._auth_token:
-            auth_cookie = self._get_cookies('https://curiositystream.com').get('auth_token')
+            auth_cookie = self._get_cookies(
+                'https://curiositystream.com').get('auth_token')
             if auth_cookie:
                 self.write_debug('Obtained auth_token cookie')
                 self._auth_token = urllib.parse.unquote(auth_cookie.value)
@@ -80,7 +81,8 @@ class CuriosityStreamIE(CuriosityStreamBaseIE):
             for encoding in media.get('encodings', []):
                 playlist_url = encoding.get('master_playlist_url')
                 if encoding_format == 'm3u8':
-                    # use `m3u8` entry_protocol until EXT-X-MAP is properly supported by `m3u8_native` entry_protocol
+                    # use `m3u8` entry_protocol until EXT-X-MAP is properly
+                    # supported by `m3u8_native` entry_protocol
                     formats.extend(self._extract_m3u8_formats(
                         playlist_url, video_id, 'mp4',
                         m3u8_id='hls', fatal=False))
@@ -105,7 +107,9 @@ class CuriosityStreamIE(CuriosityStreamBaseIE):
                     if not f_url:
                         continue
                     fmt = f.copy()
-                    rtmp = re.search(r'^(?P<url>rtmpe?://(?P<host>[^/]+)/(?P<app>.+))/(?P<playpath>mp[34]:.+)$', f_url)
+                    rtmp = re.search(
+                        r'^(?P<url>rtmpe?://(?P<host>[^/]+)/(?P<app>.+))/(?P<playpath>mp[34]:.+)$',
+                        f_url)
                     if rtmp:
                         fmt.update({
                             'url': rtmp.group('url'),
@@ -128,7 +132,8 @@ class CuriosityStreamIE(CuriosityStreamBaseIE):
             sub_url = closed_caption.get('file')
             if not sub_url:
                 continue
-            lang = closed_caption.get('code') or closed_caption.get('language') or 'en'
+            lang = closed_caption.get(
+                'code') or closed_caption.get('language') or 'en'
             subtitles.setdefault(lang, []).append({
                 'url': sub_url,
             })
@@ -139,13 +144,17 @@ class CuriosityStreamIE(CuriosityStreamBaseIE):
             'title': title,
             'description': media.get('description'),
             'thumbnail': media.get('image_large') or media.get('image_medium') or media.get('image_small'),
-            'duration': int_or_none(media.get('duration')),
+            'duration': int_or_none(
+                media.get('duration')),
             'tags': media.get('tags'),
             'subtitles': subtitles,
             'channel': media.get('producer'),
-            'categories': [media.get('primary_category'), media.get('type')],
+            'categories': [
+                media.get('primary_category'),
+                media.get('type')],
             'average_rating': media.get('rating_percentage'),
-            'series_id': str(media.get('collection_id') or '') or None,
+            'series_id': str(
+                media.get('collection_id') or '') or None,
         }
 
 
@@ -157,7 +166,8 @@ class CuriosityStreamCollectionBaseIE(CuriosityStreamBaseIE):
         entries = []
         for media in collection.get('media', []):
             media_id = str(media.get('id'))
-            media_type, ie = ('series', CuriosityStreamSeriesIE) if media.get('is_collection') else ('video', CuriosityStreamIE)
+            media_type, ie = ('series', CuriosityStreamSeriesIE) if media.get(
+                'is_collection') else ('video', CuriosityStreamIE)
             entries.append(self.url_result(
                 f'https://curiositystream.com/{media_type}/{media_id}',
                 ie=ie.ie_key(), video_id=media_id))

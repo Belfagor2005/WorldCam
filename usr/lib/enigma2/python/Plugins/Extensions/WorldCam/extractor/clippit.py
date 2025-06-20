@@ -30,7 +30,8 @@ class ClippitIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        title = self._html_search_regex(r'<title.*>(.+?)</title>', webpage, 'title')
+        title = self._html_search_regex(
+            r'<title.*>(.+?)</title>', webpage, 'title')
 
         FORMATS = ('sd', 'hd')
         quality = qualities(FORMATS)
