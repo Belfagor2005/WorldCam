@@ -41,8 +41,12 @@ class IchinanaLiveIE(InfoExtractor):
         url = f'https://17.live/live/{video_id}'
 
         enter = self._download_json(
-            f'https://api-dsa.17app.co/api/v1/lives/{video_id}/enter', video_id,
-            headers={'Referer': url}, fatal=False, expected_status=420,
+            f'https://api-dsa.17app.co/api/v1/lives/{video_id}/enter',
+            video_id,
+            headers={
+                'Referer': url},
+            fatal=False,
+            expected_status=420,
             data=b'\0')
         if enter and enter.get('message') == 'ended':
             raise ExtractorError('This live has ended.', expected=True)
@@ -163,7 +167,9 @@ class IchinanaLiveClipIE(InfoExtractor):
             'thumbnail': view_data.get('imageURL'),
             'duration': view_data.get('duration'),
             'description': view_data.get('caption'),
-            'upload_date': unified_strdate(str_or_none(view_data.get('createdAt'))),
+            'upload_date': unified_strdate(
+                str_or_none(
+                    view_data.get('createdAt'))),
         }
 
 
@@ -196,7 +202,8 @@ class IchinanaLiveVODIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        json_data = self._download_json(f'https://wap-api.17app.co/api/v1/vods/{video_id}', video_id)
+        json_data = self._download_json(
+            f'https://wap-api.17app.co/api/v1/vods/{video_id}', video_id)
 
         return traverse_obj(json_data, {
             'id': ('vodID', {str}),

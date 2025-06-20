@@ -41,7 +41,8 @@ class GoogleDriveIE(InfoExtractor):
             'thumbnail': 'https://drive.google.com/thumbnail?id=0ByeS4oOUV-49Zzh4R1J6R09zazQ',
         },
     }, {
-        # has itag 50 which is not in YoutubeIE._formats (royalty Free music from 1922)
+        # has itag 50 which is not in YoutubeIE._formats (royalty Free music
+        # from 1922)
         'url': 'https://drive.google.com/uc?id=1IP0o8dHcQrIHGgVyp0Ofvx2cGfLzyO1x',
         'md5': '322db8d63dd19788c04050a4bba67073',
         'info_dict': {
@@ -53,7 +54,8 @@ class GoogleDriveIE(InfoExtractor):
         },
     }, {
         # video can't be watched anonymously due to view count limit reached,
-        # but can be downloaded (see https://github.com/ytdl-org/youtube-dl/issues/14046)
+        # but can be downloaded (see
+        # https://github.com/ytdl-org/youtube-dl/issues/14046)
         'url': 'https://drive.google.com/file/d/0B-vUyvmDLdWDcEt4WjBqcmI2XzQ/view',
         'only_matching': True,
     }, {
@@ -195,7 +197,8 @@ class GoogleDriveIE(InfoExtractor):
                 format_id, format_url = fmt_stream_split[:2]
                 ext = self._FORMATS_EXT.get(format_id)
                 if not ext:
-                    self.report_warning(f'Unknown format {format_id}{bug_reports_message()}')
+                    self.report_warning(
+                        f'Unknown format {format_id}{bug_reports_message()}')
                 f = {
                     'url': lowercase_escape(format_url),
                     'format_id': format_id,
@@ -218,16 +221,22 @@ class GoogleDriveIE(InfoExtractor):
 
         def request_source_file(source_url, kind, data=None):
             return self._request_webpage(
-                source_url, video_id, note=f'Requesting {kind} file',
-                errnote=f'Unable to request {kind} file', fatal=False, data=data)
+                source_url,
+                video_id,
+                note=f'Requesting {kind} file',
+                errnote=f'Unable to request {kind} file',
+                fatal=False,
+                data=data)
         urlh = request_source_file(source_url, 'source')
         if urlh:
             def add_source_format(urlh):
                 nonlocal title
                 if not title:
                     title = self._search_regex(
-                        r'\bfilename="([^"]+)"', urlh.headers.get('Content-Disposition'),
-                        'title', default=None)
+                        r'\bfilename="([^"]+)"',
+                        urlh.headers.get('Content-Disposition'),
+                        'title',
+                        default=None)
                 formats.append({
                     # Use redirect URLs as download URLs in order to calculate
                     # correct cookies in _calc_cookies.
@@ -246,17 +255,20 @@ class GoogleDriveIE(InfoExtractor):
                     urlh, url, video_id, note='Downloading confirmation page',
                     errnote='Unable to confirm download', fatal=False)
                 if confirmation_webpage:
-                    confirmed_source_url = extract_attributes(
-                        get_element_html_by_id('download-form', confirmation_webpage) or '').get('action')
+                    confirmed_source_url = extract_attributes(get_element_html_by_id(
+                        'download-form', confirmation_webpage) or '').get('action')
                     if confirmed_source_url:
-                        urlh = request_source_file(confirmed_source_url, 'confirmed source', data=b'')
+                        urlh = request_source_file(
+                            confirmed_source_url, 'confirmed source', data=b'')
                         if urlh and urlh.headers.get('Content-Disposition'):
                             add_source_format(urlh)
                     else:
                         self.report_warning(
-                            get_element_by_class('uc-error-subcaption', confirmation_webpage)
-                            or get_element_by_class('uc-error-caption', confirmation_webpage)
-                            or 'unable to extract confirmation code')
+                            get_element_by_class(
+                                'uc-error-subcaption',
+                                confirmation_webpage) or get_element_by_class(
+                                'uc-error-caption',
+                                confirmation_webpage) or 'unable to extract confirmation code')
 
         if not formats and reason:
             if title:
@@ -320,12 +332,18 @@ GET %s
                 '$ct': f'multipart/mixed; boundary="{self._BOUNDARY}"',
                 'key': key,
             }, **kwargs)
-        return self._search_json('', response, 'api response', folder_id, **kwargs) or {}
+        return self._search_json(
+            '',
+            response,
+            'api response',
+            folder_id,
+            **kwargs) or {}
 
     def _get_folder_items(self, folder_id, key):
         page_token = ''
         while page_token is not None:
-            request = self._REQUEST.format(folder_id=folder_id, page_token=page_token, key=key)
+            request = self._REQUEST.format(
+                folder_id=folder_id, page_token=page_token, key=key)
             page = self._call_api(folder_id, key, self._DATA % request)
             yield from page['items']
             page_token = page.get('nextPageToken')
@@ -336,8 +354,15 @@ GET %s
         webpage = self._download_webpage(url, folder_id)
         key = self._search_regex(r'"(\w{39})"', webpage, 'key')
 
-        folder_info = self._call_api(folder_id, key, self._DATA % f'/drive/v2beta/files/{folder_id} HTTP/1.1', fatal=False)
+        folder_info = self._call_api(
+            folder_id, key, self._DATA %
+            f'/drive/v2beta/files/{folder_id} HTTP/1.1', fatal=False)
 
         return self.playlist_from_matches(
-            self._get_folder_items(folder_id, key), folder_id, folder_info.get('title'),
-            ie=GoogleDriveIE, getter=lambda item: f'https://drive.google.com/file/d/{item["id"]}')
+            self._get_folder_items(
+                folder_id,
+                key),
+            folder_id,
+            folder_info.get('title'),
+            ie=GoogleDriveIE,
+            getter=lambda item: f'https://drive.google.com/file/d/{item["id"]}')

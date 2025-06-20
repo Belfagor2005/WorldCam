@@ -46,8 +46,15 @@ class IlPostIE(InfoExtractor):
                 'podcast_id': podcast_id,
             }))
 
-        episode = traverse_obj(podcast_metadata, (
-            'data', 'postcastList', lambda _, v: str(v['id']) == episode_id, {dict}), get_all=False)
+        episode = traverse_obj(
+            podcast_metadata,
+            ('data',
+             'postcastList',
+             lambda _,
+             v: str(
+                 v['id']) == episode_id,
+                {dict}),
+            get_all=False)
         if not episode:
             raise ExtractorError('Episode could not be extracted')
 
