@@ -173,9 +173,14 @@ class ARDIE(InfoExtractor):
             if format_url:
                 ext = determine_ext(file_name)
                 if ext == 'm3u8':
-                    formats.extend(self._extract_m3u8_formats(
-                        format_url, display_id, 'mp4', entry_protocol='m3u8_native',
-                        m3u8_id=format_type or 'hls', fatal=False))
+                    formats.extend(
+                        self._extract_m3u8_formats(
+                            format_url,
+                            display_id,
+                            'mp4',
+                            entry_protocol='m3u8_native',
+                            m3u8_id=format_type or 'hls',
+                            fatal=False))
                     continue
                 elif ext == 'f4m':
                     formats.extend(self._extract_f4m_formats(
@@ -241,121 +246,117 @@ class ARDBetaMediathekIE(InfoExtractor):
     _GEO_COUNTRIES = ['DE']
     _TOKEN_URL = 'https://sso.ardmediathek.de/sso/token'
 
-    _TESTS = [{
-        'url': 'https://www.ardmediathek.de/video/filme-im-mdr/liebe-auf-vier-pfoten/mdr-fernsehen/Y3JpZDovL21kci5kZS9zZW5kdW5nLzI4MjA0MC80MjIwOTEtNDAyNTM0',
-        'md5': 'b6e8ab03f2bcc6e1f9e6cef25fcc03c4',
-        'info_dict': {
-            'display_id': 'Y3JpZDovL21kci5kZS9zZW5kdW5nLzI4MjA0MC80MjIwOTEtNDAyNTM0',
-            'id': '12939099',
-            'title': 'Liebe auf vier Pfoten',
-            'description': r're:^Claudia Schmitt, Anwältin in Salzburg',
-            'duration': 5222,
-            'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:aee7cbf8f06de976?w=960&ch=ae4d0f2ee47d8b9b',
-            'timestamp': 1701343800,
-            'upload_date': '20231130',
-            'ext': 'mp4',
-            'episode': 'Liebe auf vier Pfoten',
-            'series': 'Filme im MDR',
-            'age_limit': 0,
-            'channel': 'MDR',
-            '_old_archive_ids': ['ardbetamediathek Y3JpZDovL21kci5kZS9zZW5kdW5nLzI4MjA0MC80MjIwOTEtNDAyNTM0'],
-        },
-    }, {
-        'url': 'https://www.ardmediathek.de/mdr/video/die-robuste-roswita/Y3JpZDovL21kci5kZS9iZWl0cmFnL2Ntcy84MWMxN2MzZC0wMjkxLTRmMzUtODk4ZS0wYzhlOWQxODE2NGI/',
-        'md5': 'a1dc75a39c61601b980648f7c9f9f71d',
-        'info_dict': {
-            'display_id': 'die-robuste-roswita',
-            'id': '78566716',
-            'title': 'Die robuste Roswita',
-            'description': r're:^Der Mord.*totgeglaubte Ehefrau Roswita',
-            'duration': 5316,
-            'thumbnail': 'https://img.ardmediathek.de/standard/00/78/56/67/84/575672121/16x9/960?mandant=ard',
-            'timestamp': 1596658200,
-            'upload_date': '20200805',
-            'ext': 'mp4',
-        },
-        'skip': 'Error',
-    }, {
-        'url': 'https://www.ardmediathek.de/video/tagesschau-oder-tagesschau-20-00-uhr/das-erste/Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhZ2Vzc2NoYXUvZmM4ZDUxMjgtOTE0ZC00Y2MzLTgzNzAtNDZkNGNiZWJkOTll',
-        'md5': '1e73ded21cb79bac065117e80c81dc88',
-        'info_dict': {
-            'id': '10049223',
-            'ext': 'mp4',
-            'title': 'tagesschau, 20:00 Uhr',
-            'timestamp': 1636398000,
-            'description': 'md5:39578c7b96c9fe50afdf5674ad985e6b',
-            'upload_date': '20211108',
-            'display_id': 'Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhZ2Vzc2NoYXUvZmM4ZDUxMjgtOTE0ZC00Y2MzLTgzNzAtNDZkNGNiZWJkOTll',
-            'duration': 915,
-            'episode': 'tagesschau, 20:00 Uhr',
-            'series': 'tagesschau',
-            'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:fbb21142783b0a49?w=960&ch=ee69108ae344f678',
-            'channel': 'ARD-Aktuell',
-            '_old_archive_ids': ['ardbetamediathek Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhZ2Vzc2NoYXUvZmM4ZDUxMjgtOTE0ZC00Y2MzLTgzNzAtNDZkNGNiZWJkOTll'],
-        },
-    }, {
-        'url': 'https://www.ardmediathek.de/video/7-tage/7-tage-unter-harten-jungs/hr-fernsehen/N2I2YmM5MzgtNWFlOS00ZGFlLTg2NzMtYzNjM2JlNjk4MDg3',
-        'md5': 'c428b9effff18ff624d4f903bda26315',
-        'info_dict': {
-            'id': '94834686',
-            'ext': 'mp4',
-            'duration': 2670,
-            'episode': '7 Tage ... unter harten Jungs',
-            'description': 'md5:0f215470dcd2b02f59f4bd10c963f072',
-            'upload_date': '20231005',
-            'timestamp': 1696491171,
-            'display_id': 'N2I2YmM5MzgtNWFlOS00ZGFlLTg2NzMtYzNjM2JlNjk4MDg3',
-            'series': '7 Tage ...',
-            'channel': 'HR',
-            'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:430c86d233afa42d?w=960&ch=fa32ba69bc87989a',
-            'title': '7 Tage ... unter harten Jungs',
-            '_old_archive_ids': ['ardbetamediathek N2I2YmM5MzgtNWFlOS00ZGFlLTg2NzMtYzNjM2JlNjk4MDg3'],
-        },
-    }, {
-        'url': 'https://www.ardmediathek.de/video/lokalzeit-aus-duesseldorf/lokalzeit-aus-duesseldorf-oder-31-10-2024/wdr-duesseldorf/Y3JpZDovL3dkci5kZS9CZWl0cmFnLXNvcGhvcmEtOWFkMTc0ZWMtMDA5ZS00ZDEwLWFjYjctMGNmNTdhNzVmNzUz',
-        'info_dict': {
-            'id': '13847165',
-            'chapters': 'count:8',
-            'ext': 'mp4',
-            'channel': 'WDR',
-            'display_id': 'Y3JpZDovL3dkci5kZS9CZWl0cmFnLXNvcGhvcmEtOWFkMTc0ZWMtMDA5ZS00ZDEwLWFjYjctMGNmNTdhNzVmNzUz',
-            'episode': 'Lokalzeit aus Düsseldorf | 31.10.2024',
-            'series': 'Lokalzeit aus Düsseldorf',
-            'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:f02ec9bd9b7bd5f6?w=960&ch=612491dcd5e09b0c',
-            'title': 'Lokalzeit aus Düsseldorf | 31.10.2024',
-            'upload_date': '20241031',
-            'timestamp': 1730399400,
-            'description': 'md5:12db30b3b706314efe3778b8df1a7058',
-            'duration': 1759,
-            '_old_archive_ids': ['ardbetamediathek Y3JpZDovL3dkci5kZS9CZWl0cmFnLXNvcGhvcmEtOWFkMTc0ZWMtMDA5ZS00ZDEwLWFjYjctMGNmNTdhNzVmNzUz'],
-        },
-    }, {
-        'url': 'https://beta.ardmediathek.de/ard/video/Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhdG9ydC9mYmM4NGM1NC0xNzU4LTRmZGYtYWFhZS0wYzcyZTIxNGEyMDE',
-        'only_matching': True,
-    }, {
-        'url': 'https://ardmediathek.de/ard/video/saartalk/saartalk-gesellschaftsgift-haltung-gegen-hass/sr-fernsehen/Y3JpZDovL3NyLW9ubGluZS5kZS9TVF84MTY4MA/',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.ardmediathek.de/ard/video/trailer/private-eyes-s01-e01/one/Y3JpZDovL3dkci5kZS9CZWl0cmFnLTE1MTgwYzczLWNiMTEtNGNkMS1iMjUyLTg5MGYzOWQxZmQ1YQ/',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.ardmediathek.de/ard/player/Y3JpZDovL3N3ci5kZS9hZXgvbzEwNzE5MTU/',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.ardmediathek.de/swr/live/Y3JpZDovL3N3ci5kZS8xMzQ4MTA0Mg',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.ardmediathek.de/video/coronavirus-update-ndr-info/astrazeneca-kurz-lockdown-und-pims-syndrom-81/ndr/Y3JpZDovL25kci5kZS84NzE0M2FjNi0wMWEwLTQ5ODEtOTE5NS1mOGZhNzdhOTFmOTI/',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://www.ardmediathek.de/video/filme-im-mdr/liebe-auf-vier-pfoten/mdr-fernsehen/Y3JpZDovL21kci5kZS9zZW5kdW5nLzI4MjA0MC80MjIwOTEtNDAyNTM0',
+               'md5': 'b6e8ab03f2bcc6e1f9e6cef25fcc03c4',
+               'info_dict': {'display_id': 'Y3JpZDovL21kci5kZS9zZW5kdW5nLzI4MjA0MC80MjIwOTEtNDAyNTM0',
+                             'id': '12939099',
+                             'title': 'Liebe auf vier Pfoten',
+                             'description': r're:^Claudia Schmitt, Anwältin in Salzburg',
+                             'duration': 5222,
+                             'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:aee7cbf8f06de976?w=960&ch=ae4d0f2ee47d8b9b',
+                             'timestamp': 1701343800,
+                             'upload_date': '20231130',
+                             'ext': 'mp4',
+                             'episode': 'Liebe auf vier Pfoten',
+                             'series': 'Filme im MDR',
+                             'age_limit': 0,
+                             'channel': 'MDR',
+                             '_old_archive_ids': ['ardbetamediathek Y3JpZDovL21kci5kZS9zZW5kdW5nLzI4MjA0MC80MjIwOTEtNDAyNTM0'],
+                             },
+               },
+              {'url': 'https://www.ardmediathek.de/mdr/video/die-robuste-roswita/Y3JpZDovL21kci5kZS9iZWl0cmFnL2Ntcy84MWMxN2MzZC0wMjkxLTRmMzUtODk4ZS0wYzhlOWQxODE2NGI/',
+               'md5': 'a1dc75a39c61601b980648f7c9f9f71d',
+               'info_dict': {'display_id': 'die-robuste-roswita',
+                             'id': '78566716',
+                             'title': 'Die robuste Roswita',
+                             'description': r're:^Der Mord.*totgeglaubte Ehefrau Roswita',
+                             'duration': 5316,
+                             'thumbnail': 'https://img.ardmediathek.de/standard/00/78/56/67/84/575672121/16x9/960?mandant=ard',
+                             'timestamp': 1596658200,
+                             'upload_date': '20200805',
+                             'ext': 'mp4',
+                             },
+               'skip': 'Error',
+               },
+              {'url': 'https://www.ardmediathek.de/video/tagesschau-oder-tagesschau-20-00-uhr/das-erste/Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhZ2Vzc2NoYXUvZmM4ZDUxMjgtOTE0ZC00Y2MzLTgzNzAtNDZkNGNiZWJkOTll',
+               'md5': '1e73ded21cb79bac065117e80c81dc88',
+               'info_dict': {'id': '10049223',
+                             'ext': 'mp4',
+                             'title': 'tagesschau, 20:00 Uhr',
+                             'timestamp': 1636398000,
+                             'description': 'md5:39578c7b96c9fe50afdf5674ad985e6b',
+                             'upload_date': '20211108',
+                             'display_id': 'Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhZ2Vzc2NoYXUvZmM4ZDUxMjgtOTE0ZC00Y2MzLTgzNzAtNDZkNGNiZWJkOTll',
+                             'duration': 915,
+                             'episode': 'tagesschau, 20:00 Uhr',
+                             'series': 'tagesschau',
+                             'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:fbb21142783b0a49?w=960&ch=ee69108ae344f678',
+                             'channel': 'ARD-Aktuell',
+                             '_old_archive_ids': ['ardbetamediathek Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhZ2Vzc2NoYXUvZmM4ZDUxMjgtOTE0ZC00Y2MzLTgzNzAtNDZkNGNiZWJkOTll'],
+                             },
+               },
+              {'url': 'https://www.ardmediathek.de/video/7-tage/7-tage-unter-harten-jungs/hr-fernsehen/N2I2YmM5MzgtNWFlOS00ZGFlLTg2NzMtYzNjM2JlNjk4MDg3',
+               'md5': 'c428b9effff18ff624d4f903bda26315',
+               'info_dict': {'id': '94834686',
+                             'ext': 'mp4',
+                             'duration': 2670,
+                             'episode': '7 Tage ... unter harten Jungs',
+                             'description': 'md5:0f215470dcd2b02f59f4bd10c963f072',
+                             'upload_date': '20231005',
+                             'timestamp': 1696491171,
+                             'display_id': 'N2I2YmM5MzgtNWFlOS00ZGFlLTg2NzMtYzNjM2JlNjk4MDg3',
+                             'series': '7 Tage ...',
+                             'channel': 'HR',
+                             'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:430c86d233afa42d?w=960&ch=fa32ba69bc87989a',
+                             'title': '7 Tage ... unter harten Jungs',
+                             '_old_archive_ids': ['ardbetamediathek N2I2YmM5MzgtNWFlOS00ZGFlLTg2NzMtYzNjM2JlNjk4MDg3'],
+                             },
+               },
+              {'url': 'https://www.ardmediathek.de/video/lokalzeit-aus-duesseldorf/lokalzeit-aus-duesseldorf-oder-31-10-2024/wdr-duesseldorf/Y3JpZDovL3dkci5kZS9CZWl0cmFnLXNvcGhvcmEtOWFkMTc0ZWMtMDA5ZS00ZDEwLWFjYjctMGNmNTdhNzVmNzUz',
+               'info_dict': {'id': '13847165',
+                             'chapters': 'count:8',
+                             'ext': 'mp4',
+                             'channel': 'WDR',
+                             'display_id': 'Y3JpZDovL3dkci5kZS9CZWl0cmFnLXNvcGhvcmEtOWFkMTc0ZWMtMDA5ZS00ZDEwLWFjYjctMGNmNTdhNzVmNzUz',
+                             'episode': 'Lokalzeit aus Düsseldorf | 31.10.2024',
+                             'series': 'Lokalzeit aus Düsseldorf',
+                             'thumbnail': 'https://api.ardmediathek.de/image-service/images/urn:ard:image:f02ec9bd9b7bd5f6?w=960&ch=612491dcd5e09b0c',
+                             'title': 'Lokalzeit aus Düsseldorf | 31.10.2024',
+                             'upload_date': '20241031',
+                             'timestamp': 1730399400,
+                             'description': 'md5:12db30b3b706314efe3778b8df1a7058',
+                             'duration': 1759,
+                             '_old_archive_ids': ['ardbetamediathek Y3JpZDovL3dkci5kZS9CZWl0cmFnLXNvcGhvcmEtOWFkMTc0ZWMtMDA5ZS00ZDEwLWFjYjctMGNmNTdhNzVmNzUz'],
+                             },
+               },
+              {'url': 'https://beta.ardmediathek.de/ard/video/Y3JpZDovL2Rhc2Vyc3RlLmRlL3RhdG9ydC9mYmM4NGM1NC0xNzU4LTRmZGYtYWFhZS0wYzcyZTIxNGEyMDE',
+               'only_matching': True,
+               },
+              {'url': 'https://ardmediathek.de/ard/video/saartalk/saartalk-gesellschaftsgift-haltung-gegen-hass/sr-fernsehen/Y3JpZDovL3NyLW9ubGluZS5kZS9TVF84MTY4MA/',
+               'only_matching': True,
+               },
+              {'url': 'https://www.ardmediathek.de/ard/video/trailer/private-eyes-s01-e01/one/Y3JpZDovL3dkci5kZS9CZWl0cmFnLTE1MTgwYzczLWNiMTEtNGNkMS1iMjUyLTg5MGYzOWQxZmQ1YQ/',
+               'only_matching': True,
+               },
+              {'url': 'https://www.ardmediathek.de/ard/player/Y3JpZDovL3N3ci5kZS9hZXgvbzEwNzE5MTU/',
+               'only_matching': True,
+               },
+              {'url': 'https://www.ardmediathek.de/swr/live/Y3JpZDovL3N3ci5kZS8xMzQ4MTA0Mg',
+               'only_matching': True,
+               },
+              {'url': 'https://www.ardmediathek.de/video/coronavirus-update-ndr-info/astrazeneca-kurz-lockdown-und-pims-syndrom-81/ndr/Y3JpZDovL25kci5kZS84NzE0M2FjNi0wMWEwLTQ5ODEtOTE5NS1mOGZhNzdhOTFmOTI/',
+               'only_matching': True,
+               }]
 
     def _extract_episode_info(self, title):
         patterns = [
             # Pattern for title like "Homo sapiens (S06/E07) - Originalversion"
-            # from: https://www.ardmediathek.de/one/sendung/doctor-who/Y3JpZDovL3dkci5kZS9vbmUvZG9jdG9yIHdobw
+            # from:
+            # https://www.ardmediathek.de/one/sendung/doctor-who/Y3JpZDovL3dkci5kZS9vbmUvZG9jdG9yIHdobw
             r'.*(?P<ep_info> \(S(?P<season_number>\d+)/E(?P<episode_number>\d+)\)).*',
             # E.g.: title="Fritjof aus Norwegen (2) (AD)"
-            # from: https://www.ardmediathek.de/ard/sammlung/der-krieg-und-ich/68cMkqJdllm639Skj4c7sS/
+            # from:
+            # https://www.ardmediathek.de/ard/sammlung/der-krieg-und-ich/68cMkqJdllm639Skj4c7sS/
             r'.*(?P<ep_info> \((?:Folge |Teil )?(?P<episode_number>\d+)(?:/\d+)?\)).*',
             r'.*(?P<ep_info>Folge (?P<episode_number>\d+)(?:\:| -|) )\"(?P<episode>.+)\".*',
             # E.g.: title="Folge 25/42: Symmetrie"
@@ -367,15 +368,17 @@ class ARDBetaMediathekIE(InfoExtractor):
             r'(?P<title>.*)',
         ]
 
-        return traverse_obj(patterns, (..., {functools.partial(re.match, string=title)}, {
-            'season_number': ('season_number', {int_or_none}),
-            'episode_number': ('episode_number', {int_or_none}),
-            'episode': ((
-                ('episode', {str_or_none}),
-                ('ep_info', {lambda x: title.replace(x, '')}),
-                ('title', {str}),
-            ), {str.strip}),
-        }), get_all=False)
+        return traverse_obj(
+            patterns, (..., {
+                functools.partial(
+                    re.match, string=title)}, {
+                'season_number': (
+                    'season_number', {int_or_none}), 'episode_number': (
+                        'episode_number', {int_or_none}), 'episode': (
+                            (('episode', {str_or_none}), ('ep_info', {
+                                lambda x: title.replace(
+                                    x, '')}), ('title', {str}), ), {
+                                        str.strip}), }), get_all=False)
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -384,41 +387,60 @@ class ARDBetaMediathekIE(InfoExtractor):
 
         if self._get_cookies(self._TOKEN_URL).get('ams'):
             token = self._download_json(
-                self._TOKEN_URL, display_id, 'Fetching token for age verification',
-                'Unable to fetch age verification token', fatal=False)
+                self._TOKEN_URL,
+                display_id,
+                'Fetching token for age verification',
+                'Unable to fetch age verification token',
+                fatal=False)
             id_token = traverse_obj(token, ('idToken', {str}))
-            decoded_token = traverse_obj(id_token, ({jwt_decode_hs256}, {dict}))
-            user_id = traverse_obj(decoded_token, (('user_id', 'sub'), {str}), get_all=False)
+            decoded_token = traverse_obj(
+                id_token, ({jwt_decode_hs256}, {dict}))
+            user_id = traverse_obj(
+                decoded_token, (('user_id', 'sub'), {str}), get_all=False)
             if not user_id:
-                self.report_warning('Unable to extract token, continuing without authentication')
+                self.report_warning(
+                    'Unable to extract token, continuing without authentication')
             else:
                 headers['x-authorization'] = f'Bearer {id_token}'
                 query['userId'] = user_id
                 if decoded_token.get('age_rating') != 18:
-                    self.report_warning('Account is not verified as 18+; video may be unavailable')
+                    self.report_warning(
+                        'Account is not verified as 18+; video may be unavailable')
 
         page_data = self._download_json(
             f'https://api.ardmediathek.de/page-gateway/pages/ard/item/{display_id}',
             display_id, query=query, headers=headers)
 
         # For user convenience we use the old contentId instead of the longer crid
-        # Ref: https://github.com/yt-dlp/yt-dlp/issues/8731#issuecomment-1874398283
-        old_id = traverse_obj(page_data, ('tracking', 'atiCustomVars', 'contentId', {int}))
+        # Ref:
+        # https://github.com/yt-dlp/yt-dlp/issues/8731#issuecomment-1874398283
+        old_id = traverse_obj(
+            page_data, ('tracking', 'atiCustomVars', 'contentId', {int}))
         if old_id is not None:
             video_id = str(old_id)
             archive_ids = [make_archive_id(ARDBetaMediathekIE, display_id)]
         else:
-            self.report_warning(f'Could not extract contentId{bug_reports_message()}')
+            self.report_warning(
+                f'Could not extract contentId{bug_reports_message()}')
             video_id = display_id
             archive_ids = None
 
         player_data = traverse_obj(
-            page_data, ('widgets', lambda _, v: v['type'] in ('player_ondemand', 'player_live'), {dict}), get_all=False)
+            page_data,
+            ('widgets',
+             lambda _,
+             v: v['type'] in (
+                 'player_ondemand',
+                 'player_live'),
+                {dict}),
+            get_all=False)
         is_live = player_data.get('type') == 'player_live'
-        media_data = traverse_obj(player_data, ('mediaCollection', 'embedded', {dict}))
+        media_data = traverse_obj(
+            player_data, ('mediaCollection', 'embedded', {dict}))
 
         if player_data.get('blockedByFsk'):
-            self.raise_login_required('This video is only available for age verified users or after 22:00')
+            self.raise_login_required(
+                'This video is only available for age verified users or after 22:00')
 
         formats = []
         subtitles = {}
@@ -426,12 +448,19 @@ class ARDBetaMediathekIE(InfoExtractor):
             kind = stream.get('kind')
             # Prioritize main stream over sign language and others
             preference = 1 if kind == 'main' else None
-            for media in traverse_obj(stream, ('media', lambda _, v: url_or_none(v['url']))):
+            for media in traverse_obj(
+                stream,
+                ('media',
+                 lambda _,
+                 v: url_or_none(
+                     v['url']))):
                 media_url = media['url']
 
-                audio_kind = traverse_obj(media, (
-                    'audios', 0, 'kind', {str}), default='').replace('standard', '')
-                lang_code = traverse_obj(media, ('audios', 0, 'languageCode', {str})) or 'deu'
+                audio_kind = traverse_obj(
+                    media, ('audios', 0, 'kind', {str}), default='').replace(
+                    'standard', '')
+                lang_code = traverse_obj(
+                    media, ('audios', 0, 'languageCode', {str})) or 'deu'
                 lang = join_nonempty(lang_code, audio_kind)
                 language_preference = 10 if lang == 'deu' else -10
 
@@ -459,38 +488,53 @@ class ARDBetaMediathekIE(InfoExtractor):
                     })
 
         for sub in traverse_obj(media_data, ('subtitles', ..., {dict})):
-            for sources in traverse_obj(sub, ('sources', lambda _, v: url_or_none(v['url']))):
+            for sources in traverse_obj(
+                    sub, ('sources', lambda _, v: url_or_none(v['url']))):
                 subtitles.setdefault(sub.get('languageCode') or 'deu', []).append({
                     'url': sources['url'],
                     'ext': {'webvtt': 'vtt', 'ebutt': 'ttml'}.get(sources.get('kind')),
                 })
 
-        age_limit = traverse_obj(page_data, ('fskRating', {lambda x: remove_start(x, 'FSK')}, {int_or_none}))
-        return {
-            'id': video_id,
-            'display_id': display_id,
-            'formats': formats,
-            'subtitles': subtitles,
-            'is_live': is_live,
-            'age_limit': age_limit,
-            **traverse_obj(media_data, {
-                'chapters': ('pluginData', 'jumpmarks@all', 'chapterArray', lambda _, v: int_or_none(v['chapterTime']), {
-                    'start_time': ('chapterTime', {int_or_none}),
-                    'title': ('chapterTitle', {str}),
-                }),
-            }),
-            **traverse_obj(media_data, ('meta', {
-                'title': 'title',
-                'description': 'synopsis',
-                'timestamp': ('broadcastedOnDateTime', {parse_iso8601}),
-                'series': 'seriesTitle',
-                'thumbnail': ('images', 0, 'url', {url_or_none}),
-                'duration': ('durationSeconds', {int_or_none}),
-                'channel': 'clipSourceName',
-            })),
-            **self._extract_episode_info(page_data.get('title')),
-            '_old_archive_ids': archive_ids,
-        }
+        age_limit = traverse_obj(
+            page_data, ('fskRating', {
+                lambda x: remove_start(
+                    x, 'FSK')}, {int_or_none}))
+        return {'id': video_id,
+                'display_id': display_id,
+                'formats': formats,
+                'subtitles': subtitles,
+                'is_live': is_live,
+                'age_limit': age_limit,
+                **traverse_obj(media_data,
+                               {'chapters': ('pluginData',
+                                             'jumpmarks@all',
+                                             'chapterArray',
+                                             lambda _,
+                                             v: int_or_none(v['chapterTime']),
+                                             {'start_time': ('chapterTime',
+                                                             {int_or_none}),
+                                              'title': ('chapterTitle',
+                                                        {str}),
+                                              }),
+                                }),
+                **traverse_obj(media_data,
+                               ('meta',
+                                {'title': 'title',
+                                 'description': 'synopsis',
+                                 'timestamp': ('broadcastedOnDateTime',
+                                               {parse_iso8601}),
+                                 'series': 'seriesTitle',
+                                 'thumbnail': ('images',
+                                               0,
+                                               'url',
+                                               {url_or_none}),
+                                 'duration': ('durationSeconds',
+                                              {int_or_none}),
+                                 'channel': 'clipSourceName',
+                                 })),
+                **self._extract_episode_info(page_data.get('title')),
+                '_old_archive_ids': archive_ids,
+                }
 
 
 class ARDMediathekCollectionIE(InfoExtractor):
@@ -561,8 +605,8 @@ class ARDMediathekCollectionIE(InfoExtractor):
     _PAGE_SIZE = 100
 
     def _real_extract(self, url):
-        playlist_id, display_id, playlist_type, season_number, version = self._match_valid_url(url).group(
-            'id', 'display_id', 'playlist', 'season', 'version')
+        playlist_id, display_id, playlist_type, season_number, version = self._match_valid_url(
+            url).group('id', 'display_id', 'playlist', 'season', 'version')
 
         def call_api(page_num):
             api_path = 'compilations/ard' if playlist_type == 'sammlung' else 'widgets/ard/asset'
@@ -580,11 +624,14 @@ class ARDMediathekCollectionIE(InfoExtractor):
                 })
 
         def fetch_page(page_num):
-            for item in traverse_obj(call_api(page_num), ('teasers', ..., {dict})):
-                item_id = traverse_obj(item, ('links', 'target', ('urlId', 'id')), 'id', get_all=False)
+            for item in traverse_obj(
+                    call_api(page_num), ('teasers', ..., {dict})):
+                item_id = traverse_obj(
+                    item, ('links', 'target', ('urlId', 'id')), 'id', get_all=False)
                 if not item_id or item_id == playlist_id:
                     continue
-                item_mode = 'sammlung' if item.get('type') == 'compilation' else 'video'
+                item_mode = 'sammlung' if item.get(
+                    'type') == 'compilation' else 'video'
                 yield self.url_result(
                     f'https://www.ardmediathek.de/{item_mode}/{item_id}',
                     ie=(ARDMediathekCollectionIE if item_mode == 'sammlung' else ARDBetaMediathekIE),
@@ -599,5 +646,10 @@ class ARDMediathekCollectionIE(InfoExtractor):
         full_id = join_nonempty(playlist_id, season_number, version, delim='_')
 
         return self.playlist_result(
-            OnDemandPagedList(fetch_page, self._PAGE_SIZE), full_id, display_id=display_id,
-            title=page_data.get('title'), description=page_data.get('synopsis'))
+            OnDemandPagedList(
+                fetch_page,
+                self._PAGE_SIZE),
+            full_id,
+            display_id=display_id,
+            title=page_data.get('title'),
+            description=page_data.get('synopsis'))

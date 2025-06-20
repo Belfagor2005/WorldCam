@@ -42,7 +42,10 @@ class BaiduVideoIE(InfoExtractor):
         playlist_description = unescapeHTML(playlist_detail.get('intro'))
 
         episodes_detail = self._call_api(
-            'xqsingle', category, playlist_id, 'Download episodes JSON metadata')
+            'xqsingle',
+            category,
+            playlist_id,
+            'Download episodes JSON metadata')
 
         entries = [self.url_result(
             episode['url'], video_title=episode['title'],

@@ -57,21 +57,34 @@ class ApplePodcastsIE(InfoExtractor):
         server_data = self._search_json(
             r'<script [^>]*\bid=["\']serialized-server-data["\'][^>]*>', webpage,
             'server data', episode_id, contains_pattern=r'\[{(?s:.+)}\]')[0]['data']
-        model_data = traverse_obj(server_data, (
-            'headerButtonItems', lambda _, v: v['$kind'] == 'bookmark' and v['modelType'] == 'EpisodeOffer',
-            'model', {dict}, any))
+        model_data = traverse_obj(
+            server_data,
+            ('headerButtonItems',
+             lambda _,
+             v: v['$kind'] == 'bookmark' and v['modelType'] == 'EpisodeOffer',
+                'model',
+                {dict},
+                any))
 
-        return {
-            'id': episode_id,
-            **self._json_ld(
-                traverse_obj(server_data, ('seoData', 'schemaContent', {dict}))
-                or self._yield_json_ld(webpage, episode_id, fatal=False), episode_id, fatal=False),
-            **traverse_obj(model_data, {
-                'title': ('title', {str}),
-                'url': ('streamUrl', {clean_podcast_url}),
-                'timestamp': ('releaseDate', {parse_iso8601}),
-                'duration': ('duration', {int_or_none}),
-            }),
-            'thumbnail': self._og_search_thumbnail(webpage),
-            'vcodec': 'none',
-        }
+        return {'id': episode_id,
+                **self._json_ld(traverse_obj(server_data,
+                                             ('seoData',
+                                              'schemaContent',
+                                              {dict})) or self._yield_json_ld(webpage,
+                                                                              episode_id,
+                                                                              fatal=False),
+                                episode_id,
+                                fatal=False),
+                **traverse_obj(model_data,
+                               {'title': ('title',
+                                          {str}),
+                                'url': ('streamUrl',
+                                        {clean_podcast_url}),
+                                'timestamp': ('releaseDate',
+                                              {parse_iso8601}),
+                                'duration': ('duration',
+                                             {int_or_none}),
+                                }),
+                'thumbnail': self._og_search_thumbnail(webpage),
+                'vcodec': 'none',
+                }
