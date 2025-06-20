@@ -71,7 +71,11 @@ class CNBCVideoIE(InfoExtractor):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        data = self._search_json(r'window\.__s_data=', webpage, 'video data', display_id)
+        data = self._search_json(
+            r'window\.__s_data=',
+            webpage,
+            'video data',
+            display_id)
 
         player_data = traverse_obj(data, (
             'page', 'page', 'layout', ..., 'columns', ..., 'modules',

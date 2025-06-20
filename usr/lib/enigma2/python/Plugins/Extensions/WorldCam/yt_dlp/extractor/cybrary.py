@@ -40,8 +40,12 @@ class CybraryBaseIE(InfoExtractor):
         launch_api = self._call_api('launch', activity_id)
 
         if launch_api.get('url'):
-            return self._search_regex(r'https?://player\.vimeo\.com/video/(?P<vimeo_id>[0-9]+)', launch_api['url'], 'vimeo_id')
-        return traverse_obj(launch_api, ('vendor_data', 'content', ..., 'videoId'), get_all=False)
+            return self._search_regex(
+                r'https?://player\.vimeo\.com/video/(?P<vimeo_id>[0-9]+)',
+                launch_api['url'],
+                'vimeo_id')
+        return traverse_obj(
+            launch_api, ('vendor_data', 'content', ..., 'videoId'), get_all=False)
 
 
 class CybraryIE(CybraryBaseIE):
@@ -85,15 +89,17 @@ class CybraryIE(CybraryBaseIE):
     }]
 
     def _real_extract(self, url):
-        activity_id, enrollment_id = self._match_valid_url(url).group('id', 'enrollment')
+        activity_id, enrollment_id = self._match_valid_url(
+            url).group('id', 'enrollment')
         course = self._call_api('enrollment', enrollment_id)['content']
-        activity = traverse_obj(course, ('learning_modules', ..., 'activities', lambda _, v: int(activity_id) == v['id']), get_all=False)
+        activity = traverse_obj(course, ('learning_modules', ..., 'activities', lambda _, v: int(
+            activity_id) == v['id']), get_all=False)
 
         if activity.get('type') not in ['Video Activity', 'Lesson Activity']:
             raise ExtractorError('The activity is not a video', expected=True)
 
-        module = next((m for m in course.get('learning_modules') or []
-                      if int(activity_id) in traverse_obj(m, ('activities', ..., 'id'))), None)
+        module = next((m for m in course.get('learning_modules') or [] if int(
+            activity_id) in traverse_obj(m, ('activities', ..., 'id'))), None)
 
         vimeo_id = self._get_vimeo_id(activity_id)
 
@@ -140,5 +146,10 @@ class CybraryCourseIE(CybraryBaseIE):
 
         return self.playlist_result(
             entries,
-            traverse_obj(course, ('content_item', 'id'), expected_type=str_or_none),
-            course.get('title'), course.get('short_description'))
+            traverse_obj(
+                course,
+                ('content_item',
+                 'id'),
+                expected_type=str_or_none),
+            course.get('title'),
+            course.get('short_description'))

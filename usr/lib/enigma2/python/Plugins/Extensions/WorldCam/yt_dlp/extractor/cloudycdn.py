@@ -77,8 +77,10 @@ class CloudyCDNIE(InfoExtractor):
             }))
 
         formats, subtitles = [], {}
-        for m3u8_url in traverse_obj(data, ('source', 'sources', ..., 'src', {url_or_none})):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, fatal=False)
+        for m3u8_url in traverse_obj(
+                data, ('source', 'sources', ..., 'src', {url_or_none})):
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                m3u8_url, video_id, fatal=False)
             for fmt in fmts:
                 if re.search(r'chunklist_b\d+_vo_', fmt['url']):
                     fmt['acodec'] = 'none'
