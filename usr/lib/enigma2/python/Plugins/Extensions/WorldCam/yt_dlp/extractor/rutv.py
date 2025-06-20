@@ -128,14 +128,22 @@ class RUTVIE(InfoExtractor):
             video_id, 'Downloading JSON')
 
         if json_data['errors']:
-            raise ExtractorError('{} said: {}'.format(self.IE_NAME, json_data['errors']), expected=True)
+            raise ExtractorError(
+                '{} said: {}'.format(
+                    self.IE_NAME,
+                    json_data['errors']),
+                expected=True)
 
         playlist = json_data['data']['playlist']
         medialist = playlist['medialist']
         media = medialist[0]
 
         if media['errors']:
-            raise ExtractorError('{} said: {}'.format(self.IE_NAME, media['errors']), expected=True)
+            raise ExtractorError(
+                '{} said: {}'.format(
+                    self.IE_NAME,
+                    media['errors']),
+                expected=True)
 
         view_count = int_or_none(playlist.get('count_views'))
         priority_transport = playlist['priority_transport']
@@ -154,7 +162,8 @@ class RUTVIE(InfoExtractor):
             for quality, url in links.items():
                 preference = -1 if priority_transport == transport else -2
                 if transport == 'rtmp':
-                    mobj = re.search(r'^(?P<url>rtmp://[^/]+/(?P<app>.+))/(?P<playpath>.+)$', url)
+                    mobj = re.search(
+                        r'^(?P<url>rtmp://[^/]+/(?P<app>.+))/(?P<playpath>.+)$', url)
                     if not mobj:
                         continue
                     fmt = {

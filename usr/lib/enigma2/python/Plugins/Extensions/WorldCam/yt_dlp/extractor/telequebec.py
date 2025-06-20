@@ -11,12 +11,15 @@ class TeleQuebecBaseIE(InfoExtractor):
     BRIGHTCOVE_URL_TEMPLATE = 'http://players.brightcove.net/%s/%s_default/index.html?videoId=%s'
 
     @staticmethod
-    def _brightcove_result(brightcove_id, player_id, account_id='6150020952001'):
+    def _brightcove_result(
+            brightcove_id,
+            player_id,
+            account_id='6150020952001'):
         return {
-            '_type': 'url_transparent',
-            'url': smuggle_url(TeleQuebecBaseIE.BRIGHTCOVE_URL_TEMPLATE % (account_id, player_id, brightcove_id), {'geo_countries': ['CA']}),
-            'ie_key': 'BrightcoveNew',
-        }
+            '_type': 'url_transparent', 'url': smuggle_url(
+                TeleQuebecBaseIE.BRIGHTCOVE_URL_TEMPLATE %
+                (account_id, player_id, brightcove_id), {
+                    'geo_countries': ['CA']}), 'ie_key': 'BrightcoveNew', }
 
 
 class TeleQuebecIE(TeleQuebecBaseIE):
@@ -66,7 +69,8 @@ class TeleQuebecIE(TeleQuebecBaseIE):
         media = self._download_json(
             'https://mnmedias.api.telequebec.tv/api/v3/media/' + media_id,
             media_id)['media']
-        source_id = next(source_info['sourceId'] for source_info in media['streamInfos'] if source_info.get('source') == 'Brightcove')
+        source_id = next(source_info['sourceId'] for source_info in media['streamInfos'] if source_info.get(
+            'source') == 'Brightcove')
         info = self._brightcove_result(source_id, '22gPKdt7f')
         product = media.get('product') or {}
         season = product.get('season') or {}
@@ -214,14 +218,21 @@ class TeleQuebecVideoIE(TeleQuebecBaseIE):
 
     def _call_api(self, path, video_id):
         return self._download_json(
-            'http://beacon.playback.api.brightcove.com/telequebec/api/assets/' + path,
-            video_id, query={'device_layout': 'web', 'device_type': 'web'})['data']
+            'http://beacon.playback.api.brightcove.com/telequebec/api/assets/' +
+            path,
+            video_id,
+            query={
+                'device_layout': 'web',
+                'device_type': 'web'})['data']
 
     def _real_extract(self, url):
         asset_id = self._match_id(url)
         asset = self._call_api(asset_id, asset_id)['asset']
         stream = self._call_api(
-            asset_id + '/streams/' + asset['streams'][0]['id'], asset_id)['stream']
+            asset_id +
+            '/streams/' +
+            asset['streams'][0]['id'],
+            asset_id)['stream']
         stream_url = stream['url']
         account_id = try_get(
             stream, lambda x: x['video_provider_details']['account_id']) or '6101674910001'

@@ -54,7 +54,8 @@ class SVTBaseIE(InfoExtractor):
                 'This video is only available in Sweden',
                 countries=self._GEO_COUNTRIES, metadata_available=True)
 
-        subtitle_references = dict_get(video_info, ('subtitles', 'subtitleReferences'))
+        subtitle_references = dict_get(
+            video_info, ('subtitles', 'subtitleReferences'))
         if isinstance(subtitle_references, list):
             for sr in subtitle_references:
                 subtitle_url = sr.get('url')
@@ -76,7 +77,11 @@ class SVTBaseIE(InfoExtractor):
         episode_number = int_or_none(video_info.get('episodeNumber'))
 
         timestamp = unified_timestamp(rights.get('validFrom'))
-        duration = int_or_none(dict_get(video_info, ('materialLength', 'contentDuration')))
+        duration = int_or_none(
+            dict_get(
+                video_info,
+                ('materialLength',
+                 'contentDuration')))
         age_limit = None
         adult = dict_get(
             video_info, ('inappropriateForChildren', 'blockedForChildren'),
@@ -230,24 +235,34 @@ class SVTPlayIE(SVTBaseIE):
         data = traverse_obj(self._search_nextjs_data(webpage, video_id), (
             'props', 'urqlState', ..., 'data', {json.loads},
             'detailsPageByPath', {dict}, any, {require('video data')}))
-        details = traverse_obj(data, (
-            'modules', lambda _, v: v['details']['smartStart']['item']['videos'], 'details', any))
+        details = traverse_obj(
+            data,
+            ('modules',
+             lambda _,
+             v: v['details']['smartStart']['item']['videos'],
+                'details',
+                any))
         svt_id = traverse_obj(details, (
             'smartStart', 'item', 'videos',
-            # There can be 'AudioDescribed' and 'SignInterpreted' variants; try 'Default' or else get first
+            # There can be 'AudioDescribed' and 'SignInterpreted' variants; try
+            # 'Default' or else get first
             (lambda _, v: v['accessibility'] == 'Default', 0),
             'svtId', {str}, any))
         if not svt_id:
-            svt_id = traverse_obj(data, ('video', 'svtId', {str}, {require('SVT ID')}))
+            svt_id = traverse_obj(
+                data, ('video', 'svtId', {str}, {
+                    require('SVT ID')}))
 
         info_dict = self._extract_by_video_id(svt_id)
 
         if not info_dict.get('title'):
-            info_dict['title'] = re.sub(r'\s*\|\s*.+?$', '', self._og_search_title(webpage))
+            info_dict['title'] = re.sub(
+                r'\s*\|\s*.+?$', '', self._og_search_title(webpage))
         if not info_dict.get('thumbnail'):
             info_dict['thumbnail'] = self._og_search_thumbnail(webpage)
         if not info_dict.get('description'):
-            info_dict['description'] = traverse_obj(details, ('description', {str}))
+            info_dict['description'] = traverse_obj(
+                details, ('description', {str}))
 
         return info_dict
 
@@ -425,16 +440,22 @@ class SVTPageIE(SVTBaseIE):
         webpage = self._download_webpage(url, display_id)
         title = self._og_search_title(webpage)
 
-        urql_state = self._search_json(r'urqlState\s*[=:]', webpage, 'json data', display_id)
+        urql_state = self._search_json(
+            r'urqlState\s*[=:]', webpage, 'json data', display_id)
 
-        data = traverse_obj(urql_state, (..., 'data', {str}, {json.loads}), get_all=False) or {}
+        data = traverse_obj(
+            urql_state, (..., 'data', {str}, {
+                json.loads}), get_all=False) or {}
 
         def entries():
             for video_id in set(traverse_obj(data, (
                 'page', (('topMedia', 'svtId'), ('body', ..., 'video', 'svtId')), {str},
             ))):
                 info = self._extract_video(
-                    self._download_json(f'https://api.svt.se/video/{video_id}', video_id), video_id)
+                    self._download_json(
+                        f'https://api.svt.se/video/{video_id}',
+                        video_id),
+                    video_id)
                 info['title'] = title
                 yield info
 

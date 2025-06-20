@@ -8,7 +8,8 @@ from ..utils import (
 class RtlNlIE(InfoExtractor):
     IE_NAME = 'rtl.nl'
     IE_DESC = 'rtl.nl and rtlxl.nl'
-    _EMBED_REGEX = [r'<iframe[^>]+?\bsrc=(?P<q1>[\'"])(?P<url>(?:https?:)?//(?:(?:www|static)\.)?rtl\.nl/(?:system/videoplayer/[^"]+(?:video_)?)?embed[^"]+)(?P=q1)']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+?\bsrc=(?P<q1>[\'"])(?P<url>(?:https?:)?//(?:(?:www|static)\.)?rtl\.nl/(?:system/videoplayer/[^"]+(?:video_)?)?embed[^"]+)(?P=q1)']
     _VALID_URL = r'''(?x)
         https?://(?:(?:www|static)\.)?
         (?:
@@ -99,8 +100,7 @@ class RtlNlIE(InfoExtractor):
     def _real_extract(self, url):
         uuid = self._match_id(url)
         info = self._download_json(
-            f'http://www.rtl.nl/system/s4m/vfd/version=2/uuid={uuid}/fmt=adaptive/',
-            uuid)
+            f'http://www.rtl.nl/system/s4m/vfd/version=2/uuid={uuid}/fmt=adaptive/', uuid)
 
         material = info['material'][0]
         title = info['abstracts'][0]['name']
@@ -112,7 +112,9 @@ class RtlNlIE(InfoExtractor):
         meta = info.get('meta', {})
 
         videopath = material['videopath']
-        m3u8_url = meta.get('videohost', 'http://manifest.us.rtl.nl') + videopath
+        m3u8_url = meta.get(
+            'videohost',
+            'http://manifest.us.rtl.nl') + videopath
 
         formats = self._extract_m3u8_formats(
             m3u8_url, uuid, 'mp4', m3u8_id='hls', fatal=False)
@@ -151,14 +153,21 @@ class RTLLuBaseIE(InfoExtractor):
     }
 
     def get_media_url(self, webpage, video_id, media_type):
-        return self._search_regex(self._MEDIA_REGEX[media_type], webpage, f'{media_type} url', default=None)
+        return self._search_regex(
+            self._MEDIA_REGEX[media_type],
+            webpage,
+            f'{media_type} url',
+            default=None)
 
     def get_formats_and_subtitles(self, webpage, video_id):
-        video_url, audio_url = self.get_media_url(webpage, video_id, 'video'), self.get_media_url(webpage, video_id, 'audio')
+        video_url, audio_url = self.get_media_url(
+            webpage, video_id, 'video'), self.get_media_url(
+            webpage, video_id, 'audio')
 
         formats, subtitles = [], {}
         if video_url is not None:
-            formats, subtitles = self._extract_m3u8_formats_and_subtitles(video_url, video_id)
+            formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+                video_url, video_id)
         if audio_url is not None:
             formats.append({'url': audio_url, 'ext': 'mp3', 'vcodec': 'none'})
 
@@ -177,10 +186,17 @@ class RTLLuBaseIE(InfoExtractor):
         return {
             'id': video_id,
             'title': self._og_search_title(webpage),
-            'description': self._og_search_description(webpage, default=None),
+            'description': self._og_search_description(
+                webpage,
+                default=None),
             'formats': formats,
             'subtitles': subtitles,
-            'thumbnail': self.get_media_url(webpage, video_id, 'thumbnail') or self._og_search_thumbnail(webpage, default=None),
+            'thumbnail': self.get_media_url(
+                webpage,
+                video_id,
+                'thumbnail') or self._og_search_thumbnail(
+                webpage,
+                default=None),
             'is_live': is_live,
         }
 

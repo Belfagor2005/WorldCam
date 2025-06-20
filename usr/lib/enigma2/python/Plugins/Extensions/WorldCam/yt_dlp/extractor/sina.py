@@ -66,7 +66,8 @@ class SinaIE(InfoExtractor):
                 webpage = self._download_webpage(url, pseudo_id)
                 error = get_element_by_attribute('class', 'errtitle', webpage)
                 if error:
-                    raise ExtractorError(f'{self.IE_NAME} said: {clean_html(error)}', expected=True)
+                    raise ExtractorError(
+                        f'{self.IE_NAME} said: {clean_html(error)}', expected=True)
                 video_id = self._search_regex(
                     r"video_id\s*:\s*'(\d+)'", webpage, 'video id')
 
@@ -85,7 +86,8 @@ class SinaIE(InfoExtractor):
 
             preference = qualities(['cif', 'sd', 'hd', 'fhd', 'ffd'])
             formats = []
-            for quality_id, quality in video_data.get('videos', {}).get('mp4', {}).items():
+            for quality_id, quality in video_data.get(
+                    'videos', {}).get('mp4', {}).items():
                 file_api = quality.get('file_api')
                 file_id = quality.get('file_id')
                 if not file_api or not file_id:
