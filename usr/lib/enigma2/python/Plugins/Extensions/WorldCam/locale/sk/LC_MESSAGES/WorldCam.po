@@ -1,0 +1,357 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WorldCam\n"
+"POT-Creation-Date: 2025-06-19 19:37+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Warder <ciksa@seznam.cz>\n"
+"Language-Team: \n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: __init__.py\n"
+"X-Poedit-SearchPath-1: player.py\n"
+"X-Poedit-SearchPath-2: scraper.py\n"
+"X-Poedit-SearchPath-3: utils.py\n"
+"X-Poedit-SearchPath-4: plugin.py\n"
+
+#: __init__.py:38
+msgid ""
+"Like this plugin?\n"
+"Buy me a coffee by scanning QR code.\n"
+"Your support keeps development alive!\n"
+msgstr ""
+"Páči sa vám tento plugin?\n"
+"Kúpte mi kávu naskenovaním QR kódu.\n"
+"Vaša podpora udržiava vývoj pri živote!\n"
+
+#: player.py:276
+msgid "Could not extract video stream"
+msgstr "Nepodarilo sa extrahovať video stream"
+
+#: player.py:308
+msgid "yt_dlp module missing!"
+msgstr "chýba modul yt_dlp!"
+
+#: player.py:342
+msgid "Couldn't extract video information"
+msgstr "Nepodarilo sa extrahovať informácie o videu"
+
+#: player.py:362 player.py:366
+msgid "No playable formats available"
+msgstr "Nie sú k dispozícii žiadne prehrávateľné formáty"
+
+#: player.py:455
+msgid "Error playing YouTube video!"
+msgstr "Chyba pri prehrávaní videa z YouTube!"
+
+#: player.py:501
+msgid "All YouTube methods failed!"
+msgstr "Všetky metódy na YouTube zlyhali!"
+
+#: player.py:654
+msgid "Playback failed!"
+msgstr "Prehrávanie zlyhalo!"
+
+#: player.py:798
+msgid "Invalid YouTube URL"
+msgstr "Neplatná URL adresa YouTube"
+
+#: player.py:808
+msgid "Couldn't extract video stream"
+msgstr "Nepodarilo sa extrahovať video stream"
+
+#: player.py:849
+msgid "Error playing YouTube video with proxy!"
+msgstr "Chyba pri prehrávaní videa YouTube cez proxy!"
+
+#: plugin.py:308
+msgid "WorldCam v{}"
+msgstr "WorldCam verzia {}"
+
+#: plugin.py:310 plugin.py:672 plugin.py:762 plugin.py:815 plugin.py:864
+#: plugin.py:920 plugin.py:980 plugin.py:1039 plugin.py:1108 plugin.py:1180
+msgid "Exit"
+msgstr "Ukončiť"
+
+#: plugin.py:311
+msgid "Select"
+msgstr "Vybrať"
+
+#: plugin.py:312
+msgid "Update"
+msgstr "Aktualizovať"
+
+#: plugin.py:313
+msgid "Menu"
+msgstr "Menu"
+
+#: plugin.py:319 plugin.py:667
+msgid "User Lists"
+msgstr "Zoznamy používateľov"
+
+#: plugin.py:320 plugin.py:810
+msgid "Continents"
+msgstr "Kontinentov"
+
+#: plugin.py:321
+msgid "Countries"
+msgstr "Krajiny"
+
+#: plugin.py:322 plugin.py:975
+msgid "Categories"
+msgstr "Kategórie"
+
+#: plugin.py:323 plugin.py:1034
+msgid "Top Webcams"
+msgstr "Najlepšie webkamery"
+
+#: plugin.py:387
+msgid "Change language"
+msgstr "Zmeniť jazyk"
+
+#: plugin.py:388
+msgid "Update plugin"
+msgstr "Aktualizácia pluginu"
+
+#: plugin.py:389
+msgid "Update yt-dlp"
+msgstr "Aktualizácia yt-dlp"
+
+#: plugin.py:390
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: plugin.py:391
+msgid "About"
+msgstr "O nás"
+
+#: plugin.py:398
+msgid "Select an option"
+msgstr "Vyberte možnosť"
+
+#: plugin.py:436
+msgid "Error opening language selection"
+msgstr "Chyba pri otváraní výberu jazyka"
+
+#: plugin.py:463
+#, python-format
+msgid "Language changed to %s"
+msgstr "Jazyk zmenený na %s"
+
+#: plugin.py:466
+msgid "Error changing language"
+msgstr "Chyba pri zmene jazyka"
+
+#: plugin.py:492
+msgid "Settings functionality coming soon!"
+msgstr "Funkcia nastavení bude čoskoro dostupná!"
+
+#: plugin.py:495
+#, python-format
+msgid ""
+"Error opening settings:\n"
+"%s"
+msgstr ""
+"Chyba pri otváraní nastavení:\n"
+"%s"
+
+#: plugin.py:515
+msgid ""
+"Unable to fetch version info:\n"
+"{}"
+msgstr ""
+"Nepodarilo sa načítať informácie o verzii:\n"
+"0}"
+
+#: plugin.py:533
+msgid "You are already running the latest version: {}"
+msgstr "Už používate najnovšiu verziu: {}"
+
+#: plugin.py:540
+#, python-format
+msgid ""
+"New version %s available\n"
+"\n"
+"Changelog: %s\n"
+"\n"
+"Do you want to install it now?"
+msgstr ""
+"Nová verzia %s je k dispozícii\n"
+"\n"
+"Zoznam zmien: %s\n"
+"\n"
+"Chcete ju teraz nainštalovať?"
+
+#: plugin.py:553
+msgid "Upgrading..."
+msgstr "Aktualizácia..."
+
+#: plugin.py:560
+#, python-format
+msgid ""
+"Update failed:\n"
+"%s"
+msgstr ""
+"Aktualizácia zlyhala:\n"
+"%s"
+
+#: plugin.py:562
+msgid "Update Aborted!"
+msgstr "Aktualizácia prerušená!"
+
+#: plugin.py:569
+msgid ""
+"Update completed successfully!\n"
+"\n"
+"The plugin will now close."
+msgstr ""
+"Aktualizácia bola úspešne dokončená!\n"
+"\n"
+"Plugin sa teraz zatvorí."
+
+#: plugin.py:575
+#, python-format
+msgid "Update encountered an error (code: %s)"
+msgstr "Pri aktualizácii sa vyskytla chyba (kód: %s)"
+
+#: plugin.py:625
+msgid "yt-dlp updated successfully!"
+msgstr "yt-dlp bol úspešne aktualizovaný!"
+
+#: plugin.py:629
+#, python-format
+msgid ""
+"Failed to update yt-dlp:\n"
+"%s"
+msgstr ""
+"Aktualizácia yt-dlp zlyhala:\n"
+"%s"
+
+#: plugin.py:639
+#, python-format
+msgid "WorldCam v%s"
+msgstr "WorldCam verzia %s"
+
+#: plugin.py:640
+msgid "Live webcam viewer featuring global locations."
+msgstr "Prehliadač živých webových kamier s lokáciami z celého sveta."
+
+#: plugin.py:641
+msgid "Developed by Lululla"
+msgstr "Vyvinuté spoločnosťou Lululla"
+
+#: plugin.py:642
+msgid "Powered by Enigma2 and Python"
+msgstr "Poháňané systémom Enigma2 a Python"
+
+#: plugin.py:643
+msgid "GitHub: https://github.com/Belfagor2005/"
+msgstr "GitHub: https://github.com/Belfagor2005/"
+
+#: plugin.py:644
+msgid "Forum support: www.corvoboys.org"
+msgstr "Podpora fóra: www.corvoboys.org"
+
+#: plugin.py:645
+msgid "Included playlists and sources:\n"
+msgstr "Zahrnuté zoznamy skladieb a zdroje:\n"
+
+#: plugin.py:646
+msgid "- Local webcam list\n"
+msgstr "- Zoznam lokálnych webkamer\n"
+
+#: plugin.py:647
+msgid "- Local YouTube playlist (test)\n"
+msgstr "- Lokálny zoznam skladieb na YouTube (test)\n"
+
+#: plugin.py:648
+msgid "- Online webcam list\n"
+msgstr "- Zoznam webkamier online\n"
+
+#: plugin.py:649
+msgid "- Online Direct and YouTube webcams playlist (test)\n"
+msgstr "- Zoznam skladieb Online Direct a YouTube webkamery (test)\n"
+
+#: plugin.py:650
+msgid "- Other sources\n"
+msgstr "- Iné zdroje\n"
+
+#: plugin.py:699
+msgid "No playlists found"
+msgstr "Nenašli sa žiadne zoznamy skladieb"
+
+#: plugin.py:711
+msgid "Error loading playlists"
+msgstr "Chyba pri načítavaní zoznamov skladieb"
+
+#: plugin.py:721
+msgid "No playlists available"
+msgstr "Žiadne zoznamy skladieb nie sú k dispozícii"
+
+#: plugin.py:726
+msgid "Select a valid playlist"
+msgstr "Vyberte platný zoznam skladieb"
+
+#: plugin.py:734
+msgid "Error opening playlist"
+msgstr "Chyba pri otváraní playlistu"
+
+#: plugin.py:781
+msgid "Playlist file not found or empty"
+msgstr "Súbor zoznamu skladieb sa nenašiel alebo je prázdny"
+
+#: plugin.py:785
+msgid "Playlist file not found"
+msgstr "Súbor zoznamu skladieb sa nenašiel"
+
+#: plugin.py:788
+msgid "Error loading playlist"
+msgstr "Chyba pri načítavaní playlistu"
+
+#: plugin.py:795 plugin.py:1079 plugin.py:1217
+msgid "Select a valid webcam"
+msgstr "Vyberte platnú webkameru"
+
+#: plugin.py:838
+msgid "Error loading continents"
+msgstr "Chyba pri načítavaní kontinentov"
+
+#: plugin.py:885 plugin.py:942
+msgid "Error loading countries"
+msgstr "Chyba pri načítavaní krajín"
+
+#: plugin.py:915
+msgid "Country"
+msgstr "Krajina"
+
+#: plugin.py:1003
+msgid "Error loading categories"
+msgstr "Chyba pri načítavaní kategórií"
+
+#: plugin.py:1012
+msgid "Select a valid category"
+msgstr "Vyberte platnú kategóriu"
+
+#: plugin.py:1068
+msgid "Error loading top webcams"
+msgstr "Chyba pri načítavaní najobľúbenejších webkamier"
+
+#: plugin.py:1132
+msgid "Error loading locations"
+msgstr "Chyba pri načítavaní lokalít"
+
+#: plugin.py:1143
+msgid "Select a valid location"
+msgstr "Vyberte platnú polohu"
+
+#: plugin.py:1206
+msgid "Error loading webcams"
+msgstr "Chyba pri načítavaní webkamier"
+
+#: plugin.py:1248
+msgid "Live webcams from around the world"
+msgstr "Živé webkamery z celého sveta"

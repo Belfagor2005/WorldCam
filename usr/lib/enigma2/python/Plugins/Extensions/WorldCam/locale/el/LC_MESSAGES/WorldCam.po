@@ -1,0 +1,358 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WorldCam\n"
+"POT-Creation-Date: 2025-06-19 19:37+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: WorldCam\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: __init__.py\n"
+"X-Poedit-SearchPath-1: player.py\n"
+"X-Poedit-SearchPath-2: scraper.py\n"
+"X-Poedit-SearchPath-3: utils.py\n"
+"X-Poedit-SearchPath-4: plugin.py\n"
+
+#: __init__.py:38
+msgid ""
+"Like this plugin?\n"
+"Buy me a coffee by scanning QR code.\n"
+"Your support keeps development alive!\n"
+msgstr ""
+"Σας άρεσε αυτό το πρόσθετο;\n"
+"Κεράστε μου έναν καφέ σκανάροντας τον κωδικό QR.\n"
+"Η υποστήριξή σας κρατά την ανάπτυξη ζωντανή!\n"
+
+#: player.py:276
+msgid "Could not extract video stream"
+msgstr "Δεν ήταν δυνατή η εξαγωγή της ροής βίντεο"
+
+#: player.py:308
+msgid "yt_dlp module missing!"
+msgstr "Η ενότητα yt_dlp λείπει!"
+
+#: player.py:342
+msgid "Couldn't extract video information"
+msgstr "Δεν ήταν δυνατή η εξαγωγή πληροφοριών βίντεο"
+
+#: player.py:362 player.py:366
+msgid "No playable formats available"
+msgstr "Δεν υπάρχουν διαθέσιμες μορφές αναπαραγωγής"
+
+#: player.py:455
+msgid "Error playing YouTube video!"
+msgstr "Σφάλμα κατά την αναπαραγωγή βίντεο YouTube!"
+
+#: player.py:501
+msgid "All YouTube methods failed!"
+msgstr "Όλες οι μέθοδοι του YouTube απέτυχαν!"
+
+#: player.py:654
+msgid "Playback failed!"
+msgstr "Η αναπαραγωγή απέτυχε!"
+
+#: player.py:798
+msgid "Invalid YouTube URL"
+msgstr "Μη έγκυρο URL YouTube"
+
+#: player.py:808
+msgid "Couldn't extract video stream"
+msgstr "Δεν ήταν δυνατή η εξαγωγή της ροής βίντεο"
+
+#: player.py:849
+msgid "Error playing YouTube video with proxy!"
+msgstr "Σφάλμα κατά την αναπαραγωγή βίντεο YouTube μέσω proxy!"
+
+#: plugin.py:308
+msgid "WorldCam v{}"
+msgstr "WorldCam v{}"
+
+#: plugin.py:310 plugin.py:672 plugin.py:762 plugin.py:815 plugin.py:864
+#: plugin.py:920 plugin.py:980 plugin.py:1039 plugin.py:1108 plugin.py:1180
+msgid "Exit"
+msgstr "Έξοδος"
+
+#: plugin.py:311
+msgid "Select"
+msgstr "Επιλογή"
+
+#: plugin.py:312
+msgid "Update"
+msgstr "Ενημέρωση"
+
+#: plugin.py:313
+msgid "Menu"
+msgstr "Μενού"
+
+#: plugin.py:319 plugin.py:667
+msgid "User Lists"
+msgstr "Λίστες χρήστη"
+
+#: plugin.py:320 plugin.py:810
+msgid "Continents"
+msgstr "Ήπειροι"
+
+#: plugin.py:321
+msgid "Countries"
+msgstr "Χώρες"
+
+#: plugin.py:322 plugin.py:975
+msgid "Categories"
+msgstr "Κατηγορίες"
+
+#: plugin.py:323 plugin.py:1034
+msgid "Top Webcams"
+msgstr "Κορυφαίες κάμερες web"
+
+#: plugin.py:387
+msgid "Change language"
+msgstr "Αλλαγή γλώσσας"
+
+#: plugin.py:388
+msgid "Update plugin"
+msgstr "Ενημέρωση του πρόσθετου"
+
+#: plugin.py:389
+msgid "Update yt-dlp"
+msgstr "Ενημέρωση yt-dlp"
+
+#: plugin.py:390
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#: plugin.py:391
+msgid "About"
+msgstr "Σχετικά"
+
+#: plugin.py:398
+msgid "Select an option"
+msgstr "Επιλέξτε μια επιλογή"
+
+#: plugin.py:436
+msgid "Error opening language selection"
+msgstr "Σφάλμα κατά το άνοιγμα της επιλογής γλώσσας"
+
+#: plugin.py:463
+#, python-format
+msgid "Language changed to %s"
+msgstr "Η γλώσσα άλλαξε σε %s"
+
+#: plugin.py:466
+msgid "Error changing language"
+msgstr "Σφάλμα κατά την αλλαγή γλώσσας"
+
+#: plugin.py:492
+msgid "Settings functionality coming soon!"
+msgstr "Η λειτουργία Ρυθμίσεις έρχεται σύντομα!"
+
+#: plugin.py:495
+#, python-format
+msgid ""
+"Error opening settings:\n"
+"%s"
+msgstr ""
+"Σφάλμα κατά το άνοιγμα των ρυθμίσεων:\n"
+"%s"
+
+#: plugin.py:515
+msgid ""
+"Unable to fetch version info:\n"
+"{}"
+msgstr ""
+"Αδυναμία λήψης πληροφοριών έκδοσης:\n"
+"{}"
+
+#: plugin.py:533
+msgid "You are already running the latest version: {}"
+msgstr "Χρησιμοποιείτε ήδη την πιο πρόσφατη έκδοση: {}"
+
+#: plugin.py:540
+#, python-format
+msgid ""
+"New version %s available\n"
+"\n"
+"Changelog: %s\n"
+"\n"
+"Do you want to install it now?"
+msgstr ""
+"Διαθέσιμη νέα έκδοση %s\n"
+"\n"
+"Καταγραφή αλλαγών: %s\n"
+"\n"
+"Θέλετε να την εγκαταστήσετε τώρα;"
+
+#: plugin.py:553
+msgid "Upgrading..."
+msgstr "Αναβάθμιση..."
+
+#: plugin.py:560
+#, python-format
+msgid ""
+"Update failed:\n"
+"%s"
+msgstr ""
+"Η ενημέρωση απέτυχε:\n"
+"%s"
+
+#: plugin.py:562
+msgid "Update Aborted!"
+msgstr "Η ενημέρωση ακυρώθηκε!"
+
+#: plugin.py:569
+msgid ""
+"Update completed successfully!\n"
+"\n"
+"The plugin will now close."
+msgstr ""
+"Η ενημέρωση ολοκληρώθηκε με επιτυχία!\n"
+"\n"
+"Το πρόσθετο θα κλείσει τώρα."
+
+#: plugin.py:575
+#, python-format
+msgid "Update encountered an error (code: %s)"
+msgstr "Προέκυψε σφάλμα κατά την ενημέρωση (κωδικός: %s)"
+
+#: plugin.py:625
+msgid "yt-dlp updated successfully!"
+msgstr "Το yt-dlp ενημερώθηκε με επιτυχία!"
+
+#: plugin.py:629
+#, python-format
+msgid ""
+"Failed to update yt-dlp:\n"
+"%s"
+msgstr ""
+"Αποτυχία ενημέρωσης του yt-dlp:\n"
+"%s"
+
+#: plugin.py:639
+#, python-format
+msgid "WorldCam v%s"
+msgstr "WorldCam v%s"
+
+#: plugin.py:640
+msgid "Live webcam viewer featuring global locations."
+msgstr "Προβολή ζωντανών καμερών web από τοποθεσίες παγκοσμίως."
+
+#: plugin.py:641
+msgid "Developed by Lululla"
+msgstr "Ανάπτυξη από τον Lululla"
+
+#: plugin.py:642
+msgid "Powered by Enigma2 and Python"
+msgstr "Με την υποστήριξη των Enigma2 και Python"
+
+#: plugin.py:643
+msgid "GitHub: https://github.com/Belfagor2005/"
+msgstr "GitHub: https://github.com/Belfagor2005/"
+
+#: plugin.py:644
+msgid "Forum support: www.corvoboys.org"
+msgstr "Υποστήριξη forum: www.corvoboys.org"
+
+#: plugin.py:645
+msgid "Included playlists and sources:\n"
+msgstr "Περιλαμβανόμενες λίστες αναπαραγωγής και πηγές:\n"
+
+#: plugin.py:646
+msgid "- Local webcam list\n"
+msgstr "- Τοπική λίστα καμερών web\n"
+
+#: plugin.py:647
+msgid "- Local YouTube playlist (test)\n"
+msgstr "- Τοπική λίστα αναπαραγωγής YouTube (δοκιμή)\n"
+
+#: plugin.py:648
+msgid "- Online webcam list\n"
+msgstr "- Διαδικτυακή λίστα καμερών web\n"
+
+#: plugin.py:649
+msgid "- Online Direct and YouTube webcams playlist (test)\n"
+msgstr "- Διαδικτυακή λίστα απευθείας καμερών web και YouTube (δοκιμή)\n"
+
+#: plugin.py:650
+msgid "- Other sources\n"
+msgstr "- Άλλες πηγές\n"
+
+#: plugin.py:699
+msgid "No playlists found"
+msgstr "Δεν βρέθηκαν λίστες αναπαραγωγής"
+
+#: plugin.py:711
+msgid "Error loading playlists"
+msgstr "Σφάλμα κατά τη φόρτωση των λιστών αναπαραγωγής"
+
+#: plugin.py:721
+msgid "No playlists available"
+msgstr "Καμία διαθέσιμη λίστα αναπαραγωγής"
+
+#: plugin.py:726
+msgid "Select a valid playlist"
+msgstr "Επιλέξτε έγκυρη λίστα αναπαραγωγής"
+
+#: plugin.py:734
+msgid "Error opening playlist"
+msgstr "Σφάλμα κατά το άνοιγμα της λίστας αναπαραγωγής"
+
+#: plugin.py:781
+msgid "Playlist file not found or empty"
+msgstr "Το αρχείο λίστας αναπαραγωγής δεν βρέθηκε ή είναι κενό"
+
+#: plugin.py:785
+msgid "Playlist file not found"
+msgstr "Το αρχείο λίστας αναπαραγωγής δεν βρέθηκε"
+
+#: plugin.py:788
+msgid "Error loading playlist"
+msgstr "Σφάλμα κατά τη φόρτωση της λίστας αναπαραγωγής"
+
+#: plugin.py:795 plugin.py:1079 plugin.py:1217
+msgid "Select a valid webcam"
+msgstr "Επιλέξτε έγκυρη κάμερα web"
+
+#: plugin.py:838
+msgid "Error loading continents"
+msgstr "Σφάλμα κατά τη φόρτωση των ηπείρων"
+
+#: plugin.py:885 plugin.py:942
+msgid "Error loading countries"
+msgstr "Σφάλμα κατά τη φόρτωση των χωρών"
+
+#: plugin.py:915
+msgid "Country"
+msgstr "Χώρα"
+
+#: plugin.py:1003
+msgid "Error loading categories"
+msgstr "Σφάλμα κατά τη φόρτωση των κατηγοριών"
+
+#: plugin.py:1012
+msgid "Select a valid category"
+msgstr "Επιλέξτε έγκυρη κατηγορία"
+
+#: plugin.py:1068
+msgid "Error loading top webcams"
+msgstr "Σφάλμα κατά τη φόρτωση των κορυφαίων καμερών web"
+
+#: plugin.py:1132
+msgid "Error loading locations"
+msgstr "Σφάλμα κατά τη φόρτωση των τοποθεσιών"
+
+#: plugin.py:1143
+msgid "Select a valid location"
+msgstr "Επιλέξτε έγκυρη τοποθεσία"
+
+#: plugin.py:1206
+msgid "Error loading webcams"
+msgstr "Σφάλμα κατά τη φόρτωση των καμερών web"
+
+#: plugin.py:1248
+msgid "Live webcams from around the world"
+msgstr "Ζωντανές κάμερες web από όλο τον κόσμο"
