@@ -75,13 +75,17 @@ class NoovoIE(InfoExtractor):
             r'<div[^>]+class="banner-card__subtitle h4"[^>]*>([^<]+)',
             webpage, 'series', default=None)
 
-        season_el = try_get(data, lambda x: x['emission']['saison'], dict) or {}
+        season_el = try_get(
+            data,
+            lambda x: x['emission']['saison'],
+            dict) or {}
         season = try_get(season_el, lambda x: x['nom'], str)
         season_number = int_or_none(try_get(season_el, lambda x: x['numero']))
 
         episode_el = try_get(season_el, lambda x: x['episode'], dict) or {}
         episode = try_get(episode_el, lambda x: x['nom'], str)
-        episode_number = int_or_none(try_get(episode_el, lambda x: x['numero']))
+        episode_number = int_or_none(
+            try_get(episode_el, lambda x: x['numero']))
 
         return {
             '_type': 'url_transparent',

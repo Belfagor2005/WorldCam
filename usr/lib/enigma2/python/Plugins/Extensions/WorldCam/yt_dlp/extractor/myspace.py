@@ -58,7 +58,12 @@ class MySpaceIE(InfoExtractor):
         player_url = self._search_regex(
             r'videoSwf":"([^"?]*)', webpage, 'player URL', fatal=False)
 
-        def formats_from_stream_urls(stream_url, hls_stream_url, http_stream_url, width=None, height=None):
+        def formats_from_stream_urls(
+                stream_url,
+                hls_stream_url,
+                http_stream_url,
+                width=None,
+                height=None):
             formats = []
             vcodec = 'none' if is_song else None
             if hls_stream_url:

@@ -7,22 +7,20 @@ class SouthParkIE(MTVServicesInfoExtractor):
 
     _FEED_URL = 'http://feeds.mtvnservices.com/od/feed/intl-mrss-player-feed'
 
-    _TESTS = [{
-        'url': 'https://southpark.cc.com/video-clips/d7wr06/south-park-you-all-agreed-to-counseling',
-        'info_dict': {
-            'ext': 'mp4',
-            'title': 'You All Agreed to Counseling',
-            'description': 'Kenny, Cartman, Stan, and Kyle visit Mr. Mackey and ask for his help getting Mrs. Nelson to come back. Mr. Mackey reveals the only way to get things back to normal is to get the teachers vaccinated.',
-            'timestamp': 1615352400,
-            'upload_date': '20210310',
-        },
-    }, {
-        'url': 'http://southpark.cc.com/collections/7758/fan-favorites/1',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.southparkstudios.com/episodes/h4o269/south-park-stunning-and-brave-season-19-ep-1',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://southpark.cc.com/video-clips/d7wr06/south-park-you-all-agreed-to-counseling',
+               'info_dict': {'ext': 'mp4',
+                             'title': 'You All Agreed to Counseling',
+                             'description': 'Kenny, Cartman, Stan, and Kyle visit Mr. Mackey and ask for his help getting Mrs. Nelson to come back. Mr. Mackey reveals the only way to get things back to normal is to get the teachers vaccinated.',
+                             'timestamp': 1615352400,
+                             'upload_date': '20210310',
+                             },
+               },
+              {'url': 'http://southpark.cc.com/collections/7758/fan-favorites/1',
+               'only_matching': True,
+               },
+              {'url': 'https://www.southparkstudios.com/episodes/h4o269/south-park-stunning-and-brave-season-19-ep-1',
+               'only_matching': True,
+               }]
 
     def _get_feed_query(self, uri):
         return {
@@ -102,7 +100,8 @@ class SouthParkDeIE(SouthParkIE):  # XXX: Do not subclass from concrete IE
     def _get_feed_url(self, uri, url=None):
         video_id = self._id_from_uri(uri)
         config = self._download_json(
-            f'http://media.mtvnservices.com/pmt/e1/access/index.html?uri={uri}&configtype=edge&ref={url}', video_id)
+            f'http://media.mtvnservices.com/pmt/e1/access/index.html?uri={uri}&configtype=edge&ref={url}',
+            video_id)
         return self._remove_template_parameter(config['feedWithQueryParams'])
 
     def _get_feed_query(self, uri):

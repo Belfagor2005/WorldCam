@@ -23,7 +23,9 @@ class TruNewsIE(InfoExtractor):
         display_id = self._match_id(url)
 
         zype_id = self._download_json(
-            'https://api.zype.com/videos', display_id, query={
+            'https://api.zype.com/videos',
+            display_id,
+            query={
                 'app_key': 'PUVKp9WgGUb3-JUw6EqafLx8tFVP6VKZTWbUOR-HOm__g4fNDt1bCsm_LgYf_k9H',
                 'per_page': 1,
                 'active': 'true',

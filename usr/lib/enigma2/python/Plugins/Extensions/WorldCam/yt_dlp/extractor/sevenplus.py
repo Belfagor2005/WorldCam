@@ -45,7 +45,10 @@ class SevenPlusIE(BrightcoveNewBaseIE):
             return
 
         login_resp = self._download_json(
-            'https://login.7plus.com.au/accounts.getJWT', None, 'Logging in', fatal=False,
+            'https://login.7plus.com.au/accounts.getJWT',
+            None,
+            'Logging in',
+            fatal=False,
             query={
                 'APIKey': api_key,
                 'sdk': 'js_latest',
@@ -57,7 +60,8 @@ class SevenPlusIE(BrightcoveNewBaseIE):
             }) or {}
 
         if 'errorMessage' in login_resp:
-            self.report_warning(f'Unable to login: 7plus said: {login_resp["errorMessage"]}')
+            self.report_warning(
+                f'Unable to login: 7plus said: {login_resp["errorMessage"]}')
             return
         id_token = login_resp.get('id_token')
         if not id_token:
@@ -65,15 +69,22 @@ class SevenPlusIE(BrightcoveNewBaseIE):
             return
 
         token_resp = self._download_json(
-            'https://7plus.com.au/auth/token', None, 'Getting auth token', fatal=False,
-            headers={'Content-Type': 'application/json'}, data=json.dumps({
-                'idToken': id_token,
-                'platformId': 'web',
-                'regSource': '7plus',
-            }).encode()) or {}
+            'https://7plus.com.au/auth/token',
+            None,
+            'Getting auth token',
+            fatal=False,
+            headers={
+                'Content-Type': 'application/json'},
+            data=json.dumps(
+                {
+                    'idToken': id_token,
+                    'platformId': 'web',
+                    'regSource': '7plus',
+                }).encode()) or {}
         self.token = token_resp.get('token')
         if not self.token:
-            self.report_warning('Unable to log in: Could not extract auth token')
+            self.report_warning(
+                'Unable to log in: Could not extract auth token')
 
     def _real_extract(self, url):
         path, episode_id = self._match_valid_url(url).groups()
@@ -84,7 +95,9 @@ class SevenPlusIE(BrightcoveNewBaseIE):
 
         try:
             media = self._download_json(
-                'https://videoservice.swm.digital/playback', episode_id, query={
+                'https://videoservice.swm.digital/playback',
+                episode_id,
+                query={
                     'appId': '7plus',
                     'deviceType': 'web',
                     'platformType': 'web',
@@ -92,11 +105,15 @@ class SevenPlusIE(BrightcoveNewBaseIE):
                     'referenceId': 'ref:' + episode_id,
                     'deliveryId': 'csai',
                     'videoType': 'vod',
-                }, headers=headers)['media']
+                },
+                headers=headers)['media']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                raise ExtractorError(self._parse_json(
-                    e.cause.response.read().decode(), episode_id)[0]['error_code'], expected=True)
+                raise ExtractorError(
+                    self._parse_json(
+                        e.cause.response.read().decode(),
+                        episode_id)[0]['error_code'],
+                    expected=True)
             raise
 
         for source in media.get('sources', {}):
@@ -113,14 +130,18 @@ class SevenPlusIE(BrightcoveNewBaseIE):
                 'market-id': 4,
             }, fatal=False) or {}
         for item in content.get('items', {}):
-            if item.get('componentData', {}).get('componentType') == 'infoPanel':
-                for src_key, dst_key in [('title', 'title'), ('shortSynopsis', 'description')]:
+            if item.get('componentData', {}).get(
+                    'componentType') == 'infoPanel':
+                for src_key, dst_key in [
+                        ('title', 'title'), ('shortSynopsis', 'description')]:
                     value = item.get(src_key)
                     if value:
                         info[dst_key] = value
                 info['series'] = try_get(
                     item, lambda x: x['seriesLogo']['name'], str)
-                mobj = re.search(r'^S(\d+)\s+E(\d+)\s+-\s+(.+)$', info['title'])
+                mobj = re.search(
+                    r'^S(\d+)\s+E(\d+)\s+-\s+(.+)$',
+                    info['title'])
                 if mobj:
                     info.update({
                         'season_number': int(mobj.group(1)),

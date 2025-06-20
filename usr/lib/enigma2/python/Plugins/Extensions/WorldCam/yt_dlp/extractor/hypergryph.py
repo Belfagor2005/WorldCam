@@ -38,7 +38,8 @@ class MonsterSirenHypergryphMusicIE(InfoExtractor):
 
     def _real_extract(self, url):
         audio_id = self._match_id(url)
-        song = self._download_json(f'{self._API_BASE}/song/{audio_id}', audio_id)
+        song = self._download_json(
+            f'{self._API_BASE}/song/{audio_id}', audio_id)
         if traverse_obj(song, 'code') != 0:
             msg = traverse_obj(song, ('msg', {str}, filter))
             raise ExtractorError(
@@ -47,7 +48,9 @@ class MonsterSirenHypergryphMusicIE(InfoExtractor):
         album = None
         if album_id := traverse_obj(song, ('data', 'albumCid', {str})):
             album = self._download_json(
-                f'{self._API_BASE}/album/{album_id}/detail', album_id, fatal=False)
+                f'{self._API_BASE}/album/{album_id}/detail',
+                album_id,
+                fatal=False)
 
         return {
             'id': audio_id,

@@ -49,15 +49,26 @@ class ListenNotesIE(InfoExtractor):
     }]
 
     def _clean_description(self, description):
-        return clean_html(re.sub(r'(</?(div|p)>\s*)+', '<br/><br/>', description or ''))
+        return clean_html(
+            re.sub(
+                r'(</?(div|p)>\s*)+',
+                '<br/><br/>',
+                description or ''))
 
     def _real_extract(self, url):
         audio_id = self._match_id(url)
         webpage = self._download_webpage(url, audio_id)
         data = self._search_json(
-            r'<script id="original-content"[^>]+\btype="application/json">', webpage, 'content', audio_id)
-        data.update(extract_attributes(get_element_html_by_id(
-            r'episode-play-button-toolbar|episode-no-play-button-toolbar', webpage, escape_value=False)))
+            r'<script id="original-content"[^>]+\btype="application/json">',
+            webpage,
+            'content',
+            audio_id)
+        data.update(
+            extract_attributes(
+                get_element_html_by_id(
+                    r'episode-play-button-toolbar|episode-no-play-button-toolbar',
+                    webpage,
+                    escape_value=False)))
 
         duration, description = self._search_regex(
             r'(?P<duration>[\d:]+)\s*-\s*(?P<description>.+)',

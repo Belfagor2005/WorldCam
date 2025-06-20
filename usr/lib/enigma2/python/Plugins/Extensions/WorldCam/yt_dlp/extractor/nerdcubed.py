@@ -31,7 +31,8 @@ class NerdCubedFeedIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = 'nerdcubed-feed'
-        feed = self._download_json('https://www.nerdcubed.co.uk/_/cdn/videos.json', video_id)
+        feed = self._download_json(
+            'https://www.nerdcubed.co.uk/_/cdn/videos.json', video_id)
 
         return self.playlist_result(
             map(self._extract_video, traverse_obj(feed, ('videos', lambda _, v: v['id']))),

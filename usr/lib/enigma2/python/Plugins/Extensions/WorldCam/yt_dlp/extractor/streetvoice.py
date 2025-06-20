@@ -42,13 +42,17 @@ class StreetVoiceIE(InfoExtractor):
     def _real_extract(self, url):
         song_id = self._match_id(url)
         base_url = f'https://streetvoice.com/api/v4/song/{song_id}/'
-        song = self._download_json(base_url, song_id, query={
-            'fields': 'album,comments_count,created_at,id,image,length,likes_count,name,nickname,plays_count,profile,share_count,synopsis,user,username',
-        })
+        song = self._download_json(
+            base_url,
+            song_id,
+            query={
+                'fields': 'album,comments_count,created_at,id,image,length,likes_count,name,nickname,plays_count,profile,share_count,synopsis,user,username',
+            })
         title = song['name']
 
         formats = []
-        for suffix, format_id in [('hls/file', 'hls'), ('file', 'http'), ('file/original', 'original')]:
+        for suffix, format_id in [
+                ('hls/file', 'hls'), ('file', 'http'), ('file/original', 'original')]:
             f_url = (self._download_json(
                 base_url + suffix + '/', song_id,
                 f'Downloading {format_id} format URL',
@@ -63,7 +67,8 @@ class StreetVoiceIE(InfoExtractor):
             }
             if format_id == 'hls':
                 f['protocol'] = 'm3u8_native'
-            abr = self._search_regex(r'\.mp3\.(\d+)k', f_url, 'bitrate', default=None)
+            abr = self._search_regex(
+                r'\.mp3\.(\d+)k', f_url, 'bitrate', default=None)
             if abr:
                 abr = int(abr)
                 f.update({
@@ -74,7 +79,7 @@ class StreetVoiceIE(InfoExtractor):
 
         user = song.get('user') or {}
         username = user.get('username')
-        get_count = lambda x: int_or_none(song.get(x + '_count'))
+        def get_count(x): return int_or_none(song.get(x + '_count'))
 
         return {
             'id': song_id,

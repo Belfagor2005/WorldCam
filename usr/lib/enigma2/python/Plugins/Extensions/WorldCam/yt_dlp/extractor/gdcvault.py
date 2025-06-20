@@ -98,7 +98,8 @@ class GDCVaultIE(InfoExtractor):
             },
         },
         {
-            # Kaltura embed, whitespace between quote and embedded URL in iframe's src
+            # Kaltura embed, whitespace between quote and embedded URL in
+            # iframe's src
             'url': 'https://www.gdcvault.com/play/1025699',
             'info_dict': {
                 'id': '0_zagynv0a',
@@ -122,7 +123,10 @@ class GDCVaultIE(InfoExtractor):
     def _login(self, webpage_url, display_id):
         username, password = self._get_login_info()
         if username is None or password is None:
-            self.report_warning('It looks like ' + webpage_url + ' requires a login. Try specifying a username and password and try again.')
+            self.report_warning(
+                'It looks like ' +
+                webpage_url +
+                ' requires a login. Try specifying a username and password and try again.')
             return None
 
         mobj = re.match(r'(?P<root_url>https?://.*?/).*', webpage_url)
@@ -137,7 +141,8 @@ class GDCVaultIE(InfoExtractor):
         request = Request(login_url, urlencode_postdata(login_form))
         request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         self._download_webpage(request, display_id, 'Logging in')
-        start_page = self._download_webpage(webpage_url, display_id, 'Getting authenticated video page')
+        start_page = self._download_webpage(
+            webpage_url, display_id, 'Getting authenticated video page')
         self._download_webpage(logout_url, display_id, 'Logging out')
 
         return start_page
@@ -192,7 +197,8 @@ class GDCVaultIE(InfoExtractor):
                 r'<iframe src=".*?\?xml(?:=|URL=xml/)(.+?\.xml).*?".*?</iframe>',
                 start_page, 'xml filename', default=None)
             if not xml_name:
-                info = self._parse_html5_media_entries(url, start_page, video_id)[0]
+                info = self._parse_html5_media_entries(
+                    url, start_page, video_id)[0]
                 info.update({
                     'title': remove_start(self._search_regex(
                         r'>Session Name:\s*<.*?>\s*<td>(.+?)</td>', start_page,

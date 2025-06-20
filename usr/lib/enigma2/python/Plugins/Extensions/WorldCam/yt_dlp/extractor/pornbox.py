@@ -60,7 +60,8 @@ class PornboxIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        public_data = self._download_json(f'https://pornbox.com/contents/{video_id}', video_id)
+        public_data = self._download_json(
+            f'https://pornbox.com/contents/{video_id}', video_id)
 
         subtitles = {country_code: [{
             'url': f'https://pornbox.com/contents/{video_id}/subtitles/{country_code}',
@@ -90,16 +91,27 @@ class PornboxIE(InfoExtractor):
 
         if not public_data.get('is_purchased') or not is_free_scene:
             self.raise_login_required(
-                'You are either not logged in or do not have access to this scene', metadata_available=True)
+                'You are either not logged in or do not have access to this scene',
+                metadata_available=True)
             return metadata
 
-        media_id = traverse_obj(public_data, (
-            'medias', lambda _, v: v['title'] == 'Full video', 'media_id', {int}), get_all=False)
+        media_id = traverse_obj(
+            public_data,
+            ('medias',
+             lambda _,
+             v: v['title'] == 'Full video',
+                'media_id',
+                {int}),
+            get_all=False)
         if not media_id:
-            self.raise_no_formats('Could not find stream id', video_id=video_id)
+            self.raise_no_formats(
+                'Could not find stream id',
+                video_id=video_id)
 
         stream_data = self._download_json(
-            f'https://pornbox.com/media/{media_id}/stream', video_id=video_id, note='Getting manifest urls')
+            f'https://pornbox.com/media/{media_id}/stream',
+            video_id=video_id,
+            note='Getting manifest urls')
 
         get_quality = qualities(['web', 'vga', 'hd', '1080p', '4k', '8k'])
         metadata['formats'] = traverse_obj(stream_data, ('qualities', lambda _, v: v['src'], {

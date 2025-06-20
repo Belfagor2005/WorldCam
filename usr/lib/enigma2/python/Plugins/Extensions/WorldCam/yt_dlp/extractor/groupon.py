@@ -38,8 +38,12 @@ class GrouponIE(InfoExtractor):
         playlist_id = self._match_id(url)
         webpage = self._download_webpage(url, playlist_id)
 
-        payload = self._parse_json(self._search_regex(
-            r'(?:var\s+|window\.)payload\s*=\s*(.*?);\n', webpage, 'payload'), playlist_id)
+        payload = self._parse_json(
+            self._search_regex(
+                r'(?:var\s+|window\.)payload\s*=\s*(.*?);\n',
+                webpage,
+                'payload'),
+            playlist_id)
         videos = payload['carousel'].get('dealVideos', [])
         entries = []
         for v in videos:

@@ -38,9 +38,15 @@ class AWAANBaseIE(InfoExtractor):
             'id': video_id,
             'title': title,
             'description': video_data.get('description_en') or video_data.get('description_ar'),
-            'thumbnail': format_field(img, None, 'http://admin.mangomolo.com/analytics/%s'),
-            'duration': int_or_none(video_data.get('duration')),
-            'timestamp': parse_iso8601(video_data.get('create_time'), ' '),
+            'thumbnail': format_field(
+                img,
+                None,
+                'http://admin.mangomolo.com/analytics/%s'),
+            'duration': int_or_none(
+                video_data.get('duration')),
+            'timestamp': parse_iso8601(
+                video_data.get('create_time'),
+                ' '),
             'is_live': is_live,
             'uploader_id': video_data.get('user_id'),
         }
@@ -49,24 +55,21 @@ class AWAANBaseIE(InfoExtractor):
 class AWAANVideoIE(AWAANBaseIE):
     IE_NAME = 'awaan:video'
     _VALID_URL = r'https?://(?:www\.)?(?:awaan|dcndigital)\.ae/(?:#/)?(?:video(?:/[^/]+)?|media|catchup/[^/]+/[^/]+)/(?P<id>\d+)'
-    _TESTS = [{
-        'url': 'http://www.dcndigital.ae/#/video/%D8%B1%D8%AD%D9%84%D8%A9-%D8%A7%D9%84%D8%B9%D9%85%D8%B1-%D8%A7%D9%84%D8%AD%D9%84%D9%82%D8%A9-1/17375',
-        'md5': '5f61c33bfc7794315c671a62d43116aa',
-        'info_dict':
-        {
-            'id': '17375',
-            'ext': 'mp4',
-            'title': 'رحلة العمر : الحلقة 1',
-            'description': 'md5:0156e935d870acb8ef0a66d24070c6d6',
-            'duration': 2041,
-            'timestamp': 1227504126,
-            'upload_date': '20081124',
-            'uploader_id': '71',
-        },
-    }, {
-        'url': 'http://awaan.ae/video/26723981/%D8%AF%D8%A7%D8%B1-%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85:-%D8%AE%D9%8A%D8%B1-%D8%AF%D9%88%D8%B1-%D8%A7%D9%84%D8%A3%D9%86%D8%B5%D8%A7%D8%B1',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://www.dcndigital.ae/#/video/%D8%B1%D8%AD%D9%84%D8%A9-%D8%A7%D9%84%D8%B9%D9%85%D8%B1-%D8%A7%D9%84%D8%AD%D9%84%D9%82%D8%A9-1/17375',
+               'md5': '5f61c33bfc7794315c671a62d43116aa',
+               'info_dict': {'id': '17375',
+                             'ext': 'mp4',
+                             'title': 'رحلة العمر : الحلقة 1',
+                             'description': 'md5:0156e935d870acb8ef0a66d24070c6d6',
+                             'duration': 2041,
+                             'timestamp': 1227504126,
+                             'upload_date': '20081124',
+                             'uploader_id': '71',
+                             },
+               },
+              {'url': 'http://awaan.ae/video/26723981/%D8%AF%D8%A7%D8%B1-%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85:-%D8%AE%D9%8A%D8%B1-%D8%AF%D9%88%D8%B1-%D8%A7%D9%84%D8%A3%D9%86%D8%B5%D8%A7%D8%B1',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -138,8 +141,7 @@ class AWAANSeasonIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?(?:awaan|dcndigital)\.ae/(?:#/)?program/(?:(?P<show_id>\d+)|season/(?P<season_id>\d+))'
     _TEST = {
         'url': 'http://dcndigital.ae/#/program/205024/%D9%85%D8%AD%D8%A7%D8%B6%D8%B1%D8%A7%D8%AA-%D8%A7%D9%84%D8%B4%D9%8A%D8%AE-%D8%A7%D9%84%D8%B4%D8%B9%D8%B1%D8%A7%D9%88%D9%8A',
-        'info_dict':
-        {
+        'info_dict': {
             'id': '7910',
             'title': 'محاضرات الشيخ الشعراوي',
         },
@@ -175,7 +177,10 @@ class AWAANSeasonIE(InfoExtractor):
                 entries = []
                 for video in show['videos']:
                     video_id = str(video['id'])
-                    entries.append(self.url_result(
-                        f'http://awaan.ae/media/{video_id}', 'AWAANVideo', video_id))
+                    entries.append(
+                        self.url_result(
+                            f'http://awaan.ae/media/{video_id}',
+                            'AWAANVideo',
+                            video_id))
 
                 return self.playlist_result(entries, season_id, title)

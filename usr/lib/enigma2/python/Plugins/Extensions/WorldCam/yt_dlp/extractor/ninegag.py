@@ -99,7 +99,8 @@ class NineGagIE(InfoExtractor):
             elif ext in ('webm', 'mp4'):
                 if not duration:
                     duration = int_or_none(image.get('duration'))
-                common['acodec'] = 'none' if image.get('hasAudio') == 0 else None
+                common['acodec'] = 'none' if image.get(
+                    'hasAudio') == 0 else None
                 for vcodec in ('vp8', 'vp9', 'h265'):
                     c_url = image.get(vcodec + 'Url')
                     if not c_url:

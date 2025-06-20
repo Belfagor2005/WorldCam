@@ -179,19 +179,25 @@ class NekoHackerIE(InfoExtractor):
         playlist = get_element_by_class('playlist', webpage)
 
         if not playlist:
-            iframe_src = traverse_obj(webpage, (
-                {find_element(tag='iframe', html=True)}, {extract_attributes}, 'src', {url_or_none}))
+            iframe_src = traverse_obj(webpage, ({find_element(tag='iframe', html=True)}, {
+                                      extract_attributes}, 'src', {url_or_none}))
             if not iframe_src:
                 raise ExtractorError('No playlist or embed found in webpage')
             elif re.match(r'https?://(?:\w+\.)?spotify\.com/', iframe_src):
-                raise ExtractorError('Spotify embeds are not supported', expected=True)
+                raise ExtractorError(
+                    'Spotify embeds are not supported', expected=True)
             return self.url_result(url, 'Generic')
 
         player_params = self._search_json(
-            r'var srp_player_params_[\da-f]+\s*=', webpage, 'player params', playlist_id, default={})
+            r'var srp_player_params_[\da-f]+\s*=',
+            webpage,
+            'player params',
+            playlist_id,
+            default={})
 
         entries = []
-        for track_number, track in enumerate(re.findall(r'(<li[^>]+data-audiopath[^>]+>)', playlist), 1):
+        for track_number, track in enumerate(re.findall(
+                r'(<li[^>]+data-audiopath[^>]+>)', playlist), 1):
             entry = traverse_obj(extract_attributes(track), {
                 'url': ('data-audiopath', {url_or_none}),
                 'ext': ('data-audiopath', {determine_ext}),
@@ -211,4 +217,6 @@ class NekoHackerIE(InfoExtractor):
                 'acodec': 'mp3' if entry['ext'] == 'mp3' else None,
             })
 
-        return self.playlist_result(entries, playlist_id, traverse_obj(entries, (0, 'album')))
+        return self.playlist_result(
+            entries, playlist_id, traverse_obj(
+                entries, (0, 'album')))

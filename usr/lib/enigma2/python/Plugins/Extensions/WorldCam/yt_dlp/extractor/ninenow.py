@@ -101,10 +101,16 @@ class NineNowIE(InfoExtractor):
     }]
     BRIGHTCOVE_URL_TEMPLATE = 'http://players.brightcove.net/4460760524001/default_default/index.html?videoId={}'
 
-    # XXX: For parsing next.js v15+ data; see also yt_dlp.extractor.francetv and yt_dlp.extractor.goplay
+    # XXX: For parsing next.js v15+ data; see also yt_dlp.extractor.francetv
+    # and yt_dlp.extractor.goplay
     def _find_json(self, s):
         return self._search_json(
-            r'\w+\s*:\s*', s, 'next js data', None, contains_pattern=r'\[(?s:.+)\]', default=None)
+            r'\w+\s*:\s*',
+            s,
+            'next js data',
+            None,
+            contains_pattern=r'\[(?s:.+)\]',
+            default=None)
 
     def _real_extract(self, url):
         display_id, video_type = self._match_valid_url(url).group('id', 'type')

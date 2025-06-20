@@ -50,7 +50,9 @@ class GaiaIE(InfoExtractor):
     def _real_initialize(self):
         auth = self._get_cookies('https://www.gaia.com/').get('auth')
         if auth:
-            auth = self._parse_json(urllib.parse.unquote(auth.value), None, fatal=False)
+            auth = self._parse_json(
+                urllib.parse.unquote(
+                    auth.value), None, fatal=False)
             self._jwt = auth.get('jwt')
 
     def _perform_login(self, username, password):

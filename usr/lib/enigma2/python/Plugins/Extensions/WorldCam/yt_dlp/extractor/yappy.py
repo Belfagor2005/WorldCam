@@ -54,8 +54,14 @@ class YappyIE(InfoExtractor):
 
         media_data = (
             traverse_obj(
-                nextjs_data, ('props', 'pageProps', ('data', 'OpenGraphParameters')), get_all=False)
-            or self._download_json(f'https://yappy.media/api/video/{video_id}', video_id))
+                nextjs_data,
+                ('props',
+                 'pageProps',
+                 ('data',
+                  'OpenGraphParameters')),
+                get_all=False) or self._download_json(
+                f'https://yappy.media/api/video/{video_id}',
+                video_id))
 
         media_url = traverse_obj(media_data, ('link', {url_or_none})) or ''
         has_watermark = media_url.endswith('-wm.mp4')
@@ -120,9 +126,12 @@ class YappyProfileIE(InfoExtractor):
                 f'https://yappy.media/api/video/list/{profile_id}?page={page_num}',
                 profile_id, f'Downloading profile page {page_num} JSON')
 
-            for video in traverse_obj(videos, ('results', lambda _, v: v['uuid'])):
+            for video in traverse_obj(
+                    videos, ('results', lambda _, v: v['uuid'])):
                 yield self.url_result(
                     f'https://yappy.media/video/{video["uuid"]}', YappyIE,
                     video['uuid'], video.get('description'))
 
-        return self.playlist_result(OnDemandPagedList(fetch_page, 15), profile_id)
+        return self.playlist_result(
+            OnDemandPagedList(
+                fetch_page, 15), profile_id)

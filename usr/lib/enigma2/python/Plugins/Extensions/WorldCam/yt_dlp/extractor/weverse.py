@@ -85,16 +85,20 @@ class WeverseBaseIE(InfoExtractor):
 
     def _access_token_is_valid(self):
         response = self._download_json(
-            f'{self._ACCOUNT_API_BASE}/api/v1/token/validate', None,
-            'Validating access token', 'Unable to valid access token',
-            expected_status=401, headers={
+            f'{self._ACCOUNT_API_BASE}/api/v1/token/validate',
+            None,
+            'Validating access token',
+            'Unable to valid access token',
+            expected_status=401,
+            headers={
                 **self._oauth_headers,
                 'Authorization': f'Bearer {self._oauth_tokens[self._ACCESS_TOKEN_KEY]}',
             })
         return traverse_obj(response, ('expiresIn', {int}), default=0) > 60
 
     def _token_is_expired(self, key):
-        is_expired = jwt_decode_hs256(self._oauth_tokens[key])['exp'] - time.time() < 3600
+        is_expired = jwt_decode_hs256(self._oauth_tokens[key])[
+            'exp'] - time.time() < 3600
         if key == self._REFRESH_TOKEN_KEY or not is_expired:
             return is_expired
         return not self._access_token_is_valid()
@@ -121,30 +125,51 @@ class WeverseBaseIE(InfoExtractor):
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
                 self._oauth_tokens.clear()
                 if self._oauth_cache_key == 'cookies':
-                    self.cookiejar.clear(domain='.weverse.io', path='/', name=self._ACCESS_TOKEN_KEY)
-                    self.cookiejar.clear(domain='.weverse.io', path='/', name=self._REFRESH_TOKEN_KEY)
+                    self.cookiejar.clear(
+                        domain='.weverse.io',
+                        path='/',
+                        name=self._ACCESS_TOKEN_KEY)
+                    self.cookiejar.clear(
+                        domain='.weverse.io',
+                        path='/',
+                        name=self._REFRESH_TOKEN_KEY)
                 else:
-                    self.cache.store(self._NETRC_MACHINE, self._oauth_cache_key, self._oauth_tokens)
+                    self.cache.store(
+                        self._NETRC_MACHINE,
+                        self._oauth_cache_key,
+                        self._oauth_tokens)
                 self._report_login_error('expired_refresh_token')
             raise
 
-        self._oauth_tokens.update(traverse_obj(response, {
-            self._ACCESS_TOKEN_KEY: ('accessToken', {str}, {require('access token')}),
-            self._REFRESH_TOKEN_KEY: ('refreshToken', {str}, {require('refresh token')}),
-        }))
+        self._oauth_tokens.update(
+            traverse_obj(
+                response, {
+                    self._ACCESS_TOKEN_KEY: (
+                        'accessToken', {str}, {
+                            require('access token')}), self._REFRESH_TOKEN_KEY: (
+                        'refreshToken', {str}, {
+                            require('refresh token')}), }))
 
         if self._oauth_cache_key == 'cookies':
-            self._set_cookie('.weverse.io', self._ACCESS_TOKEN_KEY, self._oauth_tokens[self._ACCESS_TOKEN_KEY])
-            self._set_cookie('.weverse.io', self._REFRESH_TOKEN_KEY, self._oauth_tokens[self._REFRESH_TOKEN_KEY])
+            self._set_cookie('.weverse.io',
+                             self._ACCESS_TOKEN_KEY,
+                             self._oauth_tokens[self._ACCESS_TOKEN_KEY])
+            self._set_cookie('.weverse.io',
+                             self._REFRESH_TOKEN_KEY,
+                             self._oauth_tokens[self._REFRESH_TOKEN_KEY])
         else:
-            self.cache.store(self._NETRC_MACHINE, self._oauth_cache_key, self._oauth_tokens)
+            self.cache.store(
+                self._NETRC_MACHINE,
+                self._oauth_cache_key,
+                self._oauth_tokens)
 
     def _get_authorization_header(self):
         if not self._is_logged_in:
             return {}
         if self._token_is_expired(self._ACCESS_TOKEN_KEY):
             self._refresh_access_token()
-        return {'Authorization': f'Bearer {self._oauth_tokens[self._ACCESS_TOKEN_KEY]}'}
+        return {
+            'Authorization': f'Bearer {self._oauth_tokens[self._ACCESS_TOKEN_KEY]}'}
 
     def _report_login_error(self, error_id):
         error_msg = self._LOGIN_ERRORS_MAP[error_id]
@@ -156,9 +181,19 @@ class WeverseBaseIE(InfoExtractor):
         elif not username:
             username = f'{self._OAUTH_PREFIX}+USERNAME'
 
-        raise ExtractorError(join_nonempty(
-            error_msg, self._LOGIN_HINT_TMPL.format(self._OAUTH_PREFIX, self._REFRESH_TOKEN_KEY, username),
-            'Or else you can u', self._login_hint(method='session_cookies')[1:], delim=''), expected=True)
+        raise ExtractorError(
+            join_nonempty(
+                error_msg,
+                self._LOGIN_HINT_TMPL.format(
+                    self._OAUTH_PREFIX,
+                    self._REFRESH_TOKEN_KEY,
+                    username),
+                'Or else you can u',
+                self._login_hint(
+                    method='session_cookies')[
+                    1:],
+                delim=''),
+            expected=True)
 
     def _perform_login(self, username, password):
         if self._is_logged_in:
@@ -167,13 +202,19 @@ class WeverseBaseIE(InfoExtractor):
         if username.partition('+')[0] != self._OAUTH_PREFIX:
             self._report_login_error('invalid_username')
 
-        self._oauth_tokens.update(self.cache.load(self._NETRC_MACHINE, self._oauth_cache_key, default={}))
+        self._oauth_tokens.update(
+            self.cache.load(
+                self._NETRC_MACHINE,
+                self._oauth_cache_key,
+                default={}))
         if self._is_logged_in and self._access_token_is_valid():
             return
 
         rt_key = self._REFRESH_TOKEN_KEY
-        if not self._oauth_tokens.get(rt_key) or self._token_is_expired(rt_key):
-            if try_call(lambda: jwt_decode_hs256(password)['scope']) != 'refresh':
+        if not self._oauth_tokens.get(
+                rt_key) or self._token_is_expired(rt_key):
+            if try_call(lambda: jwt_decode_hs256(
+                    password)['scope']) != 'refresh':
                 self._report_login_error('invalid_password')
             self._oauth_tokens[rt_key] = password
 
@@ -183,7 +224,9 @@ class WeverseBaseIE(InfoExtractor):
         cookies = self._get_cookies('https://weverse.io/')
 
         if not self._device_id:
-            self._device_id = traverse_obj(cookies, (self._DEVICE_ID_KEY, 'value')) or str(uuid.uuid4())
+            self._device_id = traverse_obj(
+                cookies, (self._DEVICE_ID_KEY, 'value')) or str(
+                uuid.uuid4())
 
         if self._is_logged_in:
             return
@@ -197,7 +240,8 @@ class WeverseBaseIE(InfoExtractor):
 
     def _call_api(self, ep, video_id, data=None, note='Downloading API JSON'):
         # Ref: https://ssl.pstatic.net/static/wevweb/2_3_2_11101725/public/static/js/2488.a09b41ff.chunk.js
-        # From https://ssl.pstatic.net/static/wevweb/2_3_2_11101725/public/static/js/main.e206f7c1.js:
+        # From
+        # https://ssl.pstatic.net/static/wevweb/2_3_2_11101725/public/static/js/main.e206f7c1.js:
         api_path = update_url_query(ep, {
             # 'gcc': 'US',
             'appId': 'be4d79eb8fc7bd008ee82c8ec4ff6fd4',
@@ -239,44 +283,63 @@ class WeverseBaseIE(InfoExtractor):
 
     def _call_post_api(self, video_id):
         path = '' if self._is_logged_in else '/preview'
-        return self._call_api(f'/post/v1.0/post-{video_id}{path}?fieldSet=postV1', video_id)
+        return self._call_api(
+            f'/post/v1.0/post-{video_id}{path}?fieldSet=postV1',
+            video_id)
 
     def _get_community_id(self, channel):
-        return str(self._call_api(
-            f'/community/v1.0/communityIdUrlPathByUrlPathArtistCode?keyword={channel}',
-            channel, note='Fetching community ID')['communityId'])
+        return str(
+            self._call_api(
+                f'/community/v1.0/communityIdUrlPathByUrlPathArtistCode?keyword={channel}',
+                channel,
+                note='Fetching community ID')['communityId'])
 
     def _get_formats(self, data, video_id):
-        formats = traverse_obj(data, ('videos', 'list', lambda _, v: url_or_none(v['source']), {
-            'url': 'source',
-            'width': ('encodingOption', 'width', {int_or_none}),
-            'height': ('encodingOption', 'height', {int_or_none}),
-            'vcodec': 'type',
-            'vbr': ('bitrate', 'video', {int_or_none}),
-            'abr': ('bitrate', 'audio', {int_or_none}),
-            'filesize': ('size', {int_or_none}),
-            'format_id': ('encodingOption', 'id', {str_or_none}),
-        }))
+        formats = traverse_obj(
+            data, ('videos', 'list', lambda _, v: url_or_none(
+                v['source']), {
+                'url': 'source', 'width': (
+                    'encodingOption', 'width', {int_or_none}), 'height': (
+                    'encodingOption', 'height', {int_or_none}), 'vcodec': 'type', 'vbr': (
+                        'bitrate', 'video', {int_or_none}), 'abr': (
+                            'bitrate', 'audio', {int_or_none}), 'filesize': (
+                                'size', {int_or_none}), 'format_id': (
+                                    'encodingOption', 'id', {str_or_none}), }))
 
-        for stream in traverse_obj(data, ('streams', lambda _, v: v['type'] == 'HLS' and url_or_none(v['source']))):
+        for stream in traverse_obj(
+            data,
+            ('streams',
+             lambda _,
+             v: v['type'] == 'HLS' and url_or_none(
+                 v['source']))):
             query = {}
-            for param in traverse_obj(stream, ('keys', lambda _, v: v['type'] == 'param' and v['name'])):
+            for param in traverse_obj(
+                    stream, ('keys', lambda _, v: v['type'] == 'param' and v['name'])):
                 query[param['name']] = param.get('value', '')
             fmts = self._extract_m3u8_formats(
-                stream['source'], video_id, 'mp4', m3u8_id='hls', fatal=False, query=query)
+                stream['source'],
+                video_id,
+                'mp4',
+                m3u8_id='hls',
+                fatal=False,
+                query=query)
             if query:
                 for fmt in fmts:
                     fmt['url'] = update_url_query(fmt['url'], query)
-                    fmt['extra_param_to_segment_url'] = urllib.parse.urlencode(query)
+                    fmt['extra_param_to_segment_url'] = urllib.parse.urlencode(
+                        query)
             formats.extend(fmts)
 
         return formats
 
     def _get_subs(self, caption_url):
         subs_ext_re = r'\.(?:ttml|vtt)'
-        replace_ext = lambda x, y: re.sub(subs_ext_re, y, x)
+        def replace_ext(x, y): return re.sub(subs_ext_re, y, x)
         if re.search(subs_ext_re, caption_url):
-            return [replace_ext(caption_url, '.ttml'), replace_ext(caption_url, '.vtt')]
+            return [
+                replace_ext(
+                    caption_url, '.ttml'), replace_ext(
+                    caption_url, '.vtt')]
         return [caption_url]
 
     def _parse_post_meta(self, metadata):
@@ -297,10 +360,16 @@ class WeverseBaseIE(InfoExtractor):
         }, get_all=False)
 
     def _extract_availability(self, data):
-        return self._availability(**traverse_obj(data, ((('extension', 'video'), None), {
-            'needs_premium': 'paid',
-            'needs_subscription': 'membershipOnly',
-        }), get_all=False, expected_type=bool), needs_auth=True)
+        return self._availability(**traverse_obj(data,
+                                                 ((('extension',
+                                                    'video'),
+                                                   None),
+                                                  {'needs_premium': 'paid',
+                                                     'needs_subscription': 'membershipOnly',
+                                                   }),
+                                                 get_all=False,
+                                                 expected_type=bool),
+                                  needs_auth=True)
 
     def _extract_live_status(self, data):
         data = traverse_obj(data, ('extension', 'video', {dict})) or {}
@@ -415,16 +484,25 @@ class WeverseIE(WeverseBaseIE):
         video_info, formats = {}, []
 
         if live_status == 'is_upcoming':
-            self.raise_no_formats('Livestream has not yet started', expected=True)
+            self.raise_no_formats(
+                'Livestream has not yet started',
+                expected=True)
 
         elif live_status == 'is_live':
             video_info = self._call_api(
                 f'/video/v1.3/lives/{api_video_id}/playInfo?preview.format=json&preview.version=v2',
                 video_id, note='Downloading live JSON')
             playback = self._parse_json(video_info['lipPlayback'], video_id)
-            m3u8_url = traverse_obj(playback, (
-                'media', lambda _, v: v['protocol'] == 'HLS', 'path', {url_or_none}), get_all=False)
-            # Live subtitles are not downloadable, but extract to silence "ignoring subs" warning
+            m3u8_url = traverse_obj(
+                playback,
+                ('media',
+                 lambda _,
+                 v: v['protocol'] == 'HLS',
+                    'path',
+                    {url_or_none}),
+                get_all=False)
+            # Live subtitles are not downloadable, but extract to silence
+            # "ignoring subs" warning
             formats, _ = self._extract_m3u8_formats_and_subtitles(
                 m3u8_url, video_id, 'mp4', m3u8_id='hls', live=True)
 
@@ -432,13 +510,16 @@ class WeverseIE(WeverseBaseIE):
             if availability in ('premium_only', 'subscriber_only'):
                 self.report_drm(video_id)
             self.raise_no_formats(
-                'Livestream has ended and downloadable VOD is not available', expected=True)
+                'Livestream has ended and downloadable VOD is not available',
+                expected=True)
 
         else:
             infra_video_id = post['extension']['video']['infraVideoId']
             in_key = self._call_api(
-                f'/video/v1.1/vod/{api_video_id}/inKey?preview=false', video_id,
-                data=b'{}', note='Downloading VOD API key')['inKey']
+                f'/video/v1.1/vod/{api_video_id}/inKey?preview=false',
+                video_id,
+                data=b'{}',
+                note='Downloading VOD API key')['inKey']
 
             video_info = self._download_json(
                 f'https://global.apis.naver.com/rmcnmv/rmcnmv/vod/play/v2.0/{infra_video_id}',
@@ -459,10 +540,13 @@ class WeverseIE(WeverseBaseIE):
                 })
 
             formats = self._get_formats(video_info, video_id)
-            has_drm = traverse_obj(video_info, ('meta', 'provider', 'name', {str.lower})) == 'drm'
+            has_drm = traverse_obj(
+                video_info, ('meta', 'provider', 'name', {
+                    str.lower})) == 'drm'
             if has_drm and formats:
                 self.report_warning(
-                    'Requested content is DRM-protected, only a 30-second preview is available', video_id)
+                    'Requested content is DRM-protected, only a 30-second preview is available',
+                    video_id)
             elif has_drm and not formats:
                 self.report_drm(video_id)
 
@@ -541,15 +625,20 @@ class WeverseMediaIE(WeverseBaseIE):
     def _real_extract(self, url):
         channel, video_id = self._match_valid_url(url).group('artist', 'id')
         post = self._call_post_api(video_id)
-        media_type = traverse_obj(post, ('extension', 'mediaInfo', 'mediaType', {str.lower}))
-        youtube_id = traverse_obj(post, ('extension', 'youtube', 'youtubeVideoId', {str}))
+        media_type = traverse_obj(
+            post, ('extension', 'mediaInfo', 'mediaType', {str.lower}))
+        youtube_id = traverse_obj(
+            post, ('extension', 'youtube', 'youtubeVideoId', {str}))
 
         if media_type == 'vod':
-            return self.url_result(f'https://weverse.io/{channel}/live/{video_id}', WeverseIE)
+            return self.url_result(
+                f'https://weverse.io/{channel}/live/{video_id}', WeverseIE)
         elif media_type == 'youtube' and youtube_id:
             return self.url_result(youtube_id, YoutubeIE)
         elif media_type == 'image':
-            self.raise_no_formats('No video content found in webpage', expected=True)
+            self.raise_no_formats(
+                'No video content found in webpage',
+                expected=True)
         elif media_type:
             raise ExtractorError(f'Unsupported media type "{media_type}"')
 
@@ -581,11 +670,13 @@ class WeverseMomentIE(WeverseBaseIE):
     }]
 
     def _real_extract(self, url):
-        channel, uploader_id, video_id = self._match_valid_url(url).group('artist', 'uid', 'id')
+        channel, uploader_id, video_id = self._match_valid_url(
+            url).group('artist', 'uid', 'id')
         post = self._call_post_api(video_id)
         api_video_id = post['extension']['moment']['video']['videoId']
         video_info = self._call_api(
-            f'/cvideo/v1.0/cvideo-{api_video_id}/playInfo?videoId={api_video_id}', video_id,
+            f'/cvideo/v1.0/cvideo-{api_video_id}/playInfo?videoId={api_video_id}',
+            video_id,
             note='Downloading moment JSON')['playInfo']
 
         return {
@@ -623,7 +714,8 @@ class WeverseTabBaseIE(WeverseBaseIE):
                 update_url_query(self._ENDPOINT % channel_id, query), channel,
                 note=f'Downloading {self._PATH} tab page {page}')
 
-            for post in traverse_obj(posts, ('data', lambda _, v: v['postId'])):
+            for post in traverse_obj(
+                    posts, ('data', lambda _, v: v['postId'])):
                 yield self.url_result(
                     f'https://weverse.io/{channel}/{self._PATH}/{post["postId"]}',
                     self._RESULT_IE, post['postId'], **self._parse_post_meta(post),
@@ -631,7 +723,8 @@ class WeverseTabBaseIE(WeverseBaseIE):
                     availability=self._extract_availability(post),
                     live_status=self._extract_live_status(post))
 
-            query['after'] = traverse_obj(posts, ('paging', 'nextParams', 'after', {str}))
+            query['after'] = traverse_obj(
+                posts, ('paging', 'nextParams', 'after', {str}))
             if not query['after']:
                 break
 
@@ -640,7 +733,11 @@ class WeverseTabBaseIE(WeverseBaseIE):
         channel_id = self._get_community_id(channel)
 
         first_page = self._call_api(
-            update_url_query(self._ENDPOINT % channel_id, self._QUERY), channel,
+            update_url_query(
+                self._ENDPOINT %
+                channel_id,
+                self._QUERY),
+            channel,
             note=f'Downloading {self._PATH} tab page 1')
 
         return self.playlist_result(
@@ -695,75 +792,86 @@ class WeverseMediaTabIE(WeverseTabBaseIE):
 
 class WeverseLiveIE(WeverseBaseIE):
     _VALID_URL = r'https?://(?:www\.|m\.)?weverse\.io/(?P<id>[^/?#]+)/?(?:[?#]|$)'
-    _TESTS = [{
-        'url': 'https://weverse.io/purplekiss',
-        'info_dict': {
-            'id': '3-116560493',
-            'ext': 'mp4',
-            'title': r're:모하냥🫶🏻',
-            'description': '내일은 금요일~><',
-            'uploader': '채인',
-            'uploader_id': '1ffb1d9d904d6b3db2783f876eb9229d',
-            'channel': 'purplekiss',
-            'channel_id': '35',
-            'channel_url': 'https://weverse.io/purplekiss',
-            'creators': ['PURPLE KISS'],
-            'timestamp': 1680780892,
-            'upload_date': '20230406',
-            'release_timestamp': 1680780883,
-            'release_date': '20230406',
-            'thumbnail': 'https://weverse-live.pstatic.net/v1.0/live/62044/thumb',
-            'view_count': int,
-            'like_count': int,
-            'comment_count': int,
-            'availability': 'needs_auth',
-            'live_status': 'is_live',
-        },
-        'skip': 'Livestream has ended',
-    }, {
-        'url': 'https://weverse.io/lesserafim',
-        'info_dict': {
-            'id': '4-181521628',
-            'ext': 'mp4',
-            'title': r're:심심해서요',
-            'description': '',
-            'uploader': '채채🤎',
-            'uploader_id': 'd49b8b06f3cc1d92d655b25ab27ac2e7',
-            'channel': 'lesserafim',
-            'channel_id': '47',
-            'creators': ['LE SSERAFIM'],
-            'channel_url': 'https://weverse.io/lesserafim',
-            'timestamp': 1728570273,
-            'upload_date': '20241010',
-            'release_timestamp': 1728570264,
-            'release_date': '20241010',
-            'thumbnail': r're:https://phinf\.wevpstatic\.net/.+\.png',
-            'view_count': int,
-            'like_count': int,
-            'comment_count': int,
-            'availability': 'needs_auth',
-            'live_status': 'is_live',
-        },
-        'skip': 'Livestream has ended',
-    }, {
-        'url': 'https://weverse.io/billlie/',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://weverse.io/purplekiss',
+               'info_dict': {'id': '3-116560493',
+                             'ext': 'mp4',
+                             'title': r're:모하냥🫶🏻',
+                             'description': '내일은 금요일~><',
+                             'uploader': '채인',
+                             'uploader_id': '1ffb1d9d904d6b3db2783f876eb9229d',
+                             'channel': 'purplekiss',
+                             'channel_id': '35',
+                             'channel_url': 'https://weverse.io/purplekiss',
+                             'creators': ['PURPLE KISS'],
+                             'timestamp': 1680780892,
+                             'upload_date': '20230406',
+                             'release_timestamp': 1680780883,
+                             'release_date': '20230406',
+                             'thumbnail': 'https://weverse-live.pstatic.net/v1.0/live/62044/thumb',
+                             'view_count': int,
+                             'like_count': int,
+                             'comment_count': int,
+                             'availability': 'needs_auth',
+                             'live_status': 'is_live',
+                             },
+               'skip': 'Livestream has ended',
+               },
+              {'url': 'https://weverse.io/lesserafim',
+               'info_dict': {'id': '4-181521628',
+                             'ext': 'mp4',
+                             'title': r're:심심해서요',
+                             'description': '',
+                             'uploader': '채채🤎',
+                             'uploader_id': 'd49b8b06f3cc1d92d655b25ab27ac2e7',
+                             'channel': 'lesserafim',
+                             'channel_id': '47',
+                             'creators': ['LE SSERAFIM'],
+                             'channel_url': 'https://weverse.io/lesserafim',
+                             'timestamp': 1728570273,
+                             'upload_date': '20241010',
+                             'release_timestamp': 1728570264,
+                             'release_date': '20241010',
+                             'thumbnail': r're:https://phinf\.wevpstatic\.net/.+\.png',
+                             'view_count': int,
+                             'like_count': int,
+                             'comment_count': int,
+                             'availability': 'needs_auth',
+                             'live_status': 'is_live',
+                             },
+               'skip': 'Livestream has ended',
+               },
+              {'url': 'https://weverse.io/billlie/',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         channel = self._match_id(url)
         channel_id = self._get_community_id(channel)
 
         video_id = traverse_obj(
-            self._call_api(update_url_query(f'/post/v1.0/community-{channel_id}/liveTab', {
-                'debugMessage': 'true',
-                'fields': 'onAirLivePosts.fieldSet(postsV1).limit(10),reservedLivePosts.fieldSet(postsV1).limit(10)',
-            }), channel, note='Downloading live JSON'), (
-                ('onAirLivePosts', 'reservedLivePosts'), 'data',
-                lambda _, v: self._extract_live_status(v) in ('is_live', 'is_upcoming'), 'postId', {str}),
+            self._call_api(
+                update_url_query(
+                    f'/post/v1.0/community-{channel_id}/liveTab',
+                    {
+                        'debugMessage': 'true',
+                        'fields': 'onAirLivePosts.fieldSet(postsV1).limit(10),reservedLivePosts.fieldSet(postsV1).limit(10)',
+                    }),
+                channel,
+                note='Downloading live JSON'),
+            (('onAirLivePosts',
+              'reservedLivePosts'),
+             'data',
+             lambda _,
+             v: self._extract_live_status(v) in (
+                'is_live',
+                'is_upcoming'),
+             'postId',
+             {str}),
             get_all=False)
 
         if not video_id:
             raise UserNotLive(video_id=channel)
 
-        return self.url_result(f'https://weverse.io/{channel}/live/{video_id}', WeverseIE)
+        return self.url_result(
+            f'https://weverse.io/{channel}/live/{video_id}',
+            WeverseIE)

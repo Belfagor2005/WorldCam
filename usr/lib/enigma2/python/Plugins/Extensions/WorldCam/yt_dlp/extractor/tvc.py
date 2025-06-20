@@ -7,7 +7,8 @@ from ..utils import (
 
 class TVCIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?tvc\.ru/video/iframe/id/(?P<id>\d+)'
-    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>(?:http:)?//(?:www\.)?tvc\.ru/video/iframe/id/[^"]+)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+?src=(["\'])(?P<url>(?:http:)?//(?:www\.)?tvc\.ru/video/iframe/id/[^"]+)\1']
     _TEST = {
         'url': 'http://www.tvc.ru/video/iframe/id/74622/isPlay/false/id_stat/channel/?acc_video_id=/channel/brand/id/17/show/episodes/episode_id/39702',
         'md5': 'bbc5ff531d1e90e856f60fc4b3afd708',

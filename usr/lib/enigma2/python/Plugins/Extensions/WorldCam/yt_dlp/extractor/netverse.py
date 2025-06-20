@@ -13,7 +13,13 @@ class NetverseBaseIE(InfoExtractor):
         'season': 'webseason_videos',
     }
 
-    def _call_api(self, slug, endpoint, query={}, season_id='', display_id=None):
+    def _call_api(
+            self,
+            slug,
+            endpoint,
+            query={},
+            season_id='',
+            display_id=None):
         return self._download_json(
             f'https://api.netverse.id/medias/api/v2/{self._ENDPOINTS[endpoint]}/{slug}/{season_id}',
             display_id or slug, query=query)
@@ -34,7 +40,8 @@ class NetverseBaseIE(InfoExtractor):
             }))
 
             if not last_page_number:
-                last_page_number = traverse_obj(comment_data, ('response', 'comments', 'last_page'))
+                last_page_number = traverse_obj(
+                    comment_data, ('response', 'comments', 'last_page'))
             if i >= (last_page_number or 0):
                 break
 
@@ -193,7 +200,8 @@ class NetverseIE(NetverseBaseIE):
     }]
 
     def _real_extract(self, url):
-        display_id, sites_type = self._match_valid_url(url).group('display_id', 'type')
+        display_id, sites_type = self._match_valid_url(
+            url).group('display_id', 'type')
         program_json = self._call_api(display_id, sites_type)
         videos = program_json['response']['videos']
 
@@ -232,25 +240,38 @@ class NetversePlaylistIE(NetverseBaseIE):
     }]
 
     def parse_playlist(self, json_data, playlist_id):
-        slug_sample = traverse_obj(json_data, ('related', 'data', ..., 'slug'))[0]
+        slug_sample = traverse_obj(
+            json_data, ('related', 'data', ..., 'slug'))[0]
         for season in traverse_obj(json_data, ('seasons', ..., 'id')):
             playlist_json = self._call_api(
-                slug_sample, 'season', display_id=playlist_id, season_id=season)
+                slug_sample,
+                'season',
+                display_id=playlist_id,
+                season_id=season)
 
-            for current_page in range(playlist_json['response']['season_list']['last_page']):
-                playlist_json = self._call_api(slug_sample, 'season', query={'page': current_page + 1},
-                                               season_id=season, display_id=playlist_id)
-                for slug in traverse_obj(playlist_json, ('response', ..., 'data', ..., 'slug')):
+            for current_page in range(
+                    playlist_json['response']['season_list']['last_page']):
+                playlist_json = self._call_api(
+                    slug_sample,
+                    'season',
+                    query={
+                        'page': current_page + 1},
+                    season_id=season,
+                    display_id=playlist_id)
+                for slug in traverse_obj(
+                        playlist_json, ('response', ..., 'data', ..., 'slug')):
                     yield self.url_result(f'https://www.netverse.id/video/{slug}', NetverseIE)
 
     def _real_extract(self, url):
-        playlist_id, sites_type = self._match_valid_url(url).group('display_id', 'type')
+        playlist_id, sites_type = self._match_valid_url(
+            url).group('display_id', 'type')
         playlist_data = self._call_api(playlist_id, sites_type)
 
         return self.playlist_result(
-            self.parse_playlist(playlist_data['response'], playlist_id),
-            traverse_obj(playlist_data, ('response', 'webseries_info', 'slug')),
-            traverse_obj(playlist_data, ('response', 'webseries_info', 'title')))
+            self.parse_playlist(
+                playlist_data['response'], playlist_id), traverse_obj(
+                playlist_data, ('response', 'webseries_info', 'slug')), traverse_obj(
+                playlist_data, ('response', 'webseries_info', 'title')))
 
 
 class NetverseSearchIE(SearchInfoExtractor):
@@ -276,6 +297,7 @@ class NetverseSearchIE(SearchInfoExtractor):
             for video in videos:
                 yield self.url_result(f'https://netverse.id/video/{video["slug"]}', NetverseIE)
 
-            last_page = last_page or traverse_obj(search_data, ('response', 'lastpage'))
+            last_page = last_page or traverse_obj(
+                search_data, ('response', 'lastpage'))
             if not videos or i >= (last_page or 0):
                 break

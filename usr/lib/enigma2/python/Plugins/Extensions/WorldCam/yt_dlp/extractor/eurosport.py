@@ -117,7 +117,8 @@ class EurosportIE(InfoExtractor):
 
     # actually defined in https://netsport.eurosport.io/?variables={"databaseId":<databaseId>,"playoutType":"VDP"}&extensions={"persistedQuery":{"version":1 ..
     # but this method require to get sha256 hash
-    _GEO_COUNTRIES = ['DE', 'NL', 'EU', 'IT', 'FR']  # Not complete list but it should work
+    # Not complete list but it should work
+    _GEO_COUNTRIES = ['DE', 'NL', 'EU', 'IT', 'FR']
     _GEO_BYPASS = False
 
     def _real_initialize(self):
@@ -132,21 +133,25 @@ class EurosportIE(InfoExtractor):
 
         json_data = self._download_json(
             f'https://eu3-prod-direct.eurosport.com/playback/v2/videoPlaybackInfo/sourceSystemId/eurosport-{display_id}',
-            display_id, query={'usePreAuth': True}, headers={'Authorization': f'Bearer {EurosportIE._TOKEN}'})['data']
+            display_id,
+            query={
+                'usePreAuth': True},
+            headers={
+                'Authorization': f'Bearer {EurosportIE._TOKEN}'})['data']
 
         json_ld_data = self._search_json_ld(webpage, display_id)
 
         formats, subtitles = [], {}
         for stream_type in json_data['attributes']['streaming']:
             if stream_type == 'hls':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                    traverse_obj(json_data, ('attributes', 'streaming', stream_type, 'url')), display_id, ext='mp4', fatal=False)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(traverse_obj(
+                    json_data, ('attributes', 'streaming', stream_type, 'url')), display_id, ext='mp4', fatal=False)
             elif stream_type == 'dash':
-                fmts, subs = self._extract_mpd_formats_and_subtitles(
-                    traverse_obj(json_data, ('attributes', 'streaming', stream_type, 'url')), display_id, fatal=False)
+                fmts, subs = self._extract_mpd_formats_and_subtitles(traverse_obj(
+                    json_data, ('attributes', 'streaming', stream_type, 'url')), display_id, fatal=False)
             elif stream_type == 'mss':
-                fmts, subs = self._extract_ism_formats_and_subtitles(
-                    traverse_obj(json_data, ('attributes', 'streaming', stream_type, 'url')), display_id, fatal=False)
+                fmts, subs = self._extract_ism_formats_and_subtitles(traverse_obj(
+                    json_data, ('attributes', 'streaming', stream_type, 'url')), display_id, fatal=False)
 
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)

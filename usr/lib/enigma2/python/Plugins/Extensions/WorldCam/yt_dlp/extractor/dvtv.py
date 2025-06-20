@@ -114,7 +114,8 @@ class DVTVIE(InfoExtractor):
         data = self._parse_json(js, video_id, transform_source=js_to_json)
         title = unescapeHTML(data['title'])
 
-        live_starter = try_get(data, lambda x: x['plugins']['liveStarter'], dict)
+        live_starter = try_get(
+            data, lambda x: x['plugins']['liveStarter'], dict)
         if live_starter:
             data.update(live_starter)
 
@@ -127,9 +128,14 @@ class DVTVIE(InfoExtractor):
                 video_type = video.get('type')
                 ext = determine_ext(video_url, mimetype2ext(video_type))
                 if video_type == 'application/vnd.apple.mpegurl' or ext == 'm3u8':
-                    formats.extend(self._extract_m3u8_formats(
-                        video_url, video_id, 'mp4', entry_protocol='m3u8_native',
-                        m3u8_id='hls', fatal=False))
+                    formats.extend(
+                        self._extract_m3u8_formats(
+                            video_url,
+                            video_id,
+                            'mp4',
+                            entry_protocol='m3u8_native',
+                            m3u8_id='hls',
+                            fatal=False))
                 elif video_type == 'application/dash+xml' or ext == 'mpd':
                     formats.extend(self._extract_mpd_formats(
                         video_url, video_id, mpd_id='dash', fatal=False))

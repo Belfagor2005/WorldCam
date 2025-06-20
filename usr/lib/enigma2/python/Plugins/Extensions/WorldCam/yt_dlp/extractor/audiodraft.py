@@ -5,11 +5,13 @@ from ..utils import int_or_none
 class AudiodraftBaseIE(InfoExtractor):
     def _audiodraft_extract_from_id(self, player_entry_id):
         data_json = self._download_json(
-            'https://www.audiodraft.com/scripts/general/player/getPlayerInfoNew.php', player_entry_id,
+            'https://www.audiodraft.com/scripts/general/player/getPlayerInfoNew.php',
+            player_entry_id,
             headers={
                 'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
                 'X-Requested-With': 'XMLHttpRequest',
-            }, data=f'id={player_entry_id}'.encode())
+            },
+            data=f'id={player_entry_id}'.encode())
 
         return {
             'id': str(data_json['entry_id']),
@@ -68,7 +70,10 @@ class AudiodraftCustomIE(AudiodraftBaseIE):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
         player_entry_id = self._search_regex(
-            r'playAudio\(\'(player_entry_\d+)\'\);', webpage, video_id, 'play entry id')
+            r'playAudio\(\'(player_entry_\d+)\'\);',
+            webpage,
+            video_id,
+            'play entry id')
         return self._audiodraft_extract_from_id(player_entry_id)
 
 

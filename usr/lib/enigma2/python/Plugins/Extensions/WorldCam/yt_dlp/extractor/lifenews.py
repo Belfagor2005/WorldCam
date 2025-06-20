@@ -151,11 +151,17 @@ class LifeNewsIE(InfoExtractor):
                 entries.append(make_video_entry(video_id, video_url, num))
 
         if iframe_links:
-            for num, iframe_link in enumerate(iframe_links, len(video_urls) + 1):
+            for num, iframe_link in enumerate(
+                    iframe_links, len(video_urls) + 1):
                 entries.append(make_iframe_entry(video_id, iframe_link, num))
 
         playlist = common_info.copy()
-        playlist.update(self.playlist_result(entries, video_id, title, description))
+        playlist.update(
+            self.playlist_result(
+                entries,
+                video_id,
+                title,
+                description))
         return playlist
 
 

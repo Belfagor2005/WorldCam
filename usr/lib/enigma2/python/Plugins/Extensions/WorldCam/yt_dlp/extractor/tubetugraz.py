@@ -17,7 +17,10 @@ class TubeTuGrazBaseIE(InfoExtractor):
     def _perform_login(self, username, password):
         urlh = self._request_webpage(
             'https://tube.tugraz.at/Shibboleth.sso/Login?target=/paella/ui/index.html',
-            None, fatal=False, note='downloading login page', errnote='unable to fetch login page')
+            None,
+            fatal=False,
+            note='downloading login page',
+            errnote='unable to fetch login page')
         if not urlh:
             return
 
@@ -58,20 +61,43 @@ class TubeTuGrazBaseIE(InfoExtractor):
 
     def _extract_episode(self, episode_info):
         video_id = episode_info.get('id')
-        formats = list(self._extract_formats(
-            traverse_obj(episode_info, ('mediapackage', 'media', 'track')), video_id))
+        formats = list(
+            self._extract_formats(
+                traverse_obj(
+                    episode_info,
+                    ('mediapackage',
+                     'media',
+                     'track')),
+                video_id))
 
-        title = traverse_obj(episode_info, ('mediapackage', 'title'), 'dcTitle')
-        series_title = traverse_obj(episode_info, ('mediapackage', 'seriestitle'))
-        creator = ', '.join(variadic(traverse_obj(
-            episode_info, ('mediapackage', 'creators', 'creator'), 'dcCreator', default='')))
+        title = traverse_obj(
+            episode_info, ('mediapackage', 'title'), 'dcTitle')
+        series_title = traverse_obj(
+            episode_info, ('mediapackage', 'seriestitle'))
+        creator = ', '.join(
+            variadic(
+                traverse_obj(
+                    episode_info,
+                    ('mediapackage',
+                     'creators',
+                     'creator'),
+                    'dcCreator',
+                    default='')))
         return {
             'id': video_id,
             'title': title,
             'creator': creator or None,
-            'duration': traverse_obj(episode_info, ('mediapackage', 'duration'), 'dcExtent'),
+            'duration': traverse_obj(
+                episode_info,
+                ('mediapackage',
+                 'duration'),
+                'dcExtent'),
             'series': series_title,
-            'series_id': traverse_obj(episode_info, ('mediapackage', 'series'), 'dcIsPartOf'),
+            'series_id': traverse_obj(
+                episode_info,
+                ('mediapackage',
+                 'series'),
+                'dcIsPartOf'),
             'episode': series_title and title,
             'formats': formats,
         }
@@ -168,9 +194,19 @@ class TubeTuGrazIE(TubeTuGrazBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         episode_data = self._download_json(
-            self._API_EPISODE, video_id, query={'id': video_id, 'limit': 1}, note='Downloading episode metadata')
+            self._API_EPISODE,
+            video_id,
+            query={
+                'id': video_id,
+                'limit': 1},
+            note='Downloading episode metadata')
 
-        episode_info = traverse_obj(episode_data, ('search-results', 'result'), default={'id': video_id})
+        episode_info = traverse_obj(
+            episode_data,
+            ('search-results',
+             'result'),
+            default={
+                'id': video_id})
         return self._extract_episode(episode_info)
 
 
@@ -242,10 +278,14 @@ class TubeTuGrazSeriesIE(TubeTuGrazBaseIE):
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
         episodes_data = self._download_json(
-            self._API_EPISODE, playlist_id, query={'sid': playlist_id}, note='Downloading episode list')
+            self._API_EPISODE, playlist_id, query={
+                'sid': playlist_id}, note='Downloading episode list')
         series_data = self._download_json(
-            'https://tube.tugraz.at/series/series.json', playlist_id, fatal=False,
-            note='downloading series metadata', errnote='failed to download series metadata',
+            'https://tube.tugraz.at/series/series.json',
+            playlist_id,
+            fatal=False,
+            note='downloading series metadata',
+            errnote='failed to download series metadata',
             query={
                 'seriesId': playlist_id,
                 'count': 1,

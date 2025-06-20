@@ -81,7 +81,8 @@ class CamdemyIE(InfoExtractor):
         video_url = urllib.parse.urljoin(video_folder, file_name)
 
         # Some URLs return "No permission or not login" in a webpage despite being
-        # freely available via oembed JSON URL (e.g. http://www.camdemy.com/media/13885)
+        # freely available via oembed JSON URL (e.g.
+        # http://www.camdemy.com/media/13885)
         upload_date = unified_strdate(self._search_regex(
             r'>published on ([^<]+)<', webpage,
             'upload date', default=None))

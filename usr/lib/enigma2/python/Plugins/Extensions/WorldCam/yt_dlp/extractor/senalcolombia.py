@@ -29,4 +29,7 @@ class SenalColombiaLiveIE(InfoExtractor):
             r'<script\b[^>]*data-drupal-selector\s*=\s*"[^"]*drupal-settings-json[^"]*"[^>]*>',
             webpage, 'hydration', display_id)
 
-        return self.url_result(hydration['envivosrc'], RTVCKalturaIE, display_id)
+        return self.url_result(
+            hydration['envivosrc'],
+            RTVCKalturaIE,
+            display_id)

@@ -30,14 +30,24 @@ class ThreeSpeakIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        json_str = self._html_search_regex(r'JSON\.parse\(\'([^\']+)\'\)', webpage, 'json')
+        json_str = self._html_search_regex(
+            r'JSON\.parse\(\'([^\']+)\'\)', webpage, 'json')
         # The json string itself is escaped. Hence the double parsing
-        data_json = self._parse_json(self._parse_json(f'"{json_str}"', video_id), video_id)
+        data_json = self._parse_json(
+            self._parse_json(
+                f'"{json_str}"',
+                video_id),
+            video_id)
         video_json = self._parse_json(data_json['json_metadata'], video_id)
         formats, subtitles = [], {}
-        og_m3u8 = self._html_search_regex(r'<meta\s?property=\"ogvideo\"\s?content=\"([^\"]+)\">', webpage, 'og m3u8', fatal=False)
+        og_m3u8 = self._html_search_regex(
+            r'<meta\s?property=\"ogvideo\"\s?content=\"([^\"]+)\">',
+            webpage,
+            'og m3u8',
+            fatal=False)
         if og_m3u8:
-            https_frmts, https_subs = self._extract_m3u8_formats_and_subtitles(og_m3u8, video_id, fatal=False, m3u8_id='https')
+            https_frmts, https_subs = self._extract_m3u8_formats_and_subtitles(
+                og_m3u8, video_id, fatal=False, m3u8_id='https')
             formats.extend(https_frmts)
             subtitles = self._merge_subtitles(subtitles, https_subs)
         ipfs_m3u8 = try_get(video_json, lambda x: x['video']['info']['ipfs'])
@@ -61,10 +71,17 @@ class ThreeSpeakIE(InfoExtractor):
             'id': video_id,
             'title': data_json.get('title') or data_json.get('root_title'),
             'uploader': data_json.get('author'),
-            'description': try_get(video_json, lambda x: x['video']['content']['description']),
-            'tags': try_get(video_json, lambda x: x['video']['content']['tags']),
-            'thumbnail': try_get(video_json, lambda x: x['image'][0]),
-            'upload_date': unified_strdate(data_json.get('created')),
+            'description': try_get(
+                video_json,
+                lambda x: x['video']['content']['description']),
+            'tags': try_get(
+                video_json,
+                lambda x: x['video']['content']['tags']),
+            'thumbnail': try_get(
+                video_json,
+                lambda x: x['image'][0]),
+            'upload_date': unified_strdate(
+                data_json.get('created')),
             'formats': formats,
             'subtitles': subtitles,
         }

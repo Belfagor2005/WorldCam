@@ -7,7 +7,7 @@ except ImportError:
         import Crypto as _parent
     except (ImportError, SyntaxError):  # Old Crypto gives SyntaxError in newer Python
         _parent = passthrough_module(__name__, 'no_Cryptodome')
-        __bool__ = lambda: False
+        def __bool__(): return False
 
 del passthrough_module
 

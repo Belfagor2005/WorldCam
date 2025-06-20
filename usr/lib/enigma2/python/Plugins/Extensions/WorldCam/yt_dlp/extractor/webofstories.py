@@ -56,7 +56,8 @@ class WebOfStoriesIE(InfoExtractor):
 
         webpage = self._download_webpage(url, video_id)
         # Sometimes og:title meta is malformed
-        title = self._og_search_title(webpage, default=None) or self._html_search_regex(
+        title = self._og_search_title(
+            webpage, default=None) or self._html_search_regex(
             r'(?s)<strong>Title:\s*</strong>(.+?)<', webpage, 'title')
         description = self._html_search_meta('description', webpage)
         thumbnail = self._og_search_thumbnail(webpage)

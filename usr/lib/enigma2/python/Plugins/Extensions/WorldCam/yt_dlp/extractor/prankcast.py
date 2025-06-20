@@ -44,13 +44,16 @@ class PrankCastIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_id, display_id = self._match_valid_url(url).group('id', 'display_id')
+        video_id, display_id = self._match_valid_url(
+            url).group('id', 'display_id')
 
         webpage = self._download_webpage(url, video_id)
-        json_info = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['ssr_data_showreel']
+        json_info = self._search_nextjs_data(
+            webpage, video_id)['props']['pageProps']['ssr_data_showreel']
 
         uploader = json_info.get('user_name')
-        guests_json = self._parse_json(json_info.get('guests_json') or '{}', video_id)
+        guests_json = self._parse_json(
+            json_info.get('guests_json') or '{}', video_id)
         start_date = parse_iso8601(json_info.get('start_date'))
 
         return {
@@ -106,14 +109,18 @@ class PrankCastPostIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_id, display_id = self._match_valid_url(url).group('id', 'display_id')
+        video_id, display_id = self._match_valid_url(
+            url).group('id', 'display_id')
 
         webpage = self._download_webpage(url, video_id)
-        post = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['ssr_data_posts']
+        post = self._search_nextjs_data(webpage, video_id)[
+            'props']['pageProps']['ssr_data_posts']
         content = self._parse_json(post['post_contents_json'], video_id)[0]
 
         uploader = post.get('user_name')
-        guests_json = traverse_obj(content, ('guests_json', {json.loads}, {dict})) or {}
+        guests_json = traverse_obj(
+            content, ('guests_json', {
+                json.loads}, {dict})) or {}
 
         return {
             'id': video_id,

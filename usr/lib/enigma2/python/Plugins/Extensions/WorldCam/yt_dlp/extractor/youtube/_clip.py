@@ -7,7 +7,8 @@ class YoutubeClipIE(YoutubeTabBaseInfoExtractor):
     IE_NAME = 'youtube:clip'
     _VALID_URL = r'https?://(?:www\.)?youtube\.com/clip/(?P<id>[^/?#]+)'
     _TESTS = [{
-        # FIXME: Other metadata should be extracted from the clip, not from the base video
+        # FIXME: Other metadata should be extracted from the clip, not from the
+        # base video
         'url': 'https://www.youtube.com/clip/UgytZKpehg-hEMBSn3F4AaABCQ',
         'info_dict': {
             'id': 'UgytZKpehg-hEMBSn3F4AaABCQ',
@@ -45,7 +46,8 @@ class YoutubeClipIE(YoutubeTabBaseInfoExtractor):
         clip_id = self._match_id(url)
         _, data = self._extract_webpage(url, clip_id)
 
-        video_id = traverse_obj(data, ('currentVideoEndpoint', 'watchEndpoint', 'videoId'))
+        video_id = traverse_obj(
+            data, ('currentVideoEndpoint', 'watchEndpoint', 'videoId'))
         if not video_id:
             raise ExtractorError('Unable to find video ID')
 
