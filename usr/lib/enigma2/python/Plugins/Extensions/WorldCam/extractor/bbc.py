@@ -47,7 +47,8 @@ class BBCCoUkIE(InfoExtractor):
                         )
                         (?P<id>{_ID_REGEX})(?!/(?:episodes|broadcasts|clips))
                     '''
-    _EMBED_REGEX = [r'setPlaylist\("(?P<url>https?://www\.bbc\.co\.uk/iplayer/[^/]+/[\da-z]{8})"\)']
+    _EMBED_REGEX = [
+        r'setPlaylist\("(?P<url>https?://www\.bbc\.co\.uk/iplayer/[^/]+/[\da-z]{8})"\)']
 
     _LOGIN_URL = 'https://account.bbc.com/signin'
     _NETRC_MACHINE = 'bbc'
@@ -276,7 +277,10 @@ class BBCCoUkIE(InfoExtractor):
             self.id = error_id
 
     def _extract_asx_playlist(self, connection, programme_id):
-        asx = self._download_xml(connection.get('href'), programme_id, 'Downloading ASX playlist')
+        asx = self._download_xml(
+            connection.get('href'),
+            programme_id,
+            'Downloading ASX playlist')
         return [ref.get('href') for ref in asx.findall('./Entry/ref')]
 
     def _extract_items(self, playlist):
@@ -321,18 +325,23 @@ class BBCCoUkIE(InfoExtractor):
         for media_set in self._MEDIA_SETS:
             try:
                 fmts, subs = self._download_media_selector_url(
-                    self._MEDIA_SELECTOR_URL_TEMPL % (media_set, programme_id), programme_id)
+                    self._MEDIA_SELECTOR_URL_TEMPL %
+                    (media_set, programme_id), programme_id)
                 formats.extend(fmts)
                 if subs:
                     self._merge_subtitles(subs, target=subtitles)
             except BBCCoUkIE.MediaSelectionError as e:
-                if e.id in ('notukerror', 'geolocation', 'selectionunavailable'):
+                if e.id in (
+                    'notukerror',
+                    'geolocation',
+                        'selectionunavailable'):
                     last_exception = e
                     continue
                 self._raise_extractor_error(e)
         if last_exception:
             if formats or subtitles:
-                self.report_warning(f'{self.IE_NAME} returned error: {last_exception.id}')
+                self.report_warning(
+                    f'{self.IE_NAME} returned error: {last_exception.id}')
             else:
                 self._raise_extractor_error(last_exception)
         return formats, subtitles
@@ -369,7 +378,9 @@ class BBCCoUkIE(InfoExtractor):
                     format_id = supplier or conn_kind or protocol
                     # ASX playlist
                     if supplier == 'asx':
-                        for i, ref in enumerate(self._extract_asx_playlist(connection, programme_id)):
+                        for i, ref in enumerate(
+                            self._extract_asx_playlist(
+                                connection, programme_id)):
                             formats.append({
                                 'url': ref,
                                 'format_id': f'ref{i}_{format_id}',
@@ -378,7 +389,8 @@ class BBCCoUkIE(InfoExtractor):
                         formats.extend(self._extract_mpd_formats(
                             href, programme_id, mpd_id=format_id, fatal=False))
                     elif transfer_format == 'hls':
-                        # TODO: let expected_status be passed into _extract_xxx_formats() instead
+                        # TODO: let expected_status be passed into
+                        # _extract_xxx_formats() instead
                         try:
                             fmts = self._extract_m3u8_formats(
                                 href, programme_id, ext='mp4', entry_protocol='m3u8_native',
@@ -418,7 +430,8 @@ class BBCCoUkIE(InfoExtractor):
                                 'url': href,
                             })
                         elif protocol == 'rtmp':
-                            application = connection.get('application', 'ondemand')
+                            application = connection.get(
+                                'application', 'ondemand')
                             auth_string = connection.get('authString')
                             identifier = connection.get('identifier')
                             server = connection.get('server')
@@ -456,7 +469,8 @@ class BBCCoUkIE(InfoExtractor):
                         continue
                     programme_id = item.get('vpid')
                     duration = int_or_none(item.get('duration'))
-                    version_formats, version_subtitles = self._download_media_selector(programme_id)
+                    version_formats, version_subtitles = self._download_media_selector(
+                        programme_id)
                     types = version['types']
                     for f in version_formats:
                         f['format_note'] = ', '.join(types)
@@ -468,7 +482,8 @@ class BBCCoUkIE(InfoExtractor):
 
             return programme_id, title, description, duration, formats, subtitles
         except ExtractorError as ee:
-            if not (isinstance(ee.cause, HTTPError) and ee.cause.status == 404):
+            if not (isinstance(ee.cause, HTTPError)
+                    and ee.cause.status == 404):
                 raise
 
         # fallback to legacy playlist
@@ -505,7 +520,8 @@ class BBCCoUkIE(InfoExtractor):
             if kind not in ('programme', 'radioProgramme'):
                 continue
             title = playlist.find(f'./{{{self._EMP_PLAYLIST_NS}}}title').text
-            description_el = playlist.find(f'./{{{self._EMP_PLAYLIST_NS}}}summary')
+            description_el = playlist.find(
+                f'./{{{self._EMP_PLAYLIST_NS}}}summary')
             description = description_el.text if description_el is not None else None
 
             def get_programme_id(item):
@@ -523,9 +539,11 @@ class BBCCoUkIE(InfoExtractor):
             duration = int_or_none(item.get('duration'))
 
             if programme_id:
-                formats, subtitles = self._download_media_selector(programme_id)
+                formats, subtitles = self._download_media_selector(
+                    programme_id)
             else:
-                formats, subtitles = self._process_media_selector(item, playlist_id)
+                formats, subtitles = self._process_media_selector(
+                    item, playlist_id)
                 programme_id = playlist_id
 
         return programme_id, title, description, duration, formats, subtitles
@@ -533,7 +551,8 @@ class BBCCoUkIE(InfoExtractor):
     def _real_extract(self, url):
         group_id = self._match_id(url)
 
-        webpage = self._download_webpage(url, group_id, 'Downloading video page')
+        webpage = self._download_webpage(
+            url, group_id, 'Downloading video page')
 
         error = self._search_regex(
             r'<div\b[^>]+\bclass=["\'](?:smp|playout)__message delta["\'][^>]*>\s*([^<]+?)\s*<',
@@ -555,13 +574,21 @@ class BBCCoUkIE(InfoExtractor):
 
         if not programme_id:
             programme_id = self._search_regex(
-                rf'"vpid"\s*:\s*"({self._ID_REGEX})"', webpage, 'vpid', fatal=False, default=None)
+                rf'"vpid"\s*:\s*"({self._ID_REGEX})"',
+                webpage,
+                'vpid',
+                fatal=False,
+                default=None)
 
         if programme_id:
             formats, subtitles = self._download_media_selector(programme_id)
-            title = self._og_search_title(webpage, default=None) or self._html_search_regex(
+            title = self._og_search_title(
+                webpage,
+                default=None) or self._html_search_regex(
                 (r'<h2[^>]+id="parent-title"[^>]*>(.+?)</h2>',
-                 r'<div[^>]+class="info"[^>]*>\s*<h1>(.+?)</h1>'), webpage, 'title')
+                 r'<div[^>]+class="info"[^>]*>\s*<h1>(.+?)</h1>'),
+                webpage,
+                'title')
             description = self._search_regex(
                 (r'<p class="[^"]*medium-description[^"]*">([^<]+)</p>',
                  r'<div[^>]+class="info_+synopsis"[^>]*>([^<]+)</div>'),
@@ -569,7 +596,8 @@ class BBCCoUkIE(InfoExtractor):
             if not description:
                 description = self._html_search_meta('description', webpage)
         else:
-            programme_id, title, description, duration, formats, subtitles = self._download_playlist(group_id)
+            programme_id, title, description, duration, formats, subtitles = self._download_playlist(
+                group_id)
 
         return {
             'id': programme_id,
@@ -598,7 +626,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
     ]
 
     _TESTS = [{
-        # article with multiple videos embedded with data-playable containing vpids
+        # article with multiple videos embedded with data-playable containing
+        # vpids
         'url': 'http://www.bbc.com/news/world-europe-32668511',
         'info_dict': {
             'id': 'world-europe-32668511',
@@ -607,7 +636,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
         },
         'playlist_count': 2,
     }, {
-        # article with multiple videos embedded with data-playable (more videos)
+        # article with multiple videos embedded with data-playable (more
+        # videos)
         'url': 'http://www.bbc.com/news/business-28299555',
         'info_dict': {
             'id': 'business-28299555',
@@ -895,14 +925,20 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
 
     @classmethod
     def suitable(cls, url):
-        EXCLUDE_IE = (BBCCoUkIE, BBCCoUkArticleIE, BBCCoUkIPlayerEpisodesIE, BBCCoUkIPlayerGroupIE, BBCCoUkPlaylistIE)
+        EXCLUDE_IE = (
+            BBCCoUkIE,
+            BBCCoUkArticleIE,
+            BBCCoUkIPlayerEpisodesIE,
+            BBCCoUkIPlayerGroupIE,
+            BBCCoUkPlaylistIE)
         return (False if any(ie.suitable(url) for ie in EXCLUDE_IE)
                 else super().suitable(url))
 
     def _extract_from_media_meta(self, media_meta, video_id):
         # Direct links to media in media metadata (e.g.
         # http://www.bbc.com/turkce/haberler/2015/06/150615_telabyad_kentin_cogu)
-        # TODO: there are also f4m and m3u8 streams incorporated in playlist.sxml
+        # TODO: there are also f4m and m3u8 streams incorporated in
+        # playlist.sxml
         source_files = media_meta.get('sourceFiles')
         if source_files:
             return [{
@@ -921,7 +957,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
         href = media_meta.get('href')
         if href:
             playlist = self._download_legacy_playlist_url(href)
-            _, _, _, _, formats, subtitles = self._extract_from_legacy_playlist(playlist, video_id)
+            _, _, _, _, formats, subtitles = self._extract_from_legacy_playlist(
+                playlist, video_id)
             return formats, subtitles
 
         return [], []
@@ -948,7 +985,12 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
         timestamp = json_ld_info.get('timestamp')
 
         playlist_title = json_ld_info.get('title') or re.sub(
-            r'(.+)\s*-\s*BBC.*?$', r'\1', self._generic_title('', webpage, default='')).strip() or None
+            r'(.+)\s*-\s*BBC.*?$',
+            r'\1',
+            self._generic_title(
+                '',
+                webpage,
+                default='')).strip() or None
 
         playlist_description = json_ld_info.get(
             'description') or self._og_search_description(webpage, default=None)
@@ -964,8 +1006,12 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
 
         # article with multiple videos embedded with playlist.sxml (e.g.
         # http://www.bbc.com/sport/0/football/34475836)
-        playlists = re.findall(r'<param[^>]+name="playlist"[^>]+value="([^"]+)"', webpage)
-        playlists.extend(re.findall(r'data-media-id="([^"]+/playlist\.sxml)"', webpage))
+        playlists = re.findall(
+            r'<param[^>]+name="playlist"[^>]+value="([^"]+)"', webpage)
+        playlists.extend(
+            re.findall(
+                r'data-media-id="([^"]+/playlist\.sxml)"',
+                webpage))
         if playlists:
             entries = [
                 self._extract_from_playlist_sxml(playlist_url, playlist_id, timestamp)
@@ -991,7 +1037,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                             description = playlist_object.get('summary')
                             duration = int_or_none(items[0].get('duration'))
                             programme_id = items[0].get('vpid')
-                            formats, subtitles = self._download_media_selector(programme_id)
+                            formats, subtitles = self._download_media_selector(
+                                programme_id)
                             entries.append({
                                 'id': programme_id,
                                 'title': title,
@@ -1005,7 +1052,9 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                         # data-playable without vpid but with a playlist.sxml URLs
                         # in otherSettings.playlist (e.g.
                         # http://www.bbc.com/turkce/multimedya/2015/10/151010_vid_ankara_patlama_ani)
-                        playlist = data_playable.get('otherSettings', {}).get('playlist', {})
+                        playlist = data_playable.get(
+                            'otherSettings', {}).get(
+                            'playlist', {})
                         if playlist:
                             entry = None
                             for key in ('streaming', 'progressiveDownload'):
@@ -1019,19 +1068,25 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                                         entry = info
                                     else:
                                         entry['title'] = info['title']
-                                        entry['formats'].extend(info['formats'])
+                                        entry['formats'].extend(
+                                            info['formats'])
                                 except ExtractorError as e:
                                     # Some playlist URL may fail with 500, at the same time
                                     # the other one may work fine (e.g.
                                     # http://www.bbc.com/turkce/haberler/2015/06/150615_telabyad_kentin_cogu)
-                                    if isinstance(e.cause, HTTPError) and e.cause.status == 500:
+                                    if isinstance(
+                                            e.cause, HTTPError) and e.cause.status == 500:
                                         continue
                                     raise
                             if entry:
                                 entries.append(entry)
 
         if entries:
-            return self.playlist_result(entries, playlist_id, playlist_title, playlist_description)
+            return self.playlist_result(
+                entries,
+                playlist_id,
+                playlist_title,
+                playlist_description)
 
         # http://www.bbc.co.uk/learningenglish/chinese/features/lingohack/ep-181227
         group_id = self._search_regex(
@@ -1041,7 +1096,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
             return self.url_result(
                 f'https://www.bbc.co.uk/programmes/{group_id}', BBCCoUkIE)
 
-        # single video story (e.g. http://www.bbc.com/travel/story/20150625-sri-lankas-spicy-secret)
+        # single video story (e.g.
+        # http://www.bbc.com/travel/story/20150625-sri-lankas-spicy-secret)
         programme_id = self._search_regex(
             [rf'data-(?:video-player|media)-vpid="({self._ID_REGEX})"',
              rf'<param[^>]+name="externalIdentifier"[^>]+value="({self._ID_REGEX})"',
@@ -1050,15 +1106,22 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
 
         if programme_id:
             formats, subtitles = self._download_media_selector(programme_id)
-            # digitalData may be missing (e.g. http://www.bbc.com/autos/story/20130513-hyundais-rock-star)
+            # digitalData may be missing (e.g.
+            # http://www.bbc.com/autos/story/20130513-hyundais-rock-star)
             digital_data = self._parse_json(
                 self._search_regex(
-                    r'var\s+digitalData\s*=\s*({.+?});?\n', webpage, 'digital data', default='{}'),
-                programme_id, fatal=False)
+                    r'var\s+digitalData\s*=\s*({.+?});?\n',
+                    webpage,
+                    'digital data',
+                    default='{}'),
+                programme_id,
+                fatal=False)
             page_info = digital_data.get('page', {}).get('pageInfo', {})
             title = page_info.get('pageName') or self._og_search_title(webpage)
-            description = page_info.get('description') or self._og_search_description(webpage)
-            timestamp = parse_iso8601(page_info.get('publicationDate')) or timestamp
+            description = page_info.get(
+                'description') or self._og_search_description(webpage)
+            timestamp = parse_iso8601(
+                page_info.get('publicationDate')) or timestamp
             return {
                 'id': programme_id,
                 'title': title,
@@ -1068,7 +1131,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                 'subtitles': subtitles,
             }
 
-        # bbc reel (e.g. https://www.bbc.com/reel/video/p07c6sb6/how-positive-thinking-is-harming-your-happiness)
+        # bbc reel (e.g.
+        # https://www.bbc.com/reel/video/p07c6sb6/how-positive-thinking-is-harming-your-happiness)
         initial_data = self._parse_json(self._html_search_regex(
             r'<script[^>]+id=(["\'])initial-data\1[^>]+data-json=(["\'])(?P<json>(?:(?!\2).)+)',
             webpage, 'initial data', default='{}', group='json'), playlist_id, fatal=False)
@@ -1090,11 +1154,16 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                     'title': title,
                     'formats': formats,
                     'alt_title': init_data.get('shortTitle'),
-                    'thumbnail': image_url.replace('$recipe', 'raw') if image_url else None,
+                    'thumbnail': image_url.replace(
+                        '$recipe',
+                        'raw') if image_url else None,
                     'description': smp_data.get('summary') or init_data.get('shortSummary'),
-                    'upload_date': display_date.replace('-', '') if display_date else None,
+                    'upload_date': display_date.replace(
+                        '-',
+                        '') if display_date else None,
                     'subtitles': subtitles,
-                    'duration': int_or_none(clip_data.get('duration')),
+                    'duration': int_or_none(
+                        clip_data.get('duration')),
                     'categories': [topic_title] if topic_title else None,
                 }
 
@@ -1102,34 +1171,44 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
         # Several setPayload calls may be present but the video(s)
         # should be in one that mentions leadMedia or videoData
         morph_payload = self._search_json(
-            r'\bMorph\s*\.\s*setPayload\s*\([^,]+,', webpage, 'morph payload', playlist_id,
+            r'\bMorph\s*\.\s*setPayload\s*\([^,]+,',
+            webpage,
+            'morph payload',
+            playlist_id,
             contains_pattern=r'{(?s:(?:(?!</script>).)+(?:"leadMedia"|\\"videoData\\")\s*:.+)}',
             default={})
         if morph_payload:
             for lead_media in traverse_obj(morph_payload, (
                     'body', 'components', ..., 'props', 'leadMedia', {dict})):
-                programme_id = traverse_obj(lead_media, ('identifiers', ('vpid', 'playablePid'), {str}, any))
+                programme_id = traverse_obj(
+                    lead_media, ('identifiers', ('vpid', 'playablePid'), {str}, any))
                 if not programme_id:
                     continue
-                formats, subtitles = self._download_media_selector(programme_id)
+                formats, subtitles = self._download_media_selector(
+                    programme_id)
                 return {
-                    'id': programme_id,
-                    'title': lead_media.get('title') or self._og_search_title(webpage),
-                    **traverse_obj(lead_media, {
-                        'description': ('summary', {str}),
-                        'duration': ('duration', ('rawDuration', 'formattedDuration', 'spokenDuration'), {parse_duration}),
-                        'uploader': ('masterBrand', {str}),
-                        'uploader_id': ('mid', {str}),
-                    }),
-                    'formats': formats,
-                    'subtitles': subtitles,
-                }
-            body = self._parse_json(traverse_obj(morph_payload, (
-                'body', 'content', 'article', 'body')), playlist_id, fatal=False)
-            for video_data in traverse_obj(body, (lambda _, v: v['videoData']['pid'], 'videoData')):
+                    'id': programme_id, 'title': lead_media.get('title') or self._og_search_title(webpage), **traverse_obj(
+                        lead_media, {
+                            'description': (
+                                'summary', {str}), 'duration': (
+                                'duration', ('rawDuration', 'formattedDuration', 'spokenDuration'), {parse_duration}), 'uploader': (
+                                'masterBrand', {str}), 'uploader_id': (
+                                'mid', {str}), }), 'formats': formats, 'subtitles': subtitles, }
+            body = self._parse_json(
+                traverse_obj(
+                    morph_payload,
+                    ('body',
+                     'content',
+                     'article',
+                     'body')),
+                playlist_id,
+                fatal=False)
+            for video_data in traverse_obj(
+                    body, (lambda _, v: v['videoData']['pid'], 'videoData')):
                 if video_data.get('vpid'):
                     video_id = video_data['vpid']
-                    formats, subtitles = self._download_media_selector(video_id)
+                    formats, subtitles = self._download_media_selector(
+                        video_id)
                     entry = {
                         'id': video_id,
                         'formats': formats,
@@ -1140,34 +1219,62 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                     entry = self.url_result(
                         f'https://www.bbc.co.uk/programmes/{video_id}', BBCCoUkIE,
                         video_id, url_transparent=True)
-                entry.update({
-                    'timestamp': traverse_obj(morph_payload, (
-                        'body', 'content', 'article', 'dateTimeInfo', 'dateTime', {parse_iso8601}),
-                    ),
-                    **traverse_obj(video_data, {
-                        'thumbnail': (('iChefImage', 'image'), {url_or_none}, any),
-                        'title': (('title', 'caption'), {str}, any),
-                        'duration': ('duration', {parse_duration}),
-                    }),
-                })
-                if video_data.get('isLead') and not self._yes_playlist(playlist_id, video_id):
+                entry.update({'timestamp': traverse_obj(morph_payload,
+                                                        ('body',
+                                                         'content',
+                                                         'article',
+                                                         'dateTimeInfo',
+                                                         'dateTime',
+                                                         {parse_iso8601}),
+                                                        ),
+                              **traverse_obj(video_data,
+                                             {'thumbnail': (('iChefImage',
+                                                             'image'),
+                                                            {url_or_none},
+                                                            any),
+                                              'title': (('title',
+                                                         'caption'),
+                                                        {str},
+                                                        any),
+                                              'duration': ('duration',
+                                                           {parse_duration}),
+                                              }),
+                              })
+                if video_data.get('isLead') and not self._yes_playlist(
+                        playlist_id, video_id):
                     return entry
                 entries.append(entry)
             if entries:
-                playlist_title = traverse_obj(morph_payload, (
-                    'body', 'content', 'article', 'headline', {str})) or playlist_title
+                playlist_title = traverse_obj(
+                    morph_payload,
+                    ('body',
+                     'content',
+                     'article',
+                     'headline',
+                     {str})) or playlist_title
                 return self.playlist_result(
                     entries, playlist_id, playlist_title, playlist_description)
 
         # various PRELOADED_STATE JSON
         preload_state = self._search_json(
-            r'window\.__(?:PWA_)?PRELOADED_STATE__\s*=', webpage,
-            'preload state', playlist_id, transform_source=js_to_json, default={})
+            r'window\.__(?:PWA_)?PRELOADED_STATE__\s*=',
+            webpage,
+            'preload state',
+            playlist_id,
+            transform_source=js_to_json,
+            default={})
         # PRELOADED_STATE with current programmme
-        current_programme = traverse_obj(preload_state, ('programmes', 'current', {dict}))
+        current_programme = traverse_obj(
+            preload_state, ('programmes', 'current', {dict}))
         programme_id = traverse_obj(current_programme, ('id', {str}))
         if programme_id and current_programme.get('type') == 'playable_item':
-            title = traverse_obj(current_programme, ('titles', ('tertiary', 'secondary'), {str}, any)) or playlist_title
+            title = traverse_obj(
+                current_programme,
+                ('titles',
+                 ('tertiary',
+                  'secondary'),
+                    {str},
+                    any)) or playlist_title
             formats, subtitles = self._download_media_selector(programme_id)
             return {
                 'id': programme_id,
@@ -1194,14 +1301,27 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
             }
 
         # PWA_PRELOADED_STATE with article video asset
-        asset_id = traverse_obj(preload_state, (
-            'entities', 'articles', lambda k, _: k.rsplit('/', 1)[-1] == playlist_id,
-            'assetVideo', 0, {str}, any))
+        asset_id = traverse_obj(preload_state,
+                                ('entities',
+                                 'articles',
+                                 lambda k,
+                                 _: k.rsplit('/',
+                                             1)[-1] == playlist_id,
+                                    'assetVideo',
+                                    0,
+                                    {str},
+                                    any))
         if asset_id:
-            video_id = traverse_obj(preload_state, ('entities', 'videos', asset_id, 'vpid', {str}))
+            video_id = traverse_obj(
+                preload_state, ('entities', 'videos', asset_id, 'vpid', {str}))
             if video_id:
-                article = traverse_obj(preload_state, (
-                    'entities', 'articles', lambda _, v: v['assetVideo'][0] == asset_id, any))
+                article = traverse_obj(
+                    preload_state,
+                    ('entities',
+                     'articles',
+                     lambda _,
+                     v: v['assetVideo'][0] == asset_id,
+                        any))
 
                 def image_url(image_id):
                     return traverse_obj(preload_state, (
@@ -1259,7 +1379,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                     programme_id = bbc3_item.get('versionID')
                     if not programme_id:
                         continue
-                    formats, subtitles = self._download_media_selector(programme_id)
+                    formats, subtitles = self._download_media_selector(
+                        programme_id)
                     entries.append({
                         'id': programme_id,
                         'title': playlist_title,
@@ -1301,11 +1422,16 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                 r'window\.__INITIAL_DATA__\s*=\s*({.+?})\s*;', webpage,
                 'preload state', default='{}')
         else:
-            initial_data = self._parse_json(initial_data or '"{}"', playlist_id, fatal=False)
+            initial_data = self._parse_json(
+                initial_data or '"{}"', playlist_id, fatal=False)
         initial_data = self._parse_json(initial_data, playlist_id, fatal=False)
         if initial_data:
-            for video_data in traverse_obj(initial_data, (
-                    'stores', 'article', 'articleBodyContent', is_type('video'))):
+            for video_data in traverse_obj(
+                initial_data,
+                ('stores',
+                 'article',
+                 'articleBodyContent',
+                 is_type('video'))):
                 model = traverse_obj(video_data, (
                     'model', 'blocks', is_type('aresMedia'),
                     'model', 'blocks', is_type('aresMediaMetadata'),
@@ -1320,26 +1446,36 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
             def parse_media(media):
                 if not media:
                     return
-                for item in (try_get(media, lambda x: x['media']['items'], list) or []):
+                for item in (
+                    try_get(
+                        media,
+                        lambda x: x['media']['items'],
+                        list) or []):
                     item_id = item.get('id')
                     item_title = item.get('title')
                     if not (item_id and item_title):
                         continue
                     formats, subtitles = self._download_media_selector(item_id)
                     item_desc = None
-                    blocks = try_get(media, lambda x: x['summary']['blocks'], list)
+                    blocks = try_get(
+                        media, lambda x: x['summary']['blocks'], list)
                     if blocks:
                         summary = []
                         for block in blocks:
-                            text = try_get(block, lambda x: x['model']['text'], str)
+                            text = try_get(
+                                block, lambda x: x['model']['text'], str)
                             if text:
                                 summary.append(text)
                         if summary:
                             item_desc = '\n\n'.join(summary)
                     item_time = None
-                    for meta in try_get(media, lambda x: x['metadata']['items'], list) or []:
+                    for meta in try_get(
+                            media,
+                            lambda x: x['metadata']['items'],
+                            list) or []:
                         if try_get(meta, lambda x: x['label']) == 'Published':
-                            item_time = unified_timestamp(meta.get('timestamp'))
+                            item_time = unified_timestamp(
+                                meta.get('timestamp'))
                             break
                     entries.append({
                         'id': item_id,
@@ -1352,10 +1488,15 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                         'duration': int_or_none(item.get('duration')),
                     })
 
-            for resp in traverse_obj(initial_data, ('data', lambda _, v: v['name'])):
+            for resp in traverse_obj(
+                    initial_data, ('data', lambda _, v: v['name'])):
                 name = resp['name']
                 if name == 'media-experience':
-                    parse_media(try_get(resp, lambda x: x['data']['initialItem']['mediaItem'], dict))
+                    parse_media(
+                        try_get(
+                            resp,
+                            lambda x: x['data']['initialItem']['mediaItem'],
+                            dict))
                 elif name == 'article':
                     for block in traverse_obj(resp, (
                             'data', (None, ('content', 'model')), 'blocks',
@@ -1370,8 +1511,15 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
             'simorgh data', playlist_id, default={})
         if simorgh_data:
             done = False
-            for video_data in traverse_obj(simorgh_data, (
-                    'pageData', 'content', 'model', 'blocks', is_type('video', 'legacyMedia'))):
+            for video_data in traverse_obj(
+                simorgh_data,
+                ('pageData',
+                 'content',
+                 'model',
+                 'blocks',
+                 is_type(
+                     'video',
+                     'legacyMedia'))):
                 model = traverse_obj(video_data, (
                     'model', 'blocks', is_type('aresMedia'),
                     'model', 'blocks', is_type('aresMediaMetadata'),
@@ -1379,28 +1527,35 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                 if video_data['type'] == 'video':
                     entry = parse_model(model)
                 else:  # legacyMedia: no duration, subtitles
-                    block_id, entry = traverse_obj(model, ('blockId', {str})), None
+                    block_id, entry = traverse_obj(
+                        model, ('blockId', {str})), None
                     media_data = traverse_obj(simorgh_data, (
                         'pageData', 'promo', 'media',
                         {lambda x: x if x['id'] == block_id else None}))
-                    formats = traverse_obj(media_data, ('playlist', lambda _, v: url_or_none(v['url']), {
-                        'url': ('url', {url_or_none}),
-                        'ext': ('format', {str}),
-                        'tbr': ('bitrate', {int_or_none(scale=1000)}),
-                    }))
+                    formats = traverse_obj(
+                        media_data, ('playlist', lambda _, v: url_or_none(
+                            v['url']), {
+                            'url': (
+                                'url', {url_or_none}), 'ext': (
+                                'format', {str}), 'tbr': (
+                                'bitrate', {
+                                    int_or_none(
+                                        scale=1000)}), }))
                     if formats:
                         entry = {
-                            'id': block_id,
-                            'display_id': playlist_id,
-                            'formats': formats,
-                            'description': traverse_obj(simorgh_data, ('pageData', 'promo', 'summary', {str})),
-                            **traverse_obj(model, {
-                                'title': ('title', {str}),
-                                'thumbnail': ('imageUrl', {lambda u: urljoin(url, u.replace('$recipe', 'raw'))}),
-                                'description': ('synopses', ('long', 'medium', 'short'), {str}, any),
-                                'timestamp': ('firstPublished', {int_or_none(scale=1000)}),
-                            }),
-                        }
+                            'id': block_id, 'display_id': playlist_id, 'formats': formats, 'description': traverse_obj(
+                                simorgh_data, ('pageData', 'promo', 'summary', {str})), **traverse_obj(
+                                model, {
+                                    'title': (
+                                        'title', {str}), 'thumbnail': (
+                                        'imageUrl', {
+                                            lambda u: urljoin(
+                                                url, u.replace(
+                                                    '$recipe', 'raw'))}), 'description': (
+                                        'synopses', ('long', 'medium', 'short'), {str}, any), 'timestamp': (
+                                            'firstPublished', {
+                                                int_or_none(
+                                                    scale=1000)}), }), }
                         done = True
                 if entry:
                     entries.append(entry)
@@ -1417,8 +1572,14 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
 
         # US accessed article with single embedded video (e.g.
         # https://www.bbc.com/news/uk-68546268)
-        next_data = traverse_obj(self._search_nextjs_data(webpage, playlist_id, default={}),
-                                 ('props', 'pageProps', 'page'))
+        next_data = traverse_obj(
+            self._search_nextjs_data(
+                webpage,
+                playlist_id,
+                default={}),
+            ('props',
+             'pageProps',
+             'page'))
         model = traverse_obj(next_data, (
             ..., 'contents', is_type('video'),
             'model', 'blocks', is_type('media'),
@@ -1448,16 +1609,19 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                 [self.url_result(entry_, 'BBCCoUk') for entry_ in entries],
                 playlist_id, playlist_title, playlist_description)
 
-        # Multiple video article (e.g. http://www.bbc.com/news/world-europe-32668511)
+        # Multiple video article (e.g.
+        # http://www.bbc.com/news/world-europe-32668511)
         medias = extract_all(r"data-media-meta='({[^']+})'")
 
         if not medias:
-            # Single video article (e.g. http://www.bbc.com/news/video_and_audio/international)
+            # Single video article (e.g.
+            # http://www.bbc.com/news/video_and_audio/international)
             media_asset = self._search_regex(
                 r'mediaAssetPage\.init\(\s*({.+?}), "/',
                 webpage, 'media asset', default=None)
             if media_asset:
-                media_asset_page = self._parse_json(media_asset, playlist_id, fatal=False)
+                media_asset_page = self._parse_json(
+                    media_asset, playlist_id, fatal=False)
                 medias = []
                 for video in media_asset_page.get('videos', {}).values():
                     medias.extend(video.values())
@@ -1468,7 +1632,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
             vxp_playlist = self._parse_json(
                 self._search_regex(
                     r'<script[^>]+class="vxp-playlist-data"[^>]+type="application/json"[^>]*>([^<]+)</script>',
-                    webpage, 'playlist data'),
+                    webpage,
+                    'playlist data'),
                 playlist_id)
             playlist_medias = []
             for item in vxp_playlist:
@@ -1476,7 +1641,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                 if not media:
                     continue
                 playlist_medias.append(media)
-                # Download single video if found media with asset id matching the video id from URL
+                # Download single video if found media with asset id matching
+                # the video id from URL
                 if item.get('advert', {}).get('assetId') == playlist_id:
                     medias = [media]
                     break
@@ -1486,19 +1652,24 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
 
         entries = []
         for num, media_meta in enumerate(medias, start=1):
-            formats, subtitles = self._extract_from_media_meta(media_meta, playlist_id)
+            formats, subtitles = self._extract_from_media_meta(
+                media_meta, playlist_id)
             if not formats and not self.get_param('ignore_no_formats'):
                 continue
 
             video_id = media_meta.get('externalId')
             if not video_id:
-                video_id = playlist_id if len(medias) == 1 else f'{playlist_id}-{num}'
+                video_id = playlist_id if len(
+                    medias) == 1 else f'{playlist_id}-{num}'
 
             title = media_meta.get('caption')
             if not title:
-                title = playlist_title if len(medias) == 1 else f'{playlist_title} - Video {num}'
+                title = playlist_title if len(
+                    medias) == 1 else f'{playlist_title} - Video {num}'
 
-            duration = int_or_none(media_meta.get('durationInSeconds')) or parse_duration(media_meta.get('duration'))
+            duration = int_or_none(
+                media_meta.get('durationInSeconds')) or parse_duration(
+                media_meta.get('duration'))
 
             images = []
             for image in media_meta.get('images', {}).values():
@@ -1522,7 +1693,11 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
                 'subtitles': subtitles,
             })
 
-        return self.playlist_result(entries, playlist_id, playlist_title, playlist_description)
+        return self.playlist_result(
+            entries,
+            playlist_id,
+            playlist_title,
+            playlist_description)
 
 
 class BBCCoUkArticleIE(InfoExtractor):
@@ -1629,8 +1804,13 @@ class BBCCoUkIPlayerPlaylistBaseIE(InfoExtractor):
         series_id = qs.get('seriesId', [None])[0]
         page = qs.get('page', [None])[0]
         per_page = 36 if page else self._PAGE_SIZE
-        fetch_page = functools.partial(self._fetch_page, pid, per_page, series_id)
-        entries = fetch_page(int(page) - 1) if page else OnDemandPagedList(fetch_page, self._PAGE_SIZE)
+        fetch_page = functools.partial(
+            self._fetch_page, pid, per_page, series_id)
+        entries = fetch_page(
+            int(page) -
+            1) if page else OnDemandPagedList(
+            fetch_page,
+            self._PAGE_SIZE)
         playlist_data = self._get_playlist_data(self._call_api(pid, 1))
         return self.playlist_result(
             entries, pid, self._get_playlist_title(playlist_data),

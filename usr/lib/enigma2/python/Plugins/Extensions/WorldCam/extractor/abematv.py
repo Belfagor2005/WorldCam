@@ -59,12 +59,16 @@ class AbemaLicenseRH(RequestHandler):
         media_token = self.ie._get_media_token(to_show=to_show)
 
         license_response = self.ie._download_json(
-            'https://license.abema.io/abematv-hls', None, note='Requesting playback license' if to_show else False,
-            query={'t': media_token},
-            data=json.dumps({
-                'kv': 'a',
-                'lt': ticket,
-            }).encode(),
+            'https://license.abema.io/abematv-hls',
+            None,
+            note='Requesting playback license' if to_show else False,
+            query={
+                't': media_token},
+            data=json.dumps(
+                {
+                    'kv': 'a',
+                    'lt': ticket,
+                }).encode(),
             headers={
                 'Content-Type': 'application/json',
             })
@@ -128,10 +132,12 @@ class AbemaTVBaseIE(InfoExtractor):
         if self._USERTOKEN:
             return self._USERTOKEN
 
-        self._downloader._request_director.add_handler(AbemaLicenseRH(ie=self, logger=None))
+        self._downloader._request_director.add_handler(
+            AbemaLicenseRH(ie=self, logger=None))
 
         username, _ = self._get_login_info()
-        auth_cache = username and self.cache.load(self._NETRC_MACHINE, username, min_ver='2024.01.19')
+        auth_cache = username and self.cache.load(
+            self._NETRC_MACHINE, username, min_ver='2024.01.19')
         AbemaTVBaseIE._USERTOKEN = auth_cache and auth_cache.get('usertoken')
         if AbemaTVBaseIE._USERTOKEN:
             # try authentication with locally stored token
@@ -140,7 +146,8 @@ class AbemaTVBaseIE(InfoExtractor):
                 self._get_media_token(True)
                 return
             except ExtractorError as e:
-                self.report_warning(f'Failed to login with cached user token; obtaining a fresh one ({e})')
+                self.report_warning(
+                    f'Failed to login with cached user token; obtaining a fresh one ({e})')
 
         AbemaTVBaseIE._DEVICE_ID = str(uuid.uuid4())
         aks = self._generate_aks(self._DEVICE_ID)
@@ -162,7 +169,9 @@ class AbemaTVBaseIE(InfoExtractor):
             return self._MEDIATOKEN
 
         AbemaTVBaseIE._MEDIATOKEN = self._download_json(
-            'https://api.abema.io/v1/media/token', None, note='Fetching media token' if to_show else False,
+            'https://api.abema.io/v1/media/token',
+            None,
+            note='Fetching media token' if to_show else False,
             query={
                 'osName': 'android',
                 'osVersion': '6.0.1',
@@ -170,7 +179,8 @@ class AbemaTVBaseIE(InfoExtractor):
                 'osTimezone': 'Asia/Tokyo',
                 'appId': 'tv.abema',
                 'appVersion': '3.27.1',
-            }, headers={
+            },
+            headers={
                 'Authorization': f'bearer {self._get_device_token()}',
             })['token']
 
@@ -178,7 +188,10 @@ class AbemaTVBaseIE(InfoExtractor):
 
     def _perform_login(self, username, password):
         self._get_device_token()
-        if self.cache.load(self._NETRC_MACHINE, username, min_ver='2024.01.19') and self._get_media_token():
+        if self.cache.load(
+                self._NETRC_MACHINE,
+                username,
+                min_ver='2024.01.19') and self._get_media_token():
             self.write_debug('Skipping logging in')
             return
 
@@ -207,7 +220,8 @@ class AbemaTVBaseIE(InfoExtractor):
         }
         self.cache.store(self._NETRC_MACHINE, username, auth_cache)
 
-    def _call_api(self, endpoint, video_id, query=None, note='Downloading JSON metadata'):
+    def _call_api(self, endpoint, video_id, query=None,
+                  note='Downloading JSON metadata'):
         return self._download_json(
             f'https://api.abema.io/{endpoint}', video_id, query=query or {},
             note=note,
@@ -219,7 +233,8 @@ class AbemaTVBaseIE(InfoExtractor):
         for jld in re.finditer(
                 r'(?is)</span></li></ul><script[^>]+type=(["\']?)application/ld\+json\1[^>]*>(?P<json_ld>.+?)</script>',
                 webpage):
-            jsonld = self._parse_json(jld.group('json_ld'), video_id, fatal=False)
+            jsonld = self._parse_json(
+                jld.group('json_ld'), video_id, fatal=False)
             if traverse_obj(jsonld, '@type') != 'BreadcrumbList':
                 continue
             items = traverse_obj(jsonld, ('itemListElement', ..., 'name'))
@@ -290,18 +305,24 @@ class AbemaTVIE(AbemaTVBaseIE):
 
         webpage = self._download_webpage(url, video_id)
         canonical_url = self._search_regex(
-            r'<link\s+rel="canonical"\s*href="(.+?)"', webpage, 'canonical URL',
+            r'<link\s+rel="canonical"\s*href="(.+?)"',
+            webpage,
+            'canonical URL',
             default=url)
         info = self._search_json_ld(webpage, video_id, default={})
 
         title = self._search_regex(
-            r'<span\s*class=".+?EpisodeTitleBlock__title">(.+?)</span>', webpage, 'title', default=None)
+            r'<span\s*class=".+?EpisodeTitleBlock__title">(.+?)</span>',
+            webpage,
+            'title',
+            default=None)
         if not title:
             jsonld = None
             for jld in re.finditer(
                     r'(?is)<span\s*class="com-m-Thumbnail__image">(?:</span>)?<script[^>]+type=(["\']?)application/ld\+json\1[^>]*>(?P<json_ld>.+?)</script>',
                     webpage):
-                jsonld = self._parse_json(jld.group('json_ld'), video_id, fatal=False)
+                jsonld = self._parse_json(
+                    jld.group('json_ld'), video_id, fatal=False)
                 if jsonld:
                     break
             if jsonld:
@@ -369,7 +390,9 @@ class AbemaTVIE(AbemaTVBaseIE):
                     m3u8_url = ch['playback']['hls']
                     break
             else:
-                raise ExtractorError(f'Cannot find on-air {video_id} channel.', expected=True)
+                raise ExtractorError(
+                    f'Cannot find on-air {video_id} channel.',
+                    expected=True)
         elif video_type == 'episode':
             api_response = self._download_json(
                 f'https://api.abema.io/v1/video/programs/{video_id}', video_id,
@@ -388,7 +411,8 @@ class AbemaTVIE(AbemaTVBaseIE):
             if not title:
                 title = traverse_obj(api_response, ('episode', 'title'))
             if not description:
-                description = traverse_obj(api_response, ('episode', 'content'))
+                description = traverse_obj(
+                    api_response, ('episode', 'content'))
 
             m3u8_url = f'https://vod-abematv.akamaized.net/program/{video_id}/playlist.m3u8'
         elif video_type == 'slots':
@@ -396,7 +420,12 @@ class AbemaTVIE(AbemaTVBaseIE):
                 f'https://api.abema.io/v1/media/slots/{video_id}', video_id,
                 note='Checking playability',
                 headers=headers)
-            if not traverse_obj(api_response, ('slot', 'flags', 'timeshiftFree'), default=False):
+            if not traverse_obj(
+                    api_response,
+                    ('slot',
+                     'flags',
+                     'timeshiftFree'),
+                    default=False):
                 self.report_warning('This is a premium-only stream')
                 availability = 'premium_only'
 
@@ -405,8 +434,10 @@ class AbemaTVIE(AbemaTVBaseIE):
             raise ExtractorError('Unreachable')
 
         if is_live:
-            self.report_warning("This is a livestream; yt-dlp doesn't support downloading natively, but FFmpeg cannot handle m3u8 manifests from AbemaTV")
-            self.report_warning('Please consider using Streamlink to download these streams (https://github.com/streamlink/streamlink)')
+            self.report_warning(
+                "This is a livestream; yt-dlp doesn't support downloading natively, but FFmpeg cannot handle m3u8 manifests from AbemaTV")
+            self.report_warning(
+                'Please consider using Streamlink to download these streams (https://github.com/streamlink/streamlink)')
         formats = self._extract_m3u8_formats(
             m3u8_url, video_id, ext='mp4', live=is_live)
 
@@ -419,7 +450,11 @@ class AbemaTVIE(AbemaTVBaseIE):
             'availability': availability,
         })
 
-        if thumbnail := update_url(self._og_search_thumbnail(webpage, default=''), query=None):
+        if thumbnail := update_url(
+                self._og_search_thumbnail(
+                    webpage,
+                    default=''),
+                query=None):
             info['thumbnails'] = [{'url': thumbnail}]
 
         return info
@@ -429,39 +464,34 @@ class AbemaTVTitleIE(AbemaTVBaseIE):
     _VALID_URL = r'https?://abema\.tv/video/title/(?P<id>[^?/#]+)/?(?:\?(?:[^#]+&)?s=(?P<season>[^&#]+))?'
     _PAGE_SIZE = 25
 
-    _TESTS = [{
-        'url': 'https://abema.tv/video/title/90-1887',
-        'info_dict': {
-            'id': '90-1887',
-            'title': 'シャッフルアイランド',
-            'description': 'md5:61b2425308f41a5282a926edda66f178',
-        },
-        'playlist_mincount': 2,
-    }, {
-        'url': 'https://abema.tv/video/title/193-132',
-        'info_dict': {
-            'id': '193-132',
-            'title': '真心が届く~僕とスターのオフィス・ラブ!?~',
-            'description': 'md5:9b59493d1f3a792bafbc7319258e7af8',
-        },
-        'playlist_mincount': 16,
-    }, {
-        'url': 'https://abema.tv/video/title/25-1nzan-whrxe',
-        'info_dict': {
-            'id': '25-1nzan-whrxe',
-            'title': 'ソードアート・オンライン',
-            'description': 'md5:c094904052322e6978495532bdbf06e6',
-        },
-        'playlist_mincount': 25,
-    }, {
-        'url': 'https://abema.tv/video/title/26-2mzbynr-cph?s=26-2mzbynr-cph_s40',
-        'info_dict': {
-            'title': '〈物語〉シリーズ',
-            'id': '26-2mzbynr-cph',
-            'description': 'md5:e67873de1c88f360af1f0a4b84847a52',
-        },
-        'playlist_count': 59,
-    }]
+    _TESTS = [{'url': 'https://abema.tv/video/title/90-1887',
+               'info_dict': {'id': '90-1887',
+                             'title': 'シャッフルアイランド',
+                             'description': 'md5:61b2425308f41a5282a926edda66f178',
+                             },
+               'playlist_mincount': 2,
+               },
+              {'url': 'https://abema.tv/video/title/193-132',
+               'info_dict': {'id': '193-132',
+                             'title': '真心が届く~僕とスターのオフィス・ラブ!?~',
+                             'description': 'md5:9b59493d1f3a792bafbc7319258e7af8',
+                             },
+               'playlist_mincount': 16,
+               },
+              {'url': 'https://abema.tv/video/title/25-1nzan-whrxe',
+               'info_dict': {'id': '25-1nzan-whrxe',
+                             'title': 'ソードアート・オンライン',
+                             'description': 'md5:c094904052322e6978495532bdbf06e6',
+                             },
+               'playlist_mincount': 25,
+               },
+              {'url': 'https://abema.tv/video/title/26-2mzbynr-cph?s=26-2mzbynr-cph_s40',
+               'info_dict': {'title': '〈物語〉シリーズ',
+                             'id': '26-2mzbynr-cph',
+                             'description': 'md5:e67873de1c88f360af1f0a4b84847a52',
+                             },
+               'playlist_count': 59,
+               }]
 
     def _fetch_page(self, playlist_id, series_version, season_id, page):
         query = {
@@ -482,14 +512,24 @@ class AbemaTVTitleIE(AbemaTVBaseIE):
 
     def _entries(self, playlist_id, series_version, season_id):
         return OnDemandPagedList(
-            functools.partial(self._fetch_page, playlist_id, series_version, season_id),
+            functools.partial(
+                self._fetch_page,
+                playlist_id,
+                series_version,
+                season_id),
             self._PAGE_SIZE)
 
     def _real_extract(self, url):
-        playlist_id, season_id = self._match_valid_url(url).group('id', 'season')
-        series_info = self._call_api(f'v1/video/series/{playlist_id}', playlist_id)
+        playlist_id, season_id = self._match_valid_url(
+            url).group('id', 'season')
+        series_info = self._call_api(
+            f'v1/video/series/{playlist_id}', playlist_id)
 
         return self.playlist_result(
-            self._entries(playlist_id, series_info['version'], season_id), playlist_id=playlist_id,
+            self._entries(
+                playlist_id,
+                series_info['version'],
+                season_id),
+            playlist_id=playlist_id,
             playlist_title=series_info.get('title'),
             playlist_description=series_info.get('content'))

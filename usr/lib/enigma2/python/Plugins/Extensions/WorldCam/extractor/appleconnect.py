@@ -29,11 +29,22 @@ class AppleConnectIE(InfoExtractor):
             video_json = self._html_search_regex(
                 r'class="auc-video-data">(\{.*?\})', webpage, 'json')
         except ExtractorError:
-            raise ExtractorError('This post doesn\'t contain a video', expected=True)
+            raise ExtractorError(
+                'This post doesn\'t contain a video',
+                expected=True)
 
         video_data = self._parse_json(video_json, video_id)
-        timestamp = str_to_int(self._html_search_regex(r'data-timestamp="(\d+)"', webpage, 'timestamp'))
-        like_count = str_to_int(self._html_search_regex(r'(\d+) Loves', webpage, 'like count', default=None))
+        timestamp = str_to_int(
+            self._html_search_regex(
+                r'data-timestamp="(\d+)"',
+                webpage,
+                'timestamp'))
+        like_count = str_to_int(
+            self._html_search_regex(
+                r'(\d+) Loves',
+                webpage,
+                'like count',
+                default=None))
 
         return {
             'id': video_id,
