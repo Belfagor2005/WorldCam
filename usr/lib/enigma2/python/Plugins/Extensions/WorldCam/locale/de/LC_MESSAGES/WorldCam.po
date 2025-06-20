@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: worldcam\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-13 10:55+0200\n"
+"POT-Creation-Date: 2025-06-16 16:36+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Masta2002\n"
+"Last-Translator: ))^^(( <>\n"
 "Language-Team: *\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -16,100 +16,270 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:579
-#, python-format
-msgid "Error checking version: %s"
+#: plugin.py:271
+msgid "WorldCam v{}"
 msgstr ""
 
-#: plugin.py:588
-#, python-format
-msgid ""
-"New version %s is available\n"
-"\n"
-"Changelog: %s\n"
-"\n"
-"Press info_long or yellow_long button to start force updating."
+#: plugin.py:273 plugin.py:599 plugin.py:687 plugin.py:751 plugin.py:811
+#: plugin.py:870 plugin.py:935 plugin.py:1007
+msgid "Exit"
 msgstr ""
-"Neue Version %s ist verfügbar\n"
-"\n"
-"Changelog: %s\n"
-"\n"
-"Drücken Sie die Tasten info_lang oder gelb_lang, um die Aktualisierung zu "
-"erzwingen."
 
-#: plugin.py:595
+#: plugin.py:274
+msgid "Select"
+msgstr ""
+
+#: plugin.py:275
+msgid "Update"
+msgstr ""
+
+#: plugin.py:276
+msgid "Menu"
+msgstr ""
+
+#: plugin.py:282 plugin.py:594
+msgid "User Lists"
+msgstr ""
+
+#: plugin.py:283
+msgid "Countries"
+msgstr ""
+
+#: plugin.py:284 plugin.py:806
+msgid "Categories"
+msgstr ""
+
+#: plugin.py:285 plugin.py:865
+msgid "Top Webcams"
+msgstr ""
+
+#: plugin.py:350
+msgid "Change language"
+msgstr ""
+
+#: plugin.py:351
+msgid "Update plugin"
+msgstr ""
+
+#: plugin.py:352
+msgid "Update yt-dlp"
+msgstr ""
+
+#: plugin.py:353
+msgid "Settings"
+msgstr ""
+
+#: plugin.py:354
+msgid "About"
+msgstr ""
+
+#: plugin.py:357
+msgid "Select an option"
+msgstr ""
+
+#: plugin.py:382
+msgid "No languages available"
+msgstr ""
+
+#: plugin.py:398
+#, python-format
+msgid "Language changed to %s"
+msgstr ""
+
+#: plugin.py:402
 #, python-format
 msgid ""
-"New version %s is available.\n"
+"Error changing language:\n"
+"%s"
+msgstr ""
+
+#: plugin.py:409
+msgid "Settings functionality coming soon!"
+msgstr ""
+
+#: plugin.py:412
+#, python-format
+msgid ""
+"Error opening settings:\n"
+"%s"
+msgstr ""
+
+#: plugin.py:427
+msgid ""
+"Unable to fetch version info:\n"
+"{}"
+msgstr ""
+
+#: plugin.py:445
+msgid "You are already running the latest version: {}"
+msgstr ""
+
+#: plugin.py:461
+#, python-format
+msgid ""
+"New version %s available\n"
 "\n"
-"Changelog: %s \n"
+"Changelog: %s\n"
 "\n"
 "Do you want to install it now?"
 msgstr ""
-"Neue Version %s ist verfügbar.\n"
-"\n"
-"Changelog: %s\n"
-"\n"
-"Möchten Sie sie jetzt installieren?"
 
-#: plugin.py:597
-msgid "Congrats! You already have the latest version..."
-msgstr "Herzlichen Glückwunsch! Sie haben bereits die neueste Version..."
-
-#: plugin.py:607
+#: plugin.py:474
 #, python-format
-msgid "Do you want to install update ( %s ) now?"
-msgstr "Möchten Sie das Update ( %s ) jetzt installieren?"
+msgid "You are already running the latest version: %s"
+msgstr ""
 
-#: plugin.py:616
+#: plugin.py:483
+msgid "Upgrading..."
+msgstr ""
+
+#: plugin.py:490
+#, python-format
+msgid ""
+"Update failed:\n"
+"%s"
+msgstr ""
+
+#: plugin.py:492
 msgid "Update Aborted!"
-msgstr "Update Abgebrochen!"
-
-#: plugin.py:648
-msgid "Select Language"
 msgstr ""
 
-#: plugin.py:901 plugin.py:1301 plugin.py:1542
-msgid "Bouquet created successfully!"
+#: plugin.py:499
+msgid ""
+"Update completed successfully!\n"
+"\n"
+"The plugin will now close."
 msgstr ""
 
-#: plugin.py:946
-msgid "Remove all Worldcam Favorite Bouquet ?"
-msgstr "Alle Worldcam Favorite Bouquet entfernen ?"
-
-#: plugin.py:969
-#, fuzzy
-#| msgid "Worldcam Favorites List have been removed"
-msgid "WorldCam Favorites List have been removed"
-msgstr "Worldcam Favoritenliste wurde entfernt"
-
-#: plugin.py:1156 plugin.py:1467
-msgid "Remove this bouquet?"
+#: plugin.py:505
+#, python-format
+msgid "Update encountered an error (code: %s)"
 msgstr ""
 
-#: plugin.py:1182 plugin.py:1492
-msgid "Bouquet removed successfully!"
+#: plugin.py:552
+msgid "yt-dlp updated successfully!"
 msgstr ""
 
-#: plugin.py:1223
-msgid "Video URL not found!"
+#: plugin.py:556
+#, python-format
+msgid ""
+"Failed to update yt-dlp:\n"
+"%s"
 msgstr ""
 
-#: plugin.py:1246 plugin.py:1655
-msgid "Error playing YouTube video!"
+#: plugin.py:566
+#, python-format
+msgid "WorldCam v%s"
 msgstr ""
 
-#~ msgid ""
-#~ "Do you want to Convert to Favorite Bouquet ?\n"
-#~ "\n"
-#~ "Attention!! Wait while converting !!!"
-#~ msgstr ""
-#~ "Möchten Sie zu Favoriten Bouquet umwandeln?\n"
-#~ "\n"
-#~ "Achtung!!! Warten Sie mit der Konvertierung !!!"
+#: plugin.py:567
+msgid "Live webcam viewer featuring global locations."
+msgstr ""
 
-#~ msgid "bouquets reloaded.."
-#~ msgstr "bouquets neugeladen.."
+#: plugin.py:568
+msgid "Developed by Lululla"
+msgstr ""
 
-#~ msgid "Reload Bouquet"
-#~ msgstr "Bouquet neuladen"
+#: plugin.py:569
+msgid "Powered by Enigma2 and Python"
+msgstr ""
+
+#: plugin.py:570
+msgid "GitHub: https://github.com/Belfagor2005/"
+msgstr ""
+
+#: plugin.py:571
+msgid "Forum support: www.corvoboys.org"
+msgstr ""
+
+#: plugin.py:572
+msgid "Included playlists and sources:\n"
+msgstr ""
+
+#: plugin.py:573
+msgid " - Local YouTube playlist\n"
+msgstr ""
+
+#: plugin.py:574
+msgid " - Online YouTube webcams playlist\n"
+msgstr ""
+
+#: plugin.py:575
+msgid " - Local webcam list\n"
+msgstr ""
+
+#: plugin.py:576
+msgid " - Online webcam list\n"
+msgstr ""
+
+#: plugin.py:577
+msgid " - Other sources\n"
+msgstr ""
+
+#: plugin.py:627
+msgid "No playlists found"
+msgstr ""
+
+#: plugin.py:636
+msgid "Error loading playlists"
+msgstr ""
+
+#: plugin.py:646
+msgid "No playlists available"
+msgstr ""
+
+#: plugin.py:651
+msgid "Select a valid playlist"
+msgstr ""
+
+#: plugin.py:659
+msgid "Error opening playlist"
+msgstr ""
+
+#: plugin.py:707
+msgid "Playlist file not found or empty"
+msgstr ""
+
+#: plugin.py:711
+msgid "Playlist file not found"
+msgstr ""
+
+#: plugin.py:714
+msgid "Error loading playlist"
+msgstr ""
+
+#: plugin.py:721 plugin.py:906 plugin.py:1045
+msgid "Select a valid webcam"
+msgstr ""
+
+#: plugin.py:746
+msgid "Country"
+msgstr ""
+
+#: plugin.py:773
+msgid "Error loading countries"
+msgstr ""
+
+#: plugin.py:834
+msgid "Error loading categories"
+msgstr ""
+
+#: plugin.py:843
+msgid "Select a valid category"
+msgstr ""
+
+#: plugin.py:895
+msgid "Error loading top webcams"
+msgstr ""
+
+#: plugin.py:959
+msgid "Error loading locations"
+msgstr ""
+
+#: plugin.py:970
+msgid "Select a valid location"
+msgstr ""
+
+#: plugin.py:1034
+msgid "Error loading webcams"
+msgstr ""
