@@ -22,42 +22,40 @@ class PladformIE(InfoExtractor):
                         )
                         (?P<id>\d+)
                     '''
-    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//out\.pladform\.ru/player\?.+?)\1']
-    _TESTS = [{
-        'url': 'http://out.pladform.ru/player?pl=18079&type=html5&videoid=100231282',
-        'info_dict': {
-            'id': '6216d548e755edae6e8280667d774791',
-            'ext': 'mp4',
-            'timestamp': 1406117012,
-            'title': 'Гарик Мартиросян и Гарик Харламов - Кастинг на концерт ко Дню милиции',
-            'age_limit': 0,
-            'upload_date': '20140723',
-            'thumbnail': str,
-            'view_count': int,
-            'description': str,
-            'uploader_id': '12082',
-            'uploader': 'Comedy Club',
-            'duration': 367,
-        },
-        'expected_warnings': ['HTTP Error 404: Not Found'],
-    }, {
-        'url': 'https://out.pladform.ru/player?pl=64471&videoid=3777899&vk_puid15=0&vk_puid34=0',
-        'md5': '53362fac3a27352da20fa2803cc5cd6f',
-        'info_dict': {
-            'id': '3777899',
-            'ext': 'mp4',
-            'title': 'СТУДИЯ СОЮЗ • Шоу Студия Союз, 24 выпуск (01.02.2018) Нурлан Сабуров и Слава Комиссаренко',
-            'description': 'md5:05140e8bf1b7e2d46e7ba140be57fd95',
-            'thumbnail': r're:^https?://.*\.jpg$',
-            'duration': 3190,
-        },
-    }, {
-        'url': 'http://static.pladform.ru/player.swf?pl=21469&videoid=100183293&vkcid=0',
-        'only_matching': True,
-    }, {
-        'url': 'http://video.pladform.ru/catalog/video/videoid/100183293/vkcid/0',
-        'only_matching': True,
-    }]
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//out\.pladform\.ru/player\?.+?)\1']
+    _TESTS = [{'url': 'http://out.pladform.ru/player?pl=18079&type=html5&videoid=100231282',
+               'info_dict': {'id': '6216d548e755edae6e8280667d774791',
+                             'ext': 'mp4',
+                             'timestamp': 1406117012,
+                             'title': 'Гарик Мартиросян и Гарик Харламов - Кастинг на концерт ко Дню милиции',
+                             'age_limit': 0,
+                             'upload_date': '20140723',
+                             'thumbnail': str,
+                             'view_count': int,
+                             'description': str,
+                             'uploader_id': '12082',
+                             'uploader': 'Comedy Club',
+                             'duration': 367,
+                             },
+               'expected_warnings': ['HTTP Error 404: Not Found'],
+               },
+              {'url': 'https://out.pladform.ru/player?pl=64471&videoid=3777899&vk_puid15=0&vk_puid34=0',
+               'md5': '53362fac3a27352da20fa2803cc5cd6f',
+               'info_dict': {'id': '3777899',
+                             'ext': 'mp4',
+                             'title': 'СТУДИЯ СОЮЗ • Шоу Студия Союз, 24 выпуск (01.02.2018) Нурлан Сабуров и Слава Комиссаренко',
+                             'description': 'md5:05140e8bf1b7e2d46e7ba140be57fd95',
+                             'thumbnail': r're:^https?://.*\.jpg$',
+                             'duration': 3190,
+                             },
+               },
+              {'url': 'http://static.pladform.ru/player.swf?pl=21469&videoid=100183293&vkcid=0',
+               'only_matching': True,
+               },
+              {'url': 'http://video.pladform.ru/catalog/video/videoid/100183293/vkcid/0',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -77,7 +75,8 @@ class PladformIE(InfoExtractor):
                 expected=True)
 
         if not video:
-            target_url = self._request_webpage(url, video_id, note='Resolving final URL').url
+            target_url = self._request_webpage(
+                url, video_id, note='Resolving final URL').url
             if target_url == url:
                 raise ExtractorError('Can\'t parse page')
             return self.url_result(target_url)

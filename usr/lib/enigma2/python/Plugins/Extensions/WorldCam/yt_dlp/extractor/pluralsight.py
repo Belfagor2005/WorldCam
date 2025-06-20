@@ -195,19 +195,33 @@ query viewClip {
                 raise ExtractorError(
                     f'Unable to login: {BLOCKED}', expected=True)
             MUST_AGREE = 'To continue using Pluralsight, you must agree to'
-            if any(p in response for p in (MUST_AGREE, '>Disagree<', '>Agree<')):
+            if any(
+                p in response for p in (
+                    MUST_AGREE,
+                    '>Disagree<',
+                    '>Agree<')):
                 raise ExtractorError(
                     f'Unable to login: {MUST_AGREE} some documents. Go to pluralsight.com, '
                     'log in and agree with what Pluralsight requires.', expected=True)
 
             raise ExtractorError('Unable to log in')
 
-    def _get_subtitles(self, author, clip_idx, clip_id, lang, name, duration, video_id):
+    def _get_subtitles(
+            self,
+            author,
+            clip_idx,
+            clip_id,
+            lang,
+            name,
+            duration,
+            video_id):
         captions = None
         if clip_id:
             captions = self._download_json(
-                f'{self._API_BASE}/transcript/api/v1/caption/json/{clip_id}/{lang}', video_id,
-                'Downloading captions JSON', 'Unable to download captions JSON',
+                f'{self._API_BASE}/transcript/api/v1/caption/json/{clip_id}/{lang}',
+                video_id,
+                'Downloading captions JSON',
+                'Unable to download captions JSON',
                 fatal=False)
         if not captions:
             captions_post = {
@@ -240,8 +254,10 @@ query viewClip {
         for num, current in enumerate(subs):
             current = subs[num]
             start, text = (
-                float_or_none(dict_get(current, TIME_OFFSET_KEYS, skip_false_values=False)),
-                dict_get(current, TEXT_KEYS))
+                float_or_none(
+                    dict_get(
+                        current, TIME_OFFSET_KEYS, skip_false_values=False)), dict_get(
+                    current, TEXT_KEYS))
             if start is None or text is None:
                 continue
             end = duration if num == len(subs) - 1 else float_or_none(
@@ -249,12 +265,11 @@ query viewClip {
             if end is None:
                 continue
             srt += os.linesep.join(
-                (
-                    f'{num}',
-                    f'{srt_subtitles_timecode(start)} --> {srt_subtitles_timecode(end)}',
-                    text,
-                    os.linesep,
-                ))
+                (f'{num}',
+                 f'{srt_subtitles_timecode(start)} --> {srt_subtitles_timecode(end)}',
+                 text,
+                 os.linesep,
+                 ))
         return srt
 
     def _real_extract(self, url):
@@ -304,7 +319,8 @@ query viewClip {
         QUALITIES_PREFERENCE = ('low', 'medium', 'high', 'high-widescreen')
         quality_key = qualities(QUALITIES_PREFERENCE)
 
-        AllowedQuality = collections.namedtuple('AllowedQuality', ['ext', 'qualities'])
+        AllowedQuality = collections.namedtuple(
+            'AllowedQuality', ['ext', 'qualities'])
 
         ALLOWED_QUALITIES = (
             AllowedQuality('webm', ['high']),
@@ -334,7 +350,8 @@ query viewClip {
                     for allowed_quality in ALLOWED_QUALITIES:
                         if req_ext == allowed_quality.ext and req_quality in allowed_quality.qualities:
                             return (AllowedQuality(req_ext, (req_quality, )), )
-                req_ext = 'webm' if self.get_param('prefer_free_formats') else 'mp4'
+                req_ext = 'webm' if self.get_param(
+                    'prefer_free_formats') else 'mp4'
                 return (AllowedQuality(req_ext, (best_quality, )), )
             allowed_qualities = guess_allowed_qualities()
 
@@ -376,9 +393,13 @@ query viewClip {
                 # https://github.com/ytdl-org/youtube-dl/pull/6989). Moreover it may even lead
                 # to account ban (see https://github.com/ytdl-org/youtube-dl/issues/6842).
                 # To somewhat reduce the probability of these consequences
-                # we will sleep random amount of time before each call to ViewClip.
+                # we will sleep random amount of time before each call to
+                # ViewClip.
                 self._sleep(
-                    random.randint(5, 10), display_id,
+                    random.randint(
+                        5,
+                        10),
+                    display_id,
                     '%(video_id)s: Waiting for %(timeout)s seconds to avoid throttling')
 
                 if not viewclip:
@@ -404,11 +425,18 @@ query viewClip {
                     formats.append(clip_f)
 
         duration = int_or_none(
-            clip.get('duration')) or parse_duration(clip.get('formattedDuration'))
+            clip.get('duration')) or parse_duration(
+            clip.get('formattedDuration'))
 
         # TODO: other languages?
         subtitles = self.extract_subtitles(
-            author, clip_idx, clip.get('clipId'), 'en', name, duration, display_id)
+            author,
+            clip_idx,
+            clip.get('clipId'),
+            'en',
+            name,
+            duration,
+            display_id)
 
         return {
             'id': clip_id,
@@ -452,7 +480,8 @@ class PluralsightCourseIE(PluralsightBaseIE):
         title = course['title']
         course_name = course['name']
         course_data = course['modules']
-        description = course.get('description') or course.get('shortDescription')
+        description = course.get(
+            'description') or course.get('shortDescription')
 
         entries = []
         for num, module in enumerate(course_data, 1):
