@@ -42,14 +42,20 @@ class ElonetIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        src = self._parse_json(self._html_search_regex(
-            r'id=\'video-data\'[^>]+data-video-sources="([^"]+)"', webpage, 'json'), video_id)[0]['src']
+        src = self._parse_json(
+            self._html_search_regex(
+                r'id=\'video-data\'[^>]+data-video-sources="([^"]+)"',
+                webpage,
+                'json'),
+            video_id)[0]['src']
         ext = determine_ext(src)
 
         if ext == 'm3u8':
-            formats, subtitles = self._extract_m3u8_formats_and_subtitles(src, video_id, fatal=False)
+            formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+                src, video_id, fatal=False)
         elif ext == 'mpd':
-            formats, subtitles = self._extract_mpd_formats_and_subtitles(src, video_id, fatal=False)
+            formats, subtitles = self._extract_mpd_formats_and_subtitles(
+                src, video_id, fatal=False)
         else:
             formats, subtitles = [], {}
             self.raise_no_formats(f'Unknown streaming format {ext}')

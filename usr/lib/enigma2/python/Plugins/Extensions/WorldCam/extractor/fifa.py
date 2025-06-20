@@ -55,19 +55,27 @@ class FifaIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
 
         preconnect_link = self._search_regex(
-            r'<link\b[^>]+\brel\s*=\s*"preconnect"[^>]+href\s*=\s*"([^"]+)"', webpage, 'Preconnect Link')
+            r'<link\b[^>]+\brel\s*=\s*"preconnect"[^>]+href\s*=\s*"([^"]+)"',
+            webpage,
+            'Preconnect Link')
 
         video_details = self._download_json(
-            f'{preconnect_link}/sections/videoDetails/{video_id}', video_id, 'Downloading Video Details', fatal=False)
+            f'{preconnect_link}/sections/videoDetails/{video_id}',
+            video_id,
+            'Downloading Video Details',
+            fatal=False)
 
         preplay_parameters = self._download_json(
-            f'{preconnect_link}/videoPlayerData/{video_id}', video_id, 'Downloading Preplay Parameters')['preplayParameters']
+            f'{preconnect_link}/videoPlayerData/{video_id}',
+            video_id,
+            'Downloading Preplay Parameters')['preplayParameters']
 
         content_data = self._download_json(
-            'https://content.uplynk.com/preplay/{contentId}/multiple.json?{queryStr}&sig={signature}'.format(**preplay_parameters),
-            video_id, 'Downloading Content Data')
+            'https://content.uplynk.com/preplay/{contentId}/multiple.json?{queryStr}&sig={signature}'.format(
+                **preplay_parameters), video_id, 'Downloading Content Data')
 
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(content_data['playURL'], video_id)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+            content_data['playURL'], video_id)
 
         return {
             'id': video_id,

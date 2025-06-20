@@ -36,11 +36,19 @@ class EUScreenIE(InfoExtractor):
             'https://euscreen.eu/lou/LouServlet/domain/euscreenxl/html5application/euscreenxlitem',
             video_id, data=args_for_js_request.replace('screenid', 'screenId').encode())
         video_json = self._parse_json(
-            self._search_regex(r'setVideo\(({.+})\)\(\$end\$\)put', info_js, 'Video JSON'),
-            video_id, transform_source=js_to_json)
+            self._search_regex(
+                r'setVideo\(({.+})\)\(\$end\$\)put',
+                info_js,
+                'Video JSON'),
+            video_id,
+            transform_source=js_to_json)
         meta_json = self._parse_json(
-            self._search_regex(r'setData\(({.+})\)\(\$end\$\)', info_js, 'Metadata JSON'),
-            video_id, transform_source=js_to_json)
+            self._search_regex(
+                r'setData\(({.+})\)\(\$end\$\)',
+                info_js,
+                'Metadata JSON'),
+            video_id,
+            transform_source=js_to_json)
         formats = [{
             'url': source['src'],
         } for source in video_json.get('sources', [])]
@@ -49,8 +57,15 @@ class EUScreenIE(InfoExtractor):
             'id': video_id,
             'title': meta_json.get('originalTitle'),
             'alt_title': meta_json.get('title'),
-            'duration': parse_duration(meta_json.get('duration')),
-            'description': '{}\n{}'.format(meta_json.get('summaryOriginal', ''), meta_json.get('summaryEnglish', '')),
+            'duration': parse_duration(
+                meta_json.get('duration')),
+            'description': '{}\n{}'.format(
+                meta_json.get(
+                    'summaryOriginal',
+                    ''),
+                meta_json.get(
+                    'summaryEnglish',
+                    '')),
             'series': meta_json.get('series') or meta_json.get('seriesEnglish'),
             'episode': meta_json.get('episodeNumber'),
             'uploader': meta_json.get('provider'),
