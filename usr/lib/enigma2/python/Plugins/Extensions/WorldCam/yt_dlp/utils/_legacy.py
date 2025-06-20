@@ -42,13 +42,8 @@ class WebSocketsWrapper:
         self.loop = asyncio.new_event_loop()
         # XXX: "loop" is deprecated
         self.conn = websockets.connect(
-            url,
-            extra_headers=headers,
-            ping_interval=None,
-            close_timeout=float('inf'),
-            loop=self.loop,
-            ping_timeout=float('inf'),
-            **ws_kwargs)
+            url, extra_headers=headers, ping_interval=None,
+            close_timeout=float('inf'), loop=self.loop, ping_timeout=float('inf'), **ws_kwargs)
         if connect:
             self.__enter__()
         atexit.register(self.__exit__, None, None, None)
@@ -66,16 +61,13 @@ class WebSocketsWrapper:
 
     def __exit__(self, type, value, traceback):
         try:
-            return self.run_with_loop(
-                self.conn.__aexit__(
-                    type, value, traceback), self.loop)
+            return self.run_with_loop(self.conn.__aexit__(type, value, traceback), self.loop)
         finally:
             self.loop.close()
             self._cancel_all_tasks(self.loop)
 
     # taken from https://github.com/python/cpython/blob/3.9/Lib/asyncio/runners.py with modifications
-    # for contributors: If there's any new library using asyncio needs to be
-    # run in non-async, move these function out of this class
+    # for contributors: If there's any new library using asyncio needs to be run in non-async, move these function out of this class
     @staticmethod
     def run_with_loop(main, loop):
         if not asyncio.iscoroutine(main):
@@ -121,12 +113,7 @@ def load_plugins(name, suffix, namespace):
 
 
 def traverse_dict(dictn, keys, casesense=True):
-    return traverse_obj(
-        dictn,
-        keys,
-        casesense=casesense,
-        is_user_input=True,
-        traverse_string=True)
+    return traverse_obj(dictn, keys, casesense=casesense, is_user_input=True, traverse_string=True)
 
 
 def decode_base(value, digits):
@@ -161,7 +148,7 @@ def decode_png(png_data):
         raise OSError('Not a valid PNG file.')
 
     int_map = {1: '>B', 2: '>H', 4: '>I'}
-    def unpack_integer(x): return struct.unpack(int_map[len(x)], x)[0]
+    unpack_integer = lambda x: struct.unpack(int_map[len(x)], x)[0]
 
     chunks = []
 
@@ -271,9 +258,7 @@ def handle_youtubedl_headers(headers):
     filtered_headers = headers
 
     if 'Youtubedl-no-compression' in filtered_headers:
-        filtered_headers = {
-            k: v for k,
-            v in filtered_headers.items() if k.lower() != 'accept-encoding'}
+        filtered_headers = {k: v for k, v in filtered_headers.items() if k.lower() != 'accept-encoding'}
         del filtered_headers['Youtubedl-no-compression']
 
     return filtered_headers
@@ -290,8 +275,7 @@ def sanitized_Request(url, *args, **kwargs):
     from ..utils import extract_basic_auth, sanitize_url
     url, auth_header = extract_basic_auth(escape_url(sanitize_url(url)))
     if auth_header is not None:
-        headers = args[1] if len(
-            args) >= 2 else kwargs.setdefault('headers', {})
+        headers = args[1] if len(args) >= 2 else kwargs.setdefault('headers', {})
         headers['Authorization'] = auth_header
     return urllib.request.Request(url, *args, **kwargs)
 
@@ -310,8 +294,7 @@ class YoutubeDLCookieProcessor(urllib.request.HTTPCookieProcessor):
         urllib.request.HTTPCookieProcessor.__init__(self, cookiejar)
 
     def http_response(self, request, response):
-        return urllib.request.HTTPCookieProcessor.http_response(
-            self, request, response)
+        return urllib.request.HTTPCookieProcessor.http_response(self, request, response)
 
     https_request = urllib.request.HTTPCookieProcessor.http_request
     https_response = http_response
