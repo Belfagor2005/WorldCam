@@ -78,7 +78,8 @@ class _MatchChildParser(_MatchParser):
 class ParseError(Exception):
     def __init__(self, parser):
         data = parser._data[parser._pos:parser._pos + 100]
-        super().__init__(f'Parse error at position {parser._pos} (near {data!r})')
+        super().__init__(
+            f'Parse error at position {parser._pos} (near {data!r})')
 
 
 # While the specification <https://www.w3.org/TR/webvtt1/#webvtt-timestamp>
@@ -102,8 +103,8 @@ def _parse_ts(ts):
     Convert a parsed WebVTT timestamp (a re.Match obtained from _REGEX_TS)
     into an MPEG PES timestamp: a tick counter at 90 kHz resolution.
     """
-    return 90 * sum(
-        int(part or 0) * mult for part, mult in zip(ts.groups(), (3600_000, 60_000, 1000, 1)))
+    return 90 * sum(int(part or 0) * mult for part,
+                    mult in zip(ts.groups(), (3600_000, 60_000, 1000, 1)))
 
 
 def _format_ts(ts):
@@ -164,7 +165,8 @@ class Magic(HeaderBlock):
     # the last spec draft to describe this syntax element is
     # <https://www.w3.org/TR/2015/WD-webvtt1-20151208/#webvtt-metadata-header>.
     # Nevertheless, YouTube keeps serving those
-    _REGEX_META = re.compile(r'(?:(?!-->)[^\r\n])+:(?:(?!-->)[^\r\n])+(?:\r\n|[\r\n])')
+    _REGEX_META = re.compile(
+        r'(?:(?!-->)[^\r\n])+:(?:(?!-->)[^\r\n])+(?:\r\n|[\r\n])')
 
     @classmethod
     def __parse_tsmap(cls, parser):
@@ -225,7 +227,9 @@ class Magic(HeaderBlock):
         stream.write('\n')
         if self.local or self.mpegts:
             stream.write('X-TIMESTAMP-MAP=LOCAL:')
-            stream.write(_format_ts(self.local if self.local is not None else 0))
+            stream.write(
+                _format_ts(
+                    self.local if self.local is not None else 0))
             stream.write(',MPEGTS:')
             stream.write(str(self.mpegts if self.mpegts is not None else 0))
             stream.write('\n')
