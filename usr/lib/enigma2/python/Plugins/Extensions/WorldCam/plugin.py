@@ -63,7 +63,6 @@ from Screens.Screen import Screen
 from . import (
 	_,
 	AgentRequest,
-	# developer_url,
 	installer_url,
 	paypal,
 )
@@ -84,7 +83,6 @@ from .utils import (
 	set_current_language,
 	urlopen,
 	FavoritesManager
-	# _sort_by_name,
 )
 # Python 3 compatibility fallback for unicode
 try:
