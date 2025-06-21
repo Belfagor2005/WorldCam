@@ -3,7 +3,7 @@
 ## setup command=wget -q --no-check-certificate https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
 
 ## Only This 2 lines to edit with new version ######
-version='5.0'
+version='5.2'
 changelog='\nRewrite all code source and add Youtube player'
 ##
 TMPPATH=/tmp/WorldCam-main
@@ -112,6 +112,21 @@ if [ ! -d $PLUGINPATH ]; then
 	echo "Some thing wrong .. Plugin not installed"
 	exit 1
 fi
+
+
+## --- START install yt-dlp and dependencies ---
+echo "Installing yt-dlp and required dependencies..."
+opkg update
+opkg install streamlink python3-re
+opkg install gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav
+gst-inspect-1.0 --version
+# wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/bin/yt-dlp
+# chmod a+rx /usr/bin/yt-dlp
+# /usr/bin/yt-dlp -U --verbose --force-overwrites
+# opkg install --force-reinstall yt-dlp
+echo ".youtube.com	TRUE	/	TRUE	2147483647	CONSENT	YES+cb.20210615-14-p0.it+FX+294" > /etc/enigma2/yt_cookies.txt
+echo "yt-dlp installation done."
+## --- END install yt-dlp and dependencies ---
 
 rm -rf $TMPPATH > /dev/null 2>&1
 sync
