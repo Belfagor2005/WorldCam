@@ -81,7 +81,8 @@ MONTH_NAMES = {
            'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'],
 }
 
-# From https://github.com/python/cpython/blob/3.11/Lib/email/_parseaddr.py#L36-L42
+# From
+# https://github.com/python/cpython/blob/3.11/Lib/email/_parseaddr.py#L36-L42
 TIMEZONE_NAMES = {
     'UT': 0, 'UTC': 0, 'GMT': 0, 'Z': 0,
     'AST': -4, 'ADT': -3,  # Atlantic (used in Canada)
@@ -92,9 +93,11 @@ TIMEZONE_NAMES = {
 }
 
 # needed for sanitizing filenames in restricted mode
-ACCENT_CHARS = dict(zip('ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖŐØŒÙÚÛÜŰÝÞßàáâãäåæçèéêëìíîïðñòóôõöőøœùúûüűýþÿ',
-                        itertools.chain('AAAAAA', ['AE'], 'CEEEEIIIIDNOOOOOOO', ['OE'], 'UUUUUY', ['TH', 'ss'],
-                                        'aaaaaa', ['ae'], 'ceeeeiiiionooooooo', ['oe'], 'uuuuuy', ['th'], 'y')))
+ACCENT_CHARS = dict(
+    zip(
+        'ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖŐØŒÙÚÛÜŰÝÞßàáâãäåæçèéêëìíîïðñòóôõöőøœùúûüűýþÿ', itertools.chain(
+            'AAAAAA', ['AE'], 'CEEEEIIIIDNOOOOOOO', ['OE'], 'UUUUUY', [
+                'TH', 'ss'], 'aaaaaa', ['ae'], 'ceeeeiiiionooooooo', ['oe'], 'uuuuuy', ['th'], 'y')))
 
 DATE_FORMATS = (
     '%d %B %Y',
@@ -213,10 +216,9 @@ def write_json_file(obj, fn):
 def partial_application(func):
     sig = inspect.signature(func)
     required_args = [
-        param.name for param in sig.parameters.values()
-        if param.kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)
-        if param.default is inspect.Parameter.empty
-    ]
+        param.name for param in sig.parameters.values() if param.kind in (
+            inspect.Parameter.POSITIONAL_ONLY,
+            inspect.Parameter.POSITIONAL_OR_KEYWORD) if param.default is inspect.Parameter.empty]
 
     @functools.wraps(func)
     def wrapped(*args, **kwargs):
@@ -348,15 +350,29 @@ def get_elements_html_by_class(class_name, html):
 
 def get_elements_by_attribute(*args, **kwargs):
     """Return the content of the tag with the specified attribute in the passed HTML document"""
-    return [content for content, _ in get_elements_text_and_html_by_attribute(*args, **kwargs)]
+    return [
+        content for content,
+        _ in get_elements_text_and_html_by_attribute(
+            *args,
+            **kwargs)]
 
 
 def get_elements_html_by_attribute(*args, **kwargs):
     """Return the html of the tag with the specified attribute in the passed HTML document"""
-    return [whole for _, whole in get_elements_text_and_html_by_attribute(*args, **kwargs)]
+    return [
+        whole for _,
+        whole in get_elements_text_and_html_by_attribute(
+            *args,
+            **kwargs)]
 
 
-def get_elements_text_and_html_by_attribute(attribute, value, html, *, tag=r'[\w:.-]+', escape_value=True):
+def get_elements_text_and_html_by_attribute(
+        attribute,
+        value,
+        html,
+        *,
+        tag=r'[\w:.-]+',
+        escape_value=True):
     """
     Return the text (content) and the html (whole) of the tag with the specified
     attribute in the passed HTML document
@@ -375,7 +391,8 @@ def get_elements_text_and_html_by_attribute(attribute, value, html, *, tag=r'[\w
         '''
 
     for m in re.finditer(partial_element_re, html):
-        content, whole = get_element_text_and_html_by_tag(m.group('tag'), html[m.start():])
+        content, whole = get_element_text_and_html_by_tag(
+            m.group('tag'), html[m.start():])
 
         yield (
             unescapeHTML(re.sub(r'^(?P<q>["\'])(?P<content>.*)(?P=q)$', r'\g<content>', content, flags=re.DOTALL)),
@@ -420,7 +437,8 @@ class HTMLBreakOnClosingTagParser(html.parser.HTMLParser):
             if inner_tag == tag:
                 break
         else:
-            raise compat_HTMLParseError(f'matching opening tag for closing {tag} tag not found')
+            raise compat_HTMLParseError(
+                f'matching opening tag for closing {tag} tag not found')
         if not self.tagstack:
             raise self.HTMLBreakOnClosingTagException
 
@@ -445,7 +463,8 @@ def get_element_text_and_html_by_tag(tag, html):
     with HTMLBreakOnClosingTagParser() as parser:
         parser.feed(html[whole_start:content_start])
         if not parser.tagstack or parser.tagstack[0] != tag:
-            raise compat_HTMLParseError(f'parser did not match opening {tag} tag')
+            raise compat_HTMLParseError(
+                f'parser did not match opening {tag} tag')
         offset = content_start
         while offset < len(html):
             next_closing_tag_start = find_or_raise(
@@ -538,7 +557,13 @@ def clean_html(html):
 
 class LenientJSONDecoder(json.JSONDecoder):
     # TODO: Write tests
-    def __init__(self, *args, transform_source=None, ignore_extra=False, close_objects=0, **kwargs):
+    def __init__(
+            self,
+            *args,
+            transform_source=None,
+            ignore_extra=False,
+            close_objects=0,
+            **kwargs):
         self.transform_source, self.ignore_extra = transform_source, ignore_extra
         self._close_attempts = 2 * close_objects
         super().__init__(*args, **kwargs)
@@ -572,7 +597,8 @@ class LenientJSONDecoder(json.JSONDecoder):
                     s = self._close_object(e)
                     if s is not None:
                         continue
-                raise type(e)(f'{e.msg} in {s[e.pos - 10:e.pos + 10]!r}', s, e.pos)
+                raise type(e)(
+                    f'{e.msg} in {s[e.pos - 10:e.pos + 10]!r}', s, e.pos)
         assert False, 'Too many attempts to decode JSON'
 
 
@@ -590,10 +616,15 @@ def sanitize_open(filename, open_mode):
         if sys.platform == 'win32':
             import msvcrt
 
-            # stdout may be any IO stream, e.g. when using contextlib.redirect_stdout
+            # stdout may be any IO stream, e.g. when using
+            # contextlib.redirect_stdout
             with contextlib.suppress(io.UnsupportedOperation):
                 msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
-        return (sys.stdout.buffer if hasattr(sys.stdout, 'buffer') else sys.stdout, filename)
+        return (
+            sys.stdout.buffer if hasattr(
+                sys.stdout,
+                'buffer') else sys.stdout,
+            filename)
 
     for attempt in range(2):
         try:
@@ -603,7 +634,8 @@ def sanitize_open(filename, open_mode):
                     # Since windows locks are mandatory, don't lock the file on windows (for now).
                     # Ref: https://github.com/yt-dlp/yt-dlp/issues/3124
                     raise LockingUnsupportedError
-                stream = locked_file(filename, open_mode, block=False).__enter__()
+                stream = locked_file(
+                    filename, open_mode, block=False).__enter__()
             except OSError:
                 stream = open(filename, open_mode)
             return stream, filename
@@ -640,7 +672,9 @@ def sanitize_filename(s, restricted=False, is_id=NO_DEFAULT):
             return '\0 '
         elif is_id is NO_DEFAULT and not restricted and char in '"*:<>?|/\\':
             # Replace with their full-width unicode counterparts
-            return {'/': '\u29F8', '\\': '\u29f9'}.get(char, chr(ord(char) + 0xfee0))
+            return {'/': '\u29F8',
+                    '\\': '\u29f9'}.get(char,
+                                        chr(ord(char) + 0xfee0))
         elif char == '?' or ord(char) < 32 or ord(char) == 127:
             return ''
         elif char == '"':
@@ -649,19 +683,27 @@ def sanitize_filename(s, restricted=False, is_id=NO_DEFAULT):
             return '\0_\0-' if restricted else '\0 \0-'
         elif char in '\\/|*<>':
             return '\0_'
-        if restricted and (char in '!&\'()[]{}$;`^,#' or char.isspace() or ord(char) > 127):
+        if restricted and (
+                char in '!&\'()[]{}$;`^,#' or char.isspace() or ord(char) > 127):
             return '' if unicodedata.category(char)[0] in 'CM' else '\0_'
         return char
 
     # Replace look-alike Unicode glyphs
     if restricted and (is_id is NO_DEFAULT or not is_id):
         s = unicodedata.normalize('NFKC', s)
-    s = re.sub(r'[0-9]+(?::[0-9]+)+', lambda m: m.group(0).replace(':', '_'), s)  # Handle timestamps
+    s = re.sub(
+        r'[0-9]+(?::[0-9]+)+',
+        lambda m: m.group(0).replace(
+            ':',
+            '_'),
+        s)  # Handle timestamps
     result = ''.join(map(replace_insane, s))
     if is_id is NO_DEFAULT:
-        result = re.sub(r'(\0.)(?:(?=\1)..)+', r'\1', result)  # Remove repeated substitute chars
+        # Remove repeated substitute chars
+        result = re.sub(r'(\0.)(?:(?=\1)..)+', r'\1', result)
         STRIP_RE = r'(?:\0.|[ _-])*'
-        result = re.sub(f'^\0.{STRIP_RE}|{STRIP_RE}\0.$', '', result)  # Remove substitute chars from start/end
+        # Remove substitute chars from start/end
+        result = re.sub(f'^\0.{STRIP_RE}|{STRIP_RE}\0.$', '', result)
     result = result.replace('\0', '') or '_'
 
     if not is_id:
@@ -864,12 +906,20 @@ class Popen(subprocess.Popen):
         _fix('LD_LIBRARY_PATH')  # Linux
         _fix('DYLD_LIBRARY_PATH')  # macOS
 
-    def __init__(self, args, *remaining, env=None, text=False, shell=False, **kwargs):
+    def __init__(
+            self,
+            args,
+            *remaining,
+            env=None,
+            text=False,
+            shell=False,
+            **kwargs):
         if env is None:
             env = os.environ.copy()
         self._fix_pyinstaller_issues(env)
 
-        self.__text_mode = kwargs.get('encoding') or kwargs.get('errors') or text or kwargs.get('universal_newlines')
+        self.__text_mode = kwargs.get('encoding') or kwargs.get(
+            'errors') or text or kwargs.get('universal_newlines')
         if text is True:
             kwargs['universal_newlines'] = True  # For 3.6 compatibility
             kwargs.setdefault('encoding', 'utf-8')
@@ -879,18 +929,26 @@ class Popen(subprocess.Popen):
             if not isinstance(args, str):
                 args = shell_quote(args, shell=True)
             shell = False
-            # Set variable for `cmd.exe` newline escaping (see `utils.shell_quote`)
+            # Set variable for `cmd.exe` newline escaping (see
+            # `utils.shell_quote`)
             env['='] = '"^\n\n"'
             args = f'{self.__comspec()} /Q /S /D /V:OFF /E:ON /C "{args}"'
 
-        super().__init__(args, *remaining, env=env, shell=shell, **kwargs, startupinfo=self._startupinfo)
+        super().__init__(
+            args,
+            *remaining,
+            env=env,
+            shell=shell,
+            **kwargs,
+            startupinfo=self._startupinfo)
 
     def __comspec(self):
         comspec = os.environ.get('ComSpec') or os.path.join(
             os.environ.get('SystemRoot', ''), 'System32', 'cmd.exe')
         if os.path.isabs(comspec):
             return comspec
-        raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+        raise FileNotFoundError(
+            'shell not found: neither %ComSpec% nor %SystemRoot% is set')
 
     def communicate_or_kill(self, *args, **kwargs):
         try:
@@ -919,7 +977,8 @@ def encodeArgument(s):
     return s if isinstance(s, str) else s.decode('ascii')
 
 
-_timetuple = collections.namedtuple('Time', ('hours', 'minutes', 'seconds', 'milliseconds'))
+_timetuple = collections.namedtuple(
+    'Time', ('hours', 'minutes', 'seconds', 'milliseconds'))
 
 
 def timetuple_from_msec(msec):
@@ -932,7 +991,8 @@ def timetuple_from_msec(msec):
 def formatSeconds(secs, delim=':', msec=False):
     time = timetuple_from_msec(secs * 1000)
     if time.hours:
-        ret = '%d%s%02d%s%02d' % (time.hours, delim, time.minutes, delim, time.seconds)
+        ret = '%d%s%02d%s%02d' % (
+            time.hours, delim, time.minutes, delim, time.seconds)
     elif time.minutes:
         ret = '%d%s%02d' % (time.minutes, delim, time.seconds)
     else:
@@ -943,8 +1003,9 @@ def formatSeconds(secs, delim=':', msec=False):
 def bug_reports_message(before=';'):
     from ..update import REPOSITORY
 
-    msg = (f'please report this issue on  https://github.com/{REPOSITORY}/issues?q= , '
-           'filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U')
+    msg = (
+        f'please report this issue on  https://github.com/{REPOSITORY}/issues?q= , '
+        'filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U')
 
     before = before.rstrip()
     if not before or before.endswith(('.', '!', '?')):
@@ -968,7 +1029,14 @@ class YoutubeDLError(Exception):
 class ExtractorError(YoutubeDLError):
     """Error during info extraction."""
 
-    def __init__(self, msg, tb=None, expected=False, cause=None, video_id=None, ie=None):
+    def __init__(
+            self,
+            msg,
+            tb=None,
+            expected=False,
+            cause=None,
+            video_id=None,
+            ie=None):
         """ tb, if given, is the original traceback (so that it can be printed out).
         If expected is set, this is a normal error message and most likely not a bug in yt-dlp.
         """
@@ -998,9 +1066,12 @@ class ExtractorError(YoutubeDLError):
 
     def format_traceback(self):
         return join_nonempty(
-            self.traceback and ''.join(traceback.format_tb(self.traceback)),
-            self.cause and ''.join(traceback.format_exception(None, self.cause, self.cause.__traceback__)[1:]),
-            delim='\n') or None
+            self.traceback and ''.join(
+                traceback.format_tb(
+                    self.traceback)), self.cause and ''.join(
+                traceback.format_exception(
+                    None, self.cause, self.cause.__traceback__)[
+                        1:]), delim='\n') or None
 
     def __setattr__(self, name, value):
         super().__setattr__(name, value)
@@ -1146,7 +1217,8 @@ class ContentTooShortError(YoutubeDLError):
     """
 
     def __init__(self, downloaded, expected):
-        super().__init__(f'Downloaded {downloaded} bytes, expected {expected} bytes')
+        super().__init__(
+            f'Downloaded {downloaded} bytes, expected {expected} bytes')
         # Both in bytes
         self.downloaded = downloaded
         self.expected = expected
@@ -1245,7 +1317,8 @@ def unified_strdate(date_str, day_first=True):
 
     for expression in date_formats(day_first):
         with contextlib.suppress(ValueError):
-            upload_date = dt.datetime.strptime(date_str, expression).strftime('%Y%m%d')
+            upload_date = dt.datetime.strptime(
+                date_str, expression).strftime('%Y%m%d')
     if upload_date is None:
         timetuple = email.utils.parsedate_tz(date_str)
         if timetuple:
@@ -1259,8 +1332,13 @@ def unified_timestamp(date_str, day_first=True):
     if not isinstance(date_str, str):
         return None
 
-    date_str = re.sub(r'\s+', ' ', re.sub(
-        r'(?i)[,|]|(mon|tues?|wed(nes)?|thu(rs)?|fri|sat(ur)?|sun)(day)?', '', date_str))
+    date_str = re.sub(
+        r'\s+',
+        ' ',
+        re.sub(
+            r'(?i)[,|]|(mon|tues?|wed(nes)?|thu(rs)?|fri|sat(ur)?|sun)(day)?',
+            '',
+            date_str))
 
     pm_delta = 12 if re.search(r'(?i)PM', date_str) else 0
     timezone, date_str = extract_timezone(date_str)
@@ -1274,18 +1352,22 @@ def unified_timestamp(date_str, day_first=True):
         date_str = date_str[:-len(m.group('tz'))]
 
     # Python only supports microseconds, so remove nanoseconds
-    m = re.search(r'^([0-9]{4,}-[0-9]{1,2}-[0-9]{1,2}T[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\.[0-9]{6})[0-9]+$', date_str)
+    m = re.search(
+        r'^([0-9]{4,}-[0-9]{1,2}-[0-9]{1,2}T[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\.[0-9]{6})[0-9]+$',
+        date_str)
     if m:
         date_str = m.group(1)
 
     for expression in date_formats(day_first):
         with contextlib.suppress(ValueError):
-            dt_ = dt.datetime.strptime(date_str, expression) - timezone + dt.timedelta(hours=pm_delta)
+            dt_ = dt.datetime.strptime(
+                date_str, expression) - timezone + dt.timedelta(hours=pm_delta)
             return calendar.timegm(dt_.timetuple())
 
     timetuple = email.utils.parsedate_tz(date_str)
     if timetuple:
-        return calendar.timegm(timetuple) + pm_delta * 3600 - timezone.total_seconds()
+        return calendar.timegm(timetuple) + pm_delta * \
+            3600 - timezone.total_seconds()
 
 
 @partial_application
@@ -1303,7 +1385,10 @@ def determine_ext(url, default_ext='unknown_video'):
 
 
 def subtitles_filename(filename, sub_lang, sub_format, expected_real_ext=None):
-    return replace_extension(filename, sub_lang + '.' + sub_format, expected_real_ext)
+    return replace_extension(
+        filename,
+        sub_lang + '.' + sub_format,
+        expected_real_ext)
 
 
 def datetime_from_str(date_str, precision='auto', format='%Y%m%d'):
@@ -1330,10 +1415,12 @@ def datetime_from_str(date_str, precision='auto', format='%Y%m%d'):
         date_str)
     if match is not None:
         start_time = datetime_from_str(match.group('start'), precision, format)
-        time = int(match.group('time')) * (-1 if match.group('sign') == '-' else 1)
+        time = int(match.group('time')) * \
+            (-1 if match.group('sign') == '-' else 1)
         unit = match.group('unit')
         if unit == 'month' or unit == 'year':
-            new_date = datetime_add_months(start_time, time * 12 if unit == 'year' else time)
+            new_date = datetime_add_months(
+                start_time, time * 12 if unit == 'year' else time)
             unit = 'day'
         else:
             if unit == 'week':
@@ -1355,9 +1442,14 @@ def date_from_str(date_str, format='%Y%m%d', strict=False):
     @param strict  Restrict allowed patterns to "YYYYMMDD" and
                    (now|today|yesterday)(-\d+(day|week|month|year)s?)?
     """
-    if strict and not re.fullmatch(r'\d{8}|(now|today|yesterday)(-\d+(day|week|month|year)s?)?', date_str):
+    if strict and not re.fullmatch(
+        r'\d{8}|(now|today|yesterday)(-\d+(day|week|month|year)s?)?',
+            date_str):
         raise ValueError(f'Invalid date format "{date_str}"')
-    return datetime_from_str(date_str, precision='microsecond', format=format).date()
+    return datetime_from_str(
+        date_str,
+        precision='microsecond',
+        format=format).date()
 
 
 def datetime_add_months(dt_, months):
@@ -1382,8 +1474,11 @@ def datetime_round(dt_, precision='day'):
         'minute': 60,
         'second': 1,
     }
-    roundto = lambda x, n: ((x + n / 2) // n) * n
-    timestamp = roundto(calendar.timegm(dt_.timetuple()), unit_seconds[precision])
+    def roundto(x, n): return ((x + n / 2) // n) * n
+    timestamp = roundto(
+        calendar.timegm(
+            dt_.timetuple()),
+        unit_seconds[precision])
     return dt.datetime.fromtimestamp(timestamp, dt.timezone.utc)
 
 
@@ -1411,7 +1506,8 @@ class DateRange:
         else:
             self.end = dt.datetime.max.date()
         if self.start > self.end:
-            raise ValueError(f'Date range: "{self}" , the start date must be before the end date')
+            raise ValueError(
+                f'Date range: "{self}" , the start date must be before the end date')
 
     @classmethod
     def day(cls, day):
@@ -1441,7 +1537,8 @@ def system_identifier():
     if python_implementation == 'PyPy' and hasattr(sys, 'pypy_version_info'):
         python_implementation += ' version %d.%d.%d' % sys.pypy_version_info[:3]
     libc_ver = []
-    with contextlib.suppress(OSError):  # We may not have access to the executable
+    # We may not have access to the executable
+    with contextlib.suppress(OSError):
         libc_ver = platform.libc_ver()
 
     return 'Python {} ({} {} {}) - {} ({}{})'.format(
@@ -1555,16 +1652,29 @@ if sys.platform == 'win32':
         overlapped.hEvent = 0
         f._lock_file_overlapped_p = ctypes.pointer(overlapped)
 
-        if not LockFileEx(msvcrt.get_osfhandle(f.fileno()),
-                          (0x2 if exclusive else 0x0) | (0x0 if block else 0x1),
-                          0, whole_low, whole_high, f._lock_file_overlapped_p):
-            # NB: No argument form of "ctypes.FormatError" does not work on PyPy
-            raise BlockingIOError(f'Locking file failed: {ctypes.FormatError(ctypes.GetLastError())!r}')
+        if not LockFileEx(
+                msvcrt.get_osfhandle(
+                    f.fileno()),
+                (0x2 if exclusive else 0x0) | (
+                    0x0 if block else 0x1),
+                0,
+                whole_low,
+                whole_high,
+                f._lock_file_overlapped_p):
+            # NB: No argument form of "ctypes.FormatError" does not work on
+            # PyPy
+            raise BlockingIOError(
+                f'Locking file failed: {ctypes.FormatError(ctypes.GetLastError())!r}')
 
     def _unlock_file(f):
         assert f._lock_file_overlapped_p
         handle = msvcrt.get_osfhandle(f.fileno())
-        if not UnlockFileEx(handle, 0, whole_low, whole_high, f._lock_file_overlapped_p):
+        if not UnlockFileEx(
+                handle,
+                0,
+                whole_low,
+                whole_high,
+                f._lock_file_overlapped_p):
             raise OSError(f'Unlocking file failed: {ctypes.FormatError()!r}')
 
 else:
@@ -1586,8 +1696,10 @@ else:
             with contextlib.suppress(OSError):
                 return fcntl.flock(f, fcntl.LOCK_UN)
             with contextlib.suppress(OSError):
-                return fcntl.lockf(f, fcntl.LOCK_UN)  # AOSP does not have flock()
-            return fcntl.flock(f, fcntl.LOCK_UN | fcntl.LOCK_NB)  # virtiofs needs LOCK_NB on unlocking
+                # AOSP does not have flock()
+                return fcntl.lockf(f, fcntl.LOCK_UN)
+            # virtiofs needs LOCK_NB on unlocking
+            return fcntl.flock(f, fcntl.LOCK_UN | fcntl.LOCK_NB)
 
     except ImportError:
 
@@ -1618,7 +1730,13 @@ class locked_file:
             os.O_RDONLY if not writable else os.O_RDWR if readable else os.O_WRONLY,
         ))
 
-        self.f = os.fdopen(os.open(filename, flags, 0o666), mode, encoding=encoding)
+        self.f = os.fdopen(
+            os.open(
+                filename,
+                flags,
+                0o666),
+            mode,
+            encoding=encoding)
 
     def __enter__(self):
         exclusive = 'r' not in self.mode
@@ -1721,7 +1839,8 @@ def format_decimal_suffix(num, fmt='%d%s', *, factor=1000):
     if num is None or num < 0:
         return None
     POSSIBLE_SUFFIXES = 'kMGTPEZY'
-    exponent = 0 if num == 0 else min(int(math.log(num, factor)), len(POSSIBLE_SUFFIXES))
+    exponent = 0 if num == 0 else min(
+        int(math.log(num, factor)), len(POSSIBLE_SUFFIXES))
     suffix = ['', *POSSIBLE_SUFFIXES][exponent]
     if factor == 1024:
         suffix = {'k': 'Ki', '': ''}.get(suffix, f'{suffix}i')
@@ -1860,7 +1979,8 @@ def parse_resolution(s, *, lenient=False):
     if lenient:
         mobj = re.search(r'(?P<w>\d+)\s*[xX×,]\s*(?P<h>\d+)', s)
     else:
-        mobj = re.search(r'(?<![a-zA-Z0-9])(?P<w>\d+)\s*[xX×,]\s*(?P<h>\d+)(?![a-zA-Z0-9])', s)
+        mobj = re.search(
+            r'(?<![a-zA-Z0-9])(?P<w>\d+)\s*[xX×,]\s*(?P<h>\d+)(?![a-zA-Z0-9])', s)
     if mobj:
         return {
             'width': int(mobj.group('w')),
@@ -1994,14 +2114,21 @@ def urljoin(base, path):
 
 
 @partial_application
-def int_or_none(v, scale=1, default=None, get_attr=None, invscale=1, base=None):
+def int_or_none(
+        v,
+        scale=1,
+        default=None,
+        get_attr=None,
+        invscale=1,
+        base=None):
     if get_attr and v is not None:
         v = getattr(v, get_attr, None)
     if invscale == 1 and scale < 1:
         invscale = int(1 / scale)
         scale = 1
     try:
-        return (int(v) if base is None else int(v, base=base)) * invscale // scale
+        return (int(v) if base is None else int(
+            v, base=base)) * invscale // scale
     except (ValueError, TypeError, OverflowError):
         return default
 
@@ -2044,7 +2171,9 @@ def url_or_none(url):
     if not url or not isinstance(url, str):
         return None
     url = url.strip()
-    return url if re.match(r'(?:(?:https?|rt(?:m(?:pt?[es]?|fp)|sp[su]?)|mms|ftps?|wss?):)?//', url) else None
+    return url if re.match(
+        r'(?:(?:https?|rt(?:m(?:pt?[es]?|fp)|sp[su]?)|mms|ftps?|wss?):)?//',
+        url) else None
 
 
 def strftime_or_none(timestamp, date_format='%Y%m%d', default=None):
@@ -2054,7 +2183,8 @@ def strftime_or_none(timestamp, date_format='%Y%m%d', default=None):
             # Using naive datetime here can break timestamp() in Windows
             # Ref: https://github.com/yt-dlp/yt-dlp/issues/5185, https://github.com/python/cpython/issues/94414
             # Also, dt.datetime.fromtimestamp breaks for negative timestamps
-            # Ref: https://github.com/yt-dlp/yt-dlp/issues/6706#issuecomment-1496842642
+            # Ref:
+            # https://github.com/yt-dlp/yt-dlp/issues/6706#issuecomment-1496842642
             datetime_object = (dt.datetime.fromtimestamp(0, dt.timezone.utc)
                                + dt.timedelta(seconds=timestamp))
         elif isinstance(timestamp, str):  # assume YYYYMMDD
@@ -2081,7 +2211,8 @@ def parse_duration(s):
             (?P<ms>[.:][0-9]+)?Z?$
         ''', s)
     if m:
-        days, hours, mins, secs, ms = m.group('days', 'hours', 'mins', 'secs', 'ms')
+        days, hours, mins, secs, ms = m.group(
+            'days', 'hours', 'mins', 'secs', 'ms')
     else:
         m = re.match(
             r'''(?ix)(?:P?
@@ -2110,7 +2241,9 @@ def parse_duration(s):
         if m:
             days, hours, mins, secs, ms = m.groups()
         else:
-            m = re.match(r'(?i)(?:(?P<hours>[0-9.]+)\s*(?:hours?)|(?P<mins>[0-9.]+)\s*(?:mins?\.?|minutes?)\s*)Z?$', s)
+            m = re.match(
+                r'(?i)(?:(?P<hours>[0-9.]+)\s*(?:hours?)|(?P<mins>[0-9.]+)\s*(?:mins?\.?|minutes?)\s*)Z?$',
+                s)
             if m:
                 hours, mins = m.groups()
             else:
@@ -2152,7 +2285,8 @@ def _get_exe_version_output(exe, args):
     try:
         # STDIN should be redirected too. On UNIX-like systems, ffmpeg triggers
         # SIGTTOU if yt-dlp is run in the background.
-        # See https://github.com/ytdl-org/youtube-dl/issues/955#issuecomment-209789656
+        # See
+        # https://github.com/ytdl-org/youtube-dl/issues/955#issuecomment-209789656
         stdout, _, ret = Popen.run([encodeArgument(exe), *args], text=True,
                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if ret:
@@ -2233,7 +2367,8 @@ class LazyList(collections.abc.Sequence):
     def __getitem__(self, idx):
         if isinstance(idx, slice):
             if self._reversed:
-                idx = slice(self._reverse_index(idx.start), self._reverse_index(idx.stop), -(idx.step or 1))
+                idx = slice(self._reverse_index(idx.start),
+                            self._reverse_index(idx.stop), -(idx.step or 1))
             start, stop, step = idx.start, idx.stop, idx.step or 1
         elif isinstance(idx, int):
             if self._reversed:
@@ -2271,10 +2406,16 @@ class LazyList(collections.abc.Sequence):
         return len(self._cache)
 
     def __reversed__(self):
-        return type(self)(self._iterable, reverse=not self._reversed, _cache=self._cache)
+        return type(self)(
+            self._iterable,
+            reverse=not self._reversed,
+            _cache=self._cache)
 
     def __copy__(self):
-        return type(self)(self._iterable, reverse=self._reversed, _cache=self._cache)
+        return type(self)(
+            self._iterable,
+            reverse=self._reversed,
+            _cache=self._cache)
 
     def __repr__(self):
         # repr and str should mimic a list. So we exhaust the iterable
@@ -2303,7 +2444,8 @@ class PagedList:
     def getpage(self, pagenum):
         page_results = self._cache.get(pagenum)
         if page_results is None:
-            page_results = [] if pagenum > self._pagecount else list(self._pagefunc(pagenum))
+            page_results = [] if pagenum > self._pagecount else list(
+                self._pagefunc(pagenum))
         if self._use_cache:
             self._cache[pagenum] = page_results
         return page_results
@@ -2312,7 +2454,8 @@ class PagedList:
         return list(self._getslice(start, end))
 
     def _getslice(self, start, end):
-        raise NotImplementedError('This method must be implemented by subclasses')
+        raise NotImplementedError(
+            'This method must be implemented by subclasses')
 
     def __getitem__(self, idx):
         assert self._use_cache, 'Indexing PagedList requires cache'
@@ -2377,7 +2520,8 @@ class InAdvancePagedList(PagedList):
 
     def _getslice(self, start, end):
         start_page = start // self._pagesize
-        end_page = self._pagecount if end is None else min(self._pagecount, end // self._pagesize + 1)
+        end_page = self._pagecount if end is None else min(
+            self._pagecount, end // self._pagesize + 1)
         skip_elems = start - start_page * self._pagesize
         only_more = None if end is None else end - start
         for pagenum in range(start_page, end_page):
@@ -2401,7 +2545,8 @@ class PlaylistEntries:
     def __init__(self, ydl, info_dict):
         self.ydl = ydl
 
-        # _entries must be assigned now since infodict can change during iteration
+        # _entries must be assigned now since infodict can change during
+        # iteration
         entries = info_dict.get('entries')
         if entries is None:
             raise EntryNotInPlaylist('There are no entries')
@@ -2435,7 +2580,8 @@ class PlaylistEntries:
             mobj = cls.PLAYLIST_ITEMS_RE.fullmatch(segment)
             if not mobj:
                 raise ValueError(f'{segment!r} is not a valid specification')
-            start, end, step, has_range = mobj.group('start', 'end', 'step', 'range')
+            start, end, step, has_range = mobj.group(
+                'start', 'end', 'step', 'range')
             if int_or_none(step) == 0:
                 raise ValueError(f'Step in {segment!r} cannot be zero')
             yield slice(int_or_none(start), float_or_none(end), int_or_none(step)) if has_range else int(start)
@@ -2450,7 +2596,9 @@ class PlaylistEntries:
         if not playlist_items:
             playlist_items = f'{playlist_start}:{playlist_end}'
         elif playlist_start != 1 or playlist_end:
-            self.ydl.report_warning('Ignoring playliststart and playlistend because playlistitems was given', only_once=True)
+            self.ydl.report_warning(
+                'Ignoring playliststart and playlistend because playlistitems was given',
+                only_once=True)
 
         for index in self.parse_playlist_items(playlist_items):
             for i, entry in self[index]:
@@ -2458,10 +2606,12 @@ class PlaylistEntries:
                 if not entry:
                     continue
                 try:
-                    # The item may have just been added to archive. Don't break due to it
+                    # The item may have just been added to archive. Don't break
+                    # due to it
                     if not self.ydl.params.get('lazy_playlist'):
                         # TODO: Add auto-generated fields
-                        self.ydl._match_entry(entry, incomplete=True, silent=True)
+                        self.ydl._match_entry(
+                            entry, incomplete=True, silent=True)
                 except (ExistingVideoReached, RejectedVideoReached):
                     return
 
@@ -2488,7 +2638,12 @@ class PlaylistEntries:
         else:
             def get_entry(i):
                 try:
-                    return type(self.ydl)._handle_extraction_exceptions(lambda _, i: self._entries[i])(self.ydl, i)
+                    return type(
+                        self.ydl)._handle_extraction_exceptions(
+                        lambda _,
+                        i: self._entries[i])(
+                        self.ydl,
+                        i)
                 except (LazyList.IndexError, PagedList.IndexError):
                     raise self.IndexError
         return get_entry
@@ -2638,7 +2793,8 @@ def multipart_encode(data, boundary=None):
 
     while True:
         if boundary is None:
-            boundary = '---------------' + str(random.randrange(0x0fffffff, 0xffffffff))
+            boundary = '---------------' + \
+                str(random.randrange(0x0fffffff, 0xffffffff))
 
         try:
             out, content_type = _multipart_encode_impl(data, boundary)
@@ -2651,7 +2807,10 @@ def multipart_encode(data, boundary=None):
     return out, content_type
 
 
-def is_iterable_like(x, allowed_types=collections.abc.Iterable, blocked_types=NO_DEFAULT):
+def is_iterable_like(
+        x,
+        allowed_types=collections.abc.Iterable,
+        blocked_types=NO_DEFAULT):
     if blocked_types is NO_DEFAULT:
         blocked_types = (str, bytes, collections.abc.Mapping)
     return isinstance(x, allowed_types) and not isinstance(x, blocked_types)
@@ -2676,7 +2835,8 @@ def try_call(*funcs, expected_type=None, args=[], kwargs={}):
 
 
 def try_get(src, getter, expected_type=None):
-    return try_call(*variadic(getter), args=(src,), expected_type=expected_type)
+    return try_call(*variadic(getter), args=(src,),
+                    expected_type=expected_type)
 
 
 def filter_dict(dct, cndn=lambda _, v: v is not None):
@@ -2728,7 +2888,8 @@ def parse_age_limit(s):
     s = s.upper()
     if s in US_RATINGS:
         return US_RATINGS[s]
-    m = re.match(r'^TV[_-]?({})$'.format('|'.join(k[3:] for k in TV_PARENTAL_GUIDELINES)), s)
+    m = re.match(r'^TV[_-]?({})$'.format('|'.join(k[3:]
+                 for k in TV_PARENTAL_GUIDELINES)), s)
     if m:
         return TV_PARENTAL_GUIDELINES['TV-' + m.group(1)]
     return None
@@ -2781,7 +2942,9 @@ def js_to_json(code, vars={}, *, strict=False):
             return ''
 
         if v[0] in STRING_QUOTES:
-            v = re.sub(r'(?s)\${([^}]+)}', template_substitute, v[1:-1]) if v[0] == '`' else v[1:-1]
+            v = re.sub(r'(?s)\${([^}]+)}',
+                       template_substitute,
+                       v[1:-1]) if v[0] == '`' else v[1:-1]
             escaped = re.sub(r'(?s)(")|\\(.)', process_escape, v)
             return f'"{escaped}"'
 
@@ -2806,15 +2969,27 @@ def js_to_json(code, vars={}, *, strict=False):
         raise ValueError(f'Unknown value: {v}')
 
     def create_map(mobj):
-        return json.dumps(dict(json.loads(js_to_json(mobj.group(1) or '[]', vars=vars))))
+        return json.dumps(
+            dict(
+                json.loads(
+                    js_to_json(
+                        mobj.group(1) or '[]',
+                        vars=vars))))
 
     code = re.sub(r'(?:new\s+)?Array\((.*?)\)', r'[\g<1>]', code)
     code = re.sub(r'new Map\((\[.*?\])?\)', create_map, code)
     if not strict:
         code = re.sub(rf'new Date\(({STRING_RE})\)', r'\g<1>', code)
-        code = re.sub(r'new \w+\((.*?)\)', lambda m: json.dumps(m.group(0)), code)
+        code = re.sub(
+            r'new \w+\((.*?)\)',
+            lambda m: json.dumps(
+                m.group(0)),
+            code)
         code = re.sub(r'parseInt\([^\d]+(\d+)[^\d]+\)', r'\1', code)
-        code = re.sub(r'\(function\([^)]*\)\s*\{[^}]*\}\s*\)\s*\(\s*(["\'][^)]*["\'])\s*\)', r'\1', code)
+        code = re.sub(
+            r'\(function\([^)]*\)\s*\{[^}]*\}\s*\)\s*\(\s*(["\'][^)]*["\'])\s*\)',
+            r'\1',
+            code)
 
     return re.sub(rf'''(?sx)
         {STRING_RE}|
@@ -2836,7 +3011,15 @@ def qualities(quality_ids):
     return q
 
 
-POSTPROCESS_WHEN = ('pre_process', 'after_filter', 'video', 'before_dl', 'post_process', 'after_move', 'after_video', 'playlist')
+POSTPROCESS_WHEN = (
+    'pre_process',
+    'after_filter',
+    'video',
+    'before_dl',
+    'post_process',
+    'after_move',
+    'after_video',
+    'playlist')
 
 
 DEFAULT_OUTTMPL = {
@@ -3002,7 +3185,8 @@ def mimetype2ext(mt, default=NO_DEFAULT):
     mimetype = mt.partition(';')[0].strip().lower()
     _, _, subtype = mimetype.rpartition('/')
 
-    ext = traversal.traverse_obj(MAP, mimetype, subtype, subtype.rsplit('+')[-1])
+    ext = traversal.traverse_obj(
+        MAP, mimetype, subtype, subtype.rsplit('+')[-1])
     if ext:
         return ext
     elif default is not NO_DEFAULT:
@@ -3026,10 +3210,28 @@ def parse_codecs(codecs_str):
         str.strip, codecs_str.strip().strip(',').split(','))))
     vcodec, acodec, scodec, hdr = None, None, None, None
     for full_codec in split_codecs:
-        full_codec = re.sub(r'^([^.]+)', lambda m: m.group(1).lower(), full_codec)
+        full_codec = re.sub(
+            r'^([^.]+)',
+            lambda m: m.group(1).lower(),
+            full_codec)
         parts = re.sub(r'0+(?=\d)', '', full_codec).split('.')
-        if parts[0] in ('avc1', 'avc2', 'avc3', 'avc4', 'vp9', 'vp8', 'hev1', 'hev2',
-                        'h263', 'h264', 'mp4v', 'hvc1', 'av1', 'theora', 'dvh1', 'dvhe'):
+        if parts[0] in (
+            'avc1',
+            'avc2',
+            'avc3',
+            'avc4',
+            'vp9',
+            'vp8',
+            'hev1',
+            'hev2',
+            'h263',
+            'h264',
+            'mp4v',
+            'hvc1',
+            'av1',
+            'theora',
+            'dvh1',
+                'dvhe'):
             if vcodec:
                 continue
             vcodec = full_codec
@@ -3123,7 +3325,8 @@ def urlhandle_detect_ext(url_handle, default=NO_DEFAULT):
 
 
 def encode_data_uri(data, mime_type):
-    return 'data:{};base64,{}'.format(mime_type, base64.b64encode(data).decode('ascii'))
+    return 'data:{};base64,{}'.format(
+        mime_type, base64.b64encode(data).decode('ascii'))
 
 
 def age_restricted(content_limit, age_limit):
@@ -3189,7 +3392,12 @@ def render_table(header_row, data, delim=False, extra_gap=0, hide_empty=False):
         return [max(width(str(v)) for v in col) for col in zip(*table)]
 
     def filter_using_list(row, filter_array):
-        return [col for take, col in itertools.zip_longest(filter_array, row, fillvalue=True) if take]
+        return [
+            col for take,
+            col in itertools.zip_longest(
+                filter_array,
+                row,
+                fillvalue=True) if take]
 
     max_lens = get_max_lens(data) if hide_empty else []
     header_row = filter_using_list(header_row, max_lens)
@@ -3199,14 +3407,18 @@ def render_table(header_row, data, delim=False, extra_gap=0, hide_empty=False):
     max_lens = get_max_lens(table)
     extra_gap += 1
     if delim:
-        table = [header_row, [delim * (ml + extra_gap) for ml in max_lens], *data]
-        table[1][-1] = table[1][-1][:-extra_gap * len(delim)]  # Remove extra_gap from end of delimiter
+        table = [header_row, [delim * (ml + extra_gap)
+                              for ml in max_lens], *data]
+        # Remove extra_gap from end of delimiter
+        table[1][-1] = table[1][-1][:-extra_gap * len(delim)]
     for row in table:
         for pos, text in enumerate(map(str, row)):
             if '\t' in text:
-                row[pos] = text.replace('\t', ' ' * (max_lens[pos] - width(text))) + ' ' * extra_gap
+                row[pos] = text.replace(
+                    '\t', ' ' * (max_lens[pos] - width(text))) + ' ' * extra_gap
             else:
-                row[pos] = text + ' ' * (max_lens[pos] - width(text) + extra_gap)
+                row[pos] = text + ' ' * \
+                    (max_lens[pos] - width(text) + extra_gap)
     return '\n'.join(''.join(row).rstrip() for row in table)
 
 
@@ -3228,9 +3440,9 @@ def _match_one(filter_part, dct, incomplete):
     }
 
     if isinstance(incomplete, bool):
-        is_incomplete = lambda _: incomplete
+        def is_incomplete(_): return incomplete
     else:
-        is_incomplete = lambda k: k in incomplete
+        def is_incomplete(k): return k in incomplete
 
     operator_rex = re.compile(r'''(?x)
         (?P<key>[a-z_]+)
@@ -3245,12 +3457,13 @@ def _match_one(filter_part, dct, incomplete):
         m = m.groupdict()
         unnegated_op = COMPARISON_OPERATORS[m['op']]
         if m['negation']:
-            op = lambda attr, value: not unnegated_op(attr, value)
+            def op(attr, value): return not unnegated_op(attr, value)
         else:
             op = unnegated_op
         comparison_value = m['quotedstrval'] or m['strval']
         if m['quote']:
-            comparison_value = comparison_value.replace(r'\{}'.format(m['quote']), m['quote'])
+            comparison_value = comparison_value.replace(
+                r'\{}'.format(m['quote']), m['quote'])
         actual_value = dct.get(m['key'])
         numeric_comparison = None
         if isinstance(actual_value, (int, float)):
@@ -3267,10 +3480,14 @@ def _match_one(filter_part, dct, incomplete):
                 if numeric_comparison is None:
                     numeric_comparison = parse_duration(comparison_value)
         if numeric_comparison is not None and m['op'] in STRING_OPERATORS:
-            raise ValueError('Operator {} only supports string values!'.format(m['op']))
+            raise ValueError(
+                'Operator {} only supports string values!'.format(
+                    m['op']))
         if actual_value is None:
             return is_incomplete(m['key']) or m['none_inclusive']
-        return op(actual_value, comparison_value if numeric_comparison is None else numeric_comparison)
+        return op(
+            actual_value,
+            comparison_value if numeric_comparison is None else numeric_comparison)
 
     UNARY_OPERATORS = {
         '': lambda v: (v is True) if isinstance(v, bool) else (v is not None),
@@ -3307,7 +3524,8 @@ def match_filter_func(filters, breaking_filters=None):
         return None
     repr_ = f'{match_filter_func.__module__}.{match_filter_func.__qualname__}({filters}, {breaking_filters})'
 
-    breaking_filters = match_filter_func(breaking_filters) or (lambda _, __: None)
+    breaking_filters = match_filter_func(
+        breaking_filters) or (lambda _, __: None)
     filters = set(variadic(filters or []))
 
     interactive = '-' in filters
@@ -3320,10 +3538,12 @@ def match_filter_func(filters, breaking_filters=None):
         if ret is not None:
             raise RejectedVideoReached(ret)
 
-        if not filters or any(match_str(f, info_dict, incomplete) for f in filters):
+        if not filters or any(match_str(f, info_dict, incomplete)
+                              for f in filters):
             return NO_DEFAULT if interactive and not incomplete else None
         else:
-            video_title = info_dict.get('title') or info_dict.get('id') or 'entry'
+            video_title = info_dict.get(
+                'title') or info_dict.get('id') or 'entry'
             filter_str = ') | ('.join(map(str.strip, filters))
             return f'{video_title} does not pass filter ({filter_str}), skipping ..'
     return _match_func
@@ -3351,7 +3571,8 @@ class download_range_func:
                 'end_time': self._handle_negative_timestamp(end, info_dict),
             }
 
-        if self.from_info and (info_dict.get('start_time') or info_dict.get('end_time')):
+        if self.from_info and (
+                info_dict.get('start_time') or info_dict.get('end_time')):
             yield {
                 'start_time': info_dict.get('start_time') or 0,
                 'end_time': info_dict.get('end_time') or float('inf'),
@@ -3361,11 +3582,13 @@ class download_range_func:
 
     @staticmethod
     def _handle_negative_timestamp(time, info):
-        return max(info['duration'] + time, 0) if info.get('duration') and time < 0 else time
+        return max(
+            info['duration'] + time,
+            0) if info.get('duration') and time < 0 else time
 
     def __eq__(self, other):
-        return (isinstance(other, download_range_func)
-                and self.chapters == other.chapters and self.ranges == other.ranges)
+        return (isinstance(other, download_range_func) and self.chapters ==
+                other.chapters and self.ranges == other.ranges)
 
     def __repr__(self):
         return f'{__name__}.{type(self).__name__}({self.chapters}, {self.ranges})'
@@ -3381,7 +3604,8 @@ def parse_dfxp_time_expr(time_expr):
 
     mobj = re.match(r'^(\d+):(\d\d):(\d\d(?:(?:\.|:)\d+)?)$', time_expr)
     if mobj:
-        return 3600 * int(mobj.group(1)) + 60 * int(mobj.group(2)) + float(mobj.group(3).replace(':', '.'))
+        return 3600 * int(mobj.group(1)) + 60 * int(mobj.group(2)
+                                                    ) + float(mobj.group(3).replace(':', '.'))
 
 
 def srt_subtitles_timecode(seconds):
@@ -3450,7 +3674,8 @@ def dfxp2srt(dfxp_data):
                 if style:
                     font = ''
                     for k, v in sorted(style.items()):
-                        if self._applied_styles and self._applied_styles[-1].get(k) == v:
+                        if self._applied_styles and self._applied_styles[-1].get(
+                                k) == v:
                             continue
                         if k == 'color':
                             font += f' color="{v}"'
@@ -3492,8 +3717,11 @@ def dfxp2srt(dfxp_data):
             return self._out.strip()
 
     # Fix UTF-8 encoded file wrongly marked as UTF-16. See https://github.com/yt-dlp/yt-dlp/issues/6543#issuecomment-1477169870
-    # This will not trigger false positives since only UTF-8 text is being replaced
-    dfxp_data = dfxp_data.replace(b'encoding=\'UTF-16\'', b'encoding=\'UTF-8\'')
+    # This will not trigger false positives since only UTF-8 text is being
+    # replaced
+    dfxp_data = dfxp_data.replace(
+        b'encoding=\'UTF-16\'',
+        b'encoding=\'UTF-8\'')
 
     def parse_node(node):
         target = TTMLPElementParser()
@@ -3568,10 +3796,17 @@ def cli_option(params, command_option, param, separator=None):
             else [f'{command_option}{separator}{param}'])
 
 
-def cli_bool_option(params, command_option, param, true_value='true', false_value='false', separator=None):
+def cli_bool_option(
+        params,
+        command_option,
+        param,
+        true_value='true',
+        false_value='false',
+        separator=None):
     param = params.get(param)
     assert param in (True, False, None)
-    return cli_option({True: true_value, False: false_value}, command_option, param, separator)
+    return cli_option({True: true_value, False: false_value},
+                      command_option, param, separator)
 
 
 def cli_valueless_option(params, command_option, param, expected_value=True):
@@ -3598,7 +3833,13 @@ def cli_configuration_args(argdict, keys, default=[], use_compat=True):
     return default
 
 
-def _configuration_args(main_key, argdict, exe, keys=None, default=[], use_compat=True):
+def _configuration_args(
+        main_key,
+        argdict,
+        exe,
+        keys=None,
+        default=[],
+        use_compat=True):
     main_key, exe = main_key.lower(), exe.lower()
     root_key = exe if main_key == exe else f'{main_key}+{exe}'
     keys = [f'{root_key}{k}' for k in (keys or [''])]
@@ -4419,14 +4660,22 @@ def pkcs1pad(data, length):
     if len(data) > length - 11:
         raise ValueError('Input data too long for PKCS#1 padding')
 
-    pseudo_random = [random.randint(0, 254) for _ in range(length - len(data) - 3)]
+    pseudo_random = [
+        random.randint(
+            0,
+            254) for _ in range(
+            length -
+            len(data) -
+            3)]
     return [0, 2, *pseudo_random, 0, *data]
 
 
 def _base_n_table(n, table):
     if not table and not n:
         raise ValueError('Either table or n must be specified')
-    table = (table or '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')[:n]
+    table = (
+        table or '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')[
+        :n]
 
     if n and n != len(table):
         raise ValueError(f'base {n} exceeds table length {len(table)}')
@@ -4483,12 +4732,19 @@ def caesar(s, alphabet, shift):
 
 
 def rot47(s):
-    return caesar(s, r'''!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~''', 47)
+    return caesar(
+        s,
+        r'''!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~''',
+        47)
 
 
 def parse_m3u8_attributes(attrib):
     info = {}
-    for (key, val) in re.findall(r'(?P<key>[A-Z0-9-]+)=(?P<val>"[^"]+"|[^",]+)(?:,|$)', attrib):
+    for (
+        key,
+        val) in re.findall(
+        r'(?P<key>[A-Z0-9-]+)=(?P<val>"[^"]+"|[^",]+)(?:,|$)',
+            attrib):
         if val.startswith('"'):
             val = val[1:-1]
         info[key] = val
@@ -4538,8 +4794,8 @@ def write_xattr(path, key, value):
            else 'xattr' if check_executable('xattr', ['-h']) else None)
     if not exe:
         raise XAttrUnavailableError(
-            'Couldn\'t find a tool to set the xattrs. Install either the "xattr" or "pyxattr" Python modules or the '
-            + ('"xattr" binary' if sys.platform != 'linux' else 'GNU "attr" package (which contains the "setfattr" tool)'))
+            'Couldn\'t find a tool to set the xattrs. Install either the "xattr" or "pyxattr" Python modules or the ' + (
+                '"xattr" binary' if sys.platform != 'linux' else 'GNU "attr" package (which contains the "setfattr" tool)'))
 
     value = value.decode()
     try:
@@ -4617,18 +4873,25 @@ def iri_to_uri(iri):
 
     if '[' in iri_parts.netloc:
         raise ValueError('IPv6 URIs are not, yet, supported.')
-        # Querying `.netloc`, when there's only one bracket, also raises a ValueError.
+        # Querying `.netloc`, when there's only one bracket, also raises a
+        # ValueError.
 
-    # The `safe` argument values, that the following code uses, contain the characters that should not be percent-encoded. Everything else but letters, digits and '_.-' will be percent-encoded with an underlying UTF-8 encoding. Everything already percent-encoded will be left as is.
+    # The `safe` argument values, that the following code uses, contain the
+    # characters that should not be percent-encoded. Everything else but
+    # letters, digits and '_.-' will be percent-encoded with an underlying
+    # UTF-8 encoding. Everything already percent-encoded will be left as is.
 
     net_location = ''
     if iri_parts.username:
-        net_location += urllib.parse.quote(iri_parts.username, safe=r"!$%&'()*+,~")
+        net_location += urllib.parse.quote(iri_parts.username,
+                                           safe=r"!$%&'()*+,~")
         if iri_parts.password is not None:
-            net_location += ':' + urllib.parse.quote(iri_parts.password, safe=r"!$%&'()*+,~")
+            net_location += ':' + \
+                urllib.parse.quote(iri_parts.password, safe=r"!$%&'()*+,~")
         net_location += '@'
 
-    net_location += iri_parts.hostname.encode('idna').decode()  # Punycode for Unicode hostnames.
+    # Punycode for Unicode hostnames.
+    net_location += iri_parts.hostname.encode('idna').decode()
     # The 'idna' encoding produces ASCII text.
     if iri_parts.port is not None and iri_parts.port != 80:
         net_location += ':' + str(iri_parts.port)
@@ -4639,27 +4902,39 @@ def iri_to_uri(iri):
 
             urllib.parse.quote_plus(iri_parts.path, safe=r"!$%&'()*+,/:;=@|~"),
 
-            # Unsure about the `safe` argument, since this is a legacy way of handling parameters.
-            urllib.parse.quote_plus(iri_parts.params, safe=r"!$%&'()*+,/:;=@|~"),
+            # Unsure about the `safe` argument, since this is a legacy way of
+            # handling parameters.
+            urllib.parse.quote_plus(
+                iri_parts.params, safe=r"!$%&'()*+,/:;=@|~"),
 
-            # Not totally sure about the `safe` argument, since the source does not explicitly mention the query URI component.
-            urllib.parse.quote_plus(iri_parts.query, safe=r"!$%&'()*+,/:;=?@{|}~"),
+            # Not totally sure about the `safe` argument, since the source does
+            # not explicitly mention the query URI component.
+            urllib.parse.quote_plus(
+                iri_parts.query, safe=r"!$%&'()*+,/:;=?@{|}~"),
 
             urllib.parse.quote_plus(iri_parts.fragment, safe=r"!#$%&'()*+,/:;=?@{|}~")))
 
-    # Source for `safe` arguments: https://url.spec.whatwg.org/#percent-encoded-bytes.
+    # Source for `safe` arguments:
+    # https://url.spec.whatwg.org/#percent-encoded-bytes.
 
 
 def to_high_limit_path(path):
     if sys.platform in ['win32', 'cygwin']:
-        # Work around MAX_PATH limitation on Windows. The maximum allowed length for the individual path segments may still be quite limited.
+        # Work around MAX_PATH limitation on Windows. The maximum allowed
+        # length for the individual path segments may still be quite limited.
         return '\\\\?\\' + os.path.abspath(path)
 
     return path
 
 
 @partial_application
-def format_field(obj, field=None, template='%s', ignore=NO_DEFAULT, default='', func=IDENTITY):
+def format_field(
+        obj,
+        field=None,
+        template='%s',
+        ignore=NO_DEFAULT,
+        default='',
+        func=IDENTITY):
     val = traversal.traverse_obj(obj, *variadic(field))
     if not val if ignore is NO_DEFAULT else val in variadic(ignore):
         return default
@@ -4692,7 +4967,8 @@ _HEX_TABLE = '0123456789abcdef'
 
 
 def random_uuidv4():
-    return re.sub(r'[xy]', lambda x: _HEX_TABLE[random.randint(0, 15)], 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
+    return re.sub(r'[xy]', lambda x: _HEX_TABLE[random.randint(
+        0, 15)], 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
 
 
 def make_dir(path, to_screen=None):
@@ -4710,12 +4986,15 @@ def make_dir(path, to_screen=None):
 def get_executable_path():
     from ..update import _get_variant_and_executable_path
 
-    return os.path.dirname(os.path.abspath(_get_variant_and_executable_path()[1]))
+    return os.path.dirname(
+        os.path.abspath(
+            _get_variant_and_executable_path()[1]))
 
 
 def get_user_config_dirs(package_name):
     # .config (e.g. ~/.config/package_name)
-    xdg_config_home = os.getenv('XDG_CONFIG_HOME') or compat_expanduser('~/.config')
+    xdg_config_home = os.getenv(
+        'XDG_CONFIG_HOME') or compat_expanduser('~/.config')
     yield os.path.join(xdg_config_home, package_name)
 
     # appdata (%APPDATA%/package_name)
@@ -4757,7 +5036,8 @@ def jwt_encode_hs256(payload_data, key, headers={}):
     return header_b64 + b'.' + payload_b64 + b'.' + signature_b64
 
 
-# can be extended in future to verify the signature and parse header and return the algorithm used if it's not HS256
+# can be extended in future to verify the signature and parse header and
+# return the algorithm used if it's not HS256
 def jwt_decode_hs256(jwt):
     header_b64, payload_b64, signature_b64 = jwt.split('.')
     # add trailing ='s that may have been stripped, superfluous ='s are ignored
@@ -4825,7 +5105,8 @@ def number_of_digits(number):
 
 def join_nonempty(*values, delim='-', from_dict=None):
     if from_dict is not None:
-        values = (traversal.traverse_obj(from_dict, variadic(v)) for v in values)
+        values = (traversal.traverse_obj(from_dict, variadic(v))
+                  for v in values)
     return delim.join(map(str, filter(None, values)))
 
 
@@ -4858,7 +5139,10 @@ def parse_http_range(range):
     crg = re.search(r'bytes[ =](\d+)-(\d+)?(?:/(\d+))?', range)
     if not crg:
         return None, None, None
-    return int(crg.group(1)), int_or_none(crg.group(2)), int_or_none(crg.group(3))
+    return int(
+        crg.group(1)), int_or_none(
+        crg.group(2)), int_or_none(
+            crg.group(3))
 
 
 def read_stdin(what):
@@ -4918,7 +5202,11 @@ class Config:
                 if location in self._loaded_paths:
                     continue
                 self._loaded_paths.add(location)
-                self.append_config(shlex.split(read_stdin('options'), comments=True), label='stdin')
+                self.append_config(
+                    shlex.split(
+                        read_stdin('options'),
+                        comments=True),
+                    label='stdin')
                 continue
             location = os.path.join(directory, expand_path(location))
             if os.path.isdir(location):
@@ -4930,7 +5218,9 @@ class Config:
 
     def __str__(self):
         label = join_nonempty(
-            self.label, 'config', f'"{self.filename}"' if self.filename else '',
+            self.label,
+            'config',
+            f'"{self.filename}"' if self.filename else '',
             delim=' ')
         return join_nonempty(
             self.own_args is not None and f'{label[0].upper()}{label[1:]}: {self.hide_login_info(self.own_args)}',
@@ -4949,7 +5239,8 @@ class Config:
         except OSError:
             enc = None  # silently skip read errors
         try:
-            # FIXME: https://github.com/ytdl-org/youtube-dl/commit/dfe5fa49aed02cf36ba9f743b11b0903554b5e56
+            # FIXME:
+            # https://github.com/ytdl-org/youtube-dl/commit/dfe5fa49aed02cf36ba9f743b11b0903554b5e56
             contents = optionf.read().decode(enc or preferredencoding())
             res = shlex.split(contents, comments=True)
         except Exception as err:
@@ -4960,8 +5251,16 @@ class Config:
 
     @staticmethod
     def hide_login_info(opts):
-        PRIVATE_OPTS = {'-p', '--password', '-u', '--username', '--video-password', '--ap-password', '--ap-username'}
-        eqre = re.compile('^(?P<key>' + ('|'.join(re.escape(po) for po in PRIVATE_OPTS)) + ')=.+$')
+        PRIVATE_OPTS = {
+            '-p',
+            '--password',
+            '-u',
+            '--username',
+            '--video-password',
+            '--ap-password',
+            '--ap-username'}
+        eqre = re.compile('^(?P<key>' + ('|'.join(re.escape(po)
+                          for po in PRIVATE_OPTS)) + ')=.+$')
 
         def _scrub_eq(o):
             m = eqre.match(o)
@@ -4997,7 +5296,8 @@ class Config:
 
 def merge_headers(*dicts):
     """Merge dicts of http headers case insensitively, prioritizing the latter ones"""
-    return {k.title(): v for k, v in itertools.chain.from_iterable(map(dict.items, dicts))}
+    return {k.title(): v for k, v in itertools.chain.from_iterable(
+        map(dict.items, dicts))}
 
 
 def cached_method(f):
@@ -5010,7 +5310,9 @@ def cached_method(f):
         bound_args.apply_defaults()
         key = tuple(bound_args.arguments.values())[1:]
 
-        cache = vars(self).setdefault('_cached_method__cache', {}).setdefault(f.__name__, {})
+        cache = vars(self).setdefault(
+            '_cached_method__cache', {}).setdefault(
+            f.__name__, {})
         if key not in cache:
             cache[key] = f(self, *args, **kwargs)
         return cache[key]
@@ -5079,7 +5381,10 @@ MEDIA_EXTENSIONS = Namespace(
 MEDIA_EXTENSIONS.video += MEDIA_EXTENSIONS.common_video
 MEDIA_EXTENSIONS.audio += MEDIA_EXTENSIONS.common_audio
 
-KNOWN_EXTENSIONS = (*MEDIA_EXTENSIONS.video, *MEDIA_EXTENSIONS.audio, *MEDIA_EXTENSIONS.manifests)
+KNOWN_EXTENSIONS = (
+    *MEDIA_EXTENSIONS.video,
+    *MEDIA_EXTENSIONS.audio,
+    *MEDIA_EXTENSIONS.manifests)
 
 
 class _UnsafeExtensionError(Exception):
@@ -5252,11 +5557,21 @@ class RetryManager:
                 self.error_callback(self.error, self.attempt, self.retries)
 
     @staticmethod
-    def report_retry(e, count, retries, *, sleep_func, info, warn, error=None, suffix=None):
+    def report_retry(
+            e,
+            count,
+            retries,
+            *,
+            sleep_func,
+            info,
+            warn,
+            error=None,
+            suffix=None):
         """Utility function for reporting retries"""
         if count > retries:
             if error:
-                return error(f'{e}. Giving up after {count - 1} retries') if count > 1 else error(str(e))
+                return error(
+                    f'{e}. Giving up after {count - 1} retries') if count > 1 else error(str(e))
             raise e
 
         if not count:
@@ -5265,7 +5580,10 @@ class RetryManager:
             e = remove_end(str_or_none(e.cause) or e.orig_msg, '.')
         warn(f'{e}. Retrying{format_field(suffix, None, " %s")} ({count}/{retries})...')
 
-        delay = float_or_none(sleep_func(n=count - 1)) if callable(sleep_func) else sleep_func
+        delay = float_or_none(
+            sleep_func(
+                n=count -
+                1)) if callable(sleep_func) else sleep_func
         if delay:
             info(f'Sleeping {delay:.2f} seconds ...')
             time.sleep(delay)
@@ -5285,7 +5603,12 @@ def truncate_string(s, left, right=0):
     return f'{s[:left - 3]}...{s[-right:] if right else ""}'
 
 
-def orderedSet_from_options(options, alias_dict, *, use_regex=False, start=None):
+def orderedSet_from_options(
+        options,
+        alias_dict,
+        *,
+        use_regex=False,
+        start=None):
     assert 'all' in alias_dict, '"all" alias is required'
     requested = list(start or [])
     for val in options:
@@ -5297,7 +5620,8 @@ def orderedSet_from_options(options, alias_dict, *, use_regex=False, start=None)
             val = alias_dict[val] if not discard else [
                 i[1:] if i.startswith('-') else f'-{i}' for i in alias_dict[val]]
             # NB: Do not allow regex in aliases for performance
-            requested = orderedSet_from_options(val, alias_dict, start=requested)
+            requested = orderedSet_from_options(
+                val, alias_dict, start=requested)
             continue
 
         current = (filter(re.compile(val, re.I).fullmatch, alias_dict['all']) if use_regex
@@ -5319,12 +5643,48 @@ def orderedSet_from_options(options, alias_dict, *, use_regex=False, start=None)
 class FormatSorter:
     regex = r' *((?P<reverse>\+)?(?P<field>[a-zA-Z0-9_]+)((?P<separator>[~:])(?P<limit>.*?))?)? *$'
 
-    default = ('hidden', 'aud_or_vid', 'hasvid', 'ie_pref', 'lang', 'quality',
-               'res', 'fps', 'hdr:12', 'vcodec', 'channels', 'acodec',
-               'size', 'br', 'asr', 'proto', 'ext', 'hasaud', 'source', 'id')  # These must not be aliases
-    _prefer_vp9_sort = ('hidden', 'aud_or_vid', 'hasvid', 'ie_pref', 'lang', 'quality',
-                        'res', 'fps', 'hdr:12', 'vcodec:vp9.2', 'channels', 'acodec',
-                        'size', 'br', 'asr', 'proto', 'ext', 'hasaud', 'source', 'id')
+    default = (
+        'hidden',
+        'aud_or_vid',
+        'hasvid',
+        'ie_pref',
+        'lang',
+        'quality',
+        'res',
+        'fps',
+        'hdr:12',
+        'vcodec',
+        'channels',
+        'acodec',
+        'size',
+        'br',
+        'asr',
+        'proto',
+        'ext',
+        'hasaud',
+        'source',
+        'id')  # These must not be aliases
+    _prefer_vp9_sort = (
+        'hidden',
+        'aud_or_vid',
+        'hasvid',
+        'ie_pref',
+        'lang',
+        'quality',
+        'res',
+        'fps',
+        'hdr:12',
+        'vcodec:vp9.2',
+        'channels',
+        'acodec',
+        'size',
+        'br',
+        'asr',
+        'proto',
+        'ext',
+        'hasaud',
+        'source',
+        'id')
     ytdl_default = ('hasaud', 'lang', 'quality', 'tbr', 'filesize', 'vbr',
                     'height', 'width', 'proto', 'vext', 'abr', 'aext',
                     'fps', 'fs_approx', 'source', 'id')
@@ -5418,18 +5778,26 @@ class FormatSorter:
         if field not in self.settings:
             if key in ('forced', 'priority'):
                 return False
-            self.ydl.deprecated_feature(f'Using arbitrary fields ({field}) for format sorting is '
-                                        'deprecated and may be removed in a future version')
+            self.ydl.deprecated_feature(
+                f'Using arbitrary fields ({field}) for format sorting is '
+                'deprecated and may be removed in a future version')
             self.settings[field] = {}
         prop_obj = self.settings[field]
         if key not in prop_obj:
             type_ = prop_obj.get('type')
             if key == 'field':
-                default = 'preference' if type_ == 'extractor' else (field,) if type_ in ('combined', 'multiple') else field
+                default = 'preference' if type_ == 'extractor' else (
+                    field,) if type_ in ('combined', 'multiple') else field
             elif key == 'convert':
                 default = 'order' if type_ == 'ordered' else 'float_string' if field else 'ignore'
             else:
-                default = {'type': 'field', 'visible': True, 'order': [], 'not_in_list': (None,)}.get(key)
+                default = {
+                    'type': 'field',
+                    'visible': True,
+                    'order': [],
+                    'not_in_list': (
+                        None,
+                    )}.get(key)
             prop_obj[key] = default
         return prop_obj[key]
 
@@ -5449,17 +5817,22 @@ class FormatSorter:
         elif conversion == 'bytes':
             return parse_bytes(value)
         elif conversion == 'order':
-            order_list = (self._use_free_order and self._get_field_setting(field, 'order_free')) or self._get_field_setting(field, 'order')
+            order_list = (
+                self._use_free_order and self._get_field_setting(
+                    field, 'order_free')) or self._get_field_setting(
+                field, 'order')
             use_regex = self._get_field_setting(field, 'regex')
             list_length = len(order_list)
-            empty_pos = order_list.index('') if '' in order_list else list_length + 1
+            empty_pos = order_list.index(
+                '') if '' in order_list else list_length + 1
             if use_regex and value is not None:
                 for i, regex in enumerate(order_list):
                     if regex and re.match(regex, value):
                         return list_length - i
                 return list_length - empty_pos  # not in list
             else:  # not regex or  value = None
-                return list_length - (order_list.index(value) if value in order_list else empty_pos)
+                return list_length - \
+                    (order_list.index(value) if value in order_list else empty_pos)
         else:
             if value.isnumeric():
                 return float(value)
@@ -5489,33 +5862,51 @@ class FormatSorter:
                 self.settings[field] = data
 
         sort_list = (
-            tuple(field for field in self.default if self._get_field_setting(field, 'forced'))
-            + (tuple() if params.get('format_sort_force', False)
-                else tuple(field for field in self.default if self._get_field_setting(field, 'priority')))
-            + tuple(self._sort_user) + tuple(sort_extractor) + self.default)
+            tuple(
+                field for field in self.default if self._get_field_setting(
+                    field,
+                    'forced')) +
+            (
+                tuple() if params.get(
+                    'format_sort_force',
+                    False) else tuple(
+                        field for field in self.default if self._get_field_setting(
+                            field,
+                            'priority'))) +
+            tuple(
+                self._sort_user) +
+            tuple(sort_extractor) +
+            self.default)
 
         for item in sort_list:
             match = re.match(self.regex, item)
             if match is None:
-                raise ExtractorError(f'Invalid format sort string "{item}" given by extractor')
+                raise ExtractorError(
+                    f'Invalid format sort string "{item}" given by extractor')
             field = match.group('field')
             if field is None:
                 continue
             if self._get_field_setting(field, 'type') == 'alias':
                 alias, field = field, self._get_field_setting(field, 'field')
                 if self._get_field_setting(alias, 'deprecated'):
-                    self.ydl.deprecated_feature(f'Format sorting alias {alias} is deprecated and may '
-                                                f'be removed in a future version. Please use {field} instead')
+                    self.ydl.deprecated_feature(
+                        f'Format sorting alias {alias} is deprecated and may '
+                        f'be removed in a future version. Please use {field} instead')
             reverse = match.group('reverse') is not None
             closest = match.group('separator') == '~'
             limit_text = match.group('limit')
 
             has_limit = limit_text is not None
-            has_multiple_fields = self._get_field_setting(field, 'type') == 'combined'
-            has_multiple_limits = has_limit and has_multiple_fields and not self._get_field_setting(field, 'same_limit')
+            has_multiple_fields = self._get_field_setting(
+                field, 'type') == 'combined'
+            has_multiple_limits = has_limit and has_multiple_fields and not self._get_field_setting(
+                field, 'same_limit')
 
-            fields = self._get_field_setting(field, 'field') if has_multiple_fields else (field,)
-            limits = limit_text.split(':') if has_multiple_limits else (limit_text,) if has_limit else tuple()
+            fields = self._get_field_setting(
+                field, 'field') if has_multiple_fields else (
+                field,)
+            limits = limit_text.split(':') if has_multiple_limits else (
+                limit_text,) if has_limit else tuple()
             limit_count = len(limits)
             for (i, f) in enumerate(fields):
                 add_item(f, reverse, closest,
@@ -5525,9 +5916,15 @@ class FormatSorter:
 
     def print_verbose_info(self, write_debug):
         if self._sort_user:
-            write_debug('Sort order given by user: {}'.format(', '.join(self._sort_user)))
+            write_debug(
+                'Sort order given by user: {}'.format(
+                    ', '.join(
+                        self._sort_user)))
         if self._sort_extractor:
-            write_debug('Sort order given by extractor: {}'.format(', '.join(self._sort_extractor)))
+            write_debug(
+                'Sort order given by extractor: {}'.format(
+                    ', '.join(
+                        self._sort_extractor)))
         write_debug('Formats sorted by: {}'.format(', '.join(['{}{}{}'.format(
             '+' if self._get_field_setting(field, 'reverse') else '', field,
             '{}{}({})'.format('~' if self._get_field_setting(field, 'closest') else ':',
@@ -5536,7 +5933,8 @@ class FormatSorter:
             if self._get_field_setting(field, 'limit_text') is not None else '')
             for field in self._order if self._get_field_setting(field, 'visible')])))
 
-    def _calculate_field_preference_from_value(self, format_, field, type_, value):
+    def _calculate_field_preference_from_value(
+            self, format_, field, type_, value):
         reverse = self._get_field_setting(field, 'reverse')
         closest = self._get_field_setting(field, 'closest')
         limit = self._get_field_setting(field, 'limit')
@@ -5548,34 +5946,45 @@ class FormatSorter:
         elif type_ == 'boolean':
             in_list = self._get_field_setting(field, 'in_list')
             not_in_list = self._get_field_setting(field, 'not_in_list')
-            value = 0 if ((in_list is None or value in in_list) and (not_in_list is None or value not in not_in_list)) else -1
+            value = 0 if ((in_list is None or value in in_list) and (
+                not_in_list is None or value not in not_in_list)) else -1
         elif type_ == 'ordered':
             value = self._resolve_field_value(field, value, True)
 
         # try to convert to number
-        val_num = float_or_none(value, default=self._get_field_setting(field, 'default'))
-        is_num = self._get_field_setting(field, 'convert') != 'string' and val_num is not None
+        val_num = float_or_none(
+            value, default=self._get_field_setting(
+                field, 'default'))
+        is_num = self._get_field_setting(
+            field, 'convert') != 'string' and val_num is not None
         if is_num:
             value = val_num
 
         return ((-10, 0) if value is None
-                else (1, value, 0) if not is_num  # if a field has mixed strings and numbers, strings are sorted higher
+                # if a field has mixed strings and numbers, strings are sorted
+                # higher
+                else (1, value, 0) if not is_num
                 else (0, -abs(value - limit), value - limit if reverse else limit - value) if closest
                 else (0, value, 0) if not reverse and (limit is None or value <= limit)
                 else (0, -value, 0) if limit is None or (reverse and value == limit) or value > limit
                 else (-1, value, 0))
 
     def _calculate_field_preference(self, format_, field):
-        type_ = self._get_field_setting(field, 'type')  # extractor, boolean, ordered, field, multiple
-        get_value = lambda f: format_.get(self._get_field_setting(f, 'field'))
+        # extractor, boolean, ordered, field, multiple
+        type_ = self._get_field_setting(field, 'type')
+        def get_value(f): return format_.get(
+            self._get_field_setting(f, 'field'))
         if type_ == 'multiple':
             type_ = 'field'  # Only 'field' is allowed in multiple for now
             actual_fields = self._get_field_setting(field, 'field')
 
-            value = self._get_field_setting(field, 'function')(get_value(f) for f in actual_fields)
+            value = self._get_field_setting(
+                field, 'function')(
+                get_value(f) for f in actual_fields)
         else:
             value = get_value(field)
-        return self._calculate_field_preference_from_value(format_, field, type_, value)
+        return self._calculate_field_preference_from_value(
+            format_, field, type_, value)
 
     @staticmethod
     def _fill_sorting_fields(format):
@@ -5587,7 +5996,8 @@ class FormatSorter:
         if not format.get('ext') and 'url' in format:
             format['ext'] = determine_ext(format['url']).lower()
         if format.get('vcodec') == 'none':
-            format['audio_ext'] = format['ext'] if format.get('acodec') != 'none' else 'none'
+            format['audio_ext'] = format['ext'] if format.get(
+                'acodec') != 'none' else 'none'
             format['video_ext'] = 'none'
         else:
             format['video_ext'] = format['ext']
@@ -5595,7 +6005,8 @@ class FormatSorter:
         # if format.get('preference') is None and format.get('ext') in ('f4f', 'f4m'):  # Not supported?
         #    format['preference'] = -1000
 
-        if format.get('preference') is None and format.get('ext') == 'flv' and re.match('[hx]265|he?vc?', format.get('vcodec') or ''):
+        if format.get('preference') is None and format.get(
+                'ext') == 'flv' and re.match('[hx]265|he?vc?', format.get('vcodec') or ''):
             # HEVC-over-FLV is out-of-spec by FLV's original spec
             # ref. https://trac.ffmpeg.org/ticket/6389
             # ref. https://github.com/yt-dlp/yt-dlp/pull/5821
@@ -5607,15 +6018,22 @@ class FormatSorter:
         if format.get('acodec') == 'none':
             format['abr'] = 0
         if not format.get('vbr') and format.get('vcodec') != 'none':
-            format['vbr'] = try_call(lambda: format['tbr'] - format['abr']) or None
+            format['vbr'] = try_call(
+                lambda: format['tbr'] -
+                format['abr']) or None
         if not format.get('abr') and format.get('acodec') != 'none':
-            format['abr'] = try_call(lambda: format['tbr'] - format['vbr']) or None
+            format['abr'] = try_call(
+                lambda: format['tbr'] -
+                format['vbr']) or None
         if not format.get('tbr'):
-            format['tbr'] = try_call(lambda: format['vbr'] + format['abr']) or None
+            format['tbr'] = try_call(
+                lambda: format['vbr'] +
+                format['abr']) or None
 
     def calculate_preference(self, format):
         self._fill_sorting_fields(format)
-        return tuple(self._calculate_field_preference(format, field) for field in self._order)
+        return tuple(self._calculate_field_preference(format, field)
+                     for field in self._order)
 
 
 def filesize_from_tbr(tbr, duration):
