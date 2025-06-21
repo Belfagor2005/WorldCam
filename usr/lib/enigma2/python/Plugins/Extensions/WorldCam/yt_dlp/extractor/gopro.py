@@ -65,7 +65,9 @@ class GoProIE(InfoExtractor):
             'https://api.gopro.com/media/{}/download'.format(video_info['id']), video_id)
 
         formats = []
-        for fmt in try_get(media_data, lambda x: x['_embedded']['variations']) or []:
+        for fmt in try_get(
+                media_data,
+                lambda x: x['_embedded']['variations']) or []:
             format_url = url_or_none(fmt.get('url'))
             if not format_url:
                 continue

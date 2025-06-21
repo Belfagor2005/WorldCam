@@ -14,7 +14,8 @@ from ..utils import (
 class GlobalPlayerBaseIE(InfoExtractor):
     def _get_page_props(self, url, video_id):
         webpage = self._download_webpage(url, video_id)
-        return self._search_nextjs_data(webpage, video_id)['props']['pageProps']
+        return self._search_nextjs_data(webpage, video_id)[
+            'props']['pageProps']
 
     def _request_ext(self, url, video_id):
         return urlhandle_detect_ext(self._request_webpage(  # Server rejects HEAD requests
@@ -85,19 +86,24 @@ class GlobalPlayerLiveIE(GlobalPlayerBaseIE):
         station = self._get_page_props(url, video_id)['station']
         stream_url = station['streamUrl']
 
-        return {
-            'id': station['id'],
-            'display_id': join_nonempty('brandSlug', 'slug', from_dict=station) or station.get('legacyStationPrefix'),
-            'url': stream_url,
-            'ext': self._request_ext(stream_url, video_id),
-            'vcodec': 'none',
-            'is_live': True,
-            **traverse_obj(station, {
-                'title': (('name', 'brandName'), {str_or_none}),
-                'description': 'tagline',
-                'thumbnail': 'brandLogo',
-            }, get_all=False),
-        }
+        return {'id': station['id'],
+                'display_id': join_nonempty('brandSlug',
+                                            'slug',
+                                            from_dict=station) or station.get('legacyStationPrefix'),
+                'url': stream_url,
+                'ext': self._request_ext(stream_url,
+                                         video_id),
+                'vcodec': 'none',
+                'is_live': True,
+                **traverse_obj(station,
+                               {'title': (('name',
+                                           'brandName'),
+                                          {str_or_none}),
+                                'description': 'tagline',
+                                'thumbnail': 'brandLogo',
+                                },
+                               get_all=False),
+                }
 
 
 class GlobalPlayerLivePlaylistIE(GlobalPlayerBaseIE):
@@ -221,7 +227,12 @@ class GlobalPlayerAudioEpisodeIE(GlobalPlayerBaseIE):
         episode = props['podcastEpisode'] if podcast else props['catchupEpisode']
 
         return self._extract_audio(
-            episode, traverse_obj(episode, 'podcast', 'show', expected_type=dict) or {})
+            episode,
+            traverse_obj(
+                episode,
+                'podcast',
+                'show',
+                expected_type=dict) or {})
 
 
 class GlobalPlayerVideoIE(GlobalPlayerBaseIE):

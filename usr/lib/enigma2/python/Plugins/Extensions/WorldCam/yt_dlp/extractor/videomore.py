@@ -48,89 +48,84 @@ class VideomoreIE(InfoExtractor):
             <object[^>]+data=(["\'])https?://videomore\.ru/player\.swf\?.*config=
         )(?P<url>https?://videomore\.ru/[^?#"']+/\d+(?:\.xml)?)
     ''']
-    _TESTS = [{
-        'url': 'http://videomore.ru/kino_v_detalayah/5_sezon/367617',
-        'md5': '44455a346edc0d509ac5b5a5b531dc35',
-        'info_dict': {
-            'id': '367617',
-            'ext': 'flv',
-            'title': 'Кино в деталях 5 сезон В гостях Алексей Чумаков и Юлия Ковальчук',
-            'series': 'Кино в деталях',
-            'episode': 'В гостях Алексей Чумаков и Юлия Ковальчук',
-            'thumbnail': r're:^https?://.*\.jpg',
-            'duration': 2910,
-            'view_count': int,
-            'comment_count': int,
-            'age_limit': 16,
-        },
-        'skip': 'The video is not available for viewing.',
-    }, {
-        'url': 'http://videomore.ru/embed/259974',
-        'info_dict': {
-            'id': '259974',
-            'ext': 'mp4',
-            'title': 'Молодежка 2 сезон 40 серия',
-            'series': 'Молодежка',
-            'season': '2 сезон',
-            'episode': '40 серия',
-            'thumbnail': r're:^https?://.*\.jpg',
-            'duration': 2789,
-            'view_count': int,
-            'age_limit': 16,
-        },
-        'params': {
-            'skip_download': True,
-        },
-    }, {
-        'url': 'http://videomore.ru/molodezhka/sezon_promo/341073',
-        'info_dict': {
-            'id': '341073',
-            'ext': 'flv',
-            'title': 'Промо Команда проиграла из-за Бакина?',
-            'episode': 'Команда проиграла из-за Бакина?',
-            'thumbnail': r're:^https?://.*\.jpg',
-            'duration': 29,
-            'age_limit': 16,
-            'view_count': int,
-        },
-        'params': {
-            'skip_download': True,
-        },
-        'skip': 'The video is not available for viewing.',
-    }, {
-        'url': 'http://videomore.ru/elki_3?track_id=364623',
-        'only_matching': True,
-    }, {
-        'url': 'http://videomore.ru/embed/364623',
-        'only_matching': True,
-    }, {
-        'url': 'http://videomore.ru/video/tracks/364623.xml',
-        'only_matching': True,
-    }, {
-        'url': 'http://videomore.ru/video/tracks/364623.json',
-        'only_matching': True,
-    }, {
-        'url': 'http://videomore.ru/video/tracks/158031/quotes/33248',
-        'only_matching': True,
-    }, {
-        'url': 'videomore:367617',
-        'only_matching': True,
-    }, {
-        'url': 'https://player.videomore.ru/?partner_id=97&track_id=736234&autoplay=0&userToken=',
-        'only_matching': True,
-    }, {
-        'url': 'https://odysseus.more.tv/player/1788/352317',
-        'only_matching': True,
-    }, {
-        'url': 'https://siren.more.tv/player/config?track_id=352317&partner_id=1788&user_token=',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://videomore.ru/kino_v_detalayah/5_sezon/367617',
+               'md5': '44455a346edc0d509ac5b5a5b531dc35',
+               'info_dict': {'id': '367617',
+                             'ext': 'flv',
+                             'title': 'Кино в деталях 5 сезон В гостях Алексей Чумаков и Юлия Ковальчук',
+                             'series': 'Кино в деталях',
+                             'episode': 'В гостях Алексей Чумаков и Юлия Ковальчук',
+                             'thumbnail': r're:^https?://.*\.jpg',
+                             'duration': 2910,
+                             'view_count': int,
+                             'comment_count': int,
+                             'age_limit': 16,
+                             },
+               'skip': 'The video is not available for viewing.',
+               },
+              {'url': 'http://videomore.ru/embed/259974',
+               'info_dict': {'id': '259974',
+                             'ext': 'mp4',
+                             'title': 'Молодежка 2 сезон 40 серия',
+                             'series': 'Молодежка',
+                             'season': '2 сезон',
+                             'episode': '40 серия',
+                             'thumbnail': r're:^https?://.*\.jpg',
+                             'duration': 2789,
+                             'view_count': int,
+                             'age_limit': 16,
+                             },
+               'params': {'skip_download': True,
+                          },
+               },
+              {'url': 'http://videomore.ru/molodezhka/sezon_promo/341073',
+               'info_dict': {'id': '341073',
+                             'ext': 'flv',
+                             'title': 'Промо Команда проиграла из-за Бакина?',
+                             'episode': 'Команда проиграла из-за Бакина?',
+                             'thumbnail': r're:^https?://.*\.jpg',
+                             'duration': 29,
+                             'age_limit': 16,
+                             'view_count': int,
+                             },
+               'params': {'skip_download': True,
+                          },
+               'skip': 'The video is not available for viewing.',
+               },
+              {'url': 'http://videomore.ru/elki_3?track_id=364623',
+               'only_matching': True,
+               },
+              {'url': 'http://videomore.ru/embed/364623',
+               'only_matching': True,
+               },
+              {'url': 'http://videomore.ru/video/tracks/364623.xml',
+               'only_matching': True,
+               },
+              {'url': 'http://videomore.ru/video/tracks/364623.json',
+               'only_matching': True,
+               },
+              {'url': 'http://videomore.ru/video/tracks/158031/quotes/33248',
+               'only_matching': True,
+               },
+              {'url': 'videomore:367617',
+               'only_matching': True,
+               },
+              {'url': 'https://player.videomore.ru/?partner_id=97&track_id=736234&autoplay=0&userToken=',
+               'only_matching': True,
+               },
+              {'url': 'https://odysseus.more.tv/player/1788/352317',
+               'only_matching': True,
+               },
+              {'url': 'https://siren.more.tv/player/config?track_id=352317&partner_id=1788&user_token=',
+               'only_matching': True,
+               }]
     _GEO_BYPASS = False
 
     def _real_extract(self, url):
         mobj = self._match_valid_url(url)
         video_id = mobj.group('sid') or mobj.group('id')
-        partner_id = mobj.group('partner_id') or parse_qs(url).get('partner_id', [None])[0] or '97'
+        partner_id = mobj.group('partner_id') or parse_qs(
+            url).get('partner_id', [None])[0] or '97'
 
         item = self._download_json(
             'https://siren.more.tv/player/config', video_id, query={
@@ -175,8 +170,11 @@ class VideomoreIE(InfoExtractor):
         if not formats:
             error = item.get('error')
             if error:
-                if error in ('Данное видео недоступно для просмотра на территории этой страны', 'Данное видео доступно для просмотра только на территории России'):
-                    self.raise_geo_restricted(countries=['RU'], metadata_available=True)
+                if error in (
+                    'Данное видео недоступно для просмотра на территории этой страны',
+                        'Данное видео доступно для просмотра только на территории России'):
+                    self.raise_geo_restricted(
+                        countries=['RU'], metadata_available=True)
                 self.raise_no_formats(error, expected=True)
 
         return {
@@ -195,7 +193,8 @@ class VideomoreIE(InfoExtractor):
 
 class VideomoreVideoIE(VideomoreBaseIE):
     IE_NAME = 'videomore:video'
-    _VALID_URL = VideomoreBaseIE._VALID_URL_BASE + r'(?P<id>(?:(?:[^/]+/){2})?[^/?#&]+)(?:/*|[?#&].*?)$'
+    _VALID_URL = VideomoreBaseIE._VALID_URL_BASE + \
+        r'(?P<id>(?:(?:[^/]+/){2})?[^/?#&]+)(?:/*|[?#&].*?)$'
     _TESTS = [{
         # single video with og:video:iframe
         'url': 'http://videomore.ru/elki_3',
@@ -270,7 +269,8 @@ class VideomoreVideoIE(VideomoreBaseIE):
 
 class VideomoreSeasonIE(VideomoreBaseIE):
     IE_NAME = 'videomore:season'
-    _VALID_URL = VideomoreBaseIE._VALID_URL_BASE + r'(?!embed)(?P<id>[^/]+/[^/?#&]+)(?:/*|[?#&].*?)$'
+    _VALID_URL = VideomoreBaseIE._VALID_URL_BASE + \
+        r'(?!embed)(?P<id>[^/]+/[^/?#&]+)(?:/*|[?#&].*?)$'
     _TESTS = [{
         'url': 'http://videomore.ru/molodezhka/film_o_filme',
         'info_dict': {
@@ -288,8 +288,8 @@ class VideomoreSeasonIE(VideomoreBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return (False if (VideomoreIE.suitable(url) or VideomoreVideoIE.suitable(url))
-                else super().suitable(url))
+        return (False if (VideomoreIE.suitable(url)
+                or VideomoreVideoIE.suitable(url)) else super().suitable(url))
 
     def _real_extract(self, url):
         display_id = self._match_id(url)

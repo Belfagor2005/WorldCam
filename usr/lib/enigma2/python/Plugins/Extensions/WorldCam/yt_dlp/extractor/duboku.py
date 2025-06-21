@@ -15,7 +15,12 @@ from ..utils import (
 )
 
 
-def _get_elements_by_tag_and_attrib(html, tag=None, attribute=None, value=None, escape_value=True):
+def _get_elements_by_tag_and_attrib(
+        html,
+        tag=None,
+        attribute=None,
+        value=None,
+        escape_value=True):
     """Return the content of the tag with the specified attribute in the passed HTML document"""
 
     if tag is None:
@@ -45,8 +50,14 @@ def _get_elements_by_tag_and_attrib(html, tag=None, attribute=None, value=None, 
     return retlist
 
 
-def _get_element_by_tag_and_attrib(html, tag=None, attribute=None, value=None, escape_value=True):
-    retval = _get_elements_by_tag_and_attrib(html, tag, attribute, value, escape_value)
+def _get_element_by_tag_and_attrib(
+        html,
+        tag=None,
+        attribute=None,
+        value=None,
+        escape_value=True):
+    retval = _get_elements_by_tag_and_attrib(
+        html, tag, attribute, value, escape_value)
     return retval[0] if retval else None
 
 
@@ -122,7 +133,8 @@ class DubokuIE(InfoExtractor):
                     mobj1 = re.search(r'/(\d+)\.html', href)
                     if mobj1 and mobj1.group(1) == series_id:
                         series_title = clean_html(mobj.group(0))
-                        series_title = re.sub(r'[\s\r\n\t]+', ' ', series_title)
+                        series_title = re.sub(
+                            r'[\s\r\n\t]+', ' ', series_title)
                         title = clean_html(html)
                         title = re.sub(r'[\s\r\n\t]+', ' ', title)
                         break
@@ -134,7 +146,8 @@ class DubokuIE(InfoExtractor):
         if player_encrypt == 1:
             data_url = urllib.parse.unquote(data_url)
         elif player_encrypt == 2:
-            data_url = urllib.parse.unquote(base64.b64decode(data_url).decode('ascii'))
+            data_url = urllib.parse.unquote(
+                base64.b64decode(data_url).decode('ascii'))
 
         # if it is an embedded iframe, maybe it's an external source
         headers = {'Referer': webpage_url}
@@ -153,7 +166,8 @@ class DubokuIE(InfoExtractor):
                 'episode_id': episode_id,
             }
 
-        formats = self._extract_m3u8_formats(data_url, video_id, 'mp4', headers=headers)
+        formats = self._extract_m3u8_formats(
+            data_url, video_id, 'mp4', headers=headers)
 
         return {
             'id': video_id,
@@ -201,7 +215,8 @@ class DubokuPlaylistIE(InfoExtractor):
 
         # extract title
 
-        title = _get_element_by_tag_and_attrib(webpage_html, 'h1', 'class', 'title')
+        title = _get_element_by_tag_and_attrib(
+            webpage_html, 'h1', 'class', 'title')
         title = unescapeHTML(title.group('content')) if title else None
         if not title:
             title = self._html_search_meta('keywords', webpage_html)
@@ -213,11 +228,18 @@ class DubokuPlaylistIE(InfoExtractor):
 
         playlists = {}
         for div in _get_elements_by_tag_and_attrib(
-                webpage_html, attribute='id', value='playlist\\d+', escape_value=False):
+                webpage_html,
+                attribute='id',
+                value='playlist\\d+',
+                escape_value=False):
             playlist_id = div.group('value')
             playlist = []
             for a in _get_elements_by_tag_and_attrib(
-                    div.group('content'), 'a', 'href', value='[^\'"]+?', escape_value=False):
+                div.group('content'),
+                'a',
+                'href',
+                value='[^\'"]+?',
+                    escape_value=False):
                 playlist.append({
                     'href': unescapeHTML(a.group('value')),
                     'title': unescapeHTML(a.group('content')),

@@ -7,10 +7,17 @@ class SovietsClosetBaseIE(InfoExtractor):
     MEDIADELIVERY_REFERER = {'Referer': 'https://iframe.mediadelivery.net/'}
 
     def parse_nuxt_jsonp(self, nuxt_jsonp_url, video_id, name):
-        nuxt_jsonp = self._download_webpage(nuxt_jsonp_url, video_id, note=f'Downloading {name} __NUXT_JSONP__')
+        nuxt_jsonp = self._download_webpage(
+            nuxt_jsonp_url, video_id, note=f'Downloading {name} __NUXT_JSONP__')
         return self._search_nuxt_data(nuxt_jsonp, video_id, '__NUXT_JSONP__')
 
-    def video_meta(self, video_id, game_name, category_name, episode_number, stream_date):
+    def video_meta(
+            self,
+            video_id,
+            game_name,
+            category_name,
+            episode_number,
+            stream_date):
         title = game_name
         if category_name and category_name != 'Misc':
             title += f' - {category_name}'
@@ -39,81 +46,90 @@ class SovietsClosetBaseIE(InfoExtractor):
 
 class SovietsClosetIE(SovietsClosetBaseIE):
     _VALID_URL = r'https?://(?:www\.)?sovietscloset\.com/video/(?P<id>[0-9]+)/?'
-    _TESTS = [
-        {
-            'url': 'https://sovietscloset.com/video/1337',
-            'md5': 'bd012b04b261725510ca5383074cdd55',
-            'info_dict': {
-                'id': '2f0cfbf4-3588-43a9-a7d6-7c9ea3755e67',
-                'ext': 'mp4',
-                'title': 'The Witcher #13',
-                'thumbnail': r're:^https?://.*\.b-cdn\.net/2f0cfbf4-3588-43a9-a7d6-7c9ea3755e67/thumbnail\.jpg$',
-                'uploader': 'SovietWomble',
-                'creator': 'SovietWomble',
-                'release_timestamp': 1492091580,
-                'release_date': '20170413',
-                'timestamp': 1492091580,
-                'upload_date': '20170413',
-                'uploader_id': 'SovietWomble',
-                'uploader_url': 'https://www.twitch.tv/SovietWomble',
-                'duration': 7008,
-                'was_live': True,
-                'availability': 'public',
-                'series': 'The Witcher',
-                'season': 'Misc',
-                'episode_number': 13,
-                'episode': 'Episode 13',
-                'creators': ['SovietWomble'],
-                'description': '',
-                '_old_archive_ids': ['sovietscloset 1337'],
-            },
-        },
-        {
-            'url': 'https://sovietscloset.com/video/1105',
-            'md5': '89fa928f183893cb65a0b7be846d8a90',
-            'info_dict': {
-                'id': 'c0e5e76f-3a93-40b4-bf01-12343c2eec5d',
-                'ext': 'mp4',
-                'title': 'Arma 3 - Zeus Games #5',
-                'uploader': 'SovietWomble',
-                'thumbnail': r're:^https?://.*\.b-cdn\.net/c0e5e76f-3a93-40b4-bf01-12343c2eec5d/thumbnail\.jpg$',
-                'creator': 'SovietWomble',
-                'release_timestamp': 1461157200,
-                'release_date': '20160420',
-                'timestamp': 1461157200,
-                'upload_date': '20160420',
-                'uploader_id': 'SovietWomble',
-                'uploader_url': 'https://www.twitch.tv/SovietWomble',
-                'duration': 8805,
-                'was_live': True,
-                'availability': 'public',
-                'series': 'Arma 3',
-                'season': 'Zeus Games',
-                'episode_number': 5,
-                'episode': 'Episode 5',
-                'creators': ['SovietWomble'],
-                'description': '',
-                '_old_archive_ids': ['sovietscloset 1105'],
-            },
-        },
-    ]
+    _TESTS = [{'url': 'https://sovietscloset.com/video/1337',
+               'md5': 'bd012b04b261725510ca5383074cdd55',
+               'info_dict': {'id': '2f0cfbf4-3588-43a9-a7d6-7c9ea3755e67',
+                             'ext': 'mp4',
+                             'title': 'The Witcher #13',
+                             'thumbnail': r're:^https?://.*\.b-cdn\.net/2f0cfbf4-3588-43a9-a7d6-7c9ea3755e67/thumbnail\.jpg$',
+                             'uploader': 'SovietWomble',
+                             'creator': 'SovietWomble',
+                             'release_timestamp': 1492091580,
+                             'release_date': '20170413',
+                             'timestamp': 1492091580,
+                             'upload_date': '20170413',
+                             'uploader_id': 'SovietWomble',
+                             'uploader_url': 'https://www.twitch.tv/SovietWomble',
+                             'duration': 7008,
+                             'was_live': True,
+                             'availability': 'public',
+                             'series': 'The Witcher',
+                             'season': 'Misc',
+                             'episode_number': 13,
+                             'episode': 'Episode 13',
+                             'creators': ['SovietWomble'],
+                             'description': '',
+                             '_old_archive_ids': ['sovietscloset 1337'],
+                             },
+               },
+              {'url': 'https://sovietscloset.com/video/1105',
+               'md5': '89fa928f183893cb65a0b7be846d8a90',
+               'info_dict': {'id': 'c0e5e76f-3a93-40b4-bf01-12343c2eec5d',
+                             'ext': 'mp4',
+                             'title': 'Arma 3 - Zeus Games #5',
+                             'uploader': 'SovietWomble',
+                             'thumbnail': r're:^https?://.*\.b-cdn\.net/c0e5e76f-3a93-40b4-bf01-12343c2eec5d/thumbnail\.jpg$',
+                             'creator': 'SovietWomble',
+                             'release_timestamp': 1461157200,
+                             'release_date': '20160420',
+                             'timestamp': 1461157200,
+                             'upload_date': '20160420',
+                             'uploader_id': 'SovietWomble',
+                             'uploader_url': 'https://www.twitch.tv/SovietWomble',
+                             'duration': 8805,
+                             'was_live': True,
+                             'availability': 'public',
+                             'series': 'Arma 3',
+                             'season': 'Zeus Games',
+                             'episode_number': 5,
+                             'episode': 'Episode 5',
+                             'creators': ['SovietWomble'],
+                             'description': '',
+                             '_old_archive_ids': ['sovietscloset 1105'],
+                             },
+               },
+              ]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        static_assets_base = self._search_regex(r'(/_nuxt/static/\d+)', webpage, 'staticAssetsBase')
+        static_assets_base = self._search_regex(
+            r'(/_nuxt/static/\d+)', webpage, 'staticAssetsBase')
         static_assets_base = f'https://sovietscloset.com{static_assets_base}'
 
-        stream = self.parse_nuxt_jsonp(f'{static_assets_base}/video/{video_id}/payload.js', video_id, 'video')['stream']
+        stream = self.parse_nuxt_jsonp(
+            f'{static_assets_base}/video/{video_id}/payload.js',
+            video_id,
+            'video')['stream']
 
         return self.url_result(
-            f'https://iframe.mediadelivery.net/embed/5105/{stream["bunnyId"]}', ie=BunnyCdnIE, url_transparent=True,
+            f'https://iframe.mediadelivery.net/embed/5105/{stream["bunnyId"]}',
+            ie=BunnyCdnIE,
+            url_transparent=True,
             **self.video_meta(
-                video_id=video_id, game_name=stream['game']['name'],
-                category_name=try_get(stream, lambda x: x['subcategory']['name'], str),
-                episode_number=stream.get('number'), stream_date=stream.get('date')),
-            _old_archive_ids=[make_archive_id(self, video_id)])
+                video_id=video_id,
+                game_name=stream['game']['name'],
+                category_name=try_get(
+                    stream,
+                    lambda x: x['subcategory']['name'],
+                    str),
+                episode_number=stream.get('number'),
+                stream_date=stream.get('date')),
+            _old_archive_ids=[
+                make_archive_id(
+                    self,
+                    video_id)])
 
 
 class SovietsClosetPlaylistIE(SovietsClosetBaseIE):
@@ -161,10 +177,12 @@ class SovietsClosetPlaylistIE(SovietsClosetBaseIE):
 
         webpage = self._download_webpage(url, playlist_id)
 
-        static_assets_base = self._search_regex(r'(/_nuxt/static/\d+)', webpage, 'staticAssetsBase')
+        static_assets_base = self._search_regex(
+            r'(/_nuxt/static/\d+)', webpage, 'staticAssetsBase')
         static_assets_base = f'https://sovietscloset.com{static_assets_base}'
 
-        sovietscloset = self.parse_nuxt_jsonp(f'{static_assets_base}/payload.js', playlist_id, 'global')['games']
+        sovietscloset = self.parse_nuxt_jsonp(
+            f'{static_assets_base}/payload.js', playlist_id, 'global')['games']
 
         if '/' in playlist_id:
             game_slug, category_slug = playlist_id.lower().split('/')
@@ -172,9 +190,10 @@ class SovietsClosetPlaylistIE(SovietsClosetBaseIE):
             game_slug = playlist_id.lower()
             category_slug = 'misc'
 
-        game = next(game for game in sovietscloset if game['slug'].lower() == game_slug)
-        category = next((cat for cat in game['subcategories'] if cat.get('slug', '').lower() == category_slug),
-                        game['subcategories'][0])
+        game = next(
+            game for game in sovietscloset if game['slug'].lower() == game_slug)
+        category = next((cat for cat in game['subcategories'] if cat.get(
+            'slug', '').lower() == category_slug), game['subcategories'][0])
         category_slug = category.get('slug', '').lower() or category_slug
         playlist_title = game.get('name') or game_slug
         if category_slug != 'misc':

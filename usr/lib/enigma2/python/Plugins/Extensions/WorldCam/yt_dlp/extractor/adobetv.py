@@ -27,7 +27,8 @@ class AdobeTVBaseIE(InfoExtractor):
             vtt_path = translation.get(url_key)
             if not vtt_path:
                 continue
-            lang = translation.get('language_w3c') or ISO639Utils.long2short(translation['language_medium'])
+            lang = translation.get('language_w3c') or ISO639Utils.long2short(
+                translation['language_medium'])
             subtitles.setdefault(lang, []).append({
                 'ext': 'vtt',
                 'url': vtt_path,
@@ -212,7 +213,8 @@ class AdobeTVChannelIE(AdobeTVPlaylistBaseIE):
             show_data['url'], 'AdobeTVShow', str_or_none(show_data.get('id')))
 
     def _real_extract(self, url):
-        language, channel_urlname, category_urlname = self._match_valid_url(url).groups()
+        language, channel_urlname, category_urlname = self._match_valid_url(
+            url).groups()
         if not language:
             language = 'en'
         query = {
@@ -230,10 +232,12 @@ class AdobeTVChannelIE(AdobeTVPlaylistBaseIE):
 class AdobeTVVideoIE(AdobeTVBaseIE):
     IE_NAME = 'adobetv:video'
     _VALID_URL = r'https?://video\.tv\.adobe\.com/v/(?P<id>\d+)'
-    _EMBED_REGEX = [r'<iframe[^>]+src=[\'"](?P<url>(?:https?:)?//video\.tv\.adobe\.com/v/\d+[^"]+)[\'"]']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=[\'"](?P<url>(?:https?:)?//video\.tv\.adobe\.com/v/\d+[^"]+)[\'"]']
 
     _TEST = {
-        # From https://helpx.adobe.com/acrobat/how-to/new-experience-acrobat-dc.html?set=acrobat--get-started--essential-beginners
+        # From
+        # https://helpx.adobe.com/acrobat/how-to/new-experience-acrobat-dc.html?set=acrobat--get-started--essential-beginners
         'url': 'https://video.tv.adobe.com/v/2456/',
         'md5': '43662b577c018ad707a63766462b1e87',
         'info_dict': {

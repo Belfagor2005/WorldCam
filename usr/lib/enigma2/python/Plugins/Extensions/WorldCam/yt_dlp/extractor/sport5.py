@@ -4,31 +4,27 @@ from ..utils import ExtractorError
 
 class Sport5IE(InfoExtractor):
     _VALID_URL = r'https?://(?:www|vod)?\.sport5\.co\.il/.*\b(?:Vi|docID)=(?P<id>\d+)'
-    _TESTS = [
-        {
-            'url': 'http://vod.sport5.co.il/?Vc=147&Vi=176331&Page=1',
-            'info_dict': {
-                'id': 's5-Y59xx1-GUh2',
-                'ext': 'mp4',
-                'title': 'ולנסיה-קורדובה 0:3',
-                'description': 'אלקאסר, גאייה ופגולי סידרו לקבוצה של נונו ניצחון על קורדובה ואת המקום הראשון בליגה',
-                'duration': 228,
-                'categories': list,
-            },
-            'skip': 'Blocked outside of Israel',
-        }, {
-            'url': 'http://www.sport5.co.il/articles.aspx?FolderID=3075&docID=176372&lang=HE',
-            'info_dict': {
-                'id': 's5-SiXxx1-hKh2',
-                'ext': 'mp4',
-                'title': 'GOALS_CELTIC_270914.mp4',
-                'description': '',
-                'duration': 87,
-                'categories': list,
-            },
-            'skip': 'Blocked outside of Israel',
-        },
-    ]
+    _TESTS = [{'url': 'http://vod.sport5.co.il/?Vc=147&Vi=176331&Page=1',
+               'info_dict': {'id': 's5-Y59xx1-GUh2',
+                             'ext': 'mp4',
+                             'title': 'ולנסיה-קורדובה 0:3',
+                             'description': 'אלקאסר, גאייה ופגולי סידרו לקבוצה של נונו ניצחון על קורדובה ואת המקום הראשון בליגה',
+                             'duration': 228,
+                             'categories': list,
+                             },
+               'skip': 'Blocked outside of Israel',
+               },
+              {'url': 'http://www.sport5.co.il/articles.aspx?FolderID=3075&docID=176372&lang=HE',
+               'info_dict': {'id': 's5-SiXxx1-hKh2',
+                             'ext': 'mp4',
+                             'title': 'GOALS_CELTIC_270914.mp4',
+                             'description': '',
+                             'duration': 87,
+                             'categories': list,
+                             },
+               'skip': 'Blocked outside of Israel',
+               },
+              ]
 
     def _real_extract(self, url):
         mobj = self._match_valid_url(url)
@@ -36,7 +32,8 @@ class Sport5IE(InfoExtractor):
 
         webpage = self._download_webpage(url, media_id)
 
-        video_id = self._html_search_regex(r'clipId=([\w-]+)', webpage, 'video id')
+        video_id = self._html_search_regex(
+            r'clipId=([\w-]+)', webpage, 'video id')
 
         metadata = self._download_xml(
             f'http://sport5-metadata-rr-d.nsacdn.com/vod/vod/{video_id}/HDS/metadata.xml',

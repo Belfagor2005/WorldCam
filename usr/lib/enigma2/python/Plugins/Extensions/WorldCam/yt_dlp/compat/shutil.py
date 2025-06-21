@@ -1,4 +1,5 @@
 # flake8: noqa: F405
+import sys
 from shutil import *  # noqa: F403
 
 from .compat_utils import passthrough_module
@@ -6,8 +7,6 @@ from .compat_utils import passthrough_module
 passthrough_module(__name__, 'shutil')
 del passthrough_module
 
-
-import sys
 
 if sys.platform.startswith('freebsd'):
     import errno

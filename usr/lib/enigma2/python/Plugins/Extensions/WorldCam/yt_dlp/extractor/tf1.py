@@ -57,12 +57,15 @@ class TF1IE(InfoExtractor):
     def _real_extract(self, url):
         program_slug, slug = self._match_valid_url(url).groups()
         video = self._download_json(
-            'https://www.tf1.fr/graphql/web', slug, query={
+            'https://www.tf1.fr/graphql/web',
+            slug,
+            query={
                 'id': '9b80783950b85247541dd1d851f9cc7fa36574af015621f853ab111a679ce26f',
-                'variables': json.dumps({
-                    'programSlug': program_slug,
-                    'slug': slug,
-                }),
+                'variables': json.dumps(
+                    {
+                        'programSlug': program_slug,
+                        'slug': slug,
+                    }),
             })['data']['videoBySlug']
         wat_id = video['streamId']
 
@@ -76,7 +79,11 @@ class TF1IE(InfoExtractor):
         decoration = video.get('decoration') or {}
 
         thumbnails = []
-        for source in (try_get(decoration, lambda x: x['image']['sources'], list) or []):
+        for source in (
+            try_get(
+                decoration,
+                lambda x: x['image']['sources'],
+                list) or []):
             source_url = source.get('url')
             if not source_url:
                 continue
@@ -92,10 +99,16 @@ class TF1IE(InfoExtractor):
             'title': video.get('title'),
             'thumbnails': thumbnails,
             'description': decoration.get('description'),
-            'timestamp': parse_iso8601(video.get('date')),
-            'duration': int_or_none(try_get(video, lambda x: x['publicPlayingInfos']['duration'])),
+            'timestamp': parse_iso8601(
+                video.get('date')),
+            'duration': int_or_none(
+                try_get(
+                    video,
+                    lambda x: x['publicPlayingInfos']['duration'])),
             'tags': tags,
             'series': decoration.get('programLabel'),
-            'season_number': int_or_none(video.get('season')),
-            'episode_number': int_or_none(video.get('episode')),
+            'season_number': int_or_none(
+                video.get('season')),
+            'episode_number': int_or_none(
+                video.get('episode')),
         }

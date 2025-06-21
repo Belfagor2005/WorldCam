@@ -102,11 +102,13 @@ class ChilloutzoneIE(InfoExtractor):
             if native_platform == 'youtube':
                 return self.url_result(native_video_id, 'Youtube')
             elif native_platform == 'vimeo':
-                return self.url_result(f'https://vimeo.com/{native_video_id}', 'Vimeo')
+                return self.url_result(
+                    f'https://vimeo.com/{native_video_id}', 'Vimeo')
 
         elif not video_url:
             # Possibly a standard youtube embed?
-            # TODO: Investigate if site still does this (there are no tests for it)
+            # TODO: Investigate if site still does this (there are no tests for
+            # it)
             return self.url_result(url, 'Generic')
 
         return {

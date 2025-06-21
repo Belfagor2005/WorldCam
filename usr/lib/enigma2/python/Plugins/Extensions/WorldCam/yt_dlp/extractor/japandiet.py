@@ -25,7 +25,8 @@ def _parse_japanese_date(text):
         '令和': 2019,
     }
     ERA_RE = '|'.join(map(re.escape, ERA_TABLE.keys()))
-    mobj = re.search(rf'({ERA_RE})?(\d+)年(\d+)月(\d+)日', re.sub(r'[\s\u3000]+', '', text))
+    mobj = re.search(rf'({ERA_RE})?(\d+)年(\d+)月(\d+)日',
+                     re.sub(r'[\s\u3000]+', '', text))
     if not mobj:
         return None
     era, year, month, day = mobj.groups()
@@ -38,10 +39,16 @@ def _parse_japanese_date(text):
 
 
 def _parse_japanese_duration(text):
-    mobj = re.search(r'(?:(\d+)日間?)?(?:(\d+)時間?)?(?:(\d+)分)?(?:(\d+)秒)?', re.sub(r'[\s\u3000]+', '', text or ''))
+    mobj = re.search(
+        r'(?:(\d+)日間?)?(?:(\d+)時間?)?(?:(\d+)分)?(?:(\d+)秒)?',
+        re.sub(
+            r'[\s\u3000]+',
+            '',
+            text or ''))
     if not mobj:
         return
-    days, hours, mins, secs = (int_or_none(x, default=0) for x in mobj.groups())
+    days, hours, mins, secs = (int_or_none(x, default=0)
+                               for x in mobj.groups())
     return secs + mins * 60 + hours * 60 * 60 + days * 24 * 60 * 60
 
 
@@ -83,12 +90,15 @@ class ShugiinItvLiveIE(ShugiinItvBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return super().suitable(url) and not any(x.suitable(url) for x in (ShugiinItvLiveRoomIE, ShugiinItvVodIE))
+        return super().suitable(url) and not any(x.suitable(url)
+                                                 for x in (ShugiinItvLiveRoomIE, ShugiinItvVodIE))
 
     def _real_extract(self, url):
         self.to_screen(
             'Downloading all running proceedings. To specify one proceeding, use direct link from the website')
-        return self.playlist_result(self._fetch_rooms(), playlist_title='All proceedings for today')
+        return self.playlist_result(
+            self._fetch_rooms(),
+            playlist_title='All proceedings for today')
 
 
 class ShugiinItvLiveRoomIE(ShugiinItvBaseIE):
@@ -117,7 +127,12 @@ class ShugiinItvLiveRoomIE(ShugiinItvBaseIE):
             room_id, title = smug['g']
         else:
             room_id = self._match_id(url)
-            title = traverse_obj(self._fetch_rooms(), (lambda k, v: v['id'] == room_id, 'title'), get_all=False)
+            title = traverse_obj(
+                self._fetch_rooms(),
+                (lambda k,
+                 v: v['id'] == room_id,
+                    'title'),
+                get_all=False)
 
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             f'https://hlslive.shugiintv.go.jp/{room_id}/amlst:{room_id}/playlist.m3u8',
@@ -151,37 +166,46 @@ class ShugiinItvVodIE(ShugiinItvBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(
-            f'https://www.shugiintv.go.jp/jp/index.php?ex=VL&media_type=&deli_id={video_id}', video_id,
+            f'https://www.shugiintv.go.jp/jp/index.php?ex=VL&media_type=&deli_id={video_id}',
+            video_id,
             encoding='euc-jp')
 
         m3u8_url = self._search_regex(
-            r'id="vtag_src_base_vod"\s*value="(http.+?\.m3u8)"', webpage, 'm3u8 url')
+            r'id="vtag_src_base_vod"\s*value="(http.+?\.m3u8)"',
+            webpage,
+            'm3u8 url')
         m3u8_url = re.sub(r'^http://', 'https://', m3u8_url)
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             m3u8_url, video_id, ext='mp4')
 
         title = self._html_search_regex(
             (r'<td\s+align="left">(.+)\s*\(\d+分\)',
-             r'<TD.+?<IMG\s*src=".+?/spacer\.gif".+?height="15">(.+?)<IMG'), webpage, 'title', fatal=False)
+             r'<TD.+?<IMG\s*src=".+?/spacer\.gif".+?height="15">(.+?)<IMG'),
+            webpage,
+            'title',
+            fatal=False)
 
         release_date = _parse_japanese_date(self._html_search_regex(
             r'開会日</td>\s*<td.+?/td>\s*<TD>(.+?)</TD>',
             webpage, 'title', fatal=False))
 
         chapters = []
-        for chp in re.finditer(r'(?i)<A\s+HREF="([^"]+?)"\s*class="play_vod">(?!<img)(.+)</[Aa]>', webpage):
-            chapters.append({
-                'title': clean_html(chp.group(2)).strip(),
-                'start_time': try_call(lambda: float(parse_qs(chp.group(1))['time'][0].strip())),
-            })
+        for chp in re.finditer(
+            r'(?i)<A\s+HREF="([^"]+?)"\s*class="play_vod">(?!<img)(.+)</[Aa]>',
+                webpage):
+            chapters.append({'title': clean_html(chp.group(2)).strip(), 'start_time': try_call(
+                lambda: float(parse_qs(chp.group(1))['time'][0].strip())), })
         # NOTE: there are blanks at the first and the end of the videos,
         # so getting/providing the video duration is not possible
-        # also, the exact end_time for the last chapter is unknown (we can get at most minutes of granularity)
-        last_tr = re.findall(r'(?s)<TR\s*class="s14_24">(.+?)</TR>', webpage)[-1]
+        # also, the exact end_time for the last chapter is unknown (we can get
+        # at most minutes of granularity)
+        last_tr = re.findall(
+            r'(?s)<TR\s*class="s14_24">(.+?)</TR>', webpage)[-1]
         if last_tr and chapters:
             last_td = re.findall(r'<TD.+?</TD>', last_tr)[-1]
             if last_td:
-                chapters[-1]['end_time'] = chapters[-1]['start_time'] + _parse_japanese_duration(clean_html(last_td))
+                chapters[-1]['end_time'] = chapters[-1]['start_time'] + \
+                    _parse_japanese_duration(clean_html(last_td))
 
         return {
             'id': video_id,
@@ -264,7 +288,8 @@ class SangiinIE(InfoExtractor):
             r'var\s+videopath\s*=\s*(["\'])([^"\']+)\1', webpage,
             'm3u8 url', group=2)
 
-        formats, subs = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, 'mp4')
+        formats, subs = self._extract_m3u8_formats_and_subtitles(
+            m3u8_url, video_id, 'mp4')
 
         return {
             'id': video_id,

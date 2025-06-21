@@ -44,10 +44,16 @@ class XiaoHongShuIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
         initial_state = self._search_json(
-            r'window\.__INITIAL_STATE__\s*=', webpage, 'initial state', display_id, transform_source=js_to_json)
+            r'window\.__INITIAL_STATE__\s*=',
+            webpage,
+            'initial state',
+            display_id,
+            transform_source=js_to_json)
 
-        note_info = traverse_obj(initial_state, ('note', 'noteDetailMap', display_id, 'note'))
-        video_info = traverse_obj(note_info, ('video', 'media', 'stream', ..., ...))
+        note_info = traverse_obj(
+            initial_state, ('note', 'noteDetailMap', display_id, 'note'))
+        video_info = traverse_obj(
+            note_info, ('video', 'media', 'stream', ..., ...))
 
         formats = []
         for info in video_info:
@@ -66,14 +72,21 @@ class XiaoHongShuIE(InfoExtractor):
                 'duration': ('duration', {float_or_none(scale=1000)}),
             })
 
-            formats.extend(traverse_obj(info, (('masterUrl', ('backupUrls', ...)), {
-                lambda u: url_or_none(u) and {'url': u, **format_info}})))
+            formats.extend(
+                traverse_obj(
+                    info, (('masterUrl', ('backupUrls', ...)), {
+                        lambda u: url_or_none(u) and {
+                            'url': u, **format_info}})))
 
-        if origin_key := traverse_obj(note_info, ('video', 'consumer', 'originVideoKey', {str})):
+        if origin_key := traverse_obj(
+                note_info, ('video', 'consumer', 'originVideoKey', {str})):
             # Not using a head request because of false negatives
             urlh = self._request_webpage(
-                f'https://sns-video-bd.xhscdn.com/{origin_key}', display_id,
-                'Checking original video availability', 'Original video is not available', fatal=False)
+                f'https://sns-video-bd.xhscdn.com/{origin_key}',
+                display_id,
+                'Checking original video availability',
+                'Original video is not available',
+                fatal=False)
             if urlh:
                 formats.append({
                     'format_id': 'direct',
@@ -89,7 +102,8 @@ class XiaoHongShuIE(InfoExtractor):
                 'height': ('height', {int_or_none}),
                 'width': ('width', {int_or_none}),
             })
-            for thumb_url in traverse_obj(image_info, (('urlDefault', 'urlPre'), {url_or_none})):
+            for thumb_url in traverse_obj(
+                    image_info, (('urlDefault', 'urlPre'), {url_or_none})):
                 thumbnails.append({
                     'url': thumb_url,
                     **thumbnail_info,

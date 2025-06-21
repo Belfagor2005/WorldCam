@@ -35,16 +35,21 @@ class AluraIE(InfoExtractor):
 
     def _real_extract(self, url):
 
-        course, video_id = self._match_valid_url(url).group('course_name', 'id')
+        course, video_id = self._match_valid_url(
+            url).group('course_name', 'id')
         video_url = self._VIDEO_URL % (course, video_id)
 
-        video_dict = self._download_json(video_url, video_id, 'Searching for videos')
+        video_dict = self._download_json(
+            video_url, video_id, 'Searching for videos')
 
         if video_dict:
             webpage = self._download_webpage(url, video_id)
-            video_title = clean_html(self._search_regex(
-                r'<span[^>]+class=(["\'])task-body-header-title-text\1[^>]*>(?P<title>[^<]+)',
-                webpage, 'title', group='title'))
+            video_title = clean_html(
+                self._search_regex(
+                    r'<span[^>]+class=(["\'])task-body-header-title-text\1[^>]*>(?P<title>[^<]+)',
+                    webpage,
+                    'title',
+                    group='title'))
 
             formats = []
             for video_obj in video_dict:
@@ -53,10 +58,12 @@ class AluraIE(InfoExtractor):
                     video_url_m3u8, None, 'mp4', entry_protocol='m3u8_native',
                     m3u8_id='hls', fatal=False)
                 for f in video_format:
-                    m = re.search(r'^[\w \W]*-(?P<res>\w*).mp4[\W \w]*', f['url'])
+                    m = re.search(
+                        r'^[\w \W]*-(?P<res>\w*).mp4[\W \w]*', f['url'])
                     if m:
                         if not f.get('height'):
-                            f['height'] = int('720' if m.group('res') == 'hd' else '480')
+                            f['height'] = int(
+                                '720' if m.group('res') == 'hd' else '480')
                 formats.extend(video_format)
 
             return {
@@ -87,8 +94,11 @@ class AluraIE(InfoExtractor):
         })
 
         post_url = self._search_regex(
-            r'<form[^>]+class=["|\']signin-form["|\'] action=["|\'](?P<url>.+?)["|\']', login_page,
-            'post url', default=self._LOGIN_URL, group='url')
+            r'<form[^>]+class=["|\']signin-form["|\'] action=["|\'](?P<url>.+?)["|\']',
+            login_page,
+            'post url',
+            default=self._LOGIN_URL,
+            group='url')
 
         if not post_url.startswith('http'):
             post_url = urllib.parse.urljoin(self._LOGIN_URL, post_url)
@@ -103,7 +113,8 @@ class AluraIE(InfoExtractor):
                 r'(?s)<p[^>]+class="alert-message[^"]*">(.+?)</p>',
                 response, 'error message', default=None)
             if error:
-                raise ExtractorError(f'Unable to login: {error}', expected=True)
+                raise ExtractorError(
+                    f'Unable to login: {error}', expected=True)
             raise ExtractorError('Unable to log in')
 
 
@@ -132,10 +143,14 @@ class AluraCourseIE(AluraIE):  # XXX: Do not subclass from concrete IE
 
         entries = []
         if webpage:
-            for path in re.findall(r'<a\b(?=[^>]* class="[^"]*(?<=[" ])courseSectionList-section[" ])(?=[^>]* href="([^"]*))', webpage):
+            for path in re.findall(
+                r'<a\b(?=[^>]* class="[^"]*(?<=[" ])courseSectionList-section[" ])(?=[^>]* href="([^"]*))',
+                    webpage):
                 page_url = urljoin(url, path)
                 section_path = self._download_webpage(page_url, course_path)
-                for path_video in re.findall(r'<a\b(?=[^>]* class="[^"]*(?<=[" ])task-menu-nav-item-link-VIDEO[" ])(?=[^>]* href="([^"]*))', section_path):
+                for path_video in re.findall(
+                    r'<a\b(?=[^>]* class="[^"]*(?<=[" ])task-menu-nav-item-link-VIDEO[" ])(?=[^>]* href="([^"]*))',
+                        section_path):
                     chapter = clean_html(
                         self._search_regex(
                             r'<h3[^>]+class=(["\'])task-menu-section-title-text\1[^>]*>(?P<chapter>[^<]+)',

@@ -56,12 +56,14 @@ class EpornerIE(InfoExtractor):
         vid_hash = self._search_regex(
             r'hash\s*[:=]\s*["\']([\da-f]{32})', webpage, 'hash')
 
-        title = self._og_search_title(webpage, default=None) or self._html_search_regex(
+        title = self._og_search_title(
+            webpage, default=None) or self._html_search_regex(
             r'<title>(.+?) - EPORNER', webpage, 'title')
 
         # Reverse engineered from vjs.js
         def calc_hash(s):
-            return ''.join(encode_base_n(int(s[lb:lb + 8], 16), 36) for lb in range(0, 32, 8))
+            return ''.join(encode_base_n(
+                int(s[lb:lb + 8], 16), 36) for lb in range(0, 32, 8))
 
         video = self._download_json(
             f'http://www.eporner.com/xhr/video/{video_id}',
@@ -75,7 +77,10 @@ class EpornerIE(InfoExtractor):
 
         if video.get('available') is False:
             raise ExtractorError(
-                '{} said: {}'.format(self.IE_NAME, video['message']), expected=True)
+                '{} said: {}'.format(
+                    self.IE_NAME,
+                    video['message']),
+                expected=True)
 
         sources = video['sources']
 

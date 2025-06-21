@@ -31,12 +31,20 @@ class LRTStreamIE(LRTBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        streams_data = self._download_json(self._extract_js_var(webpage, 'tokenURL'), video_id)
+        streams_data = self._download_json(
+            self._extract_js_var(
+                webpage, 'tokenURL'), video_id)
 
         formats, subtitles = [], {}
-        for stream_url in traverse_obj(streams_data, (
-                'response', 'data', lambda k, _: k.startswith('content')), expected_type=url_or_none):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(stream_url, video_id, 'mp4', m3u8_id='hls', live=True)
+        for stream_url in traverse_obj(
+            streams_data,
+            ('response',
+             'data',
+             lambda k,
+             _: k.startswith('content')),
+                expected_type=url_or_none):
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                stream_url, video_id, 'mp4', m3u8_id='hls', live=True)
             formats.extend(fmts)
             subtitles = self._merge_subtitles(subtitles, subs)
 

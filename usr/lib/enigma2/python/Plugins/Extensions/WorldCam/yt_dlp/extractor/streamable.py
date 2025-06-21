@@ -10,7 +10,8 @@ from ..utils import (
 
 class StreamableIE(InfoExtractor):
     _VALID_URL = r'https?://streamable\.com/(?:[es]/)?(?P<id>\w+)'
-    _EMBED_REGEX = [r'<iframe[^>]+\bsrc=(?P<q1>[\'"])(?P<url>(?:https?:)?//streamable\.com/.+?)(?P=q1)']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+\bsrc=(?P<q1>[\'"])(?P<url>(?:https?:)?//streamable\.com/.+?)(?P=q1)']
     _TESTS = [
         {
             'url': 'https://streamable.com/dnd1',

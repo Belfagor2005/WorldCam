@@ -61,11 +61,15 @@ class RadioRadicaleIE(InfoExtractor):
             formats = []
             subtitles = {}
 
-            for m3u8_url in traverse_obj(video, ('sources', ..., 'src', {url_or_none})):
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id)
+            for m3u8_url in traverse_obj(
+                    video, ('sources', ..., 'src', {url_or_none})):
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                    m3u8_url, video_id)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
-            for sub in traverse_obj(video, ('subtitles', ..., lambda _, v: url_or_none(v['src']))):
+            for sub in traverse_obj(
+                video, ('subtitles', ..., lambda _, v: url_or_none(
+                    v['src']))):
                 self._merge_subtitles({sub.get('srclang') or 'und': [{
                     'url': sub['src'],
                     'name': sub.get('label'),

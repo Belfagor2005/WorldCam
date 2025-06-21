@@ -17,7 +17,8 @@ class TedBaseIE(InfoExtractor):
 
     def _parse_playlist(self, playlist):
         for entry in try_get(playlist, lambda x: x['videos']['nodes'], list):
-            if entry.get('__typename') == 'Video' and entry.get('canonicalUrl'):
+            if entry.get('__typename') == 'Video' and entry.get(
+                    'canonicalUrl'):
                 yield self.url_result(entry['canonicalUrl'], TedTalkIE.ie_key())
 
 
@@ -44,15 +45,18 @@ class TedTalkIE(TedBaseIE):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        talk_info = self._search_nextjs_data(webpage, display_id)['props']['pageProps']['videoData']
+        talk_info = self._search_nextjs_data(webpage, display_id)[
+            'props']['pageProps']['videoData']
         video_id = talk_info['id']
         player_data = self._parse_json(talk_info.get('playerData'), video_id)
 
         http_url = None
         formats, subtitles = [], {}
-        for format_id, resources in (player_data.get('resources') or {}).items():
+        for format_id, resources in (
+                player_data.get('resources') or {}).items():
             if format_id == 'hls':
-                stream_url = url_or_none(try_get(resources, lambda x: x['stream']))
+                stream_url = url_or_none(
+                    try_get(resources, lambda x: x['stream']))
                 if not stream_url:
                     continue
                 m3u8_formats, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
@@ -91,9 +95,11 @@ class TedTalkIE(TedBaseIE):
                 } for resource in resources if resource.get('file'))
 
         if http_url:
-            m3u8_formats = [f for f in formats if f.get('protocol') == 'm3u8' and f.get('vcodec') != 'none']
+            m3u8_formats = [f for f in formats if f.get(
+                'protocol') == 'm3u8' and f.get('vcodec') != 'none']
             for m3u8_format in m3u8_formats:
-                bitrate = self._search_regex(r'(\d+k)', m3u8_format['url'], 'bitrate', default=None)
+                bitrate = self._search_regex(
+                    r'(\d+k)', m3u8_format['url'], 'bitrate', default=None)
                 if not bitrate:
                     continue
                 bitrate_url = re.sub(r'\d+k', bitrate, http_url)
@@ -121,10 +127,12 @@ class TedTalkIE(TedBaseIE):
         if not formats:
             external = player_data.get('external') or {}
             service = external.get('service') or ''
-            ext_url = external.get('code') if service.lower() == 'youtube' else None
+            ext_url = external.get(
+                'code') if service.lower() == 'youtube' else None
             return self.url_result(ext_url or external['uri'])
 
-        thumbnail = player_data.get('thumb') or self._og_search_property('image', webpage)
+        thumbnail = player_data.get(
+            'thumb') or self._og_search_property('image', webpage)
         if thumbnail:
             # trim thumbnail resize parameters
             thumbnail = thumbnail.split('?')[0]
@@ -137,11 +145,19 @@ class TedTalkIE(TedBaseIE):
             'description': talk_info.get('description') or self._og_search_description(webpage),
             'subtitles': subtitles,
             'formats': formats,
-            'duration': talk_info.get('duration') or parse_duration(self._og_search_property('video:duration', webpage)),
-            'view_count': str_to_int(talk_info.get('viewedCount')),
-            'upload_date': unified_strdate(talk_info.get('publishedAt')),
-            'release_date': unified_strdate(talk_info.get('recordedOn')),
-            'tags': try_get(player_data, lambda x: x['targeting']['tag'].split(',')),
+            'duration': talk_info.get('duration') or parse_duration(
+                self._og_search_property(
+                    'video:duration',
+                    webpage)),
+            'view_count': str_to_int(
+                talk_info.get('viewedCount')),
+            'upload_date': unified_strdate(
+                talk_info.get('publishedAt')),
+            'release_date': unified_strdate(
+                talk_info.get('recordedOn')),
+            'tags': try_get(
+                player_data,
+                lambda x: x['targeting']['tag'].split(',')),
         }
 
 
@@ -170,14 +186,19 @@ class TedSeriesIE(TedBaseIE):
 
     def _real_extract(self, url):
         display_id, season = self._match_valid_url(url).group('id', 'season')
-        webpage = self._download_webpage(url, display_id, 'Downloading series webpage')
-        info = self._search_nextjs_data(webpage, display_id)['props']['pageProps']
+        webpage = self._download_webpage(
+            url, display_id, 'Downloading series webpage')
+        info = self._search_nextjs_data(webpage, display_id)[
+            'props']['pageProps']
 
         entries = itertools.chain.from_iterable(
-            self._parse_playlist(s) for s in info['seasons'] if season in [None, s.get('seasonNumber')])
+            self._parse_playlist(s) for s in info['seasons'] if season in [
+                None, s.get('seasonNumber')])
 
         series_id = try_get(info, lambda x: x['series']['id'])
-        series_name = try_get(info, lambda x: x['series']['name']) or self._og_search_title(webpage, fatal=False)
+        series_name = try_get(
+            info, lambda x: x['series']['name']) or self._og_search_title(
+            webpage, fatal=False)
 
         return self.playlist_result(
             entries,
@@ -202,11 +223,17 @@ class TedPlaylistIE(TedBaseIE):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        playlist = self._search_nextjs_data(webpage, display_id)['props']['pageProps']['playlist']
+        playlist = self._search_nextjs_data(webpage, display_id)[
+            'props']['pageProps']['playlist']
 
         return self.playlist_result(
-            self._parse_playlist(playlist), playlist.get('id'),
-            playlist.get('title') or self._og_search_title(webpage, default='').replace(' | TED Talks', '') or None,
+            self._parse_playlist(playlist),
+            playlist.get('id'),
+            playlist.get('title') or self._og_search_title(
+                webpage,
+                default='').replace(
+                ' | TED Talks',
+                '') or None,
             self._og_search_description(webpage))
 
 
@@ -232,4 +259,9 @@ class TedEmbedIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        return self.url_result(re.sub(r'://embed(-ssl)?', '://www', url), TedTalkIE.ie_key())
+        return self.url_result(
+            re.sub(
+                r'://embed(-ssl)?',
+                '://www',
+                url),
+            TedTalkIE.ie_key())

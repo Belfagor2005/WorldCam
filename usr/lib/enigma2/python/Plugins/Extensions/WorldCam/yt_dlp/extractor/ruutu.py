@@ -138,25 +138,51 @@ class RuutuIE(InfoExtractor):
     def _extract_embed_urls(cls, url, webpage):
         # nelonen.fi
         settings = try_call(
-            lambda: json.loads(re.search(
-                r'jQuery\.extend\(Drupal\.settings, ({.+?})\);', webpage).group(1), strict=False))
+            lambda: json.loads(
+                re.search(
+                    r'jQuery\.extend\(Drupal\.settings, ({.+?})\);',
+                    webpage).group(1),
+                strict=False))
         if settings:
-            video_id = traverse_obj(settings, (
-                'mediaCrossbowSettings', 'file', 'field_crossbow_video_id', 'und', 0, 'value'))
+            video_id = traverse_obj(
+                settings,
+                ('mediaCrossbowSettings',
+                 'file',
+                 'field_crossbow_video_id',
+                 'und',
+                 0,
+                 'value'))
             if video_id:
                 return [f'http://www.ruutu.fi/video/{video_id}']
         # hs.fi and is.fi
         settings = try_call(
-            lambda: json.loads(re.search(
-                '(?s)<script[^>]+id=[\'"]__NEXT_DATA__[\'"][^>]*>([^<]+)</script>',
-                webpage).group(1), strict=False))
+            lambda: json.loads(
+                re.search(
+                    '(?s)<script[^>]+id=[\'"]__NEXT_DATA__[\'"][^>]*>([^<]+)</script>',
+                    webpage).group(1),
+                strict=False))
         if settings:
-            video_ids = set(traverse_obj(settings, (
-                'props', 'pageProps', 'page', 'assetData', 'splitBody', ..., 'video', 'sourceId')) or [])
+            video_ids = set(
+                traverse_obj(
+                    settings,
+                    ('props',
+                     'pageProps',
+                     'page',
+                     'assetData',
+                     'splitBody',
+                     ...,
+                     'video',
+                     'sourceId')) or [])
             if video_ids:
                 return [f'http://www.ruutu.fi/video/{v}' for v in video_ids]
-            video_id = traverse_obj(settings, (
-                'props', 'pageProps', 'page', 'assetData', 'mainVideo', 'sourceId'))
+            video_id = traverse_obj(
+                settings,
+                ('props',
+                 'pageProps',
+                 'page',
+                 'assetData',
+                 'mainVideo',
+                 'sourceId'))
             if video_id:
                 return [f'http://www.ruutu.fi/video/{video_id}']
 
@@ -176,8 +202,8 @@ class RuutuIE(InfoExtractor):
                     extract_formats(child)
                 elif child.tag.endswith('File'):
                     video_url = child.text
-                    if (not video_url or video_url in processed_urls
-                            or any(p in video_url for p in ('NOT_USED', 'NOT-USED'))):
+                    if (not video_url or video_url in processed_urls or any(
+                            p in video_url for p in ('NOT_USED', 'NOT-USED'))):
                         continue
                     processed_urls.append(video_url)
                     ext = determine_ext(video_url)
@@ -210,15 +236,20 @@ class RuutuIE(InfoExtractor):
                         })
                     else:
                         proto = urllib.parse.urlparse(video_url).scheme
-                        if not child.tag.startswith('HTTP') and proto != 'rtmp':
+                        if not child.tag.startswith(
+                                'HTTP') and proto != 'rtmp':
                             continue
                         preference = -1 if proto == 'rtmp' else 1
                         label = child.get('label')
                         tbr = int_or_none(child.get('bitrate'))
                         format_id = f'{proto}-{label if label else tbr}' if label or tbr else proto
-                        if not self._is_valid_url(video_url, video_id, format_id):
+                        if not self._is_valid_url(
+                                video_url, video_id, format_id):
                             continue
-                        width, height = (int_or_none(x) for x in child.get('resolution', 'x').split('x')[:2])
+                        width, height = (
+                            int_or_none(x) for x in child.get(
+                                'resolution', 'x').split('x')[
+                                :2])
                         formats.append({
                             'format_id': format_id,
                             'url': video_url,
@@ -231,8 +262,12 @@ class RuutuIE(InfoExtractor):
         extract_formats(video_xml.find('./Clip'))
 
         def pv(name):
-            value = try_call(lambda: find_xpath_attr(
-                video_xml, './Clip/PassthroughVariables/variable', 'name', name).get('value'))
+            value = try_call(
+                lambda: find_xpath_attr(
+                    video_xml,
+                    './Clip/PassthroughVariables/variable',
+                    'name',
+                    name).get('value'))
             if value != 'NA':
                 return value or None
 
@@ -242,21 +277,47 @@ class RuutuIE(InfoExtractor):
                 self.report_drm(video_id)
             ns_st_cds = pv('ns_st_cds')
             if ns_st_cds != 'free':
-                raise ExtractorError(f'This video is {ns_st_cds}.', expected=True)
+                raise ExtractorError(
+                    f'This video is {ns_st_cds}.', expected=True)
 
         themes = pv('themes')
 
         return {
             'id': video_id,
-            'title': xpath_attr(video_xml, './/Behavior/Program', 'program_name', 'title', fatal=True),
-            'description': xpath_attr(video_xml, './/Behavior/Program', 'description', 'description'),
-            'thumbnail': xpath_attr(video_xml, './/Behavior/Startpicture', 'href', 'thumbnail'),
-            'duration': int_or_none(xpath_text(video_xml, './/Runtime', 'duration')) or int_or_none(pv('runtime')),
-            'age_limit': int_or_none(xpath_text(video_xml, './/AgeLimit', 'age limit')),
-            'upload_date': unified_strdate(pv('date_start')),
+            'title': xpath_attr(
+                video_xml,
+                './/Behavior/Program',
+                'program_name',
+                'title',
+                fatal=True),
+            'description': xpath_attr(
+                video_xml,
+                './/Behavior/Program',
+                'description',
+                'description'),
+            'thumbnail': xpath_attr(
+                video_xml,
+                './/Behavior/Startpicture',
+                'href',
+                'thumbnail'),
+            'duration': int_or_none(
+                xpath_text(
+                    video_xml,
+                    './/Runtime',
+                    'duration')) or int_or_none(
+                pv('runtime')),
+            'age_limit': int_or_none(
+                xpath_text(
+                    video_xml,
+                    './/AgeLimit',
+                    'age limit')),
+            'upload_date': unified_strdate(
+                pv('date_start')),
             'series': pv('series_name'),
-            'season_number': int_or_none(pv('season_number')),
-            'episode_number': int_or_none(pv('episode_number')),
+            'season_number': int_or_none(
+                pv('season_number')),
+            'episode_number': int_or_none(
+                pv('episode_number')),
             'categories': themes.split(',') if themes else None,
             'formats': formats,
         }

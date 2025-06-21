@@ -102,12 +102,22 @@ class TwitterBaseIE(InfoExtractor):
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 variant_url, video_id, 'mp4', 'm3u8_native',
                 m3u8_id='hls', fatal=False)
-            for f in traverse_obj(fmts, lambda _, v: v['vcodec'] == 'none' and v.get('tbr') is None):
-                if mobj := re.match(r'hls-[Aa]udio-(?P<bitrate>\d{4,})', f['format_id']):
+            for f in traverse_obj(
+                    fmts,
+                    lambda _,
+                    v: v['vcodec'] == 'none' and v.get('tbr') is None):
+                if mobj := re.match(
+                    r'hls-[Aa]udio-(?P<bitrate>\d{4,})',
+                        f['format_id']):
                     f['tbr'] = int_or_none(mobj.group('bitrate'), 1000)
             return fmts, subs
         else:
-            tbr = int_or_none(dict_get(variant, ('bitrate', 'bit_rate')), 1000) or None
+            tbr = int_or_none(
+                dict_get(
+                    variant,
+                    ('bitrate',
+                     'bit_rate')),
+                1000) or None
             f = {
                 'url': variant_url,
                 'format_id': join_nonempty('http', tbr),
@@ -124,7 +134,8 @@ class TwitterBaseIE(InfoExtractor):
         formats = []
         subtitles = {}
         urls = []
-        for video_variant in vmap_data.findall('.//{http://twitter.com/schema/videoVMapV2.xsd}videoVariant'):
+        for video_variant in vmap_data.findall(
+                './/{http://twitter.com/schema/videoVMapV2.xsd}videoVariant'):
             video_variant.attrib['url'] = urllib.parse.unquote(
                 video_variant.attrib['url'])
             urls.append(video_variant.attrib['url'])
@@ -134,7 +145,8 @@ class TwitterBaseIE(InfoExtractor):
             subtitles = self._merge_subtitles(subtitles, subs)
         video_url = strip_or_none(xpath_text(vmap_data, './/MediaFile'))
         if video_url not in urls:
-            fmts, subs = self._extract_variant_formats({'url': video_url}, video_id)
+            fmts, subs = self._extract_variant_formats(
+                {'url': video_url}, video_id)
             formats.extend(fmts)
             subtitles = self._merge_subtitles(subtitles, subs)
         return formats, subtitles
@@ -157,10 +169,16 @@ class TwitterBaseIE(InfoExtractor):
         return self._configuration_arg('api', ['graphql'], ie_key='Twitter')[0]
 
     def _fetch_guest_token(self, display_id):
-        guest_token = traverse_obj(self._download_json(
-            f'{self._API_BASE}guest/activate.json', display_id, 'Downloading guest token', data=b'',
-            headers=self._set_base_headers(legacy=display_id and self._selected_api == 'legacy')),
-            ('guest_token', {str}))
+        guest_token = traverse_obj(
+            self._download_json(
+                f'{self._API_BASE}guest/activate.json',
+                display_id,
+                'Downloading guest token',
+                data=b'',
+                headers=self._set_base_headers(
+                    legacy=display_id and self._selected_api == 'legacy')),
+            ('guest_token',
+             {str}))
         if not guest_token:
             raise ExtractorError('Could not retrieve guest token')
         return guest_token
@@ -178,14 +196,17 @@ class TwitterBaseIE(InfoExtractor):
             headers=headers, query=query, data=data, expected_status=400)
         error = traverse_obj(response, ('errors', 0, 'message', {str}))
         if error:
-            raise ExtractorError(f'Login failed, Twitter API says: {error}', expected=True)
+            raise ExtractorError(
+                f'Login failed, Twitter API says: {error}',
+                expected=True)
         elif traverse_obj(response, 'status') != 'success':
             raise ExtractorError('Login was unsuccessful')
 
         subtask = traverse_obj(
             response, ('subtasks', ..., 'subtask_id', {str}), get_all=False)
         if not subtask:
-            raise ExtractorError('Twitter API did not return next login subtask')
+            raise ExtractorError(
+                'Twitter API did not return next login subtask')
 
         self._flow_token = response['flow_token']
 
@@ -222,7 +243,8 @@ class TwitterBaseIE(InfoExtractor):
             }
 
         next_subtask = self._call_login_api(
-            'Downloading flow token', headers, query={'flow_name': 'login'}, data=self._LOGIN_INIT_DATA)
+            'Downloading flow token', headers, query={
+                'flow_name': 'login'}, data=self._LOGIN_INIT_DATA)
 
         while not self.is_logged_in:
             if next_subtask == 'LoginJsInstrumentationSubtask':
@@ -279,30 +301,45 @@ class TwitterBaseIE(InfoExtractor):
 
             elif next_subtask == 'LoginTwoFactorAuthChallenge':
                 next_subtask = self._call_login_api(
-                    'Submitting 2FA token', headers, data=build_login_json(input_dict(
-                        next_subtask, self._get_tfa_info('two-factor authentication token'))))
+                    'Submitting 2FA token',
+                    headers,
+                    data=build_login_json(
+                        input_dict(
+                            next_subtask,
+                            self._get_tfa_info('two-factor authentication token'))))
 
             elif next_subtask == 'LoginAcid':
                 next_subtask = self._call_login_api(
-                    'Submitting confirmation code', headers, data=build_login_json(input_dict(
-                        next_subtask, self._get_tfa_info('confirmation code sent to your email or phone'))))
+                    'Submitting confirmation code',
+                    headers,
+                    data=build_login_json(
+                        input_dict(
+                            next_subtask,
+                            self._get_tfa_info('confirmation code sent to your email or phone'))))
 
             elif next_subtask == 'ArkoseLogin':
-                self.raise_login_required('Twitter is requiring captcha for this login attempt', method='cookies')
+                self.raise_login_required(
+                    'Twitter is requiring captcha for this login attempt',
+                    method='cookies')
 
             elif next_subtask == 'DenyLoginSubtask':
-                self.raise_login_required('Twitter rejected this login attempt as suspicious', method='cookies')
+                self.raise_login_required(
+                    'Twitter rejected this login attempt as suspicious',
+                    method='cookies')
 
             elif next_subtask == 'LoginSuccessSubtask':
-                raise ExtractorError('Twitter API did not grant auth token cookie')
+                raise ExtractorError(
+                    'Twitter API did not grant auth token cookie')
 
             else:
-                raise ExtractorError(f'Unrecognized subtask ID "{next_subtask}"')
+                raise ExtractorError(
+                    f'Unrecognized subtask ID "{next_subtask}"')
 
         self.report_login()
 
     def _call_api(self, path, video_id, query={}, graphql=False):
-        headers = self._set_base_headers(legacy=not graphql and self._selected_api == 'legacy')
+        headers = self._set_base_headers(
+            legacy=not graphql and self._selected_api == 'legacy')
         headers.update({
             'x-twitter-auth-type': 'OAuth2Session',
             'x-twitter-client-language': 'en',
@@ -317,25 +354,36 @@ class TwitterBaseIE(InfoExtractor):
             note=f'Downloading {"GraphQL" if graphql else "legacy API"} JSON')
 
         if result.get('errors'):
-            errors = ', '.join(set(traverse_obj(result, ('errors', ..., 'message', {str}))))
+            errors = ', '.join(
+                set(traverse_obj(result, ('errors', ..., 'message', {str}))))
             if errors and 'not authorized' in errors:
                 self.raise_login_required(remove_end(errors, '.'))
-            raise ExtractorError(f'Error(s) while querying API: {errors or "Unknown error"}')
+            raise ExtractorError(
+                f'Error(s) while querying API: {errors or "Unknown error"}')
 
         return result
 
     def _build_graphql_query(self, media_id):
-        raise NotImplementedError('Method must be implemented to support GraphQL')
+        raise NotImplementedError(
+            'Method must be implemented to support GraphQL')
 
     def _call_graphql_api(self, endpoint, media_id):
         data = self._build_graphql_query(media_id)
-        query = {key: json.dumps(value, separators=(',', ':')) for key, value in data.items()}
-        return traverse_obj(self._call_api(endpoint, media_id, query=query, graphql=True), 'data')
+        query = {key: json.dumps(value, separators=(',', ':'))
+                 for key, value in data.items()}
+        return traverse_obj(
+            self._call_api(
+                endpoint,
+                media_id,
+                query=query,
+                graphql=True),
+            'data')
 
 
 class TwitterCardIE(InfoExtractor):
     IE_NAME = 'twitter:card'
-    _VALID_URL = TwitterBaseIE._BASE_REGEX + r'i/(?:cards/tfw/v1|videos(?:/tweet)?)/(?P<id>\d+)'
+    _VALID_URL = TwitterBaseIE._BASE_REGEX + \
+        r'i/(?:cards/tfw/v1|videos(?:/tweet)?)/(?P<id>\d+)'
     _TESTS = [
         {
             'url': 'https://twitter.com/i/cards/tfw/v1/560070183650213889',
@@ -447,7 +495,8 @@ class TwitterCardIE(InfoExtractor):
 
 class TwitterIE(TwitterBaseIE):
     IE_NAME = 'twitter'
-    _VALID_URL = TwitterBaseIE._BASE_REGEX + r'(?:(?:i/web|[^/]+)/status|statuses)/(?P<id>\d+)(?:/(?:video|photo)/(?P<index>\d+))?'
+    _VALID_URL = TwitterBaseIE._BASE_REGEX + \
+        r'(?:(?:i/web|[^/]+)/status|statuses)/(?P<id>\d+)(?:/(?:video|photo)/(?P<index>\d+))?'
 
     _TESTS = [{
         'url': 'https://twitter.com/freethenipple/status/643211948184596480',
@@ -1227,19 +1276,39 @@ class TwitterIE(TwitterBaseIE):
         result = traverse_obj(data, ('tweetResult', 'result', {dict})) or {}
 
         typename = result.get('__typename')
-        if typename not in ('Tweet', 'TweetWithVisibilityResults', 'TweetTombstone', 'TweetUnavailable', None):
-            self.report_warning(f'Unknown typename: {typename}', twid, only_once=True)
+        if typename not in (
+            'Tweet',
+            'TweetWithVisibilityResults',
+            'TweetTombstone',
+            'TweetUnavailable',
+                None):
+            self.report_warning(
+                f'Unknown typename: {typename}',
+                twid,
+                only_once=True)
 
         if 'tombstone' in result:
-            cause = remove_end(traverse_obj(result, ('tombstone', 'text', 'text', {str})), '. Learn more')
-            raise ExtractorError(f'Twitter API says: {cause or "Unknown error"}', expected=True)
+            cause = remove_end(
+                traverse_obj(
+                    result,
+                    ('tombstone',
+                     'text',
+                     'text',
+                     {str})),
+                '. Learn more')
+            raise ExtractorError(
+                f'Twitter API says: {cause or "Unknown error"}',
+                expected=True)
         elif typename == 'TweetUnavailable':
             reason = result.get('reason')
             if reason == 'NsfwLoggedOut':
                 self.raise_login_required('NSFW tweet requires authentication')
             elif reason == 'Protected':
-                self.raise_login_required('You are not authorized to view this protected tweet')
-            raise ExtractorError(reason or 'Requested tweet is unavailable', expected=True)
+                self.raise_login_required(
+                    'You are not authorized to view this protected tweet')
+            raise ExtractorError(
+                reason or 'Requested tweet is unavailable',
+                expected=True)
         # Result for "stale tweet" needs additional transformation
         elif typename == 'TweetWithVisibilityResults':
             result = traverse_obj(result, ('tweet', {dict})) or {}
@@ -1252,10 +1321,18 @@ class TwitterIE(TwitterBaseIE):
             'retweeted_status': ('legacy', 'retweeted_status_result', 'result', 'legacy'),
         }, expected_type=dict, default={}))
 
-        # extra transformations needed since result does not match legacy format
+        # extra transformations needed since result does not match legacy
+        # format
         if status.get('retweeted_status'):
-            status['retweeted_status']['user'] = traverse_obj(status, (
-                'retweeted_status_result', 'result', 'core', 'user_results', 'result', 'legacy', {dict})) or {}
+            status['retweeted_status']['user'] = traverse_obj(
+                status,
+                ('retweeted_status_result',
+                 'result',
+                 'core',
+                 'user_results',
+                 'result',
+                 'legacy',
+                 {dict})) or {}
 
         binding_values = {
             binding_value.get('key'): binding_value.get('value')
@@ -1303,24 +1380,35 @@ class TwitterIE(TwitterBaseIE):
     def _generate_syndication_token(self, twid):
         # ((Number(twid) / 1e15) * Math.PI).toString(36).replace(/(0+|\.)/g, '')
         translation = str.maketrans(dict.fromkeys('0.'))
-        return js_number_to_string((int(twid) / 1e15) * math.pi, 36).translate(translation)
+        return js_number_to_string(
+            (int(twid) / 1e15) * math.pi,
+            36).translate(translation)
 
     def _call_syndication_api(self, twid):
         self.report_warning(
-            'Not all metadata or media is available via syndication endpoint', twid, only_once=True)
+            'Not all metadata or media is available via syndication endpoint',
+            twid,
+            only_once=True)
         status = self._download_json(
-            'https://cdn.syndication.twimg.com/tweet-result', twid, 'Downloading syndication JSON',
-            headers={'User-Agent': 'Googlebot'}, query={
+            'https://cdn.syndication.twimg.com/tweet-result',
+            twid,
+            'Downloading syndication JSON',
+            headers={
+                'User-Agent': 'Googlebot'},
+            query={
                 'id': twid,
                 'token': self._generate_syndication_token(twid),
             })
         if not status:
-            raise ExtractorError('Syndication endpoint returned empty JSON response')
+            raise ExtractorError(
+                'Syndication endpoint returned empty JSON response')
         # Transform the result so its structure matches that of legacy/graphql
         media = []
-        for detail in traverse_obj(status, ((None, 'quoted_tweet'), 'mediaDetails', ..., {dict})):
-            detail['id_str'] = traverse_obj(detail, (
-                'video_info', 'variants', ..., 'url', {self._MEDIA_ID_RE.search}, 1), get_all=False) or twid
+        for detail in traverse_obj(
+                status, ((None, 'quoted_tweet'), 'mediaDetails', ..., {dict})):
+            detail['id_str'] = traverse_obj(
+                detail, ('video_info', 'variants', ..., 'url', {
+                    self._MEDIA_ID_RE.search}, 1), get_all=False) or twid
             media.append(detail)
         status['extended_entities'] = {'media': media}
 
@@ -1328,11 +1416,15 @@ class TwitterIE(TwitterBaseIE):
 
     def _extract_status(self, twid):
         if self._selected_api not in ('graphql', 'legacy', 'syndication'):
-            raise ExtractorError(f'{self._selected_api!r} is not a valid API selection', expected=True)
+            raise ExtractorError(
+                f'{self._selected_api!r} is not a valid API selection',
+                expected=True)
 
         try:
             if self.is_logged_in or self._selected_api == 'graphql':
-                status = self._graphql_to_legacy(self._call_graphql_api(self._GRAPHQL_ENDPOINT, twid), twid)
+                status = self._graphql_to_legacy(
+                    self._call_graphql_api(
+                        self._GRAPHQL_ENDPOINT, twid), twid)
             elif self._selected_api == 'legacy':
                 status = self._call_api(f'statuses/show/{twid}.json', twid, {
                     'cards_platform': 'Web-12',
@@ -1344,22 +1436,34 @@ class TwitterIE(TwitterBaseIE):
         except ExtractorError as e:
             if not isinstance(e.cause, HTTPError) or e.cause.status != 429:
                 raise
-            self.report_warning('Rate-limit exceeded; falling back to syndication endpoint')
+            self.report_warning(
+                'Rate-limit exceeded; falling back to syndication endpoint')
             status = self._call_syndication_api(twid)
 
         if self._selected_api == 'syndication':
             status = self._call_syndication_api(twid)
 
-        return traverse_obj(status, 'retweeted_status', None, expected_type=dict) or {}
+        return traverse_obj(
+            status,
+            'retweeted_status',
+            None,
+            expected_type=dict) or {}
 
     def _real_extract(self, url):
         twid, selected_index = self._match_valid_url(url).group('id', 'index')
         status = self._extract_status(twid)
 
         title = description = traverse_obj(
-            status, (('full_text', 'text'), {lambda x: x.replace('\n', ' ')}), get_all=False) or ''
+            status, (('full_text', 'text'), {
+                lambda x: x.replace(
+                    '\n', ' ')}), get_all=False) or ''
         # strip  'https -_t.co_BJYgOjSeGA' junk from filenames
-        title = truncate_string(re.sub(r'\s+(https?://[^ ]+)', '', title), left=72)
+        title = truncate_string(
+            re.sub(
+                r'\s+(https?://[^ ]+)',
+                '',
+                title),
+            left=72)
         user = status.get('user') or {}
         uploader = user.get('name')
         if uploader:
@@ -1383,12 +1487,14 @@ class TwitterIE(TwitterBaseIE):
         }
 
         def extract_from_video_info(media):
-            media_id = traverse_obj(media, 'id_str', 'id', expected_type=str_or_none)
+            media_id = traverse_obj(
+                media, 'id_str', 'id', expected_type=str_or_none)
             self.write_debug(f'Extracting from video info: {media_id}')
 
             formats = []
             subtitles = {}
-            for variant in traverse_obj(media, ('video_info', 'variants', ...)):
+            for variant in traverse_obj(
+                    media, ('video_info', 'variants', ...)):
                 fmts, subs = self._extract_variant_formats(variant, twid)
                 subtitles = self._merge_subtitles(subtitles, subs)
                 formats.extend(fmts)
@@ -1412,10 +1518,13 @@ class TwitterIE(TwitterBaseIE):
                 'formats': formats,
                 'subtitles': subtitles,
                 'thumbnails': thumbnails,
-                'view_count': traverse_obj(media, ('mediaStats', 'viewCount', {int_or_none})),  # No longer available
+                # No longer available
+                'view_count': traverse_obj(media, ('mediaStats', 'viewCount', {int_or_none})),
                 'duration': float_or_none(traverse_obj(media, ('video_info', 'duration_millis')), 1000),
-                # Prioritize m3u8 formats for compat, see https://github.com/yt-dlp/yt-dlp/issues/8117
-                '_format_sort_fields': ('res', 'proto:m3u8', 'br', 'size'),  # http format codec is unknown
+                # Prioritize m3u8 formats for compat, see
+                # https://github.com/yt-dlp/yt-dlp/issues/8117
+                # http format codec is unknown
+                '_format_sort_fields': ('res', 'proto:m3u8', 'br', 'size'),
             }
 
         def extract_from_card_info(card):
@@ -1459,7 +1568,8 @@ class TwitterIE(TwitterBaseIE):
                     'url': get_binding_value('card_url'),
                 }
             elif card_name == 'unified_card':
-                unified_card = self._parse_json(get_binding_value('unified_card'), twid)
+                unified_card = self._parse_json(
+                    get_binding_value('unified_card'), twid)
                 yield from map(extract_from_video_info, traverse_obj(
                     unified_card, ('media_entities', ...), expected_type=dict))
             # amplify, promo_video_website, promo_video_convo, appplayer,
@@ -1467,12 +1577,21 @@ class TwitterIE(TwitterBaseIE):
             # poll4choice_video, ...
             else:
                 is_amplify = card_name == 'amplify'
-                vmap_url = get_binding_value('amplify_url_vmap') if is_amplify else get_binding_value('player_stream_url')
-                content_id = get_binding_value('%s_content_id' % (card_name if is_amplify else 'player'))
-                formats, subtitles = self._extract_formats_from_vmap_url(vmap_url, content_id or twid)
+                vmap_url = get_binding_value(
+                    'amplify_url_vmap') if is_amplify else get_binding_value('player_stream_url')
+                content_id = get_binding_value(
+                    '%s_content_id' %
+                    (card_name if is_amplify else 'player'))
+                formats, subtitles = self._extract_formats_from_vmap_url(
+                    vmap_url, content_id or twid)
 
                 thumbnails = []
-                for suffix in ('_small', '', '_large', '_x_large', '_original'):
+                for suffix in (
+                    '_small',
+                    '',
+                    '_large',
+                    '_x_large',
+                        '_original'):
                     image = get_binding_value('player_image' + suffix) or {}
                     image_url = image.get('url')
                     if not image_url or '/player-placeholder' in image_url:
@@ -1492,18 +1611,41 @@ class TwitterIE(TwitterBaseIE):
                         'content_duration_seconds')),
                 }
 
-        videos = traverse_obj(status, (
-            (None, 'quoted_status'), 'extended_entities', 'media', lambda _, m: m['type'] != 'photo', {dict}))
+        videos = traverse_obj(
+            status,
+            ((None,
+              'quoted_status'),
+             'extended_entities',
+             'media',
+             lambda _,
+             m: m['type'] != 'photo',
+                {dict}))
 
-        if self._yes_playlist(twid, selected_index, video_label='URL-specified video number'):
-            selected_entries = (*map(extract_from_video_info, videos), *extract_from_card_info(status.get('card')))
+        if self._yes_playlist(
+                twid,
+                selected_index,
+                video_label='URL-specified video number'):
+            selected_entries = (*
+                                map(extract_from_video_info, videos), *
+                                extract_from_card_info(status.get('card')))
         else:
-            desired_obj = traverse_obj(status, (
-                (None, 'quoted_status'), 'extended_entities', 'media', int(selected_index) - 1, {dict}), get_all=False)
+            desired_obj = traverse_obj(
+                status,
+                ((None,
+                  'quoted_status'),
+                 'extended_entities',
+                 'media',
+                 int(selected_index) - 1,
+                    {dict}),
+                get_all=False)
             if not desired_obj:
-                raise ExtractorError(f'Video #{selected_index} is unavailable', expected=True)
+                raise ExtractorError(
+                    f'Video #{selected_index} is unavailable',
+                    expected=True)
             elif desired_obj.get('type') != 'video':
-                raise ExtractorError(f'Media #{selected_index} is not a video', expected=True)
+                raise ExtractorError(
+                    f'Media #{selected_index} is not a video',
+                    expected=True)
 
             # Restore original archive id and video index in title
             for index, entry in enumerate(videos, 1):
@@ -1515,13 +1657,19 @@ class TwitterIE(TwitterBaseIE):
                     info['title'] += f' #{index}'
                 break
 
-            return {**info, **extract_from_video_info(desired_obj), 'display_id': twid}
+            return {
+                **info,
+                **extract_from_video_info(desired_obj),
+                'display_id': twid}
 
-        entries = [{**info, **data, 'display_id': twid} for data in selected_entries]
+        entries = [{**info, **data, 'display_id': twid}
+                   for data in selected_entries]
         if not entries:
-            expanded_url = traverse_obj(status, ('entities', 'urls', 0, 'expanded_url'), expected_type=url_or_none)
+            expanded_url = traverse_obj(
+                status, ('entities', 'urls', 0, 'expanded_url'), expected_type=url_or_none)
             if not expanded_url or expanded_url == url:
-                self.raise_no_formats('No video could be found in this tweet', expected=True)
+                self.raise_no_formats(
+                    'No video could be found in this tweet', expected=True)
                 return info
 
             return self.url_result(expanded_url, display_id=twid, **info)
@@ -1597,7 +1745,8 @@ class TwitterAmplifyIE(TwitterBaseIE):
 class TwitterBroadcastIE(TwitterBaseIE, PeriscopeBaseIE):
     IE_NAME = 'twitter:broadcast'
 
-    _VALID_URL = TwitterBaseIE._BASE_REGEX + r'i/(?P<type>broadcasts|events)/(?P<id>\w+)'
+    _VALID_URL = TwitterBaseIE._BASE_REGEX + \
+        r'i/(?P<type>broadcasts|events)/(?P<id>\w+)'
     _TESTS = [{
         # untitled Periscope video
         'url': 'https://twitter.com/i/broadcasts/1yNGaQLWpejGj',
@@ -1673,7 +1822,8 @@ class TwitterBroadcastIE(TwitterBaseIE, PeriscopeBaseIE):
     }]
 
     def _real_extract(self, url):
-        broadcast_type, display_id = self._match_valid_url(url).group('type', 'id')
+        broadcast_type, display_id = self._match_valid_url(
+            url).group('type', 'id')
 
         if broadcast_type == 'events':
             timeline = self._call_api(
@@ -1698,7 +1848,9 @@ class TwitterBroadcastIE(TwitterBaseIE, PeriscopeBaseIE):
                 broadcast, 'twitter_username', 'https://twitter.com/%s', default=None),
         })
         if info['live_status'] == 'is_upcoming':
-            self.raise_no_formats('This live broadcast has not yet started', expected=True)
+            self.raise_no_formats(
+                'This live broadcast has not yet started',
+                expected=True)
             return info
 
         media_key = broadcast['media_key']
@@ -1717,7 +1869,8 @@ class TwitterBroadcastIE(TwitterBaseIE, PeriscopeBaseIE):
 
 class TwitterSpacesIE(TwitterBaseIE):
     IE_NAME = 'twitter:spaces'
-    _VALID_URL = TwitterBaseIE._BASE_REGEX + r'i/spaces/(?P<id>[0-9a-zA-Z]{13})'
+    _VALID_URL = TwitterBaseIE._BASE_REGEX + \
+        r'i/spaces/(?P<id>[0-9a-zA-Z]{13})'
 
     _TESTS = [{
         'url': 'https://twitter.com/i/spaces/1OwxWwQOPlNxQ',
@@ -1757,7 +1910,8 @@ class TwitterSpacesIE(TwitterBaseIE):
         },
         'params': {'skip_download': 'm3u8'},
     }, {
-        # Needs ffmpeg as downloader, see: https://github.com/yt-dlp/yt-dlp/issues/7536
+        # Needs ffmpeg as downloader, see:
+        # https://github.com/yt-dlp/yt-dlp/issues/7536
         'url': 'https://twitter.com/i/spaces/1eaKbrQbjoRKX',
         'info_dict': {
             'id': '1eaKbrQbjoRKX',
@@ -1832,24 +1986,37 @@ class TwitterSpacesIE(TwitterBaseIE):
 
     def _real_extract(self, url):
         space_id = self._match_id(url)
-        space_data = self._call_graphql_api('HPEisOmj1epUNLCWTYhUWw/AudioSpaceById', space_id)['audioSpace']
+        space_data = self._call_graphql_api(
+            'HPEisOmj1epUNLCWTYhUWw/AudioSpaceById',
+            space_id)['audioSpace']
         if not space_data:
             raise ExtractorError('Twitter Space not found', expected=True)
 
         metadata = space_data['metadata']
-        live_status = try_call(lambda: self.SPACE_STATUS[metadata['state'].lower()])
+        live_status = try_call(
+            lambda: self.SPACE_STATUS[metadata['state'].lower()])
         is_live = live_status == 'is_live'
 
         formats = []
         headers = {'Referer': 'https://twitter.com/'}
         if live_status == 'is_upcoming':
-            self.raise_no_formats('Twitter Space not started yet', expected=True)
+            self.raise_no_formats(
+                'Twitter Space not started yet',
+                expected=True)
         elif not is_live and not metadata.get('is_space_available_for_replay'):
-            self.raise_no_formats('Twitter Space ended and replay is disabled', expected=True)
+            self.raise_no_formats(
+                'Twitter Space ended and replay is disabled',
+                expected=True)
         elif metadata.get('media_key'):
             source = traverse_obj(
-                self._call_api(f'live_video_stream/status/{metadata["media_key"]}', metadata['media_key']),
-                ('source', ('noRedirectPlaybackUrl', 'location'), {url_or_none}), get_all=False)
+                self._call_api(
+                    f'live_video_stream/status/{metadata["media_key"]}',
+                    metadata['media_key']),
+                ('source',
+                 ('noRedirectPlaybackUrl',
+                  'location'),
+                    {url_or_none}),
+                get_all=False)
             is_audio_space = source and 'audio-space' in source
             formats = self._extract_m3u8_formats(
                 source, metadata['media_key'], 'm4a' if is_audio_space else 'mp4',
@@ -1862,11 +2029,14 @@ class TwitterSpacesIE(TwitterBaseIE):
                     if not is_live:
                         fmt['container'] = 'm4a_dash'
 
-        participants = ', '.join(traverse_obj(
-            space_data, ('participants', 'speakers', ..., 'display_name'))) or 'nobody yet'
+        participants = ', '.join(
+            traverse_obj(
+                space_data, ('participants', 'speakers', ..., 'display_name'))) or 'nobody yet'
 
         if not formats and live_status == 'post_live':
-            self.raise_no_formats('Twitter Space ended but not downloadable yet', expected=True)
+            self.raise_no_formats(
+                'Twitter Space ended but not downloadable yet',
+                expected=True)
 
         return {
             'id': space_id,
@@ -1876,7 +2046,8 @@ class TwitterSpacesIE(TwitterBaseIE):
             'live_status': live_status,
             **traverse_obj(metadata, {
                 'title': ('title', {str}),
-                # started_at is None when stream is_upcoming so fallback to scheduled_start for --wait-for-video
+                # started_at is None when stream is_upcoming so fallback to
+                # scheduled_start for --wait-for-video
                 'release_timestamp': (('started_at', 'scheduled_start'), {int_or_none(scale=1000)}, any),
                 'timestamp': ('created_at', {int_or_none(scale=1000)}),
             }),
@@ -1899,7 +2070,9 @@ class TwitterShortenerIE(TwitterBaseIE):
         if eid:
             shortcode = eid
             url = self._BASE_URL + shortcode
-        new_url = self._request_webpage(url, shortcode, headers={'User-Agent': 'curl'}).url
+        new_url = self._request_webpage(
+            url, shortcode, headers={
+                'User-Agent': 'curl'}).url
         __UNSAFE_LINK = 'https://twitter.com/safety/unsafe_link_warning?unsafe_link='
         if new_url.startswith(__UNSAFE_LINK):
             new_url = new_url.replace(__UNSAFE_LINK, '')

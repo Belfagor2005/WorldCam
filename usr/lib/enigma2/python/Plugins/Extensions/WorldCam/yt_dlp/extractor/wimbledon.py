@@ -46,7 +46,8 @@ class WimbledonIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         metadata = self._download_json(
-            f'https://www.wimbledon.com/relatedcontent/rest/v2/wim_v1/en/content/wim_v1_{video_id}_en', video_id)
+            f'https://www.wimbledon.com/relatedcontent/rest/v2/wim_v1/en/content/wim_v1_{video_id}_en',
+            video_id)
 
         return {
             '_type': 'url_transparent',

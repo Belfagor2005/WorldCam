@@ -22,7 +22,8 @@ from ..utils import (
 
 
 class NetEaseMusicBaseIE(InfoExtractor):
-    # XXX: _extract_formats logic depends on the order of the levels in each tier
+    # XXX: _extract_formats logic depends on the order of the levels in each
+    # tier
     _LEVELS = (
         'standard',  # free tier; 标准; 128kbps mp3 or aac
         'higher',    # free tier; 192kbps mp3 or aac
@@ -37,9 +38,11 @@ class NetEaseMusicBaseIE(InfoExtractor):
     _GEO_BYPASS = False
 
     def _create_eapi_cipher(self, api_path, query_body, cookies):
-        request_text = json.dumps({**query_body, 'header': cookies}, separators=(',', ':'))
+        request_text = json.dumps(
+            {**query_body, 'header': cookies}, separators=(',', ':'))
 
-        message = f'nobody{api_path}use{request_text}md5forencrypt'.encode('latin1')
+        message = f'nobody{api_path}use{request_text}md5forencrypt'.encode(
+            'latin1')
         msg_digest = hashlib.md5(message).hexdigest()
 
         data = pkcs7_padding(list(str.encode(
@@ -47,7 +50,13 @@ class NetEaseMusicBaseIE(InfoExtractor):
         encrypted = bytes(aes_ecb_encrypt(data, list(b'e82ckenh8dichen8')))
         return f'params={encrypted.hex().upper()}'.encode()
 
-    def _download_eapi_json(self, path, video_id, query_body, headers={}, **kwargs):
+    def _download_eapi_json(
+            self,
+            path,
+            video_id,
+            query_body,
+            headers={},
+            **kwargs):
         cookies = {
             'osver': 'undefined',
             'deviceId': 'undefined',
@@ -65,12 +74,23 @@ class NetEaseMusicBaseIE(InfoExtractor):
             }),
         }
         return self._download_json(
-            urljoin('https://interface3.music.163.com/', f'/eapi{path}'), video_id,
-            data=self._create_eapi_cipher(f'/api{path}', query_body, cookies), headers={
+            urljoin(
+                'https://interface3.music.163.com/',
+                f'/eapi{path}'),
+            video_id,
+            data=self._create_eapi_cipher(
+                f'/api{path}',
+                query_body,
+                cookies),
+            headers={
                 'Referer': 'https://music.163.com',
-                'Cookie': '; '.join([f'{k}={v}' for k, v in cookies.items()]),
+                'Cookie': '; '.join(
+                    [
+                        f'{k}={v}' for k,
+                        v in cookies.items()]),
                 **headers,
-            }, **kwargs)
+            },
+            **kwargs)
 
     def _call_player_api(self, song_id, level):
         return self._download_eapi_json(
@@ -83,7 +103,9 @@ class NetEaseMusicBaseIE(InfoExtractor):
         song_id = info['id']
         for level in self._LEVELS:
             song = traverse_obj(
-                self._call_player_api(song_id, level), ('data', lambda _, v: url_or_none(v['url']), any))
+                self._call_player_api(
+                    song_id, level), ('data', lambda _, v: url_or_none(
+                        v['url']), any))
             if not song:
                 break  # Media is not available due to removal or geo-restriction
             actual_level = song.get('level')
@@ -102,15 +124,19 @@ class NetEaseMusicBaseIE(InfoExtractor):
                 }),
             })
             if not actual_level:
-                break  # Only 1 level is available if API does not return a value (netease:program)
+                # Only 1 level is available if API does not return a value
+                # (netease:program)
+                break
         if not formats:
             self.raise_geo_restricted(
-                'No media links found; possibly due to geo restriction', countries=['CN'])
+                'No media links found; possibly due to geo restriction',
+                countries=['CN'])
         return formats
 
     def _query_api(self, endpoint, video_id, note):
         result = self._download_json(
-            f'{self._API_BASE}{endpoint}', video_id, note, headers={'Referer': self._API_BASE})
+            f'{self._API_BASE}{endpoint}', video_id, note, headers={
+                'Referer': self._API_BASE})
         code = traverse_obj(result, ('code', {int}))
         message = traverse_obj(result, ('message', {str})) or ''
         if code == -462:
@@ -119,7 +145,12 @@ class NetEaseMusicBaseIE(InfoExtractor):
             raise ExtractorError(f'Failed to get meta info: {code} {message}')
         return result
 
-    def _get_entries(self, songs_data, entry_keys=None, id_key='id', name_key='name'):
+    def _get_entries(
+            self,
+            songs_data,
+            entry_keys=None,
+            id_key='id',
+            name_key='name'):
         for song in traverse_obj(songs_data, (
                 *variadic(entry_keys, (str, bytes, dict, set)),
                 lambda _, v: int_or_none(v[id_key]) is not None)):
@@ -133,100 +164,95 @@ class NetEaseMusicIE(NetEaseMusicBaseIE):
     IE_NAME = 'netease:song'
     IE_DESC = '网易云音乐'
     _VALID_URL = r'https?://(?:y\.)?music\.163\.com/(?:[#m]/)?song\?.*?\bid=(?P<id>[0-9]+)'
-    _TESTS = [{
-        'url': 'https://music.163.com/#/song?id=550136151',
-        'info_dict': {
-            'id': '550136151',
-            'ext': 'mp3',
-            'title': 'It\'s Ok (Live)',
-            'creators': 'count:10',
-            'timestamp': 1522944000,
-            'upload_date': '20180405',
-            'description': 'md5:9fd07059c2ccee3950dc8363429a3135',
-            'duration': 197,
-            'thumbnail': r're:^http.*\.jpg',
-            'album': '偶像练习生 表演曲目合集',
-            'average_rating': int,
-            'album_artists': ['偶像练习生'],
-        },
-    }, {
-        'url': 'http://music.163.com/song?id=17241424',
-        'info_dict': {
-            'id': '17241424',
-            'ext': 'mp3',
-            'title': 'Opus 28',
-            'upload_date': '20080211',
-            'timestamp': 1202745600,
-            'duration': 263,
-            'thumbnail': r're:^http.*\.jpg',
-            'album': 'Piano Solos Vol. 2',
-            'album_artist': 'Dustin O\'Halloran',
-            'average_rating': int,
-            'description': '[00:05.00]纯音乐，请欣赏\n',
-            'album_artists': ['Dustin O\'Halloran'],
-            'creators': ['Dustin O\'Halloran'],
-            'subtitles': {'lyrics': [{'ext': 'lrc'}]},
-        },
-    }, {
-        'url': 'https://y.music.163.com/m/song?app_version=8.8.45&id=95670&uct2=sKnvS4+0YStsWkqsPhFijw%3D%3D&dlt=0846',
-        'md5': 'b896be78d8d34bd7bb665b26710913ff',
-        'info_dict': {
-            'id': '95670',
-            'ext': 'mp3',
-            'title': '国际歌',
-            'upload_date': '19911130',
-            'timestamp': 691516800,
-            'description': 'md5:1ba2f911a2b0aa398479f595224f2141',
-            'subtitles': {'lyrics': [{'ext': 'lrc'}]},
-            'duration': 268,
-            'alt_title': '伴唱:现代人乐队 合唱:总政歌舞团',
-            'thumbnail': r're:^http.*\.jpg',
-            'average_rating': int,
-            'album': '红色摇滚',
-            'album_artist': '侯牧人',
-            'creators': ['马备'],
-            'album_artists': ['侯牧人'],
-        },
-    }, {
-        'url': 'http://music.163.com/#/song?id=32102397',
-        'md5': '3e909614ce09b1ccef4a3eb205441190',
-        'info_dict': {
-            'id': '32102397',
-            'ext': 'mp3',
-            'title': 'Bad Blood',
-            'creators': ['Taylor Swift', 'Kendrick Lamar'],
-            'upload_date': '20150516',
-            'timestamp': 1431792000,
-            'description': 'md5:21535156efb73d6d1c355f95616e285a',
-            'subtitles': {'lyrics': [{'ext': 'lrc'}]},
-            'duration': 199,
-            'thumbnail': r're:^http.*\.jpg',
-            'album': 'Bad Blood',
-            'average_rating': int,
-            'album_artist': 'Taylor Swift',
-        },
-        'skip': 'Blocked outside Mainland China',
-    }, {
-        'note': 'Has translated name.',
-        'url': 'http://music.163.com/#/song?id=22735043',
-        'info_dict': {
-            'id': '22735043',
-            'ext': 'mp3',
-            'title': '소원을 말해봐 (Genie)',
-            'creators': ['少女时代'],
-            'upload_date': '20100127',
-            'timestamp': 1264608000,
-            'description': 'md5:03d1ffebec3139aa4bafe302369269c5',
-            'subtitles': {'lyrics': [{'ext': 'lrc'}]},
-            'duration': 229,
-            'alt_title': '说出愿望吧(Genie)',
-            'thumbnail': r're:^http.*\.jpg',
-            'average_rating': int,
-            'album': 'Oh!',
-            'album_artist': '少女时代',
-        },
-        'skip': 'Blocked outside Mainland China',
-    }]
+    _TESTS = [{'url': 'https://music.163.com/#/song?id=550136151',
+               'info_dict': {'id': '550136151',
+                             'ext': 'mp3',
+                             'title': 'It\'s Ok (Live)',
+                             'creators': 'count:10',
+                             'timestamp': 1522944000,
+                             'upload_date': '20180405',
+                             'description': 'md5:9fd07059c2ccee3950dc8363429a3135',
+                             'duration': 197,
+                             'thumbnail': r're:^http.*\.jpg',
+                             'album': '偶像练习生 表演曲目合集',
+                             'average_rating': int,
+                             'album_artists': ['偶像练习生'],
+                             },
+               },
+              {'url': 'http://music.163.com/song?id=17241424',
+               'info_dict': {'id': '17241424',
+                             'ext': 'mp3',
+                             'title': 'Opus 28',
+                             'upload_date': '20080211',
+                             'timestamp': 1202745600,
+                             'duration': 263,
+                             'thumbnail': r're:^http.*\.jpg',
+                             'album': 'Piano Solos Vol. 2',
+                             'album_artist': 'Dustin O\'Halloran',
+                             'average_rating': int,
+                             'description': '[00:05.00]纯音乐，请欣赏\n',
+                             'album_artists': ['Dustin O\'Halloran'],
+                             'creators': ['Dustin O\'Halloran'],
+                             'subtitles': {'lyrics': [{'ext': 'lrc'}]},
+                             },
+               },
+              {'url': 'https://y.music.163.com/m/song?app_version=8.8.45&id=95670&uct2=sKnvS4+0YStsWkqsPhFijw%3D%3D&dlt=0846',
+               'md5': 'b896be78d8d34bd7bb665b26710913ff',
+               'info_dict': {'id': '95670',
+                             'ext': 'mp3',
+                             'title': '国际歌',
+                             'upload_date': '19911130',
+                             'timestamp': 691516800,
+                             'description': 'md5:1ba2f911a2b0aa398479f595224f2141',
+                             'subtitles': {'lyrics': [{'ext': 'lrc'}]},
+                             'duration': 268,
+                             'alt_title': '伴唱:现代人乐队 合唱:总政歌舞团',
+                             'thumbnail': r're:^http.*\.jpg',
+                             'average_rating': int,
+                             'album': '红色摇滚',
+                             'album_artist': '侯牧人',
+                             'creators': ['马备'],
+                             'album_artists': ['侯牧人'],
+                             },
+               },
+              {'url': 'http://music.163.com/#/song?id=32102397',
+               'md5': '3e909614ce09b1ccef4a3eb205441190',
+               'info_dict': {'id': '32102397',
+                             'ext': 'mp3',
+                             'title': 'Bad Blood',
+                             'creators': ['Taylor Swift',
+                                          'Kendrick Lamar'],
+                             'upload_date': '20150516',
+                             'timestamp': 1431792000,
+                             'description': 'md5:21535156efb73d6d1c355f95616e285a',
+                             'subtitles': {'lyrics': [{'ext': 'lrc'}]},
+                             'duration': 199,
+                             'thumbnail': r're:^http.*\.jpg',
+                             'album': 'Bad Blood',
+                             'average_rating': int,
+                             'album_artist': 'Taylor Swift',
+                             },
+               'skip': 'Blocked outside Mainland China',
+               },
+              {'note': 'Has translated name.',
+               'url': 'http://music.163.com/#/song?id=22735043',
+               'info_dict': {'id': '22735043',
+                             'ext': 'mp3',
+                             'title': '소원을 말해봐 (Genie)',
+                             'creators': ['少女时代'],
+                             'upload_date': '20100127',
+                             'timestamp': 1264608000,
+                             'description': 'md5:03d1ffebec3139aa4bafe302369269c5',
+                             'subtitles': {'lyrics': [{'ext': 'lrc'}]},
+                             'duration': 229,
+                             'alt_title': '说出愿望吧(Genie)',
+                             'thumbnail': r're:^http.*\.jpg',
+                             'average_rating': int,
+                             'album': 'Oh!',
+                             'album_artist': '少女时代',
+                             },
+               'skip': 'Blocked outside Mainland China',
+               }]
 
     def _process_lyrics(self, lyrics_info):
         original = traverse_obj(lyrics_info, ('lrc', 'lyric', {str}))
@@ -245,8 +271,13 @@ class NetEaseMusicIE(NetEaseMusicBaseIE):
         translation_ts_dict = dict(re.findall(lyrics_expr, translated))
 
         merged = '\n'.join(
-            join_nonempty(f'{timestamp}{text}', translation_ts_dict.get(timestamp, ''), delim=' / ')
-            for timestamp, text in original_ts_texts)
+            join_nonempty(
+                f'{timestamp}{text}',
+                translation_ts_dict.get(
+                    timestamp,
+                    ''),
+                delim=' / ') for timestamp,
+            text in original_ts_texts)
 
         return {
             'lyrics_merged': [{'data': merged, 'ext': 'lrc'}],
@@ -258,14 +289,25 @@ class NetEaseMusicIE(NetEaseMusicBaseIE):
         song_id = self._match_id(url)
 
         info = self._query_api(
-            f'song/detail?id={song_id}&ids=%5B{song_id}%5D', song_id, 'Downloading song info')['songs'][0]
+            f'song/detail?id={song_id}&ids=%5B{song_id}%5D',
+            song_id,
+            'Downloading song info')['songs'][0]
 
         formats = self._extract_formats(info)
 
-        lyrics = self._process_lyrics(self._query_api(
-            f'song/lyric?id={song_id}&lv=-1&tv=-1', song_id, 'Downloading lyrics data'))
+        lyrics = self._process_lyrics(
+            self._query_api(
+                f'song/lyric?id={song_id}&lv=-1&tv=-1',
+                song_id,
+                'Downloading lyrics data'))
         lyric_data = {
-            'description': traverse_obj(lyrics, (('lyrics_merged', 'lyrics'), 0, 'data'), get_all=False),
+            'description': traverse_obj(
+                lyrics,
+                (('lyrics_merged',
+                  'lyrics'),
+                 0,
+                 'data'),
+                get_all=False),
             'subtitles': lyrics,
         } if lyrics else {}
 
@@ -315,20 +357,44 @@ class NetEaseMusicAlbumIE(NetEaseMusicBaseIE):
 
     def _real_extract(self, url):
         album_id = self._match_id(url)
-        webpage = self._download_webpage(f'https://music.163.com/album?id={album_id}', album_id)
+        webpage = self._download_webpage(
+            f'https://music.163.com/album?id={album_id}', album_id)
 
         songs = self._search_json(
-            r'<textarea[^>]+\bid="song-list-pre-data"[^>]*>', webpage, 'metainfo', album_id,
-            end_pattern=r'</textarea>', contains_pattern=r'\[(?s:.+)\]')
+            r'<textarea[^>]+\bid="song-list-pre-data"[^>]*>',
+            webpage,
+            'metainfo',
+            album_id,
+            end_pattern=r'</textarea>',
+            contains_pattern=r'\[(?s:.+)\]')
         metainfo = {
-            'title': self._og_search_property('title', webpage, 'title', fatal=False),
+            'title': self._og_search_property(
+                'title',
+                webpage,
+                'title',
+                fatal=False),
             'description': self._html_search_regex(
-                (rf'<div[^>]+\bid="album-desc-{suffix}"[^>]*>(.*?)</div>' for suffix in ('more', 'dot')),
-                webpage, 'description', flags=re.S, fatal=False),
-            'thumbnail': self._og_search_property('image', webpage, 'thumbnail', fatal=False),
-            'upload_date': unified_strdate(self._html_search_meta('music:release_date', webpage, 'date', fatal=False)),
+                (rf'<div[^>]+\bid="album-desc-{suffix}"[^>]*>(.*?)</div>' for suffix in (
+                    'more',
+                    'dot')),
+                webpage,
+                'description',
+                flags=re.S,
+                fatal=False),
+            'thumbnail': self._og_search_property(
+                'image',
+                webpage,
+                'thumbnail',
+                fatal=False),
+            'upload_date': unified_strdate(
+                self._html_search_meta(
+                    'music:release_date',
+                    webpage,
+                    'date',
+                    fatal=False)),
         }
-        return self.playlist_result(self._get_entries(songs), album_id, **metainfo)
+        return self.playlist_result(
+            self._get_entries(songs), album_id, **metainfo)
 
 
 class NetEaseMusicSingerIE(NetEaseMusicBaseIE):
@@ -365,14 +431,16 @@ class NetEaseMusicSingerIE(NetEaseMusicBaseIE):
         singer_id = self._match_id(url)
 
         info = self._query_api(
-            f'artist/{singer_id}?id={singer_id}', singer_id, note='Downloading singer data')
+            f'artist/{singer_id}?id={singer_id}',
+            singer_id,
+            note='Downloading singer data')
 
-        name = join_nonempty(
-            traverse_obj(info, ('artist', 'name', {str})),
-            join_nonempty(*traverse_obj(info, ('artist', ('trans', ('alias', ...)), {str})), delim=';'),
-            delim=' - ')
+        name = join_nonempty(traverse_obj(info, ('artist', 'name', {str})), join_nonempty(
+            *traverse_obj(info, ('artist', ('trans', ('alias', ...)), {str})), delim=';'), delim=' - ')
 
-        return self.playlist_result(self._get_entries(info, 'hotSongs'), singer_id, name)
+        return self.playlist_result(
+            self._get_entries(
+                info, 'hotSongs'), singer_id, name)
 
 
 class NetEaseMusicListIE(NetEaseMusicBaseIE):
@@ -441,7 +509,8 @@ class NetEaseMusicListIE(NetEaseMusicBaseIE):
         if traverse_obj(info, ('playlist', 'specialType')) == 10:
             metainfo['title'] = f'{metainfo.get("title")} {strftime_or_none(metainfo.get("timestamp"), "%Y-%m-%d")}'
 
-        return self.playlist_result(self._get_entries(info, ('playlist', 'tracks')), list_id, **metainfo)
+        return self.playlist_result(self._get_entries(
+            info, ('playlist', 'tracks')), list_id, **metainfo)
 
 
 class NetEaseMusicMvIE(NetEaseMusicBaseIE):
@@ -500,7 +569,9 @@ class NetEaseMusicMvIE(NetEaseMusicBaseIE):
         mv_id = self._match_id(url)
 
         info = self._query_api(
-            f'mv/detail?id={mv_id}&type=mp4', mv_id, 'Downloading mv info')['data']
+            f'mv/detail?id={mv_id}&type=mp4',
+            mv_id,
+            'Downloading mv info')['data']
 
         formats = [
             {'url': mv_url, 'ext': 'mp4', 'format_id': f'{brs}p', 'height': int_or_none(brs)}
@@ -577,7 +648,9 @@ class NetEaseMusicProgramIE(NetEaseMusicBaseIE):
         program_id = self._match_id(url)
 
         info = self._query_api(
-            f'dj/program/detail?id={program_id}', program_id, note='Downloading program info')['program']
+            f'dj/program/detail?id={program_id}',
+            program_id,
+            note='Downloading program info')['program']
 
         metainfo = traverse_obj(info, {
             'title': ('name', {str}),
@@ -588,18 +661,22 @@ class NetEaseMusicProgramIE(NetEaseMusicBaseIE):
         })
 
         if not self._yes_playlist(
-                info['songs'] and program_id, info['mainSong']['id'], playlist_label='program', video_label='song'):
+                info['songs'] and program_id,
+                info['mainSong']['id'],
+                playlist_label='program',
+                video_label='song'):
             formats = self._extract_formats(info['mainSong'])
 
             return {
-                'id': str(info['mainSong']['id']),
-                'formats': formats,
-                'duration': traverse_obj(info, ('mainSong', 'duration', {int_or_none(scale=1000)})),
-                **metainfo,
-            }
+                'id': str(
+                    info['mainSong']['id']), 'formats': formats, 'duration': traverse_obj(
+                    info, ('mainSong', 'duration', {
+                        int_or_none(
+                            scale=1000)})), **metainfo, }
 
         songs = traverse_obj(info, (('mainSong', ('songs', ...)),))
-        return self.playlist_result(self._get_entries(songs), program_id, **metainfo)
+        return self.playlist_result(
+            self._get_entries(songs), program_id, **metainfo)
 
 
 class NetEaseMusicDjRadioIE(NetEaseMusicBaseIE):
@@ -627,9 +704,12 @@ class NetEaseMusicDjRadioIE(NetEaseMusicBaseIE):
                 f'dj/program/byradio?asc=false&limit={self._PAGE_SIZE}&radioId={dj_id}&offset={offset}',
                 dj_id, note=f'Downloading dj programs - {offset}')
 
-            entries.extend(self.url_result(
-                f'http://music.163.com/#/program?id={program["id"]}', NetEaseMusicProgramIE,
-                program['id'], program.get('name')) for program in info['programs'])
+            entries.extend(
+                self.url_result(
+                    f'http://music.163.com/#/program?id={program["id"]}',
+                    NetEaseMusicProgramIE,
+                    program['id'],
+                    program.get('name')) for program in info['programs'])
             if not metainfo:
                 metainfo = traverse_obj(info, ('programs', 0, 'radio', {
                     'title': ('name', {str}),

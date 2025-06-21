@@ -56,7 +56,9 @@ class ManyVidsIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        video_data = self._download_json(f'{self._API_BASE}/{video_id}/private', video_id)['data']
+        video_data = self._download_json(
+            f'{self._API_BASE}/{video_id}/private',
+            video_id)['data']
         formats, preview_only = [], True
 
         for format_id, path in [
@@ -68,7 +70,12 @@ class ManyVidsIE(InfoExtractor):
             if not format_url:
                 continue
             if determine_ext(format_url) == 'm3u8':
-                formats.extend(self._extract_m3u8_formats(format_url, video_id, 'mp4', m3u8_id=format_id))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        format_url,
+                        video_id,
+                        'mp4',
+                        m3u8_id=format_id))
             else:
                 formats.append({
                     'url': format_url,
@@ -82,7 +89,11 @@ class ManyVidsIE(InfoExtractor):
                 preview_only = False
 
         metadata = traverse_obj(
-            self._download_json(f'{self._API_BASE}/{video_id}', video_id, fatal=False), 'data')
+            self._download_json(
+                f'{self._API_BASE}/{video_id}',
+                video_id,
+                fatal=False),
+            'data')
         title = traverse_obj(metadata, ('title', {clean_html}))
 
         if preview_only:

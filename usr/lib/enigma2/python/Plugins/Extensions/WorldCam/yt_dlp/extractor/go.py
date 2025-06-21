@@ -55,111 +55,105 @@ class GoIE(AdobePassIE):
         fr'https?://fxnow\.(?P<site>fxnetworks)\.com/{_URL_PATH_RE}',
         fr'https?://(?:www\.)?(?P<site>nationalgeographic)\.com/tv/{_URL_PATH_RE}',
     ]
-    _TESTS = [{
-        'url': 'https://abc.com/episode/4192c0e6-26e5-47a8-817b-ce8272b9e440/playlist/PL551127435',
-        'info_dict': {
-            'id': 'VDKA10805898',
-            'ext': 'mp4',
-            'title': 'Switch the Flip',
-            'description': 'To help get Brian’s life in order, Stewie and Brian swap bodies using a machine that Stewie invents.',
-            'age_limit': 14,
-            'duration': 1297,
-            'thumbnail': r're:https?://.+/.+\.jpg',
-            'series': 'Family Guy',
-            'season': 'Season 16',
-            'season_number': 16,
-            'episode': 'Episode 17',
-            'episode_number': 17,
-            'timestamp': 1746082800.0,
-            'upload_date': '20250501',
-        },
-        'params': {'skip_download': 'm3u8'},
-        'skip': 'This video requires AdobePass MSO credentials',
-    }, {
-        'url': 'https://disneynow.com/episode/21029660-ba06-4406-adb0-a9a78f6e265e/playlist/PL553044961',
-        'info_dict': {
-            'id': 'VDKA39546942',
-            'ext': 'mp4',
-            'title': 'Zero Friends Again',
-            'description': 'Relationships fray under the pressures of a difficult journey.',
-            'age_limit': 0,
-            'duration': 1721,
-            'thumbnail': r're:https?://.+/.+\.jpg',
-            'series': 'Star Wars: Skeleton Crew',
-            'season': 'Season 1',
-            'season_number': 1,
-            'episode': 'Episode 6',
-            'episode_number': 6,
-            'timestamp': 1746946800.0,
-            'upload_date': '20250511',
-        },
-        'params': {'skip_download': 'm3u8'},
-        'skip': 'This video requires AdobePass MSO credentials',
-    }, {
-        'url': 'https://fxnow.fxnetworks.com/episode/09f4fa6f-c293-469e-aebe-32c9ca5842a7/playlist/PL554408064',
-        'info_dict': {
-            'id': 'VDKA38112033',
-            'ext': 'mp4',
-            'title': 'The Return of Jerry',
-            'description': 'The vampires’ long-lost fifth roommate returns. Written by Paul Simms; directed by Kyle Newacheck.',
-            'age_limit': 17,
-            'duration': 1493,
-            'thumbnail': r're:https?://.+/.+\.jpg',
-            'series': 'What We Do in the Shadows',
-            'season': 'Season 6',
-            'season_number': 6,
-            'episode': 'Episode 1',
-            'episode_number': 1,
-            'timestamp': 1729573200.0,
-            'upload_date': '20241022',
-        },
-        'params': {'skip_download': 'm3u8'},
-        'skip': 'This video requires AdobePass MSO credentials',
-    }, {
-        'url': 'https://www.freeform.com/episode/bda0eaf7-761a-4838-aa44-96f794000844/playlist/PL553044961',
-        'info_dict': {
-            'id': 'VDKA39007340',
-            'ext': 'mp4',
-            'title': 'Angel\'s Landing',
-            'description': 'md5:91bf084e785c968fab16734df7313446',
-            'age_limit': 14,
-            'duration': 2523,
-            'thumbnail': r're:https?://.+/.+\.jpg',
-            'series': 'How I Escaped My Cult',
-            'season': 'Season 1',
-            'season_number': 1,
-            'episode': 'Episode 2',
-            'episode_number': 2,
-            'timestamp': 1740038400.0,
-            'upload_date': '20250220',
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://www.nationalgeographic.com/tv/episode/ca694661-1186-41ae-8089-82f64d69b16d/playlist/PL554408064',
-        'info_dict': {
-            'id': 'VDKA39492078',
-            'ext': 'mp4',
-            'title': 'Heart of the Emperors',
-            'description': 'md5:4fc50a2878f030bb3a7eac9124dca677',
-            'age_limit': 0,
-            'duration': 2775,
-            'thumbnail': r're:https?://.+/.+\.jpg',
-            'series': 'Secrets of the Penguins',
-            'season': 'Season 1',
-            'season_number': 1,
-            'episode': 'Episode 1',
-            'episode_number': 1,
-            'timestamp': 1745204400.0,
-            'upload_date': '20250421',
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://www.freeform.com/movies-and-specials/c38281fc-9f8f-47c7-8220-22394f9df2e1',
-        'only_matching': True,
-    }, {
-        'url': 'https://abc.com/video/219a454a-172c-41bf-878a-d169e6bc0bdc/playlist/PL5523098420',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://abc.com/episode/4192c0e6-26e5-47a8-817b-ce8272b9e440/playlist/PL551127435',
+               'info_dict': {'id': 'VDKA10805898',
+                             'ext': 'mp4',
+                             'title': 'Switch the Flip',
+                             'description': 'To help get Brian’s life in order, Stewie and Brian swap bodies using a machine that Stewie invents.',
+                             'age_limit': 14,
+                             'duration': 1297,
+                             'thumbnail': r're:https?://.+/.+\.jpg',
+                             'series': 'Family Guy',
+                             'season': 'Season 16',
+                             'season_number': 16,
+                             'episode': 'Episode 17',
+                             'episode_number': 17,
+                             'timestamp': 1746082800.0,
+                             'upload_date': '20250501',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               'skip': 'This video requires AdobePass MSO credentials',
+               },
+              {'url': 'https://disneynow.com/episode/21029660-ba06-4406-adb0-a9a78f6e265e/playlist/PL553044961',
+               'info_dict': {'id': 'VDKA39546942',
+                             'ext': 'mp4',
+                             'title': 'Zero Friends Again',
+                             'description': 'Relationships fray under the pressures of a difficult journey.',
+                             'age_limit': 0,
+                             'duration': 1721,
+                             'thumbnail': r're:https?://.+/.+\.jpg',
+                             'series': 'Star Wars: Skeleton Crew',
+                             'season': 'Season 1',
+                             'season_number': 1,
+                             'episode': 'Episode 6',
+                             'episode_number': 6,
+                             'timestamp': 1746946800.0,
+                             'upload_date': '20250511',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               'skip': 'This video requires AdobePass MSO credentials',
+               },
+              {'url': 'https://fxnow.fxnetworks.com/episode/09f4fa6f-c293-469e-aebe-32c9ca5842a7/playlist/PL554408064',
+               'info_dict': {'id': 'VDKA38112033',
+                             'ext': 'mp4',
+                             'title': 'The Return of Jerry',
+                             'description': 'The vampires’ long-lost fifth roommate returns. Written by Paul Simms; directed by Kyle Newacheck.',
+                             'age_limit': 17,
+                             'duration': 1493,
+                             'thumbnail': r're:https?://.+/.+\.jpg',
+                             'series': 'What We Do in the Shadows',
+                             'season': 'Season 6',
+                             'season_number': 6,
+                             'episode': 'Episode 1',
+                             'episode_number': 1,
+                             'timestamp': 1729573200.0,
+                             'upload_date': '20241022',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               'skip': 'This video requires AdobePass MSO credentials',
+               },
+              {'url': 'https://www.freeform.com/episode/bda0eaf7-761a-4838-aa44-96f794000844/playlist/PL553044961',
+               'info_dict': {'id': 'VDKA39007340',
+                             'ext': 'mp4',
+                             'title': 'Angel\'s Landing',
+                             'description': 'md5:91bf084e785c968fab16734df7313446',
+                             'age_limit': 14,
+                             'duration': 2523,
+                             'thumbnail': r're:https?://.+/.+\.jpg',
+                             'series': 'How I Escaped My Cult',
+                             'season': 'Season 1',
+                             'season_number': 1,
+                             'episode': 'Episode 2',
+                             'episode_number': 2,
+                             'timestamp': 1740038400.0,
+                             'upload_date': '20250220',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://www.nationalgeographic.com/tv/episode/ca694661-1186-41ae-8089-82f64d69b16d/playlist/PL554408064',
+               'info_dict': {'id': 'VDKA39492078',
+                             'ext': 'mp4',
+                             'title': 'Heart of the Emperors',
+                             'description': 'md5:4fc50a2878f030bb3a7eac9124dca677',
+                             'age_limit': 0,
+                             'duration': 2775,
+                             'thumbnail': r're:https?://.+/.+\.jpg',
+                             'series': 'Secrets of the Penguins',
+                             'season': 'Season 1',
+                             'season_number': 1,
+                             'episode': 'Episode 1',
+                             'episode_number': 1,
+                             'timestamp': 1745204400.0,
+                             'upload_date': '20250421',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://www.freeform.com/movies-and-specials/c38281fc-9f8f-47c7-8220-22394f9df2e1',
+               'only_matching': True,
+               },
+              {'url': 'https://abc.com/video/219a454a-172c-41bf-878a-d169e6bc0bdc/playlist/PL5523098420',
+               'only_matching': True,
+               }]
 
     def _extract_videos(self, brand, video_id='-1', show_id='-1'):
         display_id = video_id if video_id != '-1' else show_id
@@ -176,9 +170,19 @@ class GoIE(AdobePassIE):
         site, display_id = self._match_valid_url(url).group('site', 'id')
         webpage = self._download_webpage(url, display_id)
         config = self._extract_global_var('__CONFIG__', webpage, display_id)
-        data = self._extract_global_var(config['globalVar'], webpage, display_id)
-        video_id = traverse_obj(data, (
-            'page', 'content', 'video', 'layout', (('video', 'id'), 'videoid'), {str}, any))
+        data = self._extract_global_var(
+            config['globalVar'], webpage, display_id)
+        video_id = traverse_obj(
+            data,
+            ('page',
+             'content',
+             'video',
+             'layout',
+             (('video',
+               'id'),
+              'videoid'),
+                {str},
+                any))
         if not video_id:
             video_id = self._search_regex([
                 # data-track-video_id="VDKA39492078"
@@ -237,9 +241,12 @@ class GoIE(AdobePassIE):
                         if error.get('code') == 1002:
                             self.raise_geo_restricted(
                                 error['message'], countries=['US'])
-                    error_message = ', '.join([error['message'] for error in errors])
-                    raise ExtractorError(f'{self.IE_NAME} said: {error_message}', expected=True)
-                asset_url += '?' + entitlement['entitlement']['uplynkData']['sessionKey']
+                    error_message = ', '.join(
+                        [error['message'] for error in errors])
+                    raise ExtractorError(
+                        f'{self.IE_NAME} said: {error_message}', expected=True)
+                asset_url += '?' + \
+                    entitlement['entitlement']['uplynkData']['sessionKey']
                 fmts, subs = self._extract_m3u8_formats_and_subtitles(
                     asset_url, video_id, 'mp4', m3u8_id=format_id or 'hls', fatal=False)
                 formats.extend(fmts)
@@ -293,13 +300,31 @@ class GoIE(AdobePassIE):
             'id': video_id,
             'title': title,
             'description': video_data.get('longdescription') or video_data.get('description'),
-            'duration': int_or_none(video_data.get('duration', {}).get('value'), 1000),
-            'age_limit': parse_age_limit(video_data.get('tvrating', {}).get('rating')),
-            'episode_number': int_or_none(video_data.get('episodenumber')),
-            'series': video_data.get('show', {}).get('title'),
-            'season_number': int_or_none(video_data.get('season', {}).get('num')),
+            'duration': int_or_none(
+                video_data.get(
+                    'duration',
+                    {}).get('value'),
+                1000),
+            'age_limit': parse_age_limit(
+                video_data.get(
+                    'tvrating',
+                    {}).get('rating')),
+            'episode_number': int_or_none(
+                video_data.get('episodenumber')),
+            'series': video_data.get(
+                'show',
+                {}).get('title'),
+            'season_number': int_or_none(
+                video_data.get(
+                    'season',
+                    {}).get('num')),
             'thumbnails': thumbnails,
             'formats': formats,
             'subtitles': subtitles,
-            'timestamp': unified_timestamp(traverse_obj(video_data, ('airdates', 'airdate', 0))),
+            'timestamp': unified_timestamp(
+                traverse_obj(
+                    video_data,
+                    ('airdates',
+                     'airdate',
+                     0))),
         }

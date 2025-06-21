@@ -53,8 +53,11 @@ class OwnCloudIE(InfoExtractor):
         return {
             'id': video_id,
             'title': title,
-            'url': url_or_none(hidden_inputs.get('downloadURL')) or parsed_url._replace(
-                path=urllib.parse.urljoin(parsed_url.path, 'download')).geturl(),
+            'url': url_or_none(
+                hidden_inputs.get('downloadURL')) or parsed_url._replace(
+                path=urllib.parse.urljoin(
+                    parsed_url.path,
+                    'download')).geturl(),
             'ext': determine_ext(title),
         }
 
@@ -76,5 +79,7 @@ class OwnCloudIE(InfoExtractor):
             warning = self._search_regex(
                 r'<div[^>]+class="warning">([^<]*)</div>', validation_response,
                 'warning', default='The password is wrong')
-            raise ExtractorError(f'Opening the video failed, {self.IE_NAME} said: {warning!r}', expected=True)
+            raise ExtractorError(
+                f'Opening the video failed, {self.IE_NAME} said: {warning!r}',
+                expected=True)
         return validation_response

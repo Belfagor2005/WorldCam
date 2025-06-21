@@ -47,8 +47,14 @@ class OraTVIE(InfoExtractor):
             http_template = http_template.replace('.csmil/master.m3u8', '')
             http_template = urllib.parse.urljoin(
                 'http://videocdn-pmd.ora.tv/', http_template)
-            preference = qualities(
-                ['mobile400', 'basic400', 'basic600', 'sd900', 'sd1200', 'sd1500', 'hd720', 'hd1080'])
+            preference = qualities(['mobile400',
+                                    'basic400',
+                                    'basic600',
+                                    'sd900',
+                                    'sd1200',
+                                    'sd1500',
+                                    'hd720',
+                                    'hd1080'])
             for q in available_qualities:
                 formats.append({
                     'url': http_template % q,
@@ -56,17 +62,31 @@ class OraTVIE(InfoExtractor):
                     'quality': preference(q),
                 })
         else:
-            return self.url_result(self._search_regex(
-                r'"youtube_id"\s*:\s*"([^"]+)', webpage, 'youtube id'), 'Youtube')
+            return self.url_result(
+                self._search_regex(
+                    r'"youtube_id"\s*:\s*"([^"]+)',
+                    webpage,
+                    'youtube id'),
+                'Youtube')
 
         return {
             'id': self._search_regex(
-                r'"id"\s*:\s*(\d+)', video_data, 'video id', default=display_id),
+                r'"id"\s*:\s*(\d+)',
+                video_data,
+                'video id',
+                default=display_id),
             'display_id': display_id,
-            'title': unescapeHTML(self._og_search_title(webpage)),
+            'title': unescapeHTML(
+                self._og_search_title(webpage)),
             'description': get_element_by_attribute(
-                'class', 'video_txt_decription', webpage),
-            'thumbnail': self._proto_relative_url(self._search_regex(
-                r'"thumb"\s*:\s*"([^"]+)', video_data, 'thumbnail', None)),
+                'class',
+                'video_txt_decription',
+                webpage),
+            'thumbnail': self._proto_relative_url(
+                self._search_regex(
+                    r'"thumb"\s*:\s*"([^"]+)',
+                    video_data,
+                    'thumbnail',
+                    None)),
             'formats': formats,
         }

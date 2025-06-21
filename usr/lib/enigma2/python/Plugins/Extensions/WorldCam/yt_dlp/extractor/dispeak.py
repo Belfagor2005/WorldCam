@@ -14,7 +14,8 @@ class DigitallySpeakingIE(InfoExtractor):
     _VALID_URL = r'https?://(?:s?evt\.dispeak|events\.digitallyspeaking)\.com/(?:[^/]+/)+xml/(?P<id>[^.]+)\.xml'
 
     _TESTS = [{
-        # From http://gdcvault.com/play/1023460/Tenacious-Design-and-The-Interface
+        # From
+        # http://gdcvault.com/play/1023460/Tenacious-Design-and-The-Interface
         'url': 'http://evt.dispeak.com/ubm/gdc/sf16/xml/840376_BQRC.xml',
         'md5': 'a8efb6c31ed06ca8739294960b2dbabd',
         'info_dict': {
@@ -39,7 +40,8 @@ class DigitallySpeakingIE(InfoExtractor):
             'title': 'Pre-launch - Preparing to Take the Plunge',
         },
     }, {
-        # From http://www.gdcvault.com/play/1014846/Conference-Keynote-Shigeru, empty slideVideo
+        # From http://www.gdcvault.com/play/1014846/Conference-Keynote-Shigeru,
+        # empty slideVideo
         'url': 'http://events.digitallyspeaking.com/gdc/project25/xml/p25-miyamoto1999_1282467389849HSVB.xml',
         'only_matching': True,
     }]
@@ -66,7 +68,9 @@ class DigitallySpeakingIE(InfoExtractor):
             return None
         for a_format in formats:
             stream_name = xpath_text(a_format, 'streamName', fatal=True)
-            video_path = re.match(r'mp4\:(?P<path>.*)', stream_name).group('path')
+            video_path = re.match(
+                r'mp4\:(?P<path>.*)',
+                stream_name).group('path')
             url = video_root + video_path
             bitrate = xpath_text(a_format, 'bitrate')
             tbr = int_or_none(bitrate)

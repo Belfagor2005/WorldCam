@@ -6,20 +6,25 @@ from ..utils import ExtractorError, extract_attributes
 
 class BFMTVBaseIE(InfoExtractor):
     _VALID_URL_BASE = r'https?://(?:www\.|rmc\.)?bfmtv\.com/'
-    _VALID_URL_TMPL = _VALID_URL_BASE + r'(?:[^/]+/)*[^/?&#]+_%s[A-Z]-(?P<id>\d{12})\.html'
+    _VALID_URL_TMPL = _VALID_URL_BASE + \
+        r'(?:[^/]+/)*[^/?&#]+_%s[A-Z]-(?P<id>\d{12})\.html'
     _VIDEO_BLOCK_REGEX = r'(<div[^>]+class="video_block[^"]*"[^>]*>.*?</div>)'
     _VIDEO_ELEMENT_REGEX = r'(<video-js[^>]+>)'
     BRIGHTCOVE_URL_TEMPLATE = 'http://players.brightcove.net/%s/%s_default/index.html?videoId=%s'
 
     def _extract_video(self, video_block):
         video_element = self._search_regex(
-            self._VIDEO_ELEMENT_REGEX, video_block, 'video element', default=None)
+            self._VIDEO_ELEMENT_REGEX,
+            video_block,
+            'video element',
+            default=None)
         if video_element:
             video_element_attrs = extract_attributes(video_element)
             video_id = video_element_attrs.get('data-video-id')
             if not video_id:
                 return
-            account_id = video_element_attrs.get('data-account') or '876450610001'
+            account_id = video_element_attrs.get(
+                'data-account') or '876450610001'
             player_id = video_element_attrs.get('adjustplayer') or '19dszYXgm'
         else:
             video_block_attrs = extract_attributes(video_block)
@@ -99,34 +104,37 @@ class BFMTVLiveIE(BFMTVBaseIE):
 class BFMTVArticleIE(BFMTVBaseIE):
     IE_NAME = 'bfmtv:article'
     _VALID_URL = BFMTVBaseIE._VALID_URL_TMPL % 'A'
-    _TESTS = [{
-        'url': 'https://www.bfmtv.com/sante/covid-19-un-responsable-de-l-institut-pasteur-se-demande-quand-la-france-va-se-reconfiner_AV-202101060198.html',
-        'info_dict': {
-            'id': '202101060198',
-            'title': 'Covid-19: un responsable de l\'Institut Pasteur se demande "quand la France va se reconfiner"',
-            'description': 'md5:947974089c303d3ac6196670ae262843',
-        },
-        'playlist_count': 2,
-    }, {
-        'url': 'https://www.bfmtv.com/international/pour-bolsonaro-le-bresil-est-en-faillite-mais-il-ne-peut-rien-faire_AD-202101060232.html',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.bfmtv.com/sante/covid-19-oui-le-vaccin-de-pfizer-distribue-en-france-a-bien-ete-teste-sur-des-personnes-agees_AN-202101060275.html',
-        'only_matching': True,
-    }, {
-        'url': 'https://rmc.bfmtv.com/actualites/societe/transports/ce-n-est-plus-tout-rentable-le-bioethanol-e85-depasse-1eu-le-litre-des-automobilistes-regrettent_AV-202301100268.html',
-        'info_dict': {
-            'id': '6318445464112',
-            'ext': 'mp4',
-            'title': 'Le plein de bioéthanol fait de plus en plus mal à la pompe',
-            'uploader_id': '876630703001',
-            'upload_date': '20230110',
-            'timestamp': 1673341692,
-            'duration': 109.269,
-            'tags': ['rmc', 'show', 'apolline de malherbe', 'info', 'talk', 'matinale', 'radio'],
-            'thumbnail': 'https://cf-images.eu-west-1.prod.boltdns.net/v1/static/876630703001/5bef74b8-9d5e-4480-a21f-60c2e2480c46/96c88b74-f9db-45e1-8040-e199c5da216c/1920x1080/match/image.jpg',
-        },
-    }]
+    _TESTS = [{'url': 'https://www.bfmtv.com/sante/covid-19-un-responsable-de-l-institut-pasteur-se-demande-quand-la-france-va-se-reconfiner_AV-202101060198.html',
+               'info_dict': {'id': '202101060198',
+                             'title': 'Covid-19: un responsable de l\'Institut Pasteur se demande "quand la France va se reconfiner"',
+                             'description': 'md5:947974089c303d3ac6196670ae262843',
+                             },
+               'playlist_count': 2,
+               },
+              {'url': 'https://www.bfmtv.com/international/pour-bolsonaro-le-bresil-est-en-faillite-mais-il-ne-peut-rien-faire_AD-202101060232.html',
+               'only_matching': True,
+               },
+              {'url': 'https://www.bfmtv.com/sante/covid-19-oui-le-vaccin-de-pfizer-distribue-en-france-a-bien-ete-teste-sur-des-personnes-agees_AN-202101060275.html',
+               'only_matching': True,
+               },
+              {'url': 'https://rmc.bfmtv.com/actualites/societe/transports/ce-n-est-plus-tout-rentable-le-bioethanol-e85-depasse-1eu-le-litre-des-automobilistes-regrettent_AV-202301100268.html',
+               'info_dict': {'id': '6318445464112',
+                             'ext': 'mp4',
+                             'title': 'Le plein de bioéthanol fait de plus en plus mal à la pompe',
+                             'uploader_id': '876630703001',
+                             'upload_date': '20230110',
+                             'timestamp': 1673341692,
+                             'duration': 109.269,
+                             'tags': ['rmc',
+                                      'show',
+                                      'apolline de malherbe',
+                                      'info',
+                                      'talk',
+                                      'matinale',
+                                      'radio'],
+                             'thumbnail': 'https://cf-images.eu-west-1.prod.boltdns.net/v1/static/876630703001/5bef74b8-9d5e-4480-a21f-60c2e2480c46/96c88b74-f9db-45e1-8040-e199c5da216c/1920x1080/match/image.jpg',
+                             },
+               }]
 
     def _entries(self, webpage):
         for video_block_el in re.findall(self._VIDEO_BLOCK_REGEX, webpage):

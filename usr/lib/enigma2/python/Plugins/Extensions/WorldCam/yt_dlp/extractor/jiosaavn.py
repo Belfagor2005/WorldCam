@@ -33,7 +33,8 @@ class JioSaavnBaseIE(InfoExtractor):
 
     @functools.cached_property
     def requested_bitrates(self):
-        requested_bitrates = self._configuration_arg('bitrate', ['128', '320'], ie_key='JioSaavn')
+        requested_bitrates = self._configuration_arg(
+            'bitrate', ['128', '320'], ie_key='JioSaavn')
         if invalid_bitrates := set(requested_bitrates) - self._VALID_BITRATES:
             raise ValueError(
                 f'Invalid bitrate(s): {", ".join(invalid_bitrates)}. '
@@ -41,8 +42,10 @@ class JioSaavnBaseIE(InfoExtractor):
         return requested_bitrates
 
     def _extract_formats(self, item_data):
-        # Show/episode JSON data has a slightly different structure than song JSON data
-        if media_url := traverse_obj(item_data, ('more_info', 'encrypted_media_url', {str})):
+        # Show/episode JSON data has a slightly different structure than song
+        # JSON data
+        if media_url := traverse_obj(
+                item_data, ('more_info', 'encrypted_media_url', {str})):
             item_data.setdefault('encrypted_media_url', media_url)
 
         for bitrate in self.requested_bitrates:
@@ -56,7 +59,8 @@ class JioSaavnBaseIE(InfoExtractor):
                     'url': item_data['encrypted_media_url'],
                 }))
             if not traverse_obj(media_data, ('auth_url', {url_or_none})):
-                self.report_warning(f'Unable to extract format info for {bitrate}')
+                self.report_warning(
+                    f'Unable to extract format info for {bitrate}')
                 continue
             ext = media_data.get('type')
             yield {
@@ -69,7 +73,10 @@ class JioSaavnBaseIE(InfoExtractor):
 
     def _call_api(self, type_, token, note='API', params={}):
         return self._download_json(
-            self._API_URL, token, f'Downloading {note} JSON', f'Unable to download {note} JSON',
+            self._API_URL,
+            token,
+            f'Downloading {note} JSON',
+            f'Unable to download {note} JSON',
             query={
                 '__call': 'webapi.get',
                 '_format': 'json',
@@ -100,11 +107,17 @@ class JioSaavnBaseIE(InfoExtractor):
         })
         if webpage_url := info.get('webpage_url') or url:
             info['display_id'] = url_basename(webpage_url)
-            info['_old_archive_ids'] = [make_archive_id(JioSaavnSongIE, info['display_id'])]
+            info['_old_archive_ids'] = [
+                make_archive_id(
+                    JioSaavnSongIE,
+                    info['display_id'])]
 
-        if primary_artists := traverse_obj(song_data, ('primary_artists', {lambda x: x.split(', ') if x else None})):
+        if primary_artists := traverse_obj(
+            song_data, ('primary_artists', {
+                lambda x: x.split(', ') if x else None})):
             info['artists'].extend(primary_artists)
-        if featured_artists := traverse_obj(song_data, ('featured_artists', {str}, filter)):
+        if featured_artists := traverse_obj(
+                song_data, ('featured_artists', {str}, filter)):
             info['artists'].extend(featured_artists.split(', '))
         info['artists'] = orderedSet(info['artists']) or None
 
@@ -127,7 +140,12 @@ class JioSaavnBaseIE(InfoExtractor):
         }))
         return info
 
-    def _extract_jiosaavn_result(self, url, endpoint, response_key, parse_func):
+    def _extract_jiosaavn_result(
+            self,
+            url,
+            endpoint,
+            response_key,
+            parse_func):
         url, smuggled_data = unsmuggle_url(url)
         data = traverse_obj(smuggled_data, ({
             'id': ('id', {str}),
@@ -138,7 +156,8 @@ class JioSaavnBaseIE(InfoExtractor):
             result = {'id': data['id']}
         else:
             # only extract metadata if this is not a url_transparent result
-            data = self._call_api(endpoint, self._match_id(url))[response_key][0]
+            data = self._call_api(endpoint, self._match_id(url))[
+                response_key][0]
             result = parse_func(data, url)
 
         result['formats'] = list(self._extract_formats(data))
@@ -149,20 +168,32 @@ class JioSaavnBaseIE(InfoExtractor):
         if parse_func is None:
             parse_func = self._extract_song
 
-        for item_data in traverse_obj(playlist_data, (
-            *variadic(keys, (str, bytes, dict, set)), lambda _, v: v['id'] and v['perma_url'],
-        )):
+        for item_data in traverse_obj(
+                playlist_data,
+                (*
+                 variadic(
+                     keys,
+                     (str,
+                      bytes,
+                      dict,
+                      set)),
+                    lambda _,
+                    v: v['id'] and v['perma_url'],
+                 )):
             info = parse_func(item_data)
-            url = smuggle_url(info['webpage_url'], traverse_obj(item_data, {
-                'id': ('id', {str}),
-                'encrypted_media_url': ((None, 'more_info'), 'encrypted_media_url', {str}, any),
-            }))
+            url = smuggle_url(
+                info['webpage_url'], traverse_obj(
+                    item_data, {
+                        'id': (
+                            'id', {str}), 'encrypted_media_url': (
+                            (None, 'more_info'), 'encrypted_media_url', {str}, any), }))
             yield self.url_result(url, self._ENTRY_IE, url_transparent=True, **info)
 
 
 class JioSaavnSongIE(JioSaavnBaseIE):
     IE_NAME = 'jiosaavn:song'
-    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + r'(?:/song/[^/?#]+/|/s/song/(?:[^/?#]+/){3})(?P<id>[^/?#]+)'
+    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + \
+        r'(?:/song/[^/?#]+/|/s/song/(?:[^/?#]+/){3})(?P<id>[^/?#]+)'
     _TESTS = [{
         'url': 'https://www.jiosaavn.com/song/leja-re/OQsEfQFVUXk',
         'md5': '3b84396d15ed9e083c3106f1fa589c04',
@@ -211,12 +242,14 @@ class JioSaavnSongIE(JioSaavnBaseIE):
     }]
 
     def _real_extract(self, url):
-        return self._extract_jiosaavn_result(url, 'song', 'songs', self._extract_song)
+        return self._extract_jiosaavn_result(
+            url, 'song', 'songs', self._extract_song)
 
 
 class JioSaavnShowIE(JioSaavnBaseIE):
     IE_NAME = 'jiosaavn:show'
-    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + r'/shows/[^/?#]+/(?P<id>[^/?#]{11,})/?(?:$|[?#])'
+    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + \
+        r'/shows/[^/?#]+/(?P<id>[^/?#]{11,})/?(?:$|[?#])'
     _TESTS = [{
         'url': 'https://www.jiosaavn.com/shows/non-food-ways-to-boost-your-energy/XFMcKICOCgc_',
         'md5': '0733cd254cfe74ef88bea1eaedcf1f4f',
@@ -250,12 +283,14 @@ class JioSaavnShowIE(JioSaavnBaseIE):
     }]
 
     def _real_extract(self, url):
-        return self._extract_jiosaavn_result(url, 'episode', 'episodes', self._extract_episode)
+        return self._extract_jiosaavn_result(
+            url, 'episode', 'episodes', self._extract_episode)
 
 
 class JioSaavnAlbumIE(JioSaavnBaseIE):
     IE_NAME = 'jiosaavn:album'
-    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + r'/album/[^/?#]+/(?P<id>[^/?#]+)'
+    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + \
+        r'/album/[^/?#]+/(?P<id>[^/?#]+)'
     _TESTS = [{
         'url': 'https://www.jiosaavn.com/album/96/buIOjYZDrNA_',
         'info_dict': {
@@ -271,12 +306,15 @@ class JioSaavnAlbumIE(JioSaavnBaseIE):
         album_data = self._call_api('album', display_id)
 
         return self.playlist_result(
-            self._yield_items(album_data, 'songs'), display_id, traverse_obj(album_data, ('title', {str})))
+            self._yield_items(
+                album_data, 'songs'), display_id, traverse_obj(
+                album_data, ('title', {str})))
 
 
 class JioSaavnPlaylistIE(JioSaavnBaseIE):
     IE_NAME = 'jiosaavn:playlist'
-    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + r'/(?:s/playlist/(?:[^/?#]+/){2}|featured/[^/?#]+/)(?P<id>[^/?#]+)'
+    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + \
+        r'/(?:s/playlist/(?:[^/?#]+/){2}|featured/[^/?#]+/)(?P<id>[^/?#]+)'
     _TESTS = [{
         'url': 'https://www.jiosaavn.com/s/playlist/2279fbe391defa793ad7076929a2f5c9/mood-english/LlJ8ZWT1ibN5084vKHRj2Q__',
         'info_dict': {
@@ -304,25 +342,39 @@ class JioSaavnPlaylistIE(JioSaavnBaseIE):
 
     def _fetch_page(self, token, page):
         return self._call_api(
-            'playlist', token, f'playlist page {page}', {'p': page, 'n': self._PAGE_SIZE})
+            'playlist', token, f'playlist page {page}', {
+                'p': page, 'n': self._PAGE_SIZE})
 
     def _entries(self, token, first_page_data, page):
-        page_data = first_page_data if not page else self._fetch_page(token, page + 1)
+        page_data = first_page_data if not page else self._fetch_page(
+            token, page + 1)
         yield from self._yield_items(page_data, 'songs')
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
         playlist_data = self._fetch_page(display_id, 1)
-        total_pages = math.ceil(int(playlist_data['list_count']) / self._PAGE_SIZE)
+        total_pages = math.ceil(
+            int(playlist_data['list_count']) / self._PAGE_SIZE)
 
-        return self.playlist_result(InAdvancePagedList(
-            functools.partial(self._entries, display_id, playlist_data),
-            total_pages, self._PAGE_SIZE), display_id, traverse_obj(playlist_data, ('listname', {str})))
+        return self.playlist_result(
+            InAdvancePagedList(
+                functools.partial(
+                    self._entries,
+                    display_id,
+                    playlist_data),
+                total_pages,
+                self._PAGE_SIZE),
+            display_id,
+            traverse_obj(
+                playlist_data,
+                ('listname',
+                 {str})))
 
 
 class JioSaavnShowPlaylistIE(JioSaavnBaseIE):
     IE_NAME = 'jiosaavn:show:playlist'
-    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + r'/shows/(?P<show>[^#/?]+)/(?P<season>\d+)/[^/?#]+'
+    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + \
+        r'/shows/(?P<show>[^#/?]+)/(?P<season>\d+)/[^/?#]+'
     _TESTS = [{
         'url': 'https://www.jiosaavn.com/shows/talking-music/1/PjReFP-Sguk_',
         'info_dict': {
@@ -349,7 +401,8 @@ class JioSaavnShowPlaylistIE(JioSaavnBaseIE):
         yield from self._yield_items(page_data, keys=None, parse_func=self._extract_episode)
 
     def _real_extract(self, url):
-        show_slug, season_id = self._match_valid_url(url).group('show', 'season')
+        show_slug, season_id = self._match_valid_url(
+            url).group('show', 'season')
         playlist_id = f'{show_slug}-{season_id}'
         webpage = self._download_webpage(url, playlist_id)
 
@@ -358,14 +411,21 @@ class JioSaavnShowPlaylistIE(JioSaavnBaseIE):
             playlist_id, transform_source=js_to_json)['showView']
         show_id = show_info['current_id']
 
-        entries = OnDemandPagedList(functools.partial(self._entries, show_id, season_id), self._PAGE_SIZE)
+        entries = OnDemandPagedList(
+            functools.partial(
+                self._entries,
+                show_id,
+                season_id),
+            self._PAGE_SIZE)
         return self.playlist_result(
-            entries, playlist_id, traverse_obj(show_info, ('show', 'title', 'text', {str})))
+            entries, playlist_id, traverse_obj(
+                show_info, ('show', 'title', 'text', {str})))
 
 
 class JioSaavnArtistIE(JioSaavnBaseIE):
     IE_NAME = 'jiosaavn:artist'
-    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + r'/artist/[^/?#]+/(?P<id>[^/?#]+)'
+    _VALID_URL = JioSaavnBaseIE._URL_BASE_RE + \
+        r'/artist/[^/?#]+/(?P<id>[^/?#]+)'
     _TESTS = [{
         'url': 'https://www.jiosaavn.com/artist/krsna-songs/rYLBEve2z3U_',
         'info_dict': {
@@ -398,7 +458,8 @@ class JioSaavnArtistIE(JioSaavnBaseIE):
 
     def _entries(self, artist_id, first_page):
         for page in itertools.count():
-            playlist_data = first_page if not page else self._fetch_page(artist_id, page)
+            playlist_data = first_page if not page else self._fetch_page(
+                artist_id, page)
             if not traverse_obj(playlist_data, ('topSongs', ..., {dict})):
                 break
             yield from self._yield_items(playlist_data, 'topSongs')

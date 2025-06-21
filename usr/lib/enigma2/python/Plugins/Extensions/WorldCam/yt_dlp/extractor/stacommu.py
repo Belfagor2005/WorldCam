@@ -29,7 +29,8 @@ class StacommuBaseIE(WrestleUniverseBaseIE):
         return self._REAL_TOKEN
 
     def _get_formats(self, data, path, video_id=None):
-        if not traverse_obj(data, path) and not data.get('canWatch') and not self._TOKEN:
+        if not traverse_obj(data, path) and not data.get(
+                'canWatch') and not self._TOKEN:
             self.raise_login_required(method='password')
         return super()._get_formats(data, path, video_id)
 
@@ -37,7 +38,11 @@ class StacommuBaseIE(WrestleUniverseBaseIE):
         encryption_data = traverse_obj(data, path)
         if traverse_obj(encryption_data, ('encryptType', {int})) == 0:
             return None
-        return traverse_obj(encryption_data, {'key': ('key', {decrypt}), 'iv': ('iv', {decrypt})})
+        return traverse_obj(
+            encryption_data, {
+                'key': (
+                    'key', {decrypt}), 'iv': (
+                    'iv', {decrypt})})
 
     def _extract_vod(self, url):
         video_id = self._match_id(url)
@@ -62,18 +67,24 @@ class StacommuBaseIE(WrestleUniverseBaseIE):
 
     def _extract_ppv(self, url):
         video_id = self._match_id(url)
-        video_info = self._call_api(video_id, msg='video information', query={'al': 'ja'}, auth=False)
+        video_info = self._call_api(
+            video_id, msg='video information', query={
+                'al': 'ja'}, auth=False)
         hls_info, decrypt = self._call_encrypted_api(
             video_id, ':watchArchive', 'stream information', data={'method': 1})
 
-        formats = self._get_formats(hls_info, ('hls', 'urls', ..., {url_or_none}), video_id)
+        formats = self._get_formats(
+            hls_info, ('hls', 'urls', ..., {url_or_none}), video_id)
         for f in formats:
-            # bitrates are exaggerated in PPV playlists, so avoid wrong/huge filesize_approx values
+            # bitrates are exaggerated in PPV playlists, so avoid wrong/huge
+            # filesize_approx values
             if f.get('tbr'):
                 f['tbr'] = int(f['tbr'] / 2.5)
-            # prefer variants with the same basename as the master playlist to avoid partial streams
+            # prefer variants with the same basename as the master playlist to
+            # avoid partial streams
             f['format_id'] = url_basename(f['url']).partition('.')[0]
-            if not f['format_id'].startswith(url_basename(f['manifest_url']).partition('.')[0]):
+            if not f['format_id'].startswith(
+                    url_basename(f['manifest_url']).partition('.')[0]):
                 f['preference'] = -10
 
         return {
@@ -220,30 +231,27 @@ class TheaterComplexTownVODIE(TheaterComplexTownBaseIE):
 class TheaterComplexTownPPVIE(TheaterComplexTownBaseIE):
     _VALID_URL = r'https?://(?:www\.)?theater-complex\.town/(?:(?:en|ja)/)?(?:ppv|live)/(?P<id>\w+)'
     IE_NAME = 'theatercomplextown:ppv'
-    _TESTS = [{
-        'url': 'https://www.theater-complex.town/ppv/wytW3X7khrjJBUpKuV3jen',
-        'info_dict': {
-            'id': 'wytW3X7khrjJBUpKuV3jen',
-            'ext': 'mp4',
-            'title': 'BREAK FREE STARS　11月5日（日）12:30千秋楽公演',
-            'thumbnail': 'https://image.theater-complex.town/5GWEB31JcTUfjtgdeV5t6o/5GWEB31JcTUfjtgdeV5t6o',
-            'upload_date': '20231105',
-            'timestamp': 1699155000,
-            'duration': 8378,
-        },
-        'params': {
-            'skip_download': 'm3u8',
-        },
-    }, {
-        'url': 'https://www.theater-complex.town/en/ppv/wytW3X7khrjJBUpKuV3jen',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.theater-complex.town/ja/ppv/qwUVmLmGEiZ3ZW6it9uGys',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.theater-complex.town/en/live/79akNM7bJeD5Fi9EP39aDp',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://www.theater-complex.town/ppv/wytW3X7khrjJBUpKuV3jen',
+               'info_dict': {'id': 'wytW3X7khrjJBUpKuV3jen',
+                             'ext': 'mp4',
+                             'title': 'BREAK FREE STARS　11月5日（日）12:30千秋楽公演',
+                             'thumbnail': 'https://image.theater-complex.town/5GWEB31JcTUfjtgdeV5t6o/5GWEB31JcTUfjtgdeV5t6o',
+                             'upload_date': '20231105',
+                             'timestamp': 1699155000,
+                             'duration': 8378,
+                             },
+               'params': {'skip_download': 'm3u8',
+                          },
+               },
+              {'url': 'https://www.theater-complex.town/en/ppv/wytW3X7khrjJBUpKuV3jen',
+               'only_matching': True,
+               },
+              {'url': 'https://www.theater-complex.town/ja/ppv/qwUVmLmGEiZ3ZW6it9uGys',
+               'only_matching': True,
+               },
+              {'url': 'https://www.theater-complex.town/en/live/79akNM7bJeD5Fi9EP39aDp',
+               'only_matching': True,
+               }]
 
     _API_PATH = 'events'
 

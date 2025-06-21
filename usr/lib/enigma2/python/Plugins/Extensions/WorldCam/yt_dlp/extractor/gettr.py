@@ -18,7 +18,13 @@ class GettrBaseIE(InfoExtractor):
     _MEDIA_BASE_URL = 'https://media.gettr.com/'
 
     def _call_api(self, path, video_id, *args, **kwargs):
-        return self._download_json(urljoin('https://api.gettr.com/u/', path), video_id, *args, **kwargs)['result']
+        return self._download_json(
+            urljoin(
+                'https://api.gettr.com/u/',
+                path),
+            video_id,
+            *args,
+            **kwargs)['result']
 
 
 class GettrIE(GettrBaseIE):
@@ -76,25 +82,35 @@ class GettrIE(GettrBaseIE):
     def _real_extract(self, url):
         post_id = self._match_id(url)
         webpage = self._download_webpage(url, post_id)
-        api_data = self._call_api(f'post/{post_id}?incl="poststats|userinfo"', post_id)
+        api_data = self._call_api(
+            f'post/{post_id}?incl="poststats|userinfo"', post_id)
 
         post_data = api_data.get('data')
-        user_data = try_get(api_data, lambda x: x['aux']['uinf'][post_data['uid']], dict) or {}
+        user_data = try_get(api_data,
+                            lambda x: x['aux']['uinf'][post_data['uid']],
+                            dict) or {}
 
         vid = post_data.get('vid')
         ovid = post_data.get('ovid')
 
         if post_data.get('p_type') == 'stream':
-            return self.url_result(f'https://gettr.com/streaming/{post_id}', ie='GettrStreaming', video_id=post_id)
+            return self.url_result(
+                f'https://gettr.com/streaming/{post_id}',
+                ie='GettrStreaming',
+                video_id=post_id)
 
         if not (ovid or vid):
             embed_url = url_or_none(post_data.get('prevsrc'))
-            shared_post_id = traverse_obj(api_data, ('aux', 'shrdpst', '_id'), ('data', 'rpstIds', 0), expected_type=str)
+            shared_post_id = traverse_obj(
+                api_data, ('aux', 'shrdpst', '_id'), ('data', 'rpstIds', 0), expected_type=str)
 
             if embed_url:
                 return self.url_result(embed_url)
             elif shared_post_id:
-                return self.url_result(f'https://gettr.com/post/{shared_post_id}', ie='Gettr', video_id=shared_post_id)
+                return self.url_result(
+                    f'https://gettr.com/post/{shared_post_id}',
+                    ie='Gettr',
+                    video_id=shared_post_id)
             else:
                 raise ExtractorError('There\'s no video in this post.')
 
@@ -102,8 +118,13 @@ class GettrIE(GettrBaseIE):
             post_data.get('txt') or self._og_search_description(webpage))
 
         uploader = str_or_none(
-            user_data.get('nickname')
-            or self._search_regex(r'^(.+?) on GETTR', self._og_search_title(webpage, default=''), 'uploader', fatal=False))
+            user_data.get('nickname') or self._search_regex(
+                r'^(.+?) on GETTR',
+                self._og_search_title(
+                    webpage,
+                    default=''),
+                'uploader',
+                fatal=False))
 
         if uploader:
             title = f'{uploader} - {title}'
@@ -192,15 +213,33 @@ class GettrStreamingIE(GettrBaseIE):
 
         return {
             'id': video_id,
-            'title': try_get(video_info, lambda x: x['postData']['ttl'], str),
-            'description': try_get(video_info, lambda x: x['postData']['dsc'], str),
+            'title': try_get(
+                video_info,
+                lambda x: x['postData']['ttl'],
+                str),
+            'description': try_get(
+                video_info,
+                lambda x: x['postData']['dsc'],
+                str),
             'formats': formats,
             'subtitles': subtitles,
             'thumbnails': thumbnails,
-            'uploader': try_get(video_info, lambda x: x['liveHostInfo']['nickname'], str),
-            'uploader_id': try_get(video_info, lambda x: x['liveHostInfo']['_id'], str),
-            'view_count': int_or_none(live_info.get('viewsCount')),
-            'timestamp': float_or_none(live_info.get('startAt'), scale=1000),
-            'duration': float_or_none(live_info.get('duration'), scale=1000),
-            'is_live': bool_or_none(live_info.get('isLive')),
+            'uploader': try_get(
+                video_info,
+                lambda x: x['liveHostInfo']['nickname'],
+                str),
+            'uploader_id': try_get(
+                video_info,
+                lambda x: x['liveHostInfo']['_id'],
+                str),
+            'view_count': int_or_none(
+                live_info.get('viewsCount')),
+            'timestamp': float_or_none(
+                live_info.get('startAt'),
+                scale=1000),
+            'duration': float_or_none(
+                live_info.get('duration'),
+                scale=1000),
+            'is_live': bool_or_none(
+                live_info.get('isLive')),
         }

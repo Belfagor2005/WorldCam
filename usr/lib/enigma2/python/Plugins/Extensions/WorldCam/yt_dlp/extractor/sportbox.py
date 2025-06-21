@@ -9,7 +9,8 @@ from ..utils import (
 
 class SportBoxIE(InfoExtractor):
     _VALID_URL = r'https?://(?:news\.sportbox|matchtv)\.ru/vdl/player(?:/[^/]+/|\?.*?\bn?id=)(?P<id>\d+)'
-    _EMBED_REGEX = [r'<iframe[^>]+src="(?P<url>https?://(?:news\.sportbox|matchtv)\.ru/vdl/player[^"]+)"']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src="(?P<url>https?://(?:news\.sportbox|matchtv)\.ru/vdl/player[^"]+)"']
     _TESTS = [{
         'url': 'http://news.sportbox.ru/vdl/player/ci/211355',
         'info_dict': {

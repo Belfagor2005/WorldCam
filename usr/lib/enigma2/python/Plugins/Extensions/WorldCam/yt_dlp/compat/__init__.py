@@ -40,7 +40,8 @@ if os.name in ('nt', 'ce'):
         i = path.replace('\\', '/', 1).find('/')  # ~user
         if i < 0:
             i = len(path)
-        userhome = os.path.join(os.path.dirname(HOME), path[1:i]) if i > 1 else HOME
+        userhome = os.path.join(os.path.dirname(
+            HOME), path[1:i]) if i > 1 else HOME
         return userhome + path[i:]
 else:
     compat_expanduser = os.path.expanduser
@@ -51,6 +52,13 @@ def urllib_req_to_req(urllib_request):
     from ..networking import Request
     from ..utils.networking import HTTPHeaderDict
     return Request(
-        urllib_request.get_full_url(), data=urllib_request.data, method=urllib_request.get_method(),
-        headers=HTTPHeaderDict(urllib_request.headers, urllib_request.unredirected_hdrs),
-        extensions={'timeout': urllib_request.timeout} if hasattr(urllib_request, 'timeout') else None)
+        urllib_request.get_full_url(),
+        data=urllib_request.data,
+        method=urllib_request.get_method(),
+        headers=HTTPHeaderDict(
+            urllib_request.headers,
+            urllib_request.unredirected_hdrs),
+        extensions={
+            'timeout': urllib_request.timeout} if hasattr(
+                urllib_request,
+            'timeout') else None)

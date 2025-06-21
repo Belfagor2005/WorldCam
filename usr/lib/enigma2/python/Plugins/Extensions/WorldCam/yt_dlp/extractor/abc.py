@@ -23,109 +23,113 @@ class ABCIE(InfoExtractor):
     IE_NAME = 'abc.net.au'
     _VALID_URL = r'https?://(?:www\.)?abc\.net\.au/(?:news|btn)/(?:[^/]+/){1,4}(?P<id>\d{5,})'
 
-    _TESTS = [{
-        'url': 'http://www.abc.net.au/news/2014-11-05/australia-to-staff-ebola-treatment-centre-in-sierra-leone/5868334',
-        'md5': 'cb3dd03b18455a661071ee1e28344d9f',
-        'info_dict': {
-            'id': '5868334',
-            'ext': 'mp4',
-            'title': 'Australia to help staff Ebola treatment centre in Sierra Leone',
-            'description': 'md5:809ad29c67a05f54eb41f2a105693a67',
-        },
-        'skip': 'this video has expired',
-    }, {
-        'url': 'http://www.abc.net.au/news/2015-08-17/warren-entsch-introduces-same-sex-marriage-bill/6702326',
-        'md5': '4ebd61bdc82d9a8b722f64f1f4b4d121',
-        'info_dict': {
-            'id': 'NvqvPeNZsHU',
-            'ext': 'mp4',
-            'upload_date': '20150816',
-            'uploader': 'ABC News (Australia)',
-            'description': 'Government backbencher Warren Entsch introduces a cross-party sponsored bill to legalise same-sex marriage, saying the bill is designed to promote "an inclusive Australia, not a divided one.". Read more here: http://ab.co/1Mwc6ef',
-            'uploader_id': 'NewsOnABC',
-            'title': 'Marriage Equality: Warren Entsch introduces same sex marriage bill',
-        },
-        'add_ie': ['Youtube'],
-        'skip': 'Not accessible from Travis CI server',
-    }, {
-        'url': 'http://www.abc.net.au/news/2015-10-23/nab-lifts-interest-rates-following-westpac-and-cba/6880080',
-        'md5': 'b96eee7c9edf4fc5a358a0252881cc1f',
-        'info_dict': {
-            'id': '6880080',
-            'ext': 'mp3',
-            'title': 'NAB lifts interest rates, following Westpac and CBA',
-            'description': 'md5:f13d8edc81e462fce4a0437c7dc04728',
-        },
-    }, {
-        'url': 'http://www.abc.net.au/news/2015-10-19/6866214',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.abc.net.au/btn/classroom/wwi-centenary/10527914',
-        'info_dict': {
-            'id': '10527914',
-            'ext': 'mp4',
-            'title': 'WWI Centenary',
-            'description': 'md5:c2379ec0ca84072e86b446e536954546',
-        },
-    }, {
-        'url': 'https://www.abc.net.au/news/programs/the-world/2020-06-10/black-lives-matter-protests-spawn-support-for/12342074',
-        'info_dict': {
-            'id': '12342074',
-            'ext': 'mp4',
-            'title': 'Black Lives Matter protests spawn support for Papuans in Indonesia',
-            'description': 'md5:2961a17dc53abc558589ccd0fb8edd6f',
-        },
-    }, {
-        'url': 'https://www.abc.net.au/btn/newsbreak/btn-newsbreak-20200814/12560476',
-        'info_dict': {
-            'id': 'tDL8Ld4dK_8',
-            'ext': 'mp4',
-            'title': 'Fortnite Banned From Apple and Google App Stores',
-            'description': 'md5:a6df3f36ce8f816b74af4bd6462f5651',
-            'upload_date': '20200813',
-            'uploader': 'Behind the News',
-            'uploader_id': 'behindthenews',
-        },
-    }, {
-        'url': 'https://www.abc.net.au/news/2023-06-25/wagner-boss-orders-troops-back-to-bases-to-avoid-bloodshed/102520540',
-        'info_dict': {
-            'id': '102520540',
-            'title': 'Wagner Group retreating from Russia, leader Prigozhin to move to Belarus',
-            'ext': 'mp4',
-            'description': 'Wagner troops leave Rostov-on-Don and\xa0Yevgeny Prigozhin will move to Belarus under a deal brokered by Belarusian President Alexander Lukashenko to end the mutiny.',
-            'thumbnail': 'https://live-production.wcms.abc-cdn.net.au/0c170f5b57f0105c432f366c0e8e267b?impolicy=wcms_crop_resize&cropH=2813&cropW=5000&xPos=0&yPos=249&width=862&height=485',
-        },
-    }]
+    _TESTS = [{'url': 'http://www.abc.net.au/news/2014-11-05/australia-to-staff-ebola-treatment-centre-in-sierra-leone/5868334',
+               'md5': 'cb3dd03b18455a661071ee1e28344d9f',
+               'info_dict': {'id': '5868334',
+                             'ext': 'mp4',
+                             'title': 'Australia to help staff Ebola treatment centre in Sierra Leone',
+                             'description': 'md5:809ad29c67a05f54eb41f2a105693a67',
+                             },
+               'skip': 'this video has expired',
+               },
+              {'url': 'http://www.abc.net.au/news/2015-08-17/warren-entsch-introduces-same-sex-marriage-bill/6702326',
+               'md5': '4ebd61bdc82d9a8b722f64f1f4b4d121',
+               'info_dict': {'id': 'NvqvPeNZsHU',
+                             'ext': 'mp4',
+                             'upload_date': '20150816',
+                             'uploader': 'ABC News (Australia)',
+                             'description': 'Government backbencher Warren Entsch introduces a cross-party sponsored bill to legalise same-sex marriage, saying the bill is designed to promote "an inclusive Australia, not a divided one.". Read more here: http://ab.co/1Mwc6ef',
+                             'uploader_id': 'NewsOnABC',
+                             'title': 'Marriage Equality: Warren Entsch introduces same sex marriage bill',
+                             },
+               'add_ie': ['Youtube'],
+               'skip': 'Not accessible from Travis CI server',
+               },
+              {'url': 'http://www.abc.net.au/news/2015-10-23/nab-lifts-interest-rates-following-westpac-and-cba/6880080',
+               'md5': 'b96eee7c9edf4fc5a358a0252881cc1f',
+               'info_dict': {'id': '6880080',
+                             'ext': 'mp3',
+                             'title': 'NAB lifts interest rates, following Westpac and CBA',
+                             'description': 'md5:f13d8edc81e462fce4a0437c7dc04728',
+                             },
+               },
+              {'url': 'http://www.abc.net.au/news/2015-10-19/6866214',
+               'only_matching': True,
+               },
+              {'url': 'https://www.abc.net.au/btn/classroom/wwi-centenary/10527914',
+               'info_dict': {'id': '10527914',
+                             'ext': 'mp4',
+                             'title': 'WWI Centenary',
+                             'description': 'md5:c2379ec0ca84072e86b446e536954546',
+                             },
+               },
+              {'url': 'https://www.abc.net.au/news/programs/the-world/2020-06-10/black-lives-matter-protests-spawn-support-for/12342074',
+               'info_dict': {'id': '12342074',
+                             'ext': 'mp4',
+                             'title': 'Black Lives Matter protests spawn support for Papuans in Indonesia',
+                             'description': 'md5:2961a17dc53abc558589ccd0fb8edd6f',
+                             },
+               },
+              {'url': 'https://www.abc.net.au/btn/newsbreak/btn-newsbreak-20200814/12560476',
+               'info_dict': {'id': 'tDL8Ld4dK_8',
+                             'ext': 'mp4',
+                             'title': 'Fortnite Banned From Apple and Google App Stores',
+                             'description': 'md5:a6df3f36ce8f816b74af4bd6462f5651',
+                             'upload_date': '20200813',
+                             'uploader': 'Behind the News',
+                             'uploader_id': 'behindthenews',
+                             },
+               },
+              {'url': 'https://www.abc.net.au/news/2023-06-25/wagner-boss-orders-troops-back-to-bases-to-avoid-bloodshed/102520540',
+               'info_dict': {'id': '102520540',
+                             'title': 'Wagner Group retreating from Russia, leader Prigozhin to move to Belarus',
+                             'ext': 'mp4',
+                             'description': 'Wagner troops leave Rostov-on-Don and\xa0Yevgeny Prigozhin will move to Belarus under a deal brokered by Belarusian President Alexander Lukashenko to end the mutiny.',
+                             'thumbnail': 'https://live-production.wcms.abc-cdn.net.au/0c170f5b57f0105c432f366c0e8e267b?impolicy=wcms_crop_resize&cropH=2813&cropW=5000&xPos=0&yPos=249&width=862&height=485',
+                             },
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        mobj = re.search(r'<a\s+href="(?P<url>[^"]+)"\s+data-duration="\d+"\s+title="Download audio directly">', webpage)
+        mobj = re.search(
+            r'<a\s+href="(?P<url>[^"]+)"\s+data-duration="\d+"\s+title="Download audio directly">',
+            webpage)
         if mobj:
             urls_info = mobj.groupdict()
             youtube = False
             video = False
         else:
-            mobj = re.search(r'<a href="(?P<url>http://www\.youtube\.com/watch\?v=[^"]+)"><span><strong>External Link:</strong>',
-                             webpage)
+            mobj = re.search(
+                r'<a href="(?P<url>http://www\.youtube\.com/watch\?v=[^"]+)"><span><strong>External Link:</strong>',
+                webpage)
             if mobj is None:
-                mobj = re.search(r'<iframe width="100%" src="(?P<url>//www\.youtube-nocookie\.com/embed/[^?"]+)', webpage)
+                mobj = re.search(
+                    r'<iframe width="100%" src="(?P<url>//www\.youtube-nocookie\.com/embed/[^?"]+)',
+                    webpage)
             if mobj:
                 urls_info = mobj.groupdict()
                 youtube = True
                 video = True
 
         if mobj is None:
-            mobj = re.search(r'(?P<type>)"(?:sources|files|renditions)":\s*(?P<json_data>\[[^\]]+\])', webpage)
+            mobj = re.search(
+                r'(?P<type>)"(?:sources|files|renditions)":\s*(?P<json_data>\[[^\]]+\])',
+                webpage)
             if mobj is None:
                 mobj = re.search(
                     r'inline(?P<type>Video|Audio|YouTube)Data\.push\((?P<json_data>[^)]+)\);',
                     webpage)
                 if mobj is None:
-                    expired = self._html_search_regex(r'(?s)class="expired-(?:video|audio)".+?<span>(.+?)</span>', webpage, 'expired', None)
+                    expired = self._html_search_regex(
+                        r'(?s)class="expired-(?:video|audio)".+?<span>(.+?)</span>',
+                        webpage,
+                        'expired',
+                        None)
                     if expired:
-                        raise ExtractorError(f'{self.IE_NAME} said: {expired}', expected=True)
+                        raise ExtractorError(
+                            f'{self.IE_NAME} said: {expired}', expected=True)
                     raise ExtractorError('Unable to extract video urls')
 
             urls_info = self._parse_json(
@@ -147,7 +151,9 @@ class ABCIE(InfoExtractor):
             bitrate = int_or_none(url_info.get('bitrate'))
             width = int_or_none(url_info.get('width'))
             format_id = None
-            mobj = re.search(r'_(?:(?P<height>\d+)|(?P<bitrate>\d+)k)\.mp4$', url_info['url'])
+            mobj = re.search(
+                r'_(?:(?P<height>\d+)|(?P<bitrate>\d+)k)\.mp4$',
+                url_info['url'])
             if mobj:
                 height_from_url = mobj.group('height')
                 if height_from_url:
@@ -283,8 +289,11 @@ class ABCIViewIE(InfoExtractor):
         video_id = self._match_id(url)
         video_params = self._download_json(
             'https://iview.abc.net.au/api/programs/' + video_id, video_id)
-        title = unescapeHTML(video_params.get('title') or video_params['seriesTitle'])
-        stream = next(s for s in video_params['playlist'] if s.get('type') in ('program', 'livestream'))
+        title = unescapeHTML(video_params.get(
+            'title') or video_params['seriesTitle'])
+        stream = next(
+            s for s in video_params['playlist'] if s.get('type') in (
+                'program', 'livestream'))
 
         house_number = video_params.get('episodeHouseNumber') or video_id
         path = f'/auth/hls/sign?ts={int(time.time())}&hn={house_number}&d=android-tablet'
@@ -409,8 +418,13 @@ class ABCIViewShowSeriesIE(InfoExtractor):
             transform_source=lambda x: x.encode().decode('unicode_escape'),
             end_pattern=r'[\'"]\s*;')['route']['pageData']['_embedded']
 
-        highlight = try_get(video_data, lambda x: x['highlightVideo']['shareUrl'])
-        if not self._yes_playlist(show_id, bool(highlight), video_label='highlight video'):
+        highlight = try_get(
+            video_data,
+            lambda x: x['highlightVideo']['shareUrl'])
+        if not self._yes_playlist(
+                show_id,
+                bool(highlight),
+                video_label='highlight video'):
             return self.url_result(highlight, ie=ABCIViewIE.ie_key())
 
         series = video_data['selectedSeries']

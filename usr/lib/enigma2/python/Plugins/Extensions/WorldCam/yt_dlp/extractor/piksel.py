@@ -32,7 +32,8 @@ class PikselIE(InfoExtractor):
             )\.jp|
             vidego\.baltimorecity\.gov
         )/v/(?:refid/(?P<refid>[^/]+)/prefid/)?(?P<id>[\w-]+)'''
-    _EMBED_REGEX = [r'<iframe[^>]+src=["\'](?P<url>(?:https?:)?//player\.piksel\.(?:com|tech)/v/[a-z0-9]+)']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=["\'](?P<url>(?:https?:)?//player\.piksel\.(?:com|tech)/v/[a-z0-9]+)']
     _TESTS = [
         {
             'url': 'http://player.piksel.tech/v/ums2867l',
@@ -48,7 +49,8 @@ class PikselIE(InfoExtractor):
             },
         },
         {
-            # Original source: http://www.uscourts.gov/cameras-courts/state-washington-vs-donald-j-trump-et-al
+            # Original source:
+            # http://www.uscourts.gov/cameras-courts/state-washington-vs-donald-j-trump-et-al
             'url': 'https://player.piksel.tech/v/v80kqp41',
             'md5': '753ddcd8cc8e4fa2dda4b7be0e77744d',
             'info_dict': {
@@ -68,11 +70,26 @@ class PikselIE(InfoExtractor):
         },
     ]
 
-    def _call_api(self, app_token, resource, display_id, query, host='https://player.piksel.tech', fatal=True):
-        url = urljoin(host, f'/ws/ws_{resource}/api/{app_token}/mode/json/apiv/5')
+    def _call_api(
+            self,
+            app_token,
+            resource,
+            display_id,
+            query,
+            host='https://player.piksel.tech',
+            fatal=True):
+        url = urljoin(
+            host, f'/ws/ws_{resource}/api/{app_token}/mode/json/apiv/5')
         response = traverse_obj(
-            self._download_json(url, display_id, query=query, fatal=fatal), ('response', {dict})) or {}
-        failure = traverse_obj(response, ('failure', 'reason')) if response else 'Empty response from API'
+            self._download_json(
+                url,
+                display_id,
+                query=query,
+                fatal=fatal),
+            ('response',
+             {dict})) or {}
+        failure = traverse_obj(
+            response, ('failure', 'reason')) if response else 'Empty response from API'
         if failure:
             if fatal:
                 raise ExtractorError(failure, expected=True)
@@ -86,9 +103,12 @@ class PikselIE(InfoExtractor):
             r'clientAPI\s*:\s*"([^"]+)"',
             r'data-de-api-key\s*=\s*"([^"]+)"',
         ], webpage, 'app token')
-        query = {'refid': ref_id, 'prefid': display_id} if ref_id else {'v': display_id}
-        program = self._call_api(
-            app_token, 'program', display_id, query, url)['WsProgramResponse']['program']
+        query = {
+            'refid': ref_id,
+            'prefid': display_id} if ref_id else {
+            'v': display_id}
+        program = self._call_api(app_token, 'program', display_id, query, url)[
+            'WsProgramResponse']['program']
         video_id = program['uuid']
         video_data = program['asset']
         title = video_data['title']
@@ -149,11 +169,12 @@ class PikselIE(InfoExtractor):
 
         smil_url = dict_get(video_data, ['httpSmil', 'hdSmil', 'rtmpSmil'])
         if smil_url:
-            transform_source = lambda x: x.replace('src="/', 'src="')
+            def transform_source(x): return x.replace('src="/', 'src="')
             if ref_id == 'nhkworld':
                 # TODO: figure out if this is something to be fixed in urljoin,
                 # _parse_smil_formats or keep it here
-                transform_source = lambda x: x.replace('src="/', 'src="').replace('/media"', '/media/"')
+                def transform_source(x): return x.replace(
+                    'src="/', 'src="').replace('/media"', '/media/"')
             formats.extend(self._extract_smil_formats(
                 re.sub(r'/od/[^/]+/', '/od/http/', smil_url), video_id,
                 transform_source=transform_source, fatal=False))
@@ -173,5 +194,6 @@ class PikselIE(InfoExtractor):
             'timestamp': parse_iso8601(video_data.get('dateadd')),
             'formats': formats,
             'subtitles': subtitles,
-            '_format_sort_fields': ('tbr', ),  # Incomplete resolution information
+            # Incomplete resolution information
+            '_format_sort_fields': ('tbr', ),
         }

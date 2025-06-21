@@ -16,7 +16,8 @@ from ..utils import (
 class Tube8IE(InfoExtractor):
     _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?tube8\.com/(?:[^/]+/)+(?P<display_id>[^/]+)/(?P<id>\d+)'
-    _EMBED_REGEX = [r'<iframe[^>]+\bsrc=["\'](?P<url>(?:https?:)?//(?:www\.)?tube8\.com/embed/(?:[^/]+/)+\d+)']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+\bsrc=["\'](?P<url>(?:https?:)?//(?:www\.)?tube8\.com/embed/(?:[^/]+/)+\d+)']
     _TESTS = [{
         'url': 'http://www.tube8.com/teen/kasia-music-video/229795/',
         'md5': '65e20c48e6abff62ed0c3965fff13a39',
@@ -129,7 +130,10 @@ class Tube8IE(InfoExtractor):
                 r'videoTitle\s*=\s*"([^"]+)', webpage, 'title')
 
         description = self._html_search_regex(
-            r'(?s)Description:</dt>\s*<dd>(.+?)</dd>', webpage, 'description', fatal=False)
+            r'(?s)Description:</dt>\s*<dd>(.+?)</dd>',
+            webpage,
+            'description',
+            fatal=False)
         uploader = self._html_search_regex(
             r'<span class="username">\s*(.+?)\s*<',
             webpage, 'uploader', fatal=False)

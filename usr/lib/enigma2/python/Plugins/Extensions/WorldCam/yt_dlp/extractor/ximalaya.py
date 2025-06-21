@@ -98,7 +98,8 @@ class XimalayaIE(XimalayaBaseIE):
             cgstr += key[r]
             key = key.replace(key[r], '')
         parts = file_id.split('*')
-        filename = ''.join(cgstr[int(part)] for part in parts if part.isdecimal())
+        filename = ''.join(cgstr[int(part)]
+                           for part in parts if part.isdecimal())
         if not filename.startswith('/'):
             filename = '/' + filename
         return filename
@@ -126,7 +127,8 @@ class XimalayaIE(XimalayaBaseIE):
                 f'{scheme}://mpay.ximalaya.com/mobile/track/pay/{audio_id}/{ts}',
                 audio_id, 'Downloading VIP info json', 'Unable to download VIP info file',
                 query={'device': 'pc', 'isBackend': 'true', '_': ts})
-            filename = self._decrypt_filename(vip_info['fileId'], vip_info['seed'])
+            filename = self._decrypt_filename(
+                vip_info['fileId'], vip_info['seed'])
             sign, token, timestamp = self._decrypt_url_params(vip_info['ep'])
             vip_url = update_url_query(
                 f'{vip_info["domain"]}/download/{vip_info["apiVersion"]}{filename}', {
@@ -158,7 +160,8 @@ class XimalayaIE(XimalayaBaseIE):
                     'duration': ('duration', {int_or_none}),
                 }))
 
-            fmt['abr'] = try_call(lambda: fmt['filesize'] * 8 / fmt['duration'] / 1024)
+            fmt['abr'] = try_call(
+                lambda: fmt['filesize'] * 8 / fmt['duration'] / 1024)
             formats.append(fmt)
 
         formats.extend([{
@@ -181,7 +184,9 @@ class XimalayaIE(XimalayaBaseIE):
         audio_uploader_id = audio_info.get('uid')
 
         audio_description = try_call(
-            lambda: audio_info['intro'].replace('\r\n\r\n\r\n ', '\n').replace('\r\n', '\n'))
+            lambda: audio_info['intro'].replace(
+                '\r\n\r\n\r\n ', '\n').replace(
+                '\r\n', '\n'))
 
         return {
             'id': audio_id,
@@ -223,13 +228,20 @@ class XimalayaAlbumIE(XimalayaBaseIE):
         playlist_id = self._match_id(url)
 
         first_page = self._fetch_page(playlist_id, 1)
-        page_count = math.ceil(first_page['trackTotalCount'] / first_page['pageSize'])
+        page_count = math.ceil(
+            first_page['trackTotalCount'] /
+            first_page['pageSize'])
 
         entries = InAdvancePagedList(
-            lambda idx: self._get_entries(self._fetch_page(playlist_id, idx + 1) if idx else first_page),
-            page_count, first_page['pageSize'])
+            lambda idx: self._get_entries(
+                self._fetch_page(
+                    playlist_id,
+                    idx + 1) if idx else first_page),
+            page_count,
+            first_page['pageSize'])
 
-        title = traverse_obj(first_page, ('tracks', 0, 'albumTitle'), expected_type=str)
+        title = traverse_obj(
+            first_page, ('tracks', 0, 'albumTitle'), expected_type=str)
 
         return self.playlist_result(entries, playlist_id, title)
 

@@ -48,11 +48,14 @@ class ImpersonateTarget:
         )
 
     def __str__(self):
-        return f'{join_nonempty(self.client, self.version)}:{join_nonempty(self.os, self.os_version)}'.rstrip(':')
+        return f'{join_nonempty(self.client, self.version)}:{join_nonempty(self.os, self.os_version)}'.rstrip(
+            ':')
 
     @classmethod
     def from_str(cls, target: str):
-        mobj = re.fullmatch(r'(?:(?P<client>[^:-]+)(?:-(?P<version>[^:-]+))?)?(?::(?:(?P<os>[^:-]+)(?:-(?P<os_version>[^:-]+))?)?)?', target)
+        mobj = re.fullmatch(
+            r'(?:(?P<client>[^:-]+)(?:-(?P<version>[^:-]+))?)?(?::(?:(?P<os>[^:-]+)(?:-(?P<os_version>[^:-]+))?)?)?',
+            target)
         if not mobj:
             raise ValueError(f'Invalid impersonate target "{target}"')
         return cls(**mobj.groupdict())
@@ -89,7 +92,8 @@ class ImpersonateRequestHandler(RequestHandler, ABC):
         if target is None or not self.supported_targets:
             return
         if not self.is_supported_target(target):
-            raise UnsupportedRequest(f'Unsupported impersonate target: {target}')
+            raise UnsupportedRequest(
+                f'Unsupported impersonate target: {target}')
 
     def _check_extensions(self, extensions):
         super()._check_extensions(extensions)
@@ -121,7 +125,8 @@ class ImpersonateRequestHandler(RequestHandler, ABC):
 
     def _get_request_target(self, request):
         """Get the requested target for the request"""
-        return self._resolve_target(request.extensions.get('impersonate') or self.impersonate)
+        return self._resolve_target(
+            request.extensions.get('impersonate') or self.impersonate)
 
     def _prepare_impersonate_headers(self, request: Request, headers: HTTPHeaderDict) -> None:  # noqa: B027
         """Additional operations to prepare headers before building. To be extended by subclasses.

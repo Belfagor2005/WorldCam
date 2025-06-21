@@ -25,7 +25,9 @@ class ViuBaseIE(InfoExtractor):
             f'https://www.viu.com/api/{path}', *args, **kwargs,
             headers={**self.geo_verification_headers(), **headers})['response']
         if response.get('status') != 'success':
-            raise ExtractorError(f'{self.IE_NAME} said: {response["message"]}', expected=True)
+            raise ExtractorError(
+                f'{self.IE_NAME} said: {response["message"]}',
+                expected=True)
         return response
 
 
@@ -87,10 +89,12 @@ class ViuIE(ViuBaseIE):
             #     r'(/hlsc_)[a-z]+(\d+\.m3u8)',
             #     r'\1whe\2', video_data['href'])
             m3u8_url = video_data['href']
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, 'mp4')
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+            m3u8_url, video_id, 'mp4')
 
         for key, value in video_data.items():
-            mobj = re.match(r'subtitle_(?P<lang>[^_]+)_(?P<ext>(vtt|srt))', key)
+            mobj = re.match(
+                r'subtitle_(?P<lang>[^_]+)_(?P<ext>(vtt|srt))', key)
             if not mobj:
                 continue
             subtitles.setdefault(mobj.group('lang'), []).append({
@@ -216,7 +220,9 @@ class ViuOTTIE(InfoExtractor):
         code = try_get(response, lambda x: x['status']['code'])
         if code and code > 0:
             message = try_get(response, lambda x: x['status']['message'])
-            raise ExtractorError(f'{self.IE_NAME} said: {message} ({code})', expected=True)
+            raise ExtractorError(
+                f'{self.IE_NAME} said: {message} ({code})',
+                expected=True)
         return response.get('data') or {}
 
     def _login(self, country_code, video_id):
@@ -248,7 +254,8 @@ class ViuOTTIE(InfoExtractor):
                 }).encode())
             self._detect_error(data)
             self._user_token = data.get('identity')
-            # need to update with valid user's token else will throw an error again
+            # need to update with valid user's token else will throw an error
+            # again
             self._auth_codes[country_code] = data.get('token')
         return self._user_token
 
@@ -294,7 +301,12 @@ class ViuOTTIE(InfoExtractor):
             product = series.get('product')
             if product:
                 entries = []
-                for entry in sorted(product, key=lambda x: int_or_none(x.get('number', 0))):
+                for entry in sorted(
+                    product,
+                    key=lambda x: int_or_none(
+                        x.get(
+                            'number',
+                            0))):
                     item_id = entry.get('product_id')
                     if not item_id:
                         continue
@@ -303,18 +315,26 @@ class ViuOTTIE(InfoExtractor):
                                     {'force_noplaylist': True}),
                         ViuOTTIE, str(item_id), entry.get('synopsis', '').strip()))
 
-                return self.playlist_result(entries, series_id, series.get('name'), series.get('description'))
+                return self.playlist_result(
+                    entries,
+                    series_id,
+                    series.get('name'),
+                    series.get('description'))
 
         duration_limit = False
         query = {
             'ccs_product_id': video_data['ccs_product_id'],
-            'language_flag_id': self._LANGUAGE_FLAG.get(lang_code.lower()) or '3',
+            'language_flag_id': self._LANGUAGE_FLAG.get(
+                lang_code.lower()) or '3',
         }
 
         def download_playback():
             stream_data = self._download_json(
                 'https://api-gateway-global.viu.com/api/playback/distribute',
-                video_id=video_id, query=query, fatal=False, note='Downloading stream info',
+                video_id=video_id,
+                query=query,
+                fatal=False,
+                note='Downloading stream info',
                 headers={
                     'Authorization': f'Bearer {self._auth_codes[country_code]}',
                     'Referer': url,
@@ -323,7 +343,8 @@ class ViuOTTIE(InfoExtractor):
             return self._detect_error(stream_data).get('stream')
 
         if not self._auth_codes.get(country_code):
-            self._auth_codes[country_code] = self._get_token(country_code, video_id)
+            self._auth_codes[country_code] = self._get_token(
+                country_code, video_id)
 
         stream_data = None
         try:
@@ -334,7 +355,8 @@ class ViuOTTIE(InfoExtractor):
                 query['identity'] = token
             else:
                 # The content is Preview or for VIP only.
-                # We can try to bypass the duration which is limited to 3mins only
+                # We can try to bypass the duration which is limited to 3mins
+                # only
                 duration_limit, query['duration'] = True, '180'
             try:
                 stream_data = download_playback()
@@ -347,17 +369,26 @@ class ViuOTTIE(InfoExtractor):
 
         formats = []
         for vid_format, stream_url in (stream_data.get('url') or {}).items():
-            height = int(self._search_regex(r's(\d+)p', vid_format, 'height', default=None))
+            height = int(
+                self._search_regex(
+                    r's(\d+)p',
+                    vid_format,
+                    'height',
+                    default=None))
 
             # bypass preview duration limit
             if duration_limit:
                 old_stream_url = urllib.parse.urlparse(stream_url)
-                query = dict(urllib.parse.parse_qsl(old_stream_url.query, keep_blank_values=True))
+                query = dict(
+                    urllib.parse.parse_qsl(
+                        old_stream_url.query,
+                        keep_blank_values=True))
                 query.update({
                     'duration': video_data.get('time_duration') or '9999999',
                     'duration_start': '0',
                 })
-                stream_url = old_stream_url._replace(query=urllib.parse.urlencode(query)).geturl()
+                stream_url = old_stream_url._replace(
+                    query=urllib.parse.urlencode(query)).geturl()
 
             formats.append({
                 'format_id': vid_format,
@@ -499,9 +530,15 @@ class ViuOTTIndonesiaIE(ViuOTTIndonesiaBaseIE):
         webpage = self._download_webpage(url, display_id)
 
         video_data = self._download_json(
-            f'https://um.viuapi.io/drm/v1/content/{display_id}', display_id, data=b'',
-            headers={'Authorization': ViuOTTIndonesiaBaseIE._TOKEN, **self._HEADERS, 'ccode': 'ID'})
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(video_data['playUrl'], display_id)
+            f'https://um.viuapi.io/drm/v1/content/{display_id}',
+            display_id,
+            data=b'',
+            headers={
+                'Authorization': ViuOTTIndonesiaBaseIE._TOKEN,
+                **self._HEADERS,
+                'ccode': 'ID'})
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+            video_data['playUrl'], display_id)
 
         initial_state = self._search_json(
             r'window\.__INITIAL_STATE__\s*=', webpage, 'initial state',
@@ -522,20 +559,42 @@ class ViuOTTIndonesiaIE(ViuOTTIndonesiaBaseIE):
                         'url': f'{remove_end(initial_state[key], "vtt")}srt',
                     })
 
-        episode = traverse_obj(list(filter(
-            lambda x: x.get('@type') in ('TVEpisode', 'Movie'), self._yield_json_ld(webpage, display_id))), 0) or {}
+        episode = traverse_obj(
+            list(
+                filter(
+                    lambda x: x.get('@type') in (
+                        'TVEpisode', 'Movie'), self._yield_json_ld(
+                        webpage, display_id))), 0) or {}
         return {
             'id': display_id,
-            'title': (traverse_obj(initial_state, 'title', 'display_title')
-                      or episode.get('name')),
+            'title': (
+                traverse_obj(
+                    initial_state,
+                    'title',
+                    'display_title') or episode.get('name')),
             'description': initial_state.get('description') or episode.get('description'),
             'duration': initial_state.get('duration'),
-            'thumbnail': traverse_obj(episode, ('image', 'url')),
-            'timestamp': unified_timestamp(episode.get('dateCreated')),
+            'thumbnail': traverse_obj(
+                episode,
+                ('image',
+                 'url')),
+            'timestamp': unified_timestamp(
+                episode.get('dateCreated')),
             'formats': formats,
             'subtitles': subtitles,
-            'episode_number': (traverse_obj(initial_state, 'episode_no', 'episodeno', expected_type=int_or_none)
-                               or int_or_none(episode.get('episodeNumber'))),
-            'cast': traverse_obj(episode, ('actor', ..., 'name'), default=None),
-            'age_limit': self._AGE_RATINGS_MAPPER.get(initial_state.get('internal_age_rating')),
+            'episode_number': (
+                traverse_obj(
+                    initial_state,
+                    'episode_no',
+                    'episodeno',
+                    expected_type=int_or_none) or int_or_none(
+                    episode.get('episodeNumber'))),
+            'cast': traverse_obj(
+                episode,
+                ('actor',
+                 ...,
+                 'name'),
+                default=None),
+            'age_limit': self._AGE_RATINGS_MAPPER.get(
+                initial_state.get('internal_age_rating')),
         }

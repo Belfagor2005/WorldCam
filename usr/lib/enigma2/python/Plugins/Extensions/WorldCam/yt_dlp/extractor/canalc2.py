@@ -36,7 +36,8 @@ class Canalc2IE(InfoExtractor):
         for _, video_url in re.findall(r'file\s*=\s*(["\'])(.+?)\1', webpage):
             if video_url.startswith('rtmp://'):
                 rtmp = re.search(
-                    r'^(?P<url>rtmp://[^/]+/(?P<app>.+/))(?P<play_path>mp4:.+)$', video_url)
+                    r'^(?P<url>rtmp://[^/]+/(?P<app>.+/))(?P<play_path>mp4:.+)$',
+                    video_url)
                 formats.append({
                     'url': rtmp.group('url'),
                     'format_id': 'rtmp',
