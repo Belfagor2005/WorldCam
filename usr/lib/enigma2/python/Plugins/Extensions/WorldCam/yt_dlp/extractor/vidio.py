@@ -22,10 +22,7 @@ class VidioBaseIE(InfoExtractor):
     def _perform_login(self, username, password):
         def is_logged_in():
             res = self._download_json(
-                'https://www.vidio.com/interactions.json',
-                None,
-                'Checking if logged in',
-                fatal=False) or {}
+                'https://www.vidio.com/interactions.json', None, 'Checking if logged in', fatal=False) or {}
             return bool(res.get('current_user'))
 
         if is_logged_in():
@@ -40,32 +37,22 @@ class VidioBaseIE(InfoExtractor):
             'user[password]': password,
         })
         login_post, login_post_urlh = self._download_webpage_handle(
-            self._LOGIN_URL, None, 'Logging in', data=urlencode_postdata(login_form), expected_status=[
-                302, 401])
+            self._LOGIN_URL, None, 'Logging in', data=urlencode_postdata(login_form), expected_status=[302, 401])
 
         if login_post_urlh.status == 401:
-            if get_element_by_class(
-                'onboarding-content-register-popup__title',
-                    login_post):
+            if get_element_by_class('onboarding-content-register-popup__title', login_post):
                 raise ExtractorError(
-                    'Unable to log in: The provided email has not registered yet.',
-                    expected=True)
+                    'Unable to log in: The provided email has not registered yet.', expected=True)
 
-            reason = get_element_by_class(
-                'onboarding-form__general-error',
-                login_post) or get_element_by_class(
-                'onboarding-modal__title',
-                login_post)
+            reason = get_element_by_class('onboarding-form__general-error', login_post) or get_element_by_class('onboarding-modal__title', login_post)
             if 'Akun terhubung ke' in reason:
                 raise ExtractorError(
                     'Unable to log in: Your account is linked to a social media account. '
                     'Use --cookies to provide account credentials instead', expected=True)
             elif reason:
-                subreason = get_element_by_class(
-                    'onboarding-modal__description-text', login_post) or ''
+                subreason = get_element_by_class('onboarding-modal__description-text', login_post) or ''
                 raise ExtractorError(
-                    f'Unable to log in: {reason}. {clean_html(subreason)}',
-                    expected=True)
+                    f'Unable to log in: {reason}. {clean_html(subreason)}', expected=True)
             raise ExtractorError('Unable to log in')
 
     def _initialize_pre_login(self):
@@ -113,8 +100,7 @@ class VidioIE(VidioBaseIE):
         'url': 'https://www.vidio.com/watch/1550718-stand-by-me-doraemon',
         'only_matching': True,
     }, {
-        # embed url from
-        # https://enamplus.liputan6.com/read/5033648/video-fakta-temuan-suspek-cacar-monyet-di-jawa-tengah
+        # embed url from https://enamplus.liputan6.com/read/5033648/video-fakta-temuan-suspek-cacar-monyet-di-jawa-tengah
         'url': 'https://www.vidio.com/embed/7115874-fakta-temuan-suspek-cacar-monyet-di-jawa-tengah',
         'info_dict': {
             'id': '7115874',
@@ -142,10 +128,7 @@ class VidioIE(VidioBaseIE):
     def _real_extract(self, url):
         match = self._match_valid_url(url).groupdict()
         video_id, display_id = match.get('id'), match.get('display_id')
-        data = self._call_api(
-            'https://api.vidio.com/videos/' +
-            video_id,
-            display_id)
+        data = self._call_api('https://api.vidio.com/videos/' + video_id, display_id)
         video = data['videos'][0]
         title = video['title'].strip()
         is_premium = video.get('is_premium')
@@ -155,8 +138,7 @@ class VidioIE(VidioBaseIE):
                 f'https://www.vidio.com/interactions_stream.json?video_id={video_id}&type=videos',
                 display_id, note='Downloading premier API JSON')
             if not (sources.get('source') or sources.get('source_dash')):
-                self.raise_login_required(
-                    'This video is only available for registered users with the appropriate subscription')
+                self.raise_login_required('This video is only available for registered users with the appropriate subscription')
 
             formats, subs = [], {}
             if sources.get('source'):
@@ -164,8 +146,7 @@ class VidioIE(VidioBaseIE):
                     sources['source'], display_id, 'mp4', 'm3u8_native')
                 formats.extend(hls_formats)
                 subs.update(hls_subs)
-            if sources.get(
-                    'source_dash'):  # TODO: Find video example with source_dash
+            if sources.get('source_dash'):  # TODO: Find video example with source_dash
                 dash_formats, dash_subs = self._extract_mpd_formats_and_subtitles(
                     sources['source_dash'], display_id, 'dash')
                 formats.extend(dash_formats)
@@ -175,36 +156,28 @@ class VidioIE(VidioBaseIE):
             formats, subs = self._extract_m3u8_formats_and_subtitles(
                 hls_url, display_id, 'mp4', 'm3u8_native')
 
-        def get_first(x): return try_get(
-            data, lambda y: y[x + 's'][0], dict) or {}
+        get_first = lambda x: try_get(data, lambda y: y[x + 's'][0], dict) or {}
         channel = get_first('channel')
         user = get_first('user')
         username = user.get('username')
-        def get_count(x): return int_or_none(video.get('total_' + x))
+        get_count = lambda x: int_or_none(video.get('total_' + x))
 
         return {
             'id': video_id,
             'display_id': display_id,
             'title': title,
-            'description': strip_or_none(
-                video.get('description')),
+            'description': strip_or_none(video.get('description')),
             'thumbnail': video.get('image_url_medium'),
-            'duration': int_or_none(
-                video.get('duration')),
+            'duration': int_or_none(video.get('duration')),
             'like_count': get_count('likes'),
             'formats': formats,
             'subtitles': subs,
             'uploader': user.get('name'),
-            'timestamp': parse_iso8601(
-                video.get('created_at')),
+            'timestamp': parse_iso8601(video.get('created_at')),
             'uploader_id': username,
-            'uploader_url': format_field(
-                username,
-                None,
-                'https://www.vidio.com/@%s'),
+            'uploader_url': format_field(username, None, 'https://www.vidio.com/@%s'),
             'channel': channel.get('name'),
-            'channel_id': str_or_none(
-                channel.get('id')),
+            'channel_id': str_or_none(channel.get('id')),
             'view_count': get_count('view_count'),
             'dislike_count': get_count('dislikes'),
             'comment_count': get_count('comments'),
@@ -226,8 +199,7 @@ class VidioPremierIE(VidioBaseIE):
     def _playlist_entries(self, playlist_url, display_id):
         index = 1
         while playlist_url:
-            playlist_json = self._call_api(
-                playlist_url, display_id, f'Downloading API JSON page {index}')
+            playlist_json = self._call_api(playlist_url, display_id, f'Downloading API JSON page {index}')
             for video_json in playlist_json.get('data', []):
                 link = video_json['links']['watchpage']
                 yield self.url_result(link, 'Vidio', video_json['id'])
@@ -245,8 +217,7 @@ class VidioPremierIE(VidioBaseIE):
                 self._playlist_entries(playlist_url, playlist_id),
                 playlist_id=playlist_id, playlist_title=idata.get('title'))
 
-        playlist_data = self._call_api(
-            f'https://api.vidio.com/content_profiles/{playlist_id}/playlists', display_id)
+        playlist_data = self._call_api(f'https://api.vidio.com/content_profiles/{playlist_id}/playlists', display_id)
 
         return self.playlist_from_matches(
             playlist_data.get('data', []), playlist_id=playlist_id, ie=self.ie_key(),
@@ -281,8 +252,7 @@ class VidioLiveIE(VidioBaseIE):
     def _real_extract(self, url):
         video_id, display_id = self._match_valid_url(url).groups()
         stream_data = self._call_api(
-            f'https://www.vidio.com/api/livestreamings/{video_id}/detail',
-            display_id)
+            f'https://www.vidio.com/api/livestreamings/{video_id}/detail', display_id)
         stream_meta = stream_data['livestreamings'][0]
         user = stream_data.get('users', [{}])[0]
 
@@ -298,23 +268,14 @@ class VidioLiveIE(VidioBaseIE):
                 f'https://www.vidio.com/interactions_stream.json?video_id={video_id}&type=livestreamings',
                 display_id, note='Downloading premier API JSON')
             if not (sources.get('source') or sources.get('source_dash')):
-                self.raise_login_required(
-                    'This video is only available for registered users with the appropriate subscription')
+                self.raise_login_required('This video is only available for registered users with the appropriate subscription')
 
             if str_or_none(sources.get('source')):
                 token_json = self._download_json(
                     f'https://www.vidio.com/live/{video_id}/tokens',
                     display_id, note='Downloading HLS token JSON', data=b'')
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        sources['source'] +
-                        '?' +
-                        token_json.get(
-                            'token',
-                            ''),
-                        display_id,
-                        'mp4',
-                        'm3u8_native'))
+                formats.extend(self._extract_m3u8_formats(
+                    sources['source'] + '?' + token_json.get('token', ''), display_id, 'mp4', 'm3u8_native'))
             if str_or_none(sources.get('source_dash')):
                 pass
         else:
@@ -322,45 +283,27 @@ class VidioLiveIE(VidioBaseIE):
                 token_json = self._download_json(
                     f'https://www.vidio.com/live/{video_id}/tokens',
                     display_id, note='Downloading HLS token JSON', data=b'')
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        stream_meta['stream_token_url'] +
-                        '?' +
-                        token_json.get(
-                            'token',
-                            ''),
-                        display_id,
-                        'mp4',
-                        'm3u8_native'))
+                formats.extend(self._extract_m3u8_formats(
+                    stream_meta['stream_token_url'] + '?' + token_json.get('token', ''),
+                    display_id, 'mp4', 'm3u8_native'))
             if stream_meta.get('stream_dash_url'):
                 pass
             if stream_meta.get('stream_url'):
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        stream_meta['stream_url'],
-                        display_id,
-                        'mp4',
-                        'm3u8_native'))
+                formats.extend(self._extract_m3u8_formats(
+                    stream_meta['stream_url'], display_id, 'mp4', 'm3u8_native'))
 
         return {
             'id': video_id,
             'display_id': display_id,
             'title': title,
             'is_live': True,
-            'description': strip_or_none(
-                stream_meta.get('description')),
+            'description': strip_or_none(stream_meta.get('description')),
             'thumbnail': stream_meta.get('image'),
-            'like_count': int_or_none(
-                stream_meta.get('like')),
-            'dislike_count': int_or_none(
-                stream_meta.get('dislike')),
+            'like_count': int_or_none(stream_meta.get('like')),
+            'dislike_count': int_or_none(stream_meta.get('dislike')),
             'formats': formats,
             'uploader': user.get('name'),
-            'timestamp': parse_iso8601(
-                stream_meta.get('start_time')),
+            'timestamp': parse_iso8601(stream_meta.get('start_time')),
             'uploader_id': username,
-            'uploader_url': format_field(
-                username,
-                None,
-                'https://www.vidio.com/@%s'),
+            'uploader_url': format_field(username, None, 'https://www.vidio.com/@%s'),
         }

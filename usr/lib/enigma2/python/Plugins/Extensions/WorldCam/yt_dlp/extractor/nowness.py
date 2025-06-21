@@ -19,36 +19,29 @@ class NownessBaseIE(InfoExtractor):
                             f'http://www.nowness.com/iframe?id={video_id}', video_id,
                             note='Downloading player JavaScript',
                             errnote='Unable to download player JavaScript')
-                        bc_url = BrightcoveLegacyIE._extract_brightcove_url(
-                            player_code)
+                        bc_url = BrightcoveLegacyIE._extract_brightcove_url(player_code)
                         if bc_url:
-                            return self.url_result(
-                                bc_url, BrightcoveLegacyIE.ie_key())
-                        bc_url = BrightcoveNewIE._extract_url(
-                            self, player_code)
+                            return self.url_result(bc_url, BrightcoveLegacyIE.ie_key())
+                        bc_url = BrightcoveNewIE._extract_url(self, player_code)
                         if bc_url:
-                            return self.url_result(
-                                bc_url, BrightcoveNewIE.ie_key())
-                        raise ExtractorError(
-                            'Could not find player definition')
+                            return self.url_result(bc_url, BrightcoveNewIE.ie_key())
+                        raise ExtractorError('Could not find player definition')
                     elif source == 'vimeo':
-                        return self.url_result(
-                            f'http://vimeo.com/{video_id}', 'Vimeo')
+                        return self.url_result(f'http://vimeo.com/{video_id}', 'Vimeo')
                     elif source == 'youtube':
                         return self.url_result(video_id, 'Youtube')
                     elif source == 'cinematique':
                         # yt-dlp currently doesn't support cinematique
-                        # return
-                        # self.url_result('http://cinematique.com/embed/%s' %
-                        # video_id, 'Cinematique')
+                        # return self.url_result('http://cinematique.com/embed/%s' % video_id, 'Cinematique')
                         pass
 
     def _api_request(self, url, request_path):
         display_id = self._match_id(url)
         request = Request(
-            'http://api.nowness.com/api/' + request_path %
-            display_id, headers={
-                'X-Nowness-Language': 'zh-cn' if 'cn.nowness.com' in url else 'en-us', })
+            'http://api.nowness.com/api/' + request_path % display_id,
+            headers={
+                'X-Nowness-Language': 'zh-cn' if 'cn.nowness.com' in url else 'en-us',
+            })
         return display_id, self._download_json(request, display_id)
 
 
@@ -118,8 +111,7 @@ class NownessPlaylistIE(NownessBaseIE):
 
     def _real_extract(self, url):
         playlist_id, playlist = self._api_request(url, 'post?PlaylistId=%s')
-        entries = [self._extract_url_result(item)
-                   for item in playlist['items']]
+        entries = [self._extract_url_result(item) for item in playlist['items']]
         return self.playlist_result(entries, playlist_id)
 
 
@@ -143,8 +135,7 @@ class NownessSeriesIE(NownessBaseIE):
         series_description = None
         translations = series.get('translations', [])
         if translations:
-            series_title = translations[0].get(
-                'title') or translations[0]['seoTitle']
+            series_title = translations[0].get('title') or translations[0]['seoTitle']
             series_description = translations[0].get('seoDescription')
         return self.playlist_result(
             entries, str(series['id']), series_title, series_description)

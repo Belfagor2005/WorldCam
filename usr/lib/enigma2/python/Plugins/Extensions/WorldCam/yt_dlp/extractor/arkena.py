@@ -18,35 +18,37 @@ class ArkenaIE(InfoExtractor):
                             )
                         '''
     # See https://support.arkena.com/display/PLAY/Ways+to+embed+your+video
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//play\.arkena\.com/embed/avp/.+?)\1']
-    _TESTS = [{'url': 'https://video.qbrick.com/play2/embed/player?accountId=1034090&mediaId=d8ab4607-00090107-aab86310',
-               'md5': '97f117754e5f3c020f5f26da4a44ebaf',
-               'info_dict': {'id': 'd8ab4607-00090107-aab86310',
-                             'ext': 'mp4',
-                             'title': 'EM_HT20_117_roslund_v2.mp4',
-                             'timestamp': 1608285912,
-                             'upload_date': '20201218',
-                             'duration': 1429.162667,
-                             'subtitles': {'sv': 'count:3',
-                                           },
-                             },
-               },
-              {'url': 'https://play.arkena.com/embed/avp/v2/player/media/b41dda37-d8e7-4d3f-b1b5-9a9db578bdfe/1/129411',
-               'only_matching': True,
-               },
-              {'url': 'https://play.arkena.com/config/avp/v2/player/media/b41dda37-d8e7-4d3f-b1b5-9a9db578bdfe/1/129411/?callbackMethod=jQuery1111023664739129262213_1469227693893',
-               'only_matching': True,
-               },
-              {'url': 'http://play.arkena.com/config/avp/v1/player/media/327336/darkmatter/131064/?callbackMethod=jQuery1111002221189684892677_1469227595972',
-               'only_matching': True,
-               },
-              {'url': 'http://play.arkena.com/embed/avp/v1/player/media/327336/darkmatter/131064/',
-               'only_matching': True,
-               },
-              {'url': 'http://video.arkena.com/play2/embed/player?accountId=472718&mediaId=35763b3b-00090078-bf604299&pageStyling=styled',
-               'only_matching': True,
-               }]
+    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//play\.arkena\.com/embed/avp/.+?)\1']
+    _TESTS = [{
+        'url': 'https://video.qbrick.com/play2/embed/player?accountId=1034090&mediaId=d8ab4607-00090107-aab86310',
+        'md5': '97f117754e5f3c020f5f26da4a44ebaf',
+        'info_dict': {
+            'id': 'd8ab4607-00090107-aab86310',
+            'ext': 'mp4',
+            'title': 'EM_HT20_117_roslund_v2.mp4',
+            'timestamp': 1608285912,
+            'upload_date': '20201218',
+            'duration': 1429.162667,
+            'subtitles': {
+                'sv': 'count:3',
+            },
+        },
+    }, {
+        'url': 'https://play.arkena.com/embed/avp/v2/player/media/b41dda37-d8e7-4d3f-b1b5-9a9db578bdfe/1/129411',
+        'only_matching': True,
+    }, {
+        'url': 'https://play.arkena.com/config/avp/v2/player/media/b41dda37-d8e7-4d3f-b1b5-9a9db578bdfe/1/129411/?callbackMethod=jQuery1111023664739129262213_1469227693893',
+        'only_matching': True,
+    }, {
+        'url': 'http://play.arkena.com/config/avp/v1/player/media/327336/darkmatter/131064/?callbackMethod=jQuery1111002221189684892677_1469227595972',
+        'only_matching': True,
+    }, {
+        'url': 'http://play.arkena.com/embed/avp/v1/player/media/327336/darkmatter/131064/',
+        'only_matching': True,
+    }, {
+        'url': 'http://video.arkena.com/play2/embed/player?accountId=472718&mediaId=35763b3b-00090078-bf604299&pageStyling=styled',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         mobj = self._match_valid_url(url)
@@ -90,16 +92,16 @@ class ArkenaIE(InfoExtractor):
                             'width': int_or_none(rendition.get('width')),
                         })
                     elif rendition_type == 'subtitle':
-                        subtitles.setdefault(rendition.get(
-                            'language') or 'en', []).append({'url': href, })
+                        subtitles.setdefault(rendition.get('language') or 'en', []).append({
+                            'url': href,
+                        })
                     elif rendition_type == 'video':
                         f = {
                             'filesize': int_or_none(rendition.get('size')),
                             'format_id': rendition.get('id'),
                             'url': href,
                         }
-                        video = try_get(
-                            rendition, lambda x: x['videos'][i], dict)
+                        video = try_get(rendition, lambda x: x['videos'][i], dict)
                         if video:
                             if not duration:
                                 duration = float_or_none(video.get('duration'))
@@ -109,8 +111,7 @@ class ArkenaIE(InfoExtractor):
                                 'vcodec': video.get('codec'),
                                 'width': int_or_none(video.get('width')),
                             })
-                            audio = try_get(
-                                video, lambda x: x['audios'][0], dict)
+                            audio = try_get(video, lambda x: x['audios'][0], dict)
                             if audio:
                                 f.update({
                                     'acodec': audio.get('codec'),

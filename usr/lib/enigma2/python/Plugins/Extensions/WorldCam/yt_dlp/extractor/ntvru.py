@@ -105,13 +105,7 @@ class NTVRuIE(InfoExtractor):
             f'http://www.ntv.ru/vi{video_id}/',
             video_id, 'Downloading video XML')
 
-        title = strip_or_none(
-            unescapeHTML(
-                xpath_text(
-                    player,
-                    './data/title',
-                    'title',
-                    fatal=True)))
+        title = strip_or_none(unescapeHTML(xpath_text(player, './data/title', 'title', fatal=True)))
 
         video = player.find('./data/video')
 
@@ -124,8 +118,10 @@ class NTVRuIE(InfoExtractor):
                 file_ = self._proto_relative_url(file_)
             elif not file_.startswith('http'):
                 file_ = 'http://media.ntv.ru/vod/' + file_
-            formats.append({'url': file_, 'filesize': int_or_none(
-                xpath_text(video, f'./{format_id}size')), })
+            formats.append({
+                'url': file_,
+                'filesize': int_or_none(xpath_text(video, f'./{format_id}size')),
+            })
         hls_manifest = xpath_text(video, './playback/hls')
         if hls_manifest:
             formats.extend(self._extract_m3u8_formats(
@@ -136,25 +132,11 @@ class NTVRuIE(InfoExtractor):
                 dash_manifest, video_id, mpd_id='dash', fatal=False))
 
         return {
-            'id': xpath_text(
-                video,
-                './id'),
+            'id': xpath_text(video, './id'),
             'title': title,
-            'description': strip_or_none(
-                unescapeHTML(
-                    xpath_text(
-                        player,
-                        './data/description'))),
-            'thumbnail': xpath_text(
-                video,
-                './splash'),
-            'duration': int_or_none(
-                xpath_text(
-                    video,
-                    './totaltime')),
-            'view_count': int_or_none(
-                xpath_text(
-                    video,
-                    './views')),
+            'description': strip_or_none(unescapeHTML(xpath_text(player, './data/description'))),
+            'thumbnail': xpath_text(video, './splash'),
+            'duration': int_or_none(xpath_text(video, './totaltime')),
+            'view_count': int_or_none(xpath_text(video, './views')),
             'formats': formats,
         }

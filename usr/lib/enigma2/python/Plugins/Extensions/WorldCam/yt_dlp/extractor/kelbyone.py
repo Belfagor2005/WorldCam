@@ -39,8 +39,7 @@ class KelbyOneIE(InfoExtractor):
                 if not source.get('file'):
                     continue
                 if source.get('type') == 'application/vnd.apple.mpegurl':
-                    fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                        source['file'], video_id)
+                    fmts, subs = self._extract_m3u8_formats_and_subtitles(source['file'], video_id)
                     formats.extend(fmts)
                     subtitles = self._merge_subtitles(subs, subtitles)
                 elif source.get('type') == 'audio/mp4':
@@ -76,16 +75,7 @@ class KelbyOneIE(InfoExtractor):
     def _real_extract(self, url):
         item_id = self._match_id(url)
         webpage = self._download_webpage(url, item_id)
-        playlist_url = self._html_search_regex(
-            r'playlist"\:"(https.*content\.jwplatform\.com.*json)"',
-            webpage,
-            'playlist url').replace(
-            '\\',
-            '')
+        playlist_url = self._html_search_regex(r'playlist"\:"(https.*content\.jwplatform\.com.*json)"', webpage, 'playlist url').replace('\\', '')
         course_data = self._download_json(playlist_url, item_id)
-        return self.playlist_result(
-            self._entries(
-                course_data['playlist']),
-            item_id,
-            course_data.get('title'),
-            course_data.get('description'))
+        return self.playlist_result(self._entries(course_data['playlist']), item_id,
+                                    course_data.get('title'), course_data.get('description'))

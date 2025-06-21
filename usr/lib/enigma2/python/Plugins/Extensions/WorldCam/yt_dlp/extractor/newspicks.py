@@ -22,8 +22,7 @@ class NewsPicksIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_id, channel_id = self._match_valid_url(
-            url).group('id', 'channel_id')
+        video_id, channel_id = self._match_valid_url(url).group('id', 'channel_id')
         webpage = self._download_webpage(url, video_id)
         entries = self._parse_html5_media_entries(
             url, webpage.replace('movie-for-pc', 'movie'), video_id, 'hls')
@@ -35,13 +34,9 @@ class NewsPicksIE(InfoExtractor):
         description = self._html_search_meta(
             ('og:description', 'twitter:title'), webpage, fatal=False)
         channel = self._html_search_regex(
-            r'value="11".+?<div\s+class="title">(.+?)</div',
-            webpage,
-            'channel name',
-            fatal=False)
+            r'value="11".+?<div\s+class="title">(.+?)</div', webpage, 'channel name', fatal=False)
         if not title or not channel:
-            title, channel = re.split(
-                r'\s*|\s*', self._html_extract_title(webpage))
+            title, channel = re.split(r'\s*|\s*', self._html_extract_title(webpage))
 
         release_date = self._search_regex(
             r'<span\s+class="on-air-date">\s*(\d+)年(\d+)月(\d+)日\s*</span>',

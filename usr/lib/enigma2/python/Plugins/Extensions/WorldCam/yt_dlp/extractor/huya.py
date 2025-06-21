@@ -59,21 +59,11 @@ class HuyaLiveIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id=video_id)
-        stream_data = self._search_json(
-            r'stream:\s',
-            webpage,
-            'stream',
-            video_id=video_id,
-            default=None)
-        room_info = try_get(
-            stream_data,
-            lambda x: x['data'][0]['gameLiveInfo'])
+        stream_data = self._search_json(r'stream:\s', webpage, 'stream', video_id=video_id, default=None)
+        room_info = try_get(stream_data, lambda x: x['data'][0]['gameLiveInfo'])
         if not room_info:
-            raise ExtractorError(
-                'Can not extract the room info',
-                expected=True)
-        title = room_info.get('roomName') or room_info.get(
-            'introduction') or self._html_extract_title(webpage)
+            raise ExtractorError('Can not extract the room info', expected=True)
+        title = room_info.get('roomName') or room_info.get('introduction') or self._html_extract_title(webpage)
         screen_type = room_info.get('screenType')
         live_source_type = room_info.get('liveSourceType')
         stream_info_list = stream_data['data'][0]['gameStreamInfoList']
@@ -86,10 +76,7 @@ class HuyaLiveIE(InfoExtractor):
                 continue
             stream_name = stream_info.get('sStreamName')
             re_secret = not screen_type and live_source_type in (0, 8, 13)
-            params = dict(
-                urllib.parse.parse_qsl(
-                    unescapeHTML(
-                        stream_info['sFlvAntiCode'])))
+            params = dict(urllib.parse.parse_qsl(unescapeHTML(stream_info['sFlvAntiCode'])))
             fm, ss = '', ''
             if re_secret:
                 fm, ss = self.encrypt(params, stream_info, stream_name)
@@ -147,8 +134,7 @@ class HuyaLiveIE(InfoExtractor):
             't': '100',
         })
         fm = base64.b64decode(params['fm']).decode().split('_', 1)[0]
-        ss = hashlib.md5(
-            '|'.join([params['seqid'], params['ctype'], params['t']]))
+        ss = hashlib.md5('|'.join([params['seqid'], params['ctype'], params['t']]))
         return fm, ss
 
 
@@ -197,12 +183,7 @@ class HuyaVideoIE(InfoExtractor):
             query={'videoId': video_id})['data']['moment']['videoInfo']
 
         formats = []
-        for definition in traverse_obj(
-            video_data,
-            ('definitions',
-             lambda _,
-             v: url_or_none(
-                 v['url']))):
+        for definition in traverse_obj(video_data, ('definitions', lambda _, v: url_or_none(v['url']))):
             formats.append({
                 'url': definition['url'],
                 **traverse_obj(definition, {

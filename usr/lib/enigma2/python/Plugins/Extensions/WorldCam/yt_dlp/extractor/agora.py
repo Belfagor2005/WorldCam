@@ -16,31 +16,31 @@ class WyborczaVideoIE(InfoExtractor):
     # this id is not an article id, it has to be extracted from the article
     _VALID_URL = r'(?:wyborcza:video:|https?://wyborcza\.pl/(?:api-)?video/)(?P<id>\d+)'
     IE_NAME = 'wyborcza:video'
-    _TESTS = [{'url': 'wyborcza:video:26207634',
-               'info_dict': {'id': '26207634',
-                             'ext': 'mp4',
-                             'title': '- Polska w 2020 r. jest innym państwem niż w 2015 r. Nie zmieniła się konstytucja, ale jest to już inny ustrój - mówi Adam Bodnar',
-                             'description': ' ',
-                             'uploader': 'Dorota Roman',
-                             'duration': 2474,
-                             'thumbnail': r're:https://.+\.jpg',
-                             },
-               },
-              {'url': 'https://wyborcza.pl/video/26207634',
-               'only_matching': True,
-               },
-              {'url': 'https://wyborcza.pl/api-video/26207634',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'wyborcza:video:26207634',
+        'info_dict': {
+            'id': '26207634',
+            'ext': 'mp4',
+            'title': '- Polska w 2020 r. jest innym państwem niż w 2015 r. Nie zmieniła się konstytucja, ale jest to już inny ustrój - mówi Adam Bodnar',
+            'description': ' ',
+            'uploader': 'Dorota Roman',
+            'duration': 2474,
+            'thumbnail': r're:https://.+\.jpg',
+        },
+    }, {
+        'url': 'https://wyborcza.pl/video/26207634',
+        'only_matching': True,
+    }, {
+        'url': 'https://wyborcza.pl/api-video/26207634',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        meta = self._download_json(
-            f'https://wyborcza.pl/api-video/{video_id}', video_id)
+        meta = self._download_json(f'https://wyborcza.pl/api-video/{video_id}', video_id)
 
         formats = []
-        base_url = meta['redirector'].replace(
-            'http://', 'https://') + meta['basePath']
+        base_url = meta['redirector'].replace('http://', 'https://') + meta['basePath']
         for quality in ('standard', 'high'):
             if not meta['files'].get(quality):
                 continue
@@ -53,11 +53,7 @@ class WyborczaVideoIE(InfoExtractor):
                 'format_id': quality,
             })
         if meta['files'].get('dash'):
-            formats.extend(
-                self._extract_mpd_formats(
-                    base_url +
-                    meta['files']['dash'],
-                    video_id))
+            formats.extend(self._extract_mpd_formats(base_url + meta['files']['dash'], video_id))
 
         return {
             'id': video_id,
@@ -124,33 +120,22 @@ class WyborczaPodcastIE(InfoExtractor):
 
         if not podcast_id:  # playlist
             podcast_id = '395' if 'wysokieobcasy.pl/' in url else '334'
-            return self.url_result(
-                TokFMAuditionIE._create_url(podcast_id),
-                TokFMAuditionIE,
-                podcast_id)
+            return self.url_result(TokFMAuditionIE._create_url(podcast_id), TokFMAuditionIE, podcast_id)
 
-        meta = self._download_json(
-            'https://wyborcza.pl/api/podcast',
-            podcast_id,
-            query={
-                'guid': podcast_id,
-                'type': 'wo' if 'wysokieobcasy.pl/' in url else None})
+        meta = self._download_json('https://wyborcza.pl/api/podcast', podcast_id,
+                                   query={'guid': podcast_id, 'type': 'wo' if 'wysokieobcasy.pl/' in url else None})
 
-        day, month, year = self._search_regex(
-            r'^(\d\d?) (\w+) (\d{4})$', meta.get('publishedDate'), 'upload date', group=(
-                1, 2, 3), default=(
-                None, None, None))
+        day, month, year = self._search_regex(r'^(\d\d?) (\w+) (\d{4})$', meta.get('publishedDate'),
+                                              'upload date', group=(1, 2, 3), default=(None, None, None))
         return {
             'id': podcast_id,
             'url': meta['url'],
             'title': meta.get('title'),
             'description': meta.get('description'),
             'thumbnail': meta.get('imageUrl'),
-            'duration': parse_duration(
-                meta.get('duration')),
+            'duration': parse_duration(meta.get('duration')),
             'uploader': meta.get('author'),
-            'upload_date': try_call(
-                lambda: f'{year}{month_by_name(month, lang="pl"):0>2}{day:0>2}'),
+            'upload_date': try_call(lambda: f'{year}{month_by_name(month, lang="pl"):0>2}{day:0>2}'),
         }
 
 
@@ -174,9 +159,7 @@ class TokFMPodcastIE(InfoExtractor):
         # in case it breaks see this but it returns a lot of useless data
         # https://api.podcast.radioagora.pl/api4/getPodcasts?podcast_id=100091&with_guests=true&with_leaders_for_mobile=true
         metadata = self._download_json(
-            f'https://audycje.tokfm.pl/getp/3{media_id}',
-            media_id,
-            'Downloading podcast metadata')
+            f'https://audycje.tokfm.pl/getp/3{media_id}', media_id, 'Downloading podcast metadata')
         if not metadata:
             raise ExtractorError('No such podcast', expected=True)
         metadata = metadata[0]
@@ -228,9 +211,7 @@ class TokFMAuditionIE(InfoExtractor):
 
         data = self._download_json(
             f'https://api.podcast.radioagora.pl/api4/getSeries?series_id={audition_id}',
-            audition_id,
-            'Downloading audition metadata',
-            headers=self._HEADERS)
+            audition_id, 'Downloading audition metadata', headers=self._HEADERS)
         if not data:
             raise ExtractorError('No such audition', expected=True)
         data = data[0]
@@ -252,8 +233,7 @@ class TokFMAuditionIE(InfoExtractor):
                 f'https://api.podcast.radioagora.pl/api4/getPodcasts?series_id={audition_id}&limit=30&offset={page}&with_guests=true&with_leaders_for_mobile=true',
                 audition_id, f'Downloading podcast list page {page + 1}', headers=self._HEADERS)
             if not podcast_page:
-                retry.error = ExtractorError(
-                    'Agora returned empty page', expected=True)
+                retry.error = ExtractorError('Agora returned empty page', expected=True)
 
         for podcast in podcast_page:
             yield {

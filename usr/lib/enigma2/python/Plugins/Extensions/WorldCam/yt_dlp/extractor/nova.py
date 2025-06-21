@@ -88,27 +88,18 @@ class NovaEmbedIE(InfoExtractor):
                     })
 
         player = self._search_json(
-            r'player:',
-            webpage,
-            'player',
-            video_id,
-            fatal=False,
-            end_pattern=r';\s*</script>')
+            r'player:', webpage, 'player', video_id, fatal=False, end_pattern=r';\s*</script>')
         if player:
             for src in traverse_obj(player, ('lib', 'source', 'sources', ...)):
                 process_format_list(src)
-            duration = traverse_obj(
-                player, ('sourceInfo', 'duration', {int_or_none}))
+            duration = traverse_obj(player, ('sourceInfo', 'duration', {int_or_none}))
         if not formats and not has_drm:
             # older code path, in use before August 2023
             player = self._parse_json(
                 self._search_regex(
                     (r'(?:(?:replacePlaceholders|processAdTagModifier).*?:\s*)?(?:replacePlaceholders|processAdTagModifier)\s*\(\s*(?P<json>{.*?})\s*\)(?:\s*\))?\s*,',
                      r'Player\.init\s*\([^,]+,(?P<cndn>\s*\w+\s*\?)?\s*(?P<json>{(?(cndn).+?|.+)})\s*(?(cndn):|,\s*{.+?}\s*\)\s*;)'),
-                    webpage,
-                    'player',
-                    group='json'),
-                video_id)
+                    webpage, 'player', group='json'), video_id)
             if player:
                 for format_id, format_list in player['tracks'].items():
                     process_format_list(format_list, format_id)
@@ -208,23 +199,13 @@ class NovaIE(InfoExtractor):
 
         webpage = self._download_webpage(url, display_id)
 
-        description = clean_html(
-            self._og_search_description(
-                webpage, default=None))
+        description = clean_html(self._og_search_description(webpage, default=None))
         if site == 'novaplus':
-            upload_date = unified_strdate(
-                self._search_regex(
-                    r'(\d{1,2}-\d{1,2}-\d{4})$',
-                    display_id,
-                    'upload date',
-                    default=None))
+            upload_date = unified_strdate(self._search_regex(
+                r'(\d{1,2}-\d{1,2}-\d{4})$', display_id, 'upload date', default=None))
         elif site == 'fanda':
-            upload_date = unified_strdate(
-                self._search_regex(
-                    r'<span class="date_time">(\d{1,2}\.\d{1,2}\.\d{4})',
-                    webpage,
-                    'upload date',
-                    default=None))
+            upload_date = unified_strdate(self._search_regex(
+                r'<span class="date_time">(\d{1,2}\.\d{1,2}\.\d{4})', webpage, 'upload date', default=None))
         else:
             upload_date = None
 
@@ -257,13 +238,9 @@ class NovaIE(InfoExtractor):
         if not config_url:
             player = self._parse_json(
                 self._search_regex(
-                    r'(?s)Player\s*\(.+?\s*,\s*({.+?\bmedia\b["\']?\s*:\s*["\']?\d+.+?})\s*\)',
-                    webpage,
-                    'player',
-                    default='{}'),
-                video_id,
-                transform_source=js_to_json,
-                fatal=False)
+                    r'(?s)Player\s*\(.+?\s*,\s*({.+?\bmedia\b["\']?\s*:\s*["\']?\d+.+?})\s*\)', webpage,
+                    'player', default='{}'),
+                video_id, transform_source=js_to_json, fatal=False)
             if player:
                 config_url = url_or_none(player.get('configUrl'))
                 params = player.get('configParams')
@@ -302,9 +279,7 @@ class NovaIE(InfoExtractor):
         mediafile = config['mediafile']
         video_url = mediafile['src']
 
-        m = re.search(
-            r'^(?P<url>rtmpe?://[^/]+/(?P<app>[^/]+?))/&*(?P<playpath>.+)$',
-            video_url)
+        m = re.search(r'^(?P<url>rtmpe?://[^/]+/(?P<app>[^/]+?))/&*(?P<playpath>.+)$', video_url)
         if m:
             formats = [{
                 'url': m.group('url'),
@@ -318,8 +293,7 @@ class NovaIE(InfoExtractor):
                 'url': video_url,
             }]
 
-        title = mediafile.get('meta', {}).get(
-            'title') or self._og_search_title(webpage)
+        title = mediafile.get('meta', {}).get('title') or self._og_search_title(webpage)
         thumbnail = config.get('poster')
 
         return {

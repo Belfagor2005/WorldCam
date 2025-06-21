@@ -25,8 +25,7 @@ class ATVAtIE(InfoExtractor):
         'only_matching': True,
     }]
 
-    # extracted from bootstrap.js function (search for e.encryption_key and
-    # use your browser's debugger)
+    # extracted from bootstrap.js function (search for e.encryption_key and use your browser's debugger)
     _ACCESS_ID = 'x_atv'
     _ENCRYPTION_KEY = 'Hohnaekeishoogh2omaeghooquooshia'
 
@@ -63,19 +62,14 @@ class ATVAtIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
         json_data = self._parse_json(
-            self._search_regex(
-                r'<script id="state" type="text/plain">(.*)</script>',
-                webpage,
-                'json_data'),
+            self._search_regex(r'<script id="state" type="text/plain">(.*)</script>', webpage, 'json_data'),
             video_id=video_id)
 
         video_title = json_data['views']['default']['page']['title']
         content_resource = json_data['views']['default']['page']['contentResource']
         content_id = content_resource[0]['id']
-        content_ids = [{'id': id_,
-                        'subclip_start': content['start'],
-                        'subclip_end': content['end']} for id_,
-                       content in enumerate(content_resource)]
+        content_ids = [{'id': id_, 'subclip_start': content['start'], 'subclip_end': content['end']}
+                       for id_, content in enumerate(content_resource)]
 
         time_of_request = dt.datetime.now()
         not_before = time_of_request - dt.timedelta(minutes=5)
@@ -89,9 +83,7 @@ class ATVAtIE(InfoExtractor):
             'nbf': int(not_before.timestamp()),
             'exp': int(expire.timestamp()),
         }
-        jwt_token = jwt_encode_hs256(
-            payload, self._ENCRYPTION_KEY, headers={
-                'kid': self._ACCESS_ID})
+        jwt_token = jwt_encode_hs256(payload, self._ENCRYPTION_KEY, headers={'kid': self._ACCESS_ID})
         videos = self._download_json(
             'https://vas-v4.p7s1video.net/4.0/getsources',
             content_id, 'Downloading videos JSON', query={

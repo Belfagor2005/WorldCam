@@ -76,10 +76,8 @@ class AnchorFMEpisodeIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        channel_name, episode_id = self._match_valid_url(
-            url).group('channel_name', 'episode_id')
-        api_data = self._download_json(
-            f'https://anchor.fm/api/v3/episodes/{episode_id}', episode_id)
+        channel_name, episode_id = self._match_valid_url(url).group('channel_name', 'episode_id')
+        api_data = self._download_json(f'https://anchor.fm/api/v3/episodes/{episode_id}', episode_id)
 
         return {
             'id': episode_id,

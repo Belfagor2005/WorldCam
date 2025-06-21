@@ -133,8 +133,7 @@ class HTTPHandler(urllib.request.AbstractHTTPHandler):
         # To work around aforementioned issue we will replace request's original URL with
         # percent-encoded one
         # Since redirects are also affected (e.g. http://www.southpark.de/alle-episoden/s18e09)
-        # the code of this workaround has been moved here from
-        # YoutubeDL.urlopen()
+        # the code of this workaround has been moved here from YoutubeDL.urlopen()
         url = req.get_full_url()
         url_escaped = normalize_url(url)
 
@@ -151,33 +150,23 @@ class HTTPHandler(urllib.request.AbstractHTTPHandler):
         # To decompress, we simply do the reverse.
         # [1]: https://datatracker.ietf.org/doc/html/rfc9110#name-content-encoding
         decoded_response = None
-        for encoding in (
-            e.strip() for e in reversed(
-                resp.headers.get(
-                    'Content-encoding',
-                '').split(','))):
+        for encoding in (e.strip() for e in reversed(resp.headers.get('Content-encoding', '').split(','))):
             if encoding == 'gzip':
                 decoded_response = self.gz(decoded_response or resp.read())
             elif encoding == 'deflate':
-                decoded_response = self.deflate(
-                    decoded_response or resp.read())
+                decoded_response = self.deflate(decoded_response or resp.read())
             elif encoding == 'br' and brotli:
                 decoded_response = self.brotli(decoded_response or resp.read())
 
         if decoded_response is not None:
-            resp = urllib.request.addinfourl(
-                io.BytesIO(decoded_response),
-                old_resp.headers,
-                old_resp.url,
-                old_resp.code)
+            resp = urllib.request.addinfourl(io.BytesIO(decoded_response), old_resp.headers, old_resp.url, old_resp.code)
             resp.msg = old_resp.msg
         # Percent-encode redirect URL of Location HTTP header to satisfy RFC 3986 (see
         # https://github.com/ytdl-org/youtube-dl/issues/6457).
         if 300 <= resp.code < 400:
             location = resp.headers.get('Location')
             if location:
-                # As of RFC 2616 default charset is iso-8859-1 that is
-                # respected by Python 3
+                # As of RFC 2616 default charset is iso-8859-1 that is respected by Python 3
                 location = location.encode('iso-8859-1').decode()
                 location_escaped = normalize_url(location)
                 if location != location_escaped:
@@ -206,8 +195,7 @@ def make_socks_conn_class(base_class, socks_proxy):
                 _create_socket_func=functools.partial(
                     create_socks_proxy_socket, (self.host, self.port), proxy_args))
             if isinstance(self, http.client.HTTPSConnection):
-                self.sock = self._context.wrap_socket(
-                    self.sock, server_hostname=self.host)
+                self.sock = self._context.wrap_socket(self.sock, server_hostname=self.host)
 
     return SocksConnection
 
@@ -244,9 +232,7 @@ class RedirectHandler(urllib.request.HTTPRedirectHandler):
             new_data = None
             remove_headers.extend(['Content-Length', 'Content-Type'])
 
-        new_headers = {
-            k: v for k,
-            v in req.headers.items() if k.title() not in remove_headers}
+        new_headers = {k: v for k, v in req.headers.items() if k.title() not in remove_headers}
 
         return urllib.request.Request(
             newurl, headers=new_headers, origin_req_host=req.origin_req_host,
@@ -260,18 +246,13 @@ class ProxyHandler(urllib.request.BaseHandler):
         self.proxies = proxies
         # Set default handlers
         for scheme in ('http', 'https', 'ftp'):
-            setattr(
-                self,
-                f'{scheme}_open',
-                lambda r,
-                meth=self.proxy_open: meth(r))
+            setattr(self, f'{scheme}_open', lambda r, meth=self.proxy_open: meth(r))
 
     def proxy_open(self, req):
         proxy = select_proxy(req.get_full_url(), self.proxies)
         if proxy is None:
             return
-        if urllib.parse.urlparse(proxy).scheme.lower() in (
-                'socks4', 'socks4a', 'socks5', 'socks5h'):
+        if urllib.parse.urlparse(proxy).scheme.lower() in ('socks4', 'socks4a', 'socks5', 'socks5h'):
             req.add_header('Ytdl-socks-proxy', proxy)
             # yt-dlp's http/https handlers do wrapping the socket with socks
             return None
@@ -314,17 +295,14 @@ class UrllibResponseAdapter(Response):
     HTTP Response adapter class for urllib addinfourl and http.client.HTTPResponse
     """
 
-    def __init__(self, res: http.client.HTTPResponse |
-                 urllib.response.addinfourl):
+    def __init__(self, res: http.client.HTTPResponse | urllib.response.addinfourl):
         # addinfourl: In Python 3.9+, .status was introduced and .getcode() was deprecated [1]
         # HTTPResponse: .getcode() was deprecated, .status always existed [2]
         # 1. https://docs.python.org/3/library/urllib.request.html#urllib.response.addinfourl.getcode
-        # 2.
-        # https://docs.python.org/3.10/library/http.client.html#http.client.HTTPResponse.status
+        # 2. https://docs.python.org/3.10/library/http.client.html#http.client.HTTPResponse.status
         super().__init__(
-            fp=res, headers=res.headers, url=res.url, status=getattr(
-                res, 'status', None) or res.getcode(), reason=getattr(
-                res, 'reason', None))
+            fp=res, headers=res.headers, url=res.url,
+            status=getattr(res, 'status', None) or res.getcode(), reason=getattr(res, 'reason', None))
 
     def read(self, amt=None):
         try:
@@ -344,11 +322,7 @@ def handle_sslerror(e: ssl.SSLError):
 
 def handle_response_read_exceptions(e):
     if isinstance(e, http.client.IncompleteRead):
-        raise IncompleteRead(
-            partial=len(
-                e.partial),
-            cause=e,
-            expected=e.expected) from e
+        raise IncompleteRead(partial=len(e.partial), cause=e, expected=e.expected) from e
     elif isinstance(e, ssl.SSLError):
         handle_sslerror(e)
     elif isinstance(e, (OSError, EOFError, http.client.HTTPException, *CONTENT_DECODE_ERRORS)):
@@ -359,12 +333,7 @@ def handle_response_read_exceptions(e):
 @register_rh
 class UrllibRH(RequestHandler, InstanceStoreMixin):
     _SUPPORTED_URL_SCHEMES = ('http', 'https', 'data', 'ftp')
-    _SUPPORTED_PROXY_SCHEMES = (
-        'http',
-        'socks4',
-        'socks4a',
-        'socks5',
-        'socks5h')
+    _SUPPORTED_PROXY_SCHEMES = ('http', 'socks4', 'socks4a', 'socks5', 'socks5h')
     _SUPPORTED_FEATURES = (Features.NO_PROXY, Features.ALL_PROXY)
     RH_NAME = 'urllib'
 
@@ -372,8 +341,7 @@ class UrllibRH(RequestHandler, InstanceStoreMixin):
         super().__init__(**kwargs)
         self.enable_file_urls = enable_file_urls
         if self.enable_file_urls:
-            self._SUPPORTED_URL_SCHEMES = (
-                *self._SUPPORTED_URL_SCHEMES, 'file')
+            self._SUPPORTED_URL_SCHEMES = (*self._SUPPORTED_URL_SCHEMES, 'file')
 
     def _check_extensions(self, extensions):
         super()._check_extensions(extensions)
@@ -386,11 +354,8 @@ class UrllibRH(RequestHandler, InstanceStoreMixin):
         handlers = [
             ProxyHandler(proxies),
             HTTPHandler(
-                debuglevel=int(
-                    bool(
-                        self.verbose)),
-                context=self._make_sslcontext(
-                    legacy_ssl_support=legacy_ssl_support),
+                debuglevel=int(bool(self.verbose)),
+                context=self._make_sslcontext(legacy_ssl_support=legacy_ssl_support),
                 source_address=self.source_address),
             HTTPCookieProcessor(cookiejar),
             DataHandler(),
@@ -431,25 +396,18 @@ class UrllibRH(RequestHandler, InstanceStoreMixin):
             legacy_ssl_support=request.extensions.get('legacy_ssl'),
         )
         try:
-            res = opener.open(urllib_req,
-                              timeout=self._calculate_timeout(request))
+            res = opener.open(urllib_req, timeout=self._calculate_timeout(request))
         except urllib.error.HTTPError as e:
-            if isinstance(
-                e.fp,
-                (http.client.HTTPResponse,
-                 urllib.response.addinfourl)):
-                # Prevent file object from being closed when
-                # urllib.error.HTTPError is destroyed.
+            if isinstance(e.fp, (http.client.HTTPResponse, urllib.response.addinfourl)):
+                # Prevent file object from being closed when urllib.error.HTTPError is destroyed.
                 e._closer.close_called = True
-                raise HTTPError(UrllibResponseAdapter(e.fp),
-                                redirect_loop='redirect error' in str(e)) from e
+                raise HTTPError(UrllibResponseAdapter(e.fp), redirect_loop='redirect error' in str(e)) from e
             raise  # unexpected
         except urllib.error.URLError as e:
             cause = e.reason  # NOTE: cause may be a string
 
             # proxy errors
-            if 'tunnel connection failed' in str(
-                    cause).lower() or isinstance(cause, SocksProxyError):
+            if 'tunnel connection failed' in str(cause).lower() or isinstance(cause, SocksProxyError):
                 raise ProxyError(cause=e) from e
 
             handle_response_read_exceptions(cause)
@@ -458,8 +416,7 @@ class UrllibRH(RequestHandler, InstanceStoreMixin):
             # Validation errors
             # http.client.HTTPConnection raises ValueError in some validation cases
             # such as if request method contains illegal control characters [1]
-            # 1.
-            # https://github.com/python/cpython/blob/987b712b4aeeece336eed24fcc87a950a756c3e2/Lib/http/client.py#L1256
+            # 1. https://github.com/python/cpython/blob/987b712b4aeeece336eed24fcc87a950a756c3e2/Lib/http/client.py#L1256
             raise RequestError(cause=e) from e
         except Exception as e:
             handle_response_read_exceptions(e)

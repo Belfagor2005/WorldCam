@@ -27,10 +27,7 @@ class NiconicoLiveFD(FileDownloader):
 
         def communicate_ws(reconnect):
             if reconnect:
-                ws = self.ydl.urlopen(
-                    Request(
-                        ws_url, headers={
-                            'Origin': f'https://{ws_origin_host}'}))
+                ws = self.ydl.urlopen(Request(ws_url, headers={'Origin': f'https://{ws_origin_host}'}))
                 if self.ydl.params.get('verbose', False):
                     self.to_screen('[debug] Sending startWatching request')
                 ws.send(json.dumps({
@@ -69,8 +66,7 @@ class NiconicoLiveFD(FileDownloader):
                         return True
                     elif data.get('type') == 'error':
                         self.write_debug(data)
-                        message = try_get(
-                            data, lambda x: x['body']['code'], str) or recv
+                        message = try_get(data, lambda x: x['body']['code'], str) or recv
                         return DownloadError(message)
                     elif self.ydl.params.get('verbose', False):
                         if len(recv) > 100:
@@ -85,9 +81,7 @@ class NiconicoLiveFD(FileDownloader):
                     if ret is True:
                         return
                 except BaseException as e:
-                    self.to_screen(
-                        '[{}] {}: Connection error occured, reconnecting after 10 seconds: {}'.format(
-                            'niconico:live', video_id, str_or_none(e)))
+                    self.to_screen('[{}] {}: Connection error occured, reconnecting after 10 seconds: {}'.format('niconico:live', video_id, str_or_none(e)))
                     time.sleep(10)
                     continue
                 finally:

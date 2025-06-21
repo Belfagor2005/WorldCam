@@ -10,8 +10,7 @@ from ..utils.traversal import traverse_obj
 
 
 class AsobiChannelBaseIE(InfoExtractor):
-    _MICROCMS_HEADER = {
-        'X-MICROCMS-API-KEY': 'qRaKehul9AHU8KtL0dnq1OCLKnFec6yrbcz3'}
+    _MICROCMS_HEADER = {'X-MICROCMS-API-KEY': 'qRaKehul9AHU8KtL0dnq1OCLKnFec6yrbcz3'}
 
     def _extract_info(self, metadata):
         return traverse_obj(metadata, {
@@ -77,27 +76,22 @@ class AsobiChannelIE(AsobiChannelBaseIE):
         content_id = metadata['contents']['video_id']
 
         vod_data = self._download_json(
-            f'https://survapi.channel.or.jp/proxy/v1/contents/{content_id}/get_by_cuid',
-            video_id,
-            headers=self._survapi_header,
-            note='Downloading vod data')
+            f'https://survapi.channel.or.jp/proxy/v1/contents/{content_id}/get_by_cuid', video_id,
+            headers=self._survapi_header, note='Downloading vod data')
 
-        return {'formats': self._extract_m3u8_formats(
-            vod_data['ex_content']['streaming_url'], video_id), }
+        return {
+            'formats': self._extract_m3u8_formats(vod_data['ex_content']['streaming_url'], video_id),
+        }
 
     def _process_live(self, video_id, metadata):
         content_id = metadata['contents']['video_id']
         event_data = self._download_json(
-            f'https://survapi.channel.or.jp/ex/events/{content_id}?embed=channel',
-            video_id,
-            headers=self._survapi_header,
-            note='Downloading event data')
+            f'https://survapi.channel.or.jp/ex/events/{content_id}?embed=channel', video_id,
+            headers=self._survapi_header, note='Downloading event data')
 
         player_type = traverse_obj(event_data, ('data', 'Player_type', {str}))
         if player_type == 'poster':
-            self.raise_no_formats(
-                'Live event has not yet started',
-                expected=True)
+            self.raise_no_formats('Live event has not yet started', expected=True)
             live_status = 'is_upcoming'
             formats = []
         elif player_type == 'player':
@@ -108,11 +102,7 @@ class AsobiChannelIE(AsobiChannelBaseIE):
             raise ExtractorError('Unsupported player type {player_type!r}')
 
         return {
-            'release_timestamp': traverse_obj(
-                metadata,
-                ('period',
-                 'start',
-                 {parse_iso8601})),
+            'release_timestamp': traverse_obj(metadata, ('period', 'start', {parse_iso8601})),
             'live_status': live_status,
             'formats': formats,
         }
@@ -126,8 +116,7 @@ class AsobiChannelIE(AsobiChannelBaseIE):
 
         info = self._extract_info(metadata)
 
-        video_type = traverse_obj(
-            metadata, ('contents', 'video_type', 0, {str}))
+        video_type = traverse_obj(metadata, ('contents', 'video_type', 0, {str}))
         if video_type == 'VOD':
             return merge_dicts(info, self._process_vod(video_id, metadata))
         if video_type == 'LIVE':
@@ -160,24 +149,15 @@ class AsobiChannelTagURLIE(AsobiChannelBaseIE):
     def _real_extract(self, url):
         tag_id = self._match_id(url)
         webpage = self._download_webpage(url, tag_id)
-        title = traverse_obj(
-            self._search_nextjs_data(
-                webpage,
-                tag_id,
-                fatal=False),
-            ('props',
-             'pageProps',
-             'data',
-             'name',
-             {str}))
+        title = traverse_obj(self._search_nextjs_data(
+            webpage, tag_id, fatal=False), ('props', 'pageProps', 'data', 'name', {str}))
 
         media = self._download_json(
             f'https://channel.microcms.io/api/v1/media?limit=999&filters=(tag[contains]{tag_id})',
             tag_id, headers=self._MICROCMS_HEADER)
 
         def entries():
-            for metadata in traverse_obj(
-                    media, ('contents', lambda _, v: v['id'])):
+            for metadata in traverse_obj(media, ('contents', lambda _, v: v['id'])):
                 yield {
                     '_type': 'url',
                     'url': f'https://asobichannel.asobistore.jp/watch/{metadata["id"]}',

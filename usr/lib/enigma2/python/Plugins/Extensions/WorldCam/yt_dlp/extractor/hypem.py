@@ -22,12 +22,9 @@ class HypemIE(InfoExtractor):
 
         response = self._download_webpage(url, track_id)
 
-        track = self._parse_json(
-            self._html_search_regex(
-                r'(?s)<script\s+type="application/json"\s+id="displayList-data">(.+?)</script>',
-                response,
-                'tracks'),
-            track_id)['tracks'][0]
+        track = self._parse_json(self._html_search_regex(
+            r'(?s)<script\s+type="application/json"\s+id="displayList-data">(.+?)</script>',
+            response, 'tracks'), track_id)['tracks'][0]
 
         track_id = track['id']
         title = track['song']

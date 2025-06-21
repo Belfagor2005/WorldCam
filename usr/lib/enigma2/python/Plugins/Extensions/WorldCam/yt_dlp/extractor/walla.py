@@ -59,15 +59,11 @@ class WallaIE(InfoExtractor):
             format_id = xpath_text(quality, './title')
             fmt = {
                 'url': 'rtmp://wafla.walla.co.il/vod',
-                'play_path': xpath_text(
-                    quality,
-                    './src'),
+                'play_path': xpath_text(quality, './src'),
                 'player_url': 'http://isc.walla.co.il/w9/swf/video_swf/vod/WallaMediaPlayerAvod.swf',
                 'page_url': url,
                 'ext': 'flv',
-                'format_id': xpath_text(
-                    quality,
-                    './title'),
+                'format_id': xpath_text(quality, './title'),
             }
             m = re.search(r'^(?P<height>\d+)[Pp]', format_id)
             if m:

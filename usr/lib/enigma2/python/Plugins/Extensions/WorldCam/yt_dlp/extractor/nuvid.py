@@ -81,11 +81,7 @@ class NuvidIE(InfoExtractor):
 
         self._check_formats(formats, video_id)
 
-        duration = parse_duration(
-            traverse_obj(
-                video_data,
-                'duration',
-                'duration_format'))
+        duration = parse_duration(traverse_obj(video_data, 'duration', 'duration_format'))
         thumbnails = [
             {'url': thumb_url} for thumb_url in re.findall(
                 r'<div\s+class\s*=\s*"video-tmb-wrap"\s*>\s*<img\s+src\s*=\s*"([^"]+)"\s*/>', webpage)

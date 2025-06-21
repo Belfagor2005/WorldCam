@@ -17,61 +17,60 @@ class DigitalConcertHallIE(InfoExtractor):
     IE_DESC = 'DigitalConcertHall extractor'
     _VALID_URL = r'https?://(?:www\.)?digitalconcerthall\.com/(?P<language>[a-z]+)/(?P<type>film|concert|work)/(?P<id>[0-9]+)-?(?P<part>[0-9]+)?'
     _NETRC_MACHINE = 'digitalconcerthall'
-    _TESTS = [{'note': 'Playlist with only one video',
-               'url': 'https://www.digitalconcerthall.com/en/concert/53201',
-               'info_dict': {'id': '53201-1',
-                             'ext': 'mp4',
-                             'composer': 'Kurt Weill',
-                             'title': '[Magic Night]',
-                             'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
-                             'upload_date': '20210624',
-                             'timestamp': 1624548600,
-                             'duration': 2798,
-                             'album_artists': ['Members of the Berliner Philharmoniker',
-                                               'Simon Rössler'],
-                             'composers': ['Kurt Weill'],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'note': 'Concert with several works and an interview',
-               'url': 'https://www.digitalconcerthall.com/en/concert/53785',
-               'info_dict': {'id': '53785',
-                             'album_artists': ['Berliner Philharmoniker',
-                                               'Kirill Petrenko'],
-                             'title': 'Kirill Petrenko conducts Mendelssohn and Shostakovich',
-                             'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
-                             },
-               'params': {'skip_download': 'm3u8'},
-               'playlist_count': 3,
-               },
-              {'url': 'https://www.digitalconcerthall.com/en/film/388',
-               'info_dict': {'id': '388',
-                             'ext': 'mp4',
-                             'title': 'The Berliner Philharmoniker and Frank Peter Zimmermann',
-                             'description': 'md5:cfe25a7044fa4be13743e5089b5b5eb2',
-                             'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
-                             'upload_date': '20220714',
-                             'timestamp': 1657785600,
-                             'album_artists': ['Frank Peter Zimmermann',
-                                               'Benedikt von Bernstorff',
-                                               'Jakob von Bernstorff'],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'note': 'Concert with several works and an interview',
-               'url': 'https://www.digitalconcerthall.com/en/work/53785-1',
-               'info_dict': {'id': '53785',
-                             'album_artists': ['Berliner Philharmoniker',
-                                               'Kirill Petrenko'],
-                             'title': 'Kirill Petrenko conducts Mendelssohn and Shostakovich',
-                             'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
-                             },
-               'params': {'skip_download': 'm3u8'},
-               'playlist_count': 1,
-               }]
-    _LOGIN_HINT = (
-        'Use  --username token --password ACCESS_TOKEN  where ACCESS_TOKEN '
-        'is the "access_token_production" from your browser local storage')
+    _TESTS = [{
+        'note': 'Playlist with only one video',
+        'url': 'https://www.digitalconcerthall.com/en/concert/53201',
+        'info_dict': {
+            'id': '53201-1',
+            'ext': 'mp4',
+            'composer': 'Kurt Weill',
+            'title': '[Magic Night]',
+            'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
+            'upload_date': '20210624',
+            'timestamp': 1624548600,
+            'duration': 2798,
+            'album_artists': ['Members of the Berliner Philharmoniker', 'Simon Rössler'],
+            'composers': ['Kurt Weill'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'note': 'Concert with several works and an interview',
+        'url': 'https://www.digitalconcerthall.com/en/concert/53785',
+        'info_dict': {
+            'id': '53785',
+            'album_artists': ['Berliner Philharmoniker', 'Kirill Petrenko'],
+            'title': 'Kirill Petrenko conducts Mendelssohn and Shostakovich',
+            'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
+        },
+        'params': {'skip_download': 'm3u8'},
+        'playlist_count': 3,
+    }, {
+        'url': 'https://www.digitalconcerthall.com/en/film/388',
+        'info_dict': {
+            'id': '388',
+            'ext': 'mp4',
+            'title': 'The Berliner Philharmoniker and Frank Peter Zimmermann',
+            'description': 'md5:cfe25a7044fa4be13743e5089b5b5eb2',
+            'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
+            'upload_date': '20220714',
+            'timestamp': 1657785600,
+            'album_artists': ['Frank Peter Zimmermann', 'Benedikt von Bernstorff', 'Jakob von Bernstorff'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'note': 'Concert with several works and an interview',
+        'url': 'https://www.digitalconcerthall.com/en/work/53785-1',
+        'info_dict': {
+            'id': '53785',
+            'album_artists': ['Berliner Philharmoniker', 'Kirill Petrenko'],
+            'title': 'Kirill Petrenko conducts Mendelssohn and Shostakovich',
+            'thumbnail': r're:^https?://images.digitalconcerthall.com/cms/thumbnails.*\.jpg$',
+        },
+        'params': {'skip_download': 'm3u8'},
+        'playlist_count': 1,
+    }]
+    _LOGIN_HINT = ('Use  --username token --password ACCESS_TOKEN  where ACCESS_TOKEN '
+                   'is the "access_token_production" from your browser local storage')
     _REFRESH_HINT = 'or else use a "refresh_token" with  --username refresh --password REFRESH_TOKEN'
     _OAUTH_URL = 'https://api.digitalconcerthall.com/v2/oauth2/token'
     _CLIENT_ID = 'dch.webapp'
@@ -94,8 +93,7 @@ class DigitalConcertHallIE(InfoExtractor):
 
     def _set_access_token(self, value):
         self._access_token = value
-        self._access_token_expiry = traverse_obj(
-            value, ({jwt_decode_hs256}, 'exp', {int})) or 0
+        self._access_token_expiry = traverse_obj(value, ({jwt_decode_hs256}, 'exp', {int})) or 0
 
     def _cache_tokens(self, /):
         self.cache.store(self._NETRC_MACHINE, 'tokens', {
@@ -119,8 +117,7 @@ class DigitalConcertHallIE(InfoExtractor):
                 'Get a new "access_token_production" value from your browser '
                 f'and try again, {self._REFRESH_HINT}', expected=True)
 
-        # If we only have a refresh token, we need a temporary "initial token"
-        # for the refresh flow
+        # If we only have a refresh token, we need a temporary "initial token" for the refresh flow
         bearer_token = self._access_token or self._download_json(
             self._OAUTH_URL, None, 'Obtaining initial token', 'Unable to obtain initial token',
             data=urlencode_postdata({
@@ -153,8 +150,7 @@ class DigitalConcertHallIE(InfoExtractor):
                 self._set_access_token(None)
                 self._refresh_token = None
                 self._cache_tokens()
-                raise ExtractorError(
-                    'Your tokens have been invalidated', expected=True)
+                raise ExtractorError('Your tokens have been invalidated', expected=True)
             raise
 
         self._set_access_token(response['access_token'])
@@ -173,17 +169,15 @@ class DigitalConcertHallIE(InfoExtractor):
         if username == 'token':
             if not traverse_obj(password, {jwt_decode_hs256}):
                 raise ExtractorError(
-                    f'The access token passed to yt-dlp is not valid. {self._LOGIN_HINT}',
-                    expected=True)
+                    f'The access token passed to yt-dlp is not valid. {self._LOGIN_HINT}', expected=True)
             self._set_access_token(password)
             self._cache_tokens()
 
         if username in ('refresh', 'token'):
             if self.get_param('cachedir') is not False:
                 token_type = 'access' if username == 'token' else 'refresh'
-                self.to_screen(
-                    f'Your {token_type} token has been cached to disk. To use the cached '
-                    'token next time, pass  --username cache  along with any password')
+                self.to_screen(f'Your {token_type} token has been cached to disk. To use the cached '
+                               'token next time, pass  --username cache  along with any password')
             return
 
         if username != 'cache':
@@ -192,8 +186,7 @@ class DigitalConcertHallIE(InfoExtractor):
                 f'for this site. {self._LOGIN_HINT}, {self._REFRESH_HINT}', expected=True)
 
         # Try cached access_token
-        cached_tokens = self.cache.load(
-            self._NETRC_MACHINE, 'tokens', default={})
+        cached_tokens = self.cache.load(self._NETRC_MACHINE, 'tokens', default={})
         self._set_access_token(cached_tokens.get('access_token'))
         self._refresh_token = cached_tokens.get('refresh_token')
         if not self._access_token_is_expired:
@@ -216,10 +209,7 @@ class DigitalConcertHallIE(InfoExtractor):
                 self._fetch_new_tokens(invalidate=not should_retry)
                 try:
                     stream_info = self._download_json(
-                        self._proto_relative_url(
-                            item['_links']['streams']['href']),
-                        video_id,
-                        headers={
+                        self._proto_relative_url(item['_links']['streams']['href']), video_id, headers={
                             'Accept': 'application/json',
                             'Authorization': f'Bearer {self._access_token}',
                             'Accept-Language': language,
@@ -227,21 +217,13 @@ class DigitalConcertHallIE(InfoExtractor):
                         })
                     break
                 except ExtractorError as error:
-                    if should_retry and isinstance(
-                            error.cause, HTTPError) and error.cause.status == 401:
+                    if should_retry and isinstance(error.cause, HTTPError) and error.cause.status == 401:
                         continue
                     raise
 
             formats = []
-            for m3u8_url in traverse_obj(
-                    stream_info, ('channel', ..., 'stream', ..., 'url', {url_or_none})):
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        m3u8_url,
-                        video_id,
-                        'mp4',
-                        m3u8_id='hls',
-                        fatal=False))
+            for m3u8_url in traverse_obj(stream_info, ('channel', ..., 'stream', ..., 'url', {url_or_none})):
+                formats.extend(self._extract_m3u8_formats(m3u8_url, video_id, 'mp4', m3u8_id='hls', fatal=False))
             for fmt in formats:
                 if fmt.get('format_note') and fmt.get('vcodec') == 'none':
                     fmt.update(parse_codecs(fmt['format_note']))
@@ -263,44 +245,33 @@ class DigitalConcertHallIE(InfoExtractor):
             }
 
     def _real_extract(self, url):
-        language, type_, video_id, part = self._match_valid_url(
-            url).group('language', 'type', 'id', 'part')
+        language, type_, video_id, part = self._match_valid_url(url).group('language', 'type', 'id', 'part')
         if not language:
             language = 'en'
 
         api_type = 'concert' if type_ == 'work' else type_
         vid_info = self._download_json(
-            f'https://api.digitalconcerthall.com/v2/{api_type}/{video_id}',
-            video_id,
-            headers={
+            f'https://api.digitalconcerthall.com/v2/{api_type}/{video_id}', video_id, headers={
                 'Accept': 'application/json',
                 'Accept-Language': language,
                 'User-Agent': self._USER_AGENT,
             })
-        videos = [vid_info] if type_ == 'film' else traverse_obj(
-            vid_info, ('_embedded', ..., ...))
+        videos = [vid_info] if type_ == 'film' else traverse_obj(vid_info, ('_embedded', ..., ...))
 
         if type_ == 'work':
             videos = [videos[int(part) - 1]]
 
-        album_artists = traverse_obj(
-            vid_info, ('_links', 'artist', ..., 'name', {str}))
-        thumbnail = traverse_obj(
-            vid_info, ('image', ..., {
-                self._proto_relative_url}, {url_or_none}, {
-                lambda x: x.format(
-                    width=0, height=0)}, any))  # NB: 0x0 is the original size
+        album_artists = traverse_obj(vid_info, ('_links', 'artist', ..., 'name', {str}))
+        thumbnail = traverse_obj(vid_info, (
+            'image', ..., {self._proto_relative_url}, {url_or_none},
+            {lambda x: x.format(width=0, height=0)}, any))  # NB: 0x0 is the original size
 
         return {
             '_type': 'playlist',
             'id': video_id,
             'title': vid_info.get('title'),
             'entries': self._entries(
-                videos,
-                language,
-                type_,
-                thumbnail=thumbnail,
-                album_artists=album_artists),
+                videos, language, type_, thumbnail=thumbnail, album_artists=album_artists),
             'thumbnail': thumbnail,
             'album_artists': album_artists,
         }

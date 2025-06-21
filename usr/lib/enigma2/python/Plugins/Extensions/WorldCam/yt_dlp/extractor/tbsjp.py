@@ -37,38 +37,19 @@ class TBSJPEpisodeIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        meta = self._search_json(
-            r'window\.app\s*=',
-            webpage,
-            'episode info',
-            video_id,
-            fatal=False)
-        episode = traverse_obj(
-            meta, ('falcorCache', 'catalog', 'episode', video_id, 'value'))
+        meta = self._search_json(r'window\.app\s*=', webpage, 'episode info', video_id, fatal=False)
+        episode = traverse_obj(meta, ('falcorCache', 'catalog', 'episode', video_id, 'value'))
 
         tf_path = self._search_regex(
-            r'<script[^>]+src=["\'](/assets/tf\.[^"\']+\.js)["\']',
-            webpage,
-            'stream API config')
-        tf_js = self._download_webpage(
-            urljoin(
-                url,
-                tf_path),
-            video_id,
-            note='Downloading stream API config')
-        video_url = self._search_regex(
-            r'videoPlaybackUrl:\s*[\'"]([^\'"]+)[\'"]',
-            tf_js,
-            'stream API url')
-        api_key = self._search_regex(
-            r'api_key:\s*[\'"]([^\'"]+)[\'"]',
-            tf_js,
-            'stream API key')
+            r'<script[^>]+src=["\'](/assets/tf\.[^"\']+\.js)["\']', webpage, 'stream API config')
+        tf_js = self._download_webpage(urljoin(url, tf_path), video_id, note='Downloading stream API config')
+        video_url = self._search_regex(r'videoPlaybackUrl:\s*[\'"]([^\'"]+)[\'"]', tf_js, 'stream API url')
+        api_key = self._search_regex(r'api_key:\s*[\'"]([^\'"]+)[\'"]', tf_js, 'stream API key')
 
         try:
-            source_meta = self._download_json(
-                f'{video_url}ref:{video_id}', video_id, headers={
-                    'X-Streaks-Api-Key': api_key}, note='Downloading stream metadata')
+            source_meta = self._download_json(f'{video_url}ref:{video_id}', video_id,
+                                              headers={'X-Streaks-Api-Key': api_key},
+                                              note='Downloading stream metadata')
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
                 self.raise_geo_restricted(countries=['JP'])
@@ -76,8 +57,7 @@ class TBSJPEpisodeIE(InfoExtractor):
 
         formats, subtitles = [], {}
         for src in traverse_obj(source_meta, ('sources', ..., 'src')):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                src, video_id, fatal=False)
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(src, video_id, fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
 
@@ -117,33 +97,23 @@ class TBSJPProgramIE(InfoExtractor):
     def _real_extract(self, url):
         programme_id = self._match_id(url)
         webpage = self._download_webpage(url, programme_id)
-        meta = self._search_json(
-            r'window\.app\s*=',
-            webpage,
-            'programme info',
-            programme_id)
+        meta = self._search_json(r'window\.app\s*=', webpage, 'programme info', programme_id)
 
-        programme = traverse_obj(
-            meta,
-            ('falcorCache',
-             'catalog',
-             'program',
-             programme_id,
-             'false',
-             'value'))
+        programme = traverse_obj(meta, ('falcorCache', 'catalog', 'program', programme_id, 'false', 'value'))
 
         return {
-            '_type': 'playlist', 'entries': [
-                self.url_result(
-                    f'https://cu.tbs.co.jp/episode/{video_id}', TBSJPEpisodeIE, video_id) for video_id in traverse_obj(
-                    programme, ('custom_data', 'seriesList', 'episodeCode', ...))], 'id': programme_id, **traverse_obj(
-                programme, {
-                    'categories': (
-                        'keywords', ...), 'id': (
-                        'tv_episode_info', 'show_content_id', {str_or_none}), 'description': (
-                        'custom_data', 'program_description'), 'series': (
-                        'custom_data', 'program_name'), 'title': (
-                        'custom_data', 'program_name'), }), }
+            '_type': 'playlist',
+            'entries': [self.url_result(f'https://cu.tbs.co.jp/episode/{video_id}', TBSJPEpisodeIE, video_id)
+                        for video_id in traverse_obj(programme, ('custom_data', 'seriesList', 'episodeCode', ...))],
+            'id': programme_id,
+            **traverse_obj(programme, {
+                'categories': ('keywords', ...),
+                'id': ('tv_episode_info', 'show_content_id', {str_or_none}),
+                'description': ('custom_data', 'program_description'),
+                'series': ('custom_data', 'program_name'),
+                'title': ('custom_data', 'program_name'),
+            }),
+        }
 
 
 class TBSJPPlaylistIE(InfoExtractor):
@@ -160,18 +130,12 @@ class TBSJPPlaylistIE(InfoExtractor):
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
         page = self._download_webpage(url, playlist_id)
-        meta = self._search_json(
-            r'window\.app\s*=',
-            page,
-            'playlist info',
-            playlist_id)
+        meta = self._search_json(r'window\.app\s*=', page, 'playlist info', playlist_id)
         playlist = traverse_obj(meta, ('falcorCache', 'playList', playlist_id))
 
         def entries():
-            for entry in traverse_obj(
-                    playlist, ('catalogs', 'value', lambda _, v: v['content_id'])):
-                # TODO: it's likely possible to get all metadata from the
-                # playlist page json instead
+            for entry in traverse_obj(playlist, ('catalogs', 'value', lambda _, v: v['content_id'])):
+                # TODO: it's likely possible to get all metadata from the playlist page json instead
                 content_id = entry['content_id']
                 content_type = entry.get('content_type')
                 if content_type == 'tv_show':
@@ -181,9 +145,6 @@ class TBSJPPlaylistIE(InfoExtractor):
                     yield self.url_result(
                         f'https://cu.tbs.co.jp/episode/{content_id}', TBSJPEpisodeIE, content_id)
                 else:
-                    self.report_warning(
-                        f'Skipping "{content_id}" with unsupported content_type "{content_type}"')
+                    self.report_warning(f'Skipping "{content_id}" with unsupported content_type "{content_type}"')
 
-        return self.playlist_result(
-            entries(), playlist_id, traverse_obj(
-                playlist, ('display_name', 'value')))
+        return self.playlist_result(entries(), playlist_id, traverse_obj(playlist, ('display_name', 'value')))

@@ -8,16 +8,11 @@ from ..utils import (
 
 
 class PixivSketchBaseIE(InfoExtractor):
-    def _call_api(self, video_id, path, referer,
-                  note='Downloading JSON metadata'):
-        response = self._download_json(
-            f'https://sketch.pixiv.net/api/{path}',
-            video_id,
-            note=note,
-            headers={
-                'Referer': referer,
-                'X-Requested-With': referer,
-            })
+    def _call_api(self, video_id, path, referer, note='Downloading JSON metadata'):
+        response = self._download_json(f'https://sketch.pixiv.net/api/{path}', video_id, note=note, headers={
+            'Referer': referer,
+            'X-Requested-With': referer,
+        })
         errors = traverse_obj(response, ('errors', ..., 'message'))
         if errors:
             raise ExtractorError(' '.join(f'{e}.' for e in errors))
@@ -40,8 +35,7 @@ class PixivSketchIE(PixivSketchBaseIE):
         },
         'skip': True,
     }, {
-        # these two (age_limit > 0) requires you to login on website, but it's
-        # actually not required for download
+        # these two (age_limit > 0) requires you to login on website, but it's actually not required for download
         'url': 'https://sketch.pixiv.net/@namahyou/lives/4393103321546851377',
         'info_dict': {
             'id': '4907995960957946943',
@@ -68,14 +62,11 @@ class PixivSketchIE(PixivSketchBaseIE):
     }]
 
     def _real_extract(self, url):
-        video_id, uploader_id = self._match_valid_url(
-            url).group('id', 'uploader_id')
+        video_id, uploader_id = self._match_valid_url(url).group('id', 'uploader_id')
         data = self._call_api(video_id, f'lives/{video_id}.json', url)
 
         if not traverse_obj(data, 'is_broadcasting'):
-            raise ExtractorError(
-                f'This live is offline. Use https://sketch.pixiv.net/@{uploader_id} for ongoing live.',
-                expected=True)
+            raise ExtractorError(f'This live is offline. Use https://sketch.pixiv.net/@{uploader_id} for ongoing live.', expected=True)
 
         m3u8_url = traverse_obj(data, ('owner', 'hls_movie', 'url'))
         formats = self._extract_m3u8_formats(
@@ -119,17 +110,10 @@ class PixivSketchUserIE(PixivSketchBaseIE):
 
         if not traverse_obj(data, 'is_broadcasting'):
             try:
-                self._call_api(
-                    user_id,
-                    'users/current.json',
-                    url,
-                    'Investigating reason for request failure')
+                self._call_api(user_id, 'users/current.json', url, 'Investigating reason for request failure')
             except ExtractorError as e:
                 if isinstance(e.cause, HTTPError) and e.cause.status == 401:
-                    self.raise_login_required(
-                        f'Please log in, or use direct link like https://sketch.pixiv.net/@{user_id}/1234567890',
-                        method='cookies')
+                    self.raise_login_required(f'Please log in, or use direct link like https://sketch.pixiv.net/@{user_id}/1234567890', method='cookies')
             raise ExtractorError('This user is offline', expected=True)
 
-        return self.url_result(
-            f'https://sketch.pixiv.net/@{user_id}/lives/{data["id"]}')
+        return self.url_result(f'https://sketch.pixiv.net/@{user_id}/lives/{data["id"]}')

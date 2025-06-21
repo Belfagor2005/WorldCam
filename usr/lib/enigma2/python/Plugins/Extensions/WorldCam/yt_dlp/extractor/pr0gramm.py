@@ -114,43 +114,25 @@ class Pr0grammIE(InfoExtractor):
             flags |= 0b01000
             cookies = self._get_cookies(self.BASE_URL)
             if 'me' not in cookies:
-                self._download_webpage(
-                    self.BASE_URL, None, 'Refreshing verification information')
-            if traverse_obj(
-                cookies, ('me', {
-                    lambda x: x.value}, {
-                    urllib.parse.unquote}, {
-                    json.loads}, 'verified')):
+                self._download_webpage(self.BASE_URL, None, 'Refreshing verification information')
+            if traverse_obj(cookies, ('me', {lambda x: x.value}, {urllib.parse.unquote}, {json.loads}, 'verified')):
                 flags |= 0b00110
 
         return flags
 
-    def _call_api(
-            self,
-            endpoint,
-            video_id,
-            query={},
-            note='Downloading API json'):
+    def _call_api(self, endpoint, video_id, query={}, note='Downloading API json'):
         data = self._download_json(
             f'https://pr0gramm.com/api/items/{endpoint}',
             video_id, note, query=query, expected_status=403)
 
         error = traverse_obj(data, ('error', {str}))
-        if error in (
-            'nsfwRequired',
-            'nsflRequired',
-            'nsfpRequired',
-                'verificationRequired'):
+        if error in ('nsfwRequired', 'nsflRequired', 'nsfpRequired', 'verificationRequired'):
             if not self._is_logged_in:
                 self.raise_login_required()
-            raise ExtractorError(
-                f'Unverified account cannot access NSFW/NSFL ({error})',
-                expected=True)
+            raise ExtractorError(f'Unverified account cannot access NSFW/NSFL ({error})', expected=True)
         elif error:
             message = traverse_obj(data, ('msg', {str})) or error
-            raise ExtractorError(
-                f'API returned error: {message}',
-                expected=True)
+            raise ExtractorError(f'API returned error: {message}', expected=True)
 
         return data
 
@@ -161,27 +143,19 @@ class Pr0grammIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         video_info = traverse_obj(
-            self._call_api(
-                'get', video_id, {
-                    'id': video_id, 'flags': self._maximum_flags}), ('items', 0, {dict}))
+            self._call_api('get', video_id, {'id': video_id, 'flags': self._maximum_flags}),
+            ('items', 0, {dict}))
 
         source = video_info.get('image')
         if not source or not source.endswith('mp4'):
-            self.raise_no_formats(
-                'Could not extract a video',
-                expected=bool(source),
-                video_id=video_id)
+            self.raise_no_formats('Could not extract a video', expected=bool(source), video_id=video_id)
 
-        metadata = self._call_api(
-            'info', video_id, {
-                'itemId': video_id}, note='Downloading tags')
+        metadata = self._call_api('info', video_id, {'itemId': video_id}, note='Downloading tags')
         tags = traverse_obj(metadata, ('tags', ..., 'tag', {str}))
         # Sorted by "confidence", higher confidence = earlier in list
-        confidences = traverse_obj(
-            metadata, ('tags', ..., 'confidence', ({int}, {float})))
+        confidences = traverse_obj(metadata, ('tags', ..., 'confidence', ({int}, {float})))
         if confidences:
-            tags = [tag for _, tag in sorted(
-                zip(confidences, tags), reverse=True)]
+            tags = [tag for _, tag in sorted(zip(confidences, tags), reverse=True)]
 
         formats = traverse_obj(video_info, ('variants', ..., {
             'format_id': ('name', {str}),
@@ -203,16 +177,11 @@ class Pr0grammIE(InfoExtractor):
         }]
 
         subtitles = {}
-        for subtitle in traverse_obj(
-                video_info, ('subtitles', lambda _, v: v['language'])):
-            subtitles.setdefault(
-                subtitle['language'], []).append(
-                traverse_obj(
-                    subtitle, {
-                        'url': (
-                            'path', {
-                                self._create_source_url}), 'note': (
-                            'label', {str}), }))
+        for subtitle in traverse_obj(video_info, ('subtitles', lambda _, v: v['language'])):
+            subtitles.setdefault(subtitle['language'], []).append(traverse_obj(subtitle, {
+                'url': ('path', {self._create_source_url}),
+                'note': ('label', {str}),
+            }))
 
         return {
             'id': video_id,

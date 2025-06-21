@@ -51,9 +51,7 @@ class MLBBaseIE(InfoExtractor):
                         'tbr': int(mobj.group(1)),
                         'width': int(mobj.group(2)),
                     })
-                mobj = re.search(
-                    r'_(\d+)x(\d+)_(\d+)_(\d+)K\.mp4',
-                    playback_url)
+                mobj = re.search(r'_(\d+)x(\d+)_(\d+)_(\d+)K\.mp4', playback_url)
                 if mobj:
                     f.update({
                         'fps': int(mobj.group(3)),
@@ -185,8 +183,7 @@ class MLBIE(MLBBaseIE):
             'only_matching': True,
         },
         {
-            # From
-            # http://m.mlb.com/news/article/118550098/blue-jays-kevin-pillar-goes-spidey-up-the-wall-to-rob-tim-beckham-of-a-homer
+            # From http://m.mlb.com/news/article/118550098/blue-jays-kevin-pillar-goes-spidey-up-the-wall-to-rob-tim-beckham-of-a-homer
             'url': 'http://mlb.mlb.com/shared/video/embed/m-internal-embed.html?content_id=75609783&property=mlb&autoplay=true&hashmode=false&siteSection=mlb/multimedia/article_118550098/article_embed&club=mlb',
             'only_matching': True,
         },
@@ -202,8 +199,7 @@ class MLBIE(MLBBaseIE):
         subtitles = {}
         for keyword in (feed.get('keywordsAll') or []):
             keyword_type = keyword.get('type')
-            if keyword_type and keyword_type.startswith(
-                    'closed_captions_location_'):
+            if keyword_type and keyword_type.startswith('closed_captions_location_'):
                 cc_location = keyword.get('value')
                 if cc_location:
                     subtitles.setdefault(language, []).append({
@@ -296,8 +292,7 @@ class MLBTVIE(InfoExtractor):
         },
         'params': {'skip_download': 'm3u8'},
     }, {
-        # makeup game: has multiple dates, need to avoid games with
-        # 'rescheduleDate'
+        # makeup game: has multiple dates, need to avoid games with 'rescheduleDate'
         'url': 'https://www.mlb.com/tv/g747039/vd22541c4-5a29-45f7-822b-635ec041cf5e',
         'info_dict': {
             'id': '747039',
@@ -367,14 +362,12 @@ mutation initPlaybackSession(
     def _real_initialize(self):
         if not self._access_token:
             self.raise_login_required(
-                'All videos are only available to registered users',
-                method='password')
+                'All videos are only available to registered users', method='password')
 
     def _set_device_id(self, username):
         if self._device_id:
             return
-        device_id_cache = self.cache.load(
-            self._NETRC_MACHINE, 'device_ids', default={})
+        device_id_cache = self.cache.load(self._NETRC_MACHINE, 'device_ids', default={})
         self._device_id = device_id_cache.get(username)
         if self._device_id:
             return
@@ -397,15 +390,11 @@ mutation initPlaybackSession(
                     'client_id': '0oa3e1nutA1HLzAKG356',
                 }))['access_token']
         except ExtractorError as error:
-            if isinstance(
-                    error.cause,
-                    HTTPError) and error.cause.status == 400:
-                raise ExtractorError(
-                    'Invalid username or password', expected=True)
+            if isinstance(error.cause, HTTPError) and error.cause.status == 400:
+                raise ExtractorError('Invalid username or password', expected=True)
             raise
 
-        self._token_expiry = traverse_obj(
-            self._access_token, ({jwt_decode_hs256}, 'exp', {int})) or 0
+        self._token_expiry = traverse_obj(self._access_token, ({jwt_decode_hs256}, 'exp', {int})) or 0
         self._set_device_id(username)
 
         self._session_id = self._call_api({
@@ -426,30 +415,17 @@ mutation initPlaybackSession(
             },
         }, None, 'session ID')['data']['initSession']['sessionId']
 
-    def _call_api(
-            self,
-            data,
-            video_id,
-            description='GraphQL JSON',
-            fatal=True):
+    def _call_api(self, data, video_id, description='GraphQL JSON', fatal=True):
         return self._download_json(
-            'https://media-gateway.mlb.com/graphql',
-            video_id,
-            f'Downloading {description}',
-            f'Unable to download {description}',
-            fatal=fatal,
+            'https://media-gateway.mlb.com/graphql', video_id,
+            f'Downloading {description}', f'Unable to download {description}', fatal=fatal,
             headers={
                 **self._api_headers,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'x-client-name': 'WEB',
                 'x-client-version': self._APP_VERSION,
-            },
-            data=json.dumps(
-                data,
-                separators=(
-                    ',',
-                    ':')).encode())
+            }, data=json.dumps(data, separators=(',', ':')).encode())
 
     def _extract_formats_and_subtitles(self, broadcast, video_id):
         feed = traverse_obj(broadcast, ('homeAway', {str.title}))
@@ -469,21 +445,16 @@ mutation initPlaybackSession(
             },
         }, video_id, f'{format_id} broadcast JSON', fatal=False)
 
-        playback = traverse_obj(
-            response, ('data', 'initPlaybackSession', 'playback', {dict}))
+        playback = traverse_obj(response, ('data', 'initPlaybackSession', 'playback', {dict}))
         m3u8_url = traverse_obj(playback, ('url', {url_or_none}))
         token = traverse_obj(playback, ('token', {str}))
 
         if not (m3u8_url and token):
-            errors = '; '.join(
-                traverse_obj(
-                    response, ('errors', ..., 'message', {str})))
+            errors = '; '.join(traverse_obj(response, ('errors', ..., 'message', {str})))
             if errors:  # Only warn when 'blacked out' or 'not entitled'; radio formats may be available
-                self.report_warning(
-                    f'API returned errors for {format_id}: {errors}')
+                self.report_warning(f'API returned errors for {format_id}: {errors}')
             else:
-                self.report_warning(
-                    f'No formats available for {format_id} broadcast; skipping')
+                self.report_warning(f'No formats available for {format_id} broadcast; skipping')
             return [], {}
 
         cdn_headers = {'x-cdn-token': token}
@@ -492,9 +463,7 @@ mutation initPlaybackSession(
             m3u8_id=format_id, fatal=False, headers=cdn_headers)
         for fmt in fmts:
             fmt['http_headers'] = cdn_headers
-            fmt.setdefault(
-                'format_note', join_nonempty(
-                    feed, medium, delim=' '))
+            fmt.setdefault('format_note', join_nonempty(feed, medium, delim=' '))
             fmt.setdefault('language', language)
             if fmt.get('vcodec') == 'none' and fmt['language'] == 'en':
                 fmt['source_preference'] = 10
@@ -508,19 +477,16 @@ mutation initPlaybackSession(
                 'gamePk': video_id,
                 'hydrate': 'broadcasts(all),statusFlags',
             })
-        metadata = traverse_obj(data, ('dates', ..., 'games', lambda _, v: str(
-            v['gamePk']) == video_id and not v.get('rescheduleDate'), any))
+        metadata = traverse_obj(data, (
+            'dates', ..., 'games',
+            lambda _, v: str(v['gamePk']) == video_id and not v.get('rescheduleDate'), any))
 
-        broadcasts = traverse_obj(
-            metadata,
-            ('broadcasts',
-             lambda _,
-             v: v['mediaId'] and v['mediaState']['mediaStateCode'] != 'MEDIA_OFF'))
+        broadcasts = traverse_obj(metadata, (
+            'broadcasts', lambda _, v: v['mediaId'] and v['mediaState']['mediaStateCode'] != 'MEDIA_OFF'))
 
         formats, subtitles = [], {}
         for broadcast in broadcasts:
-            fmts, subs = self._extract_formats_and_subtitles(
-                broadcast, video_id)
+            fmts, subs = self._extract_formats_and_subtitles(broadcast, video_id)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
 
@@ -554,31 +520,15 @@ class MLBArticleIE(InfoExtractor):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        apollo_cache_json = self._search_json(
-            r'window\.initState\s*=',
-            webpage,
-            'window.initState',
-            display_id)['apolloCache']
+        apollo_cache_json = self._search_json(r'window\.initState\s*=', webpage, 'window.initState', display_id)['apolloCache']
 
         content_real_info = traverse_obj(
-            apollo_cache_json,
-            ('ROOT_QUERY',
-             lambda k,
-             _: k.startswith('getArticle')),
-            get_all=False)
+            apollo_cache_json, ('ROOT_QUERY', lambda k, _: k.startswith('getArticle')), get_all=False)
 
         return self.playlist_from_matches(
-            traverse_obj(
-                content_real_info,
-                ('parts',
-                 lambda _,
-                 v: v['__typename'] == 'Video' or v['type'] == 'video')),
+            traverse_obj(content_real_info, ('parts', lambda _, v: v['__typename'] == 'Video' or v['type'] == 'video')),
             getter=lambda x: f'https://www.mlb.com/video/{x["slug"]}',
-            ie=MLBVideoIE,
-            playlist_id=content_real_info.get('translationId'),
-            title=self._html_search_meta(
-                'og:title',
-                webpage),
+            ie=MLBVideoIE, playlist_id=content_real_info.get('translationId'),
+            title=self._html_search_meta('og:title', webpage),
             description=content_real_info.get('summary'),
-            modified_timestamp=parse_iso8601(
-                content_real_info.get('lastUpdatedDate')))
+            modified_timestamp=parse_iso8601(content_real_info.get('lastUpdatedDate')))

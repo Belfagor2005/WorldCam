@@ -76,19 +76,14 @@ class MediaWorksNZVODIE(InfoExtractor):
 
         content_type = asset.get('type')
         if content_type and content_type != 'video':
-            self.report_warning(
-                f'Unknown content type: {content_type}' +
-                bug_reports_message(),
-                video_id)
+            self.report_warning(f'Unknown content type: {content_type}' + bug_reports_message(), video_id)
 
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            asset['streamingUrl'], video_id)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(asset['streamingUrl'], video_id)
 
         audio_streaming_url = traverse_obj(
             asset, 'palyoutPathAudio', 'playoutpathaudio', expected_type=str)
         if audio_streaming_url:
-            audio_formats = self._extract_m3u8_formats(
-                audio_streaming_url, video_id, fatal=False, ext='mp3')
+            audio_formats = self._extract_m3u8_formats(audio_streaming_url, video_id, fatal=False, ext='mp3')
             for audio_format in audio_formats:
                 # all the audio streams appear to be aac
                 audio_format.setdefault('vcodec', 'none')

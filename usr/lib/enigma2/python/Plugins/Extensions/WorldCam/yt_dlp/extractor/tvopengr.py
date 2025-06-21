@@ -11,11 +11,7 @@ class TVOpenGrBaseIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
         canonical_url = self._og_search_url(webpage)
         title = self._og_search_title(webpage)
-        return self.url_result(
-            canonical_url,
-            ie=TVOpenGrWatchIE.ie_key(),
-            video_id=video_id,
-            video_title=title)
+        return self.url_result(canonical_url, ie=TVOpenGrWatchIE.ie_key(), video_id=video_id, video_title=title)
 
 
 class TVOpenGrWatchIE(TVOpenGrBaseIE):
@@ -76,22 +72,17 @@ class TVOpenGrWatchIE(TVOpenGrBaseIE):
         return formats, subs
 
     def _real_extract(self, url):
-        netloc, video_id, display_id = self._match_valid_url(
-            url).group('netloc', 'id', 'slug')
+        netloc, video_id, display_id = self._match_valid_url(url).group('netloc', 'id', 'slug')
         if netloc.find('tvopen.gr') == -1:
             return self._return_canonical_url(url, video_id)
         webpage = self._download_webpage(url, video_id)
-        info = self._search_json_ld(
-            webpage, video_id, expected_type='VideoObject')
+        info = self._search_json_ld(webpage, video_id, expected_type='VideoObject')
         info['formats'], info['subtitles'] = self._extract_formats_and_subs(
-            self._download_json(
-                self._API_ENDPOINT, video_id, query={
-                    'cid': video_id}), video_id)
+            self._download_json(self._API_ENDPOINT, video_id, query={'cid': video_id}),
+            video_id)
         info['thumbnails'] = scale_thumbnails_to_max_format_width(
             info['formats'], info['thumbnails'], r'(?<=/imgHandler/)\d+')
-        description, _html = next(
-            get_elements_text_and_html_by_attribute(
-                'class', 'description', webpage))
+        description, _html = next(get_elements_text_and_html_by_attribute('class', 'description', webpage))
         if description and _html.startswith('<span '):
             info['description'] = description
         info['id'] = video_id
@@ -103,8 +94,7 @@ class TVOpenGrEmbedIE(TVOpenGrBaseIE):
     IE_NAME = 'tvopengr:embed'
     IE_DESC = 'tvopen.gr embedded videos'
     _VALID_URL = r'(?:https?:)?//(?:www\.|cdn\.|)(?:tvopen|ethnos).gr/embed/(?P<id>\d+)'
-    _EMBED_REGEX = [
-        rf'''<iframe[^>]+?src=(?P<_q1>["'])(?P<url>{_VALID_URL})(?P=_q1)''']
+    _EMBED_REGEX = [rf'''<iframe[^>]+?src=(?P<_q1>["'])(?P<url>{_VALID_URL})(?P=_q1)''']
 
     _TESTS = [{
         'url': 'https://cdn.ethnos.gr/embed/100963',

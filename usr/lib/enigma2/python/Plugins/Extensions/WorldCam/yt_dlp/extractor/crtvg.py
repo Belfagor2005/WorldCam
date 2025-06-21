@@ -34,37 +34,20 @@ class CrtvgIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        video_url = self._search_regex(
-            r'var\s+url\s*=\s*["\']([^"\']+)', webpage, 'video url')
-        formats = self._extract_m3u8_formats(
-            video_url + '/playlist.m3u8', video_id, fatal=False)
-        formats.extend(
-            self._extract_mpd_formats(
-                video_url +
-                '/manifest.mpd',
-                video_id,
-                fatal=False))
+        video_url = self._search_regex(r'var\s+url\s*=\s*["\']([^"\']+)', webpage, 'video url')
+        formats = self._extract_m3u8_formats(video_url + '/playlist.m3u8', video_id, fatal=False)
+        formats.extend(self._extract_mpd_formats(video_url + '/manifest.mpd', video_id, fatal=False))
 
         old_video_id = None
         if mobj := re.fullmatch(r'[^/#?]+-(?P<old_id>\d{7})', video_id):
             old_video_id = [make_archive_id(self, mobj.group('old_id'))]
 
-        return {'id': video_id,
-                '_old_archive_ids': old_video_id,
-                'formats': formats,
-                'title': remove_end(self._html_search_meta(['og:title',
-                                                            'twitter:title'],
-                                                           webpage,
-                                                           'title',
-                                                           default=None),
-                                    ' | CRTVG'),
-                'description': self._html_search_meta('description',
-                                                      webpage,
-                                                      'description',
-                                                      default=None),
-                'thumbnail': self._html_search_meta(['og:image',
-                                                     'twitter:image'],
-                                                    webpage,
-                                                    'thumbnail',
-                                                    default=None),
-                }
+        return {
+            'id': video_id,
+            '_old_archive_ids': old_video_id,
+            'formats': formats,
+            'title': remove_end(self._html_search_meta(
+                ['og:title', 'twitter:title'], webpage, 'title', default=None), ' | CRTVG'),
+            'description': self._html_search_meta('description', webpage, 'description', default=None),
+            'thumbnail': self._html_search_meta(['og:image', 'twitter:image'], webpage, 'thumbnail', default=None),
+        }

@@ -40,17 +40,12 @@ class ZeeNewsIE(InfoExtractor):
     ]
 
     def _real_extract(self, url):
-        content_id, display_id = self._match_valid_url(
-            url).group('id', 'display_id')
+        content_id, display_id = self._match_valid_url(url).group('id', 'display_id')
         webpage = self._download_webpage(url, content_id)
         json_ld_list = list(self._yield_json_ld(webpage, display_id))
 
         embed_url = traverse_obj(
-            json_ld_list,
-            (lambda _,
-             v: v['@type'] == 'VideoObject',
-                'embedUrl'),
-            get_all=False)
+            json_ld_list, (lambda _, v: v['@type'] == 'VideoObject', 'embedUrl'), get_all=False)
         if not embed_url:
             raise ExtractorError('No video found', expected=True)
 

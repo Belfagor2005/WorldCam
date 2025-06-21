@@ -1,35 +1,4 @@
 from __future__ import annotations
-import urllib3.util.url
-from ..socks import ProxyError as SocksProxyError
-from .exceptions import (
-    CertificateVerifyError,
-    HTTPError,
-    IncompleteRead,
-    ProxyError,
-    RequestError,
-    SSLError,
-    TransportError,
-)
-from .common import (
-    Features,
-    RequestHandler,
-    Response,
-    register_preference,
-    register_rh,
-)
-from ._helper import (
-    InstanceStoreMixin,
-    add_accept_encoding_header,
-    create_connection,
-    create_socks_proxy_socket,
-    get_redirect_method,
-    make_socks_proxy_opts,
-)
-import urllib3.util
-import urllib3.exceptions
-import urllib3.connection
-import requests.utils
-import requests.adapters
 
 import contextlib
 import functools
@@ -49,8 +18,7 @@ if requests is None:
 if urllib3 is None:
     raise ImportError('urllib3 module is not installed')
 
-urllib3_version = tuple(int_or_none(x, default=0)
-                        for x in urllib3.__version__.split('.'))
+urllib3_version = tuple(int_or_none(x, default=0) for x in urllib3.__version__.split('.'))
 
 if urllib3_version < (1, 26, 17):
     urllib3._yt_dlp__version = f'{urllib3.__version__} (unsupported)'
@@ -60,6 +28,37 @@ if requests.__build__ < 0x023202:
     requests._yt_dlp__version = f'{requests.__version__} (unsupported)'
     raise ImportError('Only requests >= 2.32.2 is supported')
 
+import requests.adapters
+import requests.utils
+import urllib3.connection
+import urllib3.exceptions
+import urllib3.util
+
+from ._helper import (
+    InstanceStoreMixin,
+    add_accept_encoding_header,
+    create_connection,
+    create_socks_proxy_socket,
+    get_redirect_method,
+    make_socks_proxy_opts,
+)
+from .common import (
+    Features,
+    RequestHandler,
+    Response,
+    register_preference,
+    register_rh,
+)
+from .exceptions import (
+    CertificateVerifyError,
+    HTTPError,
+    IncompleteRead,
+    ProxyError,
+    RequestError,
+    SSLError,
+    TransportError,
+)
+from ..socks import ProxyError as SocksProxyError
 
 SUPPORTED_ENCODINGS = [
     'gzip', 'deflate',
@@ -100,17 +99,14 @@ class Urllib3PercentREOverride:
 
 # urllib3 >= 1.25.8 uses subn:
 # https://github.com/urllib3/urllib3/commit/a2697e7c6b275f05879b60f593c5854a816489f0
+import urllib3.util.url
 
 if hasattr(urllib3.util.url, 'PERCENT_RE'):
-    urllib3.util.url.PERCENT_RE = Urllib3PercentREOverride(
-        urllib3.util.url.PERCENT_RE)
+    urllib3.util.url.PERCENT_RE = Urllib3PercentREOverride(urllib3.util.url.PERCENT_RE)
 elif hasattr(urllib3.util.url, '_PERCENT_RE'):  # urllib3 >= 2.0.0
-    urllib3.util.url._PERCENT_RE = Urllib3PercentREOverride(
-        urllib3.util.url._PERCENT_RE)
+    urllib3.util.url._PERCENT_RE = Urllib3PercentREOverride(urllib3.util.url._PERCENT_RE)
 else:
-    warnings.warn(
-        'Failed to patch PERCENT_RE in urllib3 (does the attribute exist?)' +
-        bug_reports_message())
+    warnings.warn('Failed to patch PERCENT_RE in urllib3 (does the attribute exist?)' + bug_reports_message())
 
 '''
 Workaround for issue in urllib.util.ssl_.py: ssl_wrap_context does not pass
@@ -147,8 +143,7 @@ class RequestsResponseAdapter(Response):
             # Interact with urllib3 response directly.
             return self.fp.read(amt, decode_content=True)
 
-        # See urllib3.response.HTTPResponse.read() for exceptions raised on
-        # read
+        # See urllib3.response.HTTPResponse.read() for exceptions raised on read
         except urllib3.exceptions.SSLError as e:
             raise SSLError(cause=e) from e
 
@@ -161,11 +156,8 @@ class RequestsResponseAdapter(Response):
             if ir_err is not None:
                 # `urllib3.exceptions.IncompleteRead` is subclass of `http.client.IncompleteRead`
                 # but uses an `int` for its `partial` property.
-                partial = ir_err.partial if isinstance(
-                    ir_err.partial, int) else len(
-                    ir_err.partial)
-                raise IncompleteRead(
-                    partial=partial, expected=ir_err.expected) from e
+                partial = ir_err.partial if isinstance(ir_err.partial, int) else len(ir_err.partial)
+                raise IncompleteRead(partial=partial, expected=ir_err.expected) from e
             raise TransportError(cause=e) from e
 
         except urllib3.exceptions.HTTPError as e:
@@ -174,12 +166,7 @@ class RequestsResponseAdapter(Response):
 
 
 class RequestsHTTPAdapter(requests.adapters.HTTPAdapter):
-    def __init__(
-            self,
-            ssl_context=None,
-            proxy_ssl_context=None,
-            source_address=None,
-            **kwargs):
+    def __init__(self, ssl_context=None, proxy_ssl_context=None, source_address=None, **kwargs):
         self._pm_args = {}
         if ssl_context:
             self._pm_args['ssl_context'] = ssl_context
@@ -195,16 +182,14 @@ class RequestsHTTPAdapter(requests.adapters.HTTPAdapter):
         extra_kwargs = {}
         if not proxy.lower().startswith('socks') and self._proxy_ssl_context:
             extra_kwargs['proxy_ssl_context'] = self._proxy_ssl_context
-        return super().proxy_manager_for(
-            proxy, **proxy_kwargs, **self._pm_args, **extra_kwargs)
+        return super().proxy_manager_for(proxy, **proxy_kwargs, **self._pm_args, **extra_kwargs)
 
     # Skip `requests` internal verification; we use our own SSLContext
     def cert_verify(*args, **kwargs):
         pass
 
     # requests 2.32.2+: Reimplementation without `_urllib3_request_context`
-    def get_connection_with_tls_context(
-            self, request, verify, proxies=None, cert=None):
+    def get_connection_with_tls_context(self, request, verify, proxies=None, cert=None):
         url = urllib3.util.parse_url(request.url).url
 
         manager = self.poolmanager
@@ -220,11 +205,9 @@ class RequestsSession(requests.sessions.Session):
     """
 
     def rebuild_method(self, prepared_request, response):
-        new_method = get_redirect_method(
-            prepared_request.method, response.status_code)
+        new_method = get_redirect_method(prepared_request.method, response.status_code)
 
-        # HACK: requests removes headers/body on redirect unless code was a
-        # 307/308.
+        # HACK: requests removes headers/body on redirect unless code was a 307/308.
         if new_method == prepared_request.method:
             response._real_status_code = response.status_code
             response.status_code = 308
@@ -237,8 +220,7 @@ class RequestsSession(requests.sessions.Session):
 
     def rebuild_auth(self, prepared_request, response):
         # HACK: undo status code change from rebuild_method, if applicable.
-        # rebuild_auth runs after requests would remove headers/body based on
-        # status code
+        # rebuild_auth runs after requests would remove headers/body based on status code
         if hasattr(response, '_real_status_code'):
             response.status_code = response._real_status_code
             del response._real_status_code
@@ -279,13 +261,7 @@ class RequestsRH(RequestHandler, InstanceStoreMixin):
     """
     _SUPPORTED_URL_SCHEMES = ('http', 'https')
     _SUPPORTED_ENCODINGS = tuple(SUPPORTED_ENCODINGS)
-    _SUPPORTED_PROXY_SCHEMES = (
-        'http',
-        'https',
-        'socks4',
-        'socks4a',
-        'socks5',
-        'socks5h')
+    _SUPPORTED_PROXY_SCHEMES = ('http', 'https', 'socks4', 'socks4a', 'socks5', 'socks5h')
     _SUPPORTED_FEATURES = (Features.NO_PROXY, Features.ALL_PROXY)
     RH_NAME = 'requests'
 
@@ -295,8 +271,7 @@ class RequestsRH(RequestHandler, InstanceStoreMixin):
         # Forward urllib3 debug messages to our logger
         logger = logging.getLogger('urllib3')
         self.__logging_handler = Urllib3LoggingHandler(logger=self._logger)
-        self.__logging_handler.setFormatter(
-            logging.Formatter('requests: %(message)s'))
+        self.__logging_handler.setFormatter(logging.Formatter('requests: %(message)s'))
         self.__logging_handler.addFilter(Urllib3LoggingFilter())
         logger.addHandler(self.__logging_handler)
         # TODO: Use a logger filter to suppress pool reuse warning instead
@@ -305,8 +280,7 @@ class RequestsRH(RequestHandler, InstanceStoreMixin):
         if self.verbose:
             # Setting this globally is not ideal, but is easier than hacking with urllib3.
             # It could technically be problematic for scripts embedding yt-dlp.
-            # However, it is unlikely debug traffic is used in that context in
-            # a way this will cause problems.
+            # However, it is unlikely debug traffic is used in that context in a way this will cause problems.
             urllib3.connection.HTTPConnection.debuglevel = 1
             logger.setLevel(logging.DEBUG)
         # this is expected if we are using --no-check-certificate
@@ -328,14 +302,12 @@ class RequestsRH(RequestHandler, InstanceStoreMixin):
     def _create_instance(self, cookiejar, legacy_ssl_support=None):
         session = RequestsSession()
         http_adapter = RequestsHTTPAdapter(
-            ssl_context=self._make_sslcontext(
-                legacy_ssl_support=legacy_ssl_support),
+            ssl_context=self._make_sslcontext(legacy_ssl_support=legacy_ssl_support),
             source_address=self.source_address,
             max_retries=urllib3.util.retry.Retry(False),
         )
         session.adapters.clear()
-        session.headers = requests.models.CaseInsensitiveDict(
-            {'Connection': 'keep-alive'})
+        session.headers = requests.models.CaseInsensitiveDict({'Connection': 'keep-alive'})
         session.mount('https://', http_adapter)
         session.mount('http://', http_adapter)
         session.cookies = cookiejar
@@ -387,8 +359,7 @@ class RequestsRH(RequestHandler, InstanceStoreMixin):
             raise TransportError(cause=e) from e
 
         except requests.exceptions.RequestException as e:
-            # Miscellaneous Requests exceptions. May not necessary be network
-            # related e.g. InvalidURL
+            # Miscellaneous Requests exceptions. May not necessary be network related e.g. InvalidURL
             raise RequestError(cause=e) from e
 
         res = RequestsResponseAdapter(requests_res)
@@ -404,11 +375,9 @@ def requests_preference(rh, request):
     return 100
 
 
-# Use our socks proxy implementation with requests to avoid an extra
-# dependency.
+# Use our socks proxy implementation with requests to avoid an extra dependency.
 class SocksHTTPConnection(urllib3.connection.HTTPConnection):
-    # must use _socks_options to pass PoolKey checks
-    def __init__(self, _socks_options, *args, **kwargs):
+    def __init__(self, _socks_options, *args, **kwargs):  # must use _socks_options to pass PoolKey checks
         self._proxy_args = _socks_options
         super().__init__(*args, **kwargs)
 
@@ -430,9 +399,7 @@ class SocksHTTPConnection(urllib3.connection.HTTPConnection):
                 self, f'Failed to establish a new connection: {e}') from e
 
 
-class SocksHTTPSConnection(
-        SocksHTTPConnection,
-        urllib3.connection.HTTPSConnection):
+class SocksHTTPSConnection(SocksHTTPConnection, urllib3.connection.HTTPSConnection):
     pass
 
 
@@ -446,16 +413,8 @@ class SocksHTTPSConnectionPool(urllib3.HTTPSConnectionPool):
 
 class SocksProxyManager(urllib3.PoolManager):
 
-    def __init__(
-            self,
-            socks_proxy,
-            username=None,
-            password=None,
-            num_pools=10,
-            headers=None,
-            **connection_pool_kw):
-        connection_pool_kw['_socks_options'] = make_socks_proxy_opts(
-            socks_proxy)
+    def __init__(self, socks_proxy, username=None, password=None, num_pools=10, headers=None, **connection_pool_kw):
+        connection_pool_kw['_socks_options'] = make_socks_proxy_opts(socks_proxy)
         super().__init__(num_pools, headers, **connection_pool_kw)
         self.pool_classes_by_scheme = {
             'http': SocksHTTPConnectionPool,

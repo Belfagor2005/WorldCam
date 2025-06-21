@@ -41,8 +41,7 @@ class RtmpFD(FileDownloader):
                     if not line:
                         # proc_stderr_closed is True
                         continue
-                    mobj = re.search(
-                        r'([0-9]+\.[0-9]{3}) kB / [0-9]+\.[0-9]{2} sec \(([0-9]{1,2}\.[0-9])%\)', line)
+                    mobj = re.search(r'([0-9]+\.[0-9]{3}) kB / [0-9]+\.[0-9]{2} sec \(([0-9]{1,2}\.[0-9])%\)', line)
                     if mobj:
                         downloaded_data_len = int(float(mobj.group(1)) * 1024)
                         percent = float(mobj.group(2))
@@ -50,10 +49,8 @@ class RtmpFD(FileDownloader):
                             resume_percent = percent
                             resume_downloaded_data_len = downloaded_data_len
                         time_now = time.time()
-                        eta = self.calc_eta(
-                            start, time_now, 100 - resume_percent, percent - resume_percent)
-                        speed = self.calc_speed(
-                            start, time_now, downloaded_data_len - resume_downloaded_data_len)
+                        eta = self.calc_eta(start, time_now, 100 - resume_percent, percent - resume_percent)
+                        speed = self.calc_speed(start, time_now, downloaded_data_len - resume_downloaded_data_len)
                         data_len = None
                         if percent > 0:
                             data_len = int(downloaded_data_len * 100 / percent)
@@ -70,14 +67,11 @@ class RtmpFD(FileDownloader):
                         cursor_in_new_line = False
                     else:
                         # no percent for live streams
-                        mobj = re.search(
-                            r'([0-9]+\.[0-9]{3}) kB / [0-9]+\.[0-9]{2} sec', line)
+                        mobj = re.search(r'([0-9]+\.[0-9]{3}) kB / [0-9]+\.[0-9]{2} sec', line)
                         if mobj:
-                            downloaded_data_len = int(
-                                float(mobj.group(1)) * 1024)
+                            downloaded_data_len = int(float(mobj.group(1)) * 1024)
                             time_now = time.time()
-                            speed = self.calc_speed(
-                                start, time_now, downloaded_data_len)
+                            speed = self.calc_speed(start, time_now, downloaded_data_len)
                             self._hook_progress({
                                 'downloaded_bytes': downloaded_data_len,
                                 'tmpfilename': tmpfilename,
@@ -119,8 +113,7 @@ class RtmpFD(FileDownloader):
 
         # Check for rtmpdump first
         if not check_executable('rtmpdump', ['-h']):
-            self.report_error(
-                'RTMP download detected but "rtmpdump" could not be run. Please install')
+            self.report_error('RTMP download detected but "rtmpdump" could not be run. Please install')
             return False
 
         # Download using rtmpdump. rtmpdump returns exit code 2 when
@@ -196,11 +189,9 @@ class RtmpFD(FileDownloader):
             cursize = os.path.getsize(tmpfilename)
             if prevsize == cursize and retval == RD_FAILED:
                 break
-            # Some rtmp streams seem abort after ~ 99.8%. Don't complain for
-            # those
+            # Some rtmp streams seem abort after ~ 99.8%. Don't complain for those
             if prevsize == cursize and retval == RD_INCOMPLETE and cursize > 1024:
-                self.to_screen(
-                    '[rtmpdump] Could not download the whole video. This can happen for some advertisements.')
+                self.to_screen('[rtmpdump] Could not download the whole video. This can happen for some advertisements.')
                 retval = RD_SUCCESS
                 break
         if retval == RD_SUCCESS or (test and retval == RD_INCOMPLETE):

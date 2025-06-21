@@ -123,15 +123,11 @@ class DetikEmbedIE(InfoExtractor):
         display_id, extra_info_dict = url_basename(url), {}
 
         if player_type == 'flowplayer':
-            video_json_data = self._parse_json(
-                video_data.replace('\'', '"'), display_id)
+            video_json_data = self._parse_json(video_data.replace('\'', '"'), display_id)
             video_url = video_json_data['videoUrl']
 
             extra_info_dict = {
-                'id': self._search_regex(
-                    r'identifier\s*:\s*\'([^\']+)',
-                    webpage,
-                    'identifier'),
+                'id': self._search_regex(r'identifier\s*:\s*\'([^\']+)', webpage, 'identifier'),
                 'thumbnail': video_json_data.get('imageUrl'),
             }
 
@@ -139,47 +135,17 @@ class DetikEmbedIE(InfoExtractor):
             video_url = self._search_regex(
                 r'videoUrl\s*:\s*[\'"]?([^"\']+)', video_data, 'videoUrl')
             extra_info_dict = {
-                'id': self._html_search_meta(
-                    [
-                        'video_id',
-                        'dtk:video_id'],
-                    webpage),
-                'thumbnail': self._search_regex(
-                    r'imageUrl\s*:\s*[\'"]?([^"\']+)',
-                    video_data,
-                    'videoUrl'),
-                'duration': int_or_none(
-                    self._html_search_meta(
-                        'duration',
-                        webpage,
-                        fatal=False,
-                        default=None)),
-                'release_timestamp': int_or_none(
-                    self._html_search_meta(
-                        'dtk:publishdateunix',
-                        webpage,
-                        fatal=False,
-                        default=None),
-                    1000),
-                'timestamp': int_or_none(
-                    self._html_search_meta(
-                        'dtk:createdateunix',
-                        webpage,
-                        fatal=False,
-                        default=None),
-                    1000),
+                'id': self._html_search_meta(['video_id', 'dtk:video_id'], webpage),
+                'thumbnail': self._search_regex(r'imageUrl\s*:\s*[\'"]?([^"\']+)', video_data, 'videoUrl'),
+                'duration': int_or_none(self._html_search_meta('duration', webpage, fatal=False, default=None)),
+                'release_timestamp': int_or_none(self._html_search_meta('dtk:publishdateunix', webpage, fatal=False, default=None), 1000),
+                'timestamp': int_or_none(self._html_search_meta('dtk:createdateunix', webpage, fatal=False, default=None), 1000),
                 'uploader': self._search_regex(
-                    r'([^-]+)',
-                    self._html_search_meta(
-                        'dtk:author',
-                        webpage,
-                        default='').strip(),
-                    'uploader',
+                    r'([^-]+)', self._html_search_meta('dtk:author', webpage, default='').strip(), 'uploader',
                     default=None),
             }
 
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            video_url, display_id)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(video_url, display_id)
 
         json_ld_data = self._search_json_ld(webpage, display_id, default={})
         yield merge_dicts(json_ld_data, extra_info_dict, {

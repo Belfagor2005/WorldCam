@@ -68,8 +68,7 @@ class FrontendMastersPageBaseIE(FrontendMastersBaseIE):
         chapters = []
         lesson_elements = course.get('lessonElements')
         if isinstance(lesson_elements, list):
-            chapters = [url_or_none(e)
-                        for e in lesson_elements if url_or_none(e)]
+            chapters = [url_or_none(e) for e in lesson_elements if url_or_none(e)]
         return chapters
 
     @staticmethod

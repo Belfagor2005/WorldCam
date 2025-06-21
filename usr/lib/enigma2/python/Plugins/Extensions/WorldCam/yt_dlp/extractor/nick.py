@@ -7,48 +7,64 @@ class NickIE(MTVServicesInfoExtractor):
     _VALID_URL = r'https?://(?P<domain>(?:www\.)?nick(?:jr)?\.com)/(?:[^/]+/)?(?P<type>videos/clip|[^/]+/videos|episodes/[^/]+)/(?P<id>[^/?#.]+)'
     _FEED_URL = 'http://udat.mtvnservices.com/service1/dispatch.htm'
     _GEO_COUNTRIES = ['US']
-    _TESTS = [{'url': 'https://www.nick.com/episodes/sq47rw/spongebob-squarepants-a-place-for-pets-lockdown-for-love-season-13-ep-1',
-               'info_dict': {'description': 'md5:0650a9eb88955609d5c1d1c79292e234',
-                             'title': 'A Place for Pets/Lockdown for Love',
-                             },
-               'playlist': [{'md5': 'cb8a2afeafb7ae154aca5a64815ec9d6',
-                             'info_dict': {'id': '85ee8177-d6ce-48f8-9eee-a65364f8a6df',
-                                           'ext': 'mp4',
-                                           'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S1',
-                                           'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
-                                           },
-                             },
-                            {'md5': '839a04f49900a1fcbf517020d94e0737',
-                             'info_dict': {'id': '2e2a9960-8fd4-411d-868b-28eb1beb7fae',
-                                           'ext': 'mp4',
-                                           'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S2',
-                                           'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
-                                           },
-                             },
-                            {'md5': 'f1145699f199770e2919ee8646955d46',
-                             'info_dict': {'id': 'dc91c304-6876-40f7-84a6-7aece7baa9d0',
-                                           'ext': 'mp4',
-                                           'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S3',
-                                           'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
-                                           },
-                             },
-                            {'md5': 'd463116875aee2585ee58de3b12caebd',
-                             'info_dict': {'id': '5d929486-cf4c-42a1-889a-6e0d183a101a',
-                                           'ext': 'mp4',
-                                           'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S4',
-                                           'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
-                                           },
-                             },
-                            ],
-               },
-              {'url': 'http://www.nickjr.com/blues-clues-and-you/videos/blues-clues-and-you-original-209-imagination-station/',
-               'info_dict': {'id': '31631529-2fc5-430b-b2ef-6a74b4609abd',
-                             'ext': 'mp4',
-                             'description': 'md5:9d65a66df38e02254852794b2809d1cf',
-                             'title': 'Blue\'s Imagination Station',
-                             },
-               'skip': 'Not accessible?',
-               }]
+    _TESTS = [{
+        'url': 'https://www.nick.com/episodes/sq47rw/spongebob-squarepants-a-place-for-pets-lockdown-for-love-season-13-ep-1',
+        'info_dict': {
+            'description': 'md5:0650a9eb88955609d5c1d1c79292e234',
+            'title': 'A Place for Pets/Lockdown for Love',
+        },
+        'playlist': [
+            {
+                'md5': 'cb8a2afeafb7ae154aca5a64815ec9d6',
+                'info_dict': {
+                    'id': '85ee8177-d6ce-48f8-9eee-a65364f8a6df',
+                    'ext': 'mp4',
+                    'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S1',
+                    'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
+
+                },
+            },
+            {
+                'md5': '839a04f49900a1fcbf517020d94e0737',
+                'info_dict': {
+                    'id': '2e2a9960-8fd4-411d-868b-28eb1beb7fae',
+                    'ext': 'mp4',
+                    'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S2',
+                    'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
+
+                },
+            },
+            {
+                'md5': 'f1145699f199770e2919ee8646955d46',
+                'info_dict': {
+                    'id': 'dc91c304-6876-40f7-84a6-7aece7baa9d0',
+                    'ext': 'mp4',
+                    'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S3',
+                    'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
+
+                },
+            },
+            {
+                'md5': 'd463116875aee2585ee58de3b12caebd',
+                'info_dict': {
+                    'id': '5d929486-cf4c-42a1-889a-6e0d183a101a',
+                    'ext': 'mp4',
+                    'title': 'SpongeBob SquarePants: "A Place for Pets/Lockdown for Love" S4',
+                    'description': 'A Place for Pets/Lockdown for Love: When customers bring pets into the Krusty Krab, Mr. Krabs realizes pets are more profitable than owners. Plankton ruins another date with Karen, so she puts the Chum Bucket on lockdown until he proves his affection.',
+
+                },
+            },
+        ],
+    }, {
+        'url': 'http://www.nickjr.com/blues-clues-and-you/videos/blues-clues-and-you-original-209-imagination-station/',
+        'info_dict': {
+            'id': '31631529-2fc5-430b-b2ef-6a74b4609abd',
+            'ext': 'mp4',
+            'description': 'md5:9d65a66df38e02254852794b2809d1cf',
+            'title': 'Blue\'s Imagination Station',
+        },
+        'skip': 'Not accessible?',
+    }]
 
     def _get_feed_query(self, uri):
         return {
@@ -79,21 +95,22 @@ class NickBrIE(MTVServicesInfoExtractor):
                         )
                         /(?:programas/)?[^/]+/videos/(?:episodios/)?(?P<id>[^/?\#.]+)
                     '''
-    _TESTS = [{'url': 'http://www.nickjr.com.br/patrulha-canina/videos/210-labirinto-de-pipoca/',
-               'only_matching': True,
-               },
-              {'url': 'http://mundonick.uol.com.br/programas/the-loud-house/videos/muitas-irmas/7ljo9j',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickjr.nl/paw-patrol/videos/311-ge-wol-dig-om-terug-te-zijn/',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickjr.de/blaze-und-die-monster-maschinen/videos/f6caaf8f-e4e8-4cc1-b489-9380d6dcd059/',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeonjunior.fr/paw-patrol-la-pat-patrouille/videos/episode-401-entier-paw-patrol/',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://www.nickjr.com.br/patrulha-canina/videos/210-labirinto-de-pipoca/',
+        'only_matching': True,
+    }, {
+        'url': 'http://mundonick.uol.com.br/programas/the-loud-house/videos/muitas-irmas/7ljo9j',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickjr.nl/paw-patrol/videos/311-ge-wol-dig-om-terug-te-zijn/',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickjr.de/blaze-und-die-monster-maschinen/videos/f6caaf8f-e4e8-4cc1-b489-9380d6dcd059/',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeonjunior.fr/paw-patrol-la-pat-patrouille/videos/episode-401-entier-paw-patrol/',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         domain, display_id = self._match_valid_url(url).groups()
@@ -109,8 +126,7 @@ class NickBrIE(MTVServicesInfoExtractor):
             }, headers={
                 'Referer': url,
             })
-        info_url = self._remove_template_parameter(
-            config['feedWithQueryParams'])
+        info_url = self._remove_template_parameter(config['feedWithQueryParams'])
         if info_url == 'None':
             if domain.startswith('www.'):
                 domain = domain[4:]
@@ -168,38 +184,38 @@ class NickDeIE(MTVServicesInfoExtractor):
     def _get_feed_url(self, uri, url=None):
         video_id = self._id_from_uri(uri)
         config = self._download_json(
-            f'http://media.mtvnservices.com/pmt/e1/access/index.html?uri={uri}&configtype=edge&ref={url}',
-            video_id)
+            f'http://media.mtvnservices.com/pmt/e1/access/index.html?uri={uri}&configtype=edge&ref={url}', video_id)
         return self._remove_template_parameter(config['feedWithQueryParams'])
 
 
 class NickRuIE(MTVServicesInfoExtractor):
     IE_NAME = 'nickelodeonru'
     _VALID_URL = r'https?://(?:www\.)nickelodeon\.(?:ru|fr|es|pt|ro|hu|com\.tr)/[^/]+/(?:[^/]+/)*(?P<id>[^/?#&]+)'
-    _TESTS = [{'url': 'http://www.nickelodeon.ru/shows/henrydanger/videos/episodes/3-sezon-15-seriya-licenziya-na-polyot/pmomfb#playlist/7airc6',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeon.ru/videos/smotri-na-nickelodeon-v-iyule/g9hvh7',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeon.fr/programmes/bob-l-eponge/videos/le-marathon-de-booh-kini-bottom-mardi-31-octobre/nfn7z0',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeon.es/videos/nickelodeon-consejos-tortitas/f7w7xy',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeon.pt/series/spongebob-squarepants/videos/a-bolha-de-tinta-gigante/xutq1b',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeon.ro/emisiuni/shimmer-si-shine/video/nahal-din-bomboane/uw5u2k',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeon.hu/musorok/spongyabob-kockanadrag/videok/episodes/buborekfujas-az-elszakadt-nadrag/q57iob#playlist/k6te4y',
-               'only_matching': True,
-               },
-              {'url': 'http://www.nickelodeon.com.tr/programlar/sunger-bob/videolar/kayip-yatak/mgqbjy',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://www.nickelodeon.ru/shows/henrydanger/videos/episodes/3-sezon-15-seriya-licenziya-na-polyot/pmomfb#playlist/7airc6',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeon.ru/videos/smotri-na-nickelodeon-v-iyule/g9hvh7',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeon.fr/programmes/bob-l-eponge/videos/le-marathon-de-booh-kini-bottom-mardi-31-octobre/nfn7z0',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeon.es/videos/nickelodeon-consejos-tortitas/f7w7xy',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeon.pt/series/spongebob-squarepants/videos/a-bolha-de-tinta-gigante/xutq1b',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeon.ro/emisiuni/shimmer-si-shine/video/nahal-din-bomboane/uw5u2k',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeon.hu/musorok/spongyabob-kockanadrag/videok/episodes/buborekfujas-az-elszakadt-nadrag/q57iob#playlist/k6te4y',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.nickelodeon.com.tr/programlar/sunger-bob/videolar/kayip-yatak/mgqbjy',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)

@@ -83,9 +83,7 @@ class WimTVIE(InfoExtractor):
             for var in data['vars']:
                 val = self._search_regex(var['regex'], temp, msg_id)
                 if not val:
-                    raise ExtractorError(
-                        '{} not found'.format(
-                            var['variable']))
+                    raise ExtractorError('{} not found'.format(var['variable']))
                 self._player[var['variable']] = val
 
     def _generate_token(self):

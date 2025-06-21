@@ -81,16 +81,10 @@ class ThisOldHouseIE(InfoExtractor):
 
     def _perform_login(self, username, password):
         self._request_webpage(
-            HEADRequest('https://www.thisoldhouse.com/insider'),
-            None,
-            'Requesting session cookies')
+            HEADRequest('https://www.thisoldhouse.com/insider'), None, 'Requesting session cookies')
         urlh = self._request_webpage(
-            'https://www.thisoldhouse.com/wp-login.php',
-            None,
-            'Requesting login info',
-            errnote='Unable to login',
-            query={
-                'redirect_to': 'https://www.thisoldhouse.com/insider'})
+            'https://www.thisoldhouse.com/wp-login.php', None, 'Requesting login info',
+            errnote='Unable to login', query={'redirect_to': 'https://www.thisoldhouse.com/insider'})
 
         try:
             auth_form = self._download_webpage(
@@ -109,16 +103,12 @@ class ThisOldHouseIE(InfoExtractor):
                 }), separators=(',', ':')).encode())
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
-                raise ExtractorError(
-                    'Invalid username or password', expected=True)
+                raise ExtractorError('Invalid username or password', expected=True)
             raise
 
         self._request_webpage(
-            'https://login.thisoldhouse.com/login/callback',
-            None,
-            'Completing login',
-            data=urlencode_postdata(
-                self._hidden_inputs(auth_form)))
+            'https://login.thisoldhouse.com/login/callback', None, 'Completing login',
+            data=urlencode_postdata(self._hidden_inputs(auth_form)))
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -132,8 +122,7 @@ class ThisOldHouseIE(InfoExtractor):
             r'<iframe[^>]+src=[\'"]((?:https?:)?//(?:www\.)?thisoldhouse\.(?:chorus\.build|com)/videos/zype/([0-9a-f]{24})[^\'"]*)[\'"]',
             webpage, 'zype url', group=(1, 2), default=(None, None))
         if video_url:
-            video_url = self._request_webpage(
-                HEADRequest(video_url), video_id, 'Resolving Zype URL').url
+            video_url = self._request_webpage(HEADRequest(video_url), video_id, 'Resolving Zype URL').url
             return self.url_result(video_url, ZypeIE, video_id)
 
         video_url, video_id = self._search_regex([
@@ -141,9 +130,5 @@ class ThisOldHouseIE(InfoExtractor):
             r'<iframe[^>]+src=[\'"]((?:https?:)?//(?:www\.)thisoldhouse\.com/videos/brightcove/(\d+))'],
             webpage, 'iframe url', group=(1, 2))
         if not parse_qs(video_url).get('videoId'):
-            video_url = self._request_webpage(
-                HEADRequest(video_url), video_id, 'Resolving Brightcove URL').url
-        return self.url_result(
-            smuggle_url(
-                video_url, {
-                    'referrer': url}), BrightcoveNewIE, video_id)
+            video_url = self._request_webpage(HEADRequest(video_url), video_id, 'Resolving Brightcove URL').url
+        return self.url_result(smuggle_url(video_url, {'referrer': url}), BrightcoveNewIE, video_id)

@@ -97,15 +97,13 @@ class BunnyCdnIE(InfoExtractor):
     def _real_extract(self, url):
         url, smuggled_data = unsmuggle_url(url, {})
 
-        video_id, library_id = self._match_valid_url(
-            url).group('id', 'library_id')
+        video_id, library_id = self._match_valid_url(url).group('id', 'library_id')
         webpage = self._download_webpage(
             f'https://iframe.mediadelivery.net/embed/{library_id}/{video_id}', video_id,
             headers=traverse_obj(smuggled_data, {'Referer': 'Referer'}),
             query=traverse_obj(parse_qs(url), {'token': 'token', 'expires': 'expires'}))
 
-        if html_title := self._html_extract_title(
-                webpage, default=None) == '403':
+        if html_title := self._html_extract_title(webpage, default=None) == '403':
             raise ExtractorError(
                 'This video is inaccessible. Setting a Referer header '
                 'might be required to access the video', expected=True)
@@ -114,31 +112,16 @@ class BunnyCdnIE(InfoExtractor):
 
         headers = {'Referer': url}
 
-        info = traverse_obj(
-            self._parse_html5_media_entries(
-                url,
-                webpage,
-                video_id,
-                _headers=headers),
-            0) or {}
+        info = traverse_obj(self._parse_html5_media_entries(url, webpage, video_id, _headers=headers), 0) or {}
         formats = info.get('formats') or []
         subtitles = info.get('subtitles') or {}
 
         original_url = self._search_regex(
-            r'(?:var|const|let)\s+originalUrl\s*=\s*["\']([^"\']+)["\']',
-            webpage,
-            'original url',
-            default=None)
+            r'(?:var|const|let)\s+originalUrl\s*=\s*["\']([^"\']+)["\']', webpage, 'original url', default=None)
         if url_or_none(original_url):
             urlh = self._request_webpage(
-                HEADRequest(original_url),
-                video_id=video_id,
-                note='Checking original',
-                headers=headers,
-                fatal=False,
-                expected_status=(
-                    403,
-                    404))
+                HEADRequest(original_url), video_id=video_id, note='Checking original',
+                headers=headers, fatal=False, expected_status=(403, 404))
             if urlh and urlh.status == 200:
                 formats.append({
                     'url': original_url,
@@ -151,15 +134,9 @@ class BunnyCdnIE(InfoExtractor):
 
         # MediaCage Streams require activation and pings
         src_url = self._search_regex(
-            r'\.setAttribute\([\'"]src[\'"],\s*[\'"]([^\'"]+)[\'"]\)',
-            webpage,
-            'src url',
-            default=None)
+            r'\.setAttribute\([\'"]src[\'"],\s*[\'"]([^\'"]+)[\'"]\)', webpage, 'src url', default=None)
         activation_url = self._search_regex(
-            r'loadUrl\([\'"]([^\'"]+/activate)[\'"]',
-            webpage,
-            'activation url',
-            default=None)
+            r'loadUrl\([\'"]([^\'"]+/activate)[\'"]', webpage, 'activation url', default=None)
         ping_url = self._search_regex(
             r'loadUrl\([\'"]([^\'"]+/ping)[\'"]', webpage, 'ping url', default=None)
         secret = traverse_obj(parse_qs(src_url), ('secret', 0))
@@ -167,10 +144,7 @@ class BunnyCdnIE(InfoExtractor):
         ping_data = {}
         if src_url and activation_url and ping_url and secret and context_id:
             self._download_webpage(
-                activation_url,
-                video_id,
-                headers=headers,
-                note='Downloading activation data')
+                activation_url, video_id, headers=headers, note='Downloading activation data')
 
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 src_url, video_id, 'mp4', headers=headers, m3u8_id='hls', fatal=False)
@@ -191,22 +165,14 @@ class BunnyCdnIE(InfoExtractor):
                 },
             }
 
-        return {'id': video_id,
-                'formats': formats,
-                'subtitles': subtitles,
-                **traverse_obj(webpage,
-                               ({find_element(id='main-video',
-                                              html=True)},
-                                {extract_attributes},
-                                {'title': ('data-plyr-config',
-                                           {json.loads},
-                                           'title',
-                                           {str}),
-                                 'thumbnail': ('data-poster',
-                                               {url_or_none}),
-                                 })),
-                **ping_data,
-                **self._search_json_ld(webpage,
-                                       video_id,
-                                       fatal=False),
-                }
+        return {
+            'id': video_id,
+            'formats': formats,
+            'subtitles': subtitles,
+            **traverse_obj(webpage, ({find_element(id='main-video', html=True)}, {extract_attributes}, {
+                'title': ('data-plyr-config', {json.loads}, 'title', {str}),
+                'thumbnail': ('data-poster', {url_or_none}),
+            })),
+            **ping_data,
+            **self._search_json_ld(webpage, video_id, fatal=False),
+        }

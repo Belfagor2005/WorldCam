@@ -1363,8 +1363,7 @@ MSO_INFO = {
 }
 
 
-class AdobePassIE(
-        InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
+class AdobePassIE(InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
     _SERVICE_PROVIDER_TEMPLATE = 'https://sp.auth.adobe.com/adobe-services/%s'
     _USER_AGENT = 'Mozilla/5.0 (X11; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0'
     _MVPD_CACHE = 'ap-mvpd'
@@ -1399,16 +1398,9 @@ class AdobePassIE(
         resource_rating = etree.SubElement(item, 'media:rating')
         resource_rating.attrib = {'scheme': 'urn:v-chip'}
         resource_rating.text = rating
-        return '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">' + \
-            etree.tostring(channel).decode() + '</rss>'
+        return '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">' + etree.tostring(channel).decode() + '</rss>'
 
-    def _extract_mvpd_auth(
-            self,
-            url,
-            video_id,
-            requestor_id,
-            resource,
-            software_statement):
+    def _extract_mvpd_auth(self, url, video_id, requestor_id, resource, software_statement):
         mso_id = self.get_param('ap_mso')
         if mso_id:
             mso_info = MSO_INFO[mso_id]
@@ -1420,22 +1412,16 @@ class AdobePassIE(
                 f'<{tag}>(.+?)</{tag}>', xml_str, tag)
 
         def is_expired(token, date_ele):
-            token_expires = unified_timestamp(
-                re.sub(r'[_ ]GMT', '', xml_text(token, date_ele)))
+            token_expires = unified_timestamp(re.sub(r'[_ ]GMT', '', xml_text(token, date_ele)))
             return token_expires and token_expires <= int(time.time())
 
         def post_form(form_page_res, note, data={}, validate_url=False):
             form_page, urlh = form_page_res
-            post_url = self._html_search_regex(
-                r'<form[^>]+action=(["\'])(?P<url>.+?)\1',
-                form_page,
-                'post url',
-                group='url')
+            post_url = self._html_search_regex(r'<form[^>]+action=(["\'])(?P<url>.+?)\1', form_page, 'post url', group='url')
             if not re.match(r'https?://', post_url):
                 post_url = urllib.parse.urljoin(urlh.url, post_url)
             if validate_url:
-                # This request is submitting credentials so we should validate
-                # it when possible
+                # This request is submitting credentials so we should validate it when possible
                 url_parsed = urllib.parse.urlparse(post_url)
                 expected_hostname = mso_info.get('login_hostname')
                 if expected_hostname and expected_hostname != url_parsed.hostname:
@@ -1444,16 +1430,11 @@ class AdobePassIE(
                         f'"{url_parsed.hostname}". Aborting before submitting credentials')
                 if url_parsed.scheme != 'https':
                     self.write_debug('Upgrading login URL scheme to https')
-                    post_url = urllib.parse.urlunparse(
-                        url_parsed._replace(scheme='https'))
+                    post_url = urllib.parse.urlunparse(url_parsed._replace(scheme='https'))
             form_data = self._hidden_inputs(form_page)
             form_data.update(data)
             return self._download_webpage_handle(
-                post_url,
-                video_id,
-                note,
-                data=urlencode_postdata(form_data),
-                headers={
+                post_url, video_id, note, data=urlencode_postdata(form_data), headers={
                     **self._get_mso_headers(mso_info),
                     'Content-Type': 'application/x-www-form-urlencoded',
                 })
@@ -1462,8 +1443,7 @@ class AdobePassIE(
             raise ExtractorError(
                 'This video is only available for users of participating TV providers. '
                 'Use --ap-mso to specify Adobe Pass Multiple-system operator Identifier '
-                'and --ap-username and --ap-password or --netrc to provide account credentials.',
-                expected=True)
+                'and --ap-username and --ap-password or --netrc to provide account credentials.', expected=True)
 
         def extract_redirect_url(html, url=None, fatal=False):
             # TODO: eliminate code duplication with generic extractor and move
@@ -1477,8 +1457,7 @@ class AdobePassIE(
             if not redirect_url:
                 return None
             if url:
-                redirect_url = urllib.parse.urljoin(
-                    url, unescapeHTML(redirect_url))
+                redirect_url = urllib.parse.urljoin(url, unescapeHTML(redirect_url))
             return redirect_url
 
         mvpd_headers = {
@@ -1490,16 +1469,14 @@ class AdobePassIE(
 
         guid = xml_text(resource, 'guid') if '<' in resource else resource
         for _ in range(2):
-            requestor_info = self.cache.load(
-                self._MVPD_CACHE, requestor_id) or {}
+            requestor_info = self.cache.load(self._MVPD_CACHE, requestor_id) or {}
             authn_token = requestor_info.get('authn_token')
             if authn_token and is_expired(authn_token, 'simpleTokenExpires'):
                 authn_token = None
             if not authn_token:
                 if not mso_id:
                     raise_mvpd_required()
-                username, password = self._get_login_info(
-                    'ap_username', 'ap_password', mso_id)
+                username, password = self._get_login_info('ap_username', 'ap_password', mso_id)
                 if not username or not password:
                     raise_mvpd_required()
 
@@ -1545,11 +1522,8 @@ class AdobePassIE(
                     })['code']
 
                 provider_redirect_page_res = self._download_webpage_handle(
-                    self._SERVICE_PROVIDER_TEMPLATE %
-                    'authenticate/saml',
-                    video_id,
-                    'Downloading Provider Redirect Page',
-                    query={
+                    self._SERVICE_PROVIDER_TEMPLATE % 'authenticate/saml', video_id,
+                    'Downloading Provider Redirect Page', query={
                         'noflash': 'true',
                         'mso_id': mso_id,
                         'requestor_id': requestor_id,
@@ -1557,8 +1531,7 @@ class AdobePassIE(
                         'domain_name': 'adobe.com',
                         'redirect_url': url,
                         'reg_code': reg_code,
-                    },
-                    headers=self._get_mso_headers(mso_info))
+                    }, headers=self._get_mso_headers(mso_info))
 
                 if mso_id == 'Comcast_SSO':
                     # Comcast page flow varies by video site and whether you
@@ -1571,16 +1544,12 @@ class AdobePassIE(
                         self._download_webpage(
                             oauth_redirect_url, video_id, 'Confirming auto login')
                     elif 'automatically signed in with' in provider_redirect_page:
-                        # Seems like comcast is rolling up new way of
-                        # automatically signing customers
+                        # Seems like comcast is rolling up new way of automatically signing customers
                         oauth_redirect_url = self._html_search_regex(
-                            r'continue:\s*"(https://oauth\.xfinity\.com/oauth/authorize\?.+)"',
-                            provider_redirect_page,
+                            r'continue:\s*"(https://oauth\.xfinity\.com/oauth/authorize\?.+)"', provider_redirect_page,
                             'oauth redirect (signed)')
-                        # Just need to process the request. No useful data
-                        # comes back
-                        self._download_webpage(
-                            oauth_redirect_url, video_id, 'Confirming auto login')
+                        # Just need to process the request. No useful data comes back
+                        self._download_webpage(oauth_redirect_url, video_id, 'Confirming auto login')
                     else:
                         if '<form name="signin"' in provider_redirect_page:
                             provider_login_page_res = provider_redirect_page_res
@@ -1602,8 +1571,7 @@ class AdobePassIE(
                             }, validate_url=True)
                         mvpd_confirm_page, urlh = mvpd_confirm_page_res
                         if '<button class="submit" value="Resume">Resume</button>' in mvpd_confirm_page:
-                            post_form(
-                                mvpd_confirm_page_res, 'Confirming Login')
+                            post_form(mvpd_confirm_page_res, 'Confirming Login')
                 elif mso_id == 'Philo':
                     # Philo has very unique authentication method
                     self._request_webpage(
@@ -1620,8 +1588,7 @@ class AdobePassIE(
                             'Accept': 'application/json',
                         })
 
-                    philo_code = getpass.getpass(
-                        'Type auth code you have received [Return]: ')
+                    philo_code = getpass.getpass('Type auth code you have received [Return]: ')
                     self._request_webpage(
                         'https://idp.philo.com/auth/update/login_code', video_id,
                         'Submitting token', data=json.dumps({'token': philo_code}).encode(),
@@ -1630,15 +1597,13 @@ class AdobePassIE(
                             'Accept': 'application/json',
                         })
 
-                    mvpd_confirm_page_res = self._download_webpage_handle(
-                        'https://idp.philo.com/idp/submit', video_id, 'Confirming Philo Login')
+                    mvpd_confirm_page_res = self._download_webpage_handle('https://idp.philo.com/idp/submit', video_id, 'Confirming Philo Login')
                     post_form(mvpd_confirm_page_res, 'Confirming Login')
                 elif mso_id == 'Verizon':
                     # In general, if you're connecting from a Verizon-assigned IP,
                     # you will not actually pass your credentials.
                     provider_redirect_page, urlh = provider_redirect_page_res
-                    # From non-Verizon IP, still gave 'Please wait', but
-                    # noticed N==Y; will need to try on Verizon IP
+                    # From non-Verizon IP, still gave 'Please wait', but noticed N==Y; will need to try on Verizon IP
                     if 'Please wait ...' in provider_redirect_page and '\'N\'== "Y"' not in provider_redirect_page:
                         saml_redirect_url = self._html_search_regex(
                             r'self\.parent\.location=(["\'])(?P<url>.+?)\1',
@@ -1664,12 +1629,9 @@ class AdobePassIE(
                             r'var\surl\s*=\s*(["\'])(?P<url>.+?)\1',
                             provider_redirect_page,
                             'SAML Redirect URL', group='url')
-                        saml_redirect_url = saml_redirect_url.replace(
-                            r'\/', '/')
-                        saml_redirect_url = saml_redirect_url.replace(
-                            r'\-', '-')
-                        saml_redirect_url = saml_redirect_url.replace(
-                            r'\x26', '&')
+                        saml_redirect_url = saml_redirect_url.replace(r'\/', '/')
+                        saml_redirect_url = saml_redirect_url.replace(r'\-', '-')
+                        saml_redirect_url = saml_redirect_url.replace(r'\x26', '&')
                         saml_login_page = self._download_webpage(
                             saml_redirect_url, video_id,
                             'Downloading SAML Login Page')
@@ -1715,8 +1677,7 @@ class AdobePassIE(
                         'SAMLRequest': saml_request,
                     }
                     saml_response_json = self._download_json(
-                        'https://tveauthn.spectrum.net/tveauthentication/api/v1/manualAuth',
-                        video_id,
+                        'https://tveauthn.spectrum.net/tveauthentication/api/v1/manualAuth', video_id,
                         'Downloading SAML Response',
                         data=json.dumps(login_json).encode(),
                         headers={
@@ -1767,8 +1728,7 @@ class AdobePassIE(
                     post_form(mvpd_confirm_page_res, 'Confirming Login')
                 elif mso_id == 'Suddenlink':
                     # Suddenlink is similar to SlingTV in using a tab history count and a meta refresh,
-                    # but they also do a dynmaic redirect using javascript that
-                    # has to be followed as well
+                    # but they also do a dynmaic redirect using javascript that has to be followed as well
                     first_bookend_page, urlh = post_form(
                         provider_redirect_page_res, 'Pressing Continue...')
 
@@ -1789,7 +1749,8 @@ class AdobePassIE(
                         provider_tryauth_url = self._html_search_regex(
                             r'url:\s*[\'"]([^\'"]+)', provider_login_redirect_page, 'ajaxurl')
                         provider_tryauth_page = self._download_webpage(
-                            provider_tryauth_url, video_id, 'Submitting TryAuth', query=hidden_data)
+                            provider_tryauth_url, video_id, 'Submitting TryAuth',
+                            query=hidden_data)
 
                         provider_login_page_res = self._download_webpage_handle(
                             f'https://authorize.suddenlink.net/saml/module.php/authSynacor/login.php?AuthState={provider_tryauth_page}',
@@ -1832,10 +1793,8 @@ class AdobePassIE(
                         })
 
                     self._request_webpage(
-                        'https://sp.auth.adobe.com/adobe-services/oauth2',
-                        video_id,
-                        'Authenticating with Adobe',
-                        'Failed to authenticate with Adobe',
+                        'https://sp.auth.adobe.com/adobe-services/oauth2', video_id,
+                        'Authenticating with Adobe', 'Failed to authenticate with Adobe',
                         query={
                             'code': fubo_response['code'],
                             'state': fubo_response['state'],
@@ -1872,8 +1831,7 @@ class AdobePassIE(
                             'reg_code': reg_code,
                         }), headers=mvpd_headers)
                 except ExtractorError as e:
-                    if not mso_id and isinstance(
-                            e.cause, HTTPError) and e.cause.status == 401:
+                    if not mso_id and isinstance(e.cause, HTTPError) and e.cause.status == 401:
                         raise_mvpd_required()
                     raise
                 if '<pendingLogout' in session:
@@ -1881,10 +1839,7 @@ class AdobePassIE(
                     continue
                 authn_token = unescapeHTML(xml_text(session, 'authnToken'))
                 requestor_info['authn_token'] = authn_token
-                self.cache.store(
-                    self._MVPD_CACHE,
-                    requestor_id,
-                    requestor_info)
+                self.cache.store(self._MVPD_CACHE, requestor_id, requestor_info)
 
             authz_token = requestor_info.get(guid)
             if authz_token and is_expired(authz_token, 'simpleTokenTTL'):
@@ -1903,17 +1858,10 @@ class AdobePassIE(
                     self.cache.store(self._MVPD_CACHE, requestor_id, {})
                     continue
                 if '<error' in authorize:
-                    raise ExtractorError(
-                        xml_text(
-                            authorize,
-                            'details'),
-                        expected=True)
+                    raise ExtractorError(xml_text(authorize, 'details'), expected=True)
                 authz_token = unescapeHTML(xml_text(authorize, 'authzToken'))
                 requestor_info[guid] = authz_token
-                self.cache.store(
-                    self._MVPD_CACHE,
-                    requestor_id,
-                    requestor_info)
+                self.cache.store(self._MVPD_CACHE, requestor_id, requestor_info)
 
             mvpd_headers.update({
                 'ap_19': xml_text(authn_token, 'simpleSamlNameID'),

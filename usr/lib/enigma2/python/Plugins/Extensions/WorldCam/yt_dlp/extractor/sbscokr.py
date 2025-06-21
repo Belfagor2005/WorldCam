@@ -11,9 +11,8 @@ from ..utils.traversal import traverse_obj
 
 class SBSCoKrIE(InfoExtractor):
     IE_NAME = 'sbs.co.kr'
-    _VALID_URL = [
-        r'https?://allvod\.sbs\.co\.kr/allvod/vod(?:Package)?EndPage\.do\?(?:[^#]+&)?mdaId=(?P<id>\d+)',
-        r'https?://programs\.sbs\.co\.kr/(?:enter|drama|culture|sports|plus|mtv|kth)/[a-z0-9]+/(?:vod|clip|movie)/\d+/(?P<id>(?:OC)?\d+)']
+    _VALID_URL = [r'https?://allvod\.sbs\.co\.kr/allvod/vod(?:Package)?EndPage\.do\?(?:[^#]+&)?mdaId=(?P<id>\d+)',
+                  r'https?://programs\.sbs\.co\.kr/(?:enter|drama|culture|sports|plus|mtv|kth)/[a-z0-9]+/(?:vod|clip|movie)/\d+/(?P<id>(?:OC)?\d+)']
 
     _TESTS = [{
         'url': 'https://programs.sbs.co.kr/enter/dongsang2/clip/52007/OC467706746?div=main_pop_clip',
@@ -91,25 +90,17 @@ class SBSCoKrIE(InfoExtractor):
         video_id = self._match_id(url)
 
         details = self._call_api(video_id)
-        source = traverse_obj(
-            details, ('vod', 'source', 'mediasource', {dict})) or {}
+        source = traverse_obj(details, ('vod', 'source', 'mediasource', {dict})) or {}
 
         formats = []
-        for stream in traverse_obj(
-            details,
-            ('vod',
-             'source',
-             'mediasourcelist',
-             lambda _,
-             v: v['mediaurl'] or v['mediarscuse'],
-             ),
-                default=[source]):
+        for stream in traverse_obj(details, (
+            'vod', 'source', 'mediasourcelist', lambda _, v: v['mediaurl'] or v['mediarscuse'],
+        ), default=[source]):
             if not stream.get('mediaurl'):
                 new_source = traverse_obj(
                     self._call_api(video_id, rscuse=stream['mediarscuse']),
                     ('vod', 'source', 'mediasource', {dict})) or {}
-                if new_source.get('mediarscuse') == source.get(
-                        'mediarscuse') or not new_source.get('mediaurl'):
+                if new_source.get('mediarscuse') == source.get('mediarscuse') or not new_source.get('mediaurl'):
                     continue
                 stream = new_source
             formats.append({
@@ -120,8 +111,7 @@ class SBSCoKrIE(InfoExtractor):
                 'preference': int_or_none(stream.get('mediarscuse')),
             })
 
-        caption_url = traverse_obj(
-            details, ('vod', 'source', 'subtitle', {url_or_none}))
+        caption_url = traverse_obj(details, ('vod', 'source', 'subtitle', {url_or_none}))
 
         return {
             'id': video_id,
@@ -168,8 +158,7 @@ class SBSCoKrAllvodProgramIE(InfoExtractor):
 
         details = self._download_json(
             'https://allvod.sbs.co.kr/allvod/vodProgramDetail/vodProgramDetailAjax.do',
-            program_id,
-            note='Downloading program details',
+            program_id, note='Downloading program details',
             query={
                 'pgmId': program_id,
                 'currentCount': '10000',
@@ -204,10 +193,8 @@ class SBSCoKrProgramsVodIE(InfoExtractor):
         program_slug = self._match_id(url)
 
         program_id = self._download_json(
-            f'https://static.apis.sbs.co.kr/program-api/1.0/menu/{program_slug}',
-            program_slug,
+            f'https://static.apis.sbs.co.kr/program-api/1.0/menu/{program_slug}', program_slug,
             note='Downloading program menu data')['program']['programid']
 
         return self.url_result(
-            f'https://allvod.sbs.co.kr/allvod/vodProgramDetail.do?pgmId={program_id}',
-            SBSCoKrAllvodProgramIE)
+            f'https://allvod.sbs.co.kr/allvod/vodProgramDetail.do?pgmId={program_id}', SBSCoKrAllvodProgramIE)

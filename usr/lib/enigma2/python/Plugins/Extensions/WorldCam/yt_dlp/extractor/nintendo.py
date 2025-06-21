@@ -73,18 +73,14 @@ class NintendoIE(InfoExtractor):
     }]
 
     def _create_asset_url(self, path):
-        return urljoin(
-            'https://assets.nintendo.com/',
-            urllib.parse.quote(path))
+        return urljoin('https://assets.nintendo.com/', urllib.parse.quote(path))
 
     def _real_extract(self, url):
         locale, slug = self._match_valid_url(url).group('locale', 'slug')
 
         language, _, country = (locale or 'US').rpartition('-')
         parsed_locale = f'{language.lower() or "en"}_{country.upper()}'
-        self.write_debug(
-            f'Using locale {parsed_locale} (from {locale})',
-            only_once=True)
+        self.write_debug(f'Using locale {parsed_locale} (from {locale})', only_once=True)
 
         response = self._download_json('https://graph.nintendo.com/', slug, query={
             'operationName': 'NintendoDirect',
@@ -102,14 +98,11 @@ class NintendoIE(InfoExtractor):
         # API returns `{"data": {"direct": null}}` if no matching id
         direct_info = traverse_obj(response, ('data', 'direct', {dict}))
         if not direct_info:
-            raise ExtractorError(
-                f'No Nintendo Direct with id {slug} exists',
-                expected=True)
+            raise ExtractorError(f'No Nintendo Direct with id {slug} exists', expected=True)
 
         errors = ', '.join(traverse_obj(response, ('errors', ..., 'message')))
         if errors:
-            raise ExtractorError(
-                f'GraphQL API error: {errors or "Unknown error"}')
+            raise ExtractorError(f'GraphQL API error: {errors or "Unknown error"}')
 
         result = traverse_obj(direct_info, {
             'id': ('id', {str}),
@@ -126,8 +119,7 @@ class NintendoIE(InfoExtractor):
         if not asset_id:
             youtube_id = traverse_obj(direct_info, ('liveStream', {str}))
             if not youtube_id:
-                self.raise_no_formats(
-                    'Could not find any video formats', video_id=slug)
+                self.raise_no_formats('Could not find any video formats', video_id=slug)
 
             return self.url_result(youtube_id, **result, url_transparent=True)
 

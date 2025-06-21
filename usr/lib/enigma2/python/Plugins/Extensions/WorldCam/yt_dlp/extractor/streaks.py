@@ -22,13 +22,7 @@ class StreaksBaseIE(InfoExtractor):
     _GEO_BYPASS = False
     _GEO_COUNTRIES = ['JP']
 
-    def _extract_from_streaks_api(
-            self,
-            project_id,
-            media_id,
-            headers=None,
-            query=None,
-            ssai=False):
+    def _extract_from_streaks_api(self, project_id, media_id, headers=None, query=None, ssai=False):
         try:
             response = self._download_json(
                 self._API_URL_TEMPLATE.format('playback', project_id, media_id, ''),
@@ -40,19 +34,15 @@ class StreaksBaseIE(InfoExtractor):
                 })
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status in {403, 404}:
-                error = self._parse_json(
-                    e.cause.response.read().decode(), media_id, fatal=False)
+                error = self._parse_json(e.cause.response.read().decode(), media_id, fatal=False)
                 message = traverse_obj(error, ('message', {str}))
                 code = traverse_obj(error, ('code', {str}))
                 if code == 'REQUEST_FAILED':
-                    self.raise_geo_restricted(
-                        message, countries=self._GEO_COUNTRIES)
+                    self.raise_geo_restricted(message, countries=self._GEO_COUNTRIES)
                 elif code == 'MEDIA_NOT_FOUND':
                     raise ExtractorError(message, expected=True)
                 elif code or message:
-                    raise ExtractorError(
-                        join_nonempty(
-                            code, message, delim=': '))
+                    raise ExtractorError(join_nonempty(code, message, delim=': '))
             raise
 
         streaks_id = response['id']
@@ -66,8 +56,7 @@ class StreaksBaseIE(InfoExtractor):
         formats, subtitles = [], {}
         drm_formats = False
 
-        for source in traverse_obj(
-                response, ('sources', lambda _, v: v['src'])):
+        for source in traverse_obj(response, ('sources', lambda _, v: v['src'])):
             if source.get('key_systems'):
                 drm_formats = True
                 continue
@@ -97,15 +86,9 @@ class StreaksBaseIE(InfoExtractor):
             self.report_drm(media_id)
         self._remove_duplicate_formats(formats)
 
-        for subs in traverse_obj(
-            response,
-            ('tracks',
-             lambda _,
-             v: v['kind'] in (
-                 'captions',
-                 'subtitles') and url_or_none(
-                 v['src']),
-             )):
+        for subs in traverse_obj(response, (
+            'tracks', lambda _, v: v['kind'] in ('captions', 'subtitles') and url_or_none(v['src']),
+        )):
             lang = traverse_obj(subs, ('srclang', {str.lower})) or 'ja'
             subtitles.setdefault(lang, []).append({'url': subs['src']})
 
@@ -133,8 +116,7 @@ class StreaksIE(StreaksBaseIE):
         r'https?://players\.streaks\.jp/(?P<project_id>[\w-]+)/[\da-f]+/index\.html\?(?:[^#]+&)?m=(?P<id>(?:ref:)?[\w-]+)',
         r'https?://playback\.api\.streaks\.jp/v1/projects/(?P<project_id>[\w-]+)/medias/(?P<id>(?:ref:)?[\w-]+)',
     ]
-    _EMBED_REGEX = [
-        rf'<iframe\s+[^>]*\bsrc\s*=\s*["\'](?P<url>{_VALID_URL[0]})']
+    _EMBED_REGEX = [rf'<iframe\s+[^>]*\bsrc\s*=\s*["\'](?P<url>{_VALID_URL[0]})']
     _TESTS = [{
         'url': 'https://players.streaks.jp/tipness/08155cd19dc14c12bebefb69b92eafcc/index.html?m=dbdf2df35b4d483ebaeeaeb38c594647',
         'info_dict': {
@@ -246,8 +228,7 @@ class StreaksIE(StreaksBaseIE):
 
     def _real_extract(self, url):
         url, smuggled_data = unsmuggle_url(url, {})
-        project_id, media_id = self._match_valid_url(
-            url).group('project_id', 'id')
+        project_id, media_id = self._match_valid_url(url).group('project_id', 'id')
 
         return self._extract_from_streaks_api(
             project_id, media_id, headers=filter_dict({

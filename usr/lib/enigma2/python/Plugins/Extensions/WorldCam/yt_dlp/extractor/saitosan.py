@@ -43,21 +43,15 @@ class SaitosanIE(InfoExtractor):
         b_id = self._match_id(url)
 
         base = 'http://hankachi.saitosan-api.net:8002/socket.io/?transport=polling&EIO=3'
-        sid = self._download_socket_json(
-            base, b_id, note='Opening socket').get('sid')
+        sid = self._download_socket_json(base, b_id, note='Opening socket').get('sid')
         base += '&sid=' + sid
 
         self._download_webpage(base, b_id, note='Polling socket')
         payload = f'420["room_start_join",{{"room_id":"{b_id}"}}]'
         payload = f'{len(payload)}:{payload}'
 
-        self._download_webpage(
-            base,
-            b_id,
-            data=payload,
-            note='Polling socket with payload')
-        response = self._download_socket_json(
-            base, b_id, note='Polling socket')
+        self._download_webpage(base, b_id, data=payload, note='Polling socket with payload')
+        response = self._download_socket_json(base, b_id, note='Polling socket')
         if not response.get('ok'):
             err = response.get('error') or {}
             raise ExtractorError(
@@ -65,28 +59,17 @@ class SaitosanIE(InfoExtractor):
                 else 'The socket reported that the broadcast could not be joined. Maybe it\'s offline or the URL is incorrect',
                 expected=True, video_id=b_id)
 
-        self._download_webpage(
-            base,
-            b_id,
-            data='26:421["room_finish_join",{}]',
-            note='Polling socket')
-        b_data = self._download_socket_json(
-            base, b_id, note='Getting broadcast metadata from socket')
+        self._download_webpage(base, b_id, data='26:421["room_finish_join",{}]', note='Polling socket')
+        b_data = self._download_socket_json(base, b_id, note='Getting broadcast metadata from socket')
         m3u8_url = b_data.get('url')
 
-        self._download_webpage(
-            base,
-            b_id,
-            data='1:1',
-            note='Closing socket',
-            fatal=False)
+        self._download_webpage(base, b_id, data='1:1', note='Closing socket', fatal=False)
 
         return {
             'id': b_id,
             'title': b_data.get('name'),
             'formats': self._extract_m3u8_formats(m3u8_url, b_id, 'mp4', live=True),
             'thumbnail': m3u8_url.replace('av.m3u8', 'thumb'),
-            # same as title
-            'uploader': try_get(b_data, lambda x: x['broadcast_user']['name']),
+            'uploader': try_get(b_data, lambda x: x['broadcast_user']['name']),  # same as title
             'is_live': True,
         }

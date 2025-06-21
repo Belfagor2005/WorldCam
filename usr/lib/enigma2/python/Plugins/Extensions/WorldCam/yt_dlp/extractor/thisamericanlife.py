@@ -32,14 +32,7 @@ class ThisAmericanLifeIE(InfoExtractor):
             'acodec': 'aac',
             'vcodec': 'none',
             'abr': 64,
-            'title': self._html_search_meta(
-                r'twitter:title',
-                webpage,
-                'title',
-                fatal=True),
-            'description': self._html_search_meta(
-                r'description',
-                webpage,
-                'description'),
+            'title': self._html_search_meta(r'twitter:title', webpage, 'title', fatal=True),
+            'description': self._html_search_meta(r'description', webpage, 'description'),
             'thumbnail': self._og_search_thumbnail(webpage),
         }

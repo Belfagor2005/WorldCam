@@ -66,10 +66,8 @@ class AlJazeeraIE(InfoExtractor):
         if video_id is None:
             webpage = self._download_webpage(url, display_id)
 
-            account, player_id, embed, video_id = self._search_regex(
-                self.BRIGHTCOVE_URL_RE, webpage, 'video id', group=(
-                    1, 2, 3, 4), default=(
-                    None, None, None, None))
+            account, player_id, embed, video_id = self._search_regex(self.BRIGHTCOVE_URL_RE, webpage, 'video id',
+                                                                     group=(1, 2, 3, 4), default=(None, None, None, None))
 
             if video_id is None:
                 return {

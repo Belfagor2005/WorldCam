@@ -10,8 +10,7 @@ from ..utils import (
 
 class DailyMailIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?dailymail\.co\.uk/(?:video/[^/]+/video-|embed/video/)(?P<id>[0-9]+)'
-    _EMBED_REGEX = [
-        r'<iframe\b[^>]+\bsrc=["\'](?P<url>(?:https?:)?//(?:www\.)?dailymail\.co\.uk/embed/video/\d+\.html)']
+    _EMBED_REGEX = [r'<iframe\b[^>]+\bsrc=["\'](?P<url>(?:https?:)?//(?:www\.)?dailymail\.co\.uk/embed/video/\d+\.html)']
     _TESTS = [{
         'url': 'http://www.dailymail.co.uk/video/tvshowbiz/video-1295863/The-Mountain-appears-sparkling-water-ad-Heavy-Bubbles.html',
         'md5': 'f6129624562251f628296c3a9ffde124',
@@ -52,8 +51,7 @@ class DailyMailIE(InfoExtractor):
             tbr = int_or_none(rendition.get('encodingRate'), 1000)
             container = rendition.get('videoContainer')
             is_hls = container == 'M2TS'
-            protocol = 'm3u8_native' if is_hls else determine_protocol(
-                {'url': rendition_url})
+            protocol = 'm3u8_native' if is_hls else determine_protocol({'url': rendition_url})
             formats.append({
                 'format_id': join_nonempty('hls' if is_hls else protocol, tbr),
                 'url': rendition_url,
@@ -69,8 +67,7 @@ class DailyMailIE(InfoExtractor):
         return {
             'id': video_id,
             'title': title,
-            'description': unescapeHTML(
-                video_data.get('descr')),
+            'description': unescapeHTML(video_data.get('descr')),
             'thumbnail': video_data.get('poster') or video_data.get('thumbnail'),
             'formats': formats,
         }

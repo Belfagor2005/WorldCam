@@ -32,30 +32,12 @@ class CamFMShowIE(InfoExtractor):
         return {
             '_type': 'playlist',
             'id': show_id,
-            'entries': [
-                self.url_result(
-                    urljoin(
-                        'https://camfm.co.uk',
-                        i),
-                    CamFMEpisodeIE) for i in re.findall(
-                    r"javascript:popup\('(/player/[^']+)', 'listen'",
-                    page)],
-            'thumbnail': urljoin(
-                'https://camfm.co.uk',
-                self._search_regex(
-                    r'<img[^>]+class="thumb-expand"[^>]+src="([^"]+)"',
-                    page,
-                    'thumbnail',
-                    fatal=False)),
-            'title': self._html_search_regex(
-                '<h1>([^<]+)</h1>',
-                page,
-                'title',
-                fatal=False),
-            'description': clean_html(
-                get_element_by_class(
-                    'small-12 medium-8 cell',
-                    page)),
+            'entries': [self.url_result(urljoin('https://camfm.co.uk', i), CamFMEpisodeIE)
+                        for i in re.findall(r"javascript:popup\('(/player/[^']+)', 'listen'", page)],
+            'thumbnail': urljoin('https://camfm.co.uk', self._search_regex(
+                r'<img[^>]+class="thumb-expand"[^>]+src="([^"]+)"', page, 'thumbnail', fatal=False)),
+            'title': self._html_search_regex('<h1>([^<]+)</h1>', page, 'title', fatal=False),
+            'description': clean_html(get_element_by_class('small-12 medium-8 cell', page)),
         }
 
 
@@ -80,25 +62,19 @@ class CamFMEpisodeIE(InfoExtractor):
     def _real_extract(self, url):
         episode_id = self._match_id(url)
         page = self._download_webpage(url, episode_id)
-        audios = self._parse_html5_media_entries(
-            'https://audio.camfm.co.uk', page, episode_id)
+        audios = self._parse_html5_media_entries('https://audio.camfm.co.uk', page, episode_id)
 
         caption = get_element_by_class('caption', page)
         series = clean_html(re.sub(r'<span[^<]+<[^<]+>', '', caption))
 
         card_section = get_element_by_class('card-section', page)
-        date = self._html_search_regex(
-            '>Aired at ([^<]+)<',
-            card_section,
-            'air date',
-            fatal=False)
+        date = self._html_search_regex('>Aired at ([^<]+)<', card_section, 'air date', fatal=False)
 
         return {
             'id': episode_id,
             'title': join_nonempty(series, date, delim=' - '),
             'formats': traverse_obj(audios, (..., 'formats', ...)),
-            # XXX: Does not account for UK's daylight savings
-            'timestamp': unified_timestamp(date),
+            'timestamp': unified_timestamp(date),  # XXX: Does not account for UK's daylight savings
             'series': series,
             'description': clean_html(re.sub(r'<b>[^<]+</b><br[^>]+/>', '', card_section)),
             'thumbnail': urljoin('https://camfm.co.uk', self._search_regex(

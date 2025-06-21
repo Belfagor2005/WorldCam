@@ -77,12 +77,7 @@ class FirstTVIE(InfoExtractor):
             video_id = str(item.get('id') or item['uid'])
 
             formats, subtitles = [], {}
-            for f in traverse_obj(
-                item,
-                ('sources',
-                 lambda _,
-                 v: url_or_none(
-                     v['src']))):
+            for f in traverse_obj(item, ('sources', lambda _, v: url_or_none(v['src']))):
                 src = f['src']
                 ext = mimetype2ext(f.get('type'), default=determine_ext(src))
                 if ext == 'm3u8':
@@ -92,8 +87,7 @@ class FirstTVIE(InfoExtractor):
                     fmts, subs = self._extract_mpd_formats_and_subtitles(
                         src, video_id, mpd_id='dash', fatal=False)
                 else:
-                    tbr = self._search_regex(
-                        fr'_(\d{{3,}})\.{ext}', src, 'tbr', default=None)
+                    tbr = self._search_regex(fr'_(\d{{3,}})\.{ext}', src, 'tbr', default=None)
                     formats.append({
                         'url': src,
                         'ext': ext,
@@ -127,16 +121,11 @@ class FirstTVIE(InfoExtractor):
             r'data-playlist-url=(["\'])(?P<url>(?:(?!\1).)+)\1',
             webpage, 'playlist url', group='url'))
 
-        item_ids = traverse_obj(
-            parse_qs(playlist_url),
-            'video_id',
-            'videos_ids[]',
-            'news_ids[]')
+        item_ids = traverse_obj(parse_qs(playlist_url), 'video_id', 'videos_ids[]', 'news_ids[]')
         items = traverse_obj(
             self._download_json(playlist_url, display_id),
             lambda _, v: v['uid'] and (str(v['uid']) in item_ids if item_ids else True))
 
         return self.playlist_result(
-            self._entries(items), display_id, self._og_search_title(
-                webpage, default=None), thumbnail=self._og_search_thumbnail(
-                webpage, default=None))
+            self._entries(items), display_id, self._og_search_title(webpage, default=None),
+            thumbnail=self._og_search_thumbnail(webpage, default=None))

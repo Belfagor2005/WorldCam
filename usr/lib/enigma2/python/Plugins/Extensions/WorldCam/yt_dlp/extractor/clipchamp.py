@@ -29,19 +29,15 @@ class ClipchampIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        data = self._search_nextjs_data(webpage, video_id)[
-            'props']['pageProps']['video']
+        data = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['video']
 
         storage_location = data.get('storage_location')
         if storage_location != 'cf_stream':
-            raise ExtractorError(
-                f'Unsupported clip storage location "{storage_location}"')
+            raise ExtractorError(f'Unsupported clip storage location "{storage_location}"')
 
         path = data['download_url']
         iframe = self._download_webpage(
-            f'https://iframe.cloudflarestream.com/{path}',
-            video_id,
-            'Downloading player iframe')
+            f'https://iframe.cloudflarestream.com/{path}', video_id, 'Downloading player iframe')
         subdomain = self._search_regex(
             r'\bcustomer-domain-prefix=["\']([\w-]+)["\']', iframe,
             'subdomain', fatal=False) or 'customer-2ut9yn3y6fta1yxe'
@@ -54,11 +50,12 @@ class ClipchampIE(InfoExtractor):
             query=self._STREAM_URL_QUERY, fatal=False, m3u8_id='hls'))
 
         return {
-            'id': video_id, 'formats': formats, 'uploader': ' '.join(
-                traverse_obj(
-                    data, ('creator', ('first_name', 'last_name'), {str}))) or None, **traverse_obj(
-                data, {
-                    'title': (
-                        'project', 'project_name', {str}), 'timestamp': (
-                            'created_at', {unified_timestamp}), 'thumbnail': (
-                                'thumbnail_url', {url_or_none}), }), }
+            'id': video_id,
+            'formats': formats,
+            'uploader': ' '.join(traverse_obj(data, ('creator', ('first_name', 'last_name'), {str}))) or None,
+            **traverse_obj(data, {
+                'title': ('project', 'project_name', {str}),
+                'timestamp': ('created_at', {unified_timestamp}),
+                'thumbnail': ('thumbnail_url', {url_or_none}),
+            }),
+        }

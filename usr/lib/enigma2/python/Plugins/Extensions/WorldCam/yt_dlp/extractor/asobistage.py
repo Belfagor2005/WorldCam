@@ -70,16 +70,11 @@ class AsobiStageIE(InfoExtractor):
             response = self._download_json(
                 f'{self._API_HOST}/{path}', None, f'Downloading {name}',
                 f'Unable to download {name}', expected_status=400)
-            if traverse_obj(
-                    response,
-                    ('payload',
-                     'error_message'),
-                    'error') == 'notlogin':
+            if traverse_obj(response, ('payload', 'error_message'), 'error') == 'notlogin':
                 self._is_logged_in = False
                 break
             owned_tickets.update(
-                traverse_obj(
-                    response, ('payload', 'value', ..., 'digital_product_id', {str_or_none})))
+                traverse_obj(response, ('payload', 'value', ..., 'digital_product_id', {str_or_none})))
 
         return owned_tickets
 
@@ -87,13 +82,8 @@ class AsobiStageIE(InfoExtractor):
         channel_id = traverse_obj(channel, ('chennel_vspf_id', {str}))
         if not channel_id:
             return None
-        # if rights_type_id == 6, then 'No conditions (no login required -
-        # non-members are OK)'
-        if traverse_obj(
-            channel,
-            ('viewrights',
-             lambda _,
-             v: v['rights_type_id'] == 6)):
+        # if rights_type_id == 6, then 'No conditions (no login required - non-members are OK)'
+        if traverse_obj(channel, ('viewrights', lambda _, v: v['rights_type_id'] == 6)):
             return channel_id
         available_tickets = traverse_obj(channel, (
             'viewrights', ..., ('tickets', 'serialcodes'), ..., 'digital_product_id', {str_or_none}))
@@ -107,16 +97,12 @@ class AsobiStageIE(InfoExtractor):
         if self._get_cookies(self._API_HOST):
             self._is_logged_in = True
         token = self._download_json(
-            f'{self._API_HOST}/api/v1/vspf/token',
-            None,
-            'Getting token',
-            'Unable to get token')
+            f'{self._API_HOST}/api/v1/vspf/token', None, 'Getting token', 'Unable to get token')
         self._HEADERS['Authorization'] = f'Bearer {token}'
 
     def _real_extract(self, url):
         webpage, urlh = self._download_webpage_handle(url, self._match_id(url))
-        video_id, event, type_, slug = self._match_valid_url(
-            urlh.url).group('id', 'event', 'type', 'slug')
+        video_id, event, type_, slug = self._match_valid_url(urlh.url).group('id', 'event', 'type', 'slug')
         video_type = {'archive': 'archives', 'player': 'broadcasts'}[type_]
 
         event_data = traverse_obj(
@@ -126,30 +112,18 @@ class AsobiStageIE(InfoExtractor):
                 'thumbnail': ('event_thumbnail_image', {url_or_none}),
             }))
 
-        available_channels = traverse_obj(
-            self._download_json(
-                f'https://asobistage.asobistore.jp/cdn/v101/events/{event}/{video_type}.json',
-                video_id,
-                'Getting channel list',
-                'Unable to get channel list'),
-            (video_type,
-                lambda _,
-                v: v['broadcast_slug'] == slug,
-                'channels',
-                lambda _,
-                v: v['chennel_vspf_id'] != '00000'))
+        available_channels = traverse_obj(self._download_json(
+            f'https://asobistage.asobistore.jp/cdn/v101/events/{event}/{video_type}.json',
+            video_id, 'Getting channel list', 'Unable to get channel list'), (
+            video_type, lambda _, v: v['broadcast_slug'] == slug,
+            'channels', lambda _, v: v['chennel_vspf_id'] != '00000'))
 
         entries = []
-        for channel_id in traverse_obj(
-            available_channels, (..., {
-                self._get_available_channel_id})):
+        for channel_id in traverse_obj(available_channels, (..., {self._get_available_channel_id})):
             if video_type == 'archives':
                 channel_json = self._download_json(
-                    f'https://survapi.channel.or.jp/proxy/v1/contents/{channel_id}/get_by_cuid',
-                    channel_id,
-                    'Getting archive channel info',
-                    'Unable to get archive channel info',
-                    fatal=False,
+                    f'https://survapi.channel.or.jp/proxy/v1/contents/{channel_id}/get_by_cuid', channel_id,
+                    'Getting archive channel info', 'Unable to get archive channel info', fatal=False,
                     headers=self._HEADERS)
                 channel_data = traverse_obj(channel_json, ('ex_content', {
                     'm3u8_url': 'streaming_url',
@@ -167,18 +141,13 @@ class AsobiStageIE(InfoExtractor):
                     'thumbnail': 'Poster_url',
                 }))
 
-            entries.append(
-                {
-                    'id': channel_id,
-                    'title': channel_data.get('title'),
-                    'formats': self._extract_m3u8_formats(
-                        channel_data.get('m3u8_url'),
-                        channel_id,
-                        fatal=False),
-                    'is_live': video_type == 'broadcasts',
-                    'thumbnail': url_or_none(
-                        channel_data.get('thumbnail')),
-                })
+            entries.append({
+                'id': channel_id,
+                'title': channel_data.get('title'),
+                'formats': self._extract_m3u8_formats(channel_data.get('m3u8_url'), channel_id, fatal=False),
+                'is_live': video_type == 'broadcasts',
+                'thumbnail': url_or_none(channel_data.get('thumbnail')),
+            })
 
         if not self._is_logged_in and not entries:
             self.raise_login_required()

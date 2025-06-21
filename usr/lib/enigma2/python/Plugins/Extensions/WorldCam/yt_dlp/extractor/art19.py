@@ -107,8 +107,7 @@ class Art19IE(InfoExtractor):
     def _extract_embed_urls(cls, url, webpage):
         yield from super()._extract_embed_urls(url, webpage)
         for episode_id in re.findall(
-            rf'<div[^>]+\bclass=[\'"][^\'"]*art19-web-player[^\'"]*[\'"][^>]+\bdata-episode-id=[\'"]({cls._UUID_REGEX})[\'"]',
-                webpage):
+                rf'<div[^>]+\bclass=[\'"][^\'"]*art19-web-player[^\'"]*[\'"][^>]+\bdata-episode-id=[\'"]({cls._UUID_REGEX})[\'"]', webpage):
             yield f'https://rss.art19.com/episodes/{episode_id}.mp3'
 
     def _real_extract(self, url):
@@ -119,9 +118,7 @@ class Art19IE(InfoExtractor):
             note='Downloading player metadata', fatal=False,
             headers={'Accept': 'application/vnd.art19.v0+json'})
         rss_metadata = self._download_json(
-            f'https://rss.art19.com/episodes/{episode_id}.json',
-            episode_id,
-            fatal=False,
+            f'https://rss.art19.com/episodes/{episode_id}.json', episode_id, fatal=False,
             note='Downloading RSS metadata')
 
         formats = [{
@@ -130,8 +127,7 @@ class Art19IE(InfoExtractor):
             'vcodec': 'none',
             'acodec': 'mp3',
         }]
-        for fmt_id, fmt_data in traverse_obj(
-                rss_metadata, ('content', 'media', {dict.items}, ...)):
+        for fmt_id, fmt_data in traverse_obj(rss_metadata, ('content', 'media', {dict.items}, ...)):
             if fmt_id == 'waveform_bin':
                 continue
             fmt_url = traverse_obj(fmt_data, ('url', {url_or_none}))
@@ -181,8 +177,7 @@ class Art19ShowIE(InfoExtractor):
         rf'{_VALID_URL_BASE}(?:$|[#?])',
         r'https?://rss\.art19\.com/(?P<id>[\w-]+)/?(?:$|[#?])',
     ]
-    _EMBED_REGEX = [
-        rf'<iframe[^>]+\bsrc=[\'"](?P<url>{_VALID_URL_BASE}[^\'"])']
+    _EMBED_REGEX = [rf'<iframe[^>]+\bsrc=[\'"](?P<url>{_VALID_URL_BASE}[^\'"])']
 
     _TESTS = [{
         'url': 'https://www.art19.com/shows/5898c087-a14f-48dc-b6fc-a2280a1ff6e0/',
@@ -281,18 +276,14 @@ class Art19ShowIE(InfoExtractor):
     def _extract_embed_urls(cls, url, webpage):
         yield from super()._extract_embed_urls(url, webpage)
         for series_id in re.findall(
-            r'<div[^>]+\bclass=[\'"][^\'"]*art19-web-player[^\'"]*[\'"][^>]+\bdata-series-id=[\'"]([\w-]+)[\'"]',
-                webpage):
+                r'<div[^>]+\bclass=[\'"][^\'"]*art19-web-player[^\'"]*[\'"][^>]+\bdata-series-id=[\'"]([\w-]+)[\'"]', webpage):
             yield f'https://art19.com/shows/{series_id}'
 
     def _real_extract(self, url):
         series_id = self._match_id(url)
         series_metadata = self._download_json(
-            f'https://art19.com/series/{series_id}',
-            series_id,
-            note='Downloading series metadata',
-            headers={
-                'Accept': 'application/vnd.art19.v0+json'})
+            f'https://art19.com/series/{series_id}', series_id, note='Downloading series metadata',
+            headers={'Accept': 'application/vnd.art19.v0+json'})
 
         return {
             '_type': 'playlist',

@@ -1,7 +1,4 @@
 from __future__ import annotations
-import websockets.sync.connection  # isort: split
-from websockets.uri import parse_uri
-import websockets.sync.client
 
 import contextlib
 import functools
@@ -35,20 +32,21 @@ if not websockets:
 
 import websockets.version
 
-websockets_version = tuple(
-    map(int_or_none, websockets.version.version.split('.')))
+websockets_version = tuple(map(int_or_none, websockets.version.version.split('.')))
 if websockets_version < (13, 0):
     websockets._yt_dlp__version = f'{websockets.version.version} (unsupported)'
     raise ImportError('Only websockets>=13.0 is supported')
 
+import websockets.sync.client
+from websockets.uri import parse_uri
 
 # In websockets Connection, recv_exc and recv_events_exc are defined
 # after the recv events handler thread is started [1].
 # On our CI using PyPy, in some cases a race condition may occur
 # where the recv events handler thread tries to use these attributes before they are defined [2].
 # 1: https://github.com/python-websockets/websockets/blame/de768cf65e7e2b1a3b67854fb9e08816a5ff7050/src/websockets/sync/connection.py#L93
-# 2: "AttributeError: 'ClientConnection' object has no attribute
-# 'recv_events_exc'. Did you mean: 'recv_events'?"
+# 2: "AttributeError: 'ClientConnection' object has no attribute 'recv_events_exc'. Did you mean: 'recv_events'?"
+import websockets.sync.connection  # isort: split
 with contextlib.suppress(Exception):
     websockets.sync.connection.Connection.recv_exc = None
 
@@ -108,8 +106,7 @@ class WebsocketsRH(WebSocketRequestHandler):
         for name in ('websockets.client', 'websockets.server'):
             logger = logging.getLogger(name)
             handler = logging.StreamHandler(stream=sys.stdout)
-            handler.setFormatter(
-                logging.Formatter(f'{self.RH_NAME}: %(message)s'))
+            handler.setFormatter(logging.Formatter(f'{self.RH_NAME}: %(message)s'))
             self.__logging_handlers[name] = handler
             logger.addHandler(handler)
             if self.verbose:
@@ -140,9 +137,7 @@ class WebsocketsRH(WebSocketRequestHandler):
         headers = self._get_headers(request)
         wsuri = parse_uri(request.url)
         create_conn_kwargs = {
-            'source_address': (
-                self.source_address,
-                0) if self.source_address else None,
+            'source_address': (self.source_address, 0) if self.source_address else None,
             'timeout': timeout,
         }
         proxy = select_proxy(request.url, self._get_proxies(request))
@@ -150,14 +145,9 @@ class WebsocketsRH(WebSocketRequestHandler):
             if proxy:
                 socks_proxy_options = make_socks_proxy_opts(proxy)
                 sock = create_connection(
-                    address=(
-                        socks_proxy_options['addr'],
-                        socks_proxy_options['port']),
+                    address=(socks_proxy_options['addr'], socks_proxy_options['port']),
                     _create_socket_func=functools.partial(
-                        create_socks_proxy_socket,
-                        (wsuri.host,
-                         wsuri.port),
-                        socks_proxy_options),
+                        create_socks_proxy_socket, (wsuri.host, wsuri.port), socks_proxy_options),
                     **create_conn_kwargs,
                 )
             else:
@@ -165,8 +155,7 @@ class WebsocketsRH(WebSocketRequestHandler):
                     address=(wsuri.host, wsuri.port),
                     **create_conn_kwargs,
                 )
-            ssl_ctx = self._make_sslcontext(
-                legacy_ssl_support=request.extensions.get('legacy_ssl'))
+            ssl_ctx = self._make_sslcontext(legacy_ssl_support=request.extensions.get('legacy_ssl'))
             conn = websockets.sync.client.connect(
                 sock=sock,
                 uri=request.url,
@@ -178,8 +167,7 @@ class WebsocketsRH(WebSocketRequestHandler):
             )
             return WebsocketsResponseAdapter(conn, url=request.url)
 
-        # Exceptions as per
-        # https://websockets.readthedocs.io/en/stable/reference/sync/client.html
+        # Exceptions as per https://websockets.readthedocs.io/en/stable/reference/sync/client.html
         except SocksProxyError as e:
             raise ProxyError(cause=e) from e
         except websockets.exceptions.InvalidURI as e:

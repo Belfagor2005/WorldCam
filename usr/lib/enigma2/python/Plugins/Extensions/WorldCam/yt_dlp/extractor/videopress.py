@@ -15,8 +15,7 @@ class VideoPressIE(InfoExtractor):
     _ID_REGEX = r'[\da-zA-Z]{8}'
     _PATH_REGEX = r'video(?:\.word)?press\.com/embed/'
     _VALID_URL = rf'https?://{_PATH_REGEX}(?P<id>{_ID_REGEX})'
-    _EMBED_REGEX = [
-        rf'<iframe[^>]+src=["\'](?P<url>(?:https?://)?{_PATH_REGEX}{_ID_REGEX})']
+    _EMBED_REGEX = [rf'<iframe[^>]+src=["\'](?P<url>(?:https?://)?{_PATH_REGEX}{_ID_REGEX})']
     _TESTS = [{
         'url': 'https://videopress.com/embed/kUJmAcSf',
         'md5': '706956a6c875873d51010921310e4bc6',

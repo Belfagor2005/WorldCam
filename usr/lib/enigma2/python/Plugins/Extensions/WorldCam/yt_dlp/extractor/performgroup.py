@@ -39,23 +39,11 @@ class PerformGroupIE(InfoExtractor):
         formats = []
         hls_url = media.get('hls', {}).get('url')
         if hls_url:
-            formats.extend(
-                self._extract_m3u8_formats(
-                    hls_url,
-                    video_id,
-                    'mp4',
-                    'm3u8_native',
-                    m3u8_id='hls',
-                    fatal=False))
+            formats.extend(self._extract_m3u8_formats(hls_url, video_id, 'mp4', 'm3u8_native', m3u8_id='hls', fatal=False))
 
         hds_url = media.get('hds', {}).get('url')
         if hds_url:
-            formats.extend(
-                self._extract_f4m_formats(
-                    hds_url + '?hdcore',
-                    video_id,
-                    f4m_id='hds',
-                    fatal=False))
+            formats.extend(self._extract_f4m_formats(hds_url + '?hdcore', video_id, f4m_id='hds', fatal=False))
 
         for c in media.get('content', []):
             c_url = c.get('url')

@@ -82,18 +82,12 @@ class PinterestBaseIE(InfoExtractor):
                 if not format_url or format_url in urls:
                     continue
                 urls.append(format_url)
-                duration = float_or_none(
-                    format_dict.get('duration'), scale=1000)
+                duration = float_or_none(format_dict.get('duration'), scale=1000)
                 ext = determine_ext(format_url)
                 if 'hls' in format_id.lower() or ext == 'm3u8':
-                    formats.extend(
-                        self._extract_m3u8_formats(
-                            format_url,
-                            video_id,
-                            'mp4',
-                            entry_protocol='m3u8_native',
-                            m3u8_id=format_id,
-                            fatal=False))
+                    formats.extend(self._extract_m3u8_formats(
+                        format_url, video_id, 'mp4', entry_protocol='m3u8_native',
+                        m3u8_id=format_id, fatal=False))
                 else:
                     formats.append({
                         'url': format_url,

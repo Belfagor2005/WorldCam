@@ -14,8 +14,7 @@ from ..utils.traversal import traverse_obj
 
 class SubsplashBaseIE(InfoExtractor):
     def _get_headers(self, url, display_id):
-        token = try_call(lambda: self._get_cookies(url)
-                         ['ss-token-guest'].value)
+        token = try_call(lambda: self._get_cookies(url)['ss-token-guest'].value)
         if not token:
             webpage, urlh = self._download_webpage_handle(url, display_id)
             token = (
@@ -33,31 +32,11 @@ class SubsplashBaseIE(InfoExtractor):
 
     def _extract_video(self, data, video_id):
         formats = []
-        video_data = traverse_obj(
-            data, ('_embedded', 'video', '_embedded', {dict}))
-        m3u8_url = traverse_obj(
-            video_data,
-            ('playlists',
-             0,
-             '_links',
-             'related',
-             'href',
-             {url_or_none}))
+        video_data = traverse_obj(data, ('_embedded', 'video', '_embedded', {dict}))
+        m3u8_url = traverse_obj(video_data, ('playlists', 0, '_links', 'related', 'href', {url_or_none}))
         if m3u8_url:
-            formats.extend(
-                self._extract_m3u8_formats(
-                    m3u8_url,
-                    video_id,
-                    'mp4',
-                    m3u8_id='hls',
-                    fatal=False))
-        mp4_entry = traverse_obj(
-            video_data,
-            ('video-outputs',
-             lambda _,
-             v: url_or_none(
-                 v['_links']['related']['href']),
-                any))
+            formats.extend(self._extract_m3u8_formats(m3u8_url, video_id, 'mp4', m3u8_id='hls', fatal=False))
+        mp4_entry = traverse_obj(video_data, ('video-outputs', lambda _, v: url_or_none(v['_links']['related']['href']), any))
         if mp4_entry:
             formats.append({
                 'url': mp4_entry['_links']['related']['href'],
@@ -89,70 +68,70 @@ class SubsplashIE(SubsplashBaseIE):
         r'https?://(?:www\.)?subsplash\.com/(?:u/)?[^/?#]+/[^/?#]+/(?:d/|mi/\+)(?P<id>\w+)',
         r'https?://(?:\w+\.)?subspla\.sh/(?P<id>\w+)',
     ]
-    _TESTS = [{'url': 'https://subsplash.com/u/skywatchtv/media/d/5whnx5s-the-grand-delusion-taking-place-right-now',
-               'md5': 'd468729814e533cec86f1da505dec82d',
-               'info_dict': {'id': '5whnx5s',
-                             'ext': 'mp4',
-                             'title': 'THE GRAND DELUSION TAKING PLACE RIGHT NOW!',
-                             'description': 'md5:220a630865c3697b0ec9dcb3a70cbc33',
-                             'upload_date': '20240901',
-                             'duration': 1710,
-                             'thumbnail': r're:https?://.*\.(?:jpg|png)$',
-                             'modified_date': '20240901',
-                             'release_date': '20240901',
-                             'release_timestamp': 1725195600,
-                             'timestamp': 1725148800,
-                             'modified_timestamp': 1725195657,
-                             },
-               },
-              {'url': 'https://subsplash.com/u/prophecywatchers/media/d/n4dr8b2-the-transhumanist-plan-for-humanity-billy-crone',
-               'md5': '01982d58021af81c969958459bd81f13',
-               'info_dict': {'id': 'n4dr8b2',
-                             'ext': 'mp4',
-                             'title': 'The Transhumanist Plan for Humanity | Billy Crone',
-                             'upload_date': '20240903',
-                             'duration': 1709,
-                             'thumbnail': r're:https?://.*\.(?:jpg|png)$',
-                             'timestamp': 1725321600,
-                             'modified_date': '20241010',
-                             'release_date': '20240903',
-                             'release_timestamp': 1725379200,
-                             'modified_timestamp': 1728577804,
-                             },
-               },
-              {'url': 'https://subsplash.com/laiglesiadelcentro/vid/mi/+ecb6a6b?autoplay=true',
-               'md5': '013c9b1e391dd4b34d8612439445deef',
-               'info_dict': {'id': 'ecb6a6b',
-                             'ext': 'mp4',
-                             'thumbnail': r're:https?://.*\.(?:jpg|png)$',
-                             'release_timestamp': 1477095852,
-                             'title': 'En el Principio Era el Verbo | EVANGELIO DE JUAN | Ps. Gadiel Ríos',
-                             'timestamp': 1425772800,
-                             'upload_date': '20150308',
-                             'description': 'md5:f368221de93176654989ba66bb564798',
-                             'modified_timestamp': 1730258864,
-                             'modified_date': '20241030',
-                             'release_date': '20161022',
-                             },
-               },
-              {'url': 'https://prophecywatchers.subspla.sh/8gps8cx',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://subsplash.com/u/skywatchtv/media/d/5whnx5s-the-grand-delusion-taking-place-right-now',
+        'md5': 'd468729814e533cec86f1da505dec82d',
+        'info_dict': {
+            'id': '5whnx5s',
+            'ext': 'mp4',
+            'title': 'THE GRAND DELUSION TAKING PLACE RIGHT NOW!',
+            'description': 'md5:220a630865c3697b0ec9dcb3a70cbc33',
+            'upload_date': '20240901',
+            'duration': 1710,
+            'thumbnail': r're:https?://.*\.(?:jpg|png)$',
+            'modified_date': '20240901',
+            'release_date': '20240901',
+            'release_timestamp': 1725195600,
+            'timestamp': 1725148800,
+            'modified_timestamp': 1725195657,
+        },
+    }, {
+        'url': 'https://subsplash.com/u/prophecywatchers/media/d/n4dr8b2-the-transhumanist-plan-for-humanity-billy-crone',
+        'md5': '01982d58021af81c969958459bd81f13',
+        'info_dict': {
+            'id': 'n4dr8b2',
+            'ext': 'mp4',
+            'title': 'The Transhumanist Plan for Humanity | Billy Crone',
+            'upload_date': '20240903',
+            'duration': 1709,
+            'thumbnail': r're:https?://.*\.(?:jpg|png)$',
+            'timestamp': 1725321600,
+            'modified_date': '20241010',
+            'release_date': '20240903',
+            'release_timestamp': 1725379200,
+            'modified_timestamp': 1728577804,
+        },
+    }, {
+        'url': 'https://subsplash.com/laiglesiadelcentro/vid/mi/+ecb6a6b?autoplay=true',
+        'md5': '013c9b1e391dd4b34d8612439445deef',
+        'info_dict': {
+            'id': 'ecb6a6b',
+            'ext': 'mp4',
+            'thumbnail': r're:https?://.*\.(?:jpg|png)$',
+            'release_timestamp': 1477095852,
+            'title': 'En el Principio Era el Verbo | EVANGELIO DE JUAN | Ps. Gadiel Ríos',
+            'timestamp': 1425772800,
+            'upload_date': '20150308',
+            'description': 'md5:f368221de93176654989ba66bb564798',
+            'modified_timestamp': 1730258864,
+            'modified_date': '20241030',
+            'release_date': '20161022',
+        },
+    }, {
+        'url': 'https://prophecywatchers.subspla.sh/8gps8cx',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         data = self._download_json(
             'https://core.subsplash.com/media/v1/media-items',
-            video_id,
-            headers=self._get_headers(
-                url,
-                video_id),
+            video_id, headers=self._get_headers(url, video_id),
             query={
                 'filter[short_code]': video_id,
                 'include': 'images,audio.audio-outputs,audio.video,video.video-outputs,video.playlists,document,broadcast',
             })
-        return self._extract_video(traverse_obj(
-            data, ('_embedded', 'media-items', 0)), video_id)
+        return self._extract_video(traverse_obj(data, ('_embedded', 'media-items', 0)), video_id)
 
 
 class SubsplashPlaylistIE(SubsplashBaseIE):
@@ -180,9 +159,7 @@ class SubsplashPlaylistIE(SubsplashBaseIE):
 
     def _entries(self, series_id, headers, page):
         data = self._download_json(
-            'https://core.subsplash.com/media/v1/media-items',
-            series_id,
-            headers=headers,
+            'https://core.subsplash.com/media/v1/media-items', series_id, headers=headers,
             query={
                 'filter[broadcast.status|broadcast.status]': 'null|on-demand',
                 'filter[media_series]': series_id,
@@ -191,15 +168,9 @@ class SubsplashPlaylistIE(SubsplashBaseIE):
                 'page[number]': page + 1,
                 'page[size]': self._PAGE_SIZE,
                 'sort': '-position',
-            },
-            note=f'Downloading page {page + 1}')
+            }, note=f'Downloading page {page + 1}')
 
-        for entry in traverse_obj(
-            data,
-            ('_embedded',
-             'media-items',
-             lambda _,
-             v: v['short_code'])):
+        for entry in traverse_obj(data, ('_embedded', 'media-items', lambda _, v: v['short_code'])):
             entry_id = entry['short_code']
             info = self._extract_video(entry, entry_id)
             yield {
@@ -214,11 +185,8 @@ class SubsplashPlaylistIE(SubsplashBaseIE):
         headers = self._get_headers(url, display_id)
 
         data = self._download_json(
-            'https://core.subsplash.com/media/v1/media-series',
-            display_id,
-            headers=headers,
-            query={
-                'filter[short_code]': display_id})
+            'https://core.subsplash.com/media/v1/media-series', display_id, headers=headers,
+            query={'filter[short_code]': display_id})
         series_data = traverse_obj(data, ('_embedded', 'media-series', 0, {
             'id': ('id', {str}),
             'title': ('title', {str}),
@@ -227,12 +195,5 @@ class SubsplashPlaylistIE(SubsplashBaseIE):
         total_pages = math.ceil(series_data['count'] / self._PAGE_SIZE)
 
         return self.playlist_result(
-            InAdvancePagedList(
-                functools.partial(
-                    self._entries,
-                    series_data['id'],
-                    headers),
-                total_pages,
-                self._PAGE_SIZE),
-            display_id,
-            series_data['title'])
+            InAdvancePagedList(functools.partial(self._entries, series_data['id'], headers), total_pages, self._PAGE_SIZE),
+            display_id, series_data['title'])

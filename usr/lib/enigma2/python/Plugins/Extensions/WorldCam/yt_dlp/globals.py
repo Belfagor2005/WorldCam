@@ -27,5 +27,4 @@ plugin_ies_overrides = Indirect(defaultdict(list))
 
 # Misc
 IN_CLI = Indirect(False)
-# `False`=force, `None`=disabled, `True`=enabled
-LAZY_EXTRACTORS = Indirect(None)
+LAZY_EXTRACTORS = Indirect(None)  # `False`=force, `None`=disabled, `True`=enabled

@@ -26,13 +26,8 @@ class PolskieRadioBaseIE(InfoExtractor):
     def _extract_webpage_player_entries(self, webpage, playlist_id, base_data):
         media_urls = set()
 
-        for data_media in re.findall(
-                r'<[^>]+data-media="?({[^>]+})"?', webpage):
-            media = self._parse_json(
-                data_media,
-                playlist_id,
-                transform_source=unescapeHTML,
-                fatal=False)
+        for data_media in re.findall(r'<[^>]+data-media="?({[^>]+})"?', webpage):
+            media = self._parse_json(data_media, playlist_id, transform_source=unescapeHTML, fatal=False)
             if not media.get('file') or not media.get('desc'):
                 continue
             media_url = self._proto_relative_url(media['file'])
@@ -107,11 +102,8 @@ class PolskieRadioLegacyIE(PolskieRadioBaseIE):
 
         title = self._og_search_title(webpage).strip()
 
-        description = strip_or_none(
-            self._og_search_description(
-                webpage, default=None))
-        description = description.replace(
-            '\xa0', ' ') if description is not None else None
+        description = strip_or_none(self._og_search_description(webpage, default=None))
+        description = description.replace('\xa0', ' ') if description is not None else None
 
         if not content:
             return {
@@ -197,16 +189,8 @@ class PolskieRadioIE(PolskieRadioBaseIE):
         webpage = self._download_webpage(url, playlist_id)
 
         article_data = traverse_obj(
-            self._search_nextjs_data(
-                webpage,
-                playlist_id),
-            ('props',
-                'pageProps',
-                (('data',
-                  'articleData'),
-                 'post',
-                 'data')),
-            get_all=False)
+            self._search_nextjs_data(webpage, playlist_id), (
+                'props', 'pageProps', (('data', 'articleData'), 'post', 'data')), get_all=False)
 
         title = strip_or_none(article_data['title'])
 
@@ -221,10 +205,10 @@ class PolskieRadioIE(PolskieRadioBaseIE):
         } for entry in article_data.get('attachments') or () if entry.get('fileType') in ('Audio', )]
 
         if not entries:
-            # some legacy articles have no json attachments, but players in
-            # body
-            entries = self._extract_webpage_player_entries(
-                article_data['content'], playlist_id, {'title': title, })
+            # some legacy articles have no json attachments, but players in body
+            entries = self._extract_webpage_player_entries(article_data['content'], playlist_id, {
+                'title': title,
+            })
 
         return self.playlist_result(entries, playlist_id, title, description)
 
@@ -261,8 +245,7 @@ class PolskieRadioAuditionIE(InfoExtractor):
         },
         'playlist_mincount': 722,
     }, {
-        # some articles were "promoted to main page" and thus link to old
-        # frontend
+        # some articles were "promoted to main page" and thus link to old frontend
         'url': 'https://trojka.polskieradio.pl/audycja/305',
         'info_dict': {
             'id': '305',
@@ -274,12 +257,8 @@ class PolskieRadioAuditionIE(InfoExtractor):
 
     def _call_lp3(self, path, query, video_id, note):
         return self._download_json(
-            f'https://lp3test.polskieradio.pl/{path}',
-            video_id,
-            note,
-            query=query,
-            headers={
-                'x-api-key': '9bf6c5a2-a7d0-4980-9ed7-a3f7291f2a81'})
+            f'https://lp3test.polskieradio.pl/{path}', video_id, note,
+            query=query, headers={'x-api-key': '9bf6c5a2-a7d0-4980-9ed7-a3f7291f2a81'})
 
     def _entries(self, playlist_id, has_episodes, has_articles):
         for i in itertools.count(0) if has_episodes else []:
@@ -393,8 +372,7 @@ class PolskieRadioCategoryIE(InfoExtractor):
 
     @classmethod
     def suitable(cls, url):
-        return False if PolskieRadioLegacyIE.suitable(
-            url) else super().suitable(url)
+        return False if PolskieRadioLegacyIE.suitable(url) else super().suitable(url)
 
     def _entries(self, url, page, category_id):
         content = page
@@ -420,13 +398,8 @@ class PolskieRadioCategoryIE(InfoExtractor):
             if is_billennium_tabs:
                 params = self._search_json(
                     r'<div[^>]+class=["\']next["\'][^>]*>\s*<a[^>]+onclick=["\']TB_LoadTab\(',
-                    pagination,
-                    'next page params',
-                    category_id,
-                    default=None,
-                    close_objects=1,
-                    contains_pattern='.+',
-                    transform_source=lambda x: f'[{js_to_json(unescapeHTML(x))}')
+                    pagination, 'next page params', category_id, default=None, close_objects=1,
+                    contains_pattern='.+', transform_source=lambda x: f'[{js_to_json(unescapeHTML(x))}')
                 if not params:
                     break
                 tab_content = self._download_json(
@@ -437,8 +410,7 @@ class PolskieRadioCategoryIE(InfoExtractor):
                         'subjectIds', 'tagIndexId', 'queryString', 'name', 'openArticlesInParentTemplate',
                         'idSectionFromUrl', 'maxDocumentAge', 'showCategoryForArticle', 'pageNumber',
                     ), params))).encode())['d']
-                content, pagination = tab_content['Content'], tab_content.get(
-                    'PagerContent')
+                content, pagination = tab_content['Content'], tab_content.get('PagerContent')
             elif is_post_back:
                 target = self._search_regex(
                     r'onclick=(?:["\'])__doPostBack\((?P<q1>["\'])(?P<target>[\w$]+)(?P=q1)\s*,\s*(?P<q2>["\'])Next(?P=q2)',
@@ -453,25 +425,18 @@ class PolskieRadioCategoryIE(InfoExtractor):
                         '__EVENTARGUMENT': 'Next',
                     }).encode())
             else:
-                next_url = urljoin(
-                    url,
-                    self._search_regex(
-                        r'<div[^>]+class=["\']next["\'][^>]*>\s*<a[^>]+href=(["\'])(?P<url>(?:(?!\1).)+)\1',
-                        content,
-                        'next page url',
-                        group='url',
-                        default=None))
+                next_url = urljoin(url, self._search_regex(
+                    r'<div[^>]+class=["\']next["\'][^>]*>\s*<a[^>]+href=(["\'])(?P<url>(?:(?!\1).)+)\1',
+                    content, 'next page url', group='url', default=None))
                 if not next_url:
                     break
-                content = self._download_webpage(
-                    next_url, category_id, f'Downloading page {page_num}')
+                content = self._download_webpage(next_url, category_id, f'Downloading page {page_num}')
 
     def _real_extract(self, url):
         category_id = self._match_id(url)
         webpage, urlh = self._download_webpage_handle(url, category_id)
         if PolskieRadioAuditionIE.suitable(urlh.url):
-            return self.url_result(
-                urlh.url, PolskieRadioAuditionIE, category_id)
+            return self.url_result(urlh.url, PolskieRadioAuditionIE, category_id)
         title = self._html_search_regex(
             r'<title>([^<]+)(?: - [^<]+ - [^<]+| w [Pp]olskie[Rr]adio\.pl\s*)</title>',
             webpage, 'title', fatal=False)
@@ -513,8 +478,7 @@ class PolskieRadioPlayerIE(InfoExtractor):
         channel_url = self._match_id(url)
         channel_list = self._get_channel_list(channel_url)
 
-        channel = next(
-            (c for c in channel_list if c.get('url') == channel_url), None)
+        channel = next((c for c in channel_list if c.get('url') == channel_url), None)
 
         if not channel:
             raise ExtractorError('Channel not found')
@@ -526,35 +490,27 @@ class PolskieRadioPlayerIE(InfoExtractor):
                                                'Referer': url,
                                                'Origin': self._BASE_URL,
                                            })
-        station = next((s for s in station_list if s.get('Name') == (
-            channel.get('streamName') or channel.get('name'))), None)
+        station = next((s for s in station_list
+                        if s.get('Name') == (channel.get('streamName') or channel.get('name'))), None)
         if not station:
-            raise ExtractorError(
-                'Station not found even though we extracted channel')
+            raise ExtractorError('Station not found even though we extracted channel')
 
         formats = []
         for stream_url in station['Streams']:
             stream_url = self._proto_relative_url(stream_url)
             if stream_url.endswith('/playlist.m3u8'):
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        stream_url, channel_url, live=True))
+                formats.extend(self._extract_m3u8_formats(stream_url, channel_url, live=True))
             elif stream_url.endswith('/manifest.f4m'):
-                formats.extend(
-                    self._extract_mpd_formats(
-                        stream_url, channel_url))
+                formats.extend(self._extract_mpd_formats(stream_url, channel_url))
             elif stream_url.endswith('/Manifest'):
-                formats.extend(
-                    self._extract_ism_formats(
-                        stream_url, channel_url))
+                formats.extend(self._extract_ism_formats(stream_url, channel_url))
             else:
                 formats.append({
                     'url': stream_url,
                 })
 
         return {
-            'id': str(
-                channel['id']),
+            'id': str(channel['id']),
             'formats': formats,
             'title': channel.get('name') or channel.get('streamName'),
             'display_id': channel_url,
@@ -608,20 +564,14 @@ class PolskieRadioPodcastListIE(PolskieRadioPodcastBaseIE):
         data = self._call_api(podcast_id, 1)
 
         def get_page(page_num):
-            page_data = self._call_api(
-                podcast_id, page_num + 1) if page_num else data
+            page_data = self._call_api(podcast_id, page_num + 1) if page_num else data
             yield from (self._parse_episode(ep) for ep in page_data['items'])
 
         return {
             '_type': 'playlist',
             'entries': InAdvancePagedList(
-                get_page,
-                math.ceil(
-                    data['itemCount'] /
-                    self._PAGE_SIZE),
-                self._PAGE_SIZE),
-            'id': str(
-                data['id']),
+                get_page, math.ceil(data['itemCount'] / self._PAGE_SIZE), self._PAGE_SIZE),
+            'id': str(data['id']),
             'title': data.get('title'),
             'description': data.get('description'),
             'uploader': data.get('announcer'),

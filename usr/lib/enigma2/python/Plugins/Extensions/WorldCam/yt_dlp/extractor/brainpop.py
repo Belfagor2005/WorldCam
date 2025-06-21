@@ -19,38 +19,21 @@ class BrainPOPBaseIE(InfoExtractor):
         1506: 'Your BrainPOP plan has expired.',  # LOGIN_FAILED_ACCOUNT_EXPIRED
         1507: 'Terms not accepted.',  # LOGIN_FAILED_TERMS_NOT_ACCEPTED
         1508: 'Account not activated.',  # LOGIN_FAILED_SUBSCRIPTION_NOT_ACTIVE
-        # LOGIN_FAILED_LOGIN_LIMIT_REACHED
-        1512: 'The maximum number of devices permitted are logged in with your account right now.',
-        # LOGIN_FAILED_INVALID_IP
-        1513: 'You are trying to access your account from outside of its allowed IP range.',
-        # LOGIN_FAILED_MBP_DISABLED
-        1514: 'Individual accounts are not included in your plan. Try again with your shared username and password.',
+        1512: 'The maximum number of devices permitted are logged in with your account right now.',  # LOGIN_FAILED_LOGIN_LIMIT_REACHED
+        1513: 'You are trying to access your account from outside of its allowed IP range.',  # LOGIN_FAILED_INVALID_IP
+        1514: 'Individual accounts are not included in your plan. Try again with your shared username and password.',  # LOGIN_FAILED_MBP_DISABLED
         1515: 'Account not activated.',  # LOGIN_FAILED_TEACHER_NOT_ACTIVE
-        # LOGIN_FAILED_NO_ACCESS
-        1523: 'That username and password won\'t work on this BrainPOP site.',
-        # LOGIN_FAILED_STUDENT_NO_PERIOD
-        1524: 'You\'ll need to join a class before you can login.',
-        # LOGIN_FAILED_ACCOUNT_LOCKED
-        1526: 'Your account is locked. Reset your password, or ask a teacher or administrator for help.',
+        1523: 'That username and password won\'t work on this BrainPOP site.',  # LOGIN_FAILED_NO_ACCESS
+        1524: 'You\'ll need to join a class before you can login.',  # LOGIN_FAILED_STUDENT_NO_PERIOD
+        1526: 'Your account is locked. Reset your password, or ask a teacher or administrator for help.',  # LOGIN_FAILED_ACCOUNT_LOCKED
     }
 
     @classproperty
     def _VALID_URL(cls):
-        root = re.escape(
-            cls._ORIGIN).replace(
-            r'https:',
-            r'https?:').replace(
-            r'www\.',
-            r'(?:www\.)?')
+        root = re.escape(cls._ORIGIN).replace(r'https:', r'https?:').replace(r'www\.', r'(?:www\.)?')
         return rf'{root}/(?P<slug>[^/]+/[^/]+/(?P<id>[^/?#&]+))'
 
-    def _assemble_formats(
-            self,
-            slug,
-            format_id,
-            display_id,
-            token='',
-            extra_fields={}):
+    def _assemble_formats(self, slug, format_id, display_id, token='', extra_fields={}):
         formats = []
         formats = self._extract_m3u8_formats(
             f'{urljoin(self._HLS_URL, slug)}.m3u8?{token}',
@@ -63,13 +46,7 @@ class BrainPOPBaseIE(InfoExtractor):
             f.update(extra_fields)
         return formats
 
-    def _extract_adaptive_formats(
-            self,
-            data,
-            token,
-            display_id,
-            key_format='%s',
-            extra_fields={}):
+    def _extract_adaptive_formats(self, data, token, display_id, key_format='%s', extra_fields={}):
         formats = []
         additional_key_formats = {
             '%s': {},
@@ -80,13 +57,13 @@ class BrainPOPBaseIE(InfoExtractor):
         }
         for additional_key_format, additional_key_fields in additional_key_formats.items():
             for key_quality, key_index in enumerate(('high', 'low')):
-                full_key_index = additional_key_format % (
-                    key_format % key_index)
+                full_key_index = additional_key_format % (key_format % key_index)
                 if data.get(full_key_index):
-                    formats.extend(
-                        self._assemble_formats(
-                            data[full_key_index], full_key_index, display_id, token, {
-                                'quality': -1 - key_quality, **additional_key_fields, **extra_fields, }))
+                    formats.extend(self._assemble_formats(data[full_key_index], full_key_index, display_id, token, {
+                        'quality': -1 - key_quality,
+                        **additional_key_fields,
+                        **extra_fields,
+                    }))
         return formats
 
     def _perform_login(self, username, password):
@@ -135,20 +112,12 @@ class BrainPOPIE(BrainPOPBaseIE):
     def _real_extract(self, url):
         slug, display_id = self._match_valid_url(url).group('slug', 'id')
         movie_data = self._download_json(
-            f'https://api.brainpop.com/api/content/published/bp/en/{slug}/movie?full=1',
-            display_id,
-            'Downloading movie data JSON',
-            'Unable to download movie data')['data']
-        topic_data = traverse_obj(
-            self._download_json(
-                f'https://api.brainpop.com/api/content/published/bp/en/{slug}?full=1',
-                display_id,
-                'Downloading topic data JSON',
-                'Unable to download topic data',
-                fatal=False),
-            ('data',
-             'topic'),
-            expected_type=dict) or movie_data['topic']
+            f'https://api.brainpop.com/api/content/published/bp/en/{slug}/movie?full=1', display_id,
+            'Downloading movie data JSON', 'Unable to download movie data')['data']
+        topic_data = traverse_obj(self._download_json(
+            f'https://api.brainpop.com/api/content/published/bp/en/{slug}?full=1', display_id,
+            'Downloading topic data JSON', 'Unable to download topic data', fatal=False),
+            ('data', 'topic'), expected_type=dict) or movie_data['topic']
 
         if not traverse_obj(movie_data, ('access', 'allow')):
             reason = traverse_obj(movie_data, ('access', 'reason'))
@@ -160,26 +129,20 @@ class BrainPOPIE(BrainPOPBaseIE):
         movie_feature_data = movie_feature['data']
 
         formats, subtitles = [], {}
-        formats.extend(
-            self._extract_adaptive_formats(
-                movie_feature_data, movie_feature_data.get(
-                    'token', ''), display_id, '%s_v2', {
-                    'language': movie_feature.get('language') or 'en', 'language_preference': 10, }))
-        for lang, localized_feature in traverse_obj(
-                movie_feature, 'localization', default={}, expected_type=dict).items():
-            formats.extend(
-                self._extract_adaptive_formats(
-                    localized_feature, localized_feature.get(
-                        'token', ''), display_id, '%s_v2', {
-                        'language': lang, 'language_preference': -10, }))
+        formats.extend(self._extract_adaptive_formats(movie_feature_data, movie_feature_data.get('token', ''), display_id, '%s_v2', {
+            'language': movie_feature.get('language') or 'en',
+            'language_preference': 10,
+        }))
+        for lang, localized_feature in traverse_obj(movie_feature, 'localization', default={}, expected_type=dict).items():
+            formats.extend(self._extract_adaptive_formats(localized_feature, localized_feature.get('token', ''), display_id, '%s_v2', {
+                'language': lang,
+                'language_preference': -10,
+            }))
 
         # TODO: Do localization fields also have subtitles?
         for name, url in movie_feature_data.items():
             lang = self._search_regex(
-                r'^subtitles_(?P<lang>\w+)$',
-                name,
-                'subtitle metadata',
-                default=None)
+                r'^subtitles_(?P<lang>\w+)$', name, 'subtitle metadata', default=None)
             if lang and url:
                 subtitles.setdefault(lang, []).append({
                     'url': urljoin(self._CDN_URL, url),
@@ -216,10 +179,7 @@ class BrainPOPLegacyBaseIE(BrainPOPBaseIE):
         topic_data = self._search_json(
             r'var\s+content\s*=\s*', webpage, 'content data',
             display_id, end_pattern=';')['category']['unit']['topic']
-        token = self._search_regex(
-            r'ec_token\s*:\s*[\'"]([^\'"]+)',
-            webpage,
-            'video token')
+        token = self._search_regex(r'ec_token\s*:\s*[\'"]([^\'"]+)', webpage, 'video token')
         return self._parse_js_topic_data(topic_data, display_id, token)
 
 

@@ -13,12 +13,7 @@ class TuneInBaseIE(InfoExtractor):
     _VALID_URL_BASE = r'https?://(?:www\.)?tunein\.com'
 
     def _extract_metadata(self, webpage, content_id):
-        return self._search_json(
-            r'window.INITIAL_STATE=',
-            webpage,
-            'hydration',
-            content_id,
-            fatal=False)
+        return self._search_json(r'window.INITIAL_STATE=', webpage, 'hydration', content_id, fatal=False)
 
     def _extract_formats_and_subtitles(self, content_id):
         streams = self._download_json(
@@ -28,13 +23,11 @@ class TuneInBaseIE(InfoExtractor):
         formats, subtitles = [], {}
         for stream in streams:
             if stream.get('media_type') == 'hls':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                    stream['url'], content_id, fatal=False)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(stream['url'], content_id, fatal=False)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             elif determine_ext(stream['url']) == 'pls':
-                playlist_content = self._download_webpage(
-                    stream['url'], content_id)
+                playlist_content = self._download_webpage(stream['url'], content_id)
                 formats.append({
                     'url': self._search_regex(r'File1=(.*)', playlist_content, 'url', fatal=False),
                     'abr': stream.get('bitrate'),
@@ -51,10 +44,8 @@ class TuneInBaseIE(InfoExtractor):
 
 
 class TuneInStationIE(TuneInBaseIE):
-    _VALID_URL = TuneInBaseIE._VALID_URL_BASE + \
-        r'(?:/radio/[^?#]+-|/embed/player/)(?P<id>s\d+)'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=["\'](?P<url>(?:https?://)?tunein\.com/embed/player/s\d+)']
+    _VALID_URL = TuneInBaseIE._VALID_URL_BASE + r'(?:/radio/[^?#]+-|/embed/player/)(?P<id>s\d+)'
+    _EMBED_REGEX = [r'<iframe[^>]+src=["\'](?P<url>(?:https?://)?tunein\.com/embed/player/s\d+)']
 
     _TESTS = [{
         'url': 'https://tunein.com/radio/Jazz24-885-s34682/',
@@ -113,10 +104,8 @@ class TuneInStationIE(TuneInBaseIE):
 
 
 class TuneInPodcastIE(TuneInBaseIE):
-    _VALID_URL = TuneInBaseIE._VALID_URL_BASE + \
-        r'/(?:podcasts/[^?#]+-|embed/player/)(?P<id>p\d+)/?(?:#|$)'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=["\'](?P<url>(?:https?://)?tunein\.com/embed/player/p\d+)']
+    _VALID_URL = TuneInBaseIE._VALID_URL_BASE + r'/(?:podcasts/[^?#]+-|embed/player/)(?P<id>p\d+)/?(?:#|$)'
+    _EMBED_REGEX = [r'<iframe[^>]+src=["\'](?P<url>(?:https?://)?tunein\.com/embed/player/p\d+)']
 
     _TESTS = [{
         'url': 'https://tunein.com/podcasts/Technology-Podcasts/Artificial-Intelligence-p1153019',
@@ -149,13 +138,10 @@ class TuneInPodcastIE(TuneInBaseIE):
 
         def page_func(page_num):
             api_response = self._download_json(
-                f'https://api.tunein.com/profiles/{podcast_id}/contents',
-                podcast_id,
-                note=f'Downloading page {page_num + 1}',
-                query={
+                f'https://api.tunein.com/profiles/{podcast_id}/contents', podcast_id,
+                note=f'Downloading page {page_num + 1}', query={
                     'filter': 't:free',
-                    'offset': page_num *
-                    self._PAGE_SIZE,
+                    'offset': page_num * self._PAGE_SIZE,
                     'limit': self._PAGE_SIZE,
                 })
 
@@ -167,14 +153,12 @@ class TuneInPodcastIE(TuneInBaseIE):
 
         entries = OnDemandPagedList(page_func, self._PAGE_SIZE)
         return self.playlist_result(
-            entries, playlist_id=podcast_id, title=traverse_obj(
-                metadata, ('profiles', podcast_id, 'title')), description=traverse_obj(
-                metadata, ('profiles', podcast_id, 'description')))
+            entries, playlist_id=podcast_id, title=traverse_obj(metadata, ('profiles', podcast_id, 'title')),
+            description=traverse_obj(metadata, ('profiles', podcast_id, 'description')))
 
 
 class TuneInPodcastEpisodeIE(TuneInBaseIE):
-    _VALID_URL = TuneInBaseIE._VALID_URL_BASE + \
-        r'/podcasts/(?:[^?&]+-)?(?P<podcast_id>p\d+)/?\?topicId=(?P<id>\w\d+)'
+    _VALID_URL = TuneInBaseIE._VALID_URL_BASE + r'/podcasts/(?:[^?&]+-)?(?P<podcast_id>p\d+)/?\?topicId=(?P<id>\w\d+)'
 
     _TESTS = [{
         'url': 'https://tunein.com/podcasts/Technology-Podcasts/Artificial-Intelligence-p1153019/?topicId=236404354',
@@ -192,8 +176,7 @@ class TuneInPodcastEpisodeIE(TuneInBaseIE):
     }]
 
     def _real_extract(self, url):
-        podcast_id, episode_id = self._match_valid_url(
-            url).group('podcast_id', 'id')
+        podcast_id, episode_id = self._match_valid_url(url).group('podcast_id', 'id')
         episode_id = f't{episode_id}'
 
         webpage = self._download_webpage(url, episode_id)

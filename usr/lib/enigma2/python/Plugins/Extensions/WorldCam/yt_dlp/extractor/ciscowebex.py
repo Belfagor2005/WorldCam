@@ -16,27 +16,23 @@ class CiscoWebexIE(InfoExtractor):
                         (?:recordingservice|webappng)/sites/(?P<siteurl_2>[^/#?]*)/recording/(?:playback/|play/)?(?P<id>[0-9a-f]{32})
                     ))'''
 
-    _TESTS = [{'url': 'https://demosubdomain.webex.com/demositeurl/ldr.php?RCID=e58e803bc0f766bb5f6376d2e86adb5b',
-               'only_matching': True,
-               },
-              {'url': 'http://demosubdomain.webex.com/demositeurl/lsr.php?RCID=bc04b4a7b5ea2cc3a493d5ae6aaff5d7',
-               'only_matching': True,
-               },
-              {'url': 'https://demosubdomain.webex.com/recordingservice/sites/demositeurl/recording/88e7a42f7b19f5b423c54754aecc2ce9/playback',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://demosubdomain.webex.com/demositeurl/ldr.php?RCID=e58e803bc0f766bb5f6376d2e86adb5b',
+        'only_matching': True,
+    }, {
+        'url': 'http://demosubdomain.webex.com/demositeurl/lsr.php?RCID=bc04b4a7b5ea2cc3a493d5ae6aaff5d7',
+        'only_matching': True,
+    }, {
+        'url': 'https://demosubdomain.webex.com/recordingservice/sites/demositeurl/recording/88e7a42f7b19f5b423c54754aecc2ce9/playback',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         mobj = self._match_valid_url(url)
         rcid = mobj.group('rcid')
         if rcid:
-            webpage = self._download_webpage(
-                url, None, note='Getting video ID')
-            url = self._search_regex(
-                self._VALID_URL,
-                webpage,
-                'redirection url',
-                group='url')
+            webpage = self._download_webpage(url, None, note='Getting video ID')
+            url = self._search_regex(self._VALID_URL, webpage, 'redirection url', group='url')
         url = self._request_webpage(url, None, note='Resolving final URL').url
         mobj = self._match_valid_url(url)
         subdomain = mobj.group('subdomain')
@@ -60,11 +56,8 @@ class CiscoWebexIE(InfoExtractor):
                 if password:
                     raise ExtractorError('Wrong password', expected=True)
                 raise ExtractorError(
-                    'This video is protected by a password, use the --video-password option',
-                    expected=True)
-            raise ExtractorError(
-                f'{self.IE_NAME} said: {stream["code"]} - {stream["message"]}',
-                expected=True)
+                    'This video is protected by a password, use the --video-password option', expected=True)
+            raise ExtractorError(f'{self.IE_NAME} said: {stream["code"]} - {stream["message"]}', expected=True)
 
         if urlh.status == 429:
             self.raise_login_required(
@@ -81,8 +74,7 @@ class CiscoWebexIE(InfoExtractor):
             'acodec': 'mp4a.40.2',
         }]
         if stream.get('preventDownload') is False:
-            mp4url = try_get(
-                stream, lambda x: x['downloadRecordingInfo']['downloadInfo']['mp4URL'])
+            mp4url = try_get(stream, lambda x: x['downloadRecordingInfo']['downloadInfo']['mp4URL'])
             if mp4url:
                 formats.append({
                     'format_id': 'video',
@@ -91,8 +83,7 @@ class CiscoWebexIE(InfoExtractor):
                     'vcodec': 'avc1.640028',
                     'acodec': 'mp4a.40.2',
                 })
-            audiourl = try_get(
-                stream, lambda x: x['downloadRecordingInfo']['downloadInfo']['audioURL'])
+            audiourl = try_get(stream, lambda x: x['downloadRecordingInfo']['downloadInfo']['audioURL'])
             if audiourl:
                 formats.append({
                     'format_id': 'audio',
@@ -108,11 +99,8 @@ class CiscoWebexIE(InfoExtractor):
             'description': stream.get('description'),
             'uploader': stream.get('ownerDisplayName'),
             'uploader_id': stream.get('ownerUserName') or stream.get('ownerId'),
-            'timestamp': unified_timestamp(
-                stream.get('createTime')),
-            'duration': int_or_none(
-                stream.get('duration'),
-                1000),
+            'timestamp': unified_timestamp(stream.get('createTime')),
+            'duration': int_or_none(stream.get('duration'), 1000),
             'webpage_url': f'https://{subdomain}.webex.com/recordingservice/sites/{siteurl}/recording/playback/{video_id}',
             'formats': formats,
         }

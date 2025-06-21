@@ -20,14 +20,7 @@ from ..utils import (
 
 
 class ViceBaseIE(InfoExtractor):
-    def _call_api(
-            self,
-            resource,
-            resource_key,
-            resource_id,
-            locale,
-            fields,
-            args=''):
+    def _call_api(self, resource, resource_key, resource_id, locale, fields, args=''):
         return self._download_json(
             'https://video.vice.com/api/v1/graphql', resource_id, query={
                 'query': '''{
@@ -42,8 +35,7 @@ class ViceIE(ViceBaseIE, AdobePassIE):
     _WORKING = False
     IE_NAME = 'vice'
     _VALID_URL = r'https?://(?:(?:video|vms)\.vice|(?:www\.)?vice(?:land|tv))\.com/(?P<locale>[^/]+)/(?:video/[^/]+|embed)/(?P<id>[\da-f]{24})'
-    _EMBED_REGEX = [
-        r'<iframe\b[^>]+\bsrc=["\'](?P<url>(?:https?:)?//video\.vice\.com/[^/]+/embed/[\da-f]{24})']
+    _EMBED_REGEX = [r'<iframe\b[^>]+\bsrc=["\'](?P<url>(?:https?:)?//video\.vice\.com/[^/]+/embed/[\da-f]{24})']
     _TESTS = [{
         'url': 'https://video.vice.com/en_us/video/pet-cremator/58c69e38a55424f1227dc3f7',
         'info_dict': {
@@ -131,8 +123,7 @@ class ViceIE(ViceBaseIE, AdobePassIE):
         # signature generation algorithm is reverse engineered from signatureGenerator in
         # webpack:///../shared/~/vice-player/dist/js/vice-player.js in
         # https://www.viceland.com/assets/common/js/web.vendor.bundle.js
-        # new JS is located here
-        # https://vice-web-statics-cdn.vice.com/vice-player/player-embed.js
+        # new JS is located here https://vice-web-statics-cdn.vice.com/vice-player/player-embed.js
         exp = int(time.time()) + 1440
 
         query.update({
@@ -150,10 +141,8 @@ class ViceIE(ViceBaseIE, AdobePassIE):
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status in (400, 401):
                 error = json.loads(e.cause.response.read().decode())
-                error_message = error.get(
-                    'error_description') or error['details']
-                raise ExtractorError(
-                    f'{self.IE_NAME} said: {error_message}', expected=True)
+                error_message = error.get('error_description') or error['details']
+                raise ExtractorError(f'{self.IE_NAME} said: {error_message}', expected=True)
             raise
 
         video_data = preplay['video']
@@ -168,10 +157,7 @@ class ViceIE(ViceBaseIE, AdobePassIE):
             cc_url = subtitle.get('url')
             if not cc_url:
                 continue
-            language_code = try_get(
-                subtitle,
-                lambda x: x['languages'][0]['language_code'],
-                str) or 'en'
+            language_code = try_get(subtitle, lambda x: x['languages'][0]['language_code'], str) or 'en'
             subtitles.setdefault(language_code, []).append({
                 'url': cc_url,
             })
@@ -302,12 +288,7 @@ class ViceArticleIE(ViceBaseIE):
     def _real_extract(self, url):
         locale, display_id = self._match_valid_url(url).groups()
 
-        article = self._call_api(
-            'articles',
-            'slug',
-            display_id,
-            locale,
-            '''body
+        article = self._call_api('articles', 'slug', display_id, locale, '''body
     embed_code''')[0]
         body = article['body']
 
