@@ -124,7 +124,7 @@ gst-inspect-1.0 --version
 # chmod a+rx /usr/bin/yt-dlp
 # /usr/bin/yt-dlp -U --verbose --force-overwrites
 # opkg install --force-reinstall yt-dlp
-echo -e ".youtube.com\tTRUE\t/\tTRUE\t2147483647\tCONSENT\tYES+cb.20210615-14-p0.it+FX+294" > /etc/enigma2/yt_cookies.txt
+echo -e "# Netscape HTTP Cookie File\n.youtube.com\tTRUE\t/\tTRUE\t2147483647\tCONSENT\tYES+cb.20210615-14-p0.it+FX+294\n.youtube.com\tTRUE\t/\tTRUE\t2147483647\tPREF\tf1=50000000" > /etc/enigma2/yt_cookies.txt
 echo "yt-dlp installation done."
 ## --- END install yt-dlp and dependencies ---
 
