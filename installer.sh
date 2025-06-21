@@ -4,7 +4,7 @@
 
 ## Only This 2 lines to edit with new version ######
 version='5.2'
-changelog='\nRewrite all code source and add Youtube player'
+changelog='\nMaster stream YT fixed'
 ##
 TMPPATH=/tmp/WorldCam-main
 FILEPATH=/tmp/main.tar.gz
