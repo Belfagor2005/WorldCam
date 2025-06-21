@@ -9,7 +9,7 @@
 	<map context="WorldCamPlayer">
 		<key id="KEY_TV" mapto="leavePlayer" flags="b"/>
 		<key id="KEY_STOP" mapto="stop" flags="m"/>
-		<key id="KEY_EXIT" mapto="leavePlayerOnExit" flags="m"/>
+		<!-- <key id="KEY_EXIT" mapto="leavePlayerOnExit" flags="m"/> -->
 		<key id="KEY_ESC" mapto="leavePlayerOnExit" flags="m"/>
 		<key id="KEY_CHANNELUP" mapto="channelUp" flags="m"/>
 		<key id="KEY_CHANNELDOWN" mapto="channelDown" flags="m"/>
@@ -22,6 +22,20 @@
 		<key id="KEY_VIDEO" mapto="delete" flags="m"/>
 		<key id="KEY_TEXT" mapto="subtitles" flags="m"/>
 		<key id="KEY_RECORD" mapto="shift_record" flags="l"/>
+		<key id="KEY_RED" mapto="red" flags="m"/>
+		<key id="KEY_GREEN" mapto="green" flags="m"/>
+		<key id="KEY_YELLOW" mapto="yellow" flags="m"/>
+		<key id="KEY_BLUE" mapto="blue" flags="m"/>
+		<key id="KEY_BACKSPACE" mapto="backspace" flags="mr"/>
+		<key id="KEY_PLAYPAUSE" mapto="playpause" flags="mr"/>
+		<key id="KEY_PLAY" mapto="playpauseService" flags="mr"/>
+		<key id="KEY_PAUSE" mapto="playpauseService" flags="mr"/>
+		<key id="KEY_OK" mapto="toggleShow" flags="b" />
+		<key id="KEY_OK" mapto="LongOKPressed" flags="l" />
+		<key id="KEY_ENTER" mapto="toggleShow" flags="m" />
+		<key id="KEY_EXIT" mapto="hide" flags="m" />
+		<!-- <key id="KEY_ESC" mapto="hide" flags="m" /> -->
+		
 	</map>
 	<map context="WorldCamActions">
 		<key id="KEY_ENTER" mapto="ok" flags="m"/>

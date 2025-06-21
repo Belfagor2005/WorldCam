@@ -21,7 +21,7 @@ from __future__ import absolute_import, print_function
 """
 __author__ = "Lululla"
 
-from json import load
+from json import load, dump
 from os import makedirs, remove
 from os.path import abspath, dirname, exists, isfile, join
 
@@ -128,6 +128,62 @@ class Logger:
         self.log(message, "DEBUG")
 
 
+FAVORITES_FILE = join(PLUGIN_PATH, "favorites.json")
+
+
+class FavoritesManager:
+    @staticmethod
+    def load_favorites():
+        """Carica i preferiti dal file JSON"""
+        if not exists(FAVORITES_FILE):
+            return []
+        try:
+            with open(FAVORITES_FILE, "r", encoding="utf-8") as f:
+                return load(f)
+        except Exception as e:
+            logger.error(f"Error loading favorites: {str(e)}")
+            return []
+
+    @staticmethod
+    def save_favorites(favorites):
+        """Salva i preferiti nel file JSON"""
+        try:
+            with open(FAVORITES_FILE, "w", encoding="utf-8") as f:
+                dump(favorites, f, indent=4, ensure_ascii=False)
+            return True
+        except Exception as e:
+            logger.error(f"Error saving favorites: {str(e)}")
+            return False
+
+    @staticmethod
+    def add_favorite(name, url):
+        """Aggiunge un webcam ai preferiti"""
+        favorites = FavoritesManager.load_favorites()
+
+        # Controlla se esiste già
+        if any(fav["url"] == url for fav in favorites):
+            return False
+
+        favorites.append({"name": name, "url": url})
+        return FavoritesManager.save_favorites(favorites)
+
+    @staticmethod
+    def remove_favorite(url):
+        """Rimuove un webcam dai preferiti"""
+        favorites = FavoritesManager.load_favorites()
+        new_favorites = [fav for fav in favorites if fav["url"] != url]
+
+        if len(new_favorites) == len(favorites):
+            return False  # Non trovato
+
+        return FavoritesManager.save_favorites(new_favorites)
+
+    @staticmethod
+    def is_favorite(url):
+        """Controlla se un URL è nei preferiti"""
+        return any(fav["url"] == url for fav in FavoritesManager.load_favorites())
+
+
 def b64encoder(source):
     """Encode a string to base64, ensuring bytes input for Python 3."""
     import base64
@@ -192,23 +248,12 @@ def safe_cleanup(screen_instance):
     logger = Logger()
     logger.info("safe_cleanup:")
     try:
-        if hasattr(
-                screen_instance,
-                "cleanup") and callable(
-                screen_instance.cleanup):
+        if hasattr(screen_instance, "cleanup") and callable(screen_instance.cleanup):
             screen_instance.cleanup()
         else:
-            logger.debug(
-                "No cleanup method for " +
-                screen_instance.__class__.__name__,
-                "SAFE_CLEANUP")
+            logger.debug("No cleanup method for " + screen_instance.__class__.__name__, "SAFE_CLEANUP")
     except Exception as e:
-        logger.error(
-            "Cleanup error in " +
-            screen_instance.__class__.__name__ +
-            ": " +
-            str(e),
-            "SAFE_CLEANUP")
+        logger.error("Cleanup error in " + screen_instance.__class__.__name__ + ": " + str(e), "SAFE_CLEANUP")
 
 
 def _sort_by_name(items):
