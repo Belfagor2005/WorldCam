@@ -9,15 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.2\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: LanguageScreen.py:49
 msgid "Select language"
-msgstr "Αλλαγή γλώσσας"
+msgstr "Επιλογή γλώσσας"
 
 #: __init__.py:38
 msgid ""
@@ -44,26 +43,28 @@ msgid ""
 "STOP - Stop playback\n"
 "EXIT - Close player\n"
 msgstr ""
+"Χειριστήρια προγράμματος αναπαραγωγής:\n"
+"OK - Εμφάνιση/απόκρυψη μπάρας πληροφοριών\n"
+"BLUE - Εναλλαγή αγαπημένων\n"
+"PLAY/PAUSE - Εναλλαγή αναπαραγωγής\n"
+"STOP - Διακοπή αναπαραγωγής\n"
+"EXIT - Κλείσιμο προγράμματος αναπαραγωγής\n"
 
 #: player.py:311 plugin.py:1318
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Αφαιρέθηκε από τα αγαπημένα"
 
 #: player.py:311
-#, fuzzy
-#| msgid "Error loading categories"
 msgid "Error removing favorite"
-msgstr "Σφάλμα κατά τη φόρτωση των κατηγοριών"
+msgstr "Σφάλμα κατά την αφαίρεση από τα αγαπημένα"
 
 #: player.py:314 plugin.py:1310
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Προστέθηκε στα αγαπημένα!"
 
 #: player.py:314
-#, fuzzy
-#| msgid "Error loading categories"
 msgid "Error adding favorite"
-msgstr "Σφάλμα κατά τη φόρτωση των κατηγοριών"
+msgstr "Σφάλμα κατά την προσθήκη στα αγαπημένα"
 
 #: player.py:377
 msgid "Could not extract video stream"
@@ -74,10 +75,8 @@ msgid "Invalid YouTube URL"
 msgstr "Μη έγκυρο URL YouTube"
 
 #: player.py:482
-#, fuzzy
-#| msgid "All YouTube methods failed!"
 msgid "All YouTube playback methods failed!"
-msgstr "Όλες οι μέθοδοι του YouTube απέτυχαν!"
+msgstr "Όλες οι μέθοδοι αναπαραγωγής YouTube απέτυχαν!"
 
 #: player.py:486
 msgid "Error playing YouTube video!"
@@ -121,7 +120,7 @@ msgstr "Λίστες χρήστη"
 
 #: plugin.py:336
 msgid "Favorites"
-msgstr ""
+msgstr "Αγαπημένα"
 
 #: plugin.py:337 plugin.py:917 utils.py:468
 msgid "Continents"
@@ -250,7 +249,7 @@ msgstr "Προέκυψε σφάλμα κατά την ενημέρωση (κωδ
 
 #: plugin.py:664
 msgid "yt-dlp updated successfully!"
-msgstr "tο yt-dlp ενημερώθηκε με επιτυχία!"
+msgstr "Το yt-dlp ενημερώθηκε με επιτυχία!"
 
 #: plugin.py:668
 #, python-format
@@ -312,30 +311,28 @@ msgstr "- Άλλες πηγές\n"
 
 #: plugin.py:704
 msgid "Your Favorites"
-msgstr ""
+msgstr "Τα αγαπημένα σας"
 
 #: plugin.py:710 plugin.py:1291
 msgid "Play"
-msgstr ""
+msgstr "Αναπαραγωγή"
 
 #: plugin.py:711 plugin.py:737
 msgid "Remove"
-msgstr ""
+msgstr "Αφαίρεση"
 
 #: plugin.py:730
 msgid "No favorites yet"
-msgstr ""
+msgstr "Δεν υπάρχουν αγαπημένα ακόμα"
 
 #: plugin.py:740
-#, fuzzy
-#| msgid "Error loading categories"
 msgid "Error loading favorites"
-msgstr "Σφάλμα κατά τη φόρτωση των κατηγοριών"
+msgstr "Σφάλμα φόρτωσης αγαπημένων"
 
 #: plugin.py:763
 #, python-format
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Αφαιρέθηκε από τα αγαπημένα: %s"
 
 #: plugin.py:811
 msgid "No playlists found"
@@ -407,11 +404,11 @@ msgstr "Επιλέξτε έγκυρη τοποθεσία"
 
 #: plugin.py:1290
 msgid "Add to favorites"
-msgstr ""
+msgstr "Προσθήκη στα αγαπημένα"
 
 #: plugin.py:1290
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Αφαίρεση από τα αγαπημένα"
 
 #: plugin.py:1339
 msgid "Error loading webcams"
