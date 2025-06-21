@@ -9,32 +9,35 @@ the plugin now offers new features and greater reliability.
 
 ---
 
-## 🚀 What's new in version 5.0
+🚀 **What's new in version 5.0**
 
-- ⚡️ **Fast and interactive UI management**  
-  Asynchronous webcam loading and smooth navigation between categories.
+⚡️ **Fast and interactive UI management**
+Asynchronous webcam loading and smooth navigation between categories.
 
-- 🇺🇳 **Dynamic flag icons for language/country**  
-  Automatic mapping based on system language or country name.
+🇺🇳 **Dynamic flag icons for language/country**
+Automatic mapping based on system language or country name.
 
-- ✅ **New integrated player**  
-  Direct support for HLS streams (.m3u8) and YouTube stream and 2 fallback where available.
+✅ **New integrated player**
+Direct support for HLS streams (.m3u8), YouTube streaming, and two fallback options where available.
 
-- 🔎 **Fully revamped SkylineWebcams scraper**  
-  Faster and compatible with recent website updates.
+🔎 **Fully revamped SkylineWebcams scraper**
+Faster and fully compatible with recent site updates.
 
-- 🛠️ **Advanced console + file logger**  
-  Supports `INFO`, `DEBUG`, `ERROR`, `CRITICAL` levels,  
-  with color-coded terminal output and persistent logs in `/tmp/worldcam/worldcam.log`.
+🛠️ **Advanced console + file logger**
+Supports INFO, DEBUG, ERROR, CRITICAL levels, with color-coded terminal output and persistent logs in `/tmp/worldcam/worldcam.log`.
 
-- 🧹 **Safe screen cleanup and management**  
-  Summary removal and automatic cleanup to prevent memory leaks or crashes.
+🧹 **Safe screen cleanup and management**
+Automatic memory cleanup to prevent leaks or crashes.
 
-- 🔁 **Integrated aspect ratio handling**  
-  Stores and restores the correct aspect ratio for each video stream.
+🔁 **Integrated aspect ratio handling**
+Stores and restores the correct aspect ratio for each video stream.
 
-- 🧩 **Guaranteed compatibility from Python 2.7 to 3.9+**  
-  Safe use of cross-version libraries and methods, with automatic fallbacks.
+📁 **Favorites list now available**
+You can now manage your favorite webcams from the main menu.
+While watching a webcam, just press the **Blue button** to add or remove it from your **Favorites**.
+
+🧩 **Guaranteed compatibility from Python 2.7 to 3.9+**
+Safe use of cross-version libraries and methods, with automatic fallbacks.
 
 ---
 
