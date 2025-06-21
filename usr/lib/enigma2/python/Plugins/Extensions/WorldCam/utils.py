@@ -181,7 +181,8 @@ class FavoritesManager:
     @staticmethod
     def is_favorite(url):
         """Controlla se un URL è nei preferiti"""
-        return any(fav["url"] == url for fav in FavoritesManager.load_favorites())
+        return any(
+            fav["url"] == url for fav in FavoritesManager.load_favorites())
 
 
 def b64encoder(source):
@@ -248,12 +249,23 @@ def safe_cleanup(screen_instance):
     logger = Logger()
     logger.info("safe_cleanup:")
     try:
-        if hasattr(screen_instance, "cleanup") and callable(screen_instance.cleanup):
+        if hasattr(
+                screen_instance,
+                "cleanup") and callable(
+                screen_instance.cleanup):
             screen_instance.cleanup()
         else:
-            logger.debug("No cleanup method for " + screen_instance.__class__.__name__, "SAFE_CLEANUP")
+            logger.debug(
+                "No cleanup method for " +
+                screen_instance.__class__.__name__,
+                "SAFE_CLEANUP")
     except Exception as e:
-        logger.error("Cleanup error in " + screen_instance.__class__.__name__ + ": " + str(e), "SAFE_CLEANUP")
+        logger.error(
+            "Cleanup error in " +
+            screen_instance.__class__.__name__ +
+            ": " +
+            str(e),
+            "SAFE_CLEANUP")
 
 
 def _sort_by_name(items):
