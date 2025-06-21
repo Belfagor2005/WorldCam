@@ -47,9 +47,8 @@ from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
 from . import _
-from .utils import Logger, AspectManager, urlparse, parse_qs, quote, is_ytdlp_available
+from .utils import Logger, AspectManager, urlparse, parse_qs, quote  # , is_ytdlp_available
 from .scraper import SkylineScraper
-
 
 yt_dlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp"
 if yt_dlp_path not in sys.path:
@@ -299,242 +298,182 @@ class WorldCamPlayer(
 			self.logger.error(f"Playback error: {str(e)}")
 			self.show_error(f"Playback error: {str(e)}")
 
-	def load_ytdlp(self):
-		"""Carica yt-dlp con gestione degli errori dettagliata"""
-		try:
-			# Primo tentativo: import diretto (se disponibile a livello di sistema)
-			try:
-				from yt_dlp import YoutubeDL
-				self.logger.info("yt-dlp caricato dal percorso di sistema")
-				return YoutubeDL
-			except ImportError:
-				pass
-
-			# Secondo tentativo: percorso predefinito
-			try:
-				yt_dlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp"
-				if yt_dlp_path not in sys.path:
-					sys.path.append(yt_dlp_path)
-
-				from yt_dlp import YoutubeDL
-				self.logger.info("yt-dlp caricato dal percorso predefinito")
-				return YoutubeDL
-			except ImportError:
-				pass
-
-			# Terzo tentativo: percorso del plugin
-			try:
-				plugin_dir = dirname(abspath(__file__))
-				if plugin_dir not in sys.path:
-					sys.path.append(plugin_dir)
-
-				yt_dlp_subdir = join(plugin_dir, 'yt_dlp')
-				if yt_dlp_subdir not in sys.path:
-					sys.path.append(yt_dlp_subdir)
-
-				from yt_dlp import YoutubeDL
-				self.logger.info("yt-dlp caricato dalla cartella del plugin")
-				return YoutubeDL
-			except ImportError:
-				pass
-
-			# Quarto tentativo: import con imp
-			try:
-				import imp
-				plugin_dir = dirname(abspath(__file__))
-				yt_dlp_path = join(plugin_dir, 'yt_dlp', '__init__.py')
-
-				if exists(yt_dlp_path):
-					yt_dlp_module = imp.load_source('yt_dlp', yt_dlp_path)
-					self.logger.info("yt-dlp caricato con imp")
-					return yt_dlp_module.YoutubeDL
-			except Exception as e:
-				self.logger.error(f"Caricamento con imp fallito: {str(e)}")
-
-			self.logger.error("Impossibile caricare yt-dlp con qualsiasi metodo")
-			return None
-
-		except Exception as e:
-			self.logger.error(f"Errore nel caricamento di yt-dlp: {str(e)}")
-			return None
-
 	def play_youtube(self, url, title):
 		try:
 			self.logger.info(f"Playing YouTube: {url}")
 			self.logger.info(f"Title: {title}")
 
-			# Extract video ID
-			video_id = self.extract_video_id(url)
-			if not video_id:
-				self.logger.error("Could not extract video ID")
-				self.show_error(_("Invalid YouTube URL"))
-				return
-
-			self.logger.info(f"Video ID: {video_id}")
-
-			# Try methods in order of reliability
-			methods = [
-				self.play_with_ytdlp,
-				self.play_with_direct_embed,
-				self.play_with_direct_headers
-			]
-
-			for method in methods:
+			try:
+				# Attempt to import yt_dlp from plugin directory
 				try:
-					self.logger.info(f"Trying method: {method.__name__}")
-					if method(video_id, title):
-						self.logger.info("Playback started successfully")
+					from yt_dlp import YoutubeDL
+					self.logger.info("Using system-wide yt_dlp")
+				except ImportError:
+					# Fallback to system-wide installation if available
+					try:
+						from .yt_dlp import YoutubeDL
+						self.logger.info("Using plugin-local yt_dlp")
+					except ImportError:
+						self.logger.error("yt_dlp not found locally or system-wide")
+						self.show_error(_("yt_dlp module missing!"))
 						return
-				except Exception as e:
-					self.logger.error(f"Method failed: {str(e)}")
+				# YoutubeDL = is_ytdlp_available(logger=self.logger)
+				if YoutubeDL:
+					# YouTubeDL configuration
+					ydl_opts = {
+						'format': 'best[height<=720]',  # Limita a 720p per performance,
+						'quiet': True,
+						'logger': self.logger,
+						'nocheckcertificate': True,
+						'outtmpl': '',
+						'cachedir': False,
+						'no_warnings': False,
+						'ignoreerrors': False,
+						'geo_bypass': True,
+						'geo_bypass_country': 'US',
+						'http_headers': {
+							'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+							'Referer': 'https://www.youtube.com/',
+							'Origin': 'https://www.youtube.com'
+						},
+						'extractor_args': {
+							'youtube': {
+								'player_client': ['android', 'web'],
+								'skip': ['hls', 'dash']
+							}
+						},
+						'force_ipv4': True,
+						'verbose': True,
+						'compat_opts': ['no-youtube-unavailable-videos'],
+					}
 
-			# If all methods fail
-			self.show_error(_('All YouTube playback methods failed!'))
+					with YoutubeDL(ydl_opts) as ydl:
+						info = ydl.extract_info(url, download=False)
+
+						if not info:
+							self.logger.error("No video info returned by yt_dlp")
+							self.show_error(_("Couldn't extract video information"))
+							return
+
+						# Get best available format
+						if 'url' in info:
+							stream_url = info['url']
+
+						elif 'formats' in info:
+							formats = [f for f in info['formats']
+									   if f.get('protocol', '').startswith('http')]
+
+							if not formats:
+								self.logger.error("No HTTP formats available")
+								return False
+							# Seleziona formato compatibile
+							compatible_formats = [
+								f for f in formats
+								if not f.get('acodec', 'none') == 'none'   # Richiede audio
+								and not f.get('vcodec', 'none') == 'none'  # Richiede video
+							]
+
+							if not compatible_formats:
+								compatible_formats = formats
+
+							compatible_formats.sort(key=lambda f: f.get('height', 0), reverse=True)
+							best_format = compatible_formats[0]
+							stream_url = best_format['url']
+
+						else:
+							self.logger.error("No playable formats found")
+							self.show_error(_("No playable formats available"))
+							return
+
+						self.logger.info(f"Extracted stream URL: {stream_url[:200]}...")
+
+						# Determine service type based on URL
+						if '.m3u8' in stream_url.lower():
+							service_type = 5001  # HLS
+						else:
+							service_type = 4097  # HTTP
+
+						service = eServiceReference(service_type, 0, stream_url)
+						service.setName(title)
+
+						# Stop any current playback
+						if self.session.nav.getCurrentlyPlayingServiceReference():
+							self.session.nav.stopService()
+
+						# Start playback
+						self.session.nav.playService(service)
+						self.show()
+						self.state = self.STATE_PLAYING
+						self.logger.info("YouTube playback started successfully")
+				pass
+			except Exception as e:
+				self.logger.error(f"yt-dlp failed: {str(e)}")
+				""" test """
+				"""
+				# Fallback to custom extractor
+				try:
+					from .YouTubeExtractor import YouTubeExtractor
+					self.youtube_extractor = YouTubeExtractor(logger=self.logger)
+					self.logger.info("Trying custom extractor fallback")
+
+					# Use our extractor to get stream URL
+					video_id = self.youtube_extractor.extract_video_id(url)
+					if not video_id:
+						self.logger.error("Couldn't extract video ID")
+						self.show_error(_("Invalid YouTube URL"))
+						return
+
+					stream_url, extension, headers = self.youtube_extractor.get_stream_url(video_id)
+
+					if not stream_url:
+						self.logger.error("Extraction failed, using fallback")
+						# Try direct method as fallback
+						self.play_youtube_direct(url, title)
+						return
+
+					self.logger.info(f"Extracted URL: {stream_url[:200]}...")
+					self.logger.info(f"File extension: {extension}")
+
+					# Determine service type
+					if extension == 'm3u8' or '.m3u8' in stream_url:
+						service_type = 5001  # HLS
+					else:
+						service_type = 4097  # HTTP
+
+					# Append headers if we have them
+					if headers:
+						stream_url += f"|{headers}"
+						self.logger.info("Appended headers to URL")
+
+					service = eServiceReference(service_type, 0, stream_url)
+					service.setName(title)
+
+					# Start playback
+					self.start_service_playback(service)
+					self.logger.info("YouTube playback started successfully")
+
+				except Exception as e:
+					self.logger.error(f"Playback error: {str(e)}")
+					self.show_error(_('Error playing YouTube video!'))
+					import traceback
+					self.logger.error(traceback.format_exc())
+
+				# Proxy method
+				try:
+					self.play_youtube_proxy(url, title)
+					return
+				except Exception as e3:
+					self.logger.error(f"Proxy method failed: {str(e3)}")
+
+				# If we get here, both methods failed
+				self.show_error(_("All playback methods failed!"))
+				"""
 
 		except Exception as e:
 			self.logger.error(f"Playback failed: {str(e)}")
 			self.show_error(_('Error playing YouTube video!'))
 			import traceback
 			self.logger.error(traceback.format_exc())
-
-	def play_with_ytdlp(self, video_id, title):
-		"""Method 1: Use yt-dlp with proper configuration"""
-		try:
-			self.logger.info("Trying yt-dlp method")
-
-			# Load yt-dlp
-			YoutubeDL = is_ytdlp_available(logger=self.logger)
-			if not YoutubeDL:
-				return False
-
-			ydl_opts = {
-				'format': 'best[height<=720]',  # Limita a 720p per performance
-				'quiet': False,
-				'logger': self.logger,
-				'nocheckcertificate': True,
-				'outtmpl': '',
-				'cachedir': False,
-				'no_warnings': False,
-				'ignoreerrors': False,
-				'geo_bypass': True,
-				'geo_bypass_country': 'US',
-				'http_headers': {
-					'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-					'Referer': 'https://www.youtube.com/',
-					'Origin': 'https://www.youtube.com'
-				},
-				'extractor_args': {
-					'youtube': {
-						'player_client': ['android_embedded', 'web'],
-						'player_skip': ['config'],
-					}
-				},
-				'force_ipv4': True,
-				'verbose': True,
-				'compat_opts': ['no-youtube-unavailable-videos'],
-			}
-
-			youtube_url = f"https://www.youtube.com/watch?v={video_id}"
-
-			with YoutubeDL(ydl_opts) as ydl:
-				info = ydl.extract_info(youtube_url, download=False)
-
-				if not info:
-					self.logger.error("No video info returned by yt_dlp")
-					return False
-
-				# Estrae URL diretto
-				if 'url' in info:
-					stream_url = info['url']
-				elif 'formats' in info:
-					formats = [f for f in info['formats']
-							   if f.get('protocol', '').startswith('http')]
-
-					if not formats:
-						self.logger.error("No HTTP formats available")
-						return False
-
-					# Seleziona formato compatibile
-					compatible_formats = [
-						f for f in formats
-						if not f.get('acodec', 'none') == 'none'   # Richiede audio
-						and not f.get('vcodec', 'none') == 'none'  # Richiede video
-					]
-
-					if not compatible_formats:
-						compatible_formats = formats
-
-					compatible_formats.sort(key=lambda f: f.get('height', 0), reverse=True)
-					best_format = compatible_formats[0]
-					stream_url = best_format['url']
-
-					self.logger.info(f"Selected format: {best_format['format_id']} ({best_format.get('width', 0)}x{best_format.get('height', 0)})")
-				else:
-					self.logger.error("No playable formats found")
-					return False
-
-				self.logger.info(f"Stream URL: {stream_url[:200]}...")
-
-				# Determina il tipo di servizio
-				if '.m3u8' in stream_url.lower():
-					service_type = 5001  # HLS
-					self.logger.info("Detected HLS stream")
-				else:
-					service_type = 4097  # HTTP
-					self.logger.info("Detected HTTP stream")
-
-				service = eServiceReference(service_type, 0, stream_url)
-				service.setName(title)
-				self.start_service_playback(service)
-				return True
-
-		except Exception as e:
-			self.logger.error(f"yt-dlp method failed: {str(e)}")
-			import traceback
-			self.logger.error(traceback.format_exc())
-			return False
-
-	def play_with_direct_embed(self, video_id, title):
-		"""Method 2: Direct embed URL with headers"""
-		try:
-			self.logger.info("Trying direct embed method")
-			url = f"https://www.youtube.com/embed/{video_id}"
-
-			# Create headers string
-			headers = (
-				"User-Agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36&"
-				f"Referer=https://www.youtube.com/embed/{video_id}&"
-				"Origin=https://www.youtube.com"
-			)
-
-			service = eServiceReference(4097, 0, f"{url}|{headers}")
-			service.setName(title)
-			self.start_service_playback(service)
-			return True
-		except Exception as e:
-			self.logger.error(f"Direct embed method failed: {str(e)}")
-			return False
-
-	def play_with_direct_headers(self, video_id, title):
-		"""Method 3: Direct video URL with headers"""
-		try:
-			self.logger.info("Trying direct video method")
-			url = f"https://www.youtube.com/v/{video_id}"
-
-			# Create headers string
-			headers = (
-				"User-Agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36&"
-				f"Referer=https://www.youtube.com/watch?v={video_id}&"
-				"Origin=https://www.youtube.com"
-			)
-
-			service = eServiceReference(4097, 0, f"{url}|{headers}")
-			service.setName(title)
-			self.start_service_playback(service)
-			return True
-		except Exception as e:
-			self.logger.error(f"Direct video method failed: {str(e)}")
-			return False
 
 	def extract_video_id(self, url):
 		"""Extracts video ID from YouTube URL"""
@@ -555,10 +494,14 @@ class WorldCamPlayer(
 		return None
 
 	def start_service_playback(self, service):
-		"""Start playback with special handling"""
+		"""Start playback with special handling for YouTube"""
 		# Stop any current playback
 		if self.session.nav.getCurrentlyPlayingServiceReference():
 			self.session.nav.stopService()
+
+		# Force MP4 Player for YouTube URL
+		if "youtube.com" in service.getPath():
+			service.setPath(service.getPath().replace("https://", "4097:0:0:0:0:0:0:0:0:0:"))
 
 		# Start new playback
 		self.session.nav.playService(service)
@@ -569,8 +512,7 @@ class WorldCamPlayer(
 		"""Fallback method for direct YouTube playback"""
 		try:
 			self.logger.info("Using direct YouTube method")
-			service = eServiceReference(
-				4097, 0, f"https://www.youtube.com/watch?v={self.extract_video_id(url)}")
+			service = eServiceReference(4097, 0, f"https://www.youtube.com/watch?v={self.extract_video_id(url)}")
 			service.setName(title)
 			self.start_service_playback(service)
 		except Exception as e:
@@ -587,8 +529,7 @@ class WorldCamPlayer(
 
 			# YouTube URLs are considered direct
 			if "youtube.com" in url_lower or "youtu.be" in url_lower:
-				self.logger.info(
-					"YouTube URL detected - treating as direct stream")
+				self.logger.info("YouTube URL detected - treating as direct stream")
 				return True
 
 			parsed = urlparse(url)
@@ -596,28 +537,13 @@ class WorldCamPlayer(
 			query = parsed.query.lower()
 
 			# Check for stream file extensions
-			stream_extensions = [
-				".m3u8",
-				".mp4",
-				".ts",
-				".flv",
-				".mpd",
-				".avi",
-				".mov",
-				".mkv"]
+			stream_extensions = [".m3u8", ".mp4", ".ts", ".flv", ".mpd", ".avi", ".mov", ".mkv"]
 			if any(path.endswith(ext) for ext in stream_extensions):
-				self.logger.info(
-					f"Direct stream detected by file extension: {path}")
+				self.logger.info(f"Direct stream detected by file extension: {path}")
 				return True
 
 			# Check for direct stream protocols
-			stream_protocols = [
-				"rtmp://",
-				"rtsp://",
-				"udp://",
-				"mms://",
-				"http://",
-				"https://"]
+			stream_protocols = ["rtmp://", "rtsp://", "udp://", "mms://", "http://", "https://"]
 			if any(url_lower.startswith(proto) for proto in stream_protocols):
 				if url_lower.startswith(("http://", "https://")):
 					web_page_indicators = [
@@ -625,14 +551,11 @@ class WorldCamPlayer(
 						".jsp", ".cgi", "/index", "/main", "/home",
 						"?page=", "?id=", "?view=", "?action="
 					]
-					if not any(
-							ind in url_lower for ind in web_page_indicators):
-						self.logger.info(
-							f"HTTP/HTTPS URL without web page indicators: {url}")
+					if not any(ind in url_lower for ind in web_page_indicators):
+						self.logger.info(f"HTTP/HTTPS URL without web page indicators: {url}")
 						return True
 				else:
-					self.logger.info(
-						f"Direct stream protocol detected: {url.split('://')[0]}")
+					self.logger.info(f"Direct stream protocol detected: {url.split('://')[0]}")
 					return True
 
 			# Keywords in path
@@ -669,14 +592,12 @@ class WorldCamPlayer(
 				"exp=", "session=", "auth_token="
 			]
 			if any(pattern in query for pattern in token_patterns):
-				self.logger.info(
-					"Token detected in URL - assuming direct stream")
+				self.logger.info("Token detected in URL - assuming direct stream")
 				return True
 
 			# URL with query only
 			if not path.strip("/") and query:
-				self.logger.info(
-					"URL with only query parameters - likely API/stream endpoint")
+				self.logger.info("URL with only query parameters - likely API/stream endpoint")
 				return True
 
 			self.logger.info(f"URL appears to be a web page: {url}")
@@ -705,8 +626,7 @@ class WorldCamPlayer(
 			- An error message if stream playback fails.
 		"""
 		try:
-			self.logger.info(
-				f"Attempting to play stream of type: {type(stream_url)}")
+			self.logger.info(f"Attempting to play stream of type: {type(stream_url)}")
 
 			# Safe conversion to string
 			if isinstance(stream_url, (tuple, list)):
@@ -757,13 +677,12 @@ class WorldCamPlayer(
 	def check_stream_availability(self, url):
 		try:
 			headers = {
-				'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0'}
-			response = requests.head(
-				url, headers=headers, timeout=5, allow_redirects=True)
+				'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0'
+			}
+			response = requests.head(url, headers=headers, timeout=5, allow_redirects=True)
 
 			if response.status_code != 200:
-				self.logger.error(
-					f"Stream unavailable. Status code: {response.status_code}")
+				self.logger.error(f"Stream unavailable. Status code: {response.status_code}")
 				return False
 
 			content_type = response.headers.get('Content-Type', '').lower()
@@ -813,7 +732,7 @@ class WorldCamPlayer(
 		if exists('/tmp/hls.avi'):
 			try:
 				remove('/tmp/hls.avi')
-			except BaseException:
+			except:
 				pass
 
 		# Restore aspect ratio
@@ -826,7 +745,7 @@ class WorldCamPlayer(
 		if self.srefInit:
 			try:
 				self.session.nav.playService(self.srefInit)
-			except BaseException:
+			except:
 				pass
 
 		if self.proxy_thread and self.proxy_thread.is_alive():
@@ -867,8 +786,7 @@ class WorldCamPlayer(
 
 	def run_proxy_server(self):
 		"""Run the proxy server indefinitely"""
-		server = HTTPServer(('127.0.0.1', 8000),
-							lambda *args: HLSProxyHandler(self, *args))
+		server = HTTPServer(('127.0.0.1', 8000), lambda *args: HLSProxyHandler(self, *args))
 		self.logger.info("HLS proxy server started on port 8000")
 		server.serve_forever()
 
@@ -938,8 +856,7 @@ class WorldCamPlayer(
 			headers_str = f"User-Agent=Mozilla%2F5.0%20(X11%3B%20Linux%20x86_64)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F91.0.4472.114%20Safari%2F537.36&Referer=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D{video_id}&Origin=https%3A%2F%2Fwww.youtube.com"
 
 			# Use service 5001 (HLS) with the proxy playlist
-			service = eServiceReference(
-				5001, 0, f"{playlist_url}|{headers_str}")
+			service = eServiceReference(5001, 0, f"{playlist_url}|{headers_str}")
 			service.setName(title)
 
 			# Start playback
@@ -978,9 +895,7 @@ class HLSProxyHandler(BaseHTTPRequestHandler):
 				m3u8_content = self.generate_proxy_playlist(target_url)
 
 				self.send_response(200)
-				self.send_header(
-					'Content-Type',
-					'application/vnd.apple.mpegurl')
+				self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
 				self.end_headers()
 				self.wfile.write(m3u8_content.encode('utf-8'))
 				return
@@ -1002,7 +917,8 @@ class HLSProxyHandler(BaseHTTPRequestHandler):
 				headers = {
 					'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
 					'Referer': f'https://www.youtube.com/watch?v={video_id}',
-					'Origin': 'https://www.youtube.com'}
+					'Origin': 'https://www.youtube.com'
+				}
 
 				# Fetch the video segment
 				response = requests.get(
@@ -1016,8 +932,7 @@ class HLSProxyHandler(BaseHTTPRequestHandler):
 				# Forward the response
 				self.send_response(response.status_code)
 				for key, value in response.headers.items():
-					if key.lower() not in [
-							'transfer-encoding', 'connection', 'keep-alive']:
+					if key.lower() not in ['transfer-encoding', 'connection', 'keep-alive']:
 						self.send_header(key, value)
 				self.end_headers()
 
