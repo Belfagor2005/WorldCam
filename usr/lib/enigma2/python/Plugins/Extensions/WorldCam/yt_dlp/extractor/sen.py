@@ -13,24 +13,35 @@ class SenIE(InfoExtractor):
             'ext': 'mp4',
             'description': 'Florida, 28 Sep 2022',
             'title': 'Hurricane Ian',
-            'tags': ['North America', 'Storm', 'Weather'],
+            'tags': [
+                'North America',
+                'Storm',
+                'Weather'],
         },
     }
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        api_data = self._download_json(f'https://api.sen.com/content/public/video/{video_id}', video_id)
-        m3u8_url = (traverse_obj(api_data, (
-            'data', 'nodes', lambda _, v: v['id'] == 'player', 'video', 'url', {url_or_none}, any))
-            or f'https://vod.sen.com/videos/{video_id}/manifest.m3u8')
+        api_data = self._download_json(
+            f'https://api.sen.com/content/public/video/{video_id}', video_id)
+        m3u8_url = (
+            traverse_obj(
+                api_data,
+                ('data',
+                 'nodes',
+                 lambda _,
+                 v: v['id'] == 'player',
+                    'video',
+                    'url',
+                    {url_or_none},
+                    any)) or f'https://vod.sen.com/videos/{video_id}/manifest.m3u8')
 
         return {
-            'id': video_id,
-            'formats': self._extract_m3u8_formats(m3u8_url, video_id, 'mp4'),
-            **traverse_obj(api_data, ('data', 'nodes', lambda _, v: v['id'] == 'details', any, 'content', {
-                'title': ('title', 'text', {str}),
-                'description': ('descriptions', 0, 'text', {str}),
-                'tags': ('badges', ..., 'text', {str}),
-            })),
-        }
+            'id': video_id, 'formats': self._extract_m3u8_formats(
+                m3u8_url, video_id, 'mp4'), **traverse_obj(
+                api_data, ('data', 'nodes', lambda _, v: v['id'] == 'details', any, 'content', {
+                    'title': (
+                        'title', 'text', {str}), 'description': (
+                        'descriptions', 0, 'text', {str}), 'tags': (
+                            'badges', ..., 'text', {str}), })), }

@@ -54,17 +54,26 @@ class TelecaribePlayIE(InfoExtractor):
 
     def _download_player_webpage(self, webpage, display_id):
         page_id = self._search_regex(
-            (r'window\.firstPageId\s*=\s*["\']([^"\']+)', r'<div[^>]+id\s*=\s*"pageBackground_([^"]+)'),
-            webpage, 'page_id')
+            (r'window\.firstPageId\s*=\s*["\']([^"\']+)',
+             r'<div[^>]+id\s*=\s*"pageBackground_([^"]+)'),
+            webpage,
+            'page_id')
 
-        props = self._download_json(self._search_regex(
-            rf'<link[^>]+href\s*=\s*"([^"]+)"[^>]+id\s*=\s*"features_{page_id}"',
-            webpage, 'json_props_url'), display_id)['props']['render']['compProps']
+        props = self._download_json(
+            self._search_regex(
+                rf'<link[^>]+href\s*=\s*"([^"]+)"[^>]+id\s*=\s*"features_{page_id}"',
+                webpage,
+                'json_props_url'),
+            display_id)['props']['render']['compProps']
 
-        return self._download_webpage(traverse_obj(props, (..., 'url'))[-1], display_id)
+        return self._download_webpage(traverse_obj(
+            props, (..., 'url'))[-1], display_id)
 
     def _get_clean_title(self, title):
-        return re.sub(r'\s*\|\s*Telecaribe\s*VOD', '', title or '').strip() or None
+        return re.sub(
+            r'\s*\|\s*Telecaribe\s*VOD',
+            '',
+            title or '').strip() or None
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -72,12 +81,19 @@ class TelecaribePlayIE(InfoExtractor):
         player = self._download_player_webpage(webpage, display_id)
 
         livestream_url = self._search_regex(
-            r'(?:let|const|var)\s+source\s*=\s*["\']([^"\']+)', player, 'm3u8 url', default=None)
+            r'(?:let|const|var)\s+source\s*=\s*["\']([^"\']+)',
+            player,
+            'm3u8 url',
+            default=None)
 
         if not livestream_url:
             return self.playlist_from_matches(
-                re.findall(r'<a[^>]+href\s*=\s*"([^"]+\.mp4)', player), display_id,
-                self._get_clean_title(self._og_search_title(webpage)))
+                re.findall(
+                    r'<a[^>]+href\s*=\s*"([^"]+\.mp4)',
+                    player),
+                display_id,
+                self._get_clean_title(
+                    self._og_search_title(webpage)))
 
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             livestream_url, display_id, 'mp4', live=True)

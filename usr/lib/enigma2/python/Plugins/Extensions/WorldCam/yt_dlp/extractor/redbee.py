@@ -119,7 +119,9 @@ class ParliamentLiveUKIE(RedBeeBaseIE):
         formats, subtitles = self._get_formats_and_subtitles(video_id)
 
         video_info = self._download_json(
-            f'https://www.parliamentlive.tv/Event/GetShareVideo/{video_id}', video_id, fatal=False)
+            f'https://www.parliamentlive.tv/Event/GetShareVideo/{video_id}',
+            video_id,
+            fatal=False)
 
         return {
             'id': video_id,
@@ -231,7 +233,13 @@ class RTBFIE(RedBeeBaseIE):
         if self._get_cookies(self._LOGIN_URL).get(self._LOGIN_COOKIE_ID):
             return
 
-        self._set_cookie('.rtbf.be', 'gmid', 'gmid.ver4', secure=True, expire_time=time.time() + 3600)
+        self._set_cookie(
+            '.rtbf.be',
+            'gmid',
+            'gmid.ver4',
+            secure=True,
+            expire_time=time.time() +
+            3600)
 
         login_response = self._download_json(
             self._LOGIN_URL, None, data=urllib.parse.urlencode({
@@ -245,18 +253,27 @@ class RTBFIE(RedBeeBaseIE):
             })
 
         if login_response['statusCode'] != 200:
-            raise ExtractorError('Login failed. Server message: {}'.format(login_response['errorMessage']), expected=True)
+            raise ExtractorError(
+                'Login failed. Server message: {}'.format(
+                    login_response['errorMessage']), expected=True)
 
-        self._set_cookie('.rtbf.be', self._LOGIN_COOKIE_ID, login_response['sessionInfo']['login_token'],
-                         secure=True, expire_time=time.time() + 3600)
+        self._set_cookie(
+            '.rtbf.be',
+            self._LOGIN_COOKIE_ID,
+            login_response['sessionInfo']['login_token'],
+            secure=True,
+            expire_time=time.time() + 3600)
 
     def _get_formats_and_subtitles(self, url, media_id):
         login_token = self._get_cookies(url).get(self._LOGIN_COOKIE_ID)
         if not login_token:
             self.raise_login_required()
 
-        session_jwt = try_call(lambda: self._get_cookies(url)['rtbf_jwt'].value) or self._download_json(
-            'https://login.rtbf.be/accounts.getJWT', media_id, query={
+        session_jwt = try_call(
+            lambda: self._get_cookies(url)['rtbf_jwt'].value) or self._download_json(
+            'https://login.rtbf.be/accounts.getJWT',
+            media_id,
+            query={
                 'login_token': login_token.value,
                 'APIKey': self._GIGYA_API_KEY,
                 'sdk': 'js_latest',
@@ -274,11 +291,16 @@ class RTBFIE(RedBeeBaseIE):
             'https://www.rtbf.be/auvio/embed/' + ('direct' if live else 'media'),
             media_id, query={'id': media_id})
 
-        media_data = self._html_search_regex(r'data-media="([^"]+)"', embed_page, 'media data', fatal=False)
+        media_data = self._html_search_regex(
+            r'data-media="([^"]+)"', embed_page, 'media data', fatal=False)
         if not media_data:
-            if re.search(r'<div[^>]+id="js-error-expired"[^>]+class="(?![^"]*hidden)', embed_page):
+            if re.search(
+                r'<div[^>]+id="js-error-expired"[^>]+class="(?![^"]*hidden)',
+                    embed_page):
                 raise ExtractorError('Livestream has ended.', expected=True)
-            if re.search(r'<div[^>]+id="js-sso-connect"[^>]+class="(?![^"]*hidden)', embed_page):
+            if re.search(
+                r'<div[^>]+id="js-sso-connect"[^>]+class="(?![^"]*hidden)',
+                    embed_page):
                 self.raise_login_required()
 
             raise ExtractorError('Could not find media data')
@@ -287,7 +309,9 @@ class RTBFIE(RedBeeBaseIE):
 
         error = data.get('error')
         if error:
-            raise ExtractorError(f'{self.IE_NAME} said: {error}', expected=True)
+            raise ExtractorError(
+                f'{self.IE_NAME} said: {error}',
+                expected=True)
 
         provider = data.get('provider')
         if provider in self._PROVIDERS:
@@ -301,14 +325,16 @@ class RTBFIE(RedBeeBaseIE):
         # The old api still returns m3u8 and mpd manifest for livestreams, but these are 'fake'
         # since all they contain is a 20s video that is completely unrelated.
         # https://github.com/yt-dlp/yt-dlp/issues/4656#issuecomment-1214461092
-        m3u8_url = None if data.get('isLive') else traverse_obj(data, 'urlHlsAes128', 'urlHls')
+        m3u8_url = None if data.get('isLive') else traverse_obj(
+            data, 'urlHlsAes128', 'urlHls')
         if m3u8_url:
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 m3u8_url, media_id, 'mp4', m3u8_id='hls', fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
 
-        fix_url = lambda x: x.replace('//rtbf-vod.', '//rtbf.') if '/geo/drm/' in x else x
+        def fix_url(x): return x.replace(
+            '//rtbf-vod.', '//rtbf.') if '/geo/drm/' in x else x
         http_url = data.get('url')
         if formats and http_url and re.search(height_re, http_url):
             http_url = fix_url(http_url)
@@ -338,7 +364,8 @@ class RTBFIE(RedBeeBaseIE):
                 })
 
         mpd_url = None if data.get('isLive') else data.get('urlDash')
-        if mpd_url and (self.get_param('allow_unplayable_formats') or not data.get('drm')):
+        if mpd_url and (self.get_param(
+                'allow_unplayable_formats') or not data.get('drm')):
             fmts, subs = self._extract_mpd_formats_and_subtitles(
                 mpd_url, media_id, mpd_id='dash', fatal=False)
             formats.extend(fmts)
@@ -361,7 +388,8 @@ class RTBFIE(RedBeeBaseIE):
             })
 
         if not formats:
-            fmts, subs = self._get_formats_and_subtitles(url, f'live_{media_id}' if is_live else media_id)
+            fmts, subs = self._get_formats_and_subtitles(
+                url, f'live_{media_id}' if is_live else media_id)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
 

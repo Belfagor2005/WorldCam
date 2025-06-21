@@ -27,7 +27,9 @@ class JioCinemaBaseIE(InfoExtractor):
     _GUEST_TOKEN = None
     _USER_ID = None
     _DEVICE_ID = None
-    _API_HEADERS = {'Origin': 'https://www.jiocinema.com', 'Referer': 'https://www.jiocinema.com/'}
+    _API_HEADERS = {
+        'Origin': 'https://www.jiocinema.com',
+        'Referer': 'https://www.jiocinema.com/'}
     _APP_NAME = {'appName': 'RJIL_JioCinema'}
     _APP_VERSION = {'appVersion': '5.0.0'}
     _API_SIGNATURES = 'o668nxgzwff'
@@ -43,19 +45,41 @@ class JioCinemaBaseIE(InfoExtractor):
         assert token_type in ('access', 'refresh', 'all')
         if token_type in ('access', 'all'):
             self.cache.store(
-                JioCinemaBaseIE._NETRC_MACHINE, f'{JioCinemaBaseIE._DEVICE_ID}-access', JioCinemaBaseIE._ACCESS_TOKEN)
+                JioCinemaBaseIE._NETRC_MACHINE,
+                f'{JioCinemaBaseIE._DEVICE_ID}-access',
+                JioCinemaBaseIE._ACCESS_TOKEN)
         if token_type in ('refresh', 'all'):
             self.cache.store(
-                JioCinemaBaseIE._NETRC_MACHINE, f'{JioCinemaBaseIE._DEVICE_ID}-refresh', JioCinemaBaseIE._REFRESH_TOKEN)
+                JioCinemaBaseIE._NETRC_MACHINE,
+                f'{JioCinemaBaseIE._DEVICE_ID}-refresh',
+                JioCinemaBaseIE._REFRESH_TOKEN)
 
-    def _call_api(self, url, video_id, note='Downloading API JSON', headers={}, data={}):
+    def _call_api(
+            self,
+            url,
+            video_id,
+            note='Downloading API JSON',
+            headers={},
+            data={}):
         return self._download_json(
-            url, video_id, note, data=json.dumps(data, separators=(',', ':')).encode(), headers={
+            url,
+            video_id,
+            note,
+            data=json.dumps(
+                data,
+                separators=(
+                    ',',
+                    ':')).encode(),
+            headers={
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 **self._API_HEADERS,
                 **headers,
-            }, expected_status=(400, 403, 474))
+            },
+            expected_status=(
+                400,
+                403,
+                474))
 
     def _call_auth_api(self, service, endpoint, note, headers={}, data={}):
         return self._call_api(
@@ -81,7 +105,8 @@ class JioCinemaBaseIE(InfoExtractor):
         self._cache_token('access')
 
     def _fetch_guest_token(self):
-        JioCinemaBaseIE._DEVICE_ID = ''.join(random.choices(string.digits, k=10))
+        JioCinemaBaseIE._DEVICE_ID = ''.join(
+            random.choices(string.digits, k=10))
         guest_token = self._call_auth_api(
             'token', 'guest', 'Downloading guest token', data={
                 **self._APP_NAME,
@@ -107,10 +132,15 @@ class JioCinemaBaseIE(InfoExtractor):
                 })}, data=data)
 
     def _is_token_expired(self, token):
-        return (try_call(lambda: jwt_decode_hs256(token)['exp']) or 0) <= int(time.time() - 180)
+        return (
+            try_call(
+                lambda: jwt_decode_hs256(token)['exp']) or 0) <= int(
+            time.time() -
+            180)
 
     def _perform_login(self, username, password):
-        if self._ACCESS_TOKEN and not self._is_token_expired(self._ACCESS_TOKEN):
+        if self._ACCESS_TOKEN and not self._is_token_expired(
+                self._ACCESS_TOKEN):
             return
 
         UUID_RE = r'[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}'
@@ -119,7 +149,8 @@ class JioCinemaBaseIE(InfoExtractor):
             if try_call(lambda: jwt_decode_hs256(password)):
                 JioCinemaBaseIE._ACCESS_TOKEN = password
                 refresh_hint = 'the `refreshToken` UUID from your browser local storage'
-                refresh_token = self._configuration_arg('refresh_token', [''], ie_key=JioCinemaIE)[0]
+                refresh_token = self._configuration_arg(
+                    'refresh_token', [''], ie_key=JioCinemaIE)[0]
                 if not refresh_token:
                     self.to_screen(
                         'To extend the life of your login session, in addition to your access token, '
@@ -128,16 +159,22 @@ class JioCinemaBaseIE(InfoExtractor):
                 elif re.fullmatch(UUID_RE, refresh_token):
                     JioCinemaBaseIE._REFRESH_TOKEN = refresh_token
                 else:
-                    self.report_warning(f'Invalid refresh_token value. Use {refresh_hint}')
+                    self.report_warning(
+                        f'Invalid refresh_token value. Use {refresh_hint}')
             else:
                 raise ExtractorError(
-                    f'The password given could not be decoded as a token; use {self._ACCESS_HINT}', expected=True)
+                    f'The password given could not be decoded as a token; use {self._ACCESS_HINT}',
+                    expected=True)
 
         elif username.lower() == 'device' and re.fullmatch(rf'(?:{UUID_RE}|\d+)', password):
-            JioCinemaBaseIE._REFRESH_TOKEN = self.cache.load(JioCinemaBaseIE._NETRC_MACHINE, f'{password}-refresh')
-            JioCinemaBaseIE._ACCESS_TOKEN = self.cache.load(JioCinemaBaseIE._NETRC_MACHINE, f'{password}-access')
+            JioCinemaBaseIE._REFRESH_TOKEN = self.cache.load(
+                JioCinemaBaseIE._NETRC_MACHINE, f'{password}-refresh')
+            JioCinemaBaseIE._ACCESS_TOKEN = self.cache.load(
+                JioCinemaBaseIE._NETRC_MACHINE, f'{password}-access')
             if not JioCinemaBaseIE._REFRESH_TOKEN or not JioCinemaBaseIE._ACCESS_TOKEN:
-                raise ExtractorError(f'Failed to load cached tokens for device ID "{password}"', expected=True)
+                raise ExtractorError(
+                    f'Failed to load cached tokens for device ID "{password}"',
+                    expected=True)
 
         elif username.lower() == 'phone' and re.fullmatch(r'\+?\d+', password):
             self._fetch_guest_token()
@@ -146,9 +183,11 @@ class JioCinemaBaseIE(InfoExtractor):
                 'number': base64.b64encode(password.encode()).decode(),
                 **self._APP_VERSION,
             }
-            response = self._call_login_api('send', guest_token, initial_data, 'Requesting OTP')
+            response = self._call_login_api(
+                'send', guest_token, initial_data, 'Requesting OTP')
             if not traverse_obj(response, ('OTPInfo', {dict})):
-                raise ExtractorError('There was a problem with the phone number login attempt')
+                raise ExtractorError(
+                    'There was a problem with the phone number login attempt')
 
             is_iphone = guest_token.get('os') == 'ios'
             response = self._call_login_api('verify', guest_token, {
@@ -184,7 +223,8 @@ class JioCinemaBaseIE(InfoExtractor):
                 JioCinemaBaseIE._NETRC_MACHINE, f'{JioCinemaBaseIE._DEVICE_ID}-refresh')
             if JioCinemaBaseIE._REFRESH_TOKEN:
                 self._cache_token('access')
-        self.to_screen(f'Logging in as device ID "{JioCinemaBaseIE._DEVICE_ID}"')
+        self.to_screen(
+            f'Logging in as device ID "{JioCinemaBaseIE._DEVICE_ID}"')
         if self._is_token_expired(JioCinemaBaseIE._ACCESS_TOKEN):
             self._refresh_token()
 
@@ -234,11 +274,19 @@ class JioCinemaIE(JioCinemaBaseIE):
     }]
 
     def _extract_formats_and_subtitles(self, playback, video_id):
-        m3u8_url = traverse_obj(playback, (
-            'data', 'playbackUrls', lambda _, v: v['streamtype'] == 'hls', 'url', {url_or_none}, any))
+        m3u8_url = traverse_obj(
+            playback,
+            ('data',
+             'playbackUrls',
+             lambda _,
+             v: v['streamtype'] == 'hls',
+                'url',
+                {url_or_none},
+                any))
         if not m3u8_url:  # DRM-only content only serves dash urls
             self.report_drm(video_id)
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, m3u8_id='hls')
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+            m3u8_url, video_id, m3u8_id='hls')
         self._remove_duplicate_formats(formats)
 
         return {
@@ -250,7 +298,8 @@ class JioCinemaIE(JioCinemaBaseIE):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        if not self._ACCESS_TOKEN and self._is_token_expired(self._GUEST_TOKEN):
+        if not self._ACCESS_TOKEN and self._is_token_expired(
+                self._GUEST_TOKEN):
             self._fetch_guest_token()
         elif self._ACCESS_TOKEN and self._is_token_expired(self._ACCESS_TOKEN):
             self._refresh_token()
@@ -303,9 +352,12 @@ class JioCinemaIE(JioCinemaBaseIE):
             error_msg = 'This content is only available for premium users'
             if self._ACCESS_TOKEN:
                 raise ExtractorError(error_msg, expected=True)
-            self.raise_login_required(f'{error_msg}. {self._LOGIN_HINT}', method=None)
+            self.raise_login_required(
+                f'{error_msg}. {self._LOGIN_HINT}', method=None)
         elif status_code == 400:
-            raise ExtractorError('The requested content is not available', expected=True)
+            raise ExtractorError(
+                'The requested content is not available',
+                expected=True)
         elif status_code is not None and status_code != 200:
             raise ExtractorError(
                 f'JioCinema says: {traverse_obj(playback, ("message", {str})) or status_code}')
@@ -374,24 +426,39 @@ class JioCinemaSeriesIE(JioCinemaBaseIE):
     }]
 
     def _entries(self, series_id):
-        seasons = traverse_obj(self._download_json(
-            f'{self._METADATA_API_BASE}/voot/v1/voot-web/view/show/{series_id}', series_id,
-            'Downloading series metadata JSON', query={'responseType': 'common'}), (
-            'trays', lambda _, v: v['trayId'] == 'season-by-show-multifilter',
-            'trayTabs', lambda _, v: v['id']))
+        seasons = traverse_obj(
+            self._download_json(
+                f'{self._METADATA_API_BASE}/voot/v1/voot-web/view/show/{series_id}',
+                series_id,
+                'Downloading series metadata JSON',
+                query={
+                    'responseType': 'common'}),
+            ('trays',
+             lambda _,
+             v: v['trayId'] == 'season-by-show-multifilter',
+             'trayTabs',
+             lambda _,
+             v: v['id']))
 
         for season_num, season in enumerate(seasons, start=1):
             season_id = season['id']
             label = season.get('label') or season_num
             for page_num in itertools.count(1):
-                episodes = traverse_obj(self._download_json(
-                    f'{self._METADATA_API_BASE}/voot/v1/voot-web/content/generic/series-wise-episode',
-                    season_id, f'Downloading season {label} page {page_num} JSON', query={
-                        'sort': 'episode:asc',
-                        'id': season_id,
-                        'responseType': 'common',
-                        'page': page_num,
-                    }), ('result', lambda _, v: v['id'] and url_or_none(v['slug'])))
+                episodes = traverse_obj(
+                    self._download_json(
+                        f'{self._METADATA_API_BASE}/voot/v1/voot-web/content/generic/series-wise-episode',
+                        season_id,
+                        f'Downloading season {label} page {page_num} JSON',
+                        query={
+                            'sort': 'episode:asc',
+                            'id': season_id,
+                            'responseType': 'common',
+                            'page': page_num,
+                        }),
+                    ('result',
+                     lambda _,
+                     v: v['id'] and url_or_none(
+                         v['slug'])))
                 if not episodes:
                     break
                 for episode in episodes:

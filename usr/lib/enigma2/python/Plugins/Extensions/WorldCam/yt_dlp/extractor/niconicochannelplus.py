@@ -20,32 +20,55 @@ class NiconicoChannelPlusBaseIE(InfoExtractor):
 
     def _call_api(self, path, item_id, **kwargs):
         return self._download_json(
-            f'https://nfc-api.nicochannel.jp/fc/{path}', video_id=item_id, **kwargs)
+            f'https://nfc-api.nicochannel.jp/fc/{path}',
+            video_id=item_id,
+            **kwargs)
 
     def _find_fanclub_site_id(self, channel_name):
         fanclub_list_json = self._call_api(
-            'content_providers/channels', item_id=f'channels/{channel_name}',
-            note='Fetching channel list', errnote='Unable to fetch channel list',
+            'content_providers/channels',
+            item_id=f'channels/{channel_name}',
+            note='Fetching channel list',
+            errnote='Unable to fetch channel list',
         )['data']['content_providers']
-        fanclub_id = traverse_obj(fanclub_list_json, (
-            lambda _, v: v['domain'] == f'{self._WEBPAGE_BASE_URL}/{channel_name}', 'id'),
+        fanclub_id = traverse_obj(
+            fanclub_list_json,
+            (lambda _,
+             v: v['domain'] == f'{self._WEBPAGE_BASE_URL}/{channel_name}',
+                'id'),
             get_all=False)
         if not fanclub_id:
-            raise ExtractorError(f'Channel {channel_name} does not exist', expected=True)
+            raise ExtractorError(
+                f'Channel {channel_name} does not exist',
+                expected=True)
         return fanclub_id
 
     def _get_channel_base_info(self, fanclub_site_id):
-        return traverse_obj(self._call_api(
-            f'fanclub_sites/{fanclub_site_id}/page_base_info', item_id=f'fanclub_sites/{fanclub_site_id}',
-            note='Fetching channel base info', errnote='Unable to fetch channel base info', fatal=False,
-        ), ('data', 'fanclub_site', {dict})) or {}
+        return traverse_obj(
+            self._call_api(
+                f'fanclub_sites/{fanclub_site_id}/page_base_info',
+                item_id=f'fanclub_sites/{fanclub_site_id}',
+                note='Fetching channel base info',
+                errnote='Unable to fetch channel base info',
+                fatal=False,
+            ),
+            ('data',
+             'fanclub_site',
+             {dict})) or {}
 
     def _get_channel_user_info(self, fanclub_site_id):
-        return traverse_obj(self._call_api(
-            f'fanclub_sites/{fanclub_site_id}/user_info', item_id=f'fanclub_sites/{fanclub_site_id}',
-            note='Fetching channel user info', errnote='Unable to fetch channel user info', fatal=False,
-            data=json.dumps('null').encode('ascii'),
-        ), ('data', 'fanclub_site', {dict})) or {}
+        return traverse_obj(
+            self._call_api(
+                f'fanclub_sites/{fanclub_site_id}/user_info',
+                item_id=f'fanclub_sites/{fanclub_site_id}',
+                note='Fetching channel user info',
+                errnote='Unable to fetch channel user info',
+                fatal=False,
+                data=json.dumps('null').encode('ascii'),
+            ),
+            ('data',
+             'fanclub_site',
+             {dict})) or {}
 
 
 class NiconicoChannelPlusIE(NiconicoChannelPlusBaseIE):
@@ -99,15 +122,21 @@ class NiconicoChannelPlusIE(NiconicoChannelPlusBaseIE):
     }]
 
     def _real_extract(self, url):
-        content_code, channel_id = self._match_valid_url(url).group('code', 'channel')
+        content_code, channel_id = self._match_valid_url(
+            url).group('code', 'channel')
         fanclub_site_id = self._find_fanclub_site_id(channel_id)
 
         data_json = self._call_api(
-            f'video_pages/{content_code}', item_id=content_code, headers={'fc_use_device': 'null'},
-            note='Fetching video page info', errnote='Unable to fetch video page info',
+            f'video_pages/{content_code}',
+            item_id=content_code,
+            headers={
+                'fc_use_device': 'null'},
+            note='Fetching video page info',
+            errnote='Unable to fetch video page info',
         )['data']['video_page']
 
-        live_status, session_id = self._get_live_status_and_session_id(content_code, data_json)
+        live_status, session_id = self._get_live_status_and_session_id(
+            content_code, data_json)
 
         release_timestamp_str = data_json.get('live_scheduled_start_at')
 
@@ -157,8 +186,10 @@ class NiconicoChannelPlusIE(NiconicoChannelPlusBaseIE):
             return None
 
         comment_access_token = self._call_api(
-            f'video_pages/{content_code}/comments_user_token', item_id,
-            note='Getting comment token', errnote='Unable to get comment token',
+            f'video_pages/{content_code}/comments_user_token',
+            item_id,
+            note='Getting comment token',
+            errnote='Unable to get comment token',
         )['data']['access_token']
 
         comment_list = self._download_json(
@@ -204,27 +235,39 @@ class NiconicoChannelPlusIE(NiconicoChannelPlusBaseIE):
                 live_status = 'was_live'
                 payload = {'broadcast_type': 'dvr'}
 
-                video_allow_dvr_flg = traverse_obj(data_json, ('video', 'allow_dvr_flg'))
-                video_convert_to_vod_flg = traverse_obj(data_json, ('video', 'convert_to_vod_flg'))
+                video_allow_dvr_flg = traverse_obj(
+                    data_json, ('video', 'allow_dvr_flg'))
+                video_convert_to_vod_flg = traverse_obj(
+                    data_json, ('video', 'convert_to_vod_flg'))
 
-                self.write_debug(f'allow_dvr_flg = {video_allow_dvr_flg}, convert_to_vod_flg = {video_convert_to_vod_flg}.')
+                self.write_debug(
+                    f'allow_dvr_flg = {video_allow_dvr_flg}, convert_to_vod_flg = {video_convert_to_vod_flg}.')
 
                 if not (video_allow_dvr_flg and video_convert_to_vod_flg):
                     raise ExtractorError(
-                        'Live was ended, there is no video for download.', video_id=content_code, expected=True)
+                        'Live was ended, there is no video for download.',
+                        video_id=content_code,
+                        expected=True)
         else:
-            raise ExtractorError(f'Unknown type: {video_type}', video_id=content_code, expected=False)
+            raise ExtractorError(
+                f'Unknown type: {video_type}',
+                video_id=content_code,
+                expected=False)
 
-        self.write_debug(f'{content_code}: video_type={video_type}, live_status={live_status}')
+        self.write_debug(
+            f'{content_code}: video_type={video_type}, live_status={live_status}')
 
         session_id = self._call_api(
-            f'video_pages/{content_code}/session_ids', item_id=f'{content_code}/session',
-            data=json.dumps(payload).encode('ascii'), headers={
+            f'video_pages/{content_code}/session_ids',
+            item_id=f'{content_code}/session',
+            data=json.dumps(payload).encode('ascii'),
+            headers={
                 'Content-Type': 'application/json',
                 'fc_use_device': 'null',
                 'origin': 'https://nicochannel.jp',
             },
-            note='Getting session id', errnote='Unable to get session id',
+            note='Getting session id',
+            errnote='Unable to get session id',
         )['data']['session_id']
 
         return live_status, session_id
@@ -233,7 +276,8 @@ class NiconicoChannelPlusIE(NiconicoChannelPlusBaseIE):
 class NiconicoChannelPlusChannelBaseIE(NiconicoChannelPlusBaseIE):
     _PAGE_SIZE = 12
 
-    def _fetch_paged_channel_video_list(self, path, query, channel_name, item_id, page):
+    def _fetch_paged_channel_video_list(
+            self, path, query, channel_name, item_id, page):
         response = self._call_api(
             path, item_id, query={
                 **query,
@@ -244,7 +288,8 @@ class NiconicoChannelPlusChannelBaseIE(NiconicoChannelPlusBaseIE):
             note=f'Getting channel info (page {page + 1})',
             errnote=f'Unable to get channel info (page {page + 1})')
 
-        for content_code in traverse_obj(response, ('data', 'video_pages', 'list', ..., 'content_code')):
+        for content_code in traverse_obj(
+                response, ('data', 'video_pages', 'list', ..., 'content_code')):
             # "video/{content_code}" works for both VOD and live, but "live/{content_code}" doesn't work for VOD
             yield self.url_result(
                 f'{self._WEBPAGE_BASE_URL}/{channel_name}/video/{content_code}', NiconicoChannelPlusIE)
@@ -355,7 +400,8 @@ class NiconicoChannelPlusChannelVideosIE(NiconicoChannelPlusChannelBaseIE):
 
         channel_id = self._match_id(url)
         fanclub_site_id = self._find_fanclub_site_id(channel_id)
-        channel_name = self._get_channel_base_info(fanclub_site_id).get('fanclub_site_name')
+        channel_name = self._get_channel_base_info(
+            fanclub_site_id).get('fanclub_site_name')
         qs = parse_qs(url)
 
         return self.playlist_result(
@@ -412,15 +458,19 @@ class NiconicoChannelPlusChannelLivesIE(NiconicoChannelPlusChannelBaseIE):
 
         channel_id = self._match_id(url)
         fanclub_site_id = self._find_fanclub_site_id(channel_id)
-        channel_name = self._get_channel_base_info(fanclub_site_id).get('fanclub_site_name')
+        channel_name = self._get_channel_base_info(
+            fanclub_site_id).get('fanclub_site_name')
 
         return self.playlist_result(
             OnDemandPagedList(
                 functools.partial(
-                    self._fetch_paged_channel_video_list, f'fanclub_sites/{fanclub_site_id}/live_pages',
+                    self._fetch_paged_channel_video_list,
+                    f'fanclub_sites/{fanclub_site_id}/live_pages',
                     {
                         'live_type': 4,
                     },
-                    channel_id, f'{channel_id}/lives'),
+                    channel_id,
+                    f'{channel_id}/lives'),
                 self._PAGE_SIZE),
-            playlist_id=f'{channel_id}-lives', playlist_title=f'{channel_name}-lives')
+            playlist_id=f'{channel_id}-lives',
+            playlist_title=f'{channel_name}-lives')

@@ -270,17 +270,26 @@ class RedditIE(InfoExtractor):
             'https://www.reddit.com/api/requires_captcha/login.json', None,
             'Checking login requirement')['required']
         if captcha:
-            raise ExtractorError('Reddit is requiring captcha before login', expected=True)
+            raise ExtractorError(
+                'Reddit is requiring captcha before login',
+                expected=True)
         login = self._download_json(
-            f'https://www.reddit.com/api/login/{username}', None, data=urlencode_postdata({
-                'op': 'login-main',
-                'user': username,
-                'passwd': password,
-                'api_type': 'json',
-            }), note='Logging in', errnote='Login request failed')
+            f'https://www.reddit.com/api/login/{username}',
+            None,
+            data=urlencode_postdata(
+                {
+                    'op': 'login-main',
+                    'user': username,
+                    'passwd': password,
+                    'api_type': 'json',
+                }),
+            note='Logging in',
+            errnote='Login request failed')
         errors = '; '.join(traverse_obj(login, ('json', 'errors', ..., 1)))
         if errors:
-            raise ExtractorError(f'Unable to login, Reddit API says {errors}', expected=True)
+            raise ExtractorError(
+                f'Unable to login, Reddit API says {errors}',
+                expected=True)
         elif not traverse_obj(login, ('json', 'data', 'cookie', {str})):
             raise ExtractorError('Unable to login, no cookie was returned')
 
@@ -288,10 +297,16 @@ class RedditIE(InfoExtractor):
         # Set cookie to opt-in to age-restricted subreddits
         self._set_cookie('reddit.com', 'over18', '1')
         # Set cookie to opt-in to "gated" subreddits
-        options = traverse_obj(self._get_cookies('https://www.reddit.com/'), (
-            '_options', 'value', {urllib.parse.unquote}, {json.loads}, {dict})) or {}
+        options = traverse_obj(
+            self._get_cookies('https://www.reddit.com/'), ('_options', 'value', {
+                urllib.parse.unquote}, {
+                json.loads}, {dict})) or {}
         options['pref_gated_sr_optin'] = True
-        self._set_cookie('reddit.com', '_options', urllib.parse.quote(json.dumps(options)))
+        self._set_cookie(
+            'reddit.com',
+            '_options',
+            urllib.parse.quote(
+                json.dumps(options)))
 
     def _get_subtitles(self, video_id):
         # Fallback if there were no subtitles provided by DASH or HLS manifests
@@ -304,22 +319,29 @@ class RedditIE(InfoExtractor):
 
         try:
             data = self._download_json(
-                f'https://www.reddit.com/{slug}/.json', video_id, expected_status=403)
+                f'https://www.reddit.com/{slug}/.json',
+                video_id,
+                expected_status=403)
         except ExtractorError as e:
             if isinstance(e.cause, json.JSONDecodeError):
-                if self._get_cookies('https://www.reddit.com/').get('reddit_session'):
-                    raise ExtractorError('Your IP address is unable to access the Reddit API', expected=True)
+                if self._get_cookies(
+                        'https://www.reddit.com/').get('reddit_session'):
+                    raise ExtractorError(
+                        'Your IP address is unable to access the Reddit API', expected=True)
                 self.raise_login_required('Account authentication is required')
             raise
 
         if traverse_obj(data, 'error') == 403:
             reason = data.get('reason')
             if reason == 'quarantined':
-                self.raise_login_required('Quarantined subreddit; an account that has opted in is required')
+                self.raise_login_required(
+                    'Quarantined subreddit; an account that has opted in is required')
             elif reason == 'private':
-                self.raise_login_required('Private subreddit; an account that has been approved is required')
+                self.raise_login_required(
+                    'Private subreddit; an account that has been approved is required')
             else:
-                raise ExtractorError(f'HTTP Error 403 Forbidden; reason given: {reason}')
+                raise ExtractorError(
+                    f'HTTP Error 403 Forbidden; reason given: {reason}')
 
         data = data[0]['data']['children'][0]['data']
         video_url = data['url']
@@ -366,19 +388,32 @@ class RedditIE(InfoExtractor):
 
         parsed_url = urllib.parse.urlparse(video_url)
 
-        # Check for embeds in text posts, or else raise to avoid recursing into the same reddit URL
+        # Check for embeds in text posts, or else raise to avoid recursing into
+        # the same reddit URL
         if 'reddit.com' in parsed_url.netloc and f'/{video_id}/' in parsed_url.path:
             entries = []
-            for media in traverse_obj(data, ('media_metadata', ...), expected_type=dict):
+            for media in traverse_obj(
+                    data, ('media_metadata', ...), expected_type=dict):
                 if not media.get('id') or media.get('e') != 'RedditVideo':
                     continue
                 formats = []
                 if media.get('hlsUrl'):
-                    formats.extend(self._extract_m3u8_formats(
-                        unescapeHTML(media['hlsUrl']), video_id, 'mp4', m3u8_id='hls', fatal=False))
+                    formats.extend(
+                        self._extract_m3u8_formats(
+                            unescapeHTML(
+                                media['hlsUrl']),
+                            video_id,
+                            'mp4',
+                            m3u8_id='hls',
+                            fatal=False))
                 if media.get('dashUrl'):
-                    formats.extend(self._extract_mpd_formats(
-                        unescapeHTML(media['dashUrl']), video_id, mpd_id='dash', fatal=False))
+                    formats.extend(
+                        self._extract_mpd_formats(
+                            unescapeHTML(
+                                media['dashUrl']),
+                            video_id,
+                            mpd_id='dash',
+                            fatal=False))
                 if formats:
                     entries.append({
                         'id': media['id'],
@@ -388,12 +423,15 @@ class RedditIE(InfoExtractor):
                     })
             if entries:
                 return self.playlist_result(entries, video_id, **info)
-            self.raise_no_formats('No media found', expected=True, video_id=video_id)
+            self.raise_no_formats(
+                'No media found',
+                expected=True,
+                video_id=video_id)
             return {**info, 'id': video_id}
 
         # Check if media is hosted on reddit:
-        reddit_video = traverse_obj(data, (
-            (None, ('crosspost_parent_list', ...)), ('secure_media', 'media'), 'reddit_video'), get_all=False)
+        reddit_video = traverse_obj(data, ((None, ('crosspost_parent_list', ...)), (
+            'secure_media', 'media'), 'reddit_video'), get_all=False)
         if reddit_video:
             playlist_urls = [
                 try_get(reddit_video, lambda x: unescapeHTML(x[y]))
@@ -403,14 +441,16 @@ class RedditIE(InfoExtractor):
             # Update video_id
             display_id = video_id
             video_id = self._search_regex(
-                r'https?://v\.redd\.it/(?P<id>[^/?#&]+)', reddit_video['fallback_url'],
-                'video_id', default=display_id)
+                r'https?://v\.redd\.it/(?P<id>[^/?#&]+)',
+                reddit_video['fallback_url'],
+                'video_id',
+                default=display_id)
 
-            dash_playlist_url = playlist_urls[0] or f'https://v.redd.it/{video_id}/DASHPlaylist.mpd'
+            dash_playlist_url = playlist_urls[
+                0] or f'https://v.redd.it/{video_id}/DASHPlaylist.mpd'
             hls_playlist_url = playlist_urls[1] or f'https://v.redd.it/{video_id}/HLSPlaylist.m3u8'
-            qs = traverse_obj(parse_qs(hls_playlist_url), {
-                'f': ('f', 0, {lambda x: ','.join([x, 'subsAll']) if x else 'hd,subsAll'}),
-            })
+            qs = traverse_obj(parse_qs(hls_playlist_url), {'f': (
+                'f', 0, {lambda x: ','.join([x, 'subsAll']) if x else 'hd,subsAll'}), })
             hls_playlist_url = update_url_query(hls_playlist_url, qs)
 
             formats = [{
@@ -442,7 +482,10 @@ class RedditIE(InfoExtractor):
             }
 
         if parsed_url.netloc == 'v.redd.it':
-            self.raise_no_formats('This video is processing', expected=True, video_id=video_id)
+            self.raise_no_formats(
+                'This video is processing',
+                expected=True,
+                video_id=video_id)
             return {
                 **info,
                 'id': parsed_url.path.split('/')[1],

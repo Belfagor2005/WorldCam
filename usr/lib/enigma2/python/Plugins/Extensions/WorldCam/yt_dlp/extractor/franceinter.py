@@ -29,7 +29,8 @@ class FranceInterIE(InfoExtractor):
 
         title = self._og_search_title(webpage)
         description = self._og_search_description(webpage)
-        thumbnail = self._html_search_meta(['og:image', 'twitter:image'], webpage)
+        thumbnail = self._html_search_meta(
+            ['og:image', 'twitter:image'], webpage)
 
         upload_date_str = self._search_regex(
             r'class=["\']\s*cover-emission-period\s*["\'][^>]*>[^<]+\s+(\d{1,2}\s+[^\s]+\s+\d{4})<',
@@ -37,7 +38,8 @@ class FranceInterIE(InfoExtractor):
         if upload_date_str:
             upload_date_list = upload_date_str.split()
             upload_date_list.reverse()
-            upload_date_list[1] = '%02d' % (month_by_name(upload_date_list[1], lang='fr') or 0)
+            upload_date_list[1] = '%02d' % (
+                month_by_name(upload_date_list[1], lang='fr') or 0)
             upload_date_list[2] = '%02d' % int(upload_date_list[2])
             upload_date = ''.join(upload_date_list)
         else:

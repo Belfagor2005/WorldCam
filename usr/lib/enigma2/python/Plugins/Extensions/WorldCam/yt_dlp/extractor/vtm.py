@@ -53,8 +53,12 @@ class VTMIE(InfoExtractor):
             'title': video.get('title'),
             'url': 'http://mychannels.video/embed/%d' % video['myChannelsVideo'],
             'description': video.get('description'),
-            'timestamp': parse_iso8601(video.get('publishedAt')),
-            'duration': int_or_none(video.get('duration')),
-            'series': try_get(video, lambda x: x['program']['title']),
+            'timestamp': parse_iso8601(
+                video.get('publishedAt')),
+            'duration': int_or_none(
+                video.get('duration')),
+            'series': try_get(
+                video,
+                lambda x: x['program']['title']),
             'ie_key': 'Medialaan',
         }

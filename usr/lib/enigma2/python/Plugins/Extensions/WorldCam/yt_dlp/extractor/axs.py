@@ -67,7 +67,12 @@ class AxsIE(InfoExtractor):
             meta['video_m3u8'], video_id, 'mp4', m3u8_id='hls')
 
         subtitles = {}
-        for cc in traverse_obj(meta, ('closeCaption', lambda _, v: url_or_none(v['srtPath']))):
+        for cc in traverse_obj(
+            meta,
+            ('closeCaption',
+             lambda _,
+             v: url_or_none(
+                 v['srtPath']))):
             subtitles.setdefault(cc.get('srtShortLang') or 'en', []).append(
                 {'ext': cc.get('srtExt'), 'url': cc['srtPath']})
 

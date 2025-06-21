@@ -57,7 +57,10 @@ class MBNIE(InfoExtractor):
         webpage = self._download_webpage(url, content_id)
 
         content_cls_cd = self._search_regex(
-            r'"\?content_cls_cd=(\d+)&', webpage, 'content cls cd', fatal=False) or '20'
+            r'"\?content_cls_cd=(\d+)&',
+            webpage,
+            'content cls cd',
+            fatal=False) or '20'
         media_info = self._download_json(
             'https://www.mbn.co.kr/player/mbnVodPlayer_2020.mbn', content_id,
             note='Fetching playback data', query={
@@ -67,13 +70,23 @@ class MBNIE(InfoExtractor):
             })
 
         formats = []
-        for stream_url in traverse_obj(media_info, ('movie_list', ..., 'url', {url_or_none})):
-            stream_url = re.sub(r'/(?:chunk|play)list(?:_pd\d+)?\.m3u8', '/manifest.m3u8', stream_url)
-            final_url = url_or_none(self._download_webpage(
-                f'https://www.mbn.co.kr/player/mbnStreamAuth_new_vod.mbn?vod_url={stream_url}',
-                content_id, note='Fetching authenticated m3u8 url'))
+        for stream_url in traverse_obj(
+                media_info, ('movie_list', ..., 'url', {url_or_none})):
+            stream_url = re.sub(
+                r'/(?:chunk|play)list(?:_pd\d+)?\.m3u8',
+                '/manifest.m3u8',
+                stream_url)
+            final_url = url_or_none(
+                self._download_webpage(
+                    f'https://www.mbn.co.kr/player/mbnStreamAuth_new_vod.mbn?vod_url={stream_url}',
+                    content_id,
+                    note='Fetching authenticated m3u8 url'))
 
-            formats.extend(self._extract_m3u8_formats(final_url, content_id, fatal=False))
+            formats.extend(
+                self._extract_m3u8_formats(
+                    final_url,
+                    content_id,
+                    fatal=False))
 
         return {
             'id': content_id,

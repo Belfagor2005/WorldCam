@@ -34,10 +34,16 @@ class NuumBaseIE(InfoExtractor):
             })
 
     def _parse_video_data(self, container, extract_formats=True):
-        stream = traverse_obj(container, ('media_container_streams', 0, {dict})) or {}
+        stream = traverse_obj(
+            container, ('media_container_streams', 0, {dict})) or {}
         media = traverse_obj(stream, ('stream_media', 0, {dict})) or {}
-        media_url = traverse_obj(media, (
-            'media_meta', ('media_archive_url', 'media_url'), {url_or_none}), get_all=False)
+        media_url = traverse_obj(
+            media,
+            ('media_meta',
+             ('media_archive_url',
+              'media_url'),
+                {url_or_none}),
+            get_all=False)
 
         video_id = str(container['media_container_id'])
         is_live = media.get('media_status') == 'RUNNING'
@@ -48,28 +54,41 @@ class NuumBaseIE(InfoExtractor):
             formats, subtitles = self._extract_m3u8_formats_and_subtitles(
                 media_url, video_id, 'mp4', live=is_live, headers=headers)
 
-        return filter_dict({
-            'id': video_id,
-            'is_live': is_live,
-            'formats': formats,
-            'subtitles': subtitles,
-            'http_headers': headers,
-            **traverse_obj(container, {
-                'title': ('media_container_name', {str}),
-                'description': ('media_container_description', {str}),
-                'timestamp': ('created_at', {parse_iso8601}),
-                'channel': ('media_container_channel', 'channel_name', {str}),
-                'channel_id': ('media_container_channel', 'channel_id', {str_or_none}),
-            }),
-            **traverse_obj(stream, {
-                'view_count': ('stream_total_viewers', {int_or_none}),
-                'concurrent_view_count': ('stream_current_viewers', {int_or_none}),
-            }),
-            **traverse_obj(media, {
-                'duration': ('media_duration', {int_or_none}),
-                'thumbnail': ('media_meta', ('media_preview_archive_url', 'media_preview_url'), {url_or_none}),
-            }, get_all=False),
-        })
+        return filter_dict({'id': video_id,
+                            'is_live': is_live,
+                            'formats': formats,
+                            'subtitles': subtitles,
+                            'http_headers': headers,
+                            **traverse_obj(container,
+                                           {'title': ('media_container_name',
+                                                      {str}),
+                                            'description': ('media_container_description',
+                                                            {str}),
+                                            'timestamp': ('created_at',
+                                                          {parse_iso8601}),
+                                            'channel': ('media_container_channel',
+                                                        'channel_name',
+                                                        {str}),
+                                            'channel_id': ('media_container_channel',
+                                                           'channel_id',
+                                                           {str_or_none}),
+                                            }),
+                            **traverse_obj(stream,
+                                           {'view_count': ('stream_total_viewers',
+                                                           {int_or_none}),
+                                            'concurrent_view_count': ('stream_current_viewers',
+                                                                      {int_or_none}),
+                                            }),
+                            **traverse_obj(media,
+                                           {'duration': ('media_duration',
+                                                         {int_or_none}),
+                                            'thumbnail': ('media_meta',
+                                                          ('media_preview_archive_url',
+                                                           'media_preview_url'),
+                                                          {url_or_none}),
+                                            },
+                                           get_all=False),
+                            })
 
 
 class NuumMediaIE(NuumBaseIE):
@@ -115,7 +134,8 @@ class NuumMediaIE(NuumBaseIE):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        video_data = self._call_api(f'media-containers/{video_id}', video_id, 'media')
+        video_data = self._call_api(
+            f'media-containers/{video_id}', video_id, 'media')
 
         return self._parse_video_data(video_data)
 
@@ -179,7 +199,9 @@ class NuumTabIE(NuumBaseIE):
         }
 
         media_containers = self._call_api(
-            'media-containers', video_id=tab_id, description=f'{tab_type} tab page {page + 1}',
+            'media-containers',
+            video_id=tab_id,
+            description=f'{tab_type} tab page {page + 1}',
             query={
                 'limit': self._PAGE_SIZE,
                 'offset': page * self._PAGE_SIZE,
@@ -196,6 +218,13 @@ class NuumTabIE(NuumBaseIE):
         tab_id = f'{channel_name}_{tab_type}'
         channel_data = self._get_channel_info(channel_name)['channel']
 
-        return self.playlist_result(OnDemandPagedList(functools.partial(
-            self._fetch_page, channel_data['channel_id'], tab_type, tab_id), self._PAGE_SIZE),
-            playlist_id=tab_id, playlist_title=channel_data.get('channel_name'))
+        return self.playlist_result(
+            OnDemandPagedList(
+                functools.partial(
+                    self._fetch_page,
+                    channel_data['channel_id'],
+                    tab_type,
+                    tab_id),
+                self._PAGE_SIZE),
+            playlist_id=tab_id,
+            playlist_title=channel_data.get('channel_name'))

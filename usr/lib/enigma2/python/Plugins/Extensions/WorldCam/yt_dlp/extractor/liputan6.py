@@ -61,4 +61,6 @@ class Liputan6IE(InfoExtractor):
         video_id = json_data['videos']['video_1']['video_id']
 
         return self.url_result(
-            f'https://www.vidio.com/watch/{video_id}-{display_id}', ie=VidioIE, video_id=display_id)
+            f'https://www.vidio.com/watch/{video_id}-{display_id}',
+            ie=VidioIE,
+            video_id=display_id)

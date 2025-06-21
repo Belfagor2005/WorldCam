@@ -26,54 +26,48 @@ class LeIE(InfoExtractor):
     _GEO_COUNTRIES = ['CN']
     _URL_TEMPLATE = 'http://www.le.com/ptv/vplay/%s.html'
 
-    _TESTS = [{
-        'url': 'http://www.le.com/ptv/vplay/22005890.html',
-        'md5': 'edadcfe5406976f42f9f266057ee5e40',
-        'info_dict': {
-            'id': '22005890',
-            'ext': 'mp4',
-            'title': '第87届奥斯卡颁奖礼完美落幕 《鸟人》成最大赢家',
-            'description': 'md5:a9cb175fd753e2962176b7beca21a47c',
-        },
-        'params': {
-            'hls_prefer_native': True,
-        },
-    }, {
-        'url': 'http://www.le.com/ptv/vplay/1415246.html',
-        'info_dict': {
-            'id': '1415246',
-            'ext': 'mp4',
-            'title': '美人天下01',
-            'description': 'md5:28942e650e82ed4fcc8e4de919ee854d',
-        },
-        'params': {
-            'hls_prefer_native': True,
-        },
-    }, {
-        'note': 'This video is available only in Mainland China, thus a proxy is needed',
-        'url': 'http://www.le.com/ptv/vplay/1118082.html',
-        'md5': '2424c74948a62e5f31988438979c5ad1',
-        'info_dict': {
-            'id': '1118082',
-            'ext': 'mp4',
-            'title': '与龙共舞 完整版',
-            'description': 'md5:7506a5eeb1722bb9d4068f85024e3986',
-        },
-        'params': {
-            'hls_prefer_native': True,
-        },
-    }, {
-        'url': 'http://sports.le.com/video/25737697.html',
-        'only_matching': True,
-    }, {
-        'url': 'http://www.lesports.com/match/1023203003.html',
-        'only_matching': True,
-    }, {
-        'url': 'http://sports.le.com/match/1023203003.html',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://www.le.com/ptv/vplay/22005890.html',
+               'md5': 'edadcfe5406976f42f9f266057ee5e40',
+               'info_dict': {'id': '22005890',
+                             'ext': 'mp4',
+                             'title': '第87届奥斯卡颁奖礼完美落幕 《鸟人》成最大赢家',
+                             'description': 'md5:a9cb175fd753e2962176b7beca21a47c',
+                             },
+               'params': {'hls_prefer_native': True,
+                          },
+               },
+              {'url': 'http://www.le.com/ptv/vplay/1415246.html',
+               'info_dict': {'id': '1415246',
+                             'ext': 'mp4',
+                             'title': '美人天下01',
+                             'description': 'md5:28942e650e82ed4fcc8e4de919ee854d',
+                             },
+               'params': {'hls_prefer_native': True,
+                          },
+               },
+              {'note': 'This video is available only in Mainland China, thus a proxy is needed',
+               'url': 'http://www.le.com/ptv/vplay/1118082.html',
+               'md5': '2424c74948a62e5f31988438979c5ad1',
+               'info_dict': {'id': '1118082',
+                             'ext': 'mp4',
+                             'title': '与龙共舞 完整版',
+                             'description': 'md5:7506a5eeb1722bb9d4068f85024e3986',
+                             },
+               'params': {'hls_prefer_native': True,
+                          },
+               },
+              {'url': 'http://sports.le.com/video/25737697.html',
+               'only_matching': True,
+               },
+              {'url': 'http://www.lesports.com/match/1023203003.html',
+               'only_matching': True,
+               },
+              {'url': 'http://sports.le.com/match/1023203003.html',
+               'only_matching': True,
+               }]
 
-    # ror() and calc_time_key() are reversed from a embedded swf file in LetvPlayer.swf
+    # ror() and calc_time_key() are reversed from a embedded swf file in
+    # LetvPlayer.swf
     def ror(self, param1, param2):
         _loc3_ = 0
         while _loc3_ < param2:
@@ -113,7 +107,9 @@ class LeIE(InfoExtractor):
             if flag == 1:
                 self.raise_geo_restricted()
             else:
-                raise ExtractorError('Generic error. flag = %d' % flag, expected=True)
+                raise ExtractorError(
+                    'Generic error. flag = %d' %
+                    flag, expected=True)
 
     def _real_extract(self, url):
         media_id = self._match_id(url)
@@ -152,7 +148,9 @@ class LeIE(InfoExtractor):
             m3u8_data = self.decrypt_m3u8(req.read())
 
             return {
-                'hls': encode_data_uri(m3u8_data, 'application/vnd.apple.mpegurl'),
+                'hls': encode_data_uri(
+                    m3u8_data,
+                    'application/vnd.apple.mpegurl'),
             }
 
         extracted_formats = []
@@ -166,7 +164,8 @@ class LeIE(InfoExtractor):
             extracted_formats.append(format_id)
 
             media_url = play_domain + format_data[0]
-            for protocol, format_url in get_flash_urls(media_url, format_id).items():
+            for protocol, format_url in get_flash_urls(
+                    media_url, format_id).items():
                 f = {
                     'url': format_url,
                     'ext': determine_ext(format_data[1]),
@@ -306,8 +305,10 @@ class LetvCloudIE(InfoExtractor):
             }
             self.sign_data(data)
             return self._download_json(
-                'http://api.letvcloud.com/gpc.php?' + urllib.parse.urlencode(data),
-                media_id, f'Downloading playJson data for type {cf}')
+                'http://api.letvcloud.com/gpc.php?' +
+                urllib.parse.urlencode(data),
+                media_id,
+                f'Downloading playJson data for type {cf}')
 
         play_json = get_play_json(cf, time.time())
         # The server time may be different from local time
@@ -316,9 +317,13 @@ class LetvCloudIE(InfoExtractor):
 
         if not play_json.get('data'):
             if play_json.get('message'):
-                raise ExtractorError('Letv cloud said: {}'.format(play_json['message']), expected=True)
+                raise ExtractorError(
+                    'Letv cloud said: {}'.format(
+                        play_json['message']), expected=True)
             elif play_json.get('code'):
-                raise ExtractorError('Letv cloud returned error %d' % play_json['code'], expected=True)
+                raise ExtractorError(
+                    'Letv cloud returned error %d' %
+                    play_json['code'], expected=True)
             else:
                 raise ExtractorError('Letv cloud returned an unknown error')
 
@@ -352,7 +357,8 @@ class LetvCloudIE(InfoExtractor):
         vu = vu_mobj.group(1)
         media_id = uu + '_' + vu
 
-        formats = self._get_formats('flash', uu, vu, media_id) + self._get_formats('html5', uu, vu, media_id)
+        formats = self._get_formats(
+            'flash', uu, vu, media_id) + self._get_formats('html5', uu, vu, media_id)
 
         return {
             'id': media_id,

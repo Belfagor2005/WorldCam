@@ -54,7 +54,8 @@ class TenPlayIE(InfoExtractor):
         },
         'params': {'skip_download': 'm3u8'},
     }, {
-        # Geo-restricted to Australia; upgrading the m3u8 quality fails and we need the fallback
+        # Geo-restricted to Australia; upgrading the m3u8 quality fails and we
+        # need the fallback
         'url': 'https://10play.com.au/tiny-chef-show/episodes/season-1/episode-2/tpv240228pofvt',
         'info_dict': {
             'id': '9000000000084116',
@@ -172,7 +173,8 @@ class TenPlaySeasonIE(InfoExtractor):
     def _real_extract(self, url):
         show, season = self._match_valid_url(url).group('show', 'season')
         season_info = self._download_json(
-            f'https://10play.com.au/api/shows/{show}/episodes/{season}', f'{show}/{season}')
+            f'https://10play.com.au/api/shows/{show}/episodes/{season}',
+            f'{show}/{season}')
 
         episodes_carousel = traverse_obj(season_info, (
             'content', 0, 'components', (
@@ -183,6 +185,16 @@ class TenPlaySeasonIE(InfoExtractor):
         playlist_id = episodes_carousel['tpId']
 
         return self.playlist_from_matches(
-            self._entries(urljoin(url, episodes_carousel['loadMoreUrl']), playlist_id),
-            playlist_id, traverse_obj(season_info, ('content', 0, 'title', {str})),
+            self._entries(
+                urljoin(
+                    url,
+                    episodes_carousel['loadMoreUrl']),
+                playlist_id),
+            playlist_id,
+            traverse_obj(
+                season_info,
+                ('content',
+                 0,
+                 'title',
+                 {str})),
             getter=urljoin(url))

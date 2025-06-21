@@ -113,10 +113,17 @@ class ServusIE(InfoExtractor):
         }
 
     def _get_description(self, next_data):
-        return join_nonempty(*traverse_obj(next_data, (
-            'props', 'pageProps', 'data',
-            ('stv_short_description', 'stv_long_description'), {str},
-            {lambda x: x.replace('\n\n', '\n')}, {unescapeHTML})), delim='\n\n')
+        return join_nonempty(*traverse_obj(next_data,
+                                           ('props',
+                                            'pageProps',
+                                            'data',
+                                            ('stv_short_description',
+                                             'stv_long_description'),
+                                               {str},
+                                               {lambda x: x.replace('\n\n',
+                                                                    '\n')},
+                                               {unescapeHTML})),
+                             delim='\n\n')
 
     def _report_errors(self, video):
         playability_errors = traverse_obj(video, ('playabilityErrors', ...))
@@ -124,16 +131,33 @@ class ServusIE(InfoExtractor):
             raise ExtractorError('No videoUrl and no information about errors')
 
         elif 'FSK_BLOCKED' in playability_errors:
-            details = traverse_obj(video, ('playabilityErrorDetails', 'FSK_BLOCKED'), expected_type=dict)
-            message = format_field(''.join((
-                format_field(details, 'minEveningHour', ' from %02d:00'),
-                format_field(details, 'maxMorningHour', ' to %02d:00'),
-                format_field(details, 'minAge', ' (Minimum age %d)'),
-            )), None, 'Only available%s') or 'Blocked by FSK with unknown availability'
+            details = traverse_obj(
+                video, ('playabilityErrorDetails', 'FSK_BLOCKED'), expected_type=dict)
+            message = format_field(
+                ''.join(
+                    (format_field(
+                        details,
+                        'minEveningHour',
+                        ' from %02d:00'),
+                        format_field(
+                        details,
+                        'maxMorningHour',
+                        ' to %02d:00'),
+                        format_field(
+                        details,
+                        'minAge',
+                        ' (Minimum age %d)'),
+                     )),
+                None,
+                'Only available%s') or 'Blocked by FSK with unknown availability'
 
         elif 'NOT_YET_AVAILABLE' in playability_errors:
             message = format_field(
-                video, (('playabilityErrorDetails', 'NOT_YET_AVAILABLE', 'availableFrom'), 'currentSunrise'),
+                video,
+                (('playabilityErrorDetails',
+                  'NOT_YET_AVAILABLE',
+                  'availableFrom'),
+                 'currentSunrise'),
                 'Only available from %s') or 'Video not yet available with unknown availability'
 
         else:

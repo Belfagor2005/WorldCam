@@ -21,7 +21,8 @@ class CamsodaIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(url, video_id, headers=self.geo_verification_headers())
+        webpage = self._download_webpage(
+            url, video_id, headers=self.geo_verification_headers())
 
         data = self._download_json(
             f'https://camsoda.com/api/v1/video/vtoken/{video_id}', video_id,
@@ -50,7 +51,10 @@ class CamsodaIE(InfoExtractor):
         return {
             'id': video_id,
             'title': self._html_extract_title(webpage),
-            'description': self._html_search_meta('description', webpage, default=None),
+            'description': self._html_search_meta(
+                'description',
+                webpage,
+                default=None),
             'is_live': True,
             'formats': formats,
             'age_limit': 18,

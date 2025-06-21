@@ -134,7 +134,9 @@ class PicartoVodIE(InfoExtractor):
         video_id = self._match_id(url)
 
         data = self._download_json(
-            'https://ptvintern.picarto.tv/ptvapi', video_id, query={
+            'https://ptvintern.picarto.tv/ptvapi',
+            video_id,
+            query={
                 'query': f'''{{
   video(id: "{video_id}") {{
     id
@@ -147,13 +149,20 @@ class PicartoVodIE(InfoExtractor):
     }}
   }}
 }}''',
-            }, headers={'Accept': '*/*', 'Content-Type': 'application/json'})['data']['video']
+            },
+            headers={
+                'Accept': '*/*',
+                'Content-Type': 'application/json'})['data']['video']
 
         file_name = data['file_name']
-        netloc = urllib.parse.urlparse(data['video_recording_image_url']).netloc
+        netloc = urllib.parse.urlparse(
+            data['video_recording_image_url']).netloc
 
         formats = self._extract_m3u8_formats(
-            f'https://{netloc}/stream/hls/{file_name}/index.m3u8', video_id, 'mp4', m3u8_id='hls')
+            f'https://{netloc}/stream/hls/{file_name}/index.m3u8',
+            video_id,
+            'mp4',
+            m3u8_id='hls')
 
         return {
             'id': video_id,

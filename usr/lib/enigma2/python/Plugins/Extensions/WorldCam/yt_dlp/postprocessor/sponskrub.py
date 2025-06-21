@@ -20,7 +20,15 @@ class SponSkrubPP(PostProcessor):
     _temp_ext = 'spons'
     _exe_name = 'sponskrub'
 
-    def __init__(self, downloader, path='', args=None, ignoreerror=False, cut=False, force=False, _from_cli=False):
+    def __init__(
+            self,
+            downloader,
+            path='',
+            args=None,
+            ignoreerror=False,
+            cut=False,
+            force=False,
+            _from_cli=False):
         PostProcessor.__init__(self, downloader)
         self.force = force
         self.cutout = cut
@@ -36,7 +44,8 @@ class SponSkrubPP(PostProcessor):
             if path:
                 raise PostProcessingError(f'sponskrub not found in "{path}"')
             else:
-                raise PostProcessingError('sponskrub not found. Please install or provide the path using --sponskrub-path')
+                raise PostProcessingError(
+                    'sponskrub not found. Please install or provide the path using --sponskrub-path')
 
     def get_exe(self, path=''):
         if not path or not check_executable(path, ['-h']):
@@ -55,19 +64,25 @@ class SponSkrubPP(PostProcessor):
             return [], information
 
         if information['extractor_key'].lower() != 'youtube':
-            self.to_screen('Skipping sponskrub since it is not a YouTube video')
+            self.to_screen(
+                'Skipping sponskrub since it is not a YouTube video')
             return [], information
-        if self.cutout and not self.force and not information.get('__real_download', False):
+        if self.cutout and not self.force and not information.get(
+                '__real_download', False):
             self.report_warning(
                 'Skipping sponskrub since the video was already downloaded. '
                 'Use --sponskrub-force to run sponskrub anyway')
             return [], information
 
-        self.to_screen('Trying to %s sponsor sections' % ('remove' if self.cutout else 'mark'))
+        self.to_screen(
+            'Trying to %s sponsor sections' %
+            ('remove' if self.cutout else 'mark'))
         if self.cutout:
-            self.report_warning('Cutting out sponsor segments will cause the subtitles to go out of sync.')
+            self.report_warning(
+                'Cutting out sponsor segments will cause the subtitles to go out of sync.')
             if not information.get('__real_download', False):
-                self.report_warning('If sponskrub is run multiple times, unintended parts of the video could be cut out.')
+                self.report_warning(
+                    'If sponskrub is run multiple times, unintended parts of the video could be cut out.')
 
         temp_filename = prepend_extension(filename, self._temp_ext)
         if os.path.exists(temp_filename):
@@ -83,15 +98,19 @@ class SponSkrubPP(PostProcessor):
         cmd = [encodeArgument(i) for i in cmd]
 
         self.write_debug(f'sponskrub command line: {shell_quote(cmd)}')
-        stdout, _, returncode = Popen.run(cmd, text=True, stdout=None if self.get_param('verbose') else subprocess.PIPE)
+        stdout, _, returncode = Popen.run(
+            cmd, text=True, stdout=None if self.get_param('verbose') else subprocess.PIPE)
 
         if not returncode:
             os.replace(temp_filename, filename)
-            self.to_screen('Sponsor sections have been %s' % ('removed' if self.cutout else 'marked'))
+            self.to_screen(
+                'Sponsor sections have been %s' %
+                ('removed' if self.cutout else 'marked'))
         elif returncode == 3:
             self.to_screen('No segments in the SponsorBlock database')
         else:
             raise PostProcessingError(
-                stdout.strip().splitlines()[0 if stdout.strip().lower().startswith('unrecognised') else -1]
-                or f'sponskrub failed with error code {returncode}')
+                stdout.strip().splitlines()[
+                    0 if stdout.strip().lower().startswith('unrecognised') else -
+                    1] or f'sponskrub failed with error code {returncode}')
         return [], information

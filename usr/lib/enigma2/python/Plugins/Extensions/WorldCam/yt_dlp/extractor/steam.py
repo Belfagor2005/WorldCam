@@ -76,12 +76,16 @@ class SteamIE(InfoExtractor):
 
         webpage = self._download_webpage(video_url, playlist_id)
 
-        if re.search('<div[^>]+>Please enter your birth date to continue:</div>', webpage) is not None:
+        if re.search(
+            '<div[^>]+>Please enter your birth date to continue:</div>',
+                webpage) is not None:
             video_url = self._AGECHECK_TEMPLATE % playlist_id
             self.report_age_confirmation()
             webpage = self._download_webpage(video_url, playlist_id)
 
-        videos = re.findall(r'(<div[^>]+id=[\'"]highlight_movie_(\d+)[\'"][^>]+>)', webpage)
+        videos = re.findall(
+            r'(<div[^>]+id=[\'"]highlight_movie_(\d+)[\'"][^>]+>)',
+            webpage)
         entries = []
         playlist_title = get_element_by_class('apphub_AppName', webpage)
         for movie, movie_id in videos:
@@ -110,7 +114,11 @@ class SteamIE(InfoExtractor):
         embedded_videos = re.findall(r'(<iframe[^>]+>)', webpage)
         for evideos in embedded_videos:
             evideos = extract_attributes(evideos).get('src')
-            video_id = self._search_regex(r'youtube\.com/embed/([0-9A-Za-z_-]{11})', evideos, 'youtube_video_id', default=None)
+            video_id = self._search_regex(
+                r'youtube\.com/embed/([0-9A-Za-z_-]{11})',
+                evideos,
+                'youtube_video_id',
+                default=None)
             if video_id:
                 entries.append({
                     '_type': 'url_transparent',
@@ -146,7 +154,8 @@ class SteamCommunityBroadcastIE(InfoExtractor):
             'https://steamcommunity.com/broadcast/getbroadcastmpd/',
             video_id, query={'steamid': f'{video_id}'})
 
-        formats, subs = self._extract_m3u8_formats_and_subtitles(json_data['hls_url'], video_id)
+        formats, subs = self._extract_m3u8_formats_and_subtitles(
+            json_data['hls_url'], video_id)
 
         ''' # We cannot download live dash atm
         mpd_formats, mpd_subs = self._extract_mpd_formats_and_subtitles(json_data['url'], video_id)

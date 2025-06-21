@@ -76,25 +76,46 @@ class NDTVIE(InfoExtractor):
 
         # '__title' does not contain extra words such as sub-site name, "Video" etc.
         title = urllib.parse.unquote_plus(
-            self._search_regex(r"__title\s*=\s*'([^']+)'", webpage, 'title', default=None)
-            or self._og_search_title(webpage))
+            self._search_regex(
+                r"__title\s*=\s*'([^']+)'",
+                webpage,
+                'title',
+                default=None) or self._og_search_title(webpage))
 
         filename = self._search_regex(
             r"(?:__)?filename\s*[:=]\s*'([^']+)'", webpage, 'video filename')
         # in "movies" sub-site pages, filename is URL
-        video_url = urljoin('https://ndtvod.bc-ssl.cdn.bitgravity.com/23372/ndtv/', filename.lstrip('/'))
+        video_url = urljoin(
+            'https://ndtvod.bc-ssl.cdn.bitgravity.com/23372/ndtv/',
+            filename.lstrip('/'))
 
         # "doctor" sub-site has MM:SS format
-        duration = parse_duration(self._search_regex(
-            r"(?:__)?duration\s*[:=]\s*'([^']+)'", webpage, 'duration', fatal=False))
+        duration = parse_duration(
+            self._search_regex(
+                r"(?:__)?duration\s*[:=]\s*'([^']+)'",
+                webpage,
+                'duration',
+                fatal=False))
 
         # "sports", "doctor", "swirlster" sub-sites don't have 'publish-date'
-        upload_date = unified_strdate(self._html_search_meta(
-            'publish-date', webpage, 'upload date', default=None) or self._html_search_meta(
-            'uploadDate', webpage, 'upload date', default=None) or self._search_regex(
-            r'datePublished"\s*:\s*"([^"]+)"', webpage, 'upload date', fatal=False))
+        upload_date = unified_strdate(
+            self._html_search_meta(
+                'publish-date',
+                webpage,
+                'upload date',
+                default=None) or self._html_search_meta(
+                'uploadDate',
+                webpage,
+                'upload date',
+                default=None) or self._search_regex(
+                r'datePublished"\s*:\s*"([^"]+)"',
+                webpage,
+                'upload date',
+                fatal=False))
 
-        description = remove_end(self._og_search_description(webpage), ' (Read more)')
+        description = remove_end(
+            self._og_search_description(webpage),
+            ' (Read more)')
 
         return {
             'id': video_id,

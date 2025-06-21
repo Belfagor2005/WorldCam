@@ -42,21 +42,29 @@ class SampleFocusIE(InfoExtractor):
             r'<input[^>]+id=(["\'])sample_id\1[^>]+value=(?:["\'])(?P<id>\d+)',
             webpage, 'sample id', group='id')
 
-        title = self._og_search_title(webpage, fatal=False) or self._html_search_regex(
+        title = self._og_search_title(
+            webpage, fatal=False) or self._html_search_regex(
             r'<h1>(.+?)</h1>', webpage, 'title')
 
         mp3_url = self._search_regex(
             r'<input[^>]+id=(["\'])sample_mp3\1[^>]+value=(["\'])(?P<url>(?:(?!\2).)+)',
-            webpage, 'mp3', fatal=False, group='url') or extract_attributes(self._search_regex(
+            webpage,
+            'mp3',
+            fatal=False,
+            group='url') or extract_attributes(
+            self._search_regex(
                 r'<meta[^>]+itemprop=(["\'])contentUrl\1[^>]*>',
-                webpage, 'mp3 url', group=0))['content']
+                webpage,
+                'mp3 url',
+                group=0))['content']
 
         thumbnail = self._og_search_thumbnail(webpage) or self._html_search_regex(
             r'<img[^>]+class=(?:["\'])waveform responsive-img[^>]+src=(["\'])(?P<url>(?:(?!\1).)+)',
             webpage, 'mp3', fatal=False, group='url')
 
         comments = []
-        for author_id, author, body in re.findall(r'(?s)<p[^>]+class="comment-author"><a[^>]+href="/users/([^"]+)">([^"]+)</a>.+?<p[^>]+class="comment-body">([^>]+)</p>', webpage):
+        for author_id, author, body in re.findall(
+                r'(?s)<p[^>]+class="comment-author"><a[^>]+href="/users/([^"]+)">([^"]+)</a>.+?<p[^>]+class="comment-body">([^>]+)</p>', webpage):
             comments.append({
                 'author': author,
                 'author_id': author_id,
@@ -64,14 +72,18 @@ class SampleFocusIE(InfoExtractor):
             })
 
         uploader_id = uploader = None
-        mobj = re.search(r'>By <a[^>]+href="/users/([^"]+)"[^>]*>([^<]+)', webpage)
+        mobj = re.search(
+            r'>By <a[^>]+href="/users/([^"]+)"[^>]*>([^<]+)',
+            webpage)
         if mobj:
             uploader_id, uploader = mobj.groups()
 
-        breadcrumb = get_element_by_attribute('typeof', 'BreadcrumbList', webpage)
+        breadcrumb = get_element_by_attribute(
+            'typeof', 'BreadcrumbList', webpage)
         categories = []
         if breadcrumb:
-            for _, name in re.findall(r'<span[^>]+property=(["\'])name\1[^>]*>([^<]+)', breadcrumb):
+            for _, name in re.findall(
+                    r'<span[^>]+property=(["\'])name\1[^>]*>([^<]+)', breadcrumb):
                 categories.append(name)
 
         def extract_count(klass):

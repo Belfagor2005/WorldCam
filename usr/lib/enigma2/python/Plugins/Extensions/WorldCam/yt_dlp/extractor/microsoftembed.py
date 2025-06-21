@@ -38,11 +38,25 @@ class MicrosoftEmbedIE(InfoExtractor):
         formats = []
         for source_type, source in metadata['streams'].items():
             if source_type == 'smooth_Streaming':
-                formats.extend(self._extract_ism_formats(source['url'], video_id, 'mss', fatal=False))
+                formats.extend(
+                    self._extract_ism_formats(
+                        source['url'],
+                        video_id,
+                        'mss',
+                        fatal=False))
             elif source_type == 'apple_HTTP_Live_Streaming':
-                formats.extend(self._extract_m3u8_formats(source['url'], video_id, 'mp4', fatal=False))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        source['url'],
+                        video_id,
+                        'mp4',
+                        fatal=False))
             elif source_type == 'mPEG_DASH':
-                formats.extend(self._extract_mpd_formats(source['url'], video_id, fatal=False))
+                formats.extend(
+                    self._extract_mpd_formats(
+                        source['url'],
+                        video_id,
+                        fatal=False))
             else:
                 formats.append({
                     'format_id': source_type,
@@ -67,9 +81,20 @@ class MicrosoftEmbedIE(InfoExtractor):
 
         return {
             'id': video_id,
-            'title': traverse_obj(metadata, ('snippet', 'title')),
-            'timestamp': unified_timestamp(traverse_obj(metadata, ('snippet', 'activeStartDate'))),
-            'age_limit': int_or_none(traverse_obj(metadata, ('snippet', 'minimumAge'))) or 0,
+            'title': traverse_obj(
+                metadata,
+                ('snippet',
+                 'title')),
+            'timestamp': unified_timestamp(
+                traverse_obj(
+                    metadata,
+                    ('snippet',
+                     'activeStartDate'))),
+            'age_limit': int_or_none(
+                traverse_obj(
+                    metadata,
+                    ('snippet',
+                     'minimumAge'))) or 0,
             'formats': formats,
             'subtitles': subtitles,
             'thumbnails': thumbnails,
@@ -147,16 +172,23 @@ class MicrosoftMediusIE(MicrosoftMediusBaseIE):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(f'https://medius.microsoft.com/Embed/video-nc/{video_id}', video_id)
+        webpage = self._download_webpage(
+            f'https://medius.microsoft.com/Embed/video-nc/{video_id}', video_id)
 
         return {
             'id': video_id,
             'title': self._og_search_title(webpage),
             'description': self._og_search_description(webpage),
             'formats': self._extract_ism(
-                self._search_regex(r'StreamUrl\s*=\s*"([^"]+manifest)"', webpage, 'ism url'), video_id),
+                self._search_regex(
+                    r'StreamUrl\s*=\s*"([^"]+manifest)"',
+                    webpage,
+                    'ism url'),
+                video_id),
             'thumbnail': self._og_search_thumbnail(webpage),
-            'subtitles': self._extract_subtitle(webpage, video_id),
+            'subtitles': self._extract_subtitle(
+                webpage,
+                video_id),
         }
 
 
@@ -183,11 +215,11 @@ class MicrosoftLearnPlaylistIE(InfoExtractor):
     def _entries(self, url_base, video_id):
         skip = 0
         while True:
-            playlist_info = self._download_json(url_base, video_id, f'Downloading entries {skip}', query={
-                'locale': 'en-us',
-                '$skip': skip,
-            })
-            url_paths = traverse_obj(playlist_info, ('results', ..., 'url', {str}))
+            playlist_info = self._download_json(
+                url_base, video_id, f'Downloading entries {skip}', query={
+                    'locale': 'en-us', '$skip': skip, })
+            url_paths = traverse_obj(
+                playlist_info, ('results', ..., 'url', {str}))
             for url_path in url_paths:
                 yield self.url_result(f'https://learn.microsoft.com/en-us{url_path}')
             skip += len(url_paths)
@@ -195,7 +227,8 @@ class MicrosoftLearnPlaylistIE(InfoExtractor):
                 break
 
     def _real_extract(self, url):
-        playlist_id, playlist_type = self._match_valid_url(url).group('id', 'type')
+        playlist_id, playlist_type = self._match_valid_url(
+            url).group('id', 'type')
         webpage = self._download_webpage(url, playlist_id)
 
         metainfo = {
@@ -205,7 +238,12 @@ class MicrosoftLearnPlaylistIE(InfoExtractor):
         sub_type = 'episodes' if playlist_type == 'shows' else 'sessions'
 
         url_base = f'https://learn.microsoft.com/api/contentbrowser/search/{playlist_type}/{playlist_id}/{sub_type}'
-        return self.playlist_result(self._entries(url_base, playlist_id), playlist_id, **metainfo)
+        return self.playlist_result(
+            self._entries(
+                url_base,
+                playlist_id),
+            playlist_id,
+            **metainfo)
 
 
 class MicrosoftLearnEpisodeIE(MicrosoftMediusBaseIE):
@@ -240,26 +278,55 @@ class MicrosoftLearnEpisodeIE(MicrosoftMediusBaseIE):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        entry_id = self._html_search_meta('entryId', webpage, 'entryId', fatal=True)
+        entry_id = self._html_search_meta(
+            'entryId', webpage, 'entryId', fatal=True)
         video_info = self._download_json(
             f'https://learn.microsoft.com/api/video/public/v1/entries/{entry_id}', video_id)
 
         formats = []
-        if ism_url := traverse_obj(video_info, ('publicVideo', 'adaptiveVideoUrl', {url_or_none})):
+        if ism_url := traverse_obj(
+            video_info,
+            ('publicVideo',
+             'adaptiveVideoUrl',
+             {url_or_none})):
             formats.extend(self._extract_ism(ism_url, video_id, fatal=False))
-        if hls_url := traverse_obj(video_info, ('publicVideo', 'adaptiveVideoHLSUrl', {url_or_none})):
-            formats.extend(self._extract_m3u8_formats(hls_url, video_id, 'mp4', m3u8_id='hls', fatal=False))
-        if mpd_url := traverse_obj(video_info, ('publicVideo', 'adaptiveVideoDashUrl', {url_or_none})):
-            formats.extend(self._extract_mpd_formats(mpd_url, video_id, mpd_id='dash', fatal=False))
+        if hls_url := traverse_obj(
+            video_info,
+            ('publicVideo',
+             'adaptiveVideoHLSUrl',
+             {url_or_none})):
+            formats.extend(
+                self._extract_m3u8_formats(
+                    hls_url,
+                    video_id,
+                    'mp4',
+                    m3u8_id='hls',
+                    fatal=False))
+        if mpd_url := traverse_obj(
+            video_info,
+            ('publicVideo',
+             'adaptiveVideoDashUrl',
+             {url_or_none})):
+            formats.extend(
+                self._extract_mpd_formats(
+                    mpd_url,
+                    video_id,
+                    mpd_id='dash',
+                    fatal=False))
         for key in ('low', 'medium', 'high'):
-            if video_url := traverse_obj(video_info, ('publicVideo', f'{key}QualityVideoUrl', {url_or_none})):
+            if video_url := traverse_obj(
+                video_info,
+                ('publicVideo',
+                 f'{key}QualityVideoUrl',
+                 {url_or_none})):
                 formats.append({
                     'url': video_url,
                     'format_id': f'video-http-{key}',
                     'acodec': 'none',
                     **parse_resolution(video_url),
                 })
-        if audio_url := traverse_obj(video_info, ('publicVideo', 'audioUrl', {url_or_none})):
+        if audio_url := traverse_obj(
+                video_info, ('publicVideo', 'audioUrl', {url_or_none})):
             formats.append({
                 'url': audio_url,
                 'format_id': 'audio-http',
@@ -305,12 +372,22 @@ class MicrosoftLearnSessionIE(InfoExtractor):
         metainfo = {
             'title': self._og_search_title(webpage),
             'description': self._og_search_description(webpage),
-            'timestamp': parse_iso8601(self._html_search_meta('startDate', webpage, 'startDate')),
+            'timestamp': parse_iso8601(
+                self._html_search_meta(
+                    'startDate',
+                    webpage,
+                    'startDate')),
         }
 
         return self.url_result(
-            self._html_search_meta('externalVideoUrl', webpage, 'videoUrl', fatal=True),
-            url_transparent=True, ie=MicrosoftMediusIE, **metainfo)
+            self._html_search_meta(
+                'externalVideoUrl',
+                webpage,
+                'videoUrl',
+                fatal=True),
+            url_transparent=True,
+            ie=MicrosoftMediusIE,
+            **metainfo)
 
 
 class MicrosoftBuildIE(InfoExtractor):
@@ -355,4 +432,5 @@ class MicrosoftBuildIE(InfoExtractor):
         if video_id == 'sessions':
             return self.playlist_result(entries, video_id)
         else:
-            return traverse_obj(entries, (lambda _, v: v['id'] == video_id), get_all=False)
+            return traverse_obj(
+                entries, (lambda _, v: v['id'] == video_id), get_all=False)

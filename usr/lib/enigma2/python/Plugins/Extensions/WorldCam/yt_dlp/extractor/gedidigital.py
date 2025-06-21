@@ -40,69 +40,67 @@ class GediDigitalIE(InfoExtractor):
                 <iframe[^\n]+src=
             )
             (["'])(?P<url>{_VALID_URL})\1''']
-    _TESTS = [{
-        'url': 'https://video.lastampa.it/politica/il-paradosso-delle-regionali-la-lega-vince-ma-sembra-aver-perso/121559/121683',
-        'md5': '84658d7fb9e55a6e57ecc77b73137494',
-        'info_dict': {
-            'id': '121683',
-            'ext': 'mp4',
-            'title': 'Il paradosso delle Regionali: ecco perché la Lega vince ma sembra aver perso',
-            'description': 'md5:de7f4d6eaaaf36c153b599b10f8ce7ca',
-            'thumbnail': r're:^https://www\.repstatic\.it/video/photo/.+?-thumb-full-.+?\.jpg$',
-            'duration': 125,
-        },
-    }, {
-        'url': 'https://video.huffingtonpost.it/embed/politica/cotticelli-non-so-cosa-mi-sia-successo-sto-cercando-di-capire-se-ho-avuto-un-malore/29312/29276?responsive=true&el=video971040871621586700',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.espresso.repubblica.it/embed/tutti-i-video/01-ted-villa/14772/14870&width=640&height=360',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.repubblica.it/motori/record-della-pista-a-spa-francorchamps-la-pagani-huayra-roadster-bc-stupisce/367415/367963',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.ilsecoloxix.it/sport/cassani-e-i-brividi-azzurri-ai-mondiali-di-imola-qui-mi-sono-innamorato-del-ciclismo-da-ragazzino-incredibile-tornarci-da-ct/66184/66267',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.iltirreno.gelocal.it/sport/dentro-la-notizia-ferrari-cosa-succede-a-maranello/141059/142723',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.messaggeroveneto.gelocal.it/locale/maria-giovanna-elmi-covid-vaccino/138155/139268',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.ilpiccolo.gelocal.it/dossier/big-john/dinosauro-big-john-al-via-le-visite-guidate-a-trieste/135226/135751',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.gazzettadimantova.gelocal.it/locale/dal-ponte-visconteo-di-valeggio-l-and-8217sos-dei-ristoratori-aprire-anche-a-cena/137310/137818',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.mattinopadova.gelocal.it/dossier/coronavirus-in-veneto/covid-a-vo-un-anno-dopo-un-cuore-tricolore-per-non-dimenticare/138402/138964',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.laprovinciapavese.gelocal.it/locale/mede-zona-rossa-via-alle-vaccinazioni-per-gli-over-80/137545/138120',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.tribunatreviso.gelocal.it/dossier/coronavirus-in-veneto/ecco-le-prima-vaccinazioni-di-massa-nella-marca/134485/135024',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.nuovavenezia.gelocal.it/locale/camion-troppo-alto-per-il-ponte-ferroviario-perde-il-carico/135734/136266',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.gazzettadimodena.gelocal.it/locale/modena-scoperta-la-proteina-che-predice-il-livello-di-gravita-del-covid/139109/139796',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.lanuovaferrara.gelocal.it/locale/due-bombole-di-gpl-aperte-e-abbandonate-i-vigili-bruciano-il-gas/134391/134957',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.corrierealpi.gelocal.it/dossier/cortina-2021-i-mondiali-di-sci-alpino/mondiali-di-sci-il-timelapse-sulla-splendida-olympia/133760/134331',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.lasentinella.gelocal.it/locale/vestigne-centra-un-auto-e-si-ribalta/138931/139466',
-        'only_matching': True,
-    }, {
-        'url': 'https://video.espresso.repubblica.it/tutti-i-video/01-ted-villa/14772',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://video.lastampa.it/politica/il-paradosso-delle-regionali-la-lega-vince-ma-sembra-aver-perso/121559/121683',
+               'md5': '84658d7fb9e55a6e57ecc77b73137494',
+               'info_dict': {'id': '121683',
+                             'ext': 'mp4',
+                             'title': 'Il paradosso delle Regionali: ecco perché la Lega vince ma sembra aver perso',
+                             'description': 'md5:de7f4d6eaaaf36c153b599b10f8ce7ca',
+                             'thumbnail': r're:^https://www\.repstatic\.it/video/photo/.+?-thumb-full-.+?\.jpg$',
+                             'duration': 125,
+                             },
+               },
+              {'url': 'https://video.huffingtonpost.it/embed/politica/cotticelli-non-so-cosa-mi-sia-successo-sto-cercando-di-capire-se-ho-avuto-un-malore/29312/29276?responsive=true&el=video971040871621586700',
+               'only_matching': True,
+               },
+              {'url': 'https://video.espresso.repubblica.it/embed/tutti-i-video/01-ted-villa/14772/14870&width=640&height=360',
+               'only_matching': True,
+               },
+              {'url': 'https://video.repubblica.it/motori/record-della-pista-a-spa-francorchamps-la-pagani-huayra-roadster-bc-stupisce/367415/367963',
+               'only_matching': True,
+               },
+              {'url': 'https://video.ilsecoloxix.it/sport/cassani-e-i-brividi-azzurri-ai-mondiali-di-imola-qui-mi-sono-innamorato-del-ciclismo-da-ragazzino-incredibile-tornarci-da-ct/66184/66267',
+               'only_matching': True,
+               },
+              {'url': 'https://video.iltirreno.gelocal.it/sport/dentro-la-notizia-ferrari-cosa-succede-a-maranello/141059/142723',
+               'only_matching': True,
+               },
+              {'url': 'https://video.messaggeroveneto.gelocal.it/locale/maria-giovanna-elmi-covid-vaccino/138155/139268',
+               'only_matching': True,
+               },
+              {'url': 'https://video.ilpiccolo.gelocal.it/dossier/big-john/dinosauro-big-john-al-via-le-visite-guidate-a-trieste/135226/135751',
+               'only_matching': True,
+               },
+              {'url': 'https://video.gazzettadimantova.gelocal.it/locale/dal-ponte-visconteo-di-valeggio-l-and-8217sos-dei-ristoratori-aprire-anche-a-cena/137310/137818',
+               'only_matching': True,
+               },
+              {'url': 'https://video.mattinopadova.gelocal.it/dossier/coronavirus-in-veneto/covid-a-vo-un-anno-dopo-un-cuore-tricolore-per-non-dimenticare/138402/138964',
+               'only_matching': True,
+               },
+              {'url': 'https://video.laprovinciapavese.gelocal.it/locale/mede-zona-rossa-via-alle-vaccinazioni-per-gli-over-80/137545/138120',
+               'only_matching': True,
+               },
+              {'url': 'https://video.tribunatreviso.gelocal.it/dossier/coronavirus-in-veneto/ecco-le-prima-vaccinazioni-di-massa-nella-marca/134485/135024',
+               'only_matching': True,
+               },
+              {'url': 'https://video.nuovavenezia.gelocal.it/locale/camion-troppo-alto-per-il-ponte-ferroviario-perde-il-carico/135734/136266',
+               'only_matching': True,
+               },
+              {'url': 'https://video.gazzettadimodena.gelocal.it/locale/modena-scoperta-la-proteina-che-predice-il-livello-di-gravita-del-covid/139109/139796',
+               'only_matching': True,
+               },
+              {'url': 'https://video.lanuovaferrara.gelocal.it/locale/due-bombole-di-gpl-aperte-e-abbandonate-i-vigili-bruciano-il-gas/134391/134957',
+               'only_matching': True,
+               },
+              {'url': 'https://video.corrierealpi.gelocal.it/dossier/cortina-2021-i-mondiali-di-sci-alpino/mondiali-di-sci-il-timelapse-sulla-splendida-olympia/133760/134331',
+               'only_matching': True,
+               },
+              {'url': 'https://video.lasentinella.gelocal.it/locale/vestigne-centra-un-auto-e-si-ribalta/138931/139466',
+               'only_matching': True,
+               },
+              {'url': 'https://video.espresso.repubblica.it/tutti-i-video/01-ted-villa/14772',
+               'only_matching': True,
+               }]
 
     @staticmethod
     def _sanitize_urls(urls):
@@ -117,7 +115,10 @@ class GediDigitalIE(InfoExtractor):
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
-        return cls._sanitize_urls(tuple(super()._extract_embed_urls(url, webpage)))
+        return cls._sanitize_urls(
+            tuple(
+                super()._extract_embed_urls(
+                    url, webpage)))
 
     @staticmethod
     def _clean_formats(formats):
@@ -144,7 +145,11 @@ class GediDigitalIE(InfoExtractor):
         duration = thumb = None
         for t, n, v in player_data:
             if t == 'format':
-                if n in ('video-hds-vod-ec', 'video-hls-vod-ec', 'video-viralize', 'video-youtube-pfp'):
+                if n in (
+                    'video-hds-vod-ec',
+                    'video-hls-vod-ec',
+                    'video-viralize',
+                        'video-youtube-pfp'):
                     continue
                 elif n.endswith('-vod-ak'):
                     formats.extend(self._extract_akamai_formats(
@@ -152,8 +157,14 @@ class GediDigitalIE(InfoExtractor):
                 else:
                     ext = determine_ext(v)
                     if ext == 'm3u8':
-                        formats.extend(self._extract_m3u8_formats(
-                            v, video_id, 'mp4', 'm3u8_native', m3u8_id=n, fatal=False))
+                        formats.extend(
+                            self._extract_m3u8_formats(
+                                v,
+                                video_id,
+                                'mp4',
+                                'm3u8_native',
+                                m3u8_id=n,
+                                fatal=False))
                         continue
                     f = {
                         'format_id': n,

@@ -51,7 +51,10 @@ class UnistraIE(InfoExtractor):
         title = self._html_search_regex(
             r'<title>UTV - (.*?)</', webpage, 'title')
         description = self._html_search_regex(
-            r'<meta name="Description" content="(.*?)"', webpage, 'description', flags=re.DOTALL)
+            r'<meta name="Description" content="(.*?)"',
+            webpage,
+            'description',
+            flags=re.DOTALL)
         thumbnail = self._search_regex(
             r'image: "(.*?)"', webpage, 'thumbnail')
 

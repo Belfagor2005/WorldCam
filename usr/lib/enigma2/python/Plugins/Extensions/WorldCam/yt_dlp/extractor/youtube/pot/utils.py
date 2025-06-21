@@ -38,7 +38,8 @@ def get_webpo_content_binding(
     bind_to_visitor_id=False,
 ) -> tuple[str | None, ContentBindingType | None]:
 
-    client_name = traverse_obj(request.innertube_context, ('client', 'clientName'))
+    client_name = traverse_obj(
+        request.innertube_context, ('client', 'clientName'))
     if not client_name or client_name not in webpo_clients:
         return None, None
 

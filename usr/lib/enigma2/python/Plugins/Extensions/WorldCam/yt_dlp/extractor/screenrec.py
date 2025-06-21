@@ -22,12 +22,20 @@ class ScreenRecIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
 
         m3u8_url = self._search_regex(
-            r'customUrl\s*:\s*(["\'])(?P<url>(?:(?!\1).)+)\1', webpage, 'm3u8 URL', group='url')
+            r'customUrl\s*:\s*(["\'])(?P<url>(?:(?!\1).)+)\1',
+            webpage,
+            'm3u8 URL',
+            group='url')
 
         return {
             'id': video_id,
-            'title': self._og_search_title(webpage, default=None) or self._html_extract_title(webpage),
+            'title': self._og_search_title(
+                webpage,
+                default=None) or self._html_extract_title(webpage),
             'description': self._og_search_description(webpage),
             'thumbnail': self._og_search_thumbnail(webpage),
-            'formats': self._extract_m3u8_formats(m3u8_url, video_id, ext='mp4'),
+            'formats': self._extract_m3u8_formats(
+                m3u8_url,
+                video_id,
+                ext='mp4'),
         }

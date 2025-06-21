@@ -32,7 +32,8 @@ class HotStarBaseIE(InfoExtractor):
         st = int_or_none(st) or int(time.time())
         exp = st + 6000
         auth = f'st={st}~exp={exp}~acl=/*'
-        auth += '~hmac=' + hmac.new(self._AKAMAI_ENCRYPTION_KEY, auth.encode(), hashlib.sha256).hexdigest()
+        auth += '~hmac=' + \
+            hmac.new(self._AKAMAI_ENCRYPTION_KEY, auth.encode(), hashlib.sha256).hexdigest()
 
         if cookies and cookies.get('userUP'):
             token = cookies.get('userUP').value
@@ -40,7 +41,8 @@ class HotStarBaseIE(InfoExtractor):
             token = self._download_json(
                 f'{self._API_URL}/um/v3/users',
                 video_id, note='Downloading token',
-                data=json.dumps({'device_ids': [{'id': str(uuid.uuid4()), 'type': 'device_id'}]}).encode(),
+                data=json.dumps(
+                    {'device_ids': [{'id': str(uuid.uuid4()), 'type': 'device_id'}]}).encode(),
                 headers={
                     'hotstarauth': auth,
                     'x-hs-platform': 'PCTV',  # or 'web'
@@ -63,9 +65,14 @@ class HotStarBaseIE(InfoExtractor):
 
     def _call_api_v2(self, path, video_id, st=None, cookies=None):
         return self._call_api_impl(
-            f'{path}/content/{video_id}', video_id, st=st, cookies=cookies, query={
+            f'{path}/content/{video_id}',
+            video_id,
+            st=st,
+            cookies=cookies,
+            query={
                 'desired-config': 'audio_channel:stereo|container:fmp4|dynamic_range:hdr|encryption:plain|ladder:tv|package:dash|resolution:fhd|subs-tag:HotstarVIP|video_codec:h265',
-                'device-id': cookies.get('device_id').value if cookies.get('device_id') else str(uuid.uuid4()),
+                'device-id': cookies.get('device_id').value if cookies.get('device_id') else str(
+                    uuid.uuid4()),
                 'os-name': 'Windows',
                 'os-version': '10',
             })
@@ -141,7 +148,8 @@ class HotStarIE(HotStarBaseIE):
             'duration': 1272,
             'channel_id': '3',
         },
-        'skip': 'HTTP Error 504: Gateway Time-out',  # XXX: Investigate 504 errors on some episodes
+        # XXX: Investigate 504 errors on some episodes
+        'skip': 'HTTP Error 504: Gateway Time-out',
     }, {
         'url': 'https://www.hotstar.com/in/shows/kana-kaanum-kaalangal/1260097087/back-to-school/1260097320',
         'info_dict': {
@@ -221,7 +229,13 @@ class HotStarIE(HotStarBaseIE):
     }
 
     @classmethod
-    def _video_url(cls, video_id, video_type=None, *, slug='ignore_me', root=None):
+    def _video_url(
+            cls,
+            video_id,
+            video_type=None,
+            *,
+            slug='ignore_me',
+            root=None):
         assert None in (video_type, root)
         if not root:
             root = join_nonempty(cls._BASE_URL, video_type, delim='/')
@@ -234,20 +248,35 @@ class HotStarIE(HotStarBaseIE):
 
         video_data = traverse_obj(
             self._call_api_v1(
-                f'{video_type}/detail', video_id, fatal=False, query={'tas': 10000, 'contentId': video_id}),
-            ('body', 'results', 'item', {dict})) or {}
-        if not self.get_param('allow_unplayable_formats') and video_data.get('drmProtected'):
+                f'{video_type}/detail',
+                video_id,
+                fatal=False,
+                query={
+                    'tas': 10000,
+                    'contentId': video_id}),
+            ('body',
+             'results',
+             'item',
+             {dict})) or {}
+        if not self.get_param(
+                'allow_unplayable_formats') and video_data.get('drmProtected'):
             self.report_drm(video_id)
 
         # See https://github.com/yt-dlp/yt-dlp/issues/396
-        st = self._download_webpage_handle(f'{self._BASE_URL}/in', video_id)[1].headers.get('x-origin-date')
+        st = self._download_webpage_handle(
+            f'{self._BASE_URL}/in',
+            video_id)[1].headers.get('x-origin-date')
 
         geo_restricted = False
         formats, subs = [], {}
         headers = {'Referer': f'{self._BASE_URL}/in'}
 
         # change to v2 in the future
-        playback_sets = self._call_api_v2('play/v1/playback', video_id, st=st, cookies=cookies)['playBackSets']
+        playback_sets = self._call_api_v2(
+            'play/v1/playback',
+            video_id,
+            st=st,
+            cookies=cookies)['playBackSets']
         for playback_set in playback_sets:
             if not isinstance(playback_set, dict):
                 continue
@@ -284,7 +313,8 @@ class HotStarIE(HotStarBaseIE):
                     geo_restricted = True
                 continue
 
-            tag_dict = dict((*t.split(':', 1), None)[:2] for t in tags.split(';'))
+            tag_dict = dict((*t.split(':', 1), None)
+                            [:2] for t in tags.split(';'))
             if tag_dict.get('encryption') not in ('plain', None):
                 for f in current_formats:
                     f['has_drm'] = True
@@ -309,7 +339,8 @@ class HotStarIE(HotStarBaseIE):
             subs = self._merge_subtitles(subs, current_subs)
 
         if not formats and geo_restricted:
-            self.raise_geo_restricted(countries=['IN'], metadata_available=True)
+            self.raise_geo_restricted(
+                countries=['IN'], metadata_available=True)
         self._remove_duplicate_formats(formats)
         for f in formats:
             f.setdefault('http_headers', {}).update(headers)
@@ -318,19 +349,29 @@ class HotStarIE(HotStarBaseIE):
             'id': video_id,
             'title': video_data.get('title'),
             'description': video_data.get('description'),
-            'duration': int_or_none(video_data.get('duration')),
-            'timestamp': int_or_none(traverse_obj(video_data, 'broadcastDate', 'startDate')),
-            'release_year': int_or_none(video_data.get('year')),
+            'duration': int_or_none(
+                video_data.get('duration')),
+            'timestamp': int_or_none(
+                traverse_obj(
+                    video_data,
+                    'broadcastDate',
+                    'startDate')),
+            'release_year': int_or_none(
+                video_data.get('year')),
             'formats': formats,
             'subtitles': subs,
             'channel': video_data.get('channelName'),
-            'channel_id': str_or_none(video_data.get('channelId')),
+            'channel_id': str_or_none(
+                video_data.get('channelId')),
             'series': video_data.get('showName'),
             'season': video_data.get('seasonName'),
-            'season_number': int_or_none(video_data.get('seasonNo')),
-            'season_id': str_or_none(video_data.get('seasonId')),
+            'season_number': int_or_none(
+                video_data.get('seasonNo')),
+            'season_id': str_or_none(
+                video_data.get('seasonId')),
             'episode': video_data.get('title'),
-            'episode_number': int_or_none(video_data.get('episodeNo')),
+            'episode_number': int_or_none(
+                video_data.get('episodeNo')),
         }
 
 
@@ -368,7 +409,12 @@ class HotStarPrefixIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id, video_type = self._match_valid_url(url).group('id', 'type')
-        return self.url_result(HotStarIE._video_url(video_id, video_type), HotStarIE, video_id)
+        return self.url_result(
+            HotStarIE._video_url(
+                video_id,
+                video_type),
+            HotStarIE,
+            video_id)
 
 
 class HotStarPlaylistIE(HotStarBaseIE):
@@ -394,7 +440,13 @@ class HotStarPlaylistIE(HotStarBaseIE):
     def _real_extract(self, url):
         id_ = self._match_id(url)
         return self.playlist_result(
-            self._playlist_entries('tray/find', id_, query={'tas': 10000, 'uqId': id_}), id_)
+            self._playlist_entries(
+                'tray/find',
+                id_,
+                query={
+                    'tas': 10000,
+                    'uqId': id_}),
+            id_)
 
 
 class HotStarSeasonIE(HotStarBaseIE):
@@ -425,8 +477,17 @@ class HotStarSeasonIE(HotStarBaseIE):
 
     def _real_extract(self, url):
         url, season_id = self._match_valid_url(url).groups()
-        return self.playlist_result(self._playlist_entries(
-            'season/asset', season_id, url, query={'tao': 0, 'tas': 0, 'size': 10000, 'id': season_id}), season_id)
+        return self.playlist_result(
+            self._playlist_entries(
+                'season/asset',
+                season_id,
+                url,
+                query={
+                    'tao': 0,
+                    'tas': 0,
+                    'size': 10000,
+                    'id': season_id}),
+            season_id)
 
 
 class HotStarSeriesIE(HotStarBaseIE):
@@ -461,7 +522,19 @@ class HotStarSeriesIE(HotStarBaseIE):
     def _real_extract(self, url):
         url, series_id = self._match_valid_url(url).groups()
         id_ = self._call_api_v1(
-            'show/detail', series_id, query={'contentId': series_id})['body']['results']['item']['id']
+            'show/detail',
+            series_id,
+            query={
+                'contentId': series_id})['body']['results']['item']['id']
 
-        return self.playlist_result(self._playlist_entries(
-            'tray/g/1/items', series_id, url, query={'tao': 0, 'tas': 10000, 'etid': 0, 'eid': id_}), series_id)
+        return self.playlist_result(
+            self._playlist_entries(
+                'tray/g/1/items',
+                series_id,
+                url,
+                query={
+                    'tao': 0,
+                    'tas': 10000,
+                    'etid': 0,
+                    'eid': id_}),
+            series_id)

@@ -38,7 +38,8 @@ class BerufeTVIE(InfoExtractor):
         formats, subtitles = [], {}
         for key, source in video['videoSources']['html'].items():
             if key == 'auto':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(source[0]['source'], video_id)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                    source[0]['source'], video_id)
                 formats += fmts
                 subtitles = subs
             else:
