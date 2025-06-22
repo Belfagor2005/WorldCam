@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: worldcam\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 16:36+0200\n"
+"POT-Creation-Date: 2025-06-22 22:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ))^^(( <>\n"
 "Language-Team: *\n"
@@ -16,105 +16,111 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:271
+#: plugin.py:338
 msgid "WorldCam v{}"
 msgstr ""
 
-#: plugin.py:273 plugin.py:599 plugin.py:687 plugin.py:751 plugin.py:811
-#: plugin.py:870 plugin.py:935 plugin.py:1007
+#: plugin.py:340 plugin.py:858 plugin.py:947 plugin.py:1035 plugin.py:1103
+#: plugin.py:1156 plugin.py:1208 plugin.py:1264 plugin.py:1325 plugin.py:1399
+#: plugin.py:1476
 msgid "Exit"
 msgstr ""
 
-#: plugin.py:274
+#: plugin.py:341
 msgid "Select"
 msgstr ""
 
-#: plugin.py:275
+#: plugin.py:342
 msgid "Update"
 msgstr ""
 
-#: plugin.py:276
+#: plugin.py:343 plugin.py:1479
 msgid "Menu"
 msgstr ""
 
-#: plugin.py:282 plugin.py:594
+#: plugin.py:349 plugin.py:942
 msgid "User Lists"
 msgstr ""
 
-#: plugin.py:283
-msgid "Countries"
-msgstr ""
-
-#: plugin.py:284 plugin.py:806
-msgid "Categories"
-msgstr ""
-
-#: plugin.py:285 plugin.py:865
-msgid "Top Webcams"
-msgstr ""
-
 #: plugin.py:350
-msgid "Change language"
+msgid "Favorites"
 msgstr ""
 
-#: plugin.py:351
-msgid "Update plugin"
+#: plugin.py:351 plugin.py:1098
+msgid "Continents"
 msgstr ""
 
 #: plugin.py:352
+msgid "Countries"
+msgstr ""
+
+#: plugin.py:353 plugin.py:1259
+msgid "Categories"
+msgstr ""
+
+#: plugin.py:354 plugin.py:1320
+msgid "Top Webcams"
+msgstr ""
+
+#: plugin.py:514
+msgid "Change language"
+msgstr ""
+
+#: plugin.py:515
+msgid "Update plugin"
+msgstr ""
+
+#: plugin.py:516
 msgid "Update yt-dlp"
 msgstr ""
 
-#: plugin.py:353
+#: plugin.py:517
 msgid "Settings"
 msgstr ""
 
-#: plugin.py:354
+#: plugin.py:518
 msgid "About"
 msgstr ""
 
-#: plugin.py:357
+#: plugin.py:526
 msgid "Select an option"
 msgstr ""
 
-#: plugin.py:382
-msgid "No languages available"
+#: plugin.py:566
+msgid "Error opening language selection"
 msgstr ""
 
-#: plugin.py:398
+#: plugin.py:595
 #, python-format
 msgid "Language changed to %s"
 msgstr ""
 
-#: plugin.py:402
-#, python-format
-msgid ""
-"Error changing language:\n"
-"%s"
+#: plugin.py:600
+msgid "Error changing language"
 msgstr ""
 
-#: plugin.py:409
+#: plugin.py:650
 msgid "Settings functionality coming soon!"
 msgstr ""
 
-#: plugin.py:412
+#: plugin.py:654
 #, python-format
 msgid ""
 "Error opening settings:\n"
 "%s"
 msgstr ""
 
-#: plugin.py:427
+#: plugin.py:680
 msgid ""
 "Unable to fetch version info:\n"
 "{}"
 msgstr ""
 
-#: plugin.py:445
+#: plugin.py:702
 msgid "You are already running the latest version: {}"
 msgstr ""
 
-#: plugin.py:461
+#: plugin.py:710
 #, python-format
 msgid ""
 "New version %s available\n"
@@ -124,162 +130,218 @@ msgid ""
 "Do you want to install it now?"
 msgstr ""
 
-#: plugin.py:474
-#, python-format
-msgid "You are already running the latest version: %s"
-msgstr ""
-
-#: plugin.py:483
+#: plugin.py:723
 msgid "Upgrading..."
 msgstr ""
 
-#: plugin.py:490
+#: plugin.py:733
 #, python-format
 msgid ""
 "Update failed:\n"
 "%s"
 msgstr ""
 
-#: plugin.py:492
+#: plugin.py:736
 msgid "Update Aborted!"
 msgstr ""
 
-#: plugin.py:499
+#: plugin.py:743
 msgid ""
 "Update completed successfully!\n"
 "\n"
 "The plugin will now close."
 msgstr ""
 
-#: plugin.py:505
+#: plugin.py:749
 #, python-format
 msgid "Update encountered an error (code: %s)"
 msgstr ""
 
-#: plugin.py:552
+#: plugin.py:801
 msgid "yt-dlp updated successfully!"
 msgstr ""
 
-#: plugin.py:556
+#: plugin.py:807
 #, python-format
 msgid ""
 "Failed to update yt-dlp:\n"
 "%s"
 msgstr ""
 
-#: plugin.py:566
+#: plugin.py:820
 #, python-format
 msgid "WorldCam v%s"
 msgstr ""
 
-#: plugin.py:567
+#: plugin.py:821
 msgid "Live webcam viewer featuring global locations."
 msgstr ""
 
-#: plugin.py:568
+#: plugin.py:822
 msgid "Developed by Lululla"
 msgstr ""
 
-#: plugin.py:569
+#: plugin.py:823
 msgid "Powered by Enigma2 and Python"
 msgstr ""
 
-#: plugin.py:570
+#: plugin.py:824
 msgid "GitHub: https://github.com/Belfagor2005/"
 msgstr ""
 
-#: plugin.py:571
+#: plugin.py:825
 msgid "Forum support: www.corvoboys.org"
 msgstr ""
 
-#: plugin.py:572
+#: plugin.py:826
 msgid "Included playlists and sources:\n"
 msgstr ""
 
-#: plugin.py:573
-msgid " - Local YouTube playlist\n"
+#: plugin.py:827
+msgid "- Local webcam list\n"
 msgstr ""
 
-#: plugin.py:574
-msgid " - Online YouTube webcams playlist\n"
+#: plugin.py:828
+msgid "- Local YouTube playlist (test)\n"
 msgstr ""
 
-#: plugin.py:575
-msgid " - Local webcam list\n"
+#: plugin.py:829
+msgid "- Online webcam list\n"
 msgstr ""
 
-#: plugin.py:576
-msgid " - Online webcam list\n"
+#: plugin.py:830
+msgid "- Online Direct and YouTube webcams playlist (test)\n"
 msgstr ""
 
-#: plugin.py:577
-msgid " - Other sources\n"
+#: plugin.py:831
+msgid "- Other sources\n"
 msgstr ""
 
-#: plugin.py:627
+#: plugin.py:853
+msgid "Your Favorites"
+msgstr ""
+
+#: plugin.py:859 plugin.py:1507
+msgid "Play"
+msgstr ""
+
+#: plugin.py:860 plugin.py:887
+msgid "Remove"
+msgstr ""
+
+#: plugin.py:861 plugin.py:1478
+msgid "Export"
+msgstr ""
+
+#: plugin.py:880
+msgid "No favorites yet"
+msgstr ""
+
+#: plugin.py:890
+msgid "Error loading favorites"
+msgstr ""
+
+#: plugin.py:904
+#, python-format
+msgid "Removed from favorites: %s"
+msgstr ""
+
+#: plugin.py:977
 msgid "No playlists found"
 msgstr ""
 
-#: plugin.py:636
+#: plugin.py:991
 msgid "Error loading playlists"
 msgstr ""
 
-#: plugin.py:646
+#: plugin.py:1001
 msgid "No playlists available"
 msgstr ""
 
-#: plugin.py:651
+#: plugin.py:1006
 msgid "Select a valid playlist"
 msgstr ""
 
-#: plugin.py:659
+#: plugin.py:1014
 msgid "Error opening playlist"
 msgstr ""
 
-#: plugin.py:707
+#: plugin.py:1056
 msgid "Playlist file not found or empty"
 msgstr ""
 
-#: plugin.py:711
+#: plugin.py:1063
 msgid "Playlist file not found"
 msgstr ""
 
-#: plugin.py:714
+#: plugin.py:1066
 msgid "Error loading playlist"
 msgstr ""
 
-#: plugin.py:721 plugin.py:906 plugin.py:1045
+#: plugin.py:1075 plugin.py:1370 plugin.py:1623
 msgid "Select a valid webcam"
 msgstr ""
 
-#: plugin.py:746
-msgid "Country"
+#: plugin.py:1128
+msgid "Error loading continents"
 msgstr ""
 
-#: plugin.py:773
+#: plugin.py:1180 plugin.py:1231
 msgid "Error loading countries"
 msgstr ""
 
-#: plugin.py:834
+#: plugin.py:1203
+msgid "Country"
+msgstr ""
+
+#: plugin.py:1291
 msgid "Error loading categories"
 msgstr ""
 
-#: plugin.py:843
+#: plugin.py:1302
 msgid "Select a valid category"
 msgstr ""
 
-#: plugin.py:895
+#: plugin.py:1357
 msgid "Error loading top webcams"
 msgstr ""
 
-#: plugin.py:959
+#: plugin.py:1429
 msgid "Error loading locations"
 msgstr ""
 
-#: plugin.py:970
+#: plugin.py:1442
 msgid "Select a valid location"
 msgstr ""
 
-#: plugin.py:1034
+#: plugin.py:1477
+msgid "Add/Remove"
+msgstr ""
+
+#: plugin.py:1503
+msgid "Add to favorites"
+msgstr ""
+
+#: plugin.py:1505
+msgid "Remove from favorites"
+msgstr ""
+
+#: plugin.py:1509
+msgid "Export All to Bouquet"
+msgstr ""
+
+#: plugin.py:1533 plugin.py:1563
+msgid "Removed from favorites"
+msgstr ""
+
+#: plugin.py:1541 plugin.py:1555
+msgid "Added to favorites!"
+msgstr ""
+
+#: plugin.py:1610
 msgid "Error loading webcams"
+msgstr ""
+
+#: plugin.py:1655
+msgid "Live webcams from around the world"
 msgstr ""

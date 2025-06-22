@@ -52,10 +52,9 @@ from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
 from . import _
-from .utils import urlparse, parse_qs, quote, is_ytdlp_available
+from .utils import urlparse, parse_qs, quote, is_ytdlp_available, is_streamlink_available  # , is_exteplayer3_Available
 from .utils import disable_summary, FavoritesManager, AspectManager, Logger
 from .scraper import SkylineScraper
-
 
 PLUGIN_PATH = dirname(__file__)
 screen_width = getDesktop(0).size().width()
@@ -394,33 +393,32 @@ class WorldCamPlayer(
             current_webcam = self.get_current_webcam()
             self.logger.info(
                 f"Starting playback for: {current_webcam['name']}")
-            self.logger.info(f"URL: {current_webcam['url']}")
-
-            # if URL YouTube, direct stream
-            if 'youtube.com' in current_webcam['url'] or 'youtu.be' in current_webcam['url']:
-                self.play_youtube(
-                    current_webcam['url'],
-                    current_webcam['name'])
+            self.logger.info(f"Original URL: {current_webcam['url']}")
+            # Apply Streamlink enhancement if available
+            enhanced_url = self.get_stream_url(current_webcam['url'])
+            if enhanced_url != current_webcam['url']:
+                self.logger.info(f"Using Streamlink-enhanced URL: {enhanced_url}")
+            # Handle YouTube URLs
+            if 'youtube.com' in enhanced_url or 'youtu.be' in enhanced_url:
+                self.play_youtube(enhanced_url, current_webcam['name'])
                 return
 
             # Check if it's a direct stream URL
-            if self.is_direct_stream_url(current_webcam['url']):
-                self.logger.info(
-                    "Direct stream URL detected - bypassing scraper")
-                stream_url = current_webcam['url']
+            if self.is_direct_stream_url(enhanced_url):
+                self.logger.info("Direct stream URL detected")
+                stream_url = enhanced_url
             else:
                 # Use scraper for embedded stream
                 self.logger.info("Using scraper for web page source")
                 scraper = SkylineScraper()
-                stream_url = scraper.get_stream_url(current_webcam['url'])
-
+                stream_url = scraper.get_stream_url(enhanced_url)
+                
                 if not stream_url:
                     self.logger.error("Could not extract stream URL")
                     self.show_error(_("Could not extract video stream"))
                     return
 
-            self.logger.info(f"Using stream URL: {stream_url}")
-
+            self.logger.info(f"Final stream URL: {stream_url[:200]}...")
             # Handle YouTube or generic stream playback
             if 'youtube.com' in stream_url or 'youtu.be' in stream_url:
                 self.play_youtube(stream_url, current_webcam['name'])
@@ -430,6 +428,25 @@ class WorldCamPlayer(
         except Exception as e:
             self.logger.error(f"Playback error: {str(e)}")
             self.show_error(f"Playback error: {str(e)}")
+
+    def get_stream_url(self, url):
+        """
+        Enhance URL with Streamlink proxy if available and appropriate.
+        Returns the original URL if Streamlink is not needed or available.
+        """
+        if not is_streamlink_available():
+            return url
+
+        # Use Streamlink for these platforms
+        streamlink_domains = [
+            "youtube.com", "youtu.be", "twitch.tv", "dailymotion.com",
+            "vimeo.com", "facebook.com", "periscope.tv", "ustream.tv"
+        ]
+        # Check if this is a platform that benefits from Streamlink
+        if any(domain in url.lower() for domain in streamlink_domains):
+            encoded_url = quote(url, safe='')
+            return f"http://127.0.0.1:8088/streamlink/{encoded_url}"
+        return url
 
     def load_ytdlp(self):
         """Load yt-dlp with detailed error handling"""

@@ -22,7 +22,7 @@ from __future__ import absolute_import, print_function
 __author__ = "Lululla"
 
 from json import load, dump
-from os import makedirs, remove
+from os import makedirs, remove, listdir
 from os.path import abspath, dirname, exists, isfile, join
 
 from re import search, sub
@@ -246,6 +246,31 @@ class FavoritesManager:
         except Exception as e:
             logger.error(f"Export error: {str(e)}")
             return False, _("Export failed: ") + str(e)
+
+
+def isPythonFolder():
+    path = "/usr/lib/"
+    for name in listdir(path):
+        fullname = join(path, name)
+        if not isfile(fullname) and "python" in name:
+            print(fullname)
+            print("sys.version_info =", sys.version_info)
+            x = join(fullname, "site-packages", "streamlink")
+            print(x)
+            if exists(x):
+                return x
+    return False
+
+
+def is_streamlink_available():
+    streamlink_folder = isPythonFolder()
+    return streamlink_folder
+
+
+def is_exteplayer3_Available():
+    from enigma import eEnv
+    path = eEnv.resolve("$bindir/exteplayer3")
+    return isfile(path)
 
 
 def b64encoder(source):

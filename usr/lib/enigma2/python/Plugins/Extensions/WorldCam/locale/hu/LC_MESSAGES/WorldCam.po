@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WorldCam\n"
-"POT-Creation-Date: 2025-06-21 20:28+0200\n"
+"POT-Creation-Date: 2025-06-22 22:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Warder <ciksa@seznam.cz>\n"
 "Language-Team: \n"
@@ -11,12 +11,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.6\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-SearchPath-0: __init__.py\n"
-"X-Poedit-SearchPath-1: player.py\n"
-"X-Poedit-SearchPath-2: scraper.py\n"
-"X-Poedit-SearchPath-3: utils.py\n"
-"X-Poedit-SearchPath-4: plugin.py\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: LanguageScreen.py:49
+#, fuzzy
+#| msgid "Change language"
+msgid "Select language"
+msgstr "Nyelv változtatása"
 
 #: __init__.py:38
 msgid ""
@@ -28,16 +30,32 @@ msgstr ""
 "Fizess nekem egy kávét QR-kód beolvasásával.\n"
 "A támogatásod életben tartja a fejlesztést!\n"
 
-#: player.py:112 player.py:291 plugin.py:326 plugin.py:709 plugin.py:784
-#: plugin.py:867 plugin.py:922 plugin.py:972 plugin.py:1023 plugin.py:1077
-#: plugin.py:1133 plugin.py:1197 plugin.py:1265
+#: player.py:112 player.py:323 plugin.py:340 plugin.py:858 plugin.py:947
+#: plugin.py:1035 plugin.py:1103 plugin.py:1156 plugin.py:1208 plugin.py:1264
+#: plugin.py:1325 plugin.py:1399 plugin.py:1476
 msgid "Exit"
 msgstr "Kilépés"
 
-#: player.py:274
+#: player.py:294
+#, fuzzy
+#| msgid "Error loading webcams"
+msgid "Error switching webcam"
+msgstr "Hiba a webkamerák betöltésekor"
+
+#: player.py:300
+#, fuzzy
+#| msgid ""
+#| "Player Controls:\n"
+#| "OK - Show/hide info bar\n"
+#| "BLUE - Toggle favorite\n"
+#| "PLAY/PAUSE - Toggle playback\n"
+#| "STOP - Stop playback\n"
+#| "EXIT - Close player\n"
 msgid ""
 "Player Controls:\n"
 "OK - Show/hide info bar\n"
+"GREEN - Previous webcam\n"
+"YELLOW - Next webcam\n"
 "BLUE - Toggle favorite\n"
 "PLAY/PAUSE - Toggle playback\n"
 "STOP - Stop playback\n"
@@ -50,136 +68,136 @@ msgstr ""
 "STOP - Lejátszás leállítása\n"
 "KILÉPÉS - Lejátszó bezárása\n"
 
-#: player.py:311 plugin.py:1318
+#: player.py:345 plugin.py:1533 plugin.py:1563
 msgid "Removed from favorites"
 msgstr "Eltávolítva a kedvencek közül"
 
-#: player.py:311
+#: player.py:346
 msgid "Error removing favorite"
 msgstr "Hiba a kedvenc eltávolításakor"
 
-#: player.py:314 plugin.py:1310
+#: player.py:350 plugin.py:1541 plugin.py:1555
 msgid "Added to favorites!"
 msgstr "Hozzáadva a kedvencekhez!"
 
-#: player.py:314
+#: player.py:351
 msgid "Error adding favorite"
 msgstr "Hiba a kedvencek hozzáadásakor"
 
-#: player.py:377
+#: player.py:418
 msgid "Could not extract video stream"
 msgstr "Nem sikerült kinyerni a videó streamet"
 
-#: player.py:460 player.py:1033
+#: player.py:521 player.py:1101
 msgid "Invalid YouTube URL"
 msgstr "Érvénytelen YouTube URL"
 
-#: player.py:482
+#: player.py:543
 msgid "All YouTube playback methods failed!"
 msgstr "Minden YouTube lejátszási módszer sikertelen!"
 
-#: player.py:486
+#: player.py:547
 msgid "Error playing YouTube video!"
 msgstr "Hiba a YouTube-videó lejátszásakor!"
 
-#: player.py:720
+#: player.py:788
 msgid "All YouTube methods failed!"
 msgstr "Minden YouTube metódus kudarcot vallott!"
 
-#: player.py:895
+#: player.py:963
 msgid "Playback failed!"
 msgstr "Lejátszás sikertelen!"
 
-#: player.py:1043
+#: player.py:1111
 msgid "Couldn't extract video stream"
 msgstr "Nem sikerült kinyerni a videóstreamet"
 
-#: player.py:1085
+#: player.py:1153
 msgid "Error playing YouTube video with proxy!"
 msgstr "Hiba a YouTube-videó proxyval történő lejátszásakor!"
 
-#: plugin.py:324
+#: plugin.py:338
 msgid "WorldCam v{}"
 msgstr "WorldCam v{}"
 
-#: plugin.py:327
+#: plugin.py:341
 msgid "Select"
 msgstr "Kiválasztás"
 
-#: plugin.py:328
+#: plugin.py:342
 msgid "Update"
 msgstr "Frissítés"
 
-#: plugin.py:329 plugin.py:1268
+#: plugin.py:343 plugin.py:1479
 msgid "Menu"
 msgstr "Menü"
 
-#: plugin.py:335 plugin.py:779 utils.py:467
+#: plugin.py:349 plugin.py:942 utils.py:567
 msgid "User Lists"
 msgstr "Felhasználói listák"
 
-#: plugin.py:336
+#: plugin.py:350
 msgid "Favorites"
 msgstr "Kedvencek"
 
-#: plugin.py:337 plugin.py:917 utils.py:468
+#: plugin.py:351 plugin.py:1098 utils.py:568
 msgid "Continents"
 msgstr "Kontinens"
 
-#: plugin.py:338 utils.py:469
+#: plugin.py:352 utils.py:569
 msgid "Countries"
 msgstr "Országok"
 
-#: plugin.py:339 plugin.py:1072 utils.py:470
+#: plugin.py:353 plugin.py:1259 utils.py:570
 msgid "Categories"
 msgstr "Kategóriák"
 
-#: plugin.py:340 plugin.py:1128 utils.py:471
+#: plugin.py:354 plugin.py:1320 utils.py:571
 msgid "Top Webcams"
 msgstr "Legjobb webkamerák"
 
-#: plugin.py:426
+#: plugin.py:514
 msgid "Change language"
 msgstr "Nyelv változtatása"
 
-#: plugin.py:427
+#: plugin.py:515
 msgid "Update plugin"
 msgstr "Bővítmény frissítése"
 
-#: plugin.py:428
+#: plugin.py:516
 msgid "Update yt-dlp"
 msgstr "Yt-dlp frissítése"
 
-#: plugin.py:429
+#: plugin.py:517
 msgid "Settings"
 msgstr "Beállítások"
 
-#: plugin.py:430
+#: plugin.py:518
 msgid "About"
 msgstr "Rólunk"
 
-#: plugin.py:437
+#: plugin.py:526
 msgid "Select an option"
 msgstr "Válasszon ki egy lehetőséget"
 
-#: plugin.py:475
+#: plugin.py:566
 msgid "Error opening language selection"
 msgstr "Hiba a nyelvválasztás megnyitásakor"
 
-#: plugin.py:502
+#: plugin.py:595
 #, python-format
 msgid "Language changed to %s"
 msgstr "Nyelv módosítva erre: %s"
 
-#: plugin.py:505
+#: plugin.py:600
 msgid "Error changing language"
 msgstr "Hiba a nyelv módosításakor"
 
-#: plugin.py:531
+#: plugin.py:650
 msgid "Settings functionality coming soon!"
 msgstr "Beállítások funkció hamarosan elérhető!"
 
-#: plugin.py:534
+#: plugin.py:654
 #, python-format
 msgid ""
 "Error opening settings:\n"
@@ -188,7 +206,7 @@ msgstr ""
 "Hiba a beállítások megnyitásakor:\n"
 "%s"
 
-#: plugin.py:554
+#: plugin.py:680
 msgid ""
 "Unable to fetch version info:\n"
 "{}"
@@ -196,11 +214,11 @@ msgstr ""
 "Nem sikerült lekérni a verzióinformációkat:\n"
 "{}"
 
-#: plugin.py:572
+#: plugin.py:702
 msgid "You are already running the latest version: {}"
 msgstr "Már a legújabb verziót futtatod: {}"
 
-#: plugin.py:579
+#: plugin.py:710
 #, python-format
 msgid ""
 "New version %s available\n"
@@ -215,11 +233,11 @@ msgstr ""
 "\n"
 "Telepíteni szeretnéd most?"
 
-#: plugin.py:592
+#: plugin.py:723
 msgid "Upgrading..."
 msgstr "Frissítés..."
 
-#: plugin.py:599
+#: plugin.py:733
 #, python-format
 msgid ""
 "Update failed:\n"
@@ -228,11 +246,11 @@ msgstr ""
 "Frissítés sikertelen:\n"
 "%s"
 
-#: plugin.py:601
+#: plugin.py:736
 msgid "Update Aborted!"
 msgstr "Frissítés megszakítva!"
 
-#: plugin.py:608
+#: plugin.py:743
 msgid ""
 "Update completed successfully!\n"
 "\n"
@@ -242,16 +260,16 @@ msgstr ""
 "\n"
 "A bővítmény most bezárul."
 
-#: plugin.py:614
+#: plugin.py:749
 #, python-format
 msgid "Update encountered an error (code: %s)"
 msgstr "A frissítés hibát észlelt (kód: %s)"
 
-#: plugin.py:664
+#: plugin.py:801
 msgid "yt-dlp updated successfully!"
 msgstr "az yt-dlp frissítése sikeresen megtörtént!"
 
-#: plugin.py:668
+#: plugin.py:807
 #, python-format
 msgid ""
 "Failed to update yt-dlp:\n"
@@ -260,172 +278,206 @@ msgstr ""
 "Nem sikerült frissíteni az yt-dlp fájlt:\n"
 "%s"
 
-#: plugin.py:678
+#: plugin.py:820
 #, python-format
 msgid "WorldCam v%s"
 msgstr "WorldCam v%s"
 
-#: plugin.py:679
+#: plugin.py:821
 msgid "Live webcam viewer featuring global locations."
 msgstr "Élő webkamera-megjelenítő globális helyszínekkel."
 
-#: plugin.py:680
+#: plugin.py:822
 msgid "Developed by Lululla"
 msgstr "Lululla fejlesztette ki"
 
-#: plugin.py:681
+#: plugin.py:823
 msgid "Powered by Enigma2 and Python"
 msgstr "Enigma2 és Python alapú"
 
-#: plugin.py:682
+#: plugin.py:824
 msgid "GitHub: https://github.com/Belfagor2005/"
 msgstr "GitHub: https://github.com/Belfagor2005/"
 
-#: plugin.py:683
+#: plugin.py:825
 msgid "Forum support: www.corvoboys.org"
 msgstr "Fórum támogatás: www.corvoboys.org"
 
-#: plugin.py:684
+#: plugin.py:826
 msgid "Included playlists and sources:\n"
 msgstr "Mellékelt lejátszási listák és források:\n"
 
-#: plugin.py:685
+#: plugin.py:827
 msgid "- Local webcam list\n"
 msgstr "- Helyi webkamerák listája\n"
 
-#: plugin.py:686
+#: plugin.py:828
 msgid "- Local YouTube playlist (test)\n"
 msgstr "- Helyi YouTube lejátszási lista (teszt)\n"
 
-#: plugin.py:687
+#: plugin.py:829
 msgid "- Online webcam list\n"
 msgstr "- Online webkamerák listája\n"
 
-#: plugin.py:688
+#: plugin.py:830
 msgid "- Online Direct and YouTube webcams playlist (test)\n"
 msgstr "- Online Direct és YouTube webkamerák lejátszási listája (teszt)\n"
 
-#: plugin.py:689
+#: plugin.py:831
 msgid "- Other sources\n"
 msgstr "- Egyéb források\n"
 
-#: plugin.py:704
+#: plugin.py:853
 msgid "Your Favorites"
 msgstr "Kedvenceid"
 
-#: plugin.py:710 plugin.py:1291
+#: plugin.py:859 plugin.py:1507
 msgid "Play"
 msgstr "Lejátszás"
 
-#: plugin.py:711 plugin.py:737
+#: plugin.py:860 plugin.py:887
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: plugin.py:730
+#: plugin.py:861 plugin.py:1478
+msgid "Export"
+msgstr ""
+
+#: plugin.py:880
 msgid "No favorites yet"
 msgstr "Még nincsenek kedvencek"
 
-#: plugin.py:740
+#: plugin.py:890
 msgid "Error loading favorites"
 msgstr "Hiba a kedvencek betöltése során"
 
-#: plugin.py:763
+#: plugin.py:904
 #, python-format
 msgid "Removed from favorites: %s"
 msgstr "Eltávolítva a kedvencek közül: %s"
 
-#: plugin.py:811
+#: plugin.py:977
 msgid "No playlists found"
 msgstr "Nem található lejátszási lista"
 
-#: plugin.py:825
+#: plugin.py:991
 msgid "Error loading playlists"
 msgstr "Hiba a lejátszási listák betöltése során"
 
-#: plugin.py:835
+#: plugin.py:1001
 msgid "No playlists available"
 msgstr "Nincsenek elérhető lejátszási listák"
 
-#: plugin.py:840
+#: plugin.py:1006
 msgid "Select a valid playlist"
 msgstr "Válasszon egy érvényes lejátszási listát"
 
-#: plugin.py:848
+#: plugin.py:1014
 msgid "Error opening playlist"
 msgstr "Hiba a lejátszási lista megnyitásakor"
 
-#: plugin.py:886
+#: plugin.py:1056
 msgid "Playlist file not found or empty"
 msgstr "A lejátszási lista fájl nem található vagy üres"
 
-#: plugin.py:892
+#: plugin.py:1063
 msgid "Playlist file not found"
 msgstr "Lejátszási lista fájl nem található"
 
-#: plugin.py:895
+#: plugin.py:1066
 msgid "Error loading playlist"
 msgstr "Hiba a lejátszási lista betöltése során"
 
-#: plugin.py:902 plugin.py:1173 plugin.py:1350
+#: plugin.py:1075 plugin.py:1370 plugin.py:1623
 msgid "Select a valid webcam"
 msgstr "Válasszon egy érvényes webkamerát"
 
-#: plugin.py:946
+#: plugin.py:1128
 msgid "Error loading continents"
 msgstr "Hiba a kontinensek betöltése során"
 
-#: plugin.py:995 plugin.py:1046
+#: plugin.py:1180 plugin.py:1231
 msgid "Error loading countries"
 msgstr "Hiba az országok betöltésekor"
 
-#: plugin.py:1018
+#: plugin.py:1203
 msgid "Country"
 msgstr "Ország"
 
-#: plugin.py:1101
+#: plugin.py:1291
 msgid "Error loading categories"
 msgstr "Hiba a kategóriák betöltése során"
 
-#: plugin.py:1110
+#: plugin.py:1302
 msgid "Select a valid category"
 msgstr "Válasszon érvényes kategóriát"
 
-#: plugin.py:1162
+#: plugin.py:1357
 msgid "Error loading top webcams"
 msgstr "Hiba a legnépszerűbb webkamerák betöltésekor"
 
-#: plugin.py:1222
+#: plugin.py:1429
 msgid "Error loading locations"
 msgstr "Hiba a helyek betöltése során"
 
-#: plugin.py:1233
+#: plugin.py:1442
 msgid "Select a valid location"
 msgstr "Válasszon érvényes helyet"
 
-#: plugin.py:1290
+#: plugin.py:1477
+#, fuzzy
+#| msgid "Remove"
+msgid "Add/Remove"
+msgstr "Eltávolítás"
+
+#: plugin.py:1503
 msgid "Add to favorites"
 msgstr "Kedvencekhez"
 
-#: plugin.py:1290
+#: plugin.py:1505
 msgid "Remove from favorites"
 msgstr "Eltávolítás a kedvencek közül"
 
-#: plugin.py:1339
+#: plugin.py:1509
+msgid "Export All to Bouquet"
+msgstr ""
+
+#: plugin.py:1610
 msgid "Error loading webcams"
 msgstr "Hiba a webkamerák betöltésekor"
 
-#: plugin.py:1375
+#: plugin.py:1655
 msgid "Live webcams from around the world"
 msgstr "Élő webkamerák a világ minden tájáról"
 
-#: utils.py:472
+#: utils.py:199
+#, fuzzy
+#| msgid "No favorites yet"
+msgid "No favorites to export"
+msgstr "Még nincsenek kedvencek"
+
+#: utils.py:245
+msgid "Favorites exported successfully! Restart Enigma2 to see them."
+msgstr ""
+
+#: utils.py:248
+#, fuzzy
+#| msgid ""
+#| "Update failed:\n"
+#| "%s"
+msgid "Export failed: "
+msgstr ""
+"Frissítés sikertelen:\n"
+"%s"
+
+#: utils.py:572
 msgid "AMERICAS"
 msgstr "AMERIKA"
 
-#: utils.py:473
+#: utils.py:573
 msgid "EUROPE"
 msgstr "EURÓPA"
 
-#: utils.py:474
+#: utils.py:574
 msgid "AFRICA"
 msgstr "AFRIKA"
