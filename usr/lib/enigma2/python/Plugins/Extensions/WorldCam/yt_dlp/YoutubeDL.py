@@ -3659,7 +3659,7 @@ class YoutubeDL:
         self.post_extract(info_dict)
 
         def replace_info_dict(new_info):
-            nonlocal info_dict
+            # nonlocal info_dict
             if new_info == info_dict:
                 return
             info_dict.clear()
