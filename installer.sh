@@ -3,8 +3,8 @@
 ## setup command=wget -q --no-check-certificate https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
 
 ## Only This 2 lines to edit with new version ######
-version='5.3'
-changelog='\nAdd Favorites'
+version='5.4'
+changelog='\nAdd Favorites\nAdd Export to Bouquet\nAdd Next/Previous webcam navigation in player'
 ##
 TMPPATH=/tmp/WorldCam-main
 FILEPATH=/tmp/main.tar.gz

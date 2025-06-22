@@ -36,6 +36,15 @@ Stores and restores the correct aspect ratio for each video stream.
 You can now manage your favorite webcams from the main menu.
 While watching a webcam, just press the **Blue button** to add or remove it from your **Favorites**.
 
+🟩 **Favorites toggle shortcut (Green button)**  
+Quickly add or remove the selected webcam from your favorites list while browsing.
+
+🟨 **One-click Favorites to Bouquet export (Yellow button)**  
+Instantly export your favorite webcams into a channel bouquet without opening menus.
+
+▶️ **Next/Previous webcam navigation in player**  
+You can now switch between webcams directly from the player using left/right arrows.
+
 🧩 **Guaranteed compatibility from Python 2.7 to 3.9+**
 Safe use of cross-version libraries and methods, with automatic fallbacks.
 
