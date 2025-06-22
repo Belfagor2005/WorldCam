@@ -351,7 +351,7 @@ class WorldCamPlayer(
             message = _("Added to favorites!") if success else _(
                 "Error adding favorite")
 
-        self.update_favorite_button()
+        self.updateButtons
         self.session.open(
             MessageBox,
             message,
