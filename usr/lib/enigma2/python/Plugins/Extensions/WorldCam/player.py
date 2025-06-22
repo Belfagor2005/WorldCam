@@ -52,7 +52,8 @@ from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
 from . import _
-from .utils import urlparse, parse_qs, quote, is_ytdlp_available, is_streamlink_available  # , is_exteplayer3_Available
+# , is_exteplayer3_Available
+from .utils import urlparse, parse_qs, quote, is_ytdlp_available, is_streamlink_available
 from .utils import disable_summary, FavoritesManager, AspectManager, Logger
 from .scraper import SkylineScraper
 
@@ -397,7 +398,8 @@ class WorldCamPlayer(
             # Apply Streamlink enhancement if available
             enhanced_url = self.get_stream_url(current_webcam['url'])
             if enhanced_url != current_webcam['url']:
-                self.logger.info(f"Using Streamlink-enhanced URL: {enhanced_url}")
+                self.logger.info(
+                    f"Using Streamlink-enhanced URL: {enhanced_url}")
             # Handle YouTube URLs
             if 'youtube.com' in enhanced_url or 'youtu.be' in enhanced_url:
                 self.play_youtube(enhanced_url, current_webcam['name'])
@@ -412,7 +414,7 @@ class WorldCamPlayer(
                 self.logger.info("Using scraper for web page source")
                 scraper = SkylineScraper()
                 stream_url = scraper.get_stream_url(enhanced_url)
-                
+
                 if not stream_url:
                     self.logger.error("Could not extract stream URL")
                     self.show_error(_("Could not extract video stream"))
