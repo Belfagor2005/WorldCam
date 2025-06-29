@@ -94,7 +94,7 @@ except NameError:
 
 
 # Global constants
-PLUGIN_VERSION = "5.4"
+PLUGIN_VERSION = "5.5"
 PLUGIN_PATH = dirname(__file__)
 DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
 
