@@ -43,7 +43,7 @@ Quickly add or remove the selected webcam from your favorites list while browsin
 Instantly export your favorite webcams into a channel bouquet without opening menus.
 
 ▶️ **Next/Previous webcam navigation in player**  
-You can now switch between webcams directly from the player using left/right arrows.
+You can now switch between webcams directly from the player using ch+/ch- arrows.
 
 🧩 **Guaranteed compatibility from Python 2.7 to 3.9+**
 Safe use of cross-version libraries and methods, with automatic fallbacks.
@@ -56,12 +56,6 @@ The WorldCam plugin supports playing YouTube streams with three fallback mechani
 
 1. **Direct playback using yt\_dlp and eServiceReference**
    The plugin tries to play YouTube videos directly by extracting the stream URL with yt\_dlp.
-
-2. **Fallback to YouTubeExtractor**
-   If yt\_dlp fails, it falls back to the older YouTubeExtractor method.
-
-3. **Fallback to YouTubeProxy**
-   If both yt\_dlp and YouTubeExtractor fail, it uses YouTubeProxy as the last fallback.
 
 This ensures maximum compatibility and reliability for YouTube streams.
 
