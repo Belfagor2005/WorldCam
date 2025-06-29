@@ -35,6 +35,7 @@ from enigma import eDVBDB, eEnv
 from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
 
 from . import _
+from . import checkdependencies
 
 # Python version flags
 PY2 = sys.version_info[0] == 2
@@ -303,6 +304,21 @@ def isPythonFolder():
 	return False
 
 
+def is_streamlinkproxy_available():
+	"""Verifica se StreamlinkProxy è installato"""
+	try:
+		import subprocess
+		result = subprocess.run(
+			["opkg", "list-installed", "enigma2-plugin-extensions-streamlinkproxy"],
+			stdout=subprocess.PIPE,
+			stderr=subprocess.PIPE,
+			text=True
+		)
+		return "enigma2-plugin-extensions-streamlinkproxy" in result.stdout
+	except Exception:
+		return False
+
+
 def is_streamlink_available():
 	streamlink_folder = isPythonFolder()
 	return streamlink_folder
@@ -447,6 +463,7 @@ def is_ytdlp_available(logger=None):
 	Returns:
 		tuple: (YoutubeDL, DownloadError) if found, otherwise (None, None)
 	"""
+
 	# 1. Try system-wide import
 	try:
 		from yt_dlp import YoutubeDL
@@ -842,3 +859,15 @@ def set_current_language(lang):
 def get_current_language():
 	"""Get the current system language."""
 	return _current_language
+
+
+def check_and_warn_dependencies(logger=None):
+	try:
+		missing = checkdependencies.check_requirements(logger=logger)
+		if missing and logger:
+			logger.warning("Missing optional components: %s", ", ".join(missing))
+		return missing
+	except Exception as e:
+		if logger:
+			logger.error("Error checking dependencies: %s", str(e))
+		return []
