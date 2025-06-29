@@ -3,20 +3,20 @@
 from __future__ import absolute_import, print_function
 """
 #########################################################
-#                                                       #
-#  Worldcam Utils for Plugin                            #
-#  Version: 5.0                                         #
+#														#
+#  Worldcam Utils for Plugin							#
+#  Version: 5.0											#
 #  Created by Lululla (https://github.com/Belfagor2005) #
-#  License: CC BY-NC-SA 4.0                             #
-#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: "21:50 - 20250606"                    #
-#                                                       #
-#  Credits:                                             #
-#  - Original concept Lululla                           #
-#  Usage of this code without proper attribution        #
-#  is strictly prohibited.                              #
-#  For modifications and redistribution,                #
-#  please maintain this credit header.                  #
+#  License: CC BY-NC-SA 4.0								#
+#  https://creativecommons.org/licenses/by-nc-sa/4.0	#
+#  Last Modified: "21:50 - 20250606"					#
+#														#
+#  Credits:												#
+#  - Original concept Lululla							#
+#  Usage of this code without proper attribution		#
+#  is strictly prohibited.								#
+#  For modifications and redistribution,				#
+#  please maintain this credit header.					#
 #########################################################
 """
 __author__ = "Lululla"
@@ -66,11 +66,11 @@ class Logger:
 	_instance = None
 
 	LEVELS = {
-		"DEBUG": ("\033[92m", "[DEBUG]"),    # green
-		"INFO": ("\033[97m", "[INFO] "),     # white
-		"WARNING": ("\033[93m", "[WARN] "),  # yellow
-		"ERROR": ("\033[91m", "[ERROR]"),    # red
-		"CRITICAL": ("\033[95m", "[CRIT] ")  # magenta
+		"DEBUG": ("\033[92m", "[DEBUG]"),	 # green
+		"INFO": ("\033[97m", "[INFO] "),	 # white
+		"WARNING": ("\033[93m", "[WARN] "),	 # yellow
+		"ERROR": ("\033[91m", "[ERROR]"),	 # red
+		"CRITICAL": ("\033[95m", "[CRIT] ")	 # magenta
 	}
 	END = "\033[0m"
 
@@ -165,7 +165,7 @@ def encode_url(url):
 	"""Properly encode URLs with special characters"""
 	if not url.startswith('http'):
 		return url
-		
+
 	parsed = urlparse(url)
 	encoded_path = quote(parsed.path)
 	safe_url = urlunparse((
@@ -255,10 +255,10 @@ class FavoritesManager:
 					# Create service reference
 					if "youtube.com" in fav["url"] or "youtu.be" in fav["url"]:
 						# YouTube streams require special handling
-						service_type = 5001  # HLS
+						service_type = 5001	 # HLS
 						service_url = f"http://localhost:8000/proxy.m3u8?url={quote(fav['url'])}"
 					else:
-						service_type = 4097  # HTTP
+						service_type = 4097	 # HTTP
 						service_url = fav["url"]
 
 					# Create service line
@@ -331,7 +331,7 @@ def get_streamlink_path():
 		"/usr/local/bin/streamlink",
 		join(dirname(abspath(__file__)), "bin/streamlink")
 	]
-	
+
 	for path in possible_paths:
 		if exists(path):
 			return path
@@ -380,7 +380,7 @@ def get_system_language():
 					return lang
 	except Exception:
 		pass
-	return "en"  # Default language
+	return "en"	 # Default language
 
 
 def disable_summary(screen_instance):
@@ -450,7 +450,7 @@ def get_ytdlp_path():
 		"/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp",
 		join(dirname(abspath(__file__)), 'yt_dlp')
 	]
-	
+
 	for path in possible_paths:
 		if exists(path):
 			return path
@@ -570,83 +570,83 @@ def extract_list_item(current, logger=None):
 
 # Language to flag mapping
 language_flag_mapping = {
-	"ar": "🇸🇦",  # Arabic
-	"bg": "🇧🇬",  # Bulgarian
-	"cs": "🇨🇿",  # Czech
-	"de": "🇩🇪",  # German
-	"el": "🇬🇷",  # Greek
-	"en": "🇬🇧",  # English
-	"es": "🇪🇸",  # Spanish
-	"fa": "🇮🇷",  # Persian
-	"fr": "🇫🇷",  # French
-	"he": "🇮🇱",  # Hebrew
-	"hr": "🇭🇷",  # Croatian
-	"hu": "🇭🇺",  # Hungarian
-	"it": "🇮🇹",  # Italian
-	"jp": "🇯🇵",  # Japanese
-	"ko": "🇰🇷",  # Korean
-	"mk": "🇲🇰",  # Macedonian
-	"nl": "🇳🇱",  # Dutch
-	"pl": "🇵🇱",  # Polish
-	"pt": "🇵🇹",  # Portuguese
-	"ro": "🇷🇴",  # Romanian
-	"ru": "🇷🇺",  # Russian
-	"sk": "🇸🇰",  # Slovak
-	"sl": "🇸🇮",  # Slovenian
-	"sq": "🇦🇱",  # Albanian
-	"sr": "🇷🇸",  # Serbian
-	"th": "🇹🇭",  # Thai
-	"tr": "🇹🇷",  # Turkish
-	"vi": "🇻🇳",  # Vietnamese
-	"zh": "🇨🇳",  # Chinese
+	"ar": "🇸🇦",	 # Arabic
+	"bg": "🇧🇬",	 # Bulgarian
+	"cs": "🇨🇿",	 # Czech
+	"de": "🇩🇪",	 # German
+	"el": "🇬🇷",	 # Greek
+	"en": "🇬🇧",	 # English
+	"es": "🇪🇸",	 # Spanish
+	"fa": "🇮🇷",	 # Persian
+	"fr": "🇫🇷",	 # French
+	"he": "🇮🇱",	 # Hebrew
+	"hr": "🇭🇷",	 # Croatian
+	"hu": "🇭🇺",	 # Hungarian
+	"it": "🇮🇹",	 # Italian
+	"jp": "🇯🇵",	 # Japanese
+	"ko": "🇰🇷",	 # Korean
+	"mk": "🇲🇰",	 # Macedonian
+	"nl": "🇳🇱",	 # Dutch
+	"pl": "🇵🇱",	 # Polish
+	"pt": "🇵🇹",	 # Portuguese
+	"ro": "🇷🇴",	 # Romanian
+	"ru": "🇷🇺",	 # Russian
+	"sk": "🇸🇰",	 # Slovak
+	"sl": "🇸🇮",	 # Slovenian
+	"sq": "🇦🇱",	 # Albanian
+	"sr": "🇷🇸",	 # Serbian
+	"th": "🇹🇭",	 # Thai
+	"tr": "🇹🇷",	 # Turkish
+	"vi": "🇻🇳",	 # Vietnamese
+	"zh": "🇨🇳",	 # Chinese
 
 	# AMERICA
-	"argentina": "🇦🇷",  # Argentina
-	"bb": "🇧🇧",  # Barbados
-	"bm": "🇧🇲",  # Bermuda
-	"bq": "🇧🇶",  # Paesi Bassi Caraibici
-	"bo": "🇧🇴",  # Bolivia
-	"br": "🇧🇷",  # Brasile
-	"ca": "🇨🇦",  # Canada
-	"cl": "🇨🇱",  # Cile
-	"cr": "🇨🇷",  # Costa Rica
-	"ec": "🇪🇨",  # Ecuador
-	"sv": "🇸🇻",  # El Salvador
-	"gd": "🇬🇩",  # Grenada
-	"hn": "🇭🇳",  # Honduras
+	"argentina": "🇦🇷",	# Argentina
+	"bb": "🇧🇧",	 # Barbados
+	"bm": "🇧🇲",	 # Bermuda
+	"bq": "🇧🇶",	 # Paesi Bassi Caraibici
+	"bo": "🇧🇴",	 # Bolivia
+	"br": "🇧🇷",	 # Brasile
+	"ca": "🇨🇦",	 # Canada
+	"cl": "🇨🇱",	 # Cile
+	"cr": "🇨🇷",	 # Costa Rica
+	"ec": "🇪🇨",	 # Ecuador
+	"sv": "🇸🇻",	 # El Salvador
+	"gd": "🇬🇩",	 # Grenada
+	"hn": "🇭🇳",	 # Honduras
 	"vni": "🇻🇮",  # Isole Vergini Americane
-	"mx": "🇲🇽",  # Messico
-	"pa": "🇵🇦",  # Panama
-	"pe": "🇵🇪",  # Perù
-	"do": "🇩🇴",  # Repubblica Dominicana
-	"sx": "🇸🇽",  # Sint Maarten
-	"us": "🇺🇸",  # Stati Uniti
-	"uy": "🇺🇾",  # Uruguay
-	"ve": "🇻🇪",  # Venezuela
+	"mx": "🇲🇽",	 # Messico
+	"pa": "🇵🇦",	 # Panama
+	"pe": "🇵🇪",	 # Perù
+	"do": "🇩🇴",	 # Repubblica Dominicana
+	"sx": "🇸🇽",	 # Sint Maarten
+	"us": "🇺🇸",	 # Stati Uniti
+	"uy": "🇺🇾",	 # Uruguay
+	"ve": "🇻🇪",	 # Venezuela
 
 	# AFRICA
-	"cv": "🇨🇻",  # Capo Verde
-	"eg": "🇪🇬",  # Egitto
-	"ke": "🇰🇪",  # Kenya
-	"mu": "🇲🇺",  # Mauritius
-	"sn": "🇸🇳",  # Senegal
-	"sc": "🇸🇨",  # Seychelles
-	"za": "🇿🇦",  # Sudafrica
-	"zm": "🇿🇲",  # Zambia
-	"tz": "🇹🇿",  # Zanzibar (Tanzania)
+	"cv": "🇨🇻",	 # Capo Verde
+	"eg": "🇪🇬",	 # Egitto
+	"ke": "🇰🇪",	 # Kenya
+	"mu": "🇲🇺",	 # Mauritius
+	"sn": "🇸🇳",	 # Senegal
+	"sc": "🇸🇨",	 # Seychelles
+	"za": "🇿🇦",	 # Sudafrica
+	"zm": "🇿🇲",	 # Zambia
+	"tz": "🇹🇿",	 # Zanzibar (Tanzania)
 
 	# ASIA
-	"cn": "🇨🇳",  # Cina
-	"ae": "🇦🇪",  # Emirati Arabi Uniti
-	"ph": "🇵🇭",  # Filippine
-	"jo": "🇯🇴",  # Giordania
-	"id": "🇮🇩",  # Indonesia
-	"il": "🇮🇱",  # Israele
-	"mv": "🇲🇻",  # Maldive
-	"lk": "🇱🇰",  # Sri Lanka
-	"th": "🇹🇭",  # Thailandia
-	"tr": "🇹🇷",  # Turchia
-	"vn": "🇻🇳",  # Vietnam
+	"cn": "🇨🇳",	 # Cina
+	"ae": "🇦🇪",	 # Emirati Arabi Uniti
+	"ph": "🇵🇭",	 # Filippine
+	"jo": "🇯🇴",	 # Giordania
+	"id": "🇮🇩",	 # Indonesia
+	"il": "🇮🇱",	 # Israele
+	"mv": "🇲🇻",	 # Maldive
+	"lk": "🇱🇰",	 # Sri Lanka
+	"th": "🇹🇭",	 # Thailandia
+	"tr": "🇹🇷",	 # Turchia
+	"vn": "🇻🇳",	 # Vietnam
 }
 
 
@@ -717,7 +717,7 @@ def get_flag_path(country_code=None):
 	Returns None if no match is found.
 	"""
 	if not country_code:
-		country_code = "en"  # Default
+		country_code = "en"	 # Default
 
 	special_cases = {"ar": "argentina.png", "bm": "bm.png"}
 	filename = special_cases.get(country_code, f"{country_code}.png")
@@ -739,7 +739,7 @@ def get_flag_path(country_code=None):
 
 # # Esempio di utilizzo
 # country_name = "Deutschland"
-# country_code = get_country_code(country_name)  # Restituisce 'de'
+# country_code = get_country_code(country_name)	 # Restituisce 'de'
 # flag_path = get_flag_path(country_code)  # Restituisce .../countries/de.png
 
 

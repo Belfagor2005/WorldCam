@@ -3,21 +3,21 @@
 from __future__ import absolute_import, print_function
 """
 #########################################################
-#                                                       #
-#  Worldcam Player from Plugin                          #
-#  Completely rewritten and optimized in version *5.0*  #
-#  Version: 5.6                                         #
+#														#
+#  Worldcam Player from Plugin							#
+#  Completely rewritten and optimized in version *5.0*	#
+#  Version: 5.6											#
 #  Created by Lululla (https://github.com/Belfagor2005) #
-#  License: CC BY-NC-SA 4.0                             #
-#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: "14:34 - 20250629"                    #
-#                                                       #
-#  Credits:                                             #
-#  - Original concept Lululla                           #
-#  Usage of this code without proper attribution        #
-#  is strictly prohibited.                              #
-#  For modifications and redistribution,                #
-#  please maintain this credit header.                  #
+#  License: CC BY-NC-SA 4.0								#
+#  https://creativecommons.org/licenses/by-nc-sa/4.0	#
+#  Last Modified: "14:34 - 20250629"					#
+#														#
+#  Credits:												#
+#  - Original concept Lululla							#
+#  Usage of this code without proper attribution		#
+#  is strictly prohibited.								#
+#  For modifications and redistribution,				#
+#  please maintain this credit header.					#
 #########################################################
 """
 __author__ = "Lululla"
@@ -26,8 +26,10 @@ import sys
 from os import remove
 from os.path import abspath, dirname, exists, join
 from re import IGNORECASE, search
+
 from Components.ActionMap import ActionMap
 from Components.ServiceEventTracker import InfoBarBase, ServiceEventTracker
+# from Components.Label import Label
 from Components.config import config
 from enigma import eServiceReference, eTimer, iPlayableService, getDesktop
 from Screens.InfoBarGenerics import (
@@ -511,10 +513,10 @@ class WorldCamPlayer(
 
 				# Determine service type
 				if '.m3u8' in stream_url.lower():
-					service_type = 5001  # HLS
+					service_type = 5001	 # HLS
 					self.logger.info("Detected HLS stream")
 				else:
-					service_type = 4097  # HTTP
+					service_type = 4097	 # HTTP
 					self.logger.info("Detected HTTP stream")
 
 				service = eServiceReference(service_type, 0, stream_url)
@@ -596,9 +598,9 @@ class WorldCamPlayer(
 
 			# Determine service type
 			if '.m3u8' in stream_url.lower() or stream_url.lower().startswith('http'):
-				service_type = 5001  # HLS
+				service_type = 5001	 # HLS
 			else:
-				service_type = 4097  # HTTP
+				service_type = 4097	 # HTTP
 
 			service = eServiceReference(service_type, 0, stream_url)
 			service.setName(title)
