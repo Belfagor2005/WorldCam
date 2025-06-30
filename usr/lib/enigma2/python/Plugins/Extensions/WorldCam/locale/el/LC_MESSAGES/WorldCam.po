@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WorldCam\n"
-"POT-Creation-Date: 2025-06-22 22:59+0200\n"
+"POT-Creation-Date: 2025-06-22 22:51+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: giorbak\n"
@@ -9,14 +9,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
-"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2\n"
+"X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-SearchPath-0: .\n"
-
-#: LanguageScreen.py:49
-msgid "Select language"
-msgstr "Επιλογή γλώσσας"
+"X-Poedit-SearchPath-0: __init__.py\n"
+"X-Poedit-SearchPath-1: player.py\n"
+"X-Poedit-SearchPath-2: scraper.py\n"
+"X-Poedit-SearchPath-3: utils.py\n"
+"X-Poedit-SearchPath-4: plugin.py\n"
 
 #: __init__.py:38
 msgid ""
@@ -35,20 +36,10 @@ msgid "Exit"
 msgstr "Έξοδος"
 
 #: player.py:294
-#, fuzzy
-#| msgid "Error loading webcams"
 msgid "Error switching webcam"
-msgstr "Σφάλμα κατά τη φόρτωση των καμερών ιστού"
+msgstr "Σφάλμα κατά την εναλλαγή κάμερας ιστού"
 
 #: player.py:300
-#, fuzzy
-#| msgid ""
-#| "Player Controls:\n"
-#| "OK - Show/hide info bar\n"
-#| "BLUE - Toggle favorite\n"
-#| "PLAY/PAUSE - Toggle playback\n"
-#| "STOP - Stop playback\n"
-#| "EXIT - Close player\n"
 msgid ""
 "Player Controls:\n"
 "OK - Show/hide info bar\n"
@@ -61,6 +52,8 @@ msgid ""
 msgstr ""
 "Χειριστήρια προγράμματος αναπαραγωγής:\n"
 "OK - Εμφάνιση/απόκρυψη μπάρας πληροφοριών\n"
+"GREEN - Προηγούμενη κάμερα ιστού\n"
+"YELLOW - Επόμενη κάμερα ιστού\n"
 "BLUE - Εναλλαγή αγαπημένων\n"
 "PLAY/PAUSE - Εναλλαγή αναπαραγωγής\n"
 "STOP - Διακοπή αναπαραγωγής\n"
@@ -265,7 +258,7 @@ msgstr "Προέκυψε σφάλμα κατά την ενημέρωση (κωδ
 
 #: plugin.py:801
 msgid "yt-dlp updated successfully!"
-msgstr "tο yt-dlp ενημερώθηκε με επιτυχία!"
+msgstr "Το yt-dlp ενημερώθηκε με επιτυχία!"
 
 #: plugin.py:807
 #, python-format
@@ -282,8 +275,8 @@ msgid "WorldCam v%s"
 msgstr "WorldCam v%s"
 
 #: plugin.py:821
-msgid "Live webcam viewer featuring global locations."
-msgstr "Προβολή ζωντανών καμερών ιστού από τοποθεσίες παγκοσμίως."
+msgid "Live webcam viewer featuring global locations"
+msgstr "Προβολή ζωντανών καμερών ιστού από τοποθεσίες παγκοσμίως"
 
 #: plugin.py:822
 msgid "Developed by Lululla"
@@ -299,31 +292,31 @@ msgstr "GitHub: https://github.com/Belfagor2005/"
 
 #: plugin.py:825
 msgid "Forum support: www.corvoboys.org"
-msgstr "Υποστήριξη forum: www.corvoboys.org"
+msgstr "Φόρουμ υποστήριξης: www.corvoboys.org"
 
 #: plugin.py:826
-msgid "Included playlists and sources:\n"
-msgstr "Περιλαμβανόμενες λίστες αναπαραγωγής και πηγές:\n"
+msgid "Included playlists and sources:"
+msgstr "Περιλαμβανόμενες λίστες αναπαραγωγής και πηγές:"
 
 #: plugin.py:827
-msgid "- Local webcam list\n"
-msgstr "- Τοπική λίστα καμερών ιστού\n"
+msgid "- Local webcam list"
+msgstr "- Τοπική λίστα καμερών ιστού"
 
 #: plugin.py:828
-msgid "- Local YouTube playlist (test)\n"
-msgstr "- Τοπική λίστα αναπαραγωγής YouTube (δοκιμαστική)\n"
+msgid "- Local YouTube playlist"
+msgstr "- Τοπική λίστα αναπαραγωγής YouTube"
 
 #: plugin.py:829
-msgid "- Online webcam list\n"
-msgstr "- Διαδικτυακή λίστα καμερών ιστού\n"
+msgid "- Online webcam list"
+msgstr "- Διαδικτυακή λίστα καμερών ιστού"
 
 #: plugin.py:830
-msgid "- Online Direct and YouTube webcams playlist (test)\n"
-msgstr "- Διαδικτυακή λίστα απευθείας καμερών ιστού και YouTube (δοκιμαστική)\n"
+msgid "- Online Direct and YouTube webcams"
+msgstr "- Διαδικτυακές απευθείας κάμερες ιστού και YouTube"
 
 #: plugin.py:831
-msgid "- Other sources\n"
-msgstr "- Άλλες πηγές\n"
+msgid "- Other sources"
+msgstr "- Άλλες πηγές"
 
 #: plugin.py:853
 msgid "Your Favorites"
@@ -339,7 +332,7 @@ msgstr "Αφαίρεση"
 
 #: plugin.py:861 plugin.py:1478
 msgid "Export"
-msgstr ""
+msgstr "Εξαγωγή"
 
 #: plugin.py:880
 msgid "No favorites yet"
@@ -423,10 +416,8 @@ msgid "Select a valid location"
 msgstr "Επιλέξτε έγκυρη τοποθεσία"
 
 #: plugin.py:1477
-#, fuzzy
-#| msgid "Remove"
 msgid "Add/Remove"
-msgstr "Αφαίρεση"
+msgstr "Προσθήκη/Αφαίρεση"
 
 #: plugin.py:1503
 msgid "Add to favorites"
@@ -438,7 +429,7 @@ msgstr "Αφαίρεση από τα αγαπημένα"
 
 #: plugin.py:1509
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Εξαγωγή όλων σε μπουκέτο"
 
 #: plugin.py:1610
 msgid "Error loading webcams"
@@ -449,24 +440,16 @@ msgid "Live webcams from around the world"
 msgstr "Ζωντανές κάμερες ιστού από όλο τον κόσμο"
 
 #: utils.py:199
-#, fuzzy
-#| msgid "No favorites yet"
 msgid "No favorites to export"
-msgstr "Δεν υπάρχουν αγαπημένα ακόμα"
+msgstr "Δεν υπάρχουν αγαπημένα προς εξαγωγή"
 
 #: utils.py:245
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Τα αγαπημένα εξήχθησαν με επιτυχία! Επανεκκινήστε το Enigma2 για να τα δείτε."
 
 #: utils.py:248
-#, fuzzy
-#| msgid ""
-#| "Update failed:\n"
-#| "%s"
 msgid "Export failed: "
-msgstr ""
-"Η ενημέρωση απέτυχε:\n"
-"%s"
+msgstr "Η εξαγωγή απέτυχε: "
 
 #: utils.py:572
 msgid "AMERICAS"
@@ -479,12 +462,3 @@ msgstr "ΕΥΡΩΠΗ"
 #: utils.py:574
 msgid "AFRICA"
 msgstr "ΑΦΡΙΚΗ"
-
-#~ msgid "yt_dlp module missing!"
-#~ msgstr "Η ενότητα yt_dlp λείπει!"
-
-#~ msgid "Couldn't extract video information"
-#~ msgstr "Δεν ήταν δυνατή η εξαγωγή πληροφοριών βίντεο"
-
-#~ msgid "No playable formats available"
-#~ msgstr "Δεν υπάρχουν διαθέσιμες μορφές αναπαραγωγής"
