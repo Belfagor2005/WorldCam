@@ -1260,7 +1260,11 @@
             "Sri Lanka": "lk",
             "Thailand": "th",
             "Turkey": "tr",
-            "Vietnam": "vn"
+            "Vietnam": "vn",
+            "India": "in",
+            "Japan": "jp",
+            "Saudi Arabia": "sa",
+            "Malaysia": "my"
         },
         "Africa": {
             "Cape Verde": "cv",
@@ -1271,10 +1275,16 @@
             "Seychelles": "sc",
             "South Africa": "za",
             "Zambia": "zm",
+            "Tanzania": "tz",
+            "Nigeria": "ng",
+            "Ghana": "gh",
+            "Morocco": "ma",
             "Zanzibar": "tz"
         },
         "Oceania": {
-            "Australia": "au"
+            "Australia": "au",
+            "New Zealand": "nz",
+            "Fiji": "fj"
         },
         "Americas": {
             "Argentina": "ar",
@@ -1298,7 +1308,10 @@
             "United States": "us",
             "Uruguay": "uy",
             "Venezuela": "ve",
-            "U.S. Virgin Islands": "vi"
+            "U.S. Virgin Islands": "vi",
+            "Colombia": "co",
+            "Cuba": "cu",
+            "Jamaica": "jm"
         },
         "Europe": {
             "Albania": "al",
@@ -1324,10 +1337,11 @@
             "Spain": "es",
             "Switzerland": "ch",
             "Hungary": "hu",
-            "Faroe Islands": "fo"
-        },
-        "Ge": {
-            "ბერმუდა": "bm"
+            "Faroe Islands": "fo",
+            "Georgia": "ge",
+            "Sweden": "se",
+            "Denmark": "dk",
+            "Finland": "fi"
         }
     }
 }
