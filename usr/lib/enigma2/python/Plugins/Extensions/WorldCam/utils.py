@@ -692,7 +692,7 @@ def get_category_icon(icon_file_name):
 	"""
 	plugin_path = dirname(__file__)
 	full_path = join(plugin_path, "countries", icon_file_name)
-	print("Icon path: %s + %s" % (plugin_path, icon_file_name))
+	print("Icon path: %s" % full_path)
 	return full_path
 
 
@@ -724,7 +724,6 @@ def get_country_code(country_name):
 	# Normalize the input
 	name_clean = country_name.strip().lower()
 	name_no_punct = sub(r'\W', '', name_clean)
-
 	# Search by accuracy
 	return (
 		country_map.get(name_clean) or
