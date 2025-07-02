@@ -98,7 +98,8 @@ class SkylineScraper:
     """
 
     BASE_URL = "https://www.skylinewebcams.com"
-    HEADERS = {"User-Agent": "Mozilla/5.0", "Accept-Language": "en-US,en;q=0.5"}
+    HEADERS = {"User-Agent": "Mozilla/5.0",
+               "Accept-Language": "en-US,en;q=0.5"}
 
     def __init__(self, lang="en"):
         """
@@ -140,8 +141,16 @@ class SkylineScraper:
 
     def is_direct_stream(self, url):
         """Check if URL is a direct video stream"""
-        video_extensions = ['.m3u8', '.mp4', '.m4v', '.flv', '.ts', '.mov', '.mkv']
-        return any(url.lower().endswith(ext) for ext in video_extensions) or "m3u8" in url.lower()
+        video_extensions = [
+            '.m3u8',
+            '.mp4',
+            '.m4v',
+            '.flv',
+            '.ts',
+            '.mov',
+            '.mkv']
+        return any(url.lower().endswith(ext)
+                   for ext in video_extensions) or "m3u8" in url.lower()
 
     def get_stream_url(self, webcam_page_url):
         """
@@ -150,14 +159,17 @@ class SkylineScraper:
         self.logger.info("Entering get_stream_url")
         content = self.fetch(webcam_page_url, use_cache=False)
         if not content:
-            self.logger.warning("No content fetched for URL: " + webcam_page_url)
+            self.logger.warning(
+                "No content fetched for URL: " +
+                webcam_page_url)
             return None
         try:
             # Pattern 1: Standard HLS stream
             hls_match = search(r"source:\s*'livee\.m3u8\?a=([^']+)'", content)
             if hls_match:
                 video_id = hls_match.group(1)
-                self.logger.info("Found HLS livee.m3u8 stream with video ID: " + video_id)
+                self.logger.info(
+                    "Found HLS livee.m3u8 stream with video ID: " + video_id)
                 return "https://hd-auth.skylinewebcams.com/live.m3u8?a=" + video_id
 
             # Pattern 2: YouTube video ID
@@ -168,7 +180,8 @@ class SkylineScraper:
                 return "https://www.youtube.com/watch?v=" + video_id
 
             # Pattern 3: JW Player file URL
-            jw_match = search(r'player\.setup\({.*?file:\s*"([^"]+)"', content, DOTALL)
+            jw_match = search(
+                r'player\.setup\({.*?file:\s*"([^"]+)"', content, DOTALL)
             if jw_match:
                 self.logger.info("Found JW Player file URL")
                 return jw_match.group(1)
@@ -186,9 +199,13 @@ class SkylineScraper:
                 self.logger.info("Found direct video source: " + url)
                 return url
 
-            self.logger.warning("No stream URL found in the page: " + webcam_page_url)
+            self.logger.warning(
+                "No stream URL found in the page: " +
+                webcam_page_url)
         except Exception as e:
-            self.logger.error("Error parsing stream URL from {}: {}".format(webcam_page_url, str(e)))
+            self.logger.error(
+                "Error parsing stream URL from {}: {}".format(
+                    webcam_page_url, str(e)))
         return None
 
     def fetch(self, url, use_cache=True):
@@ -224,7 +241,7 @@ class SkylineScraper:
                 self.logger.error(f"Exception Unexpected error: {str(e)}")
                 try:
                     decoded_content = content.decode("latin-1")
-                except:
+                except BaseException:
                     decoded_content = content.decode("utf-8", errors="ignore")
 
             if use_cache:
@@ -246,7 +263,8 @@ class SkylineScraper:
         Extract country links and names from the main page.
         """
         Logger().info("Entering parse_countries")  # static method: use fresh Logger
-        pattern = r'<a href="(/' + escape(language) + r'/webcam/[^"]+\.html)">([^<]+)</a>'
+        pattern = r'<a href="(/' + escape(language) + \
+            r'/webcam/[^"]+\.html)">([^<]+)</a>'
         try:
             result = findall(pattern, html, IGNORECASE)
             Logger().info("Found {} countries".format(len(result)))
@@ -261,7 +279,8 @@ class SkylineScraper:
         Extract main categories from homepage HTML.
         """
         Logger().info("Entering parse_categories")
-        pattern = r'<a href="(/' + escape(language) + r'/[^"]+)"[^>]*>\s*<p class="tcam">([^<]+)</p>'
+        pattern = r'<a href="(/' + escape(language) + \
+            r'/[^"]+)"[^>]*>\s*<p class="tcam">([^<]+)</p>'
         try:
             result = findall(pattern, html)
             Logger().info("Found {} categories".format(len(result)))
@@ -271,7 +290,13 @@ class SkylineScraper:
             return []
 
     @staticmethod
-    def parse_top_webcams(html, language="en", base_url=None, fetch_func=None, parse_func=None, logger=None):
+    def parse_top_webcams(
+            html,
+            language="en",
+            base_url=None,
+            fetch_func=None,
+            parse_func=None,
+            logger=None):
         """
         Parse top webcams with pagination support (static)
         """
@@ -282,55 +307,64 @@ class SkylineScraper:
         if parse_func:
             webcams = parse_func(html, escape(language), base_url)
 
-        pagination_pattern = r'<a href="(/' + escape(language) + r'/top-webcams-(\d+)\.html)"'
+        pagination_pattern = r'<a href="(/' + \
+            escape(language) + r'/top-webcams-(\d+)\.html)"'
         pagination_matches = findall(pagination_pattern, html, IGNORECASE)
 
         for url, page_num in pagination_matches:
             full_url = base_url + url
             if logger:
-                logger.info(f"Processing top webcams page {page_num}: {full_url}")
+                logger.info(
+                    f"Processing top webcams page {page_num}: {full_url}")
             if fetch_func:
                 page_content = fetch_func(full_url)
                 if page_content and parse_func:
-                    webcams.extend(parse_func(page_content, language, base_url))
+                    webcams.extend(
+                        parse_func(
+                            page_content,
+                            language,
+                            base_url))
 
         if logger:
             logger.info(f"Total top webcams found: {len(webcams)}")
         return webcams
 
     @staticmethod
-    def parse_webcams(html, language="en", base_url="https://www.skylinewebcams.com"):
+    def parse_webcams(
+            html,
+            language="en",
+            base_url="https://www.skylinewebcams.com"):
         Logger().info("Entering parse_webcams")
         webcams = []
-        
+
         # Improved pattern to capture all webcam entries
         pattern = (
             r'<a\s+href="([^"]+)"\s+class="[^"]*col-xs-12[^"]*col-sm-6[^"]*col-md-4[^"]*"[^>]*>'
             r'.*?<img\s+src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>'
             r'.*?<p\s+class="tcam">(.*?)</p>'
-            r'.*?<p\s+class="subt">(.*?)</p>'
-        )
-        
+            r'.*?<p\s+class="subt">(.*?)</p>')
+
         matches = findall(pattern, html, DOTALL)
         Logger().info(f"Found {len(matches)} webcam matches")
-        
+
         for match in matches:
             href = match[0]
             thumbnail = match[1]
             alt = match[2]
             name = match[3].strip()
             description = match[4].strip()
-            
+
             # Skip ads and invalid entries
             if "Advertisement" in name or not href:
                 continue
-                
+
             # Build full URL
             if href.startswith('http'):
                 full_url = href
             else:
-                full_url = base_url + (href if href.startswith('/') else '/' + href)
-                
+                full_url = base_url + \
+                    (href if href.startswith('/') else '/' + href)
+
             webcams.append({
                 "url": full_url,
                 "thumbnail": thumbnail,
@@ -338,12 +372,12 @@ class SkylineScraper:
                 "name": name,
                 "description": description
             })
-        
+
         # Fallback for different formats
         if not webcams:
             Logger().info("Using fallback parsing method")
             # ... [keep your existing fallback logic] ...
-        
+
         Logger().info(f"Returning {len(webcams)} valid webcams")
         return webcams
 
@@ -354,12 +388,11 @@ class SkylineScraper:
 
         # Primary pattern for location buttons
         location_pattern = r'<a href="([^"]+)" class="[^"]*\bbtn\b[^"]*\bbtn-primary\b[^"]*"[^>]*>([^<]+)</a>'
-        
+
         # Webcam grid fallback pattern
         webcam_pattern = (
             r'<a href="([^"]+)" class="[^"]*col-xs-12[^"]*col-sm-6[^"]*col-md-4[^"]*"[^>]*>'
-            r'.*?<div class="cam-light">'
-        )
+            r'.*?<div class="cam-light">')
 
         try:
             # Extract locations from buttons
@@ -375,7 +408,9 @@ class SkylineScraper:
                     # Extract location name from URL
                     parts = href.split('/')
                     if len(parts) >= 5:
-                        name = parts[4].replace('.html', '').replace('-', ' ').title()
+                        name = parts[4].replace(
+                            '.html', '').replace(
+                            '-', ' ').title()
                         locations.append((href, name))
                         Logger().info(f"Fallback location: {name} -> {href}")
 
@@ -420,10 +455,13 @@ class SkylineScraper:
                             # Clean YouTube URLs
                             if "youtube.com" in url or "youtu.be" in url:
                                 # Remove any "URL:" text and trailing delimiters
-                                # url = sub(r'(URL:)|(###)', '', url, flags=IGNORECASE)
-                                url = sub(r'URL:\s*', '', url, flags=IGNORECASE).strip()
+                                # url = sub(r'(URL:)|(###)', '', url,
+                                # flags=IGNORECASE)
+                                url = sub(
+                                    r'URL:\s*', '', url, flags=IGNORECASE).strip()
                                 # Extract just the video ID
-                                match = search(r'(?:v=|youtu\.be/|embed/)([a-zA-Z0-9_-]{11})', url)
+                                match = search(
+                                    r'(?:v=|youtu\.be/|embed/)([a-zA-Z0-9_-]{11})', url)
                                 if match:
                                     url = f"https://www.youtube.com/watch?v={match.group(1)}"
 
@@ -434,7 +472,8 @@ class SkylineScraper:
                             })
                             continue
 
-                    # Traditional formats with three parts separated by various delimiters
+                    # Traditional formats with three parts separated by various
+                    # delimiters
                     if ":::" in line:
                         parts = line.split(":::", 2)
                     elif ";;" in line:
@@ -535,7 +574,8 @@ class SkylineScraper:
         continents = []
 
         continent_pattern = r'<div class="continent\s+(\w+)"><strong>([^<]+)</strong></div>(.*?)</div>\s*</div>'
-        country_pattern = r'<a href="(/' + self.lang + r'/webcam/[^"]+\.html)">([^<]+)</a>'
+        country_pattern = r'<a href="(/' + self.lang + \
+            r'/webcam/[^"]+\.html)">([^<]+)</a>'
 
         try:
             matches = findall(continent_pattern, html, DOTALL | IGNORECASE)
@@ -545,7 +585,8 @@ class SkylineScraper:
                 continent_html = match[2]
 
                 countries = []
-                country_matches = findall(country_pattern, continent_html, IGNORECASE)
+                country_matches = findall(
+                    country_pattern, continent_html, IGNORECASE)
                 for path, name in country_matches:
                     full_url = self.BASE_URL + path
                     countries.append({"name": name, "url": full_url})
@@ -569,7 +610,8 @@ class SkylineScraper:
         countries = []
 
         # Pattern to find country links
-        country_pattern = r'<a href="(/' + self.lang + r'/webcam/[^"]+\.html)">([^<]+)</a>'
+        country_pattern = r'<a href="(/' + self.lang + \
+            r'/webcam/[^"]+\.html)">([^<]+)</a>'
         try:
             matches = findall(country_pattern, html, IGNORECASE)
             for path, name in matches:
@@ -591,7 +633,8 @@ class SkylineScraper:
         try:
             for path, name in self.parse_countries(html, self.lang):
                 full_url = self.BASE_URL + path
-                self.logger.info("Country found: {} -> {}".format(name, full_url))
+                self.logger.info(
+                    "Country found: {} -> {}".format(name, full_url))
                 countries.append({"name": name, "url": full_url})
         except Exception as e:
             self.logger.error("Error in get_countries: " + str(e))
@@ -608,7 +651,8 @@ class SkylineScraper:
         try:
             for path, name in self.parse_categories(html, self.lang):
                 full_url = self.BASE_URL + path
-                self.logger.info("Category found: {} -> {}".format(name, full_url))
+                self.logger.info(
+                    "Category found: {} -> {}".format(name, full_url))
                 categories.append({"name": name, "url": full_url})
         except Exception as e:
             self.logger.error("Error in get_categories: " + str(e))
@@ -619,7 +663,7 @@ class SkylineScraper:
         self.logger.info("Entering get_top_webcams")
         url = self.BASE_URL + "/" + self.lang + "/top-live-cams.html"
         html = self.fetch(url)
-        
+
         if not html:
             self.logger.error("Failed to fetch top webcams page")
             return []
@@ -638,11 +682,9 @@ class SkylineScraper:
             # )
             """
             # Filter out any invalid entries
-            valid_webcams = [
-                w for w in webcams
-                if w.get("name") and w.get("url") and "Advertisement" not in w["name"]
-            ]
-            
+            valid_webcams = [w for w in webcams if w.get("name") and w.get(
+                "url") and "Advertisement" not in w["name"]]
+
             self.logger.info(f"Found {len(valid_webcams)} valid top webcams")
             return valid_webcams
         except Exception as e:
@@ -674,17 +716,21 @@ class SkylineScraper:
         """
         Return list of filenames in playlists directory.
         """
-        self.logger.info("Entering get_local_playlists for path: " + playlists_path)
+        self.logger.info(
+            "Entering get_local_playlists for path: " +
+            playlists_path)
         user_lists = []
 
         if not exists(playlists_path):
-            self.logger.error(f"Playlists directory not found: {playlists_path}")
+            self.logger.error(
+                f"Playlists directory not found: {playlists_path}")
             return user_lists
 
         try:
             for filename in listdir(playlists_path):
                 full_path = join(playlists_path, filename)
-                if isfile(full_path) and filename.lower().endswith(('.txt', '.m3u', '.list')):
+                if isfile(full_path) and filename.lower().endswith(
+                        ('.txt', '.m3u', '.list')):
                     user_lists.append(filename)
             return user_lists
         except Exception as e:
@@ -697,9 +743,9 @@ class SkylineScraper:
         """
         self.logger.info(f"Processing page: {page_url}")
         html = self.fetch(page_url)
-        
+
         if not html:
             self.logger.error("Failed to fetch page content")
             return []
-        
+
         return self.parse_webcams(html, self.lang, self.BASE_URL)
