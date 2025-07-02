@@ -1,5 +1,6 @@
 -Youtube African Buffalo Herd Cam – Kruger Park###https://www.youtube.com/watch?v=j2s7Kp8i2oY
 -Youtube African Elephant Herd Cam – Chobe National Park###https://www.youtube.com/watch?v=WkP3Y0r28IU
+-Youtube African Elephant Waterhole Cam###https://www.youtube.com/watch?v=9MV_82mgM0Y
 -Youtube African Lion Cubs Cam – Serengeti###https://www.youtube.com/watch?v=RSKW0oZZk84
 -Youtube African Safari Live – Djuma Private Game Reserve###https://www.youtube.com/watch?v=ydYDqZQpim8
 -Youtube African Wild Dogs – Botswana###https://www.youtube.com/watch?v=Q8TLp4b_-lc
@@ -7,15 +8,20 @@
 -Youtube Alaska Moose Cam###https://www.youtube.com/watch?v=MOZcRXvEe6E
 -Youtube Alaskan Bald Eagle Cam###https://www.youtube.com/watch?v=1wlzDpPA6yo
 -Youtube Alaskan Bald Eagle Cam###https://www.youtube.com/watch?v=HQSh3I4yMBo
+-Youtube Alpine Meadow Cam###https://www.youtube.com/watch?v=8pFvHPJoTqg
 -Youtube Amazon Rainforest Canopy Cam###https://www.youtube.com/watch?v=I5Y3-F5-3vY
 -Youtube Amazon Rainforest Live Cam###https://www.youtube.com/watch?v=zS3NGk5Wv3I
 -Youtube Amazon River Dolphin Cam###https://www.youtube.com/watch?v=KfOa2VGi3zM
+-Youtube Amazon River Wildlife Cam###https://www.youtube.com/watch?v=G9ltTu3rjRo
+-Youtube Antarctic Iceberg Live Cam###https://www.youtube.com/watch?v=wLMZm_EE9Ms
 -Youtube Antarctic Penguin Colony Cam###https://www.youtube.com/watch?v=XHYiY4N2VPE
 -Youtube Aquarium Reef Cam – Monterey Bay###https://www.youtube.com/watch?v=0ts3ML73Lk0
 -Youtube Arctic Fox Cubs Cam###https://www.youtube.com/watch?v=dVWqf0yAcnw
 -Youtube Arctic Foxes Den Cam###https://www.youtube.com/watch?v=cIZq_8h4rCI
 -Youtube Arctic Ice Cam – Greenland###https://www.youtube.com/watch?v=FWH3W0HXfb8
 -Youtube Arctic Seal Cam###https://www.youtube.com/watch?v=bWgy0DZsdZ4
+-Youtube Arctic Tern Nest Cam###https://www.youtube.com/watch?v=Sh7l7J9Yk5o
+-Youtube Arctic Wolf Pack Cam###https://www.youtube.com/watch?v=Va1m7RkbCSg
 -Youtube Australian Cockatoo Cam###https://www.youtube.com/watch?v=8ch6gKw_PjM
 -Youtube Australian Koala Cam###https://www.youtube.com/watch?v=GlzqQ3DR8Jg
 -Youtube Baby Elephant Cam###https://www.youtube.com/watch?v=w4gwT8BzBpA
@@ -34,6 +40,7 @@
 -Youtube Bird Migration Cam – Netherlands###https://www.youtube.com/watch?v=G4XxVn81KJ0
 -Youtube Black Bear Cam – North America###https://www.youtube.com/watch?v=w2K-jcS_rWk
 -Youtube Blue Heron Cam###https://www.youtube.com/watch?v=RDW3Zq_89TA
+-Youtube Blue Heron Nest Cam – Florida###https://www.youtube.com/watch?v=HKUeH6Gy6Oc
 -Youtube Blue Heron Nest Cam###https://www.youtube.com/watch?v=ebO5y0tjw30
 -Youtube Blue Whale Cam###https://www.youtube.com/watch?v=VfMJylcPrZ4
 -Youtube Bonobo Family Cam###https://www.youtube.com/watch?v=kuKkG5FfY-Q
@@ -85,7 +92,9 @@
 -Youtube Galápagos Islands Marine Life Cam###https://www.youtube.com/watch?v=QHcW-HfzPLk
 -Youtube Garden Bird Bath Cam###https://www.youtube.com/watch?v=GZOGt9Hg0_w
 -Youtube Garden Birds Cam – UK###https://www.youtube.com/watch?v=3KdQxL84_-Y
+-Youtube Giant Panda Cam – Chengdu Research Base###https://www.youtube.com/watch?v=02u13GOVn-I
 -Youtube Giraffe Cam###https://www.youtube.com/watch?v=b1bY-GN1XXg
+-Youtube Glacier Bay National Park Cam###https://www.youtube.com/watch?v=5b2p56Wzp84
 -Youtube Glacier Cam – Alaska###https://www.youtube.com/watch?v=Y_xpkrIgGqk
 -Youtube Golden Gate Bridge – San Francisco###https://www.youtube.com/watch?v=BmfXCRf2zQk
 -Youtube Gorilla Troop Cam###https://www.youtube.com/watch?v=3lmbcFOZ0WU
@@ -116,12 +125,15 @@
 -Youtube Jellyfish Tank Cam###https://www.youtube.com/watch?v=7ZRojQ3xvMI
 -Youtube Kangaroo Cam – Australia Zoo###https://www.youtube.com/watch?v=4JY5qZSGXfY
 -Youtube Kangaroo Wallaby Cam###https://www.youtube.com/watch?v=4IPKz05L0GU
+-Youtube Kilauea Volcano Live Cam###https://www.youtube.com/watch?v=_7PcxyOguN0
 -Youtube Kingfisher Cam###https://www.youtube.com/watch?v=01Zcy-KwMnA
 -Youtube Kingfisher Nest Cam###https://www.youtube.com/watch?v=aV02hHSNLhs
 -Youtube Koala Bear Cam – Australia###https://www.youtube.com/watch?v=Egl0DYXhdTQ
 -Youtube Koala Cam – Australia Zoo###https://www.youtube.com/watch?v=L2BfIVd9McQ
 -Youtube Koala Feeding Cam###https://www.youtube.com/watch?v=2TpmY7TnzLw
+-Youtube Komodo Dragon Live Cam###https://www.youtube.com/watch?v=jUxUOZ71xl8
 -Youtube Komodo Dragon Live Cam###https://www.youtube.com/watch?v=qzF9KDyySx8
+-Youtube Lake Tahoe Live Cam###https://www.youtube.com/watch?v=ljXlWUG6fJM
 -Youtube Lemur Cam###https://www.youtube.com/watch?v=YQqwlqQ6VCQ
 -Youtube Lemur Play Cam###https://www.youtube.com/watch?v=HiJsXqlPZ5o
 -Youtube Lion Cubs Cam###https://www.youtube.com/watch?v=F7x0_KUS2IM
@@ -140,6 +152,7 @@
 -Youtube Mating Birds Cam – Costa Rica###https://www.youtube.com/watch?v=8uOShL_9uSU
 -Youtube Monarch Butterfly Cam – Mexico###https://www.youtube.com/watch?v=O7nrPnrQ4Gc
 -Youtube Monarch Butterfly Cam###https://www.youtube.com/watch?v=SmCgbYkKkDY
+-Youtube Monarch Butterfly Sanctuary Cam – Canada###https://www.youtube.com/watch?v=OsqyyRUVrLE
 -Youtube Monarch Butterfly Sanctuary Cam###https://www.youtube.com/watch?v=35ojAozfz7Q
 -Youtube Moose Cam###https://www.youtube.com/watch?v=RkAQK5ETMBM
 -Youtube Moose Feeding Cam###https://www.youtube.com/watch?v=l7XwXKJ4E6g
@@ -161,6 +174,7 @@
 -Youtube Open Sea Cam – Monterey Bay Aquarium###https://www.youtube.com/watch?v=cBLRrru0J0
 -Youtube Orangutan Cam###https://www.youtube.com/watch?v=UB5j8Hxx5zo
 -Youtube Orangutan Feeding Cam###https://www.youtube.com/watch?v=KnUs0m5j8Kc
+-Youtube Oregon Coast Whale Cam###https://www.youtube.com/watch?v=SkW_7QbB0bw
 -Youtube Otter Cam###https://www.youtube.com/watch?v=nR1Fi8H_yYM
 -Youtube Otter Feeding Cam###https://www.youtube.com/watch?v=q5v_xpjWddE
 -Youtube Owl Cam###https://www.youtube.com/watch?v=zHy1hEpjY4k
@@ -187,6 +201,7 @@
 -Youtube Red Fox Cam###https://www.youtube.com/watch?v=FjX9RYPJTF0
 -Youtube Red Fox Den Cam – Pennsylvania###https://www.youtube.com/watch?v=YuD_gdmBWXM
 -Youtube Red-tailed Hawk Nest Cam###https://www.youtube.com/watch?v=R4hlXwLZw9g
+-Youtube Redwoods National Park Cam###https://www.youtube.com/watch?v=bLX0GxO27qs
 -Youtube River Dolphin Cam###https://www.youtube.com/watch?v=RYs8pzog2UI
 -Youtube River Otter Cam###https://www.youtube.com/watch?v=z3qFgxmTvxg
 -Youtube River Rapids Cam###https://www.youtube.com/watch?v=aRxrJ_AWmHU
@@ -199,6 +214,8 @@
 -Youtube Sea Lion Cam – California Coast###https://www.youtube.com/watch?v=jp8vyvYbfGg
 -Youtube Sea Otter Cam – Monterey Bay Aquarium###https://www.youtube.com/watch?v=8o1XXFCUkQE
 -Youtube Sea Otter Cam###https://www.youtube.com/watch?v=8a-4m7z7J0I
+-Youtube Sea Otters at Monterey Bay###https://www.youtube.com/watch?v=Z9MTiDFXBwI
+-Youtube Sea Turtle Nest Cam – Costa Rica###https://www.youtube.com/watch?v=F8h5A6eZwKo
 -Youtube Sea Turtle Nesting Cam – Florida###https://www.youtube.com/watch?v=XYpzC-19elw
 -Youtube Seal Beach – California Coast###https://www.youtube.com/watch?v=Wz3WZ5z1ydc
 -Youtube Seal Cam###https://www.youtube.com/watch?v=jwTw2aEgKzA
@@ -221,6 +238,7 @@
 -Youtube Tiger Cam###https://www.youtube.com/watch?v=HKoFQhK-c8Y
 -Youtube Tiger Cubs Cam###https://www.youtube.com/watch?v=EFG7FfDfzVQ
 -Youtube Tokyo Shibuya Crossing Live###https://www.youtube.com/watch?v=QlYYojNR-qk
+-Youtube Tropical Reef Cam – Belize###https://www.youtube.com/watch?v=XFOZC7svEF0
 -Youtube Turtle Cam###https://www.youtube.com/watch?v=JuWkEDMrOlw
 -Youtube Turtle Hatchlings Cam###https://www.youtube.com/watch?v=2v9pRsWHDNE
 -Youtube Vancouver Aquarium Jellyfish Cam###https://www.youtube.com/watch?v=9I-q4o6EKuQ
@@ -228,6 +246,7 @@
 -Youtube Volcano Cam – Kilauea, Hawaii###https://www.youtube.com/watch?v=uL1rPtn1YJU
 -Youtube Volcano Cam###https://www.youtube.com/watch?v=jOGp37SVz8s
 -Youtube Volcano Eruption Cam###https://www.youtube.com/watch?v=l_9uV1RflYQ
+-Youtube Volcano Eruption Live Cam – Hawaii###https://www.youtube.com/watch?v=wTPQ3Kd_F0A
 -Youtube Water Buffalo Herd Cam###https://www.youtube.com/watch?v=24hkrWl-m24
 -Youtube Waterfall Cam###https://www.youtube.com/watch?v=YlnuGZPQxko
 -Youtube Waterhole Wildlife Cam – Namibia###https://www.youtube.com/watch?v=HtvnRTa1bKw
@@ -245,6 +264,7 @@
 -Youtube Woodpecker Nest Cam###https://www.youtube.com/watch?v=lcr0gRUBlHk
 -Youtube Yellowstone Bear Cam###https://www.youtube.com/watch?v=rQdd6XIDe3k
 -Youtube Yellowstone Elk Cam###https://www.youtube.com/watch?v=9UlRFzbd4YQ
+-Youtube Yellowstone Geyser Cam###https://www.youtube.com/watch?v=ZJRFJx4p7zg
 -Youtube Yellowstone Old Faithful Geyser###https://www.youtube.com/watch?v=KxjO9r69k_Q
 -Youtube Yellowstone River Cam###https://www.youtube.com/watch?v=O-tGgMl3ND4
 -Youtube Yosemite Bear Cam###https://www.youtube.com/watch?v=3Q9P-Dv0Tns

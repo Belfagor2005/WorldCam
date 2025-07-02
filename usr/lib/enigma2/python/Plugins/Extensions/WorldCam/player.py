@@ -3,21 +3,21 @@
 from __future__ import absolute_import, print_function
 """
 #########################################################
-#                                                        #
-#  Worldcam Player from Plugin                            #
-#  Completely rewritten and optimized in version *5.0*    #
-#  Version: 5.6                                            #
+#                                                       #
+#  Worldcam Player from Plugin                          #
+#  Completely rewritten and optimized in version *5.0*  #
+#  Version: 5.6                                         #
 #  Created by Lululla (https://github.com/Belfagor2005) #
-#  License: CC BY-NC-SA 4.0                                #
+#  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
 #  Last Modified: "14:34 - 20250629"                    #
-#                                                        #
-#  Credits:                                                #
-#  - Original concept Lululla                            #
+#                                                       #
+#  Credits:                                             #
+#  - Original concept Lululla                           #
 #  Usage of this code without proper attribution        #
-#  is strictly prohibited.                                #
+#  is strictly prohibited.                              #
 #  For modifications and redistribution,                #
-#  please maintain this credit header.                    #
+#  please maintain this credit header.                  #
 #########################################################
 """
 __author__ = "Lululla"
@@ -29,7 +29,6 @@ from re import IGNORECASE, search
 
 from Components.ActionMap import ActionMap
 from Components.ServiceEventTracker import InfoBarBase, ServiceEventTracker
-# from Components.Label import Label
 from Components.config import config
 from enigma import eServiceReference, eTimer, iPlayableService, getDesktop
 from Screens.InfoBarGenerics import (
@@ -45,14 +44,8 @@ from Screens.Screen import Screen
 from . import _
 from .scraper import SkylineScraper
 from .utils import (
-    # urlparse,
-    # parse_qs,
-    # quote,
     unquote,
     is_ytdlp_available,
-    # is_streamlink_available,
-    # is_exteplayer3_Available,
-    # is_streamlinkproxy_available,
     disable_summary,
     FavoritesManager,
     AspectManager,
@@ -61,13 +54,6 @@ from .utils import (
 
 PLUGIN_PATH = dirname(__file__)
 screen_width = getDesktop(0).size().width()
-
-"""
-try:
-    import dataclasses
-except ImportError:
-    Logger().error("Failed to import 'dataclasses'")
-"""
 
 yt_dlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp"
 if yt_dlp_path not in sys.path:
@@ -513,10 +499,10 @@ class WorldCamPlayer(
 
                 # Determine service type
                 if '.m3u8' in stream_url.lower():
-                    service_type = 5001     # HLS
+                    service_type = 5001  # HLS
                     self.logger.info("Detected HLS stream")
                 else:
-                    service_type = 4097     # HTTP
+                    service_type = 4097  # HTTP
                     self.logger.info("Detected HTTP stream")
 
                 service = eServiceReference(service_type, 0, stream_url)
@@ -568,7 +554,7 @@ class WorldCamPlayer(
                 match = search(pattern, decoded_url, IGNORECASE)
                 if match:
                     return match.group(1)
-
+                    
             return None
         except Exception as e:
             self.logger.error(f"URL decoding failed: {str(e)}")
@@ -598,9 +584,9 @@ class WorldCamPlayer(
 
             # Determine service type
             if '.m3u8' in stream_url.lower() or stream_url.lower().startswith('http'):
-                service_type = 5001     # HLS
+                service_type = 5001  # HLS
             else:
-                service_type = 4097     # HTTP
+                service_type = 4097  # HTTP
 
             service = eServiceReference(service_type, 0, stream_url)
             service.setName(title)
