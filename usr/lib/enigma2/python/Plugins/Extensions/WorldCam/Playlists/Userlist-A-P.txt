@@ -1,0 +1,651 @@
+AFRICA Webcam 004###https://outbound-production.explore.org/stream-production-4.m3u8
+AFRICA Webcam 005###https://outbound-production.explore.org/stream-production-5.m3u8
+AFRICA Webcam 008###https://outbound-production.explore.org/stream-production-8.m3u8
+AFRICA Webcam 009###https://outbound-production.explore.org/stream-production-9.m3u8
+AFRICA Webcam 010###https://outbound-production.explore.org/stream-production-010.m3u8
+AFRICA Webcam 011###https://outbound-production.explore.org/stream-production-011.m3u8
+AFRICA Webcam 012###https://outbound-production.explore.org/stream-production-012.m3u8
+AFRICA Webcam 013###https://outbound-production.explore.org/stream-production-013.m3u8
+AFRICA Webcam 014###https://outbound-production.explore.org/stream-production-014.m3u8
+AFRICA Webcam 015###https://outbound-production.explore.org/stream-production-015.m3u8
+AFRICA Webcam 016###https://outbound-production.explore.org/stream-production-016.m3u8
+AFRICA Webcam 017###https://outbound-production.explore.org/stream-production-017.m3u8
+AFRICA Webcam 018###https://outbound-production.explore.org/stream-production-018.m3u8
+AFRICA Webcam 024###https://outbound-production.explore.org/stream-production-024.m3u8
+AFRICA Webcam 10###https://outbound-production.explore.org/stream-production-10.m3u8
+AFRICA Webcam 100###https://outbound-production.explore.org/stream-production-100.m3u8
+AFRICA Webcam 101###https://outbound-production.explore.org/stream-production-101.m3u8
+AFRICA Webcam 103###https://outbound-production.explore.org/stream-production-103.m3u8
+AFRICA Webcam 104###https://outbound-production.explore.org/stream-production-104.m3u8
+AFRICA Webcam 105###https://outbound-production.explore.org/stream-production-105.m3u8
+AFRICA Webcam 106###https://outbound-production.explore.org/stream-production-106.m3u8
+AFRICA Webcam 107###https://outbound-production.explore.org/stream-production-107.m3u8
+AFRICA Webcam 108###https://outbound-production.explore.org/stream-production-108.m3u8
+AFRICA Webcam 109###https://outbound-production.explore.org/stream-production-109.m3u8
+AFRICA Webcam 11###https://outbound-production.explore.org/stream-production-11.m3u8
+AFRICA Webcam 110###https://outbound-production.explore.org/stream-production-110.m3u8
+AFRICA Webcam 111###https://outbound-production.explore.org/stream-production-111.m3u8
+AFRICA Webcam 112###https://outbound-production.explore.org/stream-production-112.m3u8
+AFRICA Webcam 112###https://outbound-production.explore.org/stream-production-112.m3u8
+AFRICA Webcam 113###https://outbound-production.explore.org/stream-production-113.m3u8
+AFRICA Webcam 113###https://outbound-production.explore.org/stream-production-113.m3u8
+AFRICA Webcam 114###https://outbound-production.explore.org/stream-production-114.m3u8
+AFRICA Webcam 114###https://outbound-production.explore.org/stream-production-114.m3u8
+AFRICA Webcam 115###https://outbound-production.explore.org/stream-production-115.m3u8
+AFRICA Webcam 115###https://outbound-production.explore.org/stream-production-115.m3u8
+AFRICA Webcam 116###https://outbound-production.explore.org/stream-production-116.m3u8
+AFRICA Webcam 116###https://outbound-production.explore.org/stream-production-116.m3u8
+AFRICA Webcam 117###https://outbound-production.explore.org/stream-production-117.m3u8
+AFRICA Webcam 117###https://outbound-production.explore.org/stream-production-117.m3u8
+AFRICA Webcam 118###https://outbound-production.explore.org/stream-production-118.m3u8
+AFRICA Webcam 118###https://outbound-production.explore.org/stream-production-118.m3u8
+AFRICA Webcam 119###https://outbound-production.explore.org/stream-production-119.m3u8
+AFRICA Webcam 119###https://outbound-production.explore.org/stream-production-119.m3u8
+AFRICA Webcam 12###https://outbound-production.explore.org/stream-production-12.m3u8
+AFRICA Webcam 120###https://outbound-production.explore.org/stream-production-120.m3u8
+AFRICA Webcam 120###https://outbound-production.explore.org/stream-production-120.m3u8
+AFRICA Webcam 121###https://outbound-production.explore.org/stream-production-121.m3u8
+AFRICA Webcam 121###https://outbound-production.explore.org/stream-production-121.m3u8
+AFRICA Webcam 122###https://outbound-production.explore.org/stream-production-122.m3u8
+AFRICA Webcam 122###https://outbound-production.explore.org/stream-production-122.m3u8
+AFRICA Webcam 123###https://outbound-production.explore.org/stream-production-123.m3u8
+AFRICA Webcam 123###https://outbound-production.explore.org/stream-production-123.m3u8
+AFRICA Webcam 124###https://outbound-production.explore.org/stream-production-124.m3u8
+AFRICA Webcam 124###https://outbound-production.explore.org/stream-production-124.m3u8
+AFRICA Webcam 125###https://outbound-production.explore.org/stream-production-125.m3u8
+AFRICA Webcam 125###https://outbound-production.explore.org/stream-production-125.m3u8
+AFRICA Webcam 126###https://outbound-production.explore.org/stream-production-126.m3u8
+AFRICA Webcam 126###https://outbound-production.explore.org/stream-production-126.m3u8
+AFRICA Webcam 127###https://outbound-production.explore.org/stream-production-127.m3u8
+AFRICA Webcam 127###https://outbound-production.explore.org/stream-production-127.m3u8
+AFRICA Webcam 13###https://outbound-production.explore.org/stream-production-13.m3u8
+AFRICA Webcam 14###https://outbound-production.explore.org/stream-production-14.m3u8
+AFRICA Webcam 15###https://outbound-production.explore.org/stream-production-15.m3u8
+AFRICA Webcam 16###https://outbound-production.explore.org/stream-production-16.m3u8
+AFRICA Webcam 160###https://outbound-production.explore.org/stream-production-160.m3u8
+AFRICA Webcam 160###https://outbound-production.explore.org/stream-production-160.m3u8
+AFRICA Webcam 161###https://outbound-production.explore.org/stream-production-161.m3u8
+AFRICA Webcam 161###https://outbound-production.explore.org/stream-production-161.m3u8
+AFRICA Webcam 162###https://outbound-production.explore.org/stream-production-162.m3u8
+AFRICA Webcam 162###https://outbound-production.explore.org/stream-production-162.m3u8
+AFRICA Webcam 163###https://outbound-production.explore.org/stream-production-163.m3u8
+AFRICA Webcam 163###https://outbound-production.explore.org/stream-production-163.m3u8
+AFRICA Webcam 164###https://outbound-production.explore.org/stream-production-164.m3u8
+AFRICA Webcam 164###https://outbound-production.explore.org/stream-production-164.m3u8
+AFRICA Webcam 165###https://outbound-production.explore.org/stream-production-165.m3u8
+AFRICA Webcam 165###https://outbound-production.explore.org/stream-production-165.m3u8
+AFRICA Webcam 166###https://outbound-production.explore.org/stream-production-166.m3u8
+AFRICA Webcam 166###https://outbound-production.explore.org/stream-production-166.m3u8
+AFRICA Webcam 167###https://outbound-production.explore.org/stream-production-167.m3u8
+AFRICA Webcam 167###https://outbound-production.explore.org/stream-production-167.m3u8
+AFRICA Webcam 168###https://outbound-production.explore.org/stream-production-168.m3u8
+AFRICA Webcam 168###https://outbound-production.explore.org/stream-production-168.m3u8
+AFRICA Webcam 169###https://outbound-production.explore.org/stream-production-169.m3u8
+AFRICA Webcam 169###https://outbound-production.explore.org/stream-production-169.m3u8
+AFRICA Webcam 17###https://outbound-production.explore.org/stream-production-17.m3u8
+AFRICA Webcam 170###https://outbound-production.explore.org/stream-production-170.m3u8
+AFRICA Webcam 170###https://outbound-production.explore.org/stream-production-170.m3u8
+AFRICA Webcam 171###https://outbound-production.explore.org/stream-production-171.m3u8
+AFRICA Webcam 171###https://outbound-production.explore.org/stream-production-171.m3u8
+AFRICA Webcam 172###https://outbound-production.explore.org/stream-production-172.m3u8
+AFRICA Webcam 172###https://outbound-production.explore.org/stream-production-172.m3u8
+AFRICA Webcam 173###https://outbound-production.explore.org/stream-production-173.m3u8
+AFRICA Webcam 173###https://outbound-production.explore.org/stream-production-173.m3u8
+AFRICA Webcam 174###https://outbound-production.explore.org/stream-production-174.m3u8
+AFRICA Webcam 174###https://outbound-production.explore.org/stream-production-174.m3u8
+AFRICA Webcam 175###https://outbound-production.explore.org/stream-production-175.m3u8
+AFRICA Webcam 175###https://outbound-production.explore.org/stream-production-175.m3u8
+AFRICA Webcam 176###https://outbound-production.explore.org/stream-production-176.m3u8
+AFRICA Webcam 176###https://outbound-production.explore.org/stream-production-176.m3u8
+AFRICA Webcam 177###https://outbound-production.explore.org/stream-production-177.m3u8
+AFRICA Webcam 177###https://outbound-production.explore.org/stream-production-177.m3u8
+AFRICA Webcam 178###https://outbound-production.explore.org/stream-production-178.m3u8
+AFRICA Webcam 178###https://outbound-production.explore.org/stream-production-178.m3u8
+AFRICA Webcam 179###https://outbound-production.explore.org/stream-production-179.m3u8
+AFRICA Webcam 179###https://outbound-production.explore.org/stream-production-179.m3u8
+AFRICA Webcam 18###https://outbound-production.explore.org/stream-production-18.m3u8
+AFRICA Webcam 180###https://outbound-production.explore.org/stream-production-180.m3u8
+AFRICA Webcam 181###https://outbound-production.explore.org/stream-production-181.m3u8
+AFRICA Webcam 181###https://outbound-production.explore.org/stream-production-181.m3u8
+AFRICA Webcam 183###https://outbound-production.explore.org/stream-production-183.m3u8
+AFRICA Webcam 183###https://outbound-production.explore.org/stream-production-183.m3u8
+AFRICA Webcam 184###https://outbound-production.explore.org/stream-production-184.m3u8
+AFRICA Webcam 184###https://outbound-production.explore.org/stream-production-184.m3u8
+AFRICA Webcam 185###https://outbound-production.explore.org/stream-production-185.m3u8
+AFRICA Webcam 185###https://outbound-production.explore.org/stream-production-185.m3u8
+AFRICA Webcam 186###https://outbound-production.explore.org/stream-production-186.m3u8
+AFRICA Webcam 186###https://outbound-production.explore.org/stream-production-186.m3u8
+AFRICA Webcam 187###https://outbound-production.explore.org/stream-production-187.m3u8
+AFRICA Webcam 187###https://outbound-production.explore.org/stream-production-187.m3u8
+AFRICA Webcam 188###https://outbound-production.explore.org/stream-production-188.m3u8
+AFRICA Webcam 188###https://outbound-production.explore.org/stream-production-188.m3u8
+AFRICA Webcam 189###https://outbound-production.explore.org/stream-production-189.m3u8
+AFRICA Webcam 189###https://outbound-production.explore.org/stream-production-189.m3u8
+AFRICA Webcam 19###https://outbound-production.explore.org/stream-production-19.m3u8
+AFRICA Webcam 190###https://outbound-production.explore.org/stream-production-190.m3u8
+AFRICA Webcam 190###https://outbound-production.explore.org/stream-production-190.m3u8
+AFRICA Webcam 191###https://outbound-production.explore.org/stream-production-191.m3u8
+AFRICA Webcam 191###https://outbound-production.explore.org/stream-production-191.m3u8
+AFRICA Webcam 192###https://outbound-production.explore.org/stream-production-192.m3u8
+AFRICA Webcam 192###https://outbound-production.explore.org/stream-production-192.m3u8
+AFRICA Webcam 193###https://outbound-production.explore.org/stream-production-193.m3u8
+AFRICA Webcam 193###https://outbound-production.explore.org/stream-production-193.m3u8
+AFRICA Webcam 196###https://outbound-production.explore.org/stream-production-196.m3u8
+AFRICA Webcam 196###https://outbound-production.explore.org/stream-production-196.m3u8
+AFRICA Webcam 197###https://outbound-production.explore.org/stream-production-197.m3u8
+AFRICA Webcam 197###https://outbound-production.explore.org/stream-production-197.m3u8
+AFRICA Webcam 198###https://outbound-production.explore.org/stream-production-198.m3u8
+AFRICA Webcam 198###https://outbound-production.explore.org/stream-production-198.m3u8
+AFRICA Webcam 199###https://outbound-production.explore.org/stream-production-199.m3u8
+AFRICA Webcam 199###https://outbound-production.explore.org/stream-production-199.m3u8
+AFRICA Webcam 20###https://outbound-production.explore.org/stream-production-20.m3u8
+AFRICA Webcam 201###https://outbound-production.explore.org/stream-production-201.m3u8
+AFRICA Webcam 201###https://outbound-production.explore.org/stream-production-201.m3u8
+AFRICA Webcam 202###https://outbound-production.explore.org/stream-production-202.m3u8
+AFRICA Webcam 202###https://outbound-production.explore.org/stream-production-202.m3u8
+AFRICA Webcam 203###https://outbound-production.explore.org/stream-production-203.m3u8
+AFRICA Webcam 203###https://outbound-production.explore.org/stream-production-203.m3u8
+AFRICA Webcam 204###https://outbound-production.explore.org/stream-production-204.m3u8
+AFRICA Webcam 204###https://outbound-production.explore.org/stream-production-204.m3u8
+AFRICA Webcam 205###https://outbound-production.explore.org/stream-production-205.m3u8
+AFRICA Webcam 205###https://outbound-production.explore.org/stream-production-205.m3u8
+AFRICA Webcam 206###https://outbound-production.explore.org/stream-production-206.m3u8
+AFRICA Webcam 206###https://outbound-production.explore.org/stream-production-206.m3u8
+AFRICA Webcam 207###https://outbound-production.explore.org/stream-production-207.m3u8
+AFRICA Webcam 207###https://outbound-production.explore.org/stream-production-207.m3u8
+AFRICA Webcam 208###https://outbound-production.explore.org/stream-production-208.m3u8
+AFRICA Webcam 208###https://outbound-production.explore.org/stream-production-208.m3u8
+AFRICA Webcam 209###https://outbound-production.explore.org/stream-production-209.m3u8
+AFRICA Webcam 209###https://outbound-production.explore.org/stream-production-209.m3u8
+AFRICA Webcam 21###https://outbound-production.explore.org/stream-production-21.m3u8
+AFRICA Webcam 210###https://outbound-production.explore.org/stream-production-210.m3u8
+AFRICA Webcam 210###https://outbound-production.explore.org/stream-production-210.m3u8
+AFRICA Webcam 211###https://outbound-production.explore.org/stream-production-211.m3u8
+AFRICA Webcam 211###https://outbound-production.explore.org/stream-production-211.m3u8
+AFRICA Webcam 212###https://outbound-production.explore.org/stream-production-212.m3u8
+AFRICA Webcam 212###https://outbound-production.explore.org/stream-production-212.m3u8
+AFRICA Webcam 213###https://outbound-production.explore.org/stream-production-213.m3u8
+AFRICA Webcam 213###https://outbound-production.explore.org/stream-production-213.m3u8
+AFRICA Webcam 214###https://outbound-production.explore.org/stream-production-214.m3u8
+AFRICA Webcam 214###https://outbound-production.explore.org/stream-production-214.m3u8
+AFRICA Webcam 215###https://outbound-production.explore.org/stream-production-215.m3u8
+AFRICA Webcam 215###https://outbound-production.explore.org/stream-production-215.m3u8
+AFRICA Webcam 216###https://outbound-production.explore.org/stream-production-216.m3u8
+AFRICA Webcam 216###https://outbound-production.explore.org/stream-production-216.m3u8
+AFRICA Webcam 217###https://outbound-production.explore.org/stream-production-217.m3u8
+AFRICA Webcam 217###https://outbound-production.explore.org/stream-production-217.m3u8
+AFRICA Webcam 218###https://outbound-production.explore.org/stream-production-218.m3u8
+AFRICA Webcam 218###https://outbound-production.explore.org/stream-production-218.m3u8
+AFRICA Webcam 219###https://outbound-production.explore.org/stream-production-219.m3u8
+AFRICA Webcam 219###https://outbound-production.explore.org/stream-production-219.m3u8
+AFRICA Webcam 22###https://outbound-production.explore.org/stream-production-22.m3u8
+AFRICA Webcam 220###https://outbound-production.explore.org/stream-production-220.m3u8
+AFRICA Webcam 220###https://outbound-production.explore.org/stream-production-220.m3u8
+AFRICA Webcam 221###https://outbound-production.explore.org/stream-production-221.m3u8
+AFRICA Webcam 221###https://outbound-production.explore.org/stream-production-221.m3u8
+AFRICA Webcam 222###https://outbound-production.explore.org/stream-production-222.m3u8
+AFRICA Webcam 222###https://outbound-production.explore.org/stream-production-222.m3u8
+AFRICA Webcam 223###https://outbound-production.explore.org/stream-production-223.m3u8
+AFRICA Webcam 223###https://outbound-production.explore.org/stream-production-223.m3u8
+AFRICA Webcam 23###https://outbound-production.explore.org/stream-production-23.m3u8
+AFRICA Webcam 24###https://outbound-production.explore.org/stream-production-24.m3u8
+AFRICA Webcam 242###https://outbound-production.explore.org/stream-production-242.m3u8
+AFRICA Webcam 242###https://outbound-production.explore.org/stream-production-242.m3u8
+AFRICA Webcam 243###https://outbound-production.explore.org/stream-production-243.m3u8
+AFRICA Webcam 243###https://outbound-production.explore.org/stream-production-243.m3u8
+AFRICA Webcam 25###https://outbound-production.explore.org/stream-production-25.m3u8
+AFRICA Webcam 26###https://outbound-production.explore.org/stream-production-26.m3u8
+AFRICA Webcam 27###https://outbound-production.explore.org/stream-production-27.m3u8
+AFRICA Webcam 276###https://outbound-production.explore.org/stream-production-276.m3u8
+AFRICA Webcam 276###https://outbound-production.explore.org/stream-production-276.m3u8
+AFRICA Webcam 278###https://outbound-production.explore.org/stream-production-278.m3u8
+AFRICA Webcam 278###https://outbound-production.explore.org/stream-production-278.m3u8
+AFRICA Webcam 28###https://outbound-production.explore.org/stream-production-28.m3u8
+AFRICA Webcam 280###https://outbound-production.explore.org/stream-production-280.m3u8
+AFRICA Webcam 280###https://outbound-production.explore.org/stream-production-280.m3u8
+AFRICA Webcam 29###https://outbound-production.explore.org/stream-production-29.m3u8
+AFRICA Webcam 30###https://outbound-production.explore.org/stream-production-30.m3u8
+AFRICA Webcam 31###https://outbound-production.explore.org/stream-production-31.m3u8
+AFRICA Webcam 315###https://outbound-production.explore.org/stream-production-315.m3u8
+AFRICA Webcam 315###https://outbound-production.explore.org/stream-production-315.m3u8
+AFRICA Webcam 316###https://outbound-production.explore.org/stream-production-316.m3u8
+AFRICA Webcam 316###https://outbound-production.explore.org/stream-production-316.m3u8
+AFRICA Webcam 317###https://outbound-production.explore.org/stream-production-317.m3u8
+AFRICA Webcam 317###https://outbound-production.explore.org/stream-production-317.m3u8
+AFRICA Webcam 318###https://outbound-production.explore.org/stream-production-318.m3u8
+AFRICA Webcam 318###https://outbound-production.explore.org/stream-production-318.m3u8
+AFRICA Webcam 319###https://outbound-production.explore.org/stream-production-319.m3u8
+AFRICA Webcam 319###https://outbound-production.explore.org/stream-production-319.m3u8
+AFRICA Webcam 32###https://outbound-production.explore.org/stream-production-32.m3u8
+AFRICA Webcam 320###https://outbound-production.explore.org/stream-production-320.m3u8
+AFRICA Webcam 320###https://outbound-production.explore.org/stream-production-320.m3u8
+AFRICA Webcam 321###https://outbound-production.explore.org/stream-production-321.m3u8
+AFRICA Webcam 321###https://outbound-production.explore.org/stream-production-321.m3u8
+AFRICA Webcam 322###https://outbound-production.explore.org/stream-production-322.m3u8
+AFRICA Webcam 322###https://outbound-production.explore.org/stream-production-322.m3u8
+AFRICA Webcam 33###https://outbound-production.explore.org/stream-production-33.m3u8
+AFRICA Webcam 34###https://outbound-production.explore.org/stream-production-34.m3u8
+AFRICA Webcam 35###https://outbound-production.explore.org/stream-production-35.m3u8
+AFRICA Webcam 355###https://outbound-production.explore.org/stream-production-355.m3u8
+AFRICA Webcam 355###https://outbound-production.explore.org/stream-production-355.m3u8
+AFRICA Webcam 356###https://outbound-production.explore.org/stream-production-356.m3u8
+AFRICA Webcam 356###https://outbound-production.explore.org/stream-production-356.m3u8
+AFRICA Webcam 357###https://outbound-production.explore.org/stream-production-357.m3u8
+AFRICA Webcam 357###https://outbound-production.explore.org/stream-production-357.m3u8
+AFRICA Webcam 36###https://outbound-production.explore.org/stream-production-36.m3u8
+AFRICA Webcam 37###https://outbound-production.explore.org/stream-production-37.m3u8
+AFRICA Webcam 38###https://outbound-production.explore.org/stream-production-38.m3u8
+AFRICA Webcam 39###https://outbound-production.explore.org/stream-production-39.m3u8
+AFRICA Webcam 390###https://outbound-production.explore.org/stream-production-390.m3u8
+AFRICA Webcam 390###https://outbound-production.explore.org/stream-production-390.m3u8
+AFRICA Webcam 4###https://outbound-production.explore.org/stream-production-4.m3u8
+AFRICA Webcam 40###https://outbound-production.explore.org/stream-production-40.m3u8
+AFRICA Webcam 41###https://outbound-production.explore.org/stream-production-41.m3u8
+AFRICA Webcam 42###https://outbound-production.explore.org/stream-production-42.m3u8
+AFRICA Webcam 426###https://outbound-production.explore.org/stream-production-426.m3u8
+AFRICA Webcam 426###https://outbound-production.explore.org/stream-production-426.m3u8
+AFRICA Webcam 44###https://outbound-production.explore.org/stream-production-44.m3u8
+AFRICA Webcam 45###https://outbound-production.explore.org/stream-production-45.m3u8
+AFRICA Webcam 456###https://outbound-production.explore.org/stream-production-456.m3u8
+AFRICA Webcam 456###https://outbound-production.explore.org/stream-production-456.m3u8
+AFRICA Webcam 46###https://outbound-production.explore.org/stream-production-46.m3u8
+AFRICA Webcam 47###https://outbound-production.explore.org/stream-production-47.m3u8
+AFRICA Webcam 48###https://outbound-production.explore.org/stream-production-48.m3u8
+AFRICA Webcam 489###https://outbound-production.explore.org/stream-production-489.m3u8
+AFRICA Webcam 489###https://outbound-production.explore.org/stream-production-489.m3u8
+AFRICA Webcam 49###https://outbound-production.explore.org/stream-production-49.m3u8
+AFRICA Webcam 490###https://outbound-production.explore.org/stream-production-490.m3u8
+AFRICA Webcam 490###https://outbound-production.explore.org/stream-production-490.m3u8
+AFRICA Webcam 5###https://outbound-production.explore.org/stream-production-5.m3u8
+AFRICA Webcam 50###https://outbound-production.explore.org/stream-production-50.m3u8
+AFRICA Webcam 522###https://outbound-production.explore.org/stream-production-522.m3u8
+AFRICA Webcam 522###https://outbound-production.explore.org/stream-production-522.m3u8
+AFRICA Webcam 523###https://outbound-production.explore.org/stream-production-523.m3u8
+AFRICA Webcam 523###https://outbound-production.explore.org/stream-production-523.m3u8
+AFRICA Webcam 53###https://outbound-production.explore.org/stream-production-53.m3u8
+AFRICA Webcam 54###https://outbound-production.explore.org/stream-production-54.m3u8
+AFRICA Webcam 55###https://outbound-production.explore.org/stream-production-55.m3u8
+AFRICA Webcam 555###https://outbound-production.explore.org/stream-production-555.m3u8
+AFRICA Webcam 555###https://outbound-production.explore.org/stream-production-555.m3u8
+AFRICA Webcam 556###https://outbound-production.explore.org/stream-production-556.m3u8
+AFRICA Webcam 556###https://outbound-production.explore.org/stream-production-556.m3u8
+AFRICA Webcam 557###https://outbound-production.explore.org/stream-production-557.m3u8
+AFRICA Webcam 557###https://outbound-production.explore.org/stream-production-557.m3u8
+AFRICA Webcam 558###https://outbound-production.explore.org/stream-production-558.m3u8
+AFRICA Webcam 558###https://outbound-production.explore.org/stream-production-558.m3u8
+AFRICA Webcam 559###https://outbound-production.explore.org/stream-production-559.m3u8
+AFRICA Webcam 559###https://outbound-production.explore.org/stream-production-559.m3u8
+AFRICA Webcam 56###https://outbound-production.explore.org/stream-production-56.m3u8
+AFRICA Webcam 560###https://outbound-production.explore.org/stream-production-560.m3u8
+AFRICA Webcam 560###https://outbound-production.explore.org/stream-production-560.m3u8
+AFRICA Webcam 561###https://outbound-production.explore.org/stream-production-561.m3u8
+AFRICA Webcam 561###https://outbound-production.explore.org/stream-production-561.m3u8
+AFRICA Webcam 563###https://outbound-production.explore.org/stream-production-563.m3u8
+AFRICA Webcam 563###https://outbound-production.explore.org/stream-production-563.m3u8
+AFRICA Webcam 564###https://outbound-production.explore.org/stream-production-564.m3u8
+AFRICA Webcam 564###https://outbound-production.explore.org/stream-production-564.m3u8
+AFRICA Webcam 565###https://outbound-production.explore.org/stream-production-565.m3u8
+AFRICA Webcam 565###https://outbound-production.explore.org/stream-production-565.m3u8
+AFRICA Webcam 57###https://outbound-production.explore.org/stream-production-57.m3u8
+AFRICA Webcam 58###https://outbound-production.explore.org/stream-production-58.m3u8
+AFRICA Webcam 588###https://outbound-production.explore.org/stream-production-588.m3u8
+AFRICA Webcam 588###https://outbound-production.explore.org/stream-production-588.m3u8
+AFRICA Webcam 589###https://outbound-production.explore.org/stream-production-589.m3u8
+AFRICA Webcam 589###https://outbound-production.explore.org/stream-production-589.m3u8
+AFRICA Webcam 59###https://outbound-production.explore.org/stream-production-59.m3u8
+AFRICA Webcam 590###https://outbound-production.explore.org/stream-production-590.m3u8
+AFRICA Webcam 590###https://outbound-production.explore.org/stream-production-590.m3u8
+AFRICA Webcam 591###https://outbound-production.explore.org/stream-production-591.m3u8
+AFRICA Webcam 591###https://outbound-production.explore.org/stream-production-591.m3u8
+AFRICA Webcam 60###https://outbound-production.explore.org/stream-production-60.m3u8
+AFRICA Webcam 61###https://outbound-production.explore.org/stream-production-61.m3u8
+AFRICA Webcam 62###https://outbound-production.explore.org/stream-production-62.m3u8
+AFRICA Webcam 621###https://outbound-production.explore.org/stream-production-621.m3u8
+AFRICA Webcam 621###https://outbound-production.explore.org/stream-production-621.m3u8
+AFRICA Webcam 622###https://outbound-production.explore.org/stream-production-622.m3u8
+AFRICA Webcam 622###https://outbound-production.explore.org/stream-production-622.m3u8
+AFRICA Webcam 63###https://outbound-production.explore.org/stream-production-63.m3u8
+AFRICA Webcam 64###https://outbound-production.explore.org/stream-production-64.m3u8
+AFRICA Webcam 65###https://outbound-production.explore.org/stream-production-65.m3u8
+AFRICA Webcam 66###https://outbound-production.explore.org/stream-production-66.m3u8
+AFRICA Webcam 67###https://outbound-production.explore.org/stream-production-67.m3u8
+AFRICA Webcam 68###https://outbound-production.explore.org/stream-production-68.m3u8
+AFRICA Webcam 69###https://outbound-production.explore.org/stream-production-69.m3u8
+AFRICA Webcam 70###https://outbound-production.explore.org/stream-production-70.m3u8
+AFRICA Webcam 71###https://outbound-production.explore.org/stream-production-71.m3u8
+AFRICA Webcam 72###https://outbound-production.explore.org/stream-production-72.m3u8
+AFRICA Webcam 73###https://outbound-production.explore.org/stream-production-73.m3u8
+AFRICA Webcam 74###https://outbound-production.explore.org/stream-production-74.m3u8
+AFRICA Webcam 75###https://outbound-production.explore.org/stream-production-75.m3u8
+AFRICA Webcam 76###https://outbound-production.explore.org/stream-production-76.m3u8
+AFRICA Webcam 77###https://outbound-production.explore.org/stream-production-77.m3u8
+AFRICA Webcam 78###https://outbound-production.explore.org/stream-production-78.m3u8
+AFRICA Webcam 79###https://outbound-production.explore.org/stream-production-79.m3u8
+AFRICA Webcam 8###https://outbound-production.explore.org/stream-production-8.m3u8
+AFRICA Webcam 80###https://outbound-production.explore.org/stream-production-80.m3u8
+AFRICA Webcam 81###https://outbound-production.explore.org/stream-production-81.m3u8
+AFRICA Webcam 82###https://outbound-production.explore.org/stream-production-82.m3u8
+AFRICA Webcam 83###https://outbound-production.explore.org/stream-production-83.m3u8
+AFRICA Webcam 84###https://outbound-production.explore.org/stream-production-84.m3u8
+AFRICA Webcam 85###https://outbound-production.explore.org/stream-production-85.m3u8
+AFRICA Webcam 86###https://outbound-production.explore.org/stream-production-86.m3u8
+AFRICA Webcam 87###https://outbound-production.explore.org/stream-production-87.m3u8
+AFRICA Webcam 88###https://outbound-production.explore.org/stream-production-88.m3u8
+AFRICA Webcam 89###https://outbound-production.explore.org/stream-production-89.m3u8
+AFRICA Webcam 9###https://outbound-production.explore.org/stream-production-9.m3u8
+AFRICA Webcam 90###https://outbound-production.explore.org/stream-production-90.m3u8
+AFRICA Webcam 91###https://outbound-production.explore.org/stream-production-91.m3u8
+AFRICA Webcam 92###https://outbound-production.explore.org/stream-production-92.m3u8
+AFRICA Webcam 93###https://outbound-production.explore.org/stream-production-93.m3u8
+AFRICA Webcam 94###https://outbound-production.explore.org/stream-production-94.m3u8
+AFRICA Webcam 95###https://outbound-production.explore.org/stream-production-95.m3u8
+AFRICA Webcam 97###https://outbound-production.explore.org/stream-production-97.m3u8
+AFRICA Webcam 98###https://outbound-production.explore.org/stream-production-98.m3u8
+AFRICA Webcam 99###https://outbound-production.explore.org/stream-production-99.m3u8
+ASIA CHINA Webcam 北京-水立方###http://gcalic.v.myalicdn.com/gc/gccntv241-slf01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 北京-黄花城水长城01###https://gcalic.v.myalicdn.com/gc/wgw01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 北京-黄花城水长城02###https://gcalic.v.myalicdn.com/gc/wgw02_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 北京-黄花城水长城03###https://gcalic.v.myalicdn.com/gc/wgw03_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 大丰麋鹿###http://gcalic.v.myalicdn.com/gc/xiongmao23_1/index.m3u8
+ASIA CHINA Webcam 安徽-九华山###https://gcalic.v.myalicdn.com/gc/jhs05_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-九华山花台###https://gcalic.v.myalicdn.com/gc/jhs01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-宏村南湖###https://gcalic.v.myalicdn.com/gc/yxhcnh_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-西递牌坊###https://gcalic.v.myalicdn.com/gc/yxxdpf_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-黄山###https://gcalic.v.myalicdn.com/gc/ahhs01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-黄山卧云峰###https://gcalic.v.myalicdn.com/gc/hswlf_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-黄山始信新道###https://gcalic.v.myalicdn.com/gc/hsyg_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-黄山排云亭###https://gcalic.v.myalicdn.com/gc/hspyt_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-黄山飞来石###https://gcalic.v.myalicdn.com/gc/hsptgy_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 安徽-黟县芦村远眺###https://gcalic.v.myalicdn.com/gc/yxlcyt_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-南天门###https://gcalic.v.myalicdn.com/gc/hkts07_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-太平岭###https://gcalic.v.myalicdn.com/gc/hkts09_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-泰山主峰###https://gcalic.v.myalicdn.com/gc/taishan01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-泰山十八盘###https://gcalic.v.myalicdn.com/gc/taishan05_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-泰山大观峰###https://gcalic.v.myalicdn.com/gc/taishan03_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-泰山玉皇顶###https://gcalic.v.myalicdn.com/gc/taishan06_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-白云亭悬崖###https://gcalic.v.myalicdn.com/gc/hkts02_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 山东-碧霞祠###https://gcalic.v.myalicdn.com/gc/hkts03_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 广东-东莞中心广场###https://gcalic.v.myalicdn.com/gc/zsslstpt_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 怡然②###http://gcalic.v.myalicdn.com/gc/xiongmao18_1/index.m3u8
+ASIA CHINA Webcam 成都高清###http://gcalic.v.myalicdn.com/gc/ipanda_1td/index.m3u8
+ASIA CHINA Webcam 江苏-南京牛首山###https://gcalic.v.myalicdn.com/gc/nss01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 江苏-南京玄武湖公园###https://gcalic.v.myalicdn.com/gc/xwh01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 江苏-徐州云龙湖观景台西###https://gcalic.v.myalicdn.com/gc/ylh04_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 江苏-无锡鼋头渚赏樱阁###https://gcalic.v.myalicdn.com/gc/pshdxg01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 河南-八里沟天界山玻璃栈道###https://gcalic.v.myalicdn.com/gc/blg03_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 河南-八里沟桃花湾瀑布###https://gcalic.v.myalicdn.com/gc/blg05_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 浙江-乌镇全景###https://gcalic.v.myalicdn.com/gc/zjwzblt_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 浙江-乌镇蓝印花布###https://gcalic.v.myalicdn.com/gc/zjwzlyhb_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 浙江-乌镇西市河###https://gcalic.v.myalicdn.com/gc/zjwzbblh_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 浙江-乌镇龙形田###https://gcalic.v.myalicdn.com/gc/zjwzlxt_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 浙江-舟山东极岛###https://gcalic.v.myalicdn.com/gc/djd01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖北-武汉黄鹤楼###https://gcalic.v.myalicdn.com/gc/qdls02_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖北-龙王庙###https://gcalic.v.myalicdn.com/gc/hnttbdjd_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖南-凤凰古城东关门###https://gcalic.v.myalicdn.com/gc/fhgcdgm_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖南-凤凰古城南华山###https://gcalic.v.myalicdn.com/gc/fhgcdnhs_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖南-天门山西线玻璃栈道###https://gcalic.v.myalicdn.com/gc/tms05_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖南-宝峰湖###https://gcalic.v.myalicdn.com/gc/zjjbfh_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖南-张家界将军列队###https://gcalic.v.myalicdn.com/gc/zjjjjdl_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖南-张家界水绕四门###https://gcalic.v.myalicdn.com/gc/zjjsrsm_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 湖南-张家界迷魂台###https://gcalic.v.myalicdn.com/gc/zjjmht_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 福建-厦门鼓浪屿###https://gcalic.v.myalicdn.com/gc/gly01_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 福建-武夷山玉女峰###https://gcalic.v.myalicdn.com/gc/wysynf_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 福建-醉美沙滩翡翠湾###https://gcalic.v.myalicdn.com/gc/fcw03_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 辽宁-沈阳金廊###https://gcalic.v.myalicdn.com/gc/zsslsjjfsd_1/index.m3u8?contentid=2820180516001
+ASIA CHINA Webcam 都江堰妃妃###http://gcalic.v.myalicdn.com/gc/xiongmao13_1/index.m3u8
+ASIA CHINA Webcam 都江堰娅祥###http://gcalic.v.myalicdn.com/gc/xiongmao15_1/index.m3u8
+ASIA CHINA Webcam 都江堰水秀###http://gcalic.v.myalicdn.com/gc/xiongmao12_1/index.m3u8
+ASIA CHINA Webcam 都江堰瑞瑞###http://gcalic.v.myalicdn.com/gc/xiongmao11_1/index.m3u8
+ASIA CHINA Webcam 都江堰英英###http://gcalic.v.myalicdn.com/gc/xiongmao16_1/index.m3u8
+ASIA CHINA Webcam 都江堰高清###http://gcalic.v.myalicdn.com/gc/ipanda1000_1td/index.m3u8
+ASIA CHINA Webcam 黑龙江-雪乡梦幻家园###https://gcalic.v.myalicdn.com/gc/mdjxxmhjyxj_1/index.m3u8?contentid=2820180516001
+ASIA China Webcam 北京-水立方###http://gcalic.v.myalicdn.com/gc/gccntv241-slf01_1/index.m3u8?contentid=2820180516001
+ASIA China Webcam 大丰麋鹿###http://gcalic.v.myalicdn.com/gc/xiongmao23_1/index.m3u8
+ASIA China Webcam 怡然②###http://gcalic.v.myalicdn.com/gc/xiongmao18_1/index.m3u8
+ASIA China Webcam 都江堰妃妃###http://gcalic.v.myalicdn.com/gc/xiongmao13_1/index.m3u8
+ASIA China Webcam 都江堰娅祥###http://gcalic.v.myalicdn.com/gc/xiongmao15_1/index.m3u8
+ASIA China Webcam 都江堰水秀###http://gcalic.v.myalicdn.com/gc/xiongmao12_1/index.m3u8
+ASIA China Webcam 都江堰瑞瑞###http://gcalic.v.myalicdn.com/gc/xiongmao11_1/index.m3u8
+ASIA China Webcam 都江堰英英###http://gcalic.v.myalicdn.com/gc/xiongmao16_1/index.m3u8
+ASIA China Webcam 都江堰青青###http://gcalic.v.myalicdn.com/gc/xiongmao20_1/index.m3u8
+EU Austria Webcam Spitzerberg Airfield###https://spitzerberg.at/webcam/stream.m3u8
+EU Germany Webcam AU Salzburg###http://85.199.1.39:80/mjpg/video.mjpg
+EU Germany Webcam Austria - Spitzerberg Airfield###https://spitzerberg.at/webcam/stream.m3u8
+EU Germany Webcam Austria 1###http://stream1.panocloud.com/KlagenfurtNeuerPlatz/KlagenfurtNeuerPlatz.stream/playlist.m3u8
+EU Germany Webcam CH Aarau Aargau###http://89.186.193.101:80/mjpg/video.mjpg
+EU Germany Webcam CH Lausanne Vaud###http://145.232.235.226:80/mjpg/video.mjpg
+EU Germany Webcam DE Chemnitz Sachsen###http://77.235.182.8:80/mjpg/video.mjpg
+EU Germany Webcam Germany - Binz###http://cam01.binz-kabel.de/cam1/960.m3u8
+EU Germany Webcam Germany - Cologne Bonn Airport###https://stream-5gw.1000eyes.de/cupertino/cgn4463E1.stream/playlist.m3u8
+EU Germany Webcam Germany - Cologne Bonn Airport###https://stream-5gw.1000eyes.de/cupertino/cgn4463E1.stream/playlist.m3u8
+EU Germany Webcam Germany - Frankfurt am main - Gdaask widok na Mot###http://ls12.webcamera.pl/umgdansk_cam_11161c/umgdansk_cam_11161c.stream/playlist.m3u8
+EU Germany Webcam Germany - Groemitz###http://osltv.stream24.net/osltv1/_definst_/mp4:groemitz.stream/playlist.m3u8
+EU Germany Webcam Germany - Regensburg###https://rathausturm-wanderfalken.de/stream/stream.m3u8
+EU Germany Webcam Gr?mitz###http://osltv.stream24.net/osltv1/_definst_/mp4:groemitz.stream/.m3u8
+EU Germany Webcam Gr?mitz###http://osltv.stream24.net/osltv1/_definst_/mp4:groemitz.stream/.m3u8
+EU Germany Webcam Hamburg###https://ch-fra-n10.livespotting.com/vpu/8p96b3b9/l2mucuq9_720.m3u8
+EU Germany Webcam Kiel Schleuse###https://ch-fra-n2.livespotting.com/vpu/sttko2er/f1q161no_720.m3u8
+EU Germany Webcam Klagenfurt Neuer Platz###http://stream1.panocloud.com/KlagenfurtNeuerPlatz/KlagenfurtNeuerPlatz.stream/.m3u8
+EU Germany Webcam Klagenfurt Neuer Platz###http://stream1.panocloud.com/KlagenfurtNeuerPlatz/KlagenfurtNeuerPlatz.stream/.m3u8
+EU Germany Webcam Köln Airport Cam03###http://stream-5gw.1000eyes.de/cupertino/cgn4463E1.stream/.m3u8
+EU Germany Webcam Köln Airport Cam3###http://stream-5gw.1000eyes.de/cupertino/cgn4463E1.stream/.m3u8
+EU Germany Webcam Landshut Burg###http://tdt.shmhost.net/burg/livestream.m3u8
+EU Germany Webcam Landshut Burg###http://tdt.shmhost.net/burg/livestream.m3u8
+EU Germany Webcam Landshut Heiliggeistkirche###http://tdt.shmhost.net/geist/livestream.m3u8
+EU Germany Webcam Lindau Bodensee###https://ch-fra-n2.livespotting.com/vpu/hmepsu74/6j7t62rc_720.m3u8
+EU Poland Webcam  - Gdansk###http://hoktastream4.webcamera.pl/gdansk_cam_77aeaf/gdansk_cam_77aeaf.stream/chunks.m3u8
+EU Poland Webcam  - Hotel Stok###http://hoktastream4.webcamera.pl/hotelstok_cam_77f104/hotelstok_cam_77f104.stream/playlist.m3u8
+EU Poland Webcam  - Lodz Airport###https://cdn-3-go.toya.net.pl/kamery/lodz_lublinek1.m3u8
+EU Poland Webcam  - Lodz Airport###https://cdn-3-go.toya.net.pl/kamery/lodz_lublinek2.m3u8
+EU Poland Webcam  - Lodz Airport###https://cdn-3-go.toya.net.pl/kamery/lodz_lublinek3.m3u8
+EU Poland Webcam  - Nowy Sacz Lososina Dolna Airfield###https://videocdn.km-net.pl/Lososina_Dolna/index.m3u8
+EU Poland Webcam  - Olsztyn###http://hls13.webcamera.pl/olsztyn_cam_43a997/olsztyn_cam_43a997.stream/playlist.m3u8
+EU Poland Webcam  - Sopot###http://hls8.webcamera.pl/sopot_cam_e1c28f/sopot_cam_e1c28f.stream/chunks.m3u8
+EU Poland Webcam  - TV Cam###https://hoktastream1.webcamera.pl/tv_cam_781381/tv_cam_781381.stream/chunks.m3u8
+EU Poland Webcam  - Widok###http://91.224.104.112:80/wgwidok/index.m3u8
+EU Poland Webcam  3###https://s1.worldcam.live:8082/rabien/index.m3u8
+EU Poland Webcam  8###http://live.kamera24.pl/umolawa/index.m3u8
+EU Poland Webcam -  002###https://s1.worldcam.live:8082/opocznozalew/tracks-v1/mono.m3u8
+EU Poland Webcam -  003###https://s1.worldcam.live:8082/rabien/index.m3u8
+EU Poland Webcam -  008###http://live.kamera24.pl/umolawa/index.m3u8
+EU Poland Webcam - Bukowina Tatrza###https://hls7.webcamera.pl/skywind_cam_1f9295/skywind_cam_1f9295.stream/playlist.m3u8
+EU Poland Webcam - Bukowina Tatrza###https://hls7.webcamera.pl/skywind_cam_1f9295/skywind_cam_1f9295.stream/playlist.m3u8
+EU Poland Webcam - Czarna G?ra - Sienna - g?rna stacja###https://hls12.webcamera.pl/czarnagora_cam_a068a7/czarnagora_cam_a068a7.stream/playlist.m3u8
+EU Poland Webcam - Elbl###http://stream.elblag.net:18080/kim/index.m3u8
+EU Poland Webcam - Elbl###http://stream.elblag.net:18080/kim2/index.m3u8
+EU Poland Webcam - Gda###https://hls11.webcamera.pl/umgdansk_cam_11161c/umgdansk_cam_11161c.stream/playlist.m3u8
+EU Poland Webcam - Gdansk###http://hoktastream4.webcamera.pl/gdansk_cam_77aeaf/gdansk_cam_77aeaf.stream/chunks.m3u8
+EU Poland Webcam - Gdynia - Skwer Ko###http://hls8.webcamera.pl/gdynia_cam_b3ccea/gdynia_cam_b3ccea.stream/playlist.m3u8
+EU Poland Webcam - Gdynia - Skwer Ko###http://hls8.webcamera.pl/gdynia_cam_b3ccea/gdynia_cam_b3ccea.stream/playlist.m3u8
+EU Poland Webcam - Hotel Stok###http://hoktastream4.webcamera.pl/hotelstok_cam_77f104/hotelstok_cam_77f104.stream/playlist.m3u8
+EU Poland Webcam - Lodz Airport###https://cdn-3-go.toya.net.pl/kamery/lodz_lublinek1.m3u8
+EU Poland Webcam - Lodz Airport###https://cdn-3-go.toya.net.pl/kamery/lodz_lublinek2.m3u8
+EU Poland Webcam - Lodz Airport###https://cdn-3-go.toya.net.pl/kamery/lodz_lublinek3.m3u8
+EU Poland Webcam - Najstarszy d###https://hls8.webcamera.pl/dab-bartek_cam_187c42/dab-bartek_cam_187c42.stream/playlist.m3u8
+EU Poland Webcam - Najstarszy d###https://hls8.webcamera.pl/dab-bartek_cam_187c42/dab-bartek_cam_187c42.stream/playlist.m3u8
+EU Poland Webcam - Niechorze pla###https://hls8.webcamera.pl/rewal_cam_003f77/rewal_cam_003f77.stream/playlist.m3u8
+EU Poland Webcam - Nowy Sacz Lososina Dolna Airfield###https://videocdn.km-net.pl/Lososina_Dolna/index.m3u8
+EU Poland Webcam - Olsztyn###http://hls13.webcamera.pl/olsztyn_cam_43a997/olsztyn_cam_43a997.stream/playlist.m3u8
+EU Poland Webcam - PL KASPROWYrynek Podg??i###http://hls1.webcamera.pl/krakow_cam_c44608/krakow_cam_c44608.stream/chunks.m3u8
+EU Poland Webcam - Pola###https://hls8.webcamera.pl/polanczyk_cam_d1e2d8/polanczyk_cam_d1e2d8.stream/playlist.m3u8
+EU Poland Webcam - Polar Bear Family###https://outbound-production.explore.org/stream-production-191/.m3u8
+EU Poland Webcam - Polar Bears - Wapusk###https://outbound-production.explore.org/stream-production-75/.m3u8
+EU Poland Webcam - Pysz?w Lodowisko###https://hls1.webcamera.pl/pszow2_cam_4b93fa/pszow2_cam_4b93fa.stream/playlist.m3u8
+EU Poland Webcam - Sopot###http://hls8.webcamera.pl/sopot_cam_e1c28f/sopot_cam_e1c28f.stream/chunks.m3u8
+EU Poland Webcam - TV Cam###https://hoktastream1.webcamera.pl/tv_cam_781381/tv_cam_781381.stream/chunks.m3u8
+EU Poland Webcam - Wroclaw###http://hstream1.webcamera.pl/wroclaw_przed_cam_16c68e/wroclaw_przed_cam_16c68e.stream/playlist.m3u8
+EU Poland Webcam - Zakopane - Kasprowy Hala G###https://hls8.webcamera.pl/pkl_cam_c9ee88/pkl_cam_c9ee88.stream/playlist.m3u8
+EU Portugal Webcam Albarquel###https://video-auth1.iol.pt/beachcam/bcalbarquel/playlist.m3u8
+EU Portugal Webcam Albarquel###https://video-auth1.iol.pt/beachcam/bcalbarquel/playlist.m3u8
+EU Portugal Webcam Almograve - New###https://video-auth1.iol.pt/beachcam/bcalmograve/playlist.m3u8
+EU Portugal Webcam Almograve###https://video-auth1.iol.pt/beachcam/bcalmograve/playlist.m3u8
+EU Portugal Webcam Alvor Nascente###https://video-auth1.iol.pt/beachcam/bcalvornascente/playlist.m3u8
+EU Portugal Webcam Alvor###https://video-auth1.iol.pt/beachcam/alvor/playlist.m3u8
+EU Portugal Webcam Apúlia###https://video-auth1.iol.pt/beachcam/bcapulia/playlist.m3u8
+EU Portugal Webcam Areia Branca###https://video-auth1.iol.pt/beachcam/bcareiabranca/playlist.m3u8
+EU Portugal Webcam Areia Branca###https://video-auth1.iol.pt/beachcam/bcareiabranca/playlist.m3u8
+EU Portugal Webcam Arrifana###https://video-auth1.iol.pt/beachcam/arrifana/playlist.m3u8
+EU Portugal Webcam Bafureira | Estática###https://video-auth1.iol.pt/beachcam/bcbafureirafixa/playlist.m3u8
+EU Portugal Webcam Baía de Cascais###https://video-auth1.iol.pt/beachcam/praiadospescadores/playlist.m3u8
+EU Portugal Webcam Baía de Cascais###https://video-auth1.iol.pt/beachcam/praiadospescadores/playlist.m3u8
+EU Portugal Webcam Carcavelos | Calhau | Estática###https://video-auth1.iol.pt/beachcam/bccarcaveloscalhaufixa/playlist.m3u8
+EU Portugal Webcam Carcavelos | Norte | Estática###https://video-auth1.iol.pt/beachcam/bccarcavelosnortefixa/playlist.m3u8
+EU Portugal Webcam Carvalhal###https://video-auth1.iol.pt/beachcam/bccarvalhalodemira/playlist.m3u8
+EU Portugal Webcam Carvoeiro###https://video-auth1.iol.pt/beachcam/carvoeiro/playlist.m3u8
+EU Portugal Webcam Carvoeiro###https://video-auth1.iol.pt/beachcam/carvoeiro/playlist.m3u8
+EU Portugal Webcam Costa Nova###https://video-auth1.iol.pt/beachcam/costanova/playlist.m3u8
+EU Portugal Webcam Costa Nova###https://video-auth1.iol.pt/beachcam/costanova/playlist.m3u8
+EU Portugal Webcam Costa de Caparica - CDS Norte###https://video-auth1.iol.pt/beachcam/costacaparicacds/playlist.m3u8
+EU Portugal Webcam Costa de Caparica - CDS Norte###https://video-auth1.iol.pt/beachcam/costacaparicacds/playlist.m3u8
+EU Portugal Webcam Costa de Caparica - CDS Sul###https://video-auth1.iol.pt/beachcam/costacaparicabernard/playlist.m3u8
+EU Portugal Webcam Costa de Caparica - Praia Nova###https://video-auth1.iol.pt/beachcam/bccaparicanovapraia/playlist.m3u8
+EU Portugal Webcam Costa de Caparica - Riviera###https://video-auth1.iol.pt/beachcam/riviera/playlist.m3u8
+EU Portugal Webcam Costa de Caparica | CDS NORTE | Estática###https://video-auth1.iol.pt/beachcam/bccaparicanortefixa/playlist.m3u8
+EU Portugal Webcam Costa de Caparica | CDS SUL | Estática###https://video-auth1.iol.pt/beachcam/bcdrbernard/playlist.m3u8
+EU Portugal Webcam Costa de Caparica | Praia Nova | Estática###https://video-auth1.iol.pt/beachcam/bcnovapraia/playlist.m3u8
+EU Portugal Webcam Costa de Caparica | Tarquínio | Estática###https://video-auth1.iol.pt/beachcam/bctarquinho2/playlist.m3u8
+EU Portugal Webcam Costa de Caparica | Tarquínio###https://video-auth1.iol.pt/beachcam/bctarquinho/playlist.m3u8
+EU Portugal Webcam Ericeira###https://video-auth1.iol.pt/beachcam/ericeiraspots/playlist.m3u8
+EU Portugal Webcam Ericeira###https://video-auth1.iol.pt/beachcam/ericeiraspots/playlist.m3u8
+EU Portugal Webcam Esmoriz###https://video-auth1.iol.pt/beachcam/esmoriz/playlist.m3u8
+EU Portugal Webcam Espinho | Silvade | Estática |###https://video-auth1.iol.pt/beachcam/bcsilvadefixa/playlist.m3u8
+EU Portugal Webcam Espinho | Silvade###https://video-auth1.iol.pt/beachcam/bcsilvade/playlist.m3u8
+EU Portugal Webcam Esposende - Foz Do Rio Cávado###https://video-auth1.iol.pt/beachcam/bcfarolesposende/playlist.m3u8
+EU Portugal Webcam Esposende###https://video-auth1.iol.pt/beachcam/bcesposende/playlist.m3u8
+EU Portugal Webcam Faro | Ilha da Culatra###https://video-auth1.iol.pt/beachcam/bcfarolfaro/playlist.m3u8
+EU Portugal Webcam Faro | Praia de Faro Oeste###https://video-auth1.iol.pt/beachcam/bcfaropraia/playlist.m3u8
+EU Portugal Webcam Faro###https://video-auth1.iol.pt/beachcam/bcfaro/playlist.m3u8
+EU Portugal Webcam Ferreira do Zêzere - Dornes###https://video-auth1.iol.pt/beachcam/bcdornes/playlist.m3u8
+EU Portugal Webcam Ferreira do Zêzere - Lago Azul###https://video-auth1.iol.pt/beachcam/bclagoazul/playlist.m3u8
+EU Portugal Webcam Figueira da Foz - Buarcos###https://video-auth1.iol.pt/beachcam/bcfigueiradois/playlist.m3u8
+EU Portugal Webcam Figueira da Foz | Buarcos | Estática###https://video-auth1.iol.pt/beachcam/bcbuarcos/playlist.m3u8
+EU Portugal Webcam Figueira da Foz | Cabedelo###https://video-auth1.iol.pt/beachcam/bcfigueiracabeledo/playlist.m3u8
+EU Portugal Webcam Figueira da Foz###https://video-auth1.iol.pt/beachcam/figueiradafoz/playlist.m3u8
+EU Portugal Webcam Fonte da Telha | SUL###https://video-auth1.iol.pt/beachcam/bcbambu/playlist.m3u8
+EU Portugal Webcam Foz do Lizandro###https://video-auth1.iol.pt/beachcam/fozdolizandro/playlist.m3u8
+EU Portugal Webcam Lagoa de Albufeira###https://video-auth1.iol.pt/beachcam/bclagoaalbufeira/playlist.m3u8
+EU Portugal Webcam Leça da Palmeira | Panorâmica | Aterro###https://video-auth1.iol.pt/beachcam/bcfarolleca/playlist.m3u8
+EU Portugal Webcam Leça da Palmeira###https://video-auth1.iol.pt/beachcam/lecadapalmeira/playlist.m3u8
+EU Portugal Webcam Madeira - Jardim do Mar###https://video-auth1.iol.pt/beachcam/jardimdomardois/playlist.m3u8
+EU Portugal Webcam Madeira - Ponta Pequena - Paul###https://video-auth1.iol.pt/beachcam/madeirajardimdomar/playlist.m3u8
+EU Portugal Webcam Madeira - Porto Santo###https://video-auth1.iol.pt/beachcam/bcportosanto/playlist.m3u8
+EU Portugal Webcam Madeira | Fajã da Areia###https://video-auth1.iol.pt/beachcam/bcfaja/playlist.m3u8
+EU Portugal Webcam Madeira | Paul do Mar###https://video-auth1.iol.pt/beachcam/bcpauldomar2/playlist.m3u8
+EU Portugal Webcam Madeira | Seixal###https://video-auth1.iol.pt/beachcam/bcmadeiraseixal/playlist.m3u8
+EU Portugal Webcam Meia Praia###https://video-auth1.iol.pt/beachcam/meiapraia/playlist.m3u8
+EU Portugal Webcam Murtinheira###https://video-auth1.iol.pt/beachcam/bcmurtinheira/playlist.m3u8
+EU Portugal Webcam Murtinheira###https://video-auth1.iol.pt/beachcam/bcmurtinheira/playlist.m3u8
+EU Portugal Webcam Nazaré - Forte S. Miguel Arcanjo - Baía###https://video-auth1.iol.pt/beachcam/bcarcanjo1/playlist.m3u8
+EU Portugal Webcam Nazaré - Forte S. Miguel Arcanjo###https://video-auth1.iol.pt/beachcam/bcarcanjo3/playlist.m3u8
+EU Portugal Webcam Nazaré - Porto de Abrigo###https://video-auth1.iol.pt/beachcam/bcportodeabrigo/playlist.m3u8
+EU Portugal Webcam Nazaré - Praia da Vila###https://video-auth1.iol.pt/beachcam/nazarepraiadavila/playlist.m3u8
+EU Portugal Webcam Nazaré - Praia do Norte panorâmica###https://video-auth1.iol.pt/beachcam/nazareparadonorte/playlist.m3u8
+EU Portugal Webcam Nazaré - Praia do Norte panorâmica###https://video-auth1.iol.pt/beachcam/nazareparadonorte/playlist.m3u8
+EU Portugal Webcam Nazaré - Praia do Norte###https://video-auth1.iol.pt/beachcam/canhaonazare/playlist.m3u8
+EU Portugal Webcam Odeceixe###https://video-auth1.iol.pt/beachcam/bcodeceixe/playlist.m3u8
+EU Portugal Webcam Parede###https://video-auth1.iol.pt/beachcam/parede/playlist.m3u8
+EU Portugal Webcam Paredes da Vitória###https://video-auth1.iol.pt/beachcam/bcparedesvitoria/playlist.m3u8
+EU Portugal Webcam Paço de Arcos | Estática###https://video-auth1.iol.pt/beachcam/pacodearcosfixa/playlist.m3u8
+EU Portugal Webcam Paço de Arcos###https://video-auth1.iol.pt/beachcam/parcos/playlist.m3u8
+EU Portugal Webcam Pedra do Ouro###https://video-auth1.iol.pt/beachcam/bcpraiaouro/playlist.m3u8
+EU Portugal Webcam Peniche - Supertubos###https://video-auth1.iol.pt/beachcam/supertubos/playlist.m3u8
+EU Portugal Webcam Peniche | Baleal | Panorâmica###https://video-auth1.iol.pt/beachcam/bcbalealgeral/playlist.m3u8
+EU Portugal Webcam Peniche | Cantinho da Baia | Estática###https://video-auth1.iol.pt/beachcam/bcbalealcantinho/playlist.m3u8
+EU Portugal Webcam Peniche | Consolação###https://video-auth1.iol.pt/beachcam/bcconsolacao/playlist.m3u8
+EU Portugal Webcam Peniche | Lagide | Estática###https://video-auth1.iol.pt/beachcam/bclagidefixa/playlist.m3u8
+EU Portugal Webcam Peniche | Molhe Leste | Estática###https://video-auth1.iol.pt/beachcam/bcmolheleste/playlist.m3u8
+EU Portugal Webcam Peniche | Supertubos | Estática###https://video-auth1.iol.pt/beachcam/bcsupertubosfixa/playlist.m3u8
+EU Portugal Webcam Portinho da Arrábida###https://video-auth1.iol.pt/beachcam/bcportinho/playlist.m3u8
+EU Portugal Webcam Porto - Carneiro###https://video-auth1.iol.pt/beachcam/bccarneiro/playlist.m3u8
+EU Portugal Webcam Praia Canide Norte - Sul###https://video-auth1.iol.pt/beachcam/bccanidelo/playlist.m3u8
+EU Portugal Webcam Praia Canide Norte - Sul###https://video-auth1.iol.pt/beachcam/bccanidelo/playlist.m3u8
+EU Portugal Webcam Praia Osso da Baleia###https://video-auth1.iol.pt/beachcam/ossodabaleia/playlist.m3u8
+EU Portugal Webcam Praia Sesimbra###https://video-auth1.iol.pt/beachcam/sesimbra/playlist.m3u8
+EU Portugal Webcam Praia Sesimbra###https://video-auth1.iol.pt/beachcam/sesimbra/playlist.m3u8
+EU Portugal Webcam Praia Verde - Castro Marim###https://video-auth1.iol.pt/beachcam/bcpraiaverde/playlist.m3u8
+EU Portugal Webcam Praia Verde - Castro Marim###https://video-auth1.iol.pt/beachcam/bcpraiaverde/playlist.m3u8
+EU Portugal Webcam Praia da Barra###https://video-auth1.iol.pt/beachcam/aveiro/playlist.m3u8
+EU Portugal Webcam Praia da Barra###https://video-auth1.iol.pt/beachcam/aveiro/playlist.m3u8
+EU Portugal Webcam Praia da Galé###https://video-auth1.iol.pt/beachcam/bcgale/playlist.m3u8
+EU Portugal Webcam Praia da Luz###https://video-auth1.iol.pt/beachcam/luz/playlist.m3u8
+EU Portugal Webcam Praia da Rocha | Estática###https://video-auth1.iol.pt/beachcam/bcrochaportimao/playlist.m3u8
+EU Portugal Webcam Praia da Rocha | Marina###https://video-auth1.iol.pt/beachcam/bcrochaportimao2/playlist.m3u8
+EU Portugal Webcam Praia da Rocha | Miradouro###https://video-auth1.iol.pt/beachcam/bcmiradourorocha/playlist.m3u8
+EU Portugal Webcam Praia da Rocha###https://video-auth1.iol.pt/beachcam/praiadarocha/playlist.m3u8
+EU Portugal Webcam Praia da Rocha###https://video-auth1.iol.pt/beachcam/praiadarocha/playlist.m3u8
+EU Portugal Webcam Praia da Tocha###https://video-auth1.iol.pt/beachcam/tocha/playlist.m3u8
+EU Portugal Webcam Praia da Torre###https://video-auth1.iol.pt/beachcam/bctorre/playlist.m3u8
+EU Portugal Webcam Praia da Torreira###https://video-auth1.iol.pt/beachcam/torreira/playlist.m3u8
+EU Portugal Webcam Praia da Vieira###https://video-auth1.iol.pt/beachcam/bcvieira/playlist.m3u8
+EU Portugal Webcam Praia das Avencas###https://video-auth1.iol.pt/beachcam/praiadasavencas/playlist.m3u8
+EU Portugal Webcam Praia das Bicas###https://video-auth1.iol.pt/beachcam/bcpraiadasbicas/playlist.m3u8
+EU Portugal Webcam Praia das Bicas###https://video-auth1.iol.pt/beachcam/bcpraiadasbicas/playlist.m3u8
+EU Portugal Webcam Praia das Maçãs###https://video-auth1.iol.pt/beachcam/praiadasmacas/playlist.m3u8
+EU Portugal Webcam Praia das Rocas###https://video-auth1.iol.pt/beachcam/praiadasrocas/playlist.m3u8
+EU Portugal Webcam Praia de Santa Rita###https://video-auth1.iol.pt/beachcam/vimeiro/playlist.m3u8
+EU Portugal Webcam Praia de Santa Rita###https://video-auth1.iol.pt/beachcam/vimeiro/playlist.m3u8
+EU Portugal Webcam Praia de São Jacinto | Barra###https://video-auth1.iol.pt/beachcam/bcfarolbarra/playlist.m3u8
+EU Portugal Webcam Praia do Amado###https://video-auth1.iol.pt/beachcam/bcamado/playlist.m3u8
+EU Portugal Webcam Praia do Carvalhal###https://video-auth1.iol.pt/beachcam/carvalhal/playlist.m3u8
+EU Portugal Webcam Praia do Guincho - Sul###https://video-auth1.iol.pt/beachcam/praiaguinchosul/playlist.m3u8
+EU Portugal Webcam Praia do Guincho - Sul###https://video-auth1.iol.pt/beachcam/praiaguinchosul/playlist.m3u8
+EU Portugal Webcam Praia do Meco###https://video-auth1.iol.pt/beachcam/bcmeco/playlist.m3u8
+EU Portugal Webcam Praia do Meco###https://video-auth1.iol.pt/beachcam/bcmeco/playlist.m3u8
+EU Portugal Webcam Praia do Peneco###https://video-auth1.iol.pt/beachcam/praiadopeneco/playlist.m3u8
+EU Portugal Webcam Praia do Vau###https://video-auth1.iol.pt/beachcam/bcvauportimao/playlist.m3u8
+EU Portugal Webcam Praia dos Pescadores###https://video-auth1.iol.pt/beachcam/bcpescadores/playlist.m3u8
+EU Portugal Webcam Praia dos Pescadores###https://video-auth1.iol.pt/beachcam/bcpescadores/playlist.m3u8
+EU Portugal Webcam Ribeira D´Ilhas | Estática###https://video-auth1.iol.pt/beachcam/bcribeirafixa/playlist.m3u8
+EU Portugal Webcam Ribeira D´Ilhas###https://video-auth1.iol.pt/beachcam/bcmafraribeira/playlist.m3u8
+EU Portugal Webcam S. Torpes###https://video-auth1.iol.pt/beachcam/saotorpes/playlist.m3u8
+EU Portugal Webcam Santa Cruz - Praia Azul###https://video-auth1.iol.pt/beachcam/bcpraiaazul/playlist.m3u8
+EU Portugal Webcam Santa Cruz - Praia Azul###https://video-auth1.iol.pt/beachcam/bcpraiaazul/playlist.m3u8
+EU Portugal Webcam Santa Cruz###https://video-auth1.iol.pt/beachcam/santacruz/playlist.m3u8
+EU Portugal Webcam Santa Cruz###https://video-auth1.iol.pt/beachcam/santacruz/playlist.m3u8
+EU Portugal Webcam Santo Amaro | Estática###https://video-auth1.iol.pt/beachcam/santoamarofixa/playlist.m3u8
+EU Portugal Webcam Santo Amaro###https://video-auth1.iol.pt/beachcam/santoamaro/playlist.m3u8
+EU Portugal Webcam Senhora da Rocha e Praia Nova###https://video-auth1.iol.pt/beachcam/bcigreja/playlist.m3u8
+EU Portugal Webcam São Martinho do Porto###https://video-auth1.iol.pt/beachcam/bcsaomartinho/playlist.m3u8
+EU Portugal Webcam São Pedro de Moel###https://video-auth1.iol.pt/beachcam/bcsaopedromoel/playlist.m3u8
+EU Portugal Webcam São Pedro de Moel###https://video-auth1.iol.pt/beachcam/bcsaopedromoel/playlist.m3u8
+EU Portugal Webcam São Pedro do Estoril | Bico Estática###https://video-auth1.iol.pt/beachcam/bcsaopedrofixa/playlist.m3u8
+EU Portugal Webcam São Pedro do Estoril###http://video-auth1.iol.pt:1935/beachcam/saopedroestoria/playlist.m3u8
+EU Portugal Webcam São Pedro do Estoril###https://video-auth1.iol.pt/beachcam/saopedroestoria/playlist.m3u8
+EU Portugal Webcam São Torpes | Estática###https://video-auth1.iol.pt/beachcam/bcsaotorpes2/playlist.m3u8
+EU Portugal Webcam Troia###https://video-auth1.iol.pt/beachcam/bctroia/playlist.m3u8
+EU Portugal Webcam Troia###https://video-auth1.iol.pt/beachcam/bctroia/playlist.m3u8
+EU Portugal Webcam Viana do Castelo | Afife | Arda###https://video-auth1.iol.pt/beachcam/bcafife/playlist.m3u8
+EU Portugal Webcam Viana do Castelo | Cabedelo###https://video-auth1.iol.pt/beachcam/bccabedeloviana/playlist.m3u8
+EU Portugal Webcam Vila Nova de Milfontes - Farol###https://video-auth1.iol.pt/beachcam/bcfarol/playlist.m3u8
+EU Portugal Webcam Vila Nova de Milfontes - Franquia###https://video-auth1.iol.pt/beachcam/bcfranquia/playlist.m3u8
+EU Portugal Webcam Vila Praia de Âncora###https://video-auth1.iol.pt/beachcam/bcvilapraiadeancora/playlist.m3u8
+EU Portugal Webcam Vilamoura###https://video-auth1.iol.pt/beachcam/vilamoura/playlist.m3u8
+EU Portugal Webcam Zambujeira do Mar###https://video-auth1.iol.pt/beachcam/zambujeira/playlist.m3u8
+LATINO Webcam Armação de Pêra###https://video-auth1.iol.pt/beachcam/armacaodepera/playlist.m3u8
+LATINO Webcam Carcavelos - Calhau###https://video-auth1.iol.pt/beachcam/carcavelos2/playlist.m3u8
+LATINO Webcam Costa de Caparica - CDS Sul###https://video-auth1.iol.pt/beachcam/costacaparicabernard/playlist.m3u8
+LATINO Webcam Costa de Caparica - S. João###https://video-auth1.iol.pt/beachcam/costacaparicasaojoao/playlist.m3u8
+LATINO Webcam Ericeira - Praia do Sul###https://video-auth1.iol.pt/beachcam/praiadosulericeira/playlist.m3u8
+LATINO Webcam Ferragudo - Praia Grande###https://video-auth1.iol.pt/beachcam/ferragudo/playlist.m3u8
+LATINO Webcam Fonte da Telha###https://video-auth1.iol.pt/beachcam/fontedatelha/playlist.m3u8
+LATINO Webcam Foz do Arelho###https://video-auth1.iol.pt/beachcam/bcfozdoarelho/playlist.m3u8
+LATINO Webcam GOIÂNIA - Morro do Mendanha###https://5a7d54e35f9d2.streamlock.net/morromendanha1/morromendanha1.stream/chunklist_w182959856.m3u8
+LATINO Webcam Lisboa - Belém###https://video-auth1.iol.pt/beachcam/belem/playlist.m3u8
+LATINO Webcam Matosinhos###https://video-auth1.iol.pt/beachcam/matosinhos/playlist.m3u8
+LATINO Webcam Monte Clérigo###https://video-auth1.iol.pt/beachcam/bcmonteclerigo/playlist.m3u8
+LATINO Webcam Nazaré - Porto de Abrigo###https://video-auth1.iol.pt/beachcam/bcportodeabrigo/playlist.m3u8
+LATINO Webcam Ofir###https://video-auth1.iol.pt/beachcam/bcofir/playlist.m3u8
+LATINO Webcam Peniche - Lagide###https://video-auth1.iol.pt/beachcam/lagide/playlist.m3u8
+LATINO Webcam Peniche - Supertubos###https://video-auth1.iol.pt/beachcam/supertubos/playlist.m3u8
+LATINO Webcam Praia Grande - Norte###https://video-auth1.iol.pt/beachcam/praiagrande/playlist.m3u8
+LATINO Webcam Praia Osso da Baleia###https://video-auth1.iol.pt/beachcam/ossodabaleia/playlist.m3u8
+LATINO Webcam Praia da Cresmina###https://video-auth1.iol.pt/beachcam/crismina/playlist.m3u8
+LATINO Webcam Praia da Luz###https://video-auth1.iol.pt/beachcam/luz/playlist.m3u8
+LATINO Webcam Praia da Torreira###https://video-auth1.iol.pt/beachcam/torreira/playlist.m3u8
+LATINO Webcam Praia das Rocas###https://video-auth1.iol.pt/beachcam/praiadasrocas/playlist.m3u8
+LATINO Webcam Praia de Mira###https://video-auth1.iol.pt/beachcam/bcmira/playlist.m3u8
+LATINO Webcam Praia do Carvalhal###https://video-auth1.iol.pt/beachcam/carvalhal/playlist.m3u8
+LATINO Webcam Praia do Guincho - Sul###https://video-auth1.iol.pt/beachcam/praiaguinchosul/playlist.m3u8
+LATINO Webcam Praia do Pedrógão###https://video-auth1.iol.pt/beachcam/praiapedrogao/playlist.m3u8
+LATINO Webcam Vila Nova de Milfontes - Farol###https://video-auth1.iol.pt/beachcam/bcfarol/playlist.m3u8
+LATINO Webcam Vilamoura###https://video-auth1.iol.pt/beachcam/vilamoura/playlist.m3u8
