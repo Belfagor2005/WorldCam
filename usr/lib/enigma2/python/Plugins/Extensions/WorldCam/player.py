@@ -554,7 +554,7 @@ class WorldCamPlayer(
                 match = search(pattern, decoded_url, IGNORECASE)
                 if match:
                     return match.group(1)
-                    
+
             return None
         except Exception as e:
             self.logger.error(f"URL decoding failed: {str(e)}")
