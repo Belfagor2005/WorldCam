@@ -355,6 +355,14 @@ class WorldCamPlayer(
 			self.logger.info(
 				f"Starting playback for: {current_webcam['name']}")
 			self.logger.info(f"URL: {current_webcam['url']}")
+
+			# Get stream URL from scraper
+			stream_url = self.scraper.get_stream_url(current_webcam['url'])
+			if not stream_url:
+				self.logger.error("Could not extract stream URL")
+				self.show_error(_("Could not extract video stream"))
+				return
+
 			# Handle YouTube URLs
 			if 'youtube.com' in current_webcam['url'] or 'youtu.be' in current_webcam['url']:
 				self.play_youtube(
@@ -362,14 +370,6 @@ class WorldCamPlayer(
 					current_webcam['name']
 				)
 			else:
-				# Non-YouTube streams
-				self.logger.info("Using scraper for web page source")
-				stream_url = self.scraper.get_stream_url(current_webcam['url'])
-				if not stream_url:
-					self.logger.error("Could not extract stream URL")
-					self.show_error(_("Could not extract video stream"))
-					return
-
 				self.play_stream(stream_url, current_webcam['name'])
 
 		except Exception as e:
@@ -583,6 +583,8 @@ class WorldCamPlayer(
 		self.session.nav.playService(service)
 		self.show()
 		self.state = self.STATE_PLAYING
+		if self.state == self.STATE_PLAYING:
+			self.show_help_overlay()
 
 	def play_stream(self, stream_url, title=""):
 		"""
@@ -605,13 +607,7 @@ class WorldCamPlayer(
 
 			service = eServiceReference(service_type, 0, stream_url)
 			service.setName(title)
-
-			if self.session.nav.getCurrentlyPlayingServiceReference():
-				self.session.nav.stopService()
-
-			self.session.nav.playService(service)
-			self.show()
-			self.state = self.STATE_PLAYING
+			self.start_service_playback(service)
 			self.logger.info("Playback started successfully")
 
 		except Exception as e:
