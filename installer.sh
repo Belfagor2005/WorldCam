@@ -3,8 +3,8 @@
 ## setup command=wget -q --no-check-certificate https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
 
 ## Only This 2 lines to edit with new version ######
-version='5.7'
-changelog='\nNew Favorite list for my girl friend @Acherone <3'
+version='5.8'
+changelog='\nFavorite list removed.\nIf you don t like this plugin, don t use it!'
 ##
 TMPPATH=/tmp/WorldCam-main
 FILEPATH=/tmp/main.tar.gz
@@ -116,10 +116,24 @@ fi
 
 ## --- START install yt-dlp and dependencies ---
 echo "Installing yt-dlp and required dependencies..."
-opkg update
-opkg install streamlink python3-re
-opkg install gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav
+
+
+[ -e "/usr/bin/python3" ] && PY="python3" || PY="python"; \
+opkg update && \
+opkg remove enigma2-plugin-systemplugins-serviceapp exteplayer3 ffmpeg gstplayer && \
+opkg install ffmpeg exteplayer3 enigma2-plugin-systemplugins-serviceapp gstplayer streamlink \
+enigma2-plugin-extensions-streamlinkwrapper \
+enigma2-plugin-extensions-streamlinkproxyv \
+enigma2-plugin-extensions-ytdlpwrapper \
+enigma2-plugin-extensions-ytdlwrapper \
+streamlink python3-re \
+gstreamer1.0-plugins-bad \
+gstreamer1.0-plugins-ugly \
+gstreamer1.0-libav \
+${PY}-requests ${PY}-yt-dlp ${PY}-youtube-dl
 gst-inspect-1.0 --version
+
+
 # wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/bin/yt-dlp
 # chmod a+rx /usr/bin/yt-dlp
 # /usr/bin/yt-dlp -U --verbose --force-overwrites
