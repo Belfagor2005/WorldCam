@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
+
 """
 #########################################################
 #                                                       #
@@ -9,7 +10,7 @@ from __future__ import absolute_import, print_function
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: "17:05 - 20250608"                    #
+#  Last Modified: "18:30 - 20250703"                    #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept Lululla                           #
@@ -78,8 +79,7 @@ class LanguageScreen(Screen):
         languages = []
         for code in sorted(self.flag_mapping.keys()):
             name = self.get_english_name(code)
-            entry = LanguageEntryComponent(
-                name, code)  # returns (code, name, png)
+            entry = LanguageEntryComponent(name, code)  # returns (code, name, png)
             languages.append(entry)
 
         self["list"].setList(languages)
@@ -88,35 +88,15 @@ class LanguageScreen(Screen):
     def get_english_name(self, code):
         """Returns the English name of the language"""
         english_names = {
-            "en": "English",
-            "it": "Italian",
-            "ar": "Arabic",
-            "bg": "Bulgarian",
-            "cs": "Czech",
-            "de": "German",
-            "el": "Greek",
-            "es": "Spanish",
-            "fa": "Persian",
-            "fr": "French",
-            "he": "Hebrew",
-            "hr": "Croatian",
-            "hu": "Hungarian",
-            "ja": "Japanese",
-            "ko": "Korean",
-            "mk": "Macedonian",
-            "nl": "Dutch",
-            "pl": "Polish",
-            "pt": "Portuguese",
-            "ro": "Romanian",
-            "ru": "Russian",
-            "sk": "Slovak",
-            "sl": "Slovenian",
-            "sq": "Albanian",
-            "sr": "Serbian",
-            "th": "Thai",
-            "tr": "Turkish",
-            "vi": "Vietnamese",
-            "zh": "Chinese"}
+            "en": "English", "it": "Italian", "ar": "Arabic", "bg": "Bulgarian",
+            "cs": "Czech", "de": "German", "el": "Greek", "es": "Spanish",
+            "fa": "Persian", "fr": "French", "he": "Hebrew", "hr": "Croatian",
+            "hu": "Hungarian", "ja": "Japanese", "ko": "Korean", "mk": "Macedonian",
+            "nl": "Dutch", "pl": "Polish", "pt": "Portuguese", "ro": "Romanian",
+            "ru": "Russian", "sk": "Slovak", "sl": "Slovenian", "sq": "Albanian",
+            "sr": "Serbian", "th": "Thai", "tr": "Turkish", "vi": "Vietnamese",
+            "zh": "Chinese"
+        }
         return english_names.get(code, code.upper())
 
     def selectActiveLanguage(self):

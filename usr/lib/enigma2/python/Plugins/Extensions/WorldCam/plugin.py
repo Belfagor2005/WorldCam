@@ -11,7 +11,7 @@ from __future__ import absolute_import, print_function
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: "14:34 - 20250629"                    #
+#  Last Modified: "18:30 - 20250703"                    #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept Lululla                           #
@@ -92,7 +92,7 @@ except NameError:
 
 
 # Global constants
-PLUGIN_VERSION = "5.8"
+PLUGIN_VERSION = "5.9"
 PLUGIN_PATH = dirname(__file__)
 DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
 BASE_URL = "https://www.skylinewebcams.com"
