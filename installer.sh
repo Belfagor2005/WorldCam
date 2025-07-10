@@ -3,8 +3,8 @@
 ## setup command=wget -q --no-check-certificate https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
 
 ## Only This 2 lines to edit with new version ######
-version='5.9'
-changelog='\nIf you don t like this plugin, don t use it!'
+version='6.0'
+changelog='\nIf you don t like this plugin, don t use it! or offer beir ;)'
 ##
 TMPPATH=/tmp/WorldCam-main
 FILEPATH=/tmp/main.tar.gz

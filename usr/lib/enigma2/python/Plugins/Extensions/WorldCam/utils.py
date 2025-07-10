@@ -29,6 +29,7 @@ from re import search, sub
 import sys
 import html
 from time import strftime
+from threading import Lock
 from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse, urlunparse
 from urllib.request import Request, urlopen
@@ -74,11 +75,13 @@ class Logger:
         "CRITICAL": ("\033[95m", "[CRIT] ")  # magenta
     }
     END = "\033[0m"
+    _lock = Lock()
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
-            cls._instance = super(Logger, cls).__new__(cls)
-            cls._instance.__initialized = False
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self, log_path=None, clear_on_start=True):
@@ -120,20 +123,46 @@ class Logger:
             except Exception as e:
                 print(f"Log write failed: {str(e)}")
 
+    def debug(self, message, *args):
+        self.log("DEBUG", message % args if args else message)
+
     def info(self, message, *args):
-        self.log(message, "INFO")
+        self.log("INFO", message % args if args else message)
 
     def warning(self, message, *args):
-        self.log(message, "WARNING")
+        self.log("WARNING", message % args if args else message)
 
     def error(self, message, *args):
-        self.log(message, "ERROR")
+        self.log("ERROR", message % args if args else message)
 
     def critical(self, message, *args):
-        self.log(message, "CRITICAL")
+        self.log("ERROR", "CRITICAL: " + (message % args if args else message))
 
-    def debug(self, message, *args):
-        self.log(message, "DEBUG")
+    def exception(self, message, *args):
+        exc_info = self._get_exception_info()
+        self.log("ERROR", f"EXCEPTION: {message % args if args else message}\n{exc_info}")
+
+    def _get_exception_info(self):
+        """Get formatted exception info"""
+        import sys
+        import traceback
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        return ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+
+    # def info(self, message, *args):
+        # self.log(message, "INFO")
+
+    # def warning(self, message, *args):
+        # self.log(message, "WARNING")
+
+    # def error(self, message, *args):
+        # self.log(message, "ERROR")
+
+    # def critical(self, message, *args):
+        # self.log(message, "CRITICAL")
+
+    # def debug(self, message, *args):
+        # self.log(message, "DEBUG")
 
 
 FAVORITES_FILE = join(PLUGIN_PATH, "favorites.json")
@@ -888,9 +917,7 @@ def check_and_warn_dependencies(logger=None):
     try:
         missing = checkdependencies.check_requirements(logger=logger)
         if missing and logger:
-            logger.warning(
-                "Missing optional components: %s",
-                ", ".join(missing))
+            logger.warning("Missing optional components: %s", ", ".join(missing))
         return missing
     except Exception as e:
         if logger:
