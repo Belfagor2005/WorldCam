@@ -56,15 +56,16 @@ else
 	Packagerequests=python-requests
 fi
 
+
 if [ $PYTHON = "PY3" ]; then
-	if grep -qs "Package: $Packagesix" cat $STATUS ; then
+	if grep -qs "Package: $Packagesix" $STATUS ; then
 		echo ""
 	else
 		opkg update && opkg --force-reinstall --force-overwrite install python3-six
 	fi
 fi
 echo ""
-if grep -qs "Package: $Packagerequests" cat $STATUS ; then
+if grep -qs "Package: $Packagerequests" $STATUS ; then
 	echo ""
 else
 	echo "Need to install $Packagerequests"
@@ -100,8 +101,8 @@ if [ $OSTYPE != "DreamOs" ]; then
 fi
 sleep 2
 
-wget https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz -O /tmp/worldcam.tar.gz
-tar -xzf /tmp/worldcam.tar.gz -C /tmp/
+wget https://github.com/Belfagor2005/WorldCam/archive/main.tar.gz -O $FILEPATH
+tar -xzf $FILEPATH -C /tmp/
 cp -r /tmp/WorldCam-main/usr/* /usr/
 rm -rf /tmp/worldcam.tar.gz /tmp/WorldCam-main
 sync
