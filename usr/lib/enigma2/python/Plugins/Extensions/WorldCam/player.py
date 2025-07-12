@@ -247,7 +247,13 @@ class WorldCamPlayer(
 		self.aspect_manager = AspectManager()
 		self.aspect_manager.set_aspect("16:9")
 		self.scraper = SkylineScraper()
-
+		self["state"] = Label("")
+		self["eventname"] = Label("")
+		self["speed"] = Label("")
+		self["statusicon"] = Label("")
+		self["key_green"] = Label("")
+		self["key_yellow"] = Label("")
+		self["key_blue"] = Label("")
 		self["actions"] = ActionMap(
 			[
 				"ColorActions", "OkCancelActions",
