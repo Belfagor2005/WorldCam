@@ -96,14 +96,21 @@ else
 fi
 
 if [ $OSTYPE != "DreamOs" ]; then
-	opkg update && opkg --force-reinstall --force-overwrite install ffmpeg gstplayer exteplayer3 enigma2-plugin-systemplugins-serviceapp
+	opkg update && opkg install ffmpeg exteplayer3 gstplayer enigma2-plugin-systemplugins-serviceapp
 fi
 sleep 2
 
-wget --no-check-certificate 'https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz'
-tar -xzf main.tar.gz
-cp -r 'WorldCam-main/usr' '/'
-set +e
+wget https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz -O /tmp/worldcam.tar.gz
+tar -xzf /tmp/worldcam.tar.gz -C /tmp/
+cp -r /tmp/WorldCam-main/usr/* /usr/
+rm -rf /tmp/worldcam.tar.gz /tmp/WorldCam-main
+sync
+
+
+# wget --no-check-certificate 'https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz'
+# tar -xzf main.tar.gz
+# cp -r 'WorldCam-main/usr' '/'
+# set +e
 cd
 sleep 2
 
