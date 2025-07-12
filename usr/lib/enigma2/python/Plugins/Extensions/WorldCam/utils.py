@@ -140,14 +140,20 @@ class Logger:
 
     def exception(self, message, *args):
         exc_info = self._get_exception_info()
-        self.log("ERROR", f"EXCEPTION: {message % args if args else message}\n{exc_info}")
+        self.log(
+            "ERROR",
+            f"EXCEPTION: {message % args if args else message}\n{exc_info}")
 
     def _get_exception_info(self):
         """Get formatted exception info"""
         import sys
         import traceback
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        return ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+        return ''.join(
+            traceback.format_exception(
+                exc_type,
+                exc_value,
+                exc_traceback))
 
     # def info(self, message, *args):
         # self.log(message, "INFO")
@@ -917,7 +923,9 @@ def check_and_warn_dependencies(logger=None):
     try:
         missing = checkdependencies.check_requirements(logger=logger)
         if missing and logger:
-            logger.warning("Missing optional components: %s", ", ".join(missing))
+            logger.warning(
+                "Missing optional components: %s",
+                ", ".join(missing))
         return missing
     except Exception as e:
         if logger:
