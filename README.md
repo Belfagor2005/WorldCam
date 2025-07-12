@@ -4,7 +4,7 @@
 
 **WorldCam** is an Enigma2 plugin that allows you to view live webcams from around the world,  
 with a simple, fast, and stable interface.  
-Completely rewritten and optimized in version **5.0**,  
+Completely rewritten and optimized in version **6.0**,  
 the plugin now offers new features and greater reliability.
 
 ---
