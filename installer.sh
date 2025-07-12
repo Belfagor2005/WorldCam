@@ -2,163 +2,154 @@
 
 ## setup command=wget -q --no-check-certificate https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
 
-## Only This 2 lines to edit with new version ######
+## Only These 2 lines to edit with new version ######
 version='6.0'
 changelog='\nIf you don t like this plugin, don t use it! or offer beir ;)'
-##
+##############################################################
+
 TMPPATH=/tmp/WorldCam-main
 FILEPATH=/tmp/main.tar.gz
 
+# Determine plugin path based on architecture
 if [ ! -d /usr/lib64 ]; then
-	PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/WorldCam
+    PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/WorldCam
 else
-	PLUGINPATH=/usr/lib64/enigma2/python/Plugins/Extensions/WorldCam
+    PLUGINPATH=/usr/lib64/enigma2/python/Plugins/Extensions/WorldCam
 fi
 
-## Remove tmp directory
-[ -r $TMPPATH ] && rm -f $TMPPATH > /dev/null 2>&1
+# Cleanup function
+cleanup() {
+    [ -d "$TMPPATH" ] && rm -rf "$TMPPATH"
+    [ -f "$FILEPATH" ] && rm -f "$FILEPATH"
+    [ -f "/tmp/worldcam.tar.gz" ] && rm -f "/tmp/worldcam.tar.gz"
+}
 
-## Remove tmp directory
-[ -r $FILEPATH ] && rm -f $FILEPATH > /dev/null 2>&1
-
-## Remove old plugin directory
-## [ -r $PLUGINPATH ] && rm -rf $PLUGINPATH
-
-## check depends packges
+# Check package manager type
 if [ -f /var/lib/dpkg/status ]; then
-   STATUS=/var/lib/dpkg/status
-   OSTYPE=DreamOs
+    STATUS=/var/lib/dpkg/status
+    OSTYPE=DreamOs
+    PKG_MANAGER="apt-get"
 else
-   STATUS=/var/lib/opkg/status
-   OSTYPE=Dream
+    STATUS=/var/lib/opkg/status
+    OSTYPE=Dream
+    PKG_MANAGER="opkg"
 fi
+
 echo ""
+cleanup
 
-if [ -f /usr/bin/wget ]; then
-    echo "wget exist"
-else
-	if [ $OSTYPE = "DreamOs" ]; then
-		echo "dreamos"
-		apt-get update && apt-get install wget
-	else
-		opkg update && opkg install wget
-	fi
+# Install wget if missing
+if ! command -v wget >/dev/null 2>&1; then
+    echo "Installing wget..."
+    if [ "$OSTYPE" = "DreamOs" ]; then
+        apt-get update && apt-get install -y wget
+    else
+        opkg update && opkg install wget
+    fi
 fi
 
+# Detect Python version
 if python --version 2>&1 | grep -q '^Python 3\.'; then
-	echo "You have Python3 image"
-	PYTHON=PY3
-	Packagesix=python3-six
-	Packagerequests=python3-requests
+    echo "Python3 image detected"
+    PYTHON=PY3
+    Packagesix=python3-six
+    Packagerequests=python3-requests
 else
-	echo "You have Python2 image"
-	PYTHON=PY2
-	Packagerequests=python-requests
+    echo "Python2 image detected"
+    PYTHON=PY2
+    Packagerequests=python-requests
 fi
 
+# Install required packages
+install_pkg() {
+    local pkg=$1
+    if ! grep -qs "Package: $pkg" "$STATUS"; then
+        echo "Installing $pkg..."
+        if [ "$OSTYPE" = "DreamOs" ]; then
+            apt-get update && apt-get install -y "$pkg"
+        else
+            opkg update && opkg install "$pkg"
+        fi
+    fi
+}
 
-if [ $PYTHON = "PY3" ]; then
-	if grep -qs "Package: $Packagesix" $STATUS ; then
-		echo ""
-	else
-		opkg update && opkg --force-reinstall --force-overwrite install python3-six
-	fi
-fi
-echo ""
-if grep -qs "Package: $Packagerequests" $STATUS ; then
-	echo ""
-else
-	echo "Need to install $Packagerequests"
-	echo ""
-	if [ $OSTYPE = "DreamOs" ]; then
-		apt-get update && apt-get install python-requests -y
-	else
-		if [ $PYTHON = "PY3" ]; then
-			opkg update && opkg --force-reinstall --force-overwrite install python3-requests
-		# elif [ $PYTHON = "PY2" ]; then
-		else
-			opkg update && opkg --force-reinstall --force-overwrite install python-requests
-		fi
-	fi
-fi
-echo ""
+[ "$PYTHON" = "PY3" ] && install_pkg "$Packagesix"
+install_pkg "$Packagerequests"
 
-## Download and install plugin
-## check depends packges
-mkdir -p $TMPPATH
-cd $TMPPATH
+# Download and install plugin
+mkdir -p "$TMPPATH"
+cd "$TMPPATH" || exit 1
 set -e
-if [ $OSTYPE = "DreamOs" ]; then
-   echo "# Your image is OE2.5/2.6 #"
-   echo ""
-else
-   echo "# Your image is OE2.0 #"
-   echo ""
+
+echo -e "\n# Your image is ${OSTYPE}\n"
+
+# Install additional dependencies for non-DreamOs systems
+if [ "$OSTYPE" != "DreamOs" ]; then
+    for pkg in ffmpeg exteplayer3 gstplayer enigma2-plugin-systemplugins-serviceapp; do
+        install_pkg "$pkg"
+    done
 fi
 
-if [ $OSTYPE != "DreamOs" ]; then
-	opkg update && opkg install ffmpeg exteplayer3 gstplayer enigma2-plugin-systemplugins-serviceapp
+echo "Downloading WorldCam..."
+wget --no-check-certificate 'https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz' -O "$FILEPATH"
+if [ $? -ne 0 ]; then
+    echo "Failed to download WorldCam package!"
+    exit 1
 fi
-sleep 2
 
-wget https://github.com/Belfagor2005/WorldCam/archive/main.tar.gz -O $FILEPATH
-tar -xzf $FILEPATH -C /tmp/
+tar -xzf "$FILEPATH" -C /tmp/
 cp -r /tmp/WorldCam-main/usr/* /usr/
-rm -rf /tmp/worldcam.tar.gz /tmp/WorldCam-main
-sync
+set +e
 
-
-# wget --no-check-certificate 'https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz'
-# tar -xzf main.tar.gz
-# cp -r 'WorldCam-main/usr' '/'
-# set +e
-cd
-sleep 2
-
-## Check if plugin installed correctly
-if [ ! -d $PLUGINPATH ]; then
-	echo "Some thing wrong .. Plugin not installed"
-	exit 1
+# Verify installation
+if [ ! -d "$PLUGINPATH" ]; then
+    echo "Error: Plugin installation failed!"
+    cleanup
+    exit 1
 fi
 
-
-## --- START install yt-dlp and dependencies ---
+# Install yt-dlp and dependencies
 echo "Installing yt-dlp and required dependencies..."
+[ -e "/usr/bin/python3" ] && PY="python3" || PY="python"
 
-
-[ -e "/usr/bin/python3" ] && PY="python3" || PY="python"; \
 opkg update && \
-opkg remove enigma2-plugin-systemplugins-serviceapp exteplayer3 ffmpeg gstplayer && \
-opkg install ffmpeg exteplayer3 enigma2-plugin-systemplugins-serviceapp gstplayer streamlink \
-enigma2-plugin-extensions-streamlinkwrapper \
-enigma2-plugin-extensions-streamlinkproxyv \
-enigma2-plugin-extensions-ytdlpwrapper \
-enigma2-plugin-extensions-ytdlwrapper \
-streamlink python3-re \
-gstreamer1.0-plugins-bad \
-gstreamer1.0-plugins-ugly \
-gstreamer1.0-libav \
-${PY}-requests ${PY}-yt-dlp ${PY}-youtube-dl
-gst-inspect-1.0 --version
+opkg install \
+    ffmpeg \
+    exteplayer3 \
+    enigma2-plugin-systemplugins-serviceapp \
+    gstplayer \
+    streamlink \
+    enigma2-plugin-extensions-streamlinkwrapper \
+    enigma2-plugin-extensions-streamlinkproxyv \
+    enigma2-plugin-extensions-ytdlpwrapper \
+    enigma2-plugin-extensions-ytdlwrapper \
+    streamlink \
+    python3-re \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
+    ${PY}-requests \
+    ${PY}-yt-dlp \
+    ${PY}-youtube-dl
 
-
-# wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/bin/yt-dlp
-# chmod a+rx /usr/bin/yt-dlp
-# /usr/bin/yt-dlp -U --verbose --force-overwrites
-# opkg install --force-reinstall yt-dlp
+# Create YouTube cookies file
+mkdir -p /etc/enigma2
 echo -e "# Netscape HTTP Cookie File\n.youtube.com\tTRUE\t/\tTRUE\t2147483647\tCONSENT\tYES+cb.20210615-14-p0.it+FX+294\n.youtube.com\tTRUE\t/\tTRUE\t2147483647\tPREF\tf1=50000000" > /etc/enigma2/yt_cookies.txt
 echo "yt-dlp installation done."
-## --- END install yt-dlp and dependencies ---
 
-rm -rf $TMPPATH > /dev/null 2>&1
+# Cleanup
+cleanup
 sync
-# # Identify the box type from the hostname file
+
+# System info
 FILE="/etc/image-version"
-box_type=$(head -n 1 /etc/hostname)
-distro_value=$(grep '^distro=' "$FILE" | awk -F '=' '{print $2}')
-distro_version=$(grep '^version=' "$FILE" | awk -F '=' '{print $2}')
+box_type=$(head -n 1 /etc/hostname 2>/dev/null || echo "Unknown")
+distro_value=$(grep '^distro=' "$FILE" 2>/dev/null | awk -F '=' '{print $2}')
+distro_version=$(grep '^version=' "$FILE" 2>/dev/null | awk -F '=' '{print $2}')
 python_vers=$(python --version 2>&1)
-echo "#########################################################
+
+cat <<EOF
+#########################################################
 #               INSTALLED SUCCESSFULLY                  #
 #                developed by LULULLA                   #
 #               https://corvoboys.org                   #
@@ -169,8 +160,10 @@ echo "#########################################################
 BOX MODEL: $box_type
 OO SYSTEM: $OSTYPE
 PYTHON: $python_vers
-IMAGE NAME: $distro_value
-IMAGE VERSION: $distro_version"
+IMAGE NAME: ${distro_value:-Unknown}
+IMAGE VERSION: ${distro_version:-Unknown}
+EOF
+
 sleep 5
 killall -9 enigma2
 exit 0
