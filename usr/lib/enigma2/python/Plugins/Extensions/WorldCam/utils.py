@@ -35,6 +35,8 @@ from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse, urlunpar
 from urllib.request import Request, urlopen
 from enigma import eDVBDB, eEnv
 from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
+import logging
+from logging.handlers import RotatingFileHandler
 
 from . import _
 from . import checkdependencies
@@ -66,7 +68,7 @@ def reload_services():
 
 class Logger:
     _instance = None
-
+    _initialized = False
     LEVELS = {
         "DEBUG": ("\033[92m", "[DEBUG]"),    # green
         "INFO": ("\033[97m", "[INFO] "),     # white
@@ -78,16 +80,16 @@ class Logger:
     _lock = Lock()
 
     def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            with cls._lock:
-                if cls._instance is None:
-                    cls._instance = super().__new__(cls)
+        if not cls._instance:
+            cls._instance = super(Logger, cls).__new__(cls)
         return cls._instance
 
     def __init__(self, log_path=None, clear_on_start=True):
-        if self.__initialized:
+        if self._initialized:
             return
-        self.__initialized = True
+
+        self._initialized = True
+
         log_dir = "/tmp/worldcam"
 
         if not exists(log_dir):
@@ -140,20 +142,14 @@ class Logger:
 
     def exception(self, message, *args):
         exc_info = self._get_exception_info()
-        self.log(
-            "ERROR",
-            f"EXCEPTION: {message % args if args else message}\n{exc_info}")
+        self.log("ERROR", f"EXCEPTION: {message % args if args else message}\n{exc_info}")
 
     def _get_exception_info(self):
         """Get formatted exception info"""
         import sys
         import traceback
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        return ''.join(
-            traceback.format_exception(
-                exc_type,
-                exc_value,
-                exc_traceback))
+        return ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
 
     # def info(self, message, *args):
         # self.log(message, "INFO")
@@ -248,7 +244,7 @@ class FavoritesManager:
             with open(FAVORITES_FILE, "r", encoding="utf-8") as f:
                 return load(f)
         except Exception as e:
-            logger.error(f"Error loading favorites: {str(e)}")
+            Logger().error(f"Error loading favorites: {str(e)}")
             return []
 
     @staticmethod
@@ -259,7 +255,7 @@ class FavoritesManager:
                 dump(favorites, f, indent=4, ensure_ascii=False)
             return True
         except Exception as e:
-            logger.error(f"Error saving favorites: {str(e)}")
+            Logger().error(f"Error saving favorites: {str(e)}")
             return False
 
     @staticmethod
@@ -345,7 +341,7 @@ class FavoritesManager:
             return True, _(
                 "Favorites exported successfully! Restart Enigma2 to see them.")
         except Exception as e:
-            logger.error(f"Export error: {str(e)}")
+            Logger().error(f"Export error: {str(e)}")
             return False, _("Export failed: ") + str(e)
 
 
@@ -923,9 +919,7 @@ def check_and_warn_dependencies(logger=None):
     try:
         missing = checkdependencies.check_requirements(logger=logger)
         if missing and logger:
-            logger.warning(
-                "Missing optional components: %s",
-                ", ".join(missing))
+            logger.warning("Missing optional components: %s", ", ".join(missing))
         return missing
     except Exception as e:
         if logger:
