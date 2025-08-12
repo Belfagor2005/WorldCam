@@ -1,28 +1,28 @@
 <screen name="WorldCamMainScreen" position="0,0" size="2560,1440" title="..::WORLDCAM::.." flags="wfNoBorder">
     <!-- Graph -->
-    <widget name="title" position="1290,44" size="1206,70" font="Regular; 42" halign="center" zPosition="5" transparent="1"/>
-    <widget name="paypal" position="366,997" size="771,280" font="Regular; 34" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="5"/>
-    <widget name="flag_icon" position="1238,1055" size="120,60" zPosition="5"/>
-    <widget name="language_label" position="1239,1056" size="120,60" font="Regular;24" halign="left" valign="center" transparent="1" zPosition="6"/>    
+    <widget name="title" position="1290,44" size="1206,70" font="Regular; 42" halign="center" zPosition="5" transparent="1" />
+    <widget name="paypal" position="366,997" size="771,280" font="Regular; 34" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="5" />
+    <widget name="flag_icon" position="1238,1055" size="120,60" zPosition="5" />
+    <widget name="language_label" position="1239,1056" size="120,60" font="Regular;24" halign="left" valign="center" transparent="1" zPosition="6" />    
     
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" position="2258,1045" size="200,200" zPosition="4" scale="1" alphatest="blend"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" position="1721,1048" size="530,200" scale="1" zPosition="5" alphatest="blend"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/logo.png" position="1209,43" size="70,70" scale="1" zPosition="5" alphatest="blend"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="970,1280" size="156,75" scale="1" zPosition="5" alphatest="on"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="76,998" size="280,280" scale="1" zPosition="2" alphatest="on"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" position="1233,1016" size="1234,10" alphatest="blend"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/mask.png" position="0,0" size="2560,1440" zPosition="-1" scale="1" transparent="1" alphatest="blend"/>
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/ft.png" position="2258,1045" size="200,200" zPosition="4" scale="1" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/plugin.png" position="1631,1048" size="530,200" scale="1" zPosition="5" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/logo.png" position="1209,43" size="70,70" scale="1" zPosition="5" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="970,1280" size="156,75" scale="1" zPosition="5" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="76,998" size="280,280" scale="1" zPosition="2" alphatest="on" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" position="1233,1021" size="1234,10" alphatest="blend" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/mask.png" position="0,0" size="2560,1440" zPosition="-1" scale="1" transparent="1" alphatest="blend" />
 
-    <widget source="session.VideoPicture" render="Pig" position="105,201" zPosition="20" size="978,568" backgroundColor="transparent" transparent="0"/>
+    <widget source="session.VideoPicture" render="Pig" position="105,201" zPosition="20" size="978,568" backgroundColor="transparent" transparent="0" />
     <widget font="Regular; 44" halign="center" position="122,63" render="Label" size="961,70" source="global.CurrentTime" transparent="1" backgroundColor="#000000" foregroundColor="#92f1fc">
         <convert type="ClockToText">Format:%a %d.%m. %Y | %H:%M</convert>
     </widget>
 
     <!-- Menu List -->
-    <widget name="list" position="1235,163" size="1234,838" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049"/>
+    <widget name="list" position="1237,163" size="1234,842" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" />
     <!-- Colors -->
-    <widget name="key_red" position="1347,1368" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1"/>
-    <widget name="key_green" position="1620,1366" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1"/>
-    <widget name="key_yellow" position="1884,1363" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1"/>
-    <widget name="key_blue" position="2158,1358" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1"/>
+    <widget name="key_red" position="1347,1368" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
+    <widget name="key_green" position="1620,1366" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
+    <widget name="key_yellow" position="1884,1363" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
+    <widget name="key_blue" position="2158,1358" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
 </screen>
