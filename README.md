@@ -1,6 +1,6 @@
 ![](https://komarev.com/ghpvc/?username=Belfagor2005) [![Python package](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml)
 
-# 🌍 You WorldCam Plugin v6.0
+# 🌍 You WorldCam Plugin v6.1
 
 **WorldCam** is an Enigma2 plugin that allows you to view live webcams from around the world,  
 with a simple, fast, and stable interface.  
@@ -9,7 +9,7 @@ the plugin now offers new features and greater reliability.
 
 ---
 
-🚀 **What's new in version 5.0**
+🚀 **What's new from version > 5.0**
 
 ⚡️ **Fast and interactive UI management**
 Asynchronous webcam loading and smooth navigation between categories.
