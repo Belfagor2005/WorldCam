@@ -11,7 +11,7 @@
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/PayPal.png" position="37,624" size="125,50" scale="1" zPosition="5" alphatest="blend" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/qr-code.png" position="40,495" size="120,120" scale="1" zPosition="5" alphatest="blend" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/slider_fhd.png" position="610,497" size="620,5" alphatest="blend" />    
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/mask.png" position="center,center" size="1280,720" scale="1" transparent="1" zPosition="-1" alphatest="blend" />    
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/pics/maskhd.png" position="center,center" size="1280,720" scale="1" transparent="1" zPosition="-1" alphatest="blend" />    
     
     <widget source="session.VideoPicture" render="Pig" position="58,106" zPosition="20" size="480,280" backgroundColor="transparent" transparent="0" />
     <widget font="Regular; 34" halign="center" position="44,16" render="Label" size="505,70" source="global.CurrentTime" transparent="1" backgroundColor="#000000" foregroundColor="#92f1fc">
