@@ -3,8 +3,8 @@
 An attribute "_yt_dlp__identifier" may be inserted into the module if it uses an ambiguous namespace"""
 
 try:
-from . import Cryptodome
-import brotlicffi as brotli
+    from . import Cryptodome
+    import brotlicffi as brotli
 except ImportError:
     try:
         import brotli
