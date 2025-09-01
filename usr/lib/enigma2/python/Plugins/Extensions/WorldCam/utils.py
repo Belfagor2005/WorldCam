@@ -142,20 +142,14 @@ class Logger:
 
     def exception(self, message, *args):
         exc_info = self._get_exception_info()
-        self.log(
-            "ERROR",
-            f"EXCEPTION: {message % args if args else message}\n{exc_info}")
+        self.log("ERROR", f"EXCEPTION: {message % args if args else message}\n{exc_info}")
 
     def _get_exception_info(self):
         """Get formatted exception info"""
         import sys
         import traceback
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        return ''.join(
-            traceback.format_exception(
-                exc_type,
-                exc_value,
-                exc_traceback))
+        return ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
 
     # def info(self, message, *args):
         # self.log(message, "INFO")
@@ -173,7 +167,9 @@ class Logger:
         # self.log(message, "DEBUG")
 
 
-FAVORITES_FILE = join(PLUGIN_PATH, "favorites.json")
+# FAVORITES_FILE = join(PLUGIN_PATH, "favorites.json")
+# FAVORITES_FILE = "/etc/enigma2/favorites.json"
+FAVORITES_FILE = join(eEnv.resolve("${sysconfdir}/enigma2"), "favorites.json")
 
 
 # Update the safe_encode_url function
@@ -242,9 +238,7 @@ def clean_html_entities(text):
 
 # try export with#
 # DESCRIPTION Alghero - Mugoni Beach
-# SERVICE
-# 4097:0:1:46DE:221E:EC:0:0:0:0:streamlink%3a//https%3a//www.skylinewebcams.com/it/webcam/italia/sardegna/sassari/stintino.html:Sassari
-# - Stintino - La Pelosa
+# SERVICE 4097:0:1:46DE:221E:EC:0:0:0:0:streamlink%3a//https%3a//www.skylinewebcams.com/it/webcam/italia/sardegna/sassari/stintino.html:Sassari - Stintino - La Pelosa
 
 class FavoritesManager:
     @staticmethod
@@ -933,9 +927,7 @@ def check_and_warn_dependencies(logger=None):
     try:
         missing = checkdependencies.check_requirements(logger=logger)
         if missing and logger:
-            logger.warning(
-                "Missing optional components: %s",
-                ", ".join(missing))
+            logger.warning("Missing optional components: %s", ", ".join(missing))
         return missing
     except Exception as e:
         if logger:
