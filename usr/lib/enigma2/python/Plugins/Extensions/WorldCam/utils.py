@@ -890,30 +890,36 @@ class VideoURLHelper:
 
 
 class AspectManager:
-    def save_aspect(self):
-        """Save the current aspect ratio settings."""
-        try:
-            with open("/proc/stb/video/aspect", "r") as f:
-                self.old_aspect = f.read().strip()
-        except Exception:
-            self.old_aspect = None
+    """Manages aspect ratio settings for the plugin"""
 
-    def set_aspect(self, aspect="16:9"):
-        """Set a new aspect ratio."""
+    def __init__(self):
         try:
-            with open("/proc/stb/video/aspect", "w") as f:
-                f.write(aspect)
-        except Exception:
-            pass
+            self.init_aspect = self.get_current_aspect()
+            print("[INFO] Initial aspect ratio:", self.init_aspect)
+        except Exception as e:
+            print("[ERROR] Failed to initialize aspect manager:", str(e))
+            self.init_aspect = 0  # Fallback
+
+    def get_current_aspect(self):
+        """Get current aspect ratio setting"""
+        try:
+            aspect = AVSwitch().getAspectRatioSetting()
+            # Assicurati che sia un intero valido
+            return int(aspect) if aspect is not None else 0
+        except (ValueError, TypeError, Exception) as e:
+            print("[ERROR] Failed to get aspect ratio:", str(e))
+            return 0  # Default 4:3
 
     def restore_aspect(self):
-        """Restore the original aspect ratio."""
-        if hasattr(self, "old_aspect") and self.old_aspect:
-            try:
-                with open("/proc/stb/video/aspect", "w") as f:
-                    f.write(self.old_aspect)
-            except Exception:
-                pass
+        """Restore original aspect ratio"""
+        try:
+            if hasattr(self, 'init_aspect') and self.init_aspect is not None:
+                print("[INFO] Restoring aspect ratio to:", self.init_aspect)
+                AVSwitch().setAspectRatio(self.init_aspect)
+            else:
+                print("[WARNING] No initial aspect ratio to restore")
+        except Exception as e:
+            print("[ERROR] Failed to restore aspect ratio:", str(e))
 
 
 # Global variable for the current system language
