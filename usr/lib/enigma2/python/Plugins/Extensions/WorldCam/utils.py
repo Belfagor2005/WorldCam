@@ -41,6 +41,12 @@ from logging.handlers import RotatingFileHandler
 from . import _
 from . import checkdependencies
 
+
+try:
+    from Components.AVSwitch import AVSwitch
+except ImportError:
+    from Components.AVSwitch import eAVControl as AVSwitch
+
 # Python version flags
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info.major >= 3
@@ -893,16 +899,11 @@ class AspectManager:
     """Manages aspect ratio settings for the plugin"""
 
     def __init__(self):
-        self.save_current_aspect()  # Salva l'aspect ratio corrente all'inizializzazione
-        print("[INFO] Initial aspect ratio saved:", self.init_aspect)
-
-    def save_current_aspect(self):
-        """Save current aspect ratio setting"""
         try:
             self.init_aspect = self.get_current_aspect()
-            print("[INFO] Current aspect ratio saved:", self.init_aspect)
+            print("[INFO] Initial aspect ratio:", self.init_aspect)
         except Exception as e:
-            print("[ERROR] Failed to save aspect ratio:", str(e))
+            print("[ERROR] Failed to initialize aspect manager:", str(e))
             self.init_aspect = 0  # Fallback
 
     def get_current_aspect(self):
@@ -927,7 +928,6 @@ class AspectManager:
             print("[ERROR] Failed to restore aspect ratio:", str(e))
 
 
-aspect_manager = AspectManager()
 # Global variable for the current system language
 _current_language = get_system_language()
 
