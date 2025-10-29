@@ -8,7 +8,8 @@ from ...utils import ExtractorError, classproperty, parse_qs, update_url_query, 
 
 class YoutubeYtBeIE(YoutubeBaseInfoExtractor):
     IE_DESC = 'youtu.be'
-    _VALID_URL = rf'https?://youtu\.be/(?P<id>[0-9A-Za-z_-]{{11}})/*?.*?\blist=(?P<playlist_id>{YoutubeBaseInfoExtractor._PLAYLIST_ID_RE})'
+    _VALID_URL = rf'https?://youtu\.be/(?P<id>[0-9A-Za-z_-]{{11}})/*?.*?\blist=(?P<playlist_id>{
+        YoutubeBaseInfoExtractor._PLAYLIST_ID_RE})'
     _TESTS = [{
         'url': 'https://youtu.be/yeWKywCrFtk?list=PL2qgrgXsNUG5ig9cat4ohreBjYLAPC0J5',
         'info_dict': {
@@ -203,7 +204,8 @@ class YoutubeShortsAudioPivotIE(YoutubeBaseInfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         return self.url_result(
-            f'https://www.youtube.com/feed/sfv_audio_pivot?bp={self._generate_audio_pivot_params(video_id)}',
+            f'https://www.youtube.com/feed/sfv_audio_pivot?bp={
+                self._generate_audio_pivot_params(video_id)}',
             ie=YoutubeTabIE)
 
 

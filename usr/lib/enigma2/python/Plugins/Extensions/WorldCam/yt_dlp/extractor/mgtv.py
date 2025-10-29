@@ -113,10 +113,17 @@ class MGTVIE(InfoExtractor):
                 expected_type=str)
             resolution = traverse_obj(
                 self._RESOLUTIONS, (stream_name, 1 if stream.get('scale') == '16:9' else 0))
-            format_url = traverse_obj(self._download_json(
-                urljoin(stream_domain, stream['url']), video_id, fatal=False,
-                note=f'Downloading video info for format {resolution or stream_name}'),
-                ('info', {url_or_none}))
+            format_url = traverse_obj(
+                self._download_json(
+                    urljoin(
+                        stream_domain,
+                        stream['url']),
+                    video_id,
+                    fatal=False,
+                    note=f'Downloading video info for format {
+                        resolution or stream_name}'),
+                ('info',
+                 {url_or_none}))
             if not format_url:
                 continue
             tbr = int_or_none(stream.get('filebitrate') or self._search_regex(
@@ -163,7 +170,8 @@ class MGTVIE(InfoExtractor):
                 f'{domain}{url_sub}',
                 video_id,
                 fatal=False,
-                note=f'Download subtitle for locale {sub.get("name")} ({locale})') or {}
+                note=f'Download subtitle for locale {
+                    sub.get("name")} ({locale})') or {}
             sub_url = url_or_none(sub.get('info'))
             if not sub_url:
                 continue

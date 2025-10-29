@@ -266,8 +266,9 @@ def create_connection(
         ip_addrs = [addr for addr in ip_addrs if addr[0] == af]
         if not ip_addrs:
             raise OSError(
-                f'No remote IPv{4 if af == socket.AF_INET else 6} addresses available for connect. '
-                f'Can\'t use "{source_address[0]}" as source address')
+                f'No remote IPv{
+                    4 if af == socket.AF_INET else 6} addresses available for connect. ' f'Can\'t use "{
+                    source_address[0]}" as source address')
 
     err = None
     for ip_addr in ip_addrs:

@@ -43,7 +43,8 @@ class JStreamIE(InfoExtractor):
                 continue
             m3u8_id = remove_start(remove_start(text, 'auto'), '_') or None
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                f'https://{publisher}.eq.webcdn.stream.ne.jp/{host}/{publisher}/jmc_pub/{value.get("url")}', video_id, 'mp4', m3u8_id=m3u8_id)
+                f'https://{publisher}.eq.webcdn.stream.ne.jp/{host}/{publisher}/jmc_pub/{
+                    value.get("url")}', video_id, 'mp4', m3u8_id=m3u8_id)
             self._merge_subtitles(subs, target=subtitles)
             yield from fmts
 

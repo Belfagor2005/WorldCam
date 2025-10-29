@@ -57,7 +57,8 @@ class NebulaBaseIE(InfoExtractor):
                     403):
                 raise
             self.to_screen(
-                f'Reauthorizing with Nebula and retrying, because last API call resulted in error {e.cause.status}')
+                f'Reauthorizing with Nebula and retrying, because last API call resulted in error {
+                    e.cause.status}')
             self._real_initialize()
             if self._token:
                 kwargs.setdefault(
@@ -72,7 +73,8 @@ class NebulaBaseIE(InfoExtractor):
             'https://users.api.nebula.app/api/v1/authorization/',
             None,
             headers={
-                'Authorization': f'Token {self._api_token}'} if self._api_token else None,
+                'Authorization': f'Token {
+                    self._api_token}'} if self._api_token else None,
             note='Authorizing to Nebula',
             data=b'')['token']
 

@@ -192,7 +192,8 @@ class SubsplashPlaylistIE(SubsplashBaseIE):
                 'page[size]': self._PAGE_SIZE,
                 'sort': '-position',
             },
-            note=f'Downloading page {page + 1}')
+            note=f'Downloading page {
+                page + 1}')
 
         for entry in traverse_obj(
             data,

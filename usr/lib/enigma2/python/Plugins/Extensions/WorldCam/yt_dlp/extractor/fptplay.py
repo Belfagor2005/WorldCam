@@ -135,4 +135,8 @@ class FptplayIE(InfoExtractor):
 
         st_token = convert(n).replace(
             '+', '-').replace('/', '_').replace('=', '')
-        return f'https://api.fptplay.net{path}?{urllib.parse.urlencode({"st": st_token, "e": timestamp})}'
+        return f'https://api.fptplay.net{path}?{
+            urllib.parse.urlencode(
+                {
+                    "st": st_token,
+                    "e": timestamp})}'

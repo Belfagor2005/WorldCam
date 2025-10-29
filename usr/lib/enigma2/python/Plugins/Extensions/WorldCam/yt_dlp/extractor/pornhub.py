@@ -556,7 +556,8 @@ class PornHubPlaylistBaseIE(PornHubBaseIE):
 
 
 class PornHubUserIE(PornHubPlaylistBaseIE):
-    _VALID_URL = rf'(?P<url>https?://(?:[^/]+\.)?{PornHubBaseIE._PORNHUB_HOST_RE}/(?:(?:user|channel)s|model|pornstar)/(?P<id>[^/?#&]+))(?:[?#&]|/(?!videos)|$)'
+    _VALID_URL = rf'(?P<url>https?://(?:[^/]+\.)?{
+        PornHubBaseIE._PORNHUB_HOST_RE}/(?:(?:user|channel)s|model|pornstar)/(?P<id>[^/?#&]+))(?:[?#&]|/(?!videos)|$)'
     _TESTS = [{
         'url': 'https://www.pornhub.com/model/zoe_ph',
         'playlist_mincount': 118,
@@ -669,7 +670,8 @@ class PornHubPagedPlaylistBaseIE(PornHubPlaylistBaseIE):
 
 
 class PornHubPagedVideoListIE(PornHubPagedPlaylistBaseIE):
-    _VALID_URL = rf'https?://(?:[^/]+\.)?{PornHubBaseIE._PORNHUB_HOST_RE}/(?!playlist/)(?P<id>(?:[^/]+/)*[^/?#&]+)'
+    _VALID_URL = rf'https?://(?:[^/]+\.)?{
+        PornHubBaseIE._PORNHUB_HOST_RE}/(?!playlist/)(?P<id>(?:[^/]+/)*[^/?#&]+)'
     _TESTS = [{
         'url': 'https://www.pornhub.com/model/zoe_ph/videos',
         'only_matching': True,
@@ -774,7 +776,8 @@ class PornHubPagedVideoListIE(PornHubPagedPlaylistBaseIE):
 
 
 class PornHubUserVideosUploadIE(PornHubPagedPlaylistBaseIE):
-    _VALID_URL = rf'(?P<url>https?://(?:[^/]+\.)?{PornHubBaseIE._PORNHUB_HOST_RE}/(?:(?:user|channel)s|model|pornstar)/(?P<id>[^/]+)/videos/upload)'
+    _VALID_URL = rf'(?P<url>https?://(?:[^/]+\.)?{
+        PornHubBaseIE._PORNHUB_HOST_RE}/(?:(?:user|channel)s|model|pornstar)/(?P<id>[^/]+)/videos/upload)'
     _TESTS = [{'url': 'https://www.pornhub.com/pornstar/jenny-blighe/videos/upload',
                'info_dict': {'id': 'jenny-blighe',
                              },
@@ -789,7 +792,8 @@ class PornHubUserVideosUploadIE(PornHubPagedPlaylistBaseIE):
 
 
 class PornHubPlaylistIE(PornHubPlaylistBaseIE):
-    _VALID_URL = rf'(?P<url>https?://(?:[^/]+\.)?{PornHubBaseIE._PORNHUB_HOST_RE}/playlist/(?P<id>[^/?#&]+))'
+    _VALID_URL = rf'(?P<url>https?://(?:[^/]+\.)?{
+        PornHubBaseIE._PORNHUB_HOST_RE}/playlist/(?P<id>[^/?#&]+))'
     _TESTS = [{
         'url': 'https://www.pornhub.com/playlist/44121572',
         'info_dict': {

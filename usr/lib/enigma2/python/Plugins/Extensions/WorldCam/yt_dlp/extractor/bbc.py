@@ -1596,7 +1596,8 @@ class BBCIE(BBCCoUkIE):  # XXX: Do not subclass from concrete IE
 
         # Multiple video article (e.g.
         # http://www.bbc.co.uk/blogs/adamcurtis/entries/3662a707-0af9-3149-963f-47bea720b460)
-        EMBED_URL = rf'https?://(?:www\.)?bbc\.co\.uk/(?:[^/]+/)+{self._ID_REGEX}(?:\b[^"]+)?'
+        EMBED_URL = rf'https?://(?:www\.)?bbc\.co\.uk/(?:[^/]+/)+{
+            self._ID_REGEX}(?:\b[^"]+)?'
         entries = []
         for match in extract_all(r'new\s+SMP\(({.+?})\)'):
             embed_url = match.get('playerSettings', {}).get('externalEmbedUrl')
@@ -1763,7 +1764,8 @@ class BBCCoUkPlaylistBaseIE(InfoExtractor):
 
 
 class BBCCoUkIPlayerPlaylistBaseIE(InfoExtractor):
-    _VALID_URL_TMPL = rf'https?://(?:www\.)?bbc\.co\.uk/iplayer/%s/(?P<id>{BBCCoUkIE._ID_REGEX})'
+    _VALID_URL_TMPL = rf'https?://(?:www\.)?bbc\.co\.uk/iplayer/%s/(?P<id>{
+        BBCCoUkIE._ID_REGEX})'
 
     @staticmethod
     def _get_default(episode, key, default_key='default'):
@@ -1972,7 +1974,8 @@ class BBCCoUkIPlayerGroupIE(BBCCoUkIPlayerPlaylistBaseIE):
 
 class BBCCoUkPlaylistIE(BBCCoUkPlaylistBaseIE):
     IE_NAME = 'bbc.co.uk:playlist'
-    _VALID_URL = rf'https?://(?:www\.)?bbc\.co\.uk/programmes/(?P<id>{BBCCoUkIE._ID_REGEX})/(?:episodes|broadcasts|clips)'
+    _VALID_URL = rf'https?://(?:www\.)?bbc\.co\.uk/programmes/(?P<id>{
+        BBCCoUkIE._ID_REGEX})/(?:episodes|broadcasts|clips)'
     _URL_TEMPLATE = 'http://www.bbc.co.uk/programmes/%s'
     _VIDEO_ID_TEMPLATE = r'data-pid=["\'](%s)'
     _TESTS = [{

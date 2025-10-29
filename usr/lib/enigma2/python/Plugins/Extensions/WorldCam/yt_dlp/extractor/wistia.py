@@ -171,7 +171,9 @@ class WistiaBaseIE(InfoExtractor):
 
 
 class WistiaIE(WistiaBaseIE):
-    _VALID_URL = rf'(?:wistia:|{WistiaBaseIE._VALID_URL_BASE}(?:iframe|medias)/){WistiaBaseIE._VALID_ID_REGEX}'
+    _VALID_URL = rf'(?:wistia:|{
+        WistiaBaseIE._VALID_URL_BASE}(?:iframe|medias)/){
+        WistiaBaseIE._VALID_ID_REGEX}'
     _EMBED_REGEX = [
         r'''(?x)
             <(?:meta[^>]+?content|(?:iframe|script)[^>]+?src)=["\']
@@ -281,7 +283,9 @@ class WistiaIE(WistiaBaseIE):
 
 
 class WistiaPlaylistIE(WistiaBaseIE):
-    _VALID_URL = rf'{WistiaBaseIE._VALID_URL_BASE}playlists/{WistiaBaseIE._VALID_ID_REGEX}'
+    _VALID_URL = rf'{
+        WistiaBaseIE._VALID_URL_BASE}playlists/{
+        WistiaBaseIE._VALID_ID_REGEX}'
 
     _TEST = {
         'url': 'https://fast.wistia.net/embed/playlists/aodt9etokc',
@@ -306,7 +310,9 @@ class WistiaPlaylistIE(WistiaBaseIE):
 
 
 class WistiaChannelIE(WistiaBaseIE):
-    _VALID_URL = rf'(?:wistiachannel:|{WistiaBaseIE._VALID_URL_BASE}channel/){WistiaBaseIE._VALID_ID_REGEX}'
+    _VALID_URL = rf'(?:wistiachannel:|{
+        WistiaBaseIE._VALID_URL_BASE}channel/){
+        WistiaBaseIE._VALID_ID_REGEX}'
 
     _TESTS = [{
         # JSON Embed API returns 403, should fall back to webpage

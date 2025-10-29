@@ -112,10 +112,8 @@ class Zee5IE(InfoExtractor):
                     otp_request_json['message'], expected=True)
             otp_code = self._get_tfa_info('OTP')
             otp_verify_json = self._download_json(
-                f'https://b2bapi.zee5.com/device/verifyotp_v1.php?phoneno=91{username}&otp={otp_code}&guest_token={self._DEVICE_ID}&platform=web',
-                None,
-                note='Verifying OTP',
-                fatal=False)
+                f'https://b2bapi.zee5.com/device/verifyotp_v1.php?phoneno=91{username}&otp={otp_code}&guest_token={
+                    self._DEVICE_ID}&platform=web', None, note='Verifying OTP', fatal=False)
             if not otp_verify_json:
                 raise ExtractorError('Unable to verify OTP.', expected=True)
             self._USER_TOKEN = otp_verify_json.get('token')

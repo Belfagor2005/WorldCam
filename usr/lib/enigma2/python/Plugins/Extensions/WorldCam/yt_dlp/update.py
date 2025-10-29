@@ -45,7 +45,7 @@ _INVERSE_UPDATE_SOURCES = {value: key for key, value in UPDATE_SOURCES.items()}
 _VERSION_RE = re.compile(r'(\d+\.)*\d+')
 _HASH_PATTERN = r'[\da-f]{40}'
 _COMMIT_RE = re.compile(
-    rf'Generated from: https://(?:[^/?#]+/){{3}}commit/(?P<hash>{_HASH_PATTERN})')
+    rf'Generated from: https://(?:[^/?#]+/){3} commit/(?P<hash>{_HASH_PATTERN})')
 
 API_BASE_URL = 'https://api.github.com/repos'
 
@@ -154,7 +154,11 @@ def _get_system_deprecation():
         return None
 
     major, minor = sys.version_info[:2]
-    PYTHON_MSG = f'Please update to Python {".".join(map(str, MIN_RECOMMENDED))} or above'
+    PYTHON_MSG = f'Please update to Python {
+        ".".join(
+            map(
+                str,
+                MIN_RECOMMENDED))} or above'
 
     if sys.version_info < MIN_SUPPORTED:
         return f'Python version {major}.{minor} is no longer supported! {PYTHON_MSG}'
@@ -251,9 +255,16 @@ class Updater:
             if not self.requested_repo.startswith(
                     'yt-dlp/') and self.requested_repo != self._origin:
                 self.ydl.report_warning(
-                    f'You are switching to an {self.ydl._format_err("unofficial", "red")} executable '
-                    f'from {self.ydl._format_err(self.requested_repo, self.ydl.Styles.EMPHASIS)}. '
-                    f'Run {self.ydl._format_err("at your own risk", "light red")}')
+                    f'You are switching to an {
+                        self.ydl._format_err(
+                            "unofficial",
+                            "red")} executable ' f'from {
+                        self.ydl._format_err(
+                            self.requested_repo,
+                            self.ydl.Styles.EMPHASIS)}. ' f'Run {
+                        self.ydl._format_err(
+                            "at your own risk",
+                            "light red")}')
                 self._block_restart(
                     'Automatically restarting into custom builds is disabled for security reasons')
         else:
@@ -263,8 +274,10 @@ class Updater:
                 self.requested_channel)
             if not self.requested_repo:
                 self._report_error(
-                    f'Invalid update channel {self.requested_channel!r} requested. '
-                    f'Valid channels are {", ".join(self._update_sources)}', True)
+                    f'Invalid update channel {
+                        self.requested_channel!r} requested. ' f'Valid channels are {
+                        ", ".join(
+                            self._update_sources)}', True)
 
         self._identifier = f'{detect_variant()} {system_identifier()}'
 
@@ -283,7 +296,8 @@ class Updater:
             tag = self.requested_tag
 
         path = 'latest/download' if tag == 'latest' else f'download/{tag}'
-        url = f'https://github.com/{self.requested_repo}/releases/{path}/{name}'
+        url = f'https://github.com/{
+            self.requested_repo}/releases/{path}/{name}'
         self.ydl.write_debug(f'Downloading {name} from {url}')
         return self.ydl.urlopen(url).read()
 
@@ -337,8 +351,9 @@ class Updater:
                 return None
 
         self._report_error(
-            f'The requested tag {self.requested_tag} does not exist for {self.requested_repo}',
-            True)
+            f'The requested tag {
+                self.requested_tag} does not exist for {
+                self.requested_repo}', True)
         return None
 
     def _process_update_spec(self, lockfile: str, resolved_tag: str):
@@ -419,7 +434,8 @@ class Updater:
             self.requested_repo,
             resolved_tag,
             requested_version)
-        latest_or_requested = f'{"Latest" if self.requested_tag == "latest" else "Requested"} version: {requested_label}'
+        latest_or_requested = f'{
+            "Latest" if self.requested_tag == "latest" else "Requested"} version: {requested_label}'
         if not has_update:
             if _output:
                 self.ydl.to_screen(
@@ -503,7 +519,9 @@ class Updater:
         elif not os.access(directory, os.W_OK):
             return self._report_permission_error(directory)
 
-        new_filename, old_filename = f'{self.filename}.new', f'{self.filename}.old'
+        new_filename, old_filename = f'{
+            self.filename}.new', f'{
+            self.filename}.old'
         if detect_variant() == 'zip':  # Can be replaced in-place
             new_filename, old_filename = self.filename, None
 

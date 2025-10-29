@@ -254,8 +254,9 @@ class WeiboVideoIE(WeiboBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        post_data = f'data={{"Component_Play_Playinfo":{{"oid":"{video_id}"}}}}'.encode(
-        )
+        post_data = f'data={
+            "Component_Play_Playinfo":{
+                "oid": "{video_id}"} } '.encode()
         video_info = self._weibo_download_json(
             f'https://weibo.com/tv/api/component?page=%2Ftv%2Fshow%2F{video_id.replace(":", "%3A")}',
             video_id, headers={'Referer': url}, data=post_data)['data']['Component_Play_Playinfo']

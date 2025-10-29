@@ -163,8 +163,8 @@ class JioCinemaBaseIE(InfoExtractor):
                         f'Invalid refresh_token value. Use {refresh_hint}')
             else:
                 raise ExtractorError(
-                    f'The password given could not be decoded as a token; use {self._ACCESS_HINT}',
-                    expected=True)
+                    f'The password given could not be decoded as a token; use {
+                        self._ACCESS_HINT}', expected=True)
 
         elif username.lower() == 'device' and re.fullmatch(rf'(?:{UUID_RE}|\d+)', password):
             JioCinemaBaseIE._REFRESH_TOKEN = self.cache.load(
@@ -220,7 +220,8 @@ class JioCinemaBaseIE(InfoExtractor):
                     f'NOTE: For subsequent logins you can use "-u device -p {JioCinemaBaseIE._DEVICE_ID}"')
         elif not JioCinemaBaseIE._REFRESH_TOKEN:
             JioCinemaBaseIE._REFRESH_TOKEN = self.cache.load(
-                JioCinemaBaseIE._NETRC_MACHINE, f'{JioCinemaBaseIE._DEVICE_ID}-refresh')
+                JioCinemaBaseIE._NETRC_MACHINE, f'{
+                    JioCinemaBaseIE._DEVICE_ID}-refresh')
             if JioCinemaBaseIE._REFRESH_TOKEN:
                 self._cache_token('access')
         self.to_screen(
@@ -360,7 +361,9 @@ class JioCinemaIE(JioCinemaBaseIE):
                 expected=True)
         elif status_code is not None and status_code != 200:
             raise ExtractorError(
-                f'JioCinema says: {traverse_obj(playback, ("message", {str})) or status_code}')
+                f'JioCinema says: {
+                    traverse_obj(
+                        playback, ("message", {str})) or status_code}')
 
         metadata = self._download_json(
             f'{self._METADATA_API_BASE}/voot/v1/voot-web/content/query/asset-details',

@@ -77,8 +77,9 @@ class WrestleUniverseBaseIE(InfoExtractor):
         token = traverse_obj(login, ('idToken', {str}))
         if not token:
             raise ExtractorError(
-                f'Unable to log in: {traverse_obj(login, ("error", "message"))}',
-                expected=True)
+                f'Unable to log in: {
+                    traverse_obj(
+                        login, ("error", "message"))}', expected=True)
         self._REFRESH_TOKEN = traverse_obj(login, ('refreshToken', {str}))
         if not self._REFRESH_TOKEN:
             self.report_warning('No refresh token was granted')

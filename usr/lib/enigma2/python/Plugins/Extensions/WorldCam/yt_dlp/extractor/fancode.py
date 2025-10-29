@@ -44,7 +44,8 @@ class FancodeVodIE(InfoExtractor):
         # Access tokens are shortlived, so get them using the refresh token.
         if username != 'refresh':
             self.report_warning(
-                f'Login using username and password is not currently supported. {self._LOGIN_HINT}')
+                f'Login using username and password is not currently supported. {
+                    self._LOGIN_HINT}')
 
         self.report_login()
         data = '''{
@@ -68,7 +69,8 @@ class FancodeVodIE(InfoExtractor):
     def _check_login_required(self, is_available, is_premium):
         msg = None
         if is_premium and self._ACCESS_TOKEN is None:
-            msg = f'This video is only available for registered users. {self._LOGIN_HINT}'
+            msg = f'This video is only available for registered users. {
+                self._LOGIN_HINT}'
         elif not is_available and self._ACCESS_TOKEN is not None:
             msg = 'This video isn\'t available to the current logged in account'
         if msg:

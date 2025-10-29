@@ -112,9 +112,15 @@ class IdolPlusIE(InfoExtractor):
                 if not member_video_url:
                     continue
                 member_formats = self._extract_m3u8_formats(
-                    member_video_url, video_id, note=f'Downloading m3u8 for multicam {member["name"]}')
+                    member_video_url,
+                    video_id,
+                    note=f'Downloading m3u8 for multicam {
+                        member["name"]}')
                 for mf in member_formats:
-                    mf['format_id'] = f'{mf["format_id"]}-{member["name"].replace(" ", "_")}'
+                    mf['format_id'] = f'{
+                        mf["format_id"]}-{
+                        member["name"].replace(
+                            " ", "_")}'
                 formats.extend(member_formats)
 
         return {

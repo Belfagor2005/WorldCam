@@ -208,7 +208,8 @@ class DRTVIE(InfoExtractor):
                 'sub': 'Anonymous',
             },
             headers={
-                'authorization': f'Bearer {self._TOKEN}'})
+                'authorization': f'Bearer {
+                    self._TOKEN}'})
 
         formats = []
         subtitles = {}

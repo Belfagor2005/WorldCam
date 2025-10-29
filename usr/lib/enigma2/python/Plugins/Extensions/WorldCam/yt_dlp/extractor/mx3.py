@@ -35,7 +35,9 @@ class Mx3BaseIE(InfoExtractor):
     def _extract_formats(self, track_id):
         formats = []
         for fmt in self._FORMATS:
-            format_url = f'https://{self._DOMAIN}/tracks/{track_id}/{fmt["url"]}'
+            format_url = f'https://{
+                self._DOMAIN}/tracks/{track_id}/{
+                fmt["url"]}'
             urlh = self._request_webpage(
                 HEADRequest(format_url),
                 track_id,

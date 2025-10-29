@@ -433,8 +433,8 @@ class YoutubeTabBaseInfoExtractor(YoutubeBaseInfoExtractor):
             'LOCKUP_CONTENT_TYPE_PLAYLIST',
                 'LOCKUP_CONTENT_TYPE_PODCAST'):
             self.report_warning(
-                f'Unsupported lockup view model content type "{content_type}"{bug_reports_message()}',
-                only_once=True)
+                f'Unsupported lockup view model content type "{content_type}"{
+                    bug_reports_message()}', only_once=True)
             return
         return self.url_result(
             f'https://www.youtube.com/playlist?list={content_id}',
@@ -2555,7 +2555,9 @@ class YoutubeTabIE(YoutubeTabBaseInfoExtractor):
             selected_tab_id, selected_tab_name = self._extract_tab_id_and_name(
                 selected_tab, url)  # NB: Name may be translated
             self.write_debug(
-                f'Selected tab: {selected_tab_id!r} ({selected_tab_name}), Requested tab: {original_tab_id!r}')
+                f'Selected tab: {
+                    selected_tab_id!r} ({selected_tab_name}), Requested tab: {
+                    original_tab_id!r}')
 
             # /about is no longer a tab
             if original_tab_id == 'about':

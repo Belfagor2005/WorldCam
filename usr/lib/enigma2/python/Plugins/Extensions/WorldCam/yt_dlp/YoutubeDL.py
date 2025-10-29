@@ -1703,7 +1703,8 @@ class YoutubeDL:
             if date is not None:
                 date_range = self.params.get('daterange', DateRange())
                 if date not in date_range:
-                    return f'{date_from_str(date).isoformat()} upload date is not in range {date_range}'
+                    return f'{
+                        date_from_str(date).isoformat()} upload date is not in range {date_range}'
             view_count = info_dict.get('view_count')
             if view_count is not None:
                 min_views = self.params.get('min_views')
@@ -1840,7 +1841,11 @@ class YoutubeDL:
             extractors_restricted = self.params.get(
                 'allowed_extractors') not in (None, ['default'])
             self.report_error(
-                f'No suitable extractor{format_field(ie_key, None, " (%s)")} found for URL {url}',
+                f'No suitable extractor{
+                    format_field(
+                        ie_key,
+                        None,
+                        " (%s)")} found for URL {url}',
                 tb=False if extractors_restricted else None)
 
     def _handle_extraction_exceptions(func):
@@ -1927,7 +1932,10 @@ class YoutubeDL:
                     raise ReExtractInfo(
                         '[wait] Wait period ended', expected=True)
                 progress(
-                    f'[wait] Remaining time until next attempt: {self._format_screen(format_dur(diff), self.Styles.EMPHASIS)}')
+                    f'[wait] Remaining time until next attempt: {
+                        self._format_screen(
+                            format_dur(diff),
+                            self.Styles.EMPHASIS)}')
                 time.sleep(1)
         except KeyboardInterrupt:
             progress('')
@@ -2012,7 +2020,9 @@ class YoutubeDL:
         # should be moved here)
         if ie_result is None:
             self.report_warning(
-                f'Extractor {ie.IE_NAME} returned nothing{bug_reports_message()}')
+                f'Extractor {
+                    ie.IE_NAME} returned nothing{
+                    bug_reports_message()}')
             return
         if isinstance(ie_result, list):
             # Backwards compatibility: old IE result format
@@ -2331,8 +2341,13 @@ class YoutubeDL:
                 continue
 
             self.to_screen(
-                f'[download] Downloading item {self._format_screen(i + 1, self.Styles.ID)} '
-                f'of {self._format_screen(n_entries, self.Styles.EMPHASIS)}')
+                f'[download] Downloading item {
+                    self._format_screen(
+                        i + 1,
+                        self.Styles.ID)} ' f'of {
+                    self._format_screen(
+                        n_entries,
+                        self.Styles.EMPHASIS)}')
 
             entry_result = self.__process_iterable_entry(entry, download, collections.ChainMap(
                 {'playlist_index': playlist_index, 'playlist_autonumber': i + 1, }, extra))
@@ -2462,7 +2477,8 @@ class YoutubeDL:
                         os.remove(temp_file.name)
                     except OSError:
                         self.report_warning(
-                            f'Unable to delete temporary file "{temp_file.name}"')
+                            f'Unable to delete temporary file "{
+                                temp_file.name}"')
             f['__working'] = success
             if success:
                 yield f
@@ -2476,7 +2492,8 @@ class YoutubeDL:
             'formats': formats,
             'has_merged_format': any('none' not in (f.get('acodec'), f.get('vcodec')) for f in formats),
             'incomplete_formats': (all(f.get('vcodec') == 'none' for f in formats)  # No formats with video
-                                   or all(f.get('acodec') == 'none' for f in formats)),  # OR, No formats with audio
+                                   # OR, No formats with audio
+                                   or all(f.get('acodec') == 'none' for f in formats)),
         }))
 
     def _default_format_spec(self, info_dict):
@@ -2968,7 +2985,9 @@ class YoutubeDL:
                     self.urlopen(HEADRequest(t['url']))
                 except network_exceptions as err:
                     self.to_screen(
-                        f'[info] Unable to connect to thumbnail {t["id"]} URL {t["url"]!r} - {err}. Skipping...')
+                        f'[info] Unable to connect to thumbnail {
+                            t["id"]} URL {
+                            t["url"]!r} - {err}. Skipping...')
                     continue
                 yield t
 
@@ -2997,7 +3016,10 @@ class YoutubeDL:
                 else:
                     self.report_warning(
                         'Extractor failed to obtain "title". Creating a generic title instead')
-                info_dict['title'] = f'{info_dict["extractor"].replace(":", "-")} video #{info_dict["id"]}'
+                info_dict['title'] = f'{
+                    info_dict["extractor"].replace(
+                        ":", "-")} video #{
+                    info_dict["id"]}'
 
         if info_dict.get('duration') is not None:
             info_dict['duration_string'] = formatSeconds(info_dict['duration'])
@@ -3052,7 +3074,9 @@ class YoutubeDL:
             if new_key in info_dict and old_key in info_dict:
                 if '_version' not in info_dict:  # HACK: Do not warn when using --load-info-json
                     self.deprecation_warning(
-                        f'Do not return {old_key!r} when {new_key!r} is present')
+                        f'Do not return {
+                            old_key!r} when {
+                            new_key!r} is present')
             elif old_value := info_dict.get(old_key):
                 info_dict[new_key] = old_value.split(', ')
             elif new_value := info_dict.get(new_key):
@@ -3382,7 +3406,11 @@ class YoutubeDL:
             if best_format and requested_ranges:
                 def to_screen(*msg):
                     self.to_screen(
-                        f'[info] {info_dict["id"]}: {" ".join(", ".join(variadic(m)) for m in msg)}')
+                        f'[info] {
+                            info_dict["id"]}: {
+                            " ".join(
+                                ", ".join(
+                                    variadic(m)) for m in msg)}')
 
                 to_screen(f'Downloading {len(formats_to_download)} format(s):',
                           (f['format_id'] for f in formats_to_download))
@@ -3482,7 +3510,8 @@ class YoutubeDL:
             ))[:1]
         if requested_langs:
             self.to_screen(
-                f'[info] {video_id}: Downloading subtitles: {", ".join(requested_langs)}')
+                f'[info] {video_id}: Downloading subtitles: {
+                    ", ".join(requested_langs)}')
 
         formats_query = self.params.get('subtitlesformat', 'best')
         formats_preference = formats_query.split('/') if formats_query else []
@@ -3755,7 +3784,8 @@ class YoutubeDL:
             url = try_get(info_dict['webpage_url'], iri_to_uri)
             if not url:
                 self.report_warning(
-                    f'Cannot write internet shortcut file because the actual URL of "{info_dict["webpage_url"]}" is unknown')
+                    f'Cannot write internet shortcut file because the actual URL of "{
+                        info_dict["webpage_url"]}" is unknown')
                 return True
             linkfn = replace_extension(
                 self.prepare_filename(
@@ -3969,7 +3999,9 @@ class YoutubeDL:
                 raise UnavailableVideoError(err)
             except ContentTooShortError as err:
                 self.report_error(
-                    f'content too short (expected {err.expected} bytes and served {err.downloaded})')
+                    f'content too short (expected {
+                        err.expected} bytes and served {
+                        err.downloaded})')
                 return
 
             self._raise_pending_errors(info_dict)
@@ -4648,7 +4680,9 @@ class YoutubeDL:
 
         write_debug(f'Proxy map: {self.proxies}')
         write_debug(
-            f'Request Handlers: {", ".join(rh.RH_NAME for rh in self._request_director.handlers.values())}')
+            f'Request Handlers: {
+                ", ".join(
+                    rh.RH_NAME for rh in self._request_director.handlers.values())}')
 
         for plugin_type, plugins in (
                 ('Extractor', plugin_ies), ('Post-Processor', plugin_pps)):
@@ -4977,7 +5011,8 @@ class YoutubeDL:
                 sub_info['filepath'] = sub_filename
                 ret.append((sub_filename, sub_filename_final))
             except (DownloadError, ExtractorError, OSError, ValueError, *network_exceptions) as err:
-                msg = f'Unable to download video subtitles for {sub_lang!r}: {err}'
+                msg = f'Unable to download video subtitles for {
+                    sub_lang!r}: {err}'
                 if self.params.get(
                         'ignoreerrors') is not True:  # False or 'only_download'
                     if not self.params.get('ignoreerrors'):
@@ -5047,7 +5082,8 @@ class YoutubeDL:
                 except network_exceptions as err:
                     if isinstance(err, HTTPError) and err.status == 404:
                         self.to_screen(
-                            f'[info] {thumb_display_id.title()} does not exist')
+                            f'[info] {
+                                thumb_display_id.title()} does not exist')
                     else:
                         self.report_warning(
                             f'Unable to download {thumb_display_id}: {err}')

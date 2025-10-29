@@ -124,7 +124,8 @@ class TennisTVIE(InfoExtractor):
 
     def _download_session_json(self, video_id, entryid):
         return self._download_json(
-            f'https://atppayments.streamamg.com/api/v1/session/ksession/?lang=en&apijwttoken={self.access_token}&entryId={entryid}',
+            f'https://atppayments.streamamg.com/api/v1/session/ksession/?lang=en&apijwttoken={
+                self.access_token}&entryId={entryid}',
             video_id,
             'Downloading ksession token',
             'Failed to download ksession token',
@@ -170,13 +171,15 @@ class TennisTVIE(InfoExtractor):
                 webpage,
                 'description',
                 fatal=False),
-            'thumbnail': f'https://open.http.mp.streamamg.com/p/{self._PARTNER_ID}/sp/{self._PARTNER_ID}00/thumbnail/entry_id/{entryid}/version/100001/height/1920',
+            'thumbnail': f'https://open.http.mp.streamamg.com/p/{
+                self._PARTNER_ID}/sp/{
+                    self._PARTNER_ID}00/thumbnail/entry_id/{entryid}/version/100001/height/1920',
             'timestamp': unified_timestamp(
-                self._html_search_regex(
-                    r'<span itemprop="uploadDate" content=["\']([^"\']+)["\']>',
-                    webpage,
-                    'upload time',
-                    fatal=False)),
+                        self._html_search_regex(
+                            r'<span itemprop="uploadDate" content=["\']([^"\']+)["\']>',
+                            webpage,
+                            'upload time',
+                            fatal=False)),
             'series': self._html_search_regex(
                 r'data-series\s*?=\s*?"(.*?)"',
                 webpage,

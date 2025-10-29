@@ -102,7 +102,8 @@ class CineverseIE(CineverseBaseIE):
 
 
 class CineverseDetailsIE(CineverseBaseIE):
-    _VALID_URL = rf'{CineverseBaseIE._VALID_URL_BASE}/details/(?P<id>[A-Z0-9]+)'
+    _VALID_URL = rf'{
+        CineverseBaseIE._VALID_URL_BASE}/details/(?P<id>[A-Z0-9]+)'
     _TESTS = [
         {
             'url': 'https://www.retrocrush.tv/details/1000000023012/Space-Adventure-COBRA-(Original-Japanese)',

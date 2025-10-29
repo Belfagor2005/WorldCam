@@ -154,7 +154,8 @@ class CDAIE(InfoExtractor):
         cached_bearer = self.cache.load(self._BEARER_CACHE, username) or {}
         if cached_bearer.get('valid_until',
                              0) > dt.datetime.now().timestamp() + 5:
-            self._API_HEADERS['Authorization'] = f'Bearer {cached_bearer["token"]}'
+            self._API_HEADERS['Authorization'] = f'Bearer {
+                cached_bearer["token"]}'
             return
 
         password_hash = base64.urlsafe_b64encode(hmac.new(
@@ -180,7 +181,8 @@ class CDAIE(InfoExtractor):
             'token': token_res['access_token'],
             'valid_until': token_res['expires_in'] + dt.datetime.now().timestamp(),
         })
-        self._API_HEADERS['Authorization'] = f'Bearer {token_res["access_token"]}'
+        self._API_HEADERS['Authorization'] = f'Bearer {
+            token_res["access_token"]}'
 
     def _real_extract(self, url):
         video_id = self._match_id(url)

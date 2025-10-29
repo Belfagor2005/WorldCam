@@ -351,7 +351,8 @@ def create_parser():
             keys, val = variadic(default_key), value
         else:
             raise optparse.OptionValueError(
-                f'wrong {opt_str} formatting; it should be {option.metavar}, not "{value}"')
+                f'wrong {opt_str} formatting; it should be {
+                    option.metavar}, not "{value}"')
         try:
             keys = map(process_key, keys) if process_key else keys
             val = process(val) if process else val

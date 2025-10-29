@@ -240,7 +240,8 @@ class NexxIE(InfoExtractor):
                     f'cdnShield{shield_type}HTTP{secure.upper()}')
                 if cdn_shield:
                     return f'http{secure}://{cdn_shield}'
-            return f'http://sdn-global-{"prog" if shield_type.lower() == "prog" else "streaming"}-cache.3qsdn.com/' + (
+            return f'http://sdn-global-{
+                "prog" if shield_type.lower() == "prog" else "streaming"}-cache.3qsdn.com/' + (
                 f's/{protection_key}/' if protection_key else '')
 
         stream_base = get_cdn_shield_base()
@@ -248,7 +249,8 @@ class NexxIE(InfoExtractor):
         formats = []
         formats.extend(
             self._extract_m3u8_formats(
-                f'{stream_base}{q_acc}/files/{q_prefix}/{q_locator}/{q_acc}-{stream_data.get("qHEVCHash") or q_hash}.ism/manifest.m3u8',
+                f'{stream_base}{q_acc}/files/{q_prefix}/{q_locator}/{q_acc}-{
+                    stream_data.get("qHEVCHash") or q_hash}.ism/manifest.m3u8',
                 video_id,
                 'mp4',
                 m3u8_id=f'{cdn}-hls',
@@ -398,7 +400,15 @@ class NexxIE(InfoExtractor):
         # not all videos work via arc, e.g. nexx:741:1269984
         if not video:
             # Reverse engineered from JS code (see getDeviceID function)
-            device_id = f'{random.randint(1, 4)}:{int(time.time())}:{random.randint(10000, 99999)}{random.randint(1, 9)}'
+            device_id = f'{
+                random.randint(
+                    1, 4)}:{
+                int(
+                    time.time())}:{
+                random.randint(
+                    10000, 99999)}{
+                random.randint(
+                    1, 9)}'
 
             result = self._call_api(domain_id, 'session/init', video_id, data={
                 'nxp_devh': device_id,

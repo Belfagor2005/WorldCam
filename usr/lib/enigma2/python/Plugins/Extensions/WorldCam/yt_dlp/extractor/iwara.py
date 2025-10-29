@@ -66,9 +66,13 @@ class IwaraBaseIE(InfoExtractor):
         if not IwaraBaseIE._MEDIATOKEN or self._is_token_expired(
                 IwaraBaseIE._MEDIATOKEN, 'Media'):
             IwaraBaseIE._MEDIATOKEN = self._download_json(
-                'https://api.iwara.tv/user/token', None, note='Fetching media token',
-                data=b'', headers={
-                    'Authorization': f'Bearer {IwaraBaseIE._USERTOKEN}',
+                'https://api.iwara.tv/user/token',
+                None,
+                note='Fetching media token',
+                data=b'',
+                headers={
+                    'Authorization': f'Bearer {
+                        IwaraBaseIE._USERTOKEN}',
                     'Content-Type': 'application/json',
                 })['accessToken']
 

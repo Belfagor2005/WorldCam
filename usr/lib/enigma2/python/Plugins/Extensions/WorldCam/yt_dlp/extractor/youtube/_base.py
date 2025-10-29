@@ -553,7 +553,10 @@ class YoutubeBaseInfoExtractor(InfoExtractor):
             return
         if preferred_lang not in self._SUPPORTED_LANG_CODES:
             raise ExtractorError(
-                f'Unsupported language code: {preferred_lang}. Supported language codes (case-sensitive): {join_nonempty(*self._SUPPORTED_LANG_CODES, delim=", ")}.',
+                f'Unsupported language code: {preferred_lang}. Supported language codes (case-sensitive): {
+                    join_nonempty(
+                        *self._SUPPORTED_LANG_CODES,
+                        delim=", ")}.',
                 expected=True)
         elif preferred_lang != 'en':
             self.report_warning(
@@ -600,11 +603,12 @@ class YoutubeBaseInfoExtractor(InfoExtractor):
     def _perform_login(self, username, password):
         if username.startswith('oauth'):
             raise ExtractorError(
-                f'Login with OAuth is no longer supported. {self._youtube_login_hint}',
-                expected=True)
+                f'Login with OAuth is no longer supported. {
+                    self._youtube_login_hint}', expected=True)
 
         self.report_warning(
-            f'Login with password is not supported for YouTube. {self._youtube_login_hint}')
+            f'Login with password is not supported for YouTube. {
+                self._youtube_login_hint}')
 
     @property
     def _youtube_login_hint(self):
@@ -615,8 +619,8 @@ class YoutubeBaseInfoExtractor(InfoExtractor):
     def _check_login_required(self):
         if self._LOGIN_REQUIRED and not self.is_authenticated:
             self.raise_login_required(
-                f'Login details are needed to download this content. {self._youtube_login_hint}',
-                method=None)
+                f'Login details are needed to download this content. {
+                    self._youtube_login_hint}', method=None)
 
     _YT_INITIAL_DATA_RE = r'(?:window\s*\[\s*["\']ytInitialData["\']\s*\]|ytInitialData)\s*='
     _YT_INITIAL_PLAYER_RESPONSE_RE = r'ytInitialPlayerResponse\s*='

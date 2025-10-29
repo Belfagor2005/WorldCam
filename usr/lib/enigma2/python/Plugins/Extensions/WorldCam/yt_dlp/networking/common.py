@@ -142,7 +142,8 @@ def register_rh(handler):
     """Register a RequestHandler class"""
     assert issubclass(
         handler, RequestHandler), f'{handler} must be a subclass of RequestHandler'
-    assert handler.RH_KEY not in _REQUEST_HANDLERS, f'RequestHandler {handler.RH_KEY} already registered'
+    assert handler.RH_KEY not in _REQUEST_HANDLERS, f'RequestHandler {
+        handler.RH_KEY} already registered'
     _REQUEST_HANDLERS[handler.RH_KEY] = handler
     return handler
 

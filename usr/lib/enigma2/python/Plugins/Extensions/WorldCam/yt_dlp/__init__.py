@@ -487,7 +487,8 @@ def validate_options(opts):
         ''', opts.cookiesfrombrowser)
         if mobj is None:
             raise ValueError(
-                f'invalid cookies from browser arguments: {opts.cookiesfrombrowser}')
+                f'invalid cookies from browser arguments: {
+                    opts.cookiesfrombrowser}')
         browser_name, keyring, profile, container = mobj.group(
             'name', 'keyring', 'profile', 'container')
         browser_name = browser_name.lower()
@@ -582,7 +583,12 @@ def validate_options(opts):
         ed = get_external_downloader(path)
         if ed is None:
             raise ValueError(
-                f'No such {format_field(proto, None, "%s ", ignore="default")}external downloader "{path}"')
+                f'No such {
+                    format_field(
+                        proto,
+                        None,
+                        "%s ",
+                        ignore="default")}external downloader "{path}"')
         elif ed and proto == 'default':
             default_downloader = ed.get_basename()
 

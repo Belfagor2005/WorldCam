@@ -993,7 +993,11 @@ class JSInterpreter:
                 argvals, allow_recursion=allow_recursion), should_return
 
         raise self.Exception(
-            f'Unsupported JS expression {truncate_string(expr, 20, 20) if expr != stmt else ""}',
+            f'Unsupported JS expression {
+                truncate_string(
+                    expr,
+                    20,
+                    20) if expr != stmt else ""}',
             stmt)
 
     def interpret_expression(self, expr, local_vars, allow_recursion):

@@ -76,5 +76,8 @@ class LaXarxaMesIE(InfoExtractor):
             self.raise_no_formats('No video found', expected=True)
 
         return self.url_result(
-            f'https://players.brightcove.net/5779379807001/default_default/index.html?videoId={media_play_info["ContentUrl"]}',
-            BrightcoveNewIE, video_id, media_play_info.get('Title'))
+            f'https://players.brightcove.net/5779379807001/default_default/index.html?videoId={
+                media_play_info["ContentUrl"]}',
+            BrightcoveNewIE,
+            video_id,
+            media_play_info.get('Title'))

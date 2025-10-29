@@ -161,7 +161,8 @@ class SBSIE(InfoExtractor):
                 'duration': ('duration', ({float_or_none}, {parse_duration})),
                 'is_live': ('liveStream', {bool}),
                 'age_limit': (('classificationID', 'contentRating'), {str.upper}, {
-                    lambda x: self._AUS_TV_PARENTAL_GUIDELINES.get(x)}),  # dict.get is unhashable in py3.7
+                    # dict.get is unhashable in py3.7
+                    lambda x: self._AUS_TV_PARENTAL_GUIDELINES.get(x)}),
             }, get_all=False),
             **traverse_obj(media, {
                 'categories': (('genres', ...), ('taxonomy', ('genre', 'subgenre'), 'name'), {str}),

@@ -209,7 +209,8 @@ class EmbedThumbnailPP(FFmpegPostProcessor):
                         cmd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     if returncode:
                         self.report_warning(
-                            f'Unable to embed thumbnails using AtomicParsley; {stderr.strip()}')
+                            f'Unable to embed thumbnails using AtomicParsley; {
+                                stderr.strip()}')
                         success = False
                     # for formats that don't support thumbnails (like 3gp) AtomicParsley
                     # won't create to the temporary file

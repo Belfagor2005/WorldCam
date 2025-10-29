@@ -203,7 +203,9 @@ class MainStreamingIE(InfoExtractor):
         if content_type == 20:
             dvr_enabled = traverse_obj(
                 content_info, ('playerSettings', 'dvrEnabled'), expected_type=bool)
-            format_base_url = f"https://{host}/live/{content_info['liveSourceID']}/{video_id}/%s{'?DVR' if dvr_enabled else ''}"
+            format_base_url = f"https://{host}/live/{
+                content_info['liveSourceID']}/{video_id}/%s{
+                '?DVR' if dvr_enabled else ''}"
             live_status = 'is_live'
             heartbeat = self._call_api(
                 host,

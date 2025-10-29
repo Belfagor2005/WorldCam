@@ -293,8 +293,9 @@ class YouTubeExtractor:
                 return response.json()
             except Exception as e:
                 self.log(
-                    f"API request failed with client {client['context']['client']['clientName']}: {str(e)}",
-                    'warning')
+                    f"API request failed with client {
+                        client['context']['client']['clientName']}: {
+                        str(e)}", 'warning')
 
         return None
 

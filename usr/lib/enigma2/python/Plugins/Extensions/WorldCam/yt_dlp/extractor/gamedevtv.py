@@ -75,7 +75,9 @@ class GameDevTVDashboardIE(InfoExtractor):
                     'Invalid username/password', expected=True)
             raise
 
-        self._API_HEADERS['Authorization'] = f'{response["token_type"]} {response["access_token"]}'
+        self._API_HEADERS['Authorization'] = f'{
+            response["token_type"]} {
+            response["access_token"]}'
 
     def _real_initialize(self):
         if not self._API_HEADERS.get('Authorization'):

@@ -86,7 +86,10 @@ class RCSBaseIE(InfoExtractor):
                 matches = re.search(
                     r'(?:https?:)?//(?P<host>[\w\.\-]+)\.net/i(?P<path>.+)$', url)
                 if matches:
-                    url = f'https://vod.rcsobjects.it/hls/{self._MIGRATION_MAP[matches.group("host")]}{matches.group("path")}'
+                    url = f'https://vod.rcsobjects.it/hls/{
+                        self._MIGRATION_MAP[
+                            matches.group("host")]}{
+                        matches.group("path")}'
             if traverse_obj(video, ('mediaProfile', 'geoblocking')) or (
                     type_ == 'm3u8' and 'fcs.quotidiani_!' in url):
                 url = url.replace('vod.rcsobjects', 'vod-it.rcsobjects')

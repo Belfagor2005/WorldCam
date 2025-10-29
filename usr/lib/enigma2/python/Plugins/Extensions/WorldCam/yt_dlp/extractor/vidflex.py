@@ -38,7 +38,8 @@ class VidflexIE(InfoExtractor):
         r'watch\.rekindle\.tv',
         r'watch\.wpca\.com',
     ]
-    _VALID_URL = rf'https?://(?:{"|".join(_DOMAINS_RE)})/[a-z]{{2}}(?:-[a-z]{{2}})?/c/[\w-]+\.(?P<id>\d+)'
+    _VALID_URL = rf'https?://(?:{
+        "|".join(_DOMAINS_RE)})/[a-z]{2} (?:-[a-z]{2} )?/c/[\w-]+\.(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://video.hockeycanada.ca/en/c/nwt-micd-up-with-jamie-lee-rattray.107486',
         'only_matching': True,

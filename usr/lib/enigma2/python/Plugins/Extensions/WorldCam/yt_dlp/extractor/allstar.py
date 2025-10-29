@@ -79,7 +79,8 @@ class AllstarBaseIE(InfoExtractor):
 
         if info.get('id') and info.get('url'):
             basename = 'clip' if '/clips/' in info['url'] else 'montage'
-            info['webpage_url'] = f'https://allstar.gg/{basename}?{basename}={info["id"]}'
+            info['webpage_url'] = f'https://allstar.gg/{basename}?{basename}={
+                info["id"]}'
 
         info.update({
             'extractor_key': AllstarIE.ie_key(),

@@ -558,7 +558,8 @@ class PolskieRadioPlayerIE(InfoExtractor):
             'formats': formats,
             'title': channel.get('name') or channel.get('streamName'),
             'display_id': channel_url,
-            'thumbnail': f'{self._BASE_URL}/images/{channel_url}-color-logo.png',
+            'thumbnail': f'{
+                self._BASE_URL}/images/{channel_url}-color-logo.png',
             'is_live': True,
         }
 

@@ -422,7 +422,9 @@ class SocksHTTPConnection(urllib3.connection.HTTPConnection):
                     create_socks_proxy_socket, (self.host, self.port), self._proxy_args))
         except (socket.timeout, TimeoutError) as e:
             raise urllib3.exceptions.ConnectTimeoutError(
-                self, f'Connection to {self.host} timed out. (connect timeout={self.timeout})') from e
+                self, f'Connection to {
+                    self.host} timed out. (connect timeout={
+                    self.timeout})') from e
         except SocksProxyError as e:
             raise urllib3.exceptions.ProxyError(str(e), e) from e
         except OSError as e:

@@ -125,7 +125,10 @@ class LeFigaroVideoSectionIE(InfoExtractor):
 
         def page_func(page_num):
             api_response = self._get_api_response(
-                display_id, page_num + 1, note=f'Downloading page {page_num + 1}')
+                display_id,
+                page_num + 1,
+                note=f'Downloading page {
+                    page_num + 1}')
 
             return [self.url_result(
                 video['embedUrl'], LeFigaroVideoEmbedIE, **traverse_obj(video, {

@@ -134,6 +134,7 @@ class NintendoIE(InfoExtractor):
         if asset_id.startswith('Legacy Videos/'):
             result['_old_archive_ids'] = [make_archive_id(self, asset_id[14:])]
         result['formats'] = self._extract_m3u8_formats(
-            self._create_asset_url(f'/video/upload/sp_full_hd/v1/{asset_id}.m3u8'), slug)
+            self._create_asset_url(
+                f'/video/upload/sp_full_hd/v1/{asset_id}.m3u8'), slug)
 
         return result

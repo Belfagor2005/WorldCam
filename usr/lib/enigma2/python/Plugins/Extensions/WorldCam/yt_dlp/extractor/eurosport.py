@@ -137,7 +137,8 @@ class EurosportIE(InfoExtractor):
             query={
                 'usePreAuth': True},
             headers={
-                'Authorization': f'Bearer {EurosportIE._TOKEN}'})['data']
+                'Authorization': f'Bearer {
+                    EurosportIE._TOKEN}'})['data']
 
         json_ld_data = self._search_json_ld(webpage, display_id)
 

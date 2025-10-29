@@ -90,7 +90,8 @@ class PanoptoIE(PanoptoBaseIE):
     _VALID_URL = PanoptoBaseIE.BASE_URL_RE + \
         r'/Pages/(Viewer|Embed)\.aspx.*(?:\?|&)id=(?P<id>[a-f0-9-]+)'
     _EMBED_REGEX = [
-        rf'<iframe[^>]+src=["\'](?P<url>{PanoptoBaseIE.BASE_URL_RE}/Pages/(Viewer|Embed|Sessions/List)\.aspx[^"\']+)']
+        rf'<iframe[^>]+src=["\'](?P<url>{
+            PanoptoBaseIE.BASE_URL_RE}/Pages/(Viewer|Embed|Sessions/List)\.aspx[^"\']+)']
     _TESTS = [
         {
             'url': 'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=26b3ae9e-4a48-4dcc-96ba-0befba08a0fb',
@@ -263,7 +264,10 @@ class PanoptoIE(PanoptoBaseIE):
         stream_id = traverse_obj(
             delivery_info, ('Delivery', 'Streams', ..., 'PublicID'), get_all=False, expected_type=str)
         if invocation_id and stream_id and duration:
-            timestamp_str = f'/Date({calendar.timegm(dt.datetime.now(dt.timezone.utc).timetuple())}000)/'
+            timestamp_str = f'/Date({
+                calendar.timegm(
+                    dt.datetime.now(
+                        dt.timezone.utc).timetuple())}000)/'
             data = {
                 'streamRequests': [
                     {

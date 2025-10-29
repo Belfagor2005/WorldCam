@@ -280,7 +280,8 @@ class RaiBaseIE(InfoExtractor):
 
 
 class RaiPlayIE(RaiBaseIE):
-    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplay\.it/.+?-(?P<id>{RaiBaseIE._UUID_RE}))\.(?:html|json)'
+    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplay\.it/.+?-(?P<id>{
+        RaiBaseIE._UUID_RE}))\.(?:html|json)'
     _TESTS = [{
         'url': 'https://www.raiplay.it/video/2014/04/Report-del-07042014-cb27157f-9dd0-4aee-b788-b1f67643a391.html',
         'md5': '8970abf8caf8aef4696e7b1f2adfc696',
@@ -520,7 +521,8 @@ class RaiPlayPlaylistIE(InfoExtractor):
 
 
 class RaiPlaySoundIE(RaiBaseIE):
-    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplaysound\.it/.+?-(?P<id>{RaiBaseIE._UUID_RE}))\.(?:html|json)'
+    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplaysound\.it/.+?-(?P<id>{
+        RaiBaseIE._UUID_RE}))\.(?:html|json)'
     _TESTS = [{
         'url': 'https://www.raiplaysound.it/audio/2021/12/IL-RUGGITO-DEL-CONIGLIO-1ebae2a7-7cdb-42bb-842e-fe0d193e9707.html',
         'md5': '8970abf8caf8aef4696e7b1f2adfc696',
@@ -662,7 +664,8 @@ class RaiPlaySoundPlaylistIE(InfoExtractor):
 
 
 class RaiIE(RaiBaseIE):
-    _VALID_URL = rf'https?://[^/]+\.(?:rai\.(?:it|tv))/.+?-(?P<id>{RaiBaseIE._UUID_RE})(?:-.+?)?\.html'
+    _VALID_URL = rf'https?://[^/]+\.(?:rai\.(?:it|tv))/.+?-(?P<id>{
+        RaiBaseIE._UUID_RE})(?:-.+?)?\.html'
     _TESTS = [{
         'url': 'https://www.raisport.rai.it/dl/raiSport/media/rassegna-stampa-04a9f4bd-b563-40cf-82a6-aad3529cb4a9.html',
         'info_dict': {
@@ -736,7 +739,8 @@ class RaiIE(RaiBaseIE):
 
 
 class RaiNewsIE(RaiBaseIE):
-    _VALID_URL = rf'https?://(www\.)?rainews\.it/(?!articoli)[^?#]+-(?P<id>{RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
+    _VALID_URL = rf'https?://(www\.)?rainews\.it/(?!articoli)[^?#]+-(?P<id>{
+        RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
     _EMBED_REGEX = [
         rf'<iframe[^>]+data-src="(?P<url>/iframe/[^?#]+?{RaiBaseIE._UUID_RE}\.html)']
     _TESTS = [{
@@ -813,7 +817,8 @@ class RaiNewsIE(RaiBaseIE):
 
 
 class RaiCulturaIE(RaiNewsIE):  # XXX: Do not subclass from concrete IE
-    _VALID_URL = rf'https?://(www\.)?raicultura\.it/(?!articoli)[^?#]+-(?P<id>{RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
+    _VALID_URL = rf'https?://(www\.)?raicultura\.it/(?!articoli)[^?#]+-(?P<id>{
+        RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
     _EMBED_REGEX = [
         rf'<iframe[^>]+data-src="(?P<url>/iframe/[^?#]+?{RaiBaseIE._UUID_RE}\.html)']
     _TESTS = [{

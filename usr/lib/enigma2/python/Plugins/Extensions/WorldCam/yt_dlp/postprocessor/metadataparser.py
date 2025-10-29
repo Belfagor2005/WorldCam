@@ -88,7 +88,8 @@ class MetadataParserPP(PostProcessor):
                 return
             elif not isinstance(val, str):
                 self.report_warning(
-                    f'Cannot replace in field {field} since it is a {type(val).__name__}')
+                    f'Cannot replace in field {field} since it is a {
+                        type(val).__name__}')
                 return
             self.write_debug(
                 f'Replacing all {search!r} in {field} with {replace!r}')

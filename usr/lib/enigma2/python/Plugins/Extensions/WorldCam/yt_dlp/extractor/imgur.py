@@ -26,8 +26,8 @@ class ImgurBaseIE(InfoExtractor):
 
     def _call_api(self, endpoint, video_id, **kwargs):
         return self._download_json(
-            f'https://api.imgur.com/post/v1/{endpoint}/{video_id}?client_id={self._CLIENT_ID}&include=media,account',
-            video_id, **kwargs)
+            f'https://api.imgur.com/post/v1/{endpoint}/{video_id}?client_id={
+                self._CLIENT_ID}&include=media,account', video_id, **kwargs)
 
     @staticmethod
     def get_description(s):

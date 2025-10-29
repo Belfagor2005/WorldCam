@@ -37,8 +37,12 @@ class JioSaavnBaseIE(InfoExtractor):
             'bitrate', ['128', '320'], ie_key='JioSaavn')
         if invalid_bitrates := set(requested_bitrates) - self._VALID_BITRATES:
             raise ValueError(
-                f'Invalid bitrate(s): {", ".join(invalid_bitrates)}. '
-                f'Valid bitrates are: {", ".join(sorted(self._VALID_BITRATES, key=int))}')
+                f'Invalid bitrate(s): {
+                    ", ".join(invalid_bitrates)}. ' f'Valid bitrates are: {
+                    ", ".join(
+                        sorted(
+                            self._VALID_BITRATES,
+                            key=int))}')
         return requested_bitrates
 
     def _extract_formats(self, item_data):

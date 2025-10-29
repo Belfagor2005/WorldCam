@@ -148,7 +148,8 @@ class ExternalFD(FragmentFD):
             tmp_cookies.close()
             self._cookies_tempfile = tmp_cookies.name
             self.to_screen(
-                f'[download] Writing temporary cookies file to "{self._cookies_tempfile}"')
+                f'[download] Writing temporary cookies file to "{
+                    self._cookies_tempfile}"')
         # real_download resets _cookies_tempfile; if it's None then save() will
         # write to cookiejar.filename
         self.ydl.cookiejar.save(self._cookies_tempfile)
@@ -387,7 +388,8 @@ class Aria2cFD(ExternalFD):
             url_list_file = f'{tmpfilename}.frag.urls'
             url_list = []
             for frag_index, fragment in enumerate(info_dict['fragments']):
-                fragment_filename = f'{os.path.basename(tmpfilename)}-Frag{frag_index}'
+                fragment_filename = f'{
+                    os.path.basename(tmpfilename)}-Frag{frag_index}'
                 url_list.append(
                     '{}\n\tout={}'.format(
                         fragment['url'],
@@ -653,7 +655,8 @@ class FFmpegFD(ExternalFD):
                 args += ['-t', str(end_time - start_time)]
 
             args += [*
-                     self._configuration_args((f'_i{i + 1}', '_i')), '-i', fmt['url']]
+                     self._configuration_args((f'_i{i +
+                                                    1}', '_i')), '-i', fmt['url']]
 
         if not (start_time or end_time) or not self.params.get(
                 'force_keyframes_at_cuts'):

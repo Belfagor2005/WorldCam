@@ -1440,8 +1440,8 @@ class AdobePassIE(
                 expected_hostname = mso_info.get('login_hostname')
                 if expected_hostname and expected_hostname != url_parsed.hostname:
                     raise ExtractorError(
-                        f'Unexpected login URL hostname; expected "{expected_hostname}" but got '
-                        f'"{url_parsed.hostname}". Aborting before submitting credentials')
+                        f'Unexpected login URL hostname; expected "{expected_hostname}" but got ' f'"{
+                            url_parsed.hostname}". Aborting before submitting credentials')
                 if url_parsed.scheme != 'https':
                     self.write_debug('Upgrading login URL scheme to https')
                     post_url = urllib.parse.urlunparse(

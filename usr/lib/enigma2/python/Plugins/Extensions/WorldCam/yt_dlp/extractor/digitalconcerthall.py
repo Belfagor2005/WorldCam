@@ -188,8 +188,9 @@ class DigitalConcertHallIE(InfoExtractor):
 
         if username != 'cache':
             raise ExtractorError(
-                'Login with username and password is no longer supported '
-                f'for this site. {self._LOGIN_HINT}, {self._REFRESH_HINT}', expected=True)
+                'Login with username and password is no longer supported ' f'for this site. {
+                    self._LOGIN_HINT}, {
+                    self._REFRESH_HINT}', expected=True)
 
         # Try cached access_token
         cached_tokens = self.cache.load(
@@ -205,8 +206,9 @@ class DigitalConcertHallIE(InfoExtractor):
     def _real_initialize(self):
         if not self._access_token:
             self.raise_login_required(
-                'All content on this site is only available for registered users. '
-                f'{self._LOGIN_HINT}, {self._REFRESH_HINT}', method=None)
+                'All content on this site is only available for registered users. ' f'{
+                    self._LOGIN_HINT}, {
+                    self._REFRESH_HINT}', method=None)
 
     def _entries(self, items, language, type_, **kwargs):
         for item in items:

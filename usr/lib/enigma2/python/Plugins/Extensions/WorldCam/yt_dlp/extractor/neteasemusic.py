@@ -57,22 +57,23 @@ class NetEaseMusicBaseIE(InfoExtractor):
             query_body,
             headers={},
             **kwargs):
-        cookies = {
-            'osver': 'undefined',
-            'deviceId': 'undefined',
-            'appver': '8.0.0',
-            'versioncode': '140',
-            'mobilename': 'undefined',
-            'buildver': '1623435496',
-            'resolution': '1920x1080',
-            '__csrf': '',
-            'os': 'pc',
-            'channel': 'undefined',
-            'requestId': f'{int(time.time() * 1000)}_{random.randint(0, 1000):04}',
-            **traverse_obj(self._get_cookies(self._API_BASE), {
-                'MUSIC_U': ('MUSIC_U', {lambda i: i.value}),
-            }),
-        }
+        cookies = {'osver': 'undefined',
+                   'deviceId': 'undefined',
+                   'appver': '8.0.0',
+                   'versioncode': '140',
+                   'mobilename': 'undefined',
+                   'buildver': '1623435496',
+                   'resolution': '1920x1080',
+                   '__csrf': '',
+                   'os': 'pc',
+                   'channel': 'undefined',
+                   'requestId': f'{int(time.time() * 1000)}_{random.randint(0,
+                                                                            1000):04}',
+                   **traverse_obj(self._get_cookies(self._API_BASE),
+                                  {'MUSIC_U': ('MUSIC_U',
+                                               {lambda i: i.value}),
+                                   }),
+                   }
         return self._download_json(
             urljoin(
                 'https://interface3.music.163.com/',
@@ -507,7 +508,11 @@ class NetEaseMusicListIE(NetEaseMusicBaseIE):
             'timestamp': ('updateTime', {int_or_none(scale=1000)}),
         }))
         if traverse_obj(info, ('playlist', 'specialType')) == 10:
-            metainfo['title'] = f'{metainfo.get("title")} {strftime_or_none(metainfo.get("timestamp"), "%Y-%m-%d")}'
+            metainfo['title'] = f'{
+                metainfo.get("title")} {
+                strftime_or_none(
+                    metainfo.get("timestamp"),
+                    "%Y-%m-%d")}'
 
         return self.playlist_result(self._get_entries(
             info, ('playlist', 'tracks')), list_id, **metainfo)

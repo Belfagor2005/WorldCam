@@ -508,7 +508,12 @@ class WorldCamPlayer(
                     stream_url = best_format['url']
 
                     self.logger.info(
-                        f"Selected format: {best_format['format_id']} ({best_format.get('width', 0)}x{best_format.get('height', 0)})")
+                        f"Selected format: {
+                            best_format['format_id']} ({
+                            best_format.get(
+                                'width', 0)}x{
+                            best_format.get(
+                                'height', 0)})")
                 else:
                     self.logger.error("No playable formats found")
                     return False

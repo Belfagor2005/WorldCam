@@ -115,7 +115,8 @@ class PinterestBaseIE(InfoExtractor):
 
 
 class PinterestIE(PinterestBaseIE):
-    _VALID_URL = rf'{PinterestBaseIE._VALID_URL_BASE}/pin/(?:[\w-]+--)?(?P<id>\d+)'
+    _VALID_URL = rf'{
+        PinterestBaseIE._VALID_URL_BASE}/pin/(?:[\w-]+--)?(?P<id>\d+)'
     _TESTS = [{
         # formats found in data['videos']
         'url': 'https://www.pinterest.com/pin/664281013778109217/',
@@ -212,7 +213,8 @@ class PinterestIE(PinterestBaseIE):
 
 
 class PinterestCollectionIE(PinterestBaseIE):
-    _VALID_URL = rf'{PinterestBaseIE._VALID_URL_BASE}/(?P<username>[^/]+)/(?P<id>[^/?#&]+)'
+    _VALID_URL = rf'{
+        PinterestBaseIE._VALID_URL_BASE}/(?P<username>[^/]+)/(?P<id>[^/?#&]+)'
     _TESTS = [{
         'url': 'https://www.pinterest.ca/mashal0407/cool-diys/',
         'info_dict': {

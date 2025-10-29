@@ -108,7 +108,8 @@ class HttpFD(FileDownloader):
                 ctx.resume_len = 0
                 ctx.open_mode = 'wb'
                 raise RetryDownload(
-                    Exception(f'Conflicting range. (start={range_start} > end={range_end})'))
+                    Exception(
+                        f'Conflicting range. (start={range_start} > end={range_end})'))
 
             if try_call(lambda: range_end >= ctx.content_len):
                 range_end = ctx.content_len - 1
@@ -116,7 +117,9 @@ class HttpFD(FileDownloader):
             request = Request(url, request_data, headers)
             has_range = range_start is not None
             if has_range:
-                request.headers['Range'] = f'bytes={int(range_start)}-{int_or_none(range_end) or ""}'
+                request.headers['Range'] = f'bytes={
+                    int(range_start)}-{
+                    int_or_none(range_end) or ""}'
             # Establish connection
             try:
                 ctx.data = self.ydl.urlopen(request)

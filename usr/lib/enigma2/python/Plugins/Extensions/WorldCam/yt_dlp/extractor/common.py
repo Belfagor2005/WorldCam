@@ -580,7 +580,8 @@ class InfoExtractor:
     _EMBED_REGEX = []
 
     def _login_hint(self, method=NO_DEFAULT, netrc=None):
-        password_hint = f'--username and --password, --netrc-cmd, or --netrc ({netrc or self._NETRC_MACHINE}) to provide account credentials'
+        password_hint = f'--username and --password, --netrc-cmd, or --netrc ({
+            netrc or self._NETRC_MACHINE}) to provide account credentials'
         cookies_hint = 'See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies'
         return {
             None: '',
@@ -654,7 +655,8 @@ class InfoExtractor:
                     self._perform_login(username, password)
             elif self.get_param('username') and False not in (self.IE_DESC, self._NETRC_MACHINE):
                 self.report_warning(
-                    f'Login with password is not supported for this website. {self._login_hint("cookies")}')
+                    f'Login with password is not supported for this website. {
+                        self._login_hint("cookies")}')
             self._real_initialize()
             self._ready = True
 
@@ -721,7 +723,8 @@ class InfoExtractor:
             if ip_block:
                 self._x_forwarded_for_ip = GeoUtils.random_ipv4(ip_block)
                 self.write_debug(
-                    f'Using fake IP {self._x_forwarded_for_ip} as X-Forwarded-For')
+                    f'Using fake IP {
+                        self._x_forwarded_for_ip} as X-Forwarded-For')
                 return
 
             # Path 2: bypassing based on country code
@@ -740,7 +743,9 @@ class InfoExtractor:
             if country:
                 self._x_forwarded_for_ip = GeoUtils.random_ipv4(country)
                 self._downloader.write_debug(
-                    f'Using fake IP {self._x_forwarded_for_ip} ({country.upper()}) as X-Forwarded-For')
+                    f'Using fake IP {
+                        self._x_forwarded_for_ip} ({
+                        country.upper()}) as X-Forwarded-For')
 
     def extract(self, url):
         """Extracts URL information and returns it in list of dicts."""
@@ -795,8 +800,9 @@ class InfoExtractor:
             self._x_forwarded_for_ip = GeoUtils.random_ipv4(country_code)
             if self._x_forwarded_for_ip:
                 self.report_warning(
-                    'Video is geo restricted. Retrying extraction with fake IP '
-                    f'{self._x_forwarded_for_ip} ({country_code.upper()}) as X-Forwarded-For.')
+                    'Video is geo restricted. Retrying extraction with fake IP ' f'{
+                        self._x_forwarded_for_ip} ({
+                        country_code.upper()}) as X-Forwarded-For.')
                 return True
         return False
 
@@ -4500,7 +4506,10 @@ class InfoExtractor:
             desc += f'{";" if cls.IE_DESC else ""} "{cls.SEARCH_KEY}:" prefix'
             if search_examples:
                 _COUNTS = ('', '5', '10', 'all')
-                desc += f' (e.g. "{cls.SEARCH_KEY}{random.choice(_COUNTS)}:{random.choice(search_examples)}")'
+                desc += f' (e.g. "{
+                    cls.SEARCH_KEY}{
+                    random.choice(_COUNTS)}:{
+                    random.choice(search_examples)}")'
         if not cls.working():
             desc += ' (**Currently broken**)' if markdown else ' (Currently broken)'
 
@@ -4653,7 +4662,8 @@ class InfoExtractor:
                 issue = (f'{chapter["start_time"]} > {duration}' if chapter['start_time']
                          > duration else f'{chapter["start_time"]} < {chapters[-1]["start_time"]}')
                 warn(
-                    f'Invalid start time ({issue}) for chapter "{chapter["title"]}"')
+                    f'Invalid start time ({issue}) for chapter "{
+                        chapter["title"]}"')
         return chapters[1:]
 
     def _extract_chapters_from_description(self, description, duration):
@@ -4793,8 +4803,8 @@ class InfoExtractor:
         if '_EMBED_URL_RE' not in cls.__dict__:
             assert isinstance(cls._EMBED_REGEX, (list, tuple))
             for idx, regex in enumerate(cls._EMBED_REGEX):
-                assert regex.count('(?P<url>') == 1, \
-                    f'{cls.__name__}._EMBED_REGEX[{idx}] must have exactly 1 url group\n\t{regex}'
+                assert regex.count('(?P<url>') == 1, f'{
+                    cls.__name__}._EMBED_REGEX[{idx}] must have exactly 1 url group\n\t{regex}'
             cls._EMBED_URL_RE = tuple(map(re.compile, cls._EMBED_REGEX))
 
         for regex in cls._EMBED_URL_RE:
@@ -4845,7 +4855,8 @@ class SearchInfoExtractor(InfoExtractor):
 
     @classproperty
     def _VALID_URL(cls):
-        return rf'{cls._SEARCH_KEY}(?P<prefix>|[1-9][0-9]*|all):(?P<query>[\s\S]+)'
+        return rf'{
+            cls._SEARCH_KEY}(?P<prefix>|[1-9][0-9]*|all):(?P<query>[\s\S]+)'
 
     def _real_extract(self, query):
         prefix, query = self._match_valid_url(query).group('prefix', 'query')

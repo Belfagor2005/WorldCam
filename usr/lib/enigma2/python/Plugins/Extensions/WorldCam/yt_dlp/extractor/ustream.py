@@ -105,8 +105,8 @@ class UstreamIE(InfoExtractor):
         # Sometimes the return dict does not have 'stream'
         for trial_count in range(3):
             stream_info = self._get_stream_info(
-                url, video_id, app_id_ver,
-                extra_note=f' (try {trial_count + 1})' if trial_count > 0 else '')
+                url, video_id, app_id_ver, extra_note=f' (try {
+                    trial_count + 1})' if trial_count > 0 else '')
             if 'stream' in stream_info[0]['args'][0]:
                 return stream_info[0]['args'][0]['stream']
         return []

@@ -254,8 +254,9 @@ class IqiyiIE(InfoExtractor):
         sdk = data['sdk']
         timestamp = int(time.time())
         target = (
-            f'/apis/reglogin/login.action?lang=zh_TW&area_code=null&email={username}'
-            f'&passwd={self._rsa_fun(password.encode())}&agenttype=1&from=undefined&keeplogin=0&piccode=&fromurl=&_pos=1')
+            f'/apis/reglogin/login.action?lang=zh_TW&area_code=null&email={username}' f'&passwd={
+                self._rsa_fun(
+                    password.encode())}&agenttype=1&from=undefined&keeplogin=0&piccode=&fromurl=&_pos=1')
 
         interp = IqiyiSDKInterpreter(sdk)
         sign = interp.run(target, data['ip'], timestamp)
@@ -870,7 +871,10 @@ class IqAlbumIE(InfoExtractor):
             page = self._download_json(
                 f'https://pcw-api.iq.com/api/episodeListSource/{album_id_num}',
                 album_id,
-                note=f'Downloading video list episodes {page_range.get("msg", "")}',
+                note=f'Downloading video list episodes {
+                    page_range.get(
+                        "msg",
+                        "")}',
                 errnote='Unable to download video list',
                 query={
                     'platformId': 3,

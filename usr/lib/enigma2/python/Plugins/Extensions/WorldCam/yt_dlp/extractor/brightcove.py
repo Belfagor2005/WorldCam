@@ -922,7 +922,8 @@ class BrightcoveNewIE(BrightcoveNewBaseIE):
             return policy_key
 
         token = smuggled_data.get('token')
-        api_url = f'https://{"edge-auth" if token else "edge"}.api.brightcove.com/playback/v1/accounts/{account_id}/{content_type}s/{video_id}'
+        api_url = f'https://{
+            "edge-auth" if token else "edge"}.api.brightcove.com/playback/v1/accounts/{account_id}/{content_type}s/{video_id}'
         headers = {'Authorization': f'Bearer {token}'} if token else {}
         # XXX: notice the spelling/case of the key
         referrer = smuggled_data.get('referrer')

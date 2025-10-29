@@ -137,15 +137,19 @@ class PoTokenProvider(IEContentProvider, abc.ABC, suffix='PTP'):
             and request.context not in self._SUPPORTED_CONTEXTS
         ):
             raise PoTokenProviderRejectedRequest(
-                f'PO Token Context "{request.context}" is not supported by {self.PROVIDER_NAME}')
+                f'PO Token Context "{
+                    request.context}" is not supported by {
+                    self.PROVIDER_NAME}')
 
         if self._SUPPORTED_CLIENTS is not None:
             client_name = traverse_obj(
                 request.innertube_context, ('client', 'clientName'))
             if client_name not in self._SUPPORTED_CLIENTS:
                 raise PoTokenProviderRejectedRequest(
-                    f'Client "{client_name}" is not supported by {self.PROVIDER_NAME}. '
-                    f'Supported clients: {", ".join(self._SUPPORTED_CLIENTS) or "none"}')
+                    f'Client "{client_name}" is not supported by {
+                        self.PROVIDER_NAME}. ' f'Supported clients: {
+                        ", ".join(
+                            self._SUPPORTED_CLIENTS) or "none"}')
 
         self.__validate_external_request_features(request)
 

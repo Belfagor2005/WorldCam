@@ -147,7 +147,8 @@ class DangalPlayIE(DangalPlayBaseIE):
                         json.loads}, 'error', {dict})) or {}
                 if error_info.get('code') == '1016':
                     self.raise_login_required(
-                        f'Your token has expired or is invalid. {self._LOGIN_HINT}', method=None)
+                        f'Your token has expired or is invalid. {
+                            self._LOGIN_HINT}', method=None)
                 elif msg := error_info.get('message'):
                     raise ExtractorError(msg)
             raise

@@ -333,7 +333,9 @@ class YahooSearchIE(SearchInfoExtractor):
 
     def _search_results(self, query):
         for pagenum in itertools.count(0):
-            result_url = f'http://video.search.yahoo.com/search/?p={urllib.parse.quote_plus(query)}&fr=screen&o=js&gs=0&b={pagenum * 30}'
+            result_url = f'http://video.search.yahoo.com/search/?p={
+                urllib.parse.quote_plus(query)}&fr=screen&o=js&gs=0&b={
+                pagenum * 30}'
             info = self._download_json(
                 result_url, query, note='Downloading results page ' + str(pagenum + 1))
             yield from (self.url_result(result['rurl']) for result in info['results'])

@@ -254,6 +254,7 @@ class PhantomJSwrapper:
                 f'{note} failed: Unable to run PhantomJS binary', cause=e)
         if returncode:
             raise ExtractorError(
-                f'{note} failed with returncode {returncode}:\n{stderr.strip()}')
+                f'{note} failed with returncode {returncode}:\n{
+                    stderr.strip()}')
 
         return stdout

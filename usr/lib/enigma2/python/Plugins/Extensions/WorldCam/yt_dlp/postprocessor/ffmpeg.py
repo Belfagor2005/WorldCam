@@ -650,7 +650,9 @@ class FFmpegEmbedSubtitlePP(FFmpegPostProcessor):
     def run(self, info):
         if info['ext'] not in self.SUPPORTED_EXTS:
             self.to_screen(
-                f'Subtitles can only be embedded in {", ".join(self.SUPPORTED_EXTS)} files')
+                f'Subtitles can only be embedded in {
+                    ", ".join(
+                        self.SUPPORTED_EXTS)} files')
             return [], info
         subtitles = info.get('requested_subtitles')
         if not subtitles:
@@ -800,7 +802,8 @@ class FFmpegMetadataPP(FFmpegPostProcessor):
                     chapter['end_time'] * 1000)
                 chapter_title = chapter.get('title')
                 if chapter_title:
-                    metadata_file_content += f'title={ffmpeg_escape(chapter_title)}\n'
+                    metadata_file_content += f'title={
+                        ffmpeg_escape(chapter_title)}\n'
             f.write(metadata_file_content)
         yield ('-map_metadata', '1')
 

@@ -81,7 +81,8 @@ class CBSNewsBaseIE(InfoExtractor):
             if anvato_id:
                 return self.url_result(
                     smuggle_url(
-                        f'anvato:{self._ANVACK}:{anvato_id}', {
+                        f'anvato:{
+                            self._ANVACK}:{anvato_id}', {
                             'token': 'default'}), AnvatoIE, url_transparent=True, _old_archive_ids=[
                         make_archive_id(
                             self, anvato_id)])
@@ -276,7 +277,8 @@ class CBSLocalBaseIE(CBSNewsBaseIE):
                     video_id=video_id)
 
             anv_data = self._parse_json(
-                base64.urlsafe_b64decode(f'{anv_params}===').decode(), video_id)
+                base64.urlsafe_b64decode(
+                    f'{anv_params}===').decode(), video_id)
             anvato_id = anv_data['v']
             return self.url_result(
                 smuggle_url(f'anvato:{anv_data.get("anvack") or self._ANVACK}:{anvato_id}', {
@@ -287,7 +289,8 @@ class CBSLocalBaseIE(CBSNewsBaseIE):
 
 
 class CBSLocalIE(CBSLocalBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{CBSNewsBaseIE._LOCALE_RE})/(?:live/)?video/(?P<id>[\w-]+)'
+    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{
+        CBSNewsBaseIE._LOCALE_RE})/(?:live/)?video/(?P<id>[\w-]+)'
     _TESTS = [{
         # Anvato video via defaultPayload JSON
         'url': 'https://www.cbsnews.com/newyork/video/1st-cannabis-dispensary-opens-in-queens/',
@@ -324,7 +327,8 @@ class CBSLocalIE(CBSLocalBaseIE):
 
 
 class CBSLocalArticleIE(CBSLocalBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{CBSNewsBaseIE._LOCALE_RE})/news/(?P<id>[\w-]+)'
+    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{
+        CBSNewsBaseIE._LOCALE_RE})/news/(?P<id>[\w-]+)'
     _TESTS = [{
         # Anvato video via iframe embed
         'url': 'https://www.cbsnews.com/newyork/news/mta-station-agents-leaving-their-booths-to-provide-more-direct-customer-service/',
@@ -388,7 +392,8 @@ class CBSNewsLiveBaseIE(CBSNewsBaseIE):
 
 
 class CBSLocalLiveIE(CBSNewsLiveBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?P<id>{CBSNewsBaseIE._LOCALE_RE})/live/?(?:[?#]|$)'
+    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?P<id>{
+        CBSNewsBaseIE._LOCALE_RE})/live/?(?:[?#]|$)'
     _TESTS = [{
         'url': 'https://www.cbsnews.com/losangeles/live/',
         'info_dict': {

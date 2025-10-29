@@ -48,7 +48,9 @@ class TestURLIE(InfoExtractor):
             tc = testcases[int(num or 0)]
         except IndexError:
             raise ExtractorError(
-                f'Test case {num or 0} not found, got only {len(testcases)} tests',
+                f'Test case {
+                    num or 0} not found, got only {
+                    len(testcases)} tests',
                 expected=True)
 
         self.to_screen(f'Test URL: {tc["url"]}')

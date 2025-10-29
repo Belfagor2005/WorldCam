@@ -177,10 +177,13 @@ class NhkBaseIE(InfoExtractor):
 
 class NhkVodIE(NhkBaseIE):
     _VALID_URL = [
-        rf'{NhkBaseIE._BASE_URL_REGEX}shows/(?:(?P<type>video)/)?(?P<id>\d{{4}}[\da-z]\d+)/?(?:$|[?#])',
-        rf'{NhkBaseIE._BASE_URL_REGEX}(?:ondemand|shows)/(?P<type>audio)/(?P<id>[^/?#]+?-\d{{8}}-[\da-z]+)',
+        rf'{
+            NhkBaseIE._BASE_URL_REGEX}shows/(?:(?P<type>video)/)?(?P<id>\d{{4}}[\da-z]\d+)/?(?:$|[?#])',
+        rf'{
+            NhkBaseIE._BASE_URL_REGEX}(?:ondemand|shows)/(?P<type>audio)/(?P<id>[^/?#]+?-\d{{8}}-[\da-z]+)',
         # deprecated
-        rf'{NhkBaseIE._BASE_URL_REGEX}ondemand/(?P<type>video)/(?P<id>\d{{4}}[\da-z]\d+)',
+        rf'{
+            NhkBaseIE._BASE_URL_REGEX}ondemand/(?P<type>video)/(?P<id>\d{{4}}[\da-z]\d+)',
     ]
     # Content available only for a limited period of time. Visit
     # https://www3.nhk.or.jp/nhkworld/en/ondemand/ for working samples.
@@ -765,8 +768,12 @@ class NhkRadiruIE(InfoExtractor):
 
         if error := traverse_obj(response, ('error', {dict})):
             self.report_warning(
-                'Failed to get extended metadata. API returned '
-                f'Error {join_nonempty("code", "message", from_dict=error, delim=": ")}')
+                'Failed to get extended metadata. API returned ' f'Error {
+                    join_nonempty(
+                        "code",
+                        "message",
+                        from_dict=error,
+                        delim=": ")}')
             return {}
 
         full_meta = traverse_obj(response, ('list', service, 0, {dict}))

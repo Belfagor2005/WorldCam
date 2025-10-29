@@ -242,7 +242,8 @@ class RuutuIE(InfoExtractor):
                         preference = -1 if proto == 'rtmp' else 1
                         label = child.get('label')
                         tbr = int_or_none(child.get('bitrate'))
-                        format_id = f'{proto}-{label if label else tbr}' if label or tbr else proto
+                        format_id = f'{proto}-{
+                            label if label else tbr}' if label or tbr else proto
                         if not self._is_valid_url(
                                 video_url, video_id, format_id):
                             continue

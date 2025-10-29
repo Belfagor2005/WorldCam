@@ -411,7 +411,8 @@ def _extract_chrome_cookies(browser_name, profile, keyring, logger):
             else:
                 failed_message = ''
             logger.info(
-                f'Extracted {len(jar)} cookies from {browser_name}{failed_message}')
+                f'Extracted {
+                    len(jar)} cookies from {browser_name}{failed_message}')
             counts = decryptor._cookie_counts.copy()
             counts['unencrypted'] = unencrypted_cookies
             logger.debug(f'cookie version breakdown: {counts}')
@@ -752,7 +753,8 @@ class DataParser:
     def skip(self, num_bytes, description='unknown'):
         if num_bytes > 0:
             self._logger.debug(
-                f'skipping {num_bytes} bytes ({description}): {self.read_bytes(num_bytes)!r}')
+                f'skipping {num_bytes} bytes ({description}): {
+                    self.read_bytes(num_bytes)!r}')
         elif num_bytes < 0:
             raise ParserError(f'invalid skip of {num_bytes} bytes')
 
@@ -1558,7 +1560,8 @@ class YoutubeDLCookieJar(http.cookiejar.MozillaCookieJar):
                             'Cookies file must be Netscape formatted, not JSON. See  '
                             'https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp')
                     write_string(
-                        f'WARNING: skipping cookie file entry due to {e}: {line!r}\n')
+                        f'WARNING: skipping cookie file entry due to {e}: {
+                            line!r}\n')
                     continue
         cf.seek(0)
         self._really_load(cf, filename, ignore_discard, ignore_expires)

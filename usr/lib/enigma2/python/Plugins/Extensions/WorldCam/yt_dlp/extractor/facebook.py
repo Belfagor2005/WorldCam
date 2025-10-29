@@ -670,7 +670,8 @@ class FacebookIE(InfoExtractor):
                     [
                         r'bigPipe\.onPageletArrive\(({.+?})\)\s*;\s*}\s*\)\s*,\s*["\']onPageletArrive\s+' +
                         self._SUPPORTED_PAGLETS_REGEX,
-                        rf'bigPipe\.onPageletArrive\(({{.*?id\s*:\s*"{self._SUPPORTED_PAGLETS_REGEX}".*?}})\);',
+                        rf'bigPipe\.onPageletArrive\(({{.*?id\s*:\s*"{
+                            self._SUPPORTED_PAGLETS_REGEX}".*?}})\);',
                     ],
                     webpage,
                     'js data',
@@ -895,8 +896,8 @@ class FacebookIE(InfoExtractor):
                 webpage)
             if m_msg is not None:
                 raise ExtractorError(
-                    f'The video is not available, Facebook said: "{m_msg.group(1)}"',
-                    expected=True)
+                    f'The video is not available, Facebook said: "{
+                        m_msg.group(1)}"', expected=True)
             elif any(p in webpage for p in (
                     '>You must log in to continue',
                     'id="login_form"',

@@ -102,10 +102,14 @@ class TencentBaseIE(InfoExtractor):
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
-                formats.append({
-                    'url': f'{video_format["url"]}{video_response["fn"]}?vkey={video_response["fvkey"]}',
-                    'ext': 'mp4',
-                })
+                formats.append(
+                    {
+                        'url': f'{
+                            video_format["url"]}{
+                            video_response["fn"]}?vkey={
+                            video_response["fvkey"]}',
+                        'ext': 'mp4',
+                    })
 
         identifier = video_response.get('br')
         format_response = traverse_obj(

@@ -171,7 +171,8 @@ class SohuIE(InfoExtractor):
                     if cdn_id is not None:
                         params['idc'] = cdn_id
 
-                    download_note = f'Downloading {format_id} video URL part {i + 1} of {part_count}'
+                    download_note = f'Downloading {format_id} video URL part {
+                        i + 1} of {part_count}'
 
                     if retries > 0:
                         download_note += f' (retry #{retries})'

@@ -146,7 +146,8 @@ class PluginFinder(importlib.abc.MetaPathFinder):
                         yield candidate
             except PermissionError as e:
                 write_string(
-                    f'Permission error while accessing modules in "{e.filename}"\n')
+                    f'Permission error while accessing modules in "{
+                        e.filename}"\n')
 
     def find_spec(self, fullname, path=None, target=None):
         if fullname not in self.packages:
@@ -220,7 +221,11 @@ def load_plugins(plugin_spec: PluginSpec):
                 spec.loader.exec_module(module)
         except Exception:
             write_string(
-                f'Error while importing module {module_name!r}\n{traceback.format_exc(limit=-1)}',
+                f'Error while importing module {
+                    module_name!r}\n{
+                    traceback.format_exc(
+                        limit=-
+                        1)}',
             )
             continue
         regular_classes.update(

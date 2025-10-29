@@ -48,8 +48,13 @@ class ImpersonateTarget:
         )
 
     def __str__(self):
-        return f'{join_nonempty(self.client, self.version)}:{join_nonempty(self.os, self.os_version)}'.rstrip(
-            ':')
+        return f'{
+            join_nonempty(
+                self.client,
+                self.version)}:{
+            join_nonempty(
+                self.os,
+                self.os_version)}'.rstrip(':')
 
     @classmethod
     def from_str(cls, target: str):

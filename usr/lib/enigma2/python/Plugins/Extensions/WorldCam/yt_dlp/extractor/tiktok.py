@@ -349,12 +349,27 @@ class TikTokBaseIE(InfoExtractor):
                 fatal=False)
             if not caption_json:
                 continue
-            subtitles.setdefault(caption.get('language', 'en'), []).append({
-                'ext': 'srt',
-                'data': '\n\n'.join(
-                    f'{i + 1}\n{srt_subtitles_timecode(line["start_time"] / 1000)} --> {srt_subtitles_timecode(line["end_time"] / 1000)}\n{line["text"]}'
-                    for i, line in enumerate(caption_json['utterances']) if line.get('text')),
-            })
+            subtitles.setdefault(
+                caption.get(
+                    'language',
+                    'en'),
+                []).append(
+                {
+                    'ext': 'srt',
+                    'data': '\n\n'.join(
+                        f'{
+                            i +
+                            1}\n{
+                            srt_subtitles_timecode(
+                                line["start_time"] /
+                                1000)} --> {
+                                    srt_subtitles_timecode(
+                                        line["end_time"] /
+                                        1000)}\n{
+                                            line["text"]}' for i,
+                        line in enumerate(
+                            caption_json['utterances']) if line.get('text')),
+                })
         # feed endpoint subs
         if not subtitles:
             for caption in traverse_obj(
@@ -455,7 +470,9 @@ class TikTokBaseIE(InfoExtractor):
                 'format_id': 'play_addr',
                 'format_note': 'Direct video',
                 'vcodec': 'h265' if traverse_obj(
-                    video_info, 'is_bytevc1', 'is_h265') else 'h264',  # TODO: Check for "direct iOS" videos, like https://www.tiktok.com/@cookierun_dev/video/7039716639834656002
+                    # TODO: Check for "direct iOS" videos, like
+                    # https://www.tiktok.com/@cookierun_dev/video/7039716639834656002
+                    video_info, 'is_bytevc1', 'is_h265') else 'h264',
                 'width': width,
                 'height': height,
             }))

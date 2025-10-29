@@ -408,7 +408,8 @@ class RadioFrancePodcastIE(RadioFrancePlaylistBaseIE):
 
 
 class RadioFranceProfileIE(RadioFrancePlaylistBaseIE):
-    _VALID_URL = rf'{RadioFranceBaseIE._VALID_URL_BASE}/personnes/(?P<id>[\w-]+)'
+    _VALID_URL = rf'{
+        RadioFranceBaseIE._VALID_URL_BASE}/personnes/(?P<id>[\w-]+)'
 
     _TESTS = [{
         'url': 'https://www.radiofrance.fr/personnes/thomas-pesquet?p=3',

@@ -543,7 +543,9 @@ class GameJoltCommunityIE(GameJoltPostListBaseIE):
                 fatal=False),
             'channel') or {}
 
-        title = f'{community_data.get("name") or community_id} - {channel_data.get("display_title") or channel_id}'
+        title = f'{
+            community_data.get("name") or community_id} - {
+            channel_data.get("display_title") or channel_id}'
         description = self._parse_content_as_text(
             self._parse_json(
                 community_data.get('description_content') or '{}',

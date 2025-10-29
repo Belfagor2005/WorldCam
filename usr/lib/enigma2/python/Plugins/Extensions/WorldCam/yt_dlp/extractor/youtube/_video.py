@@ -1870,7 +1870,8 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                     if not is_live:
                         retry.error = f'{video_id}: Video is no longer live'
                     else:
-                        retry.error = f'Cannot find refreshed manifest for format {format_id}{bug_reports_message()}'
+                        retry.error = f'Cannot find refreshed manifest for format {format_id}{
+                            bug_reports_message()}'
                     continue
 
                 # Formats from ended premieres will be missing a manifest_url
@@ -2042,7 +2043,8 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
         if requested_js_variant in self._PLAYER_JS_VARIANT_MAP:
             player_id = self._extract_player_info(player_url)
             original_url = player_url
-            player_url = f'/s/player/{player_id}/{self._PLAYER_JS_VARIANT_MAP[requested_js_variant]}'
+            player_url = f'/s/player/{player_id}/{
+                self._PLAYER_JS_VARIANT_MAP[requested_js_variant]}'
             if original_url != player_url:
                 self.write_debug(
                     f'Forcing "{requested_js_variant}" player JS variant for player {player_id}\n'
@@ -2288,7 +2290,10 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
 
             args, func_body = func_code
             ret = jsi.execute(
-                f'console.log(function({", ".join(args)}) {{ {func_body} }}({s!r}));',
+                f'console.log(function({
+                    ", ".join(args)}) {
+                    {func_body}} ({
+                    s!r}));',
                 video_id=video_id,
                 note='Executing signature code').strip()
 
@@ -2845,8 +2850,8 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                         # See: https://github.com/yt-dlp/yt-dlp/issues/6712
                         continue
                     self.report_warning(
-                        'Detected YouTube comments looping. Stopping comment extraction '
-                        f'{"for this thread" if parent else ""} as we probably cannot get any more.')
+                        'Detected YouTube comments looping. Stopping comment extraction ' f'{
+                            "for this thread" if parent else ""} as we probably cannot get any more.')
                     yield
                 else:
                     tracker['seen_comment_ids'].add(comment['id'])
@@ -3140,7 +3145,8 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                     f'You may need to pass a Data Sync ID with --extractor-args "youtube:data_sync_id=XXX"')
 
             self.write_debug(
-                f'{video_id}: Retrieved a {context.value} PO Token for {client} client from config')
+                f'{video_id}: Retrieved a {
+                    context.value} PO Token for {client} client from config')
             return config_po_token
 
         # Require GVS WebPO Token if logged in for external fetching
@@ -3166,7 +3172,8 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
 
         if po_token:
             self.write_debug(
-                f'{video_id}: Retrieved a {context.value} PO Token for {client} client')
+                f'{video_id}: Retrieved a {
+                    context.value} PO Token for {client} client')
             return po_token
 
     def _fetch_po_token(self, client, **kwargs):
@@ -3738,10 +3745,10 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 except ExtractorError as e:
                     if player_url:
                         self.report_warning(
-                            f'nsig extraction failed: Some formats may be missing\n'
-                            f'         n = {query["n"][0]} ; player = {player_url}\n'
-                            f'         {bug_reports_message(before="")}',
-                            video_id=video_id, only_once=True)
+                            f'nsig extraction failed: Some formats may be missing\n' f'         n = {
+                                query["n"][0]} ; player = {player_url}\n' f'         {
+                                bug_reports_message(
+                                    before="")}', video_id=video_id, only_once=True)
                         self.write_debug(e, only_once=True)
                     else:
                         self.report_warning(
@@ -4007,7 +4014,9 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
             counts = list(map(int_or_none, args[:5]))
             if len(args) != 8 or not all(counts):
                 self.report_warning(
-                    f'Malformed storyboard {i}: {"#".join(args)}{bug_reports_message()}')
+                    f'Malformed storyboard {i}: {
+                        "#".join(args)}{
+                        bug_reports_message()}')
                 continue
             width, height, frame_count, cols, rows = counts
             N, sigh = args[6:]
@@ -4227,7 +4236,10 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 if 'sign in' in reason.lower():
                     reason = remove_end(
                         reason, 'This helps protect our community. Learn more')
-                    reason = f'{remove_end(reason.strip(), ".")}. {self._youtube_login_hint}'
+                    reason = f'{
+                        remove_end(
+                            reason.strip(), ".")}. {
+                        self._youtube_login_hint}'
                 elif get_first(playability_statuses, ('errorScreen', 'playerCaptchaViewModel', {dict})):
                     reason += '. YouTube is requiring a captcha challenge before playback'
                 elif "This content isn't available, try again later" in reason:
@@ -4532,8 +4544,10 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 True,
                 msg=join_nonempty(
                     f'{video_id}: There are missing subtitles languages because a PO token was not provided.',
-                    need_subs_langs and f'Subtitles for these languages are missing: {", ".join(need_subs_langs)}.',
-                    need_caps_langs and f'Automatic captions for {len(need_caps_langs)} languages are missing.',
+                    need_subs_langs and f'Subtitles for these languages are missing: {
+                        ", ".join(need_subs_langs)}.',
+                    need_caps_langs and f'Automatic captions for {
+                        len(need_caps_langs)} languages are missing.',
                     delim=' '))
 
         info['automatic_captions'] = automatic_captions

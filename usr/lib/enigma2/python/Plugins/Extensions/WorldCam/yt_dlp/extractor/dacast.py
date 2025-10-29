@@ -20,7 +20,8 @@ class DacastBaseIE(InfoExtractor):
 
     @classproperty
     def _VALID_URL(cls):
-        return fr'https?://iframe\.dacast\.com/{cls._URL_TYPE}/(?P<user_id>[\w-]+)/(?P<id>[\w-]+)'
+        return fr'https?://iframe\.dacast\.com/{
+            cls._URL_TYPE}/(?P<user_id>[\w-]+)/(?P<id>[\w-]+)'
 
     @classproperty
     def _EMBED_REGEX(cls):
@@ -31,13 +32,15 @@ class DacastBaseIE(InfoExtractor):
     @classmethod
     def _get_url_from_id(cls, content_id):
         user_id, media_id = content_id.split(f'-{cls._URL_TYPE}-')
-        return f'https://iframe.dacast.com/{cls._URL_TYPE}/{user_id}/{media_id}'
+        return f'https://iframe.dacast.com/{
+            cls._URL_TYPE}/{user_id}/{media_id}'
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
         yield from super()._extract_embed_urls(url, webpage)
         for content_id in re.findall(
-            rf'<script[^>]+\bsrc=["\']https://player\.dacast\.com/js/player\.js\?contentId=([\w-]+-{cls._URL_TYPE}-[\w-]+)["\']',
+                rf'<script[^>]+\bsrc=["\']https://player\.dacast\.com/js/player\.js\?contentId=([\w-]+-{
+                    cls._URL_TYPE}-[\w-]+)["\']',
                 webpage):
             yield cls._get_url_from_id(content_id)
 

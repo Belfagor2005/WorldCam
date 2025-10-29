@@ -109,7 +109,9 @@ class PoTokenCache:
             # calling is_available() for every PO Token provider upfront may
             # have some overhead
             self.logger.trace(
-                f'PO Token Cache Providers: {provider_display_list(self.cache_providers.values())}')
+                f'PO Token Cache Providers: {
+                    provider_display_list(
+                        self.cache_providers.values())}')
             self.logger.trace(
                 'Cache Provider preferences for this request: {}'.format(
                     ', '.join(
@@ -134,17 +136,21 @@ class PoTokenCache:
                     continue
                 if not validate_cache_spec(spec):
                     self.logger.error(
-                        f'PoTokenCacheSpecProvider "{provider.PROVIDER_KEY}" generate_cache_spec() '
-                        f'returned invalid spec {spec}{provider_bug_report_message(provider)}')
+                        f'PoTokenCacheSpecProvider "{
+                            provider.PROVIDER_KEY}" generate_cache_spec() ' f'returned invalid spec {spec}{
+                            provider_bug_report_message(provider)}')
                     continue
                 spec = dataclasses.replace(spec, _provider=provider)
                 self.logger.trace(
-                    f'Retrieved cache spec {spec} from cache spec provider "{provider.PROVIDER_NAME}"')
+                    f'Retrieved cache spec {spec} from cache spec provider "{
+                        provider.PROVIDER_NAME}"')
                 return spec
             except Exception as e:
                 self.logger.error(
-                    f'Error occurred with "{provider.PROVIDER_NAME}" PO Token cache spec provider: '
-                    f'{e!r}{provider_bug_report_message(provider)}')
+                    f'Error occurred with "{
+                        provider.PROVIDER_NAME}" PO Token cache spec provider: ' f'{
+                        e!r}{
+                        provider_bug_report_message(provider)}')
                 continue
         return None
 
@@ -177,7 +183,8 @@ class PoTokenCache:
         for idx, provider in enumerate(self._get_cache_providers(request)):
             try:
                 self.logger.trace(
-                    f'Attempting to fetch PO Token response from "{provider.PROVIDER_NAME}" cache provider')
+                    f'Attempting to fetch PO Token response from "{
+                        provider.PROVIDER_NAME}" cache provider')
                 cache_response = provider.get(cache_key)
                 if not cache_response:
                     continue
@@ -188,13 +195,14 @@ class PoTokenCache:
                     po_token_response = None
                 if not validate_response(po_token_response):
                     self.logger.error(
-                        f'Invalid PO Token response retrieved from cache provider "{provider.PROVIDER_NAME}": '
-                        f'{cache_response}{provider_bug_report_message(provider)}')
+                        f'Invalid PO Token response retrieved from cache provider "{
+                            provider.PROVIDER_NAME}": ' f'{cache_response}{
+                            provider_bug_report_message(provider)}')
                     provider.delete(cache_key)
                     continue
                 self.logger.trace(
-                    f'PO Token response retrieved from cache using "{provider.PROVIDER_NAME}" provider: '
-                    f'{po_token_response}')
+                    f'PO Token response retrieved from cache using "{
+                        provider.PROVIDER_NAME}" provider: ' f'{po_token_response}')
                 if idx > 0:
                     # Write back to the highest priority cache provider,
                     # so we stop trying to fetch from lower priority providers
@@ -208,13 +216,17 @@ class PoTokenCache:
                 return po_token_response
             except PoTokenCacheProviderError as e:
                 self.logger.warning(
-                    f'Error from "{provider.PROVIDER_NAME}" PO Token cache provider: '
-                    f'{e!r}{provider_bug_report_message(provider) if not e.expected else ""}')
+                    f'Error from "{
+                        provider.PROVIDER_NAME}" PO Token cache provider: ' f'{
+                        e!r}{
+                        provider_bug_report_message(provider) if not e.expected else ""}')
                 continue
             except Exception as e:
                 self.logger.error(
-                    f'Error occurred with "{provider.PROVIDER_NAME}" PO Token cache provider: '
-                    f'{e!r}{provider_bug_report_message(provider)}', )
+                    f'Error occurred with "{
+                        provider.PROVIDER_NAME}" PO Token cache provider: ' f'{
+                        e!r}{
+                        provider_bug_report_message(provider)}', )
                 continue
         return None
 
@@ -252,20 +264,25 @@ class PoTokenCache:
         for idx, provider in enumerate(self._get_cache_providers(request)):
             try:
                 self.logger.trace(
-                    f'Caching PO Token response in "{provider.PROVIDER_NAME}" cache provider '
-                    f'(key={cache_key}, expires_at={cache_response.expires_at})')
+                    f'Caching PO Token response in "{
+                        provider.PROVIDER_NAME}" cache provider ' f'(key={cache_key}, expires_at={
+                        cache_response.expires_at})')
                 provider.store(
                     key=cache_key,
                     value=json.dumps(dataclasses.asdict(cache_response)),
                     expires_at=cache_response.expires_at)
             except PoTokenCacheProviderError as e:
                 self.logger.warning(
-                    f'Error from "{provider.PROVIDER_NAME}" PO Token cache provider: '
-                    f'{e!r}{provider_bug_report_message(provider) if not e.expected else ""}')
+                    f'Error from "{
+                        provider.PROVIDER_NAME}" PO Token cache provider: ' f'{
+                        e!r}{
+                        provider_bug_report_message(provider) if not e.expected else ""}')
             except Exception as e:
                 self.logger.error(
-                    f'Error occurred with "{provider.PROVIDER_NAME}" PO Token cache provider: '
-                    f'{e!r}{provider_bug_report_message(provider)}')
+                    f'Error occurred with "{
+                        provider.PROVIDER_NAME}" PO Token cache provider: ' f'{
+                        e!r}{
+                        provider_bug_report_message(provider)}')
 
             # WRITE_FIRST should not write to lower priority providers in the
             # case the highest priority provider fails
@@ -305,7 +322,9 @@ class PoTokenRequestDirector:
             # calling is_available() for every PO Token provider upfront may
             # have some overhead
             self.logger.trace(
-                f'PO Token Providers: {provider_display_list(self.providers.values())}')
+                f'PO Token Providers: {
+                    provider_display_list(
+                        self.providers.values())}')
             self.logger.trace(
                 'Provider preferences for this request: {}'.format(
                     ', '.join(
@@ -322,7 +341,8 @@ class PoTokenRequestDirector:
         for provider in self._get_providers(request):
             try:
                 self.logger.trace(
-                    f'Attempting to fetch a PO Token from "{provider.PROVIDER_NAME}" provider')
+                    f'Attempting to fetch a PO Token from "{
+                        provider.PROVIDER_NAME}" provider')
                 response = provider.request_pot(request.copy())
             except PoTokenProviderRejectedRequest as e:
                 self.logger.trace(
@@ -331,22 +351,28 @@ class PoTokenRequestDirector:
                 continue
             except PoTokenProviderError as e:
                 self.logger.warning(
-                    f'Error fetching PO Token from "{provider.PROVIDER_NAME}" provider: '
-                    f'{e!r}{provider_bug_report_message(provider) if not e.expected else ""}')
+                    f'Error fetching PO Token from "{
+                        provider.PROVIDER_NAME}" provider: ' f'{
+                        e!r}{
+                        provider_bug_report_message(provider) if not e.expected else ""}')
                 continue
             except Exception as e:
                 self.logger.error(
-                    f'Unexpected error when fetching PO Token from "{provider.PROVIDER_NAME}" provider: '
-                    f'{e!r}{provider_bug_report_message(provider)}')
+                    f'Unexpected error when fetching PO Token from "{
+                        provider.PROVIDER_NAME}" provider: ' f'{
+                        e!r}{
+                        provider_bug_report_message(provider)}')
                 continue
 
             self.logger.trace(
-                f'PO Token response from "{provider.PROVIDER_NAME}" provider: {response}')
+                f'PO Token response from "{
+                    provider.PROVIDER_NAME}" provider: {response}')
 
             if not validate_response(response):
                 self.logger.error(
-                    f'Invalid PO Token response received from "{provider.PROVIDER_NAME}" provider: '
-                    f'{response}{provider_bug_report_message(provider)}')
+                    f'Invalid PO Token response received from "{
+                        provider.PROVIDER_NAME}" provider: ' f'{response}{
+                        provider_bug_report_message(provider)}')
                 continue
 
             return response
@@ -374,7 +400,8 @@ class PoTokenRequestDirector:
             self.cache.store(request, pot_response)
         else:
             self.logger.trace(
-                f'PO Token response will not be cached (expires_at={pot_response.expires_at})')
+                f'PO Token response will not be cached (expires_at={
+                    pot_response.expires_at})')
 
         return pot_response.po_token
 
@@ -449,11 +476,17 @@ def initialize_pot_director(ie):
         # calling is_available() for every PO Token provider upfront may have
         # some overhead
         director.logger.debug(
-            f'PO Token Providers: {provider_display_list(director.providers.values())}')
+            f'PO Token Providers: {
+                provider_display_list(
+                    director.providers.values())}')
         director.logger.debug(
-            f'PO Token Cache Providers: {provider_display_list(cache.cache_providers.values())}')
+            f'PO Token Cache Providers: {
+                provider_display_list(
+                    cache.cache_providers.values())}')
         director.logger.debug(
-            f'PO Token Cache Spec Providers: {provider_display_list(cache.cache_spec_providers.values())}')
+            f'PO Token Cache Spec Providers: {
+                provider_display_list(
+                    cache.cache_spec_providers.values())}')
         director.logger.trace(
             f'Registered {len(director.preferences)} provider preferences')
         director.logger.trace(

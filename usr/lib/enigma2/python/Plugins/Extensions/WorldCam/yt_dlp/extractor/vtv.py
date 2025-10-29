@@ -94,7 +94,10 @@ class VTVIE(InfoExtractor):
         data_vid = extract_attributes(get_element_html_by_class(
             'VCSortableInPreviewMode', get_element_html_by_class(
                 'video-highlight-box', webpage)))['data-vid']
-        m3u8_url = f'https://cdn-videos.vtv.vn/{remove_start(data_vid, "vtv.mediacdn.vn/")}/master.m3u8'
+        m3u8_url = f'https://cdn-videos.vtv.vn/{
+            remove_start(
+                data_vid,
+                "vtv.mediacdn.vn/")}/master.m3u8'
         return {
             'id': video_id,
             'title': self._og_search_title(webpage, default=None),

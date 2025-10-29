@@ -128,7 +128,8 @@ class HlsFD(FragmentFD):
             message = message or 'Unsupported features have been detected'
             fd = FFmpegFD(self.ydl, self.params)
             self.report_warning(
-                f'{message}; extraction will be delegated to {fd.get_basename()}')
+                f'{message}; extraction will be delegated to {
+                    fd.get_basename()}')
             return fd.real_download(filename, info_dict)
         elif message:
             self.report_warning(message)

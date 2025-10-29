@@ -294,7 +294,8 @@ class VVVVIDIE(InfoExtractor):
 
 
 class VVVVIDShowIE(VVVVIDIE):  # XXX: Do not subclass from concrete IE
-    _VALID_URL = rf'(?P<base_url>{VVVVIDIE._VALID_URL_BASE}(?P<id>\d+)(?:/(?P<show_title>[^/?&#]+))?)/?(?:[?#&]|$)'
+    _VALID_URL = rf'(?P<base_url>{
+        VVVVIDIE._VALID_URL_BASE}(?P<id>\d+)(?:/(?P<show_title>[^/?&#]+))?)/?(?:[?#&]|$)'
     _TESTS = [{
         'url': 'https://www.vvvvid.it/show/156/psyco-pass',
         'info_dict': {

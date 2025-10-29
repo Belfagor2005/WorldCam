@@ -107,7 +107,8 @@ class Art19IE(InfoExtractor):
     def _extract_embed_urls(cls, url, webpage):
         yield from super()._extract_embed_urls(url, webpage)
         for episode_id in re.findall(
-            rf'<div[^>]+\bclass=[\'"][^\'"]*art19-web-player[^\'"]*[\'"][^>]+\bdata-episode-id=[\'"]({cls._UUID_REGEX})[\'"]',
+                rf'<div[^>]+\bclass=[\'"][^\'"]*art19-web-player[^\'"]*[\'"][^>]+\bdata-episode-id=[\'"]({
+                    cls._UUID_REGEX})[\'"]',
                 webpage):
             yield f'https://rss.art19.com/episodes/{episode_id}.mp3'
 

@@ -365,7 +365,8 @@ class WatchESPNIE(AdobePassIE):
                 data=json.dumps(
                     {
                         'refreshToken': json.loads(
-                            base64.urlsafe_b64decode(f'{jwt}==='))['refresh_token'],
+                            base64.urlsafe_b64decode(
+                                f'{jwt}==='))['refresh_token'],
                     }).encode())['data']['token']['id_token']
 
             assertion = self._call_bamgrid_api(
@@ -426,7 +427,10 @@ class WatchESPNIE(AdobePassIE):
 
             asset = self._download_json(
                 f'https://watch.auth.api.espn.com/video/auth/media/{video_id}/asset?apikey=uiqlbgzdwuru14v627vdusswb',
-                video_id, data=f'adobeToken={urllib.parse.quote_plus(base64.b64encode(auth))}&drmSupport=HLS'.encode())
+                video_id,
+                data=f'adobeToken={
+                    urllib.parse.quote_plus(
+                        base64.b64encode(auth))}&drmSupport=HLS'.encode())
             m3u8_url, headers = asset['stream'], {}
 
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(

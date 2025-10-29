@@ -233,8 +233,8 @@ class BilibiliBaseIE(InfoExtractor):
             headers=self._HEADERS)
         if traverse_obj(video_info, ('data', 'need_login_subtitle')):
             self.report_warning(
-                f'Subtitles are only available when logged in. {self._login_hint()}',
-                only_once=True)
+                f'Subtitles are only available when logged in. {
+                    self._login_hint()}', only_once=True)
         for s in traverse_obj(
             video_info,
             ('data',
@@ -749,7 +749,12 @@ class BiliBiliIE(BilibiliBaseIE):
 
         if is_anthology:
             part_id = part_id or 1
-            title += f' p{part_id:02d} {traverse_obj(page_list_json, (part_id - 1, "part")) or ""}'
+            title += f' p{
+                part_id:02d} {
+                traverse_obj(
+                    page_list_json,
+                    (part_id - 1,
+                     "part")) or ""}'
 
         aid = video_data.get('aid')
         old_video_id = format_field(aid, None, f'%s_part{part_id or 1}')
@@ -825,7 +830,13 @@ class BiliBiliIE(BilibiliBaseIE):
                  'show_info',
                  'high_level',
                  {dict})) or {}
-            msg = f'{join_nonempty("title", "sub_title", from_dict=high_level, delim="，")}. {self._login_hint()}'
+            msg = f'{
+                join_nonempty(
+                    "title",
+                    "sub_title",
+                    from_dict=high_level,
+                    delim="，")}. {
+                self._login_hint()}'
             if not formats:
                 raise ExtractorError(
                     f'This is a supporter-only video: {msg}',
@@ -1427,7 +1438,8 @@ class BilibiliSpaceVideoIE(BilibiliSpaceBaseIE):
                     'Request is rejected by server (352)', expected=True)
             elif status_code != 0:
                 raise ExtractorError(
-                    f'Request failed ({status_code}): {response.get("message") or "Unknown error"}')
+                    f'Request failed ({status_code}): {
+                        response.get("message") or "Unknown error"}')
             return response['data']
 
         def get_metadata(page_data):
@@ -1834,7 +1846,8 @@ class BilibiliPlaylistIE(BilibiliSpaceListBaseIE):
                 raise ExtractorError(
                     'Playlist is no longer available', expected=True)
             raise ExtractorError(
-                f'Could not access playlist: {error_code} {error.get("message")}')
+                f'Could not access playlist: {error_code} {
+                    error.get("message")}')
 
         query = {
             'ps': 20,
@@ -1907,10 +1920,14 @@ class BilibiliCategoryIE(InfoExtractor):
 
         if category not in rid_map:
             raise ExtractorError(
-                f'The category {category} isn\'t supported. Supported categories: {list(rid_map.keys())}')
+                f'The category {category} isn\'t supported. Supported categories: {
+                    list(
+                        rid_map.keys())}')
         if subcategory not in rid_map[category]:
             raise ExtractorError(
-                f'The subcategory {subcategory} isn\'t supported for this category. Supported subcategories: {list(rid_map[category].keys())}')
+                f'The subcategory {subcategory} isn\'t supported for this category. Supported subcategories: {
+                    list(
+                        rid_map[category].keys())}')
         rid_value = rid_map[category][subcategory]
 
         api_url = 'https://api.bilibili.com/x/web-interface/newlist?rid=%d&type=1&ps=20&jsonp=jsonp' % rid_value
@@ -2192,7 +2209,12 @@ class BiliIntlBaseIE(InfoExtractor):
             else:
                 if json.get('message') and str(
                         json['code']) != json['message']:
-                    errmsg = f'{kwargs.get("errnote", "Unable to download JSON metadata")}: {self.IE_NAME} said: {json["message"]}'
+                    errmsg = f'{
+                        kwargs.get(
+                            "errnote",
+                            "Unable to download JSON metadata")}: {
+                        self.IE_NAME} said: {
+                        json["message"]}'
                 else:
                     errmsg = kwargs.get(
                         'errnote', 'Unable to download JSON metadata')
@@ -2204,7 +2226,14 @@ class BiliIntlBaseIE(InfoExtractor):
 
     def json2srt(self, json):
         return '\n\n'.join(
-            f'{i + 1}\n{srt_subtitles_timecode(line["from"])} --> {srt_subtitles_timecode(line["to"])}\n{line["content"]}' for i,
+            f'{
+                i +
+                1}\n{
+                srt_subtitles_timecode(
+                    line["from"])} --> {
+                    srt_subtitles_timecode(
+                        line["to"])}\n{
+                            line["content"]}' for i,
             line in enumerate(
                 traverse_obj(
                     json,
@@ -2241,8 +2270,14 @@ class BiliIntlBaseIE(InfoExtractor):
                     })
                 elif sub_ext == 'json':
                     sub_data = self._download_json(
-                        url, ep_id or aid, fatal=False,
-                        note=f'Downloading subtitles{format_field(sub, "lang", " for %s")} ({sub_lang})',
+                        url,
+                        ep_id or aid,
+                        fatal=False,
+                        note=f'Downloading subtitles{
+                            format_field(
+                                sub,
+                                "lang",
+                                " for %s")} ({sub_lang})',
                         errnote='Unable to download subtitles')
 
                     if sub_data:
@@ -2338,7 +2373,9 @@ class BiliIntlBaseIE(InfoExtractor):
         if login_post.get('code'):
             if login_post.get('message'):
                 raise ExtractorError(
-                    f'Unable to log in: {self.IE_NAME} said: {login_post["message"]}',
+                    f'Unable to log in: {
+                        self.IE_NAME} said: {
+                        login_post["message"]}',
                     expected=True)
             else:
                 raise ExtractorError('Unable to log in')

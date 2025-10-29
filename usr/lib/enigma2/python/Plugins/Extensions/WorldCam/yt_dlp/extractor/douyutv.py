@@ -46,7 +46,8 @@ class DouyuBaseIE(InfoExtractor):
     def _calc_sign(self, sign_func, video_id, a):
         b = uuid.uuid4().hex
         c = round(time.time())
-        js_script = f'{self._get_cryptojs_md5(video_id)};{sign_func};console.log(ub98484234("{a}","{b}","{c}"))'
+        js_script = f'{
+            self._get_cryptojs_md5(video_id)};{sign_func};console.log(ub98484234("{a}","{b}","{c}"))'
         phantom = PhantomJSwrapper(self)
         result = phantom.execute(js_script, video_id,
                                  note='Executing JS signing script').strip()
@@ -317,7 +318,11 @@ class DouyuShowIE(DouyuBaseIE):
                 })
             else:
                 self.to_screen(
-                    f'"{self._FORMATS.get(name, name)}" format may require logging in. {self._login_hint()}')
+                    f'"{
+                        self._FORMATS.get(
+                            name,
+                            name)}" format may require logging in. {
+                        self._login_hint()}')
 
         return {
             'id': video_id,

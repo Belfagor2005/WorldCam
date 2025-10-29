@@ -16,9 +16,8 @@ class PeekVidsBaseIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id, expected_status=429)
         if '>Rate Limit Exceeded' in webpage:
             raise ExtractorError(
-                f'You are suspected as a bot. Wait, or pass the captcha on the site and provide cookies. {self._login_hint()}',
-                video_id=video_id,
-                expected=True)
+                f'You are suspected as a bot. Wait, or pass the captcha on the site and provide cookies. {
+                    self._login_hint()}', video_id=video_id, expected=True)
 
         title = self._html_search_regex(
             r'(?s)<h1\b[^>]*>(.+?)</h1>', webpage, 'title')

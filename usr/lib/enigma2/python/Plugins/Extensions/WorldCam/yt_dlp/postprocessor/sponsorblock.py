@@ -100,7 +100,8 @@ class SponsorBlockPP(FFmpegPostProcessor):
                 'No matching segments were found in the SponsorBlock database')
         else:
             self.to_screen(
-                f'Found {len(sponsor_chapters)} segments in the SponsorBlock database')
+                f'Found {
+                    len(sponsor_chapters)} segments in the SponsorBlock database')
         return sponsor_chapters
 
     def _get_sponsor_segments(self, video_id, service):

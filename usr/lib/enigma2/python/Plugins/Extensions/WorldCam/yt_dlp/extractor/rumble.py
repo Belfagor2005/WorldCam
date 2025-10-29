@@ -151,8 +151,11 @@ class RumbleEmbedIE(InfoExtractor):
         embeds = tuple(super()._extract_embed_urls(url, webpage))
         if embeds:
             return embeds
-        return [f'https://rumble.com/embed/{mobj.group("id")}' for mobj in re.finditer(
-            r'<script>[^<]*\bRumble\(\s*"play"\s*,\s*{[^}]*[\'"]?video[\'"]?\s*:\s*[\'"](?P<id>[0-9a-z]+)[\'"]', webpage)]
+        return [
+            f'https://rumble.com/embed/{
+                mobj.group("id")}' for mobj in re.finditer(
+                r'<script>[^<]*\bRumble\(\s*"play"\s*,\s*{[^}]*[\'"]?video[\'"]?\s*:\s*[\'"](?P<id>[0-9a-z]+)[\'"]',
+                webpage)]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)

@@ -150,7 +150,11 @@ class WyborczaPodcastIE(InfoExtractor):
                 meta.get('duration')),
             'uploader': meta.get('author'),
             'upload_date': try_call(
-                lambda: f'{year}{month_by_name(month, lang="pl"):0>2}{day:0>2}'),
+                lambda: f'{year}{
+                    month_by_name(
+                        month,
+                        lang="pl"):0>2}{
+                    day:0>2}'),
         }
 
 
@@ -250,7 +254,11 @@ class TokFMAuditionIE(InfoExtractor):
         for retry in self.RetryManager():
             podcast_page = self._download_json(
                 f'https://api.podcast.radioagora.pl/api4/getPodcasts?series_id={audition_id}&limit=30&offset={page}&with_guests=true&with_leaders_for_mobile=true',
-                audition_id, f'Downloading podcast list page {page + 1}', headers=self._HEADERS)
+                audition_id,
+                f'Downloading podcast list page {
+                    page +
+                    1}',
+                headers=self._HEADERS)
             if not podcast_page:
                 retry.error = ExtractorError(
                     'Agora returned empty page', expected=True)

@@ -9,7 +9,7 @@ from ..utils.traversal import traverse_obj
 class SharePointIE(InfoExtractor):
     _BASE_URL_RE = r'https?://[\w-]+\.sharepoint\.com/'
     _VALID_URL = [
-        rf'{_BASE_URL_RE}:v:/[a-z]/(?:[^/?#]+/)*(?P<id>[^/?#]{{46}})/?(?:$|[?#])',
+        rf'{_BASE_URL_RE}:v:/[a-z]/(?:[^/?#]+/)*(?P<id>[^/?#]{46} )/?(?:$|[?#])',
         rf'{_BASE_URL_RE}(?!:v:)(?:[^/?#]+/)*stream\.aspx\?(?:[^#]+&)?id=(?P<id>[^&#]+)',
     ]
     _TESTS = [{'url': 'https://lut-my.sharepoint.com/:v:/g/personal/juha_eerola_student_lab_fi/EUrAmrktb4ZMhUcY9J2PqMEBD_9x_l0DyYWVgAvp-TTOMw?e=ZpQOOw',

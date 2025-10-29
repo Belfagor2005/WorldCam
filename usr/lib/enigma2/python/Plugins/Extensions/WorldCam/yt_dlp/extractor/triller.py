@@ -289,7 +289,8 @@ class TrillerUserIE(TrillerBaseIE):
                 raise ExtractorError(
                     'Unable to fetch required auth token for user extraction')
 
-            self._API_HEADERS['Authorization'] = f'Bearer {guest["auth_token"]}'
+            self._API_HEADERS['Authorization'] = f'Bearer {
+                guest["auth_token"]}'
 
     def _entries(self, username, user_id, limit=6):
         query = {'limit': limit}

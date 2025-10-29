@@ -162,7 +162,9 @@ class TedTalkIE(TedBaseIE):
 
 
 class TedSeriesIE(TedBaseIE):
-    _VALID_URL = fr'{TedBaseIE._VALID_URL_BASE.format(type=r"series")}(?:#season_(?P<season>\d+))?'
+    _VALID_URL = fr'{
+        TedBaseIE._VALID_URL_BASE.format(
+            type=r"series")}(?:#season_(?P<season>\d+))?'
     _TESTS = [{
         'url': 'https://www.ted.com/series/small_thing_big_idea',
         'info_dict': {

@@ -16,8 +16,10 @@ class BrilliantpalaBaseIE(InfoExtractor):
         self._HOMEPAGE = f'https://{self._DOMAIN}'
         self._LOGIN_API = f'{self._HOMEPAGE}/login/'
         self._LOGOUT_DEVICES_API = f'{self._HOMEPAGE}/logout_devices/?next=/'
-        self._CONTENT_API = f'{self._HOMEPAGE}/api/v2.4/contents/{{content_id}}/'
-        self._HLS_AES_URI = f'{self._HOMEPAGE}/api/v2.5/video_contents/{{content_id}}/key/'
+        self._CONTENT_API = f'{
+            self._HOMEPAGE}/api/v2.4/contents/{{content_id}}/'
+        self._HLS_AES_URI = f'{
+            self._HOMEPAGE}/api/v2.5/video_contents/{{content_id}}/key/'
 
     def _get_logged_in_username(self, url, video_id):
         webpage, urlh = self._download_webpage_handle(url, video_id)

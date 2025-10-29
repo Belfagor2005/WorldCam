@@ -854,7 +854,8 @@ class YoutubeWebArchiveIE(InfoExtractor):
         _CHANNEL_URL_HREF_RE = r'href="[^"]*(?P<url>https?://www\.youtube\.com/(?:user|channel)/[^"]+)"'
         uploader_or_channel_url = self._search_regex(
             [fr'<(?:link\s*itemprop=\"url\"|a\s*id=\"watch-username\").*?\b{_CHANNEL_URL_HREF_RE}>',  # @fd05024
-             fr'<div\s*id=\"(?:watch-channel-stats|watch-headline-user-info)\"[^>]*>\s*<a[^>]*\b{_CHANNEL_URL_HREF_RE}'],  # ~ May 2009, ~June 2012
+             # ~ May 2009, ~June 2012
+             fr'<div\s*id=\"(?:watch-channel-stats|watch-headline-user-info)\"[^>]*>\s*<a[^>]*\b{_CHANNEL_URL_HREF_RE}'],
             webpage, 'uploader or channel url', default=None)
 
         owner_profile_url = url_or_none(
@@ -874,7 +875,8 @@ class YoutubeWebArchiveIE(InfoExtractor):
                  r'var\s*watchUsername\s*=\s*\'(.+?)\';',  # ~May 2009
                  # ~May 2009
                  r'<div\s*\bid=\"watch-channel-stats"[^>]*>\s*<a[^>]*>\s*(.+?)\s*</a',
-                 r'<a\s*id="watch-userbanner"[^>]*title="\s*(.+?)\s*"'],  # ~June 2012
+                 # ~June 2012
+                 r'<a\s*id="watch-userbanner"[^>]*title="\s*(.+?)\s*"'],
                 webpage, 'uploader', default=None)
             or self._html_search_regex(
                 [r'(?s)<div\s*class="yt-user-info".*?<a[^>]*[^>]*>\s*(.*?)\s*</a',  # March 2016
@@ -919,7 +921,8 @@ class YoutubeWebArchiveIE(InfoExtractor):
                 [r'(?s)id="eow-date.*?>\s*(.*?)\s*</span>',
                  # @7998520
                  r'(?:id="watch-uploader-info".*?>.*?|["\']simpleText["\']\s*:\s*["\'])(?:Published|Uploaded|Streamed live|Started) on (.+?)[<"\']',
-                 r'class\s*=\s*"(?:watch-video-date|watch-video-added post-date)"[^>]*>\s*([^<]+?)\s*<'],  # ~June 2010, ~Jan 2009 (respectively)
+                 # ~June 2010, ~Jan 2009 (respectively)
+                 r'class\s*=\s*"(?:watch-video-date|watch-video-added post-date)"[^>]*>\s*([^<]+?)\s*<'],
                 webpage, 'upload date', default=None))
 
         return {
@@ -1016,8 +1019,11 @@ class YoutubeWebArchiveIE(InfoExtractor):
         for retry in retry_manager:
             try:
                 urlh = self._request_webpage(
-                    HEADRequest(f'https://web.archive.org/web/2oe_/http://wayback-fakeurl.archive.org/yt/{video_id}'),
-                    video_id, note='Fetching archived video file url', expected_status=True)
+                    HEADRequest(
+                        f'https://web.archive.org/web/2oe_/http://wayback-fakeurl.archive.org/yt/{video_id}'),
+                    video_id,
+                    note='Fetching archived video file url',
+                    expected_status=True)
             except ExtractorError as e:
                 # HTTP Error 404 is expected if the video is not saved.
                 if isinstance(e.cause, HTTPError) and e.cause.status == 404:

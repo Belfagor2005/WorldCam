@@ -100,7 +100,8 @@ class ManyVidsIE(InfoExtractor):
             title = join_nonempty(title, '(Preview)', delim=' ')
             video_id += '-preview'
             self.report_warning(
-                f'Only extracting preview. Video may be paid or subscription only. {self._login_hint()}')
+                f'Only extracting preview. Video may be paid or subscription only. {
+                    self._login_hint()}')
 
         return {
             'id': video_id,

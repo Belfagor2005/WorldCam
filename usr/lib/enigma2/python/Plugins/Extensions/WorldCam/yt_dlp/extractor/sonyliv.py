@@ -281,7 +281,9 @@ class SonyLIVSeriesIE(InfoExtractor):
             'sort_order', [self._SORT_ORDERS[0]])[0]
         if sort_order not in self._SORT_ORDERS:
             raise ValueError(
-                f'Invalid sort order "{sort_order}". Allowed values are: {", ".join(self._SORT_ORDERS)}')
+                f'Invalid sort order "{sort_order}". Allowed values are: {
+                    ", ".join(
+                        self._SORT_ORDERS)}')
 
         return self.playlist_result(
             self._entries(

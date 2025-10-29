@@ -1054,7 +1054,8 @@ class WorldCamContinentCountryScreen(WebcamBaseScreen):
         super().__init__(session, lang)
         disable_summary(self)
         self.logger.info(
-            f"Initializing WorldCamContinentCountryScreen for {continent['name']}")
+            f"Initializing WorldCamContinentCountryScreen for {
+                continent['name']}")
         self.continent = continent
         # self.scraper = SkylineScraper(lang if lang else "en")
         self["title"] = Label(continent["name"])
@@ -1079,7 +1080,9 @@ class WorldCamContinentCountryScreen(WebcamBaseScreen):
             self.countries = sorted(countries, key=lambda c: c["name"].lower())
             country_names = [country["name"] for country in self.countries]
             self.logger.info(
-                f"Loaded {len(country_names)} countries for {self.continent['name']}")
+                f"Loaded {
+                    len(country_names)} countries for {
+                    self.continent['name']}")
             if country_names:
                 showlist(country_names, self["list"], is_country=True)
                 self["list"].setCurrentIndex(0)

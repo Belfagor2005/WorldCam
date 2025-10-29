@@ -25,7 +25,9 @@ class RedBeeBaseIE(InfoExtractor):
         Ref: https://apidocs.emp.ebsd.ericsson.net
         Subclasses must set _REDBEE_CUSTOMER, _REDBEE_BUSINESS_UNIT
         """
-        return f'https://exposure.api.redbee.live/v2/customer/{self._REDBEE_CUSTOMER}/businessunit/{self._REDBEE_BUSINESS_UNIT}'
+        return f'https://exposure.api.redbee.live/v2/customer/{
+            self._REDBEE_CUSTOMER}/businessunit/{
+            self._REDBEE_BUSINESS_UNIT}'
 
     def _get_bearer_token(self, asset_id, jwt=None):
         request = {

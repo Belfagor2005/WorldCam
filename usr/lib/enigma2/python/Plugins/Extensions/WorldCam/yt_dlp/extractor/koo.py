@@ -116,7 +116,11 @@ class KooIE(InfoExtractor):
             'id': video_id,
             'title': clean_html(
                 item_json.get('title')),
-            'description': f'{clean_html(item_json.get("title"))}\n\n{clean_html(item_json.get("enTransliteration"))}',
+            'description': f'{
+                clean_html(
+                    item_json.get("title"))}\n\n{
+                clean_html(
+                    item_json.get("enTransliteration"))}',
             'timestamp': item_json.get('createdAt'),
             'uploader_id': item_json.get('handle'),
             'uploader': item_json.get('name'),

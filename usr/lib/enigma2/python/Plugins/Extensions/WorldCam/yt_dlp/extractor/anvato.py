@@ -237,9 +237,12 @@ class AnvatoIE(InfoExtractor):
 
     def _get_video_json(self, access_key, video_id, extracted_token):
         # See et() in anvplayer.min.js, which is an alias of getVideoJSON()
-        video_data_url = f'{self._API_BASE_URL}/mcp/video/{video_id}?anvack={access_key}'
+        video_data_url = f'{
+            self._API_BASE_URL}/mcp/video/{video_id}?anvack={access_key}'
         server_time = self._server_time(access_key, video_id)
-        input_data = f'{server_time}~{md5_text(video_data_url)}~{md5_text(server_time)}'
+        input_data = f'{server_time}~{
+            md5_text(video_data_url)}~{
+            md5_text(server_time)}'
 
         auth_secret = bytes(aes_encrypt(
             list(input_data[:64].encode()), list(self._AUTH_KEY)))
@@ -256,7 +259,8 @@ class AnvatoIE(InfoExtractor):
             api['anvstk2'] = extracted_token
         elif self._ANVACK_TABLE.get(access_key) is not None:
             api['anvstk'] = md5_text(
-                f'{access_key}|{anvrid}|{server_time}|{self._ANVACK_TABLE[access_key]}')
+                f'{access_key}|{anvrid}|{server_time}|{
+                    self._ANVACK_TABLE[access_key]}')
         else:
             api['anvstk2'] = 'default'
 

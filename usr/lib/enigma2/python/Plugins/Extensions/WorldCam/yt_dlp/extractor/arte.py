@@ -231,7 +231,8 @@ class ArteTVIE(ArteTVBaseIE):
 
             else:
                 self.report_warning(
-                    f'Skipping stream with unknown protocol {stream["protocol"]}')
+                    f'Skipping stream with unknown protocol {
+                        stream["protocol"]}')
 
         formats.extend(secondary_formats)
         self._remove_duplicate_formats(formats)
@@ -290,7 +291,8 @@ class ArteTVEmbedIE(InfoExtractor):
 
 
 class ArteTVPlaylistIE(ArteTVBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>RC-\d{{6}})'
+    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{
+        ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>RC-\d{{6}})'
     _TESTS = [{
         'url': 'https://www.arte.tv/en/videos/RC-016954/earn-a-living/',
         'only_matching': True,
@@ -328,7 +330,8 @@ class ArteTVPlaylistIE(ArteTVBaseIE):
 
 
 class ArteTVCategoryIE(ArteTVBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>[\w-]+(?:/[\w-]+)*)/?\s*$'
+    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{
+        ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>[\w-]+(?:/[\w-]+)*)/?\s*$'
     _TESTS = [{
         'url': 'https://www.arte.tv/en/videos/politics-and-society/',
         'info_dict': {

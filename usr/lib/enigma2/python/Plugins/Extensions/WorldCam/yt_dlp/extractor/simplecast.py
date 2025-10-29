@@ -74,7 +74,8 @@ class SimplecastBaseIE(InfoExtractor):
 
 class SimplecastIE(SimplecastBaseIE):
     IE_NAME = 'simplecast'
-    _VALID_URL = rf'https?://(?:api\.simplecast\.com/episodes|player\.simplecast\.com)/(?P<id>{SimplecastBaseIE._UUID_REGEX})'
+    _VALID_URL = rf'https?://(?:api\.simplecast\.com/episodes|player\.simplecast\.com)/(?P<id>{
+        SimplecastBaseIE._UUID_REGEX})'
     _EMBED_REGEX = [rf'''(?x)<iframe[^>]+src=["\']
         (?P<url>https?://(?:
             embed\.simplecast\.com/[0-9a-f]{8}|

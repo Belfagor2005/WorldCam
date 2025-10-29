@@ -59,7 +59,8 @@ class YandexMusicBaseIE(InfoExtractor):
 class YandexMusicTrackIE(YandexMusicBaseIE):
     IE_NAME = 'yandexmusic:track'
     IE_DESC = 'Яндекс.Музыка - Трек'
-    _VALID_URL = rf'{YandexMusicBaseIE._VALID_URL_BASE}/album/(?P<album_id>\d+)/track/(?P<id>\d+)'
+    _VALID_URL = rf'{
+        YandexMusicBaseIE._VALID_URL_BASE}/album/(?P<album_id>\d+)/track/(?P<id>\d+)'
 
     _TESTS = [{
         'url': 'http://music.yandex.ru/album/540508/track/4878838',
@@ -315,7 +316,8 @@ class YandexMusicAlbumIE(YandexMusicPlaylistBaseIE):
 class YandexMusicPlaylistIE(YandexMusicPlaylistBaseIE):
     IE_NAME = 'yandexmusic:playlist'
     IE_DESC = 'Яндекс.Музыка - Плейлист'
-    _VALID_URL = rf'{YandexMusicBaseIE._VALID_URL_BASE}/users/(?P<user>[^/]+)/playlists/(?P<id>\d+)'
+    _VALID_URL = rf'{
+        YandexMusicBaseIE._VALID_URL_BASE}/users/(?P<user>[^/]+)/playlists/(?P<id>\d+)'
 
     _TESTS = [{
         'url': 'http://music.yandex.ru/users/music.partners/playlists/1245',
@@ -394,7 +396,8 @@ class YandexMusicArtistBaseIE(YandexMusicPlaylistBaseIE):
 class YandexMusicArtistTracksIE(YandexMusicArtistBaseIE):
     IE_NAME = 'yandexmusic:artist:tracks'
     IE_DESC = 'Яндекс.Музыка - Артист - Треки'
-    _VALID_URL = rf'{YandexMusicBaseIE._VALID_URL_BASE}/artist/(?P<id>\d+)/tracks'
+    _VALID_URL = rf'{
+        YandexMusicBaseIE._VALID_URL_BASE}/artist/(?P<id>\d+)/tracks'
 
     _TESTS = [{
         'url': 'https://music.yandex.ru/artist/617526/tracks',
@@ -424,7 +427,8 @@ class YandexMusicArtistTracksIE(YandexMusicArtistBaseIE):
 class YandexMusicArtistAlbumsIE(YandexMusicArtistBaseIE):
     IE_NAME = 'yandexmusic:artist:albums'
     IE_DESC = 'Яндекс.Музыка - Артист - Альбомы'
-    _VALID_URL = rf'{YandexMusicBaseIE._VALID_URL_BASE}/artist/(?P<id>\d+)/albums'
+    _VALID_URL = rf'{
+        YandexMusicBaseIE._VALID_URL_BASE}/artist/(?P<id>\d+)/albums'
 
     _TESTS = [{
         'url': 'https://music.yandex.ru/artist/617526/albums',

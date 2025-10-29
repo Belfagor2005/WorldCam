@@ -336,7 +336,8 @@ class ViuOTTIE(InfoExtractor):
                 fatal=False,
                 note='Downloading stream info',
                 headers={
-                    'Authorization': f'Bearer {self._auth_codes[country_code]}',
+                    'Authorization': f'Bearer {
+                        self._auth_codes[country_code]}',
                     'Referer': url,
                     'Origin': url,
                 })

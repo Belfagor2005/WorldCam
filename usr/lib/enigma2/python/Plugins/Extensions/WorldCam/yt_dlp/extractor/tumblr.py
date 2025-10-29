@@ -400,7 +400,10 @@ class TumblrIE(InfoExtractor):
             response = _call_login()
         if traverse_obj(response, 'error'):
             raise ExtractorError(
-                f'API returned error {": ".join(traverse_obj(response, (("error", "error_description"), {str})))}')
+                f'API returned error {
+                    ": ".join(
+                        traverse_obj(
+                            response, (("error", "error_description"), {str})))}')
 
     def _real_extract(self, url):
         blog_1, blog_2, video_id = self._match_valid_url(url).groups()
@@ -428,7 +431,8 @@ class TumblrIE(InfoExtractor):
                     f'https://www.tumblr.com/api/v2/blog/{blog}/posts/{video_id}/permalink',
                     video_id,
                     headers={
-                        'Authorization': f'Bearer {self._ACCESS_TOKEN}'},
+                        'Authorization': f'Bearer {
+                            self._ACCESS_TOKEN}'},
                     fatal=False),
                 ('response',
                  'timeline',
@@ -562,17 +566,18 @@ class TumblrIE(InfoExtractor):
         if ignored_providers:
             if not entries:
                 raise ExtractorError(
-                    f'None of embed providers are supported: {", ".join(ignored_providers)!s}',
+                    f'None of embed providers are supported: {
+                        ", ".join(ignored_providers)!s}',
                     video_id=video_id,
                     expected=True)
             else:
                 self.report_warning(
-                    f'Skipped embeds from unsupported providers: {", ".join(ignored_providers)!s}',
-                    video_id)
+                    f'Skipped embeds from unsupported providers: {
+                        ", ".join(ignored_providers)!s}', video_id)
         if unknown_providers:
             self.report_warning(
-                f'Unrecognized providers, please report: {", ".join(unknown_providers)!s}',
-                video_id)
+                f'Unrecognized providers, please report: {
+                    ", ".join(unknown_providers)!s}', video_id)
 
         if not entries:
             self.raise_no_formats(

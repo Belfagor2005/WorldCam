@@ -188,7 +188,8 @@ class QQMusicIE(QQMusicBaseIE):
         code = traverse_obj(data, ('req_1', 'code', {int}))
         if code != 0:
             raise ExtractorError(
-                f'Failed to download format info, error code {code or "unknown"}')
+                f'Failed to download format info, error code {
+                    code or "unknown"}')
         formats = []
         for media_info in traverse_obj(
             data,

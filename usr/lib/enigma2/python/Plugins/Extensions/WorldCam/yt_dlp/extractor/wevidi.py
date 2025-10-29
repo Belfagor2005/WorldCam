@@ -72,7 +72,10 @@ class WeVidiIE(InfoExtractor):
             6: 1080,
         }
 
-        src_path = f'{wvplayer_props["srcVID"]}/{wvplayer_props["srcUID"]}/{wvplayer_props["srcNAME"]}'
+        src_path = f'{
+            wvplayer_props["srcVID"]}/{
+            wvplayer_props["srcUID"]}/{
+            wvplayer_props["srcNAME"]}'
         for res in traverse_obj(
                 wvplayer_props, ('resolutions', ..., {int}, filter)):
             format_id = str(-(res // -2) - 1)

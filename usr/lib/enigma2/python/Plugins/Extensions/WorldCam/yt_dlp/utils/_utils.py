@@ -1664,7 +1664,9 @@ if sys.platform == 'win32':
             # NB: No argument form of "ctypes.FormatError" does not work on
             # PyPy
             raise BlockingIOError(
-                f'Locking file failed: {ctypes.FormatError(ctypes.GetLastError())!r}')
+                f'Locking file failed: {
+                    ctypes.FormatError(
+                        ctypes.GetLastError())!r}')
 
     def _unlock_file(f):
         assert f._lock_file_overlapped_p
@@ -5571,14 +5573,22 @@ class RetryManager:
         if count > retries:
             if error:
                 return error(
-                    f'{e}. Giving up after {count - 1} retries') if count > 1 else error(str(e))
+                    f'{e}. Giving up after {
+                        count -
+                        1} retries') if count > 1 else error(
+                    str(e))
             raise e
 
         if not count:
             return warn(e)
         elif isinstance(e, ExtractorError):
             e = remove_end(str_or_none(e.cause) or e.orig_msg, '.')
-        warn(f'{e}. Retrying{format_field(suffix, None, " %s")} ({count}/{retries})...')
+        warn(
+            f'{e}. Retrying{
+                format_field(
+                    suffix,
+                    None,
+                    " %s")} ({count}/{retries})...')
 
         delay = float_or_none(
             sleep_func(

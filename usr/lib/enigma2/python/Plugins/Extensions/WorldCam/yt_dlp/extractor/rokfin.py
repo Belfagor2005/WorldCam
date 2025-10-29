@@ -168,7 +168,8 @@ class RokfinIE(InfoExtractor):
                     'This video is only available to premium users', True, method='cookies')
             elif scheduled:
                 self.raise_no_formats(
-                    f'Stream is offline; scheduled for {dt.datetime.fromtimestamp(scheduled).strftime("%Y-%m-%d %H:%M:%S")}',
+                    f'Stream is offline; scheduled for {
+                        dt.datetime.fromtimestamp(scheduled).strftime("%Y-%m-%d %H:%M:%S")}',
                     video_id=video_id,
                     expected=True)
 
@@ -424,8 +425,14 @@ class RokfinChannelIE(RokfinPlaylistBaseIE):
             else:
                 data_url = f'{_API_BASE_URL}post/search/{tab}?page={page_n}&size=50&creator={channel_id}'
             metadata = self._download_json(
-                data_url, channel_name,
-                note=f'Downloading video metadata page {page_n + 1}{format_field(pages_total, None, " of %s")}')
+                data_url,
+                channel_name,
+                note=f'Downloading video metadata page {
+                    page_n + 1}{
+                    format_field(
+                        pages_total,
+                        None,
+                        " of %s")}')
 
             yield from self._get_video_data(metadata)
             pages_total = int_or_none(metadata.get('totalPages')) or None
@@ -484,8 +491,11 @@ class RokfinSearchIE(SearchInfoExtractor):
         total_pages = None
         for page_number in itertools.count(1):
             search_results = self._run_search_query(
-                query, data={'query': query, 'page': {'size': 100, 'current': page_number}},
-                note=f'Downloading page {page_number}{format_field(total_pages, None, " of ~%s")}')
+                query, data={
+                    'query': query, 'page': {
+                        'size': 100, 'current': page_number}}, note=f'Downloading page {page_number}{
+                    format_field(
+                        total_pages, None, " of ~%s")}')
             total_pages = traverse_obj(
                 search_results, ('meta', 'page', 'total_pages'), expected_type=int_or_none)
 

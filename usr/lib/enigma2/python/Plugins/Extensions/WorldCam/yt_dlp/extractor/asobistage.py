@@ -99,7 +99,8 @@ class AsobiStageIE(InfoExtractor):
             'viewrights', ..., ('tickets', 'serialcodes'), ..., 'digital_product_id', {str_or_none}))
         if not self._owned_tickets.intersection(available_tickets):
             self.report_warning(
-                f'You are not a ticketholder for "{channel.get("channel_name") or channel_id}"')
+                f'You are not a ticketholder for "{
+                    channel.get("channel_name") or channel_id}"')
             return None
         return channel_id
 

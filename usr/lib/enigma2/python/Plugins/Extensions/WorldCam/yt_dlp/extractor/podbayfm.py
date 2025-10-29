@@ -64,7 +64,8 @@ class PodbayFMChannelIE(InfoExtractor):
     def _fetch_page(self, channel_id, pagenum):
         return self._download_json(
             f'https://podbay.fm/api/podcast?reverse=true&page={pagenum}&slug={channel_id}',
-            f'Downloading channel JSON page {pagenum + 1}',
+            f'Downloading channel JSON page {
+                pagenum + 1}',
             channel_id)['podcast']
 
     @staticmethod

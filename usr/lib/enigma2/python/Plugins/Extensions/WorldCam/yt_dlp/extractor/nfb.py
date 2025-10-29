@@ -286,7 +286,8 @@ class NFBIE(NFBBaseIE):
 class NFBSeriesIE(NFBBaseIE):
     IE_NAME = 'nfb:series'
     IE_DESC = 'nfb.ca and onf.ca series'
-    _VALID_URL = rf'{NFBBaseIE._VALID_URL_BASE}/(?P<type>series?)/(?P<id>[^/?#&]+)/?(?:[?#]|$)'
+    _VALID_URL = rf'{
+        NFBBaseIE._VALID_URL_BASE}/(?P<type>series?)/(?P<id>[^/?#&]+)/?(?:[?#]|$)'
     _TESTS = [{
         'url': 'https://www.nfb.ca/series/true-north-inside-the-rise-of-toronto-basketball/',
         'playlist_mincount': 9,

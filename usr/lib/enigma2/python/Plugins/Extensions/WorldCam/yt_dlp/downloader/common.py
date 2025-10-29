@@ -172,7 +172,8 @@ class FileDownloader:
 
     @staticmethod
     def format_speed(speed):
-        return ' Unknown B/s' if speed is None else f'{format_bytes(speed):>10s}/s'
+        return ' Unknown B/s' if speed is None else f'{
+            format_bytes(speed):>10s}/s'
 
     @staticmethod
     def format_retries(retries):
@@ -245,8 +246,10 @@ class FileDownloader:
                 info=fd.__to_screen,
                 warn=lambda e: (
                     time.sleep(0.01),
-                    fd.to_screen(f'[download] Unable to {action} file: {e}')),
-                error=None if fatal else lambda e: fd.report_error(f'Unable to {action} file: {e}'),
+                    fd.to_screen(
+                        f'[download] Unable to {action} file: {e}')),
+                error=None if fatal else lambda e: fd.report_error(
+                    f'Unable to {action} file: {e}'),
                 sleep_func=fd.params.get(
                     'retry_sleep_functions',
                     {}).get('file_access'))
@@ -459,13 +462,16 @@ class FileDownloader:
             count,
             retries,
             info=self.__to_screen,
-            warn=lambda msg: self.__to_screen(f'[download] Got error: {msg}'),
-            error=IDENTITY if not fatal else lambda e: self.report_error(f'\r[download] Got error: {e}'),
+            warn=lambda msg: self.__to_screen(
+                f'[download] Got error: {msg}'),
+            error=IDENTITY if not fatal else lambda e: self.report_error(
+                f'\r[download] Got error: {e}'),
             sleep_func=self.params.get(
                 'retry_sleep_functions',
                 {}).get(
-                is_frag or 'http'),
-            suffix=f'fragment{"s" if frag_index is None else f" {frag_index}"}' if is_frag else None)
+                    is_frag or 'http'),
+            suffix=f'fragment{
+                "s" if frag_index is None else f" {frag_index}"}' if is_frag else None)
 
     def report_unable_to_resume(self):
         """Report it was impossible to resume download."""

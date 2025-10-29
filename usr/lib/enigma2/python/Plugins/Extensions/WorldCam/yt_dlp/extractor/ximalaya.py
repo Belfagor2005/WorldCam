@@ -145,7 +145,8 @@ class XimalayaIE(XimalayaBaseIE):
             }
             if '_preview_' in vip_url:
                 self.report_warning(
-                    f'This tracks requires a VIP account. Using a sample instead. {self._login_hint()}')
+                    f'This tracks requires a VIP account. Using a sample instead. {
+                        self._login_hint()}')
                 fmt.update({
                     'format_note': 'Sample',
                     'preference': -10,

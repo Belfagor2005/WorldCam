@@ -408,7 +408,8 @@ class XHamsterIE(InfoExtractor):
 
 
 class XHamsterEmbedIE(InfoExtractor):
-    _VALID_URL = rf'https?://(?:[^/?#]+\.)?{XHamsterIE._DOMAINS}/xembed\.php\?video=(?P<id>\d+)'
+    _VALID_URL = rf'https?://(?:[^/?#]+\.)?{
+        XHamsterIE._DOMAINS}/xembed\.php\?video=(?P<id>\d+)'
     _EMBED_REGEX = [
         r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//(?:www\.)?xhamster\.com/xembed\.php\?video=\d+)\1']
     _TEST = {
@@ -452,7 +453,8 @@ class XHamsterEmbedIE(InfoExtractor):
 
 
 class XHamsterUserIE(InfoExtractor):
-    _VALID_URL = rf'https?://(?:[^/?#]+\.)?{XHamsterIE._DOMAINS}/(?:(?P<user>users)|creators)/(?P<id>[^/?#&]+)'
+    _VALID_URL = rf'https?://(?:[^/?#]+\.)?{
+        XHamsterIE._DOMAINS}/(?:(?P<user>users)|creators)/(?P<id>[^/?#&]+)'
     _TESTS = [{
         # Paginated user profile
         'url': 'https://xhamster.com/users/netvideogirls/videos',

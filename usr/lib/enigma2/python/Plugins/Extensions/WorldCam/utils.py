@@ -331,7 +331,9 @@ class FavoritesManager:
                     if "youtube.com" in fav["url"] or "youtu.be" in fav["url"]:
                         # YouTube streams require special handling
                         service_type = 5001  # HLS
-                        service_url = f"http://localhost:8000/proxy.m3u8?url={quote(fav['url'])}"
+                        service_url = f"http://localhost:8000/proxy.m3u8?url={
+                            quote(
+                                fav['url'])}"
                     else:
                         service_type = 4097  # HTTP
                         # service_url = fav["url"]

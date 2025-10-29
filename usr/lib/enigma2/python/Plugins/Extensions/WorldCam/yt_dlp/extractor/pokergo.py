@@ -104,8 +104,12 @@ class PokerGoCollectionIE(PokerGoBaseIE):
 
     def _entries(self, playlist_id):
         data_json = self._download_json(
-            f'https://api.pokergo.com/v2/properties/{self._PROPERTY_ID}/collections/{playlist_id}?include=entities',
-            playlist_id, headers={'authorization': f'Bearer {self._AUTH_TOKEN}'})['data']
+            f'https://api.pokergo.com/v2/properties/{
+                self._PROPERTY_ID}/collections/{playlist_id}?include=entities',
+            playlist_id,
+            headers={
+                'authorization': f'Bearer {
+                    self._AUTH_TOKEN}'})['data']
         for video in data_json.get('collection_video') or []:
             video_id = video.get('id')
             if video_id:

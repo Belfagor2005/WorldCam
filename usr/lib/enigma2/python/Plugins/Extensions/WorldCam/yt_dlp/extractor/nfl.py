@@ -89,7 +89,8 @@ class NFLBaseIE(InfoExtractor):
     def _get_account_info(self):
         cookies = self._get_cookies('https://auth-id.nfl.com/')
         login_token = traverse_obj(
-            cookies, ((f'glt_{self._API_KEY}', lambda k, _: k.startswith('glt_')), {
+            cookies, ((f'glt_{
+                self._API_KEY}', lambda k, _: k.startswith('glt_')), {
                 lambda x: x.value}), get_all=False)
         if not login_token:
             self.raise_login_required()
