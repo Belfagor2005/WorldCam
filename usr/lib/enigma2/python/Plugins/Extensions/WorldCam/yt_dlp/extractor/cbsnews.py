@@ -5,8 +5,6 @@ import zlib
 
 from .anvato import AnvatoIE
 from .common import InfoExtractor
-from .paramountplus import ParamountPlusIE
-from ..networking import HEADRequest
 from ..utils import (
     ExtractorError,
     UserNotLive,
@@ -53,39 +51,26 @@ class CBSNewsBaseIE(InfoExtractor):
         return traverse_obj(item, 'video', 'video2', expected_type=url_or_none)
 
     def _extract_playlist(self, webpage, playlist_id):
-        entries = [
-            self.url_result(
-                embed_url,
-                CBSNewsEmbedIE) for embed_url in re.findall(
-                r'<iframe[^>]+data-src="(https?://(?:www\.)?cbsnews\.com/embed/video/[^#]*#[^"]+)"',
-                webpage)]
+        entries = [self.url_result(embed_url, CBSNewsEmbedIE) for embed_url in re.findall(
+            r'<iframe[^>]+data-src="(https?://(?:www\.)?cbsnews\.com/embed/video/[^#]*#[^"]+)"', webpage)]
         if entries:
             return self.playlist_result(
                 entries, playlist_id, self._html_search_meta(['og:title', 'twitter:title'], webpage),
                 self._html_search_meta(['og:description', 'twitter:description', 'description'], webpage))
 
     def _extract_video(self, item, video_url, video_id):
-        if mimetype2ext(
-                item.get('format'),
-                default=determine_ext(video_url)) == 'mp4':
+        if mimetype2ext(item.get('format'), default=determine_ext(video_url)) == 'mp4':
             formats = [{'url': video_url, 'ext': 'mp4'}]
 
         else:
-            manifest = self._download_webpage(
-                video_url, video_id, note='Downloading m3u8 information')
+            manifest = self._download_webpage(video_url, video_id, note='Downloading m3u8 information')
 
-            anvato_id = self._search_regex(
-                r'anvato-(\d+)', manifest, 'Anvato ID', default=None)
-            # Prefer Anvato if available; cbsnews.com m3u8 formats are
-            # re-encoded from Anvato source
+            anvato_id = self._search_regex(r'anvato-(\d+)', manifest, 'Anvato ID', default=None)
+            # Prefer Anvato if available; cbsnews.com m3u8 formats are re-encoded from Anvato source
             if anvato_id:
                 return self.url_result(
-                    smuggle_url(
-                        f'anvato:{
-                            self._ANVACK}:{anvato_id}', {
-                            'token': 'default'}), AnvatoIE, url_transparent=True, _old_archive_ids=[
-                        make_archive_id(
-                            self, anvato_id)])
+                    smuggle_url(f'anvato:{self._ANVACK}:{anvato_id}', {'token': 'default'}),
+                    AnvatoIE, url_transparent=True, _old_archive_ids=[make_archive_id(self, anvato_id)])
 
             formats, _ = self._parse_m3u8_formats_and_subtitles(
                 manifest, video_url, 'mp4', m3u8_id='hls', video_id=video_id)
@@ -145,14 +130,7 @@ class CBSNewsEmbedIE(CBSNewsBaseIE):
         video_id = item['mpxRefId']
         video_url = self._get_video_url(item)
         if not video_url:
-            # Old embeds redirect user to ParamountPlus but most links are 404
-            pplus_url = f'https://www.paramountplus.com/shows/video/{video_id}'
-            try:
-                self._request_webpage(HEADRequest(pplus_url), video_id)
-                return self.url_result(pplus_url, ParamountPlusIE)
-            except ExtractorError:
-                self.raise_no_formats(
-                    'This video is no longer available', True, video_id)
+            raise ExtractorError('This video is no longer available', expected=True)
 
         return self._extract_video(item, video_url, video_id)
 
@@ -244,10 +222,7 @@ class CBSNewsIE(CBSNewsBaseIE):
         video_id = item.get('mpxRefId') or display_id
         video_url = self._get_video_url(item)
         if not video_url:
-            self.raise_no_formats(
-                'No video content was found',
-                expected=True,
-                video_id=video_id)
+            self.raise_no_formats('No video content was found', expected=True, video_id=video_id)
 
         return self._extract_video(item, video_url, video_id)
 
@@ -271,14 +246,9 @@ class CBSLocalBaseIE(CBSNewsBaseIE):
                 playlist = self._extract_playlist(webpage, display_id)
                 if playlist:
                     return playlist
-                self.raise_no_formats(
-                    'No video content was found',
-                    expected=True,
-                    video_id=video_id)
+                self.raise_no_formats('No video content was found', expected=True, video_id=video_id)
 
-            anv_data = self._parse_json(
-                base64.urlsafe_b64decode(
-                    f'{anv_params}===').decode(), video_id)
+            anv_data = self._parse_json(base64.urlsafe_b64decode(f'{anv_params}===').decode(), video_id)
             anvato_id = anv_data['v']
             return self.url_result(
                 smuggle_url(f'anvato:{anv_data.get("anvack") or self._ANVACK}:{anvato_id}', {
@@ -289,8 +259,7 @@ class CBSLocalBaseIE(CBSNewsBaseIE):
 
 
 class CBSLocalIE(CBSLocalBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{
-        CBSNewsBaseIE._LOCALE_RE})/(?:live/)?video/(?P<id>[\w-]+)'
+    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{CBSNewsBaseIE._LOCALE_RE})/(?:live/)?video/(?P<id>[\w-]+)'
     _TESTS = [{
         # Anvato video via defaultPayload JSON
         'url': 'https://www.cbsnews.com/newyork/video/1st-cannabis-dispensary-opens-in-queens/',
@@ -327,8 +296,7 @@ class CBSLocalIE(CBSLocalBaseIE):
 
 
 class CBSLocalArticleIE(CBSLocalBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{
-        CBSNewsBaseIE._LOCALE_RE})/news/(?P<id>[\w-]+)'
+    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?:{CBSNewsBaseIE._LOCALE_RE})/news/(?P<id>[\w-]+)'
     _TESTS = [{
         # Anvato video via iframe embed
         'url': 'https://www.cbsnews.com/newyork/news/mta-station-agents-leaving-their-booths-to-provide-more-direct-customer-service/',
@@ -355,8 +323,7 @@ class CBSLocalArticleIE(CBSLocalBaseIE):
 
 class CBSNewsLiveBaseIE(CBSNewsBaseIE):
     def _get_id(self, url):
-        raise NotImplementedError(
-            'This method must be implemented by subclasses')
+        raise NotImplementedError('This method must be implemented by subclasses')
 
     def _real_extract(self, url):
         video_id = self._get_id(url)
@@ -370,13 +337,11 @@ class CBSNewsLiveBaseIE(CBSNewsBaseIE):
                 'type': 'live',
             }), ('navigation', 'data', 0, {dict}))
 
-        video_url = traverse_obj(
-            data, (('videoUrlDAI', ('videoUrl', 'base')), {url_or_none}), get_all=False)
+        video_url = traverse_obj(data, (('videoUrlDAI', ('videoUrl', 'base')), {url_or_none}), get_all=False)
         if not video_url:
             raise UserNotLive(video_id=video_id)
 
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            video_url, video_id, 'mp4', m3u8_id='hls')
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(video_url, video_id, 'mp4', m3u8_id='hls')
 
         return {
             'id': video_id,
@@ -392,8 +357,7 @@ class CBSNewsLiveBaseIE(CBSNewsBaseIE):
 
 
 class CBSLocalLiveIE(CBSNewsLiveBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?P<id>{
-        CBSNewsBaseIE._LOCALE_RE})/live/?(?:[?#]|$)'
+    _VALID_URL = rf'https?://(?:www\.)?cbsnews\.com/(?P<id>{CBSNewsBaseIE._LOCALE_RE})/live/?(?:[?#]|$)'
     _TESTS = [{
         'url': 'https://www.cbsnews.com/losangeles/live/',
         'info_dict': {
@@ -437,8 +401,7 @@ class CBSNewsLiveVideoIE(InfoExtractor):
     IE_DESC = 'CBS News Live Videos'
     _VALID_URL = r'https?://(?:www\.)?cbsnews\.com/live/video/(?P<id>[^/?#]+)'
 
-    # Live videos get deleted soon. See http://www.cbsnews.com/live/ for the
-    # latest examples
+    # Live videos get deleted soon. See http://www.cbsnews.com/live/ for the latest examples
     _TESTS = [{
         'url': 'http://www.cbsnews.com/live/video/clinton-sanders-prepare-to-face-off-in-nh/',
         'info_dict': {

@@ -29,8 +29,7 @@ class VideaIE(InfoExtractor):
                         )
                         (?P<id>[^?#&]+)
                     '''
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//videa\.hu/player\?.*?\bv=.+?)\1']
+    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//videa\.hu/player\?.*?\bv=.+?)\1']
     _TESTS = [{
         'url': 'http://videa.hu/videok/allatok/az-orult-kigyasz-285-kigyot-kigyo-8YfIAjxwWGwT8HVQ',
         'md5': '97a7af41faeaffd9f1fc864a7c7e7603',
@@ -38,7 +37,7 @@ class VideaIE(InfoExtractor):
             'id': '8YfIAjxwWGwT8HVQ',
             'ext': 'mp4',
             'title': 'Az őrült kígyász 285 kígyót enged szabadon',
-            'thumbnail': r're:^https?://.*',
+            'thumbnail': r're:https?://videa\.hu/static/still/.+',
             'duration': 21,
             'age_limit': 0,
         },
@@ -49,7 +48,7 @@ class VideaIE(InfoExtractor):
             'id': 'jAHDWfWSJH5XuFhH',
             'ext': 'mp4',
             'title': 'Supercars előzés',
-            'thumbnail': r're:^https?://.*',
+            'thumbnail': r're:https?://videa\.hu/static/still/.+',
             'duration': 64,
             'age_limit': 0,
         },
@@ -60,7 +59,7 @@ class VideaIE(InfoExtractor):
             'id': '8YfIAjxwWGwT8HVQ',
             'ext': 'mp4',
             'title': 'Az őrült kígyász 285 kígyót enged szabadon',
-            'thumbnail': r're:^https?://.*',
+            'thumbnail': r're:https?://videa\.hu/static/still/.+',
             'duration': 21,
             'age_limit': 0,
         },
@@ -76,6 +75,25 @@ class VideaIE(InfoExtractor):
     }, {
         'url': 'https://videakid.hu/player/v/8YfIAjxwWGwT8HVQ?autoplay=1',
         'only_matching': True,
+    }]
+    _WEBPAGE_TESTS = [{
+        'url': 'https://www.kapucziner.hu/',
+        'info_dict': {
+            'id': '95yhJCdK2dX1T5Nh',
+            'ext': 'mp4',
+            'title': 'Nemzetközi díjat kapott a győri kávémanufaktúra',
+            'age_limit': 0,
+            'duration': 207,
+            'thumbnail': r're:https?://videa\.hu/static/still/.+',
+        },
+    }, {
+        # FIXME: No video formats found
+        'url': 'https://hirtv.hu/hirtv_kesleltetett',
+        'info_dict': {
+            'id': 'IDRqF7W9X0GXHGj1',
+            'ext': 'mp4',
+            'title': 'Hír TV - 60 perccel késleltetett adás',
+        },
     }]
     _STATIC_SECRET = 'xHb0ZvME5q8CBcoQi6AngerDu3FGO9fkUlwPmLVY_RTzj2hJIS4NasXWKy1td7p'
 
@@ -124,11 +142,7 @@ class VideaIE(InfoExtractor):
             result += s[i - (self._STATIC_SECRET.index(l[i]) - 31)]
 
         query = parse_qs(player_url)
-        random_seed = ''.join(
-            random.choices(
-                string.ascii_letters +
-                string.digits,
-                k=8))
+        random_seed = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
         query['_s'] = random_seed
         query['_t'] = result[:16]
 

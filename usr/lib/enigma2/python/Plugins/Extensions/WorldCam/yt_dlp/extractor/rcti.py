@@ -16,18 +16,14 @@ from ..utils import (
 class RCTIPlusBaseIE(InfoExtractor):
     def _real_initialize(self):
         self._AUTH_KEY = self._download_json(
-            # platform can be web, mweb, android, ios
-            'https://api.rctiplus.com/api/v1/visitor?platform=web',
+            'https://api.rctiplus.com/api/v1/visitor?platform=web',  # platform can be web, mweb, android, ios
             None, 'Fetching authorization key')['data']['access_token']
 
     def _call_api(self, url, video_id, note=None):
         json = self._download_json(
-            url, video_id, note=note, headers={
-                'Authorization': self._AUTH_KEY})
+            url, video_id, note=note, headers={'Authorization': self._AUTH_KEY})
         if json.get('status', {}).get('code', 0) != 0:
-            raise ExtractorError(
-                f'{self.IE_NAME} said: {json["status"]["message_client"]}',
-                cause=json)
+            raise ExtractorError(f'{self.IE_NAME} said: {json["status"]["message_client"]}', cause=json)
         return json.get('data'), json.get('meta')
 
 
@@ -148,88 +144,64 @@ class RCTIPlusIE(RCTIPlusBaseIE):
         video_type, video_id, display_id = match['type'], match['id'], match['display_id']
 
         url_api_version = 'v2' if video_type == 'missed-event' else 'v1'
-        # Based on the webpage's uuidRandom generator
-        appier_id = '23984824_' + str(random.randint(0, 10000000000))
+        appier_id = '23984824_' + str(random.randint(0, 10000000000))  # Based on the webpage's uuidRandom generator
         video_json = self._call_api(
-            f'https://api.rctiplus.com/api/{url_api_version}/{video_type}/{video_id}/url?appierid={appier_id}',
-            display_id,
-            'Downloading video URL JSON')[0]
+            f'https://api.rctiplus.com/api/{url_api_version}/{video_type}/{video_id}/url?appierid={appier_id}', display_id, 'Downloading video URL JSON')[0]
         video_url = video_json['url']
 
-        is_upcoming = try_get(video_json,
-                              lambda x: x['current_date'] < x['live_at'])
+        is_upcoming = try_get(video_json, lambda x: x['current_date'] < x['live_at'])
         if is_upcoming is None:
-            is_upcoming = try_get(
-                video_json, lambda x: x['current_date'] < x['start_date'])
+            is_upcoming = try_get(video_json, lambda x: x['current_date'] < x['start_date'])
         if is_upcoming:
             self.raise_no_formats(
-                'This event will start at {}.'.format(
-                    video_json['live_label']) if video_json.get('live_label') else 'This event has not started yet.',
-                expected=True)
+                'This event will start at {}.'.format(video_json['live_label']) if video_json.get('live_label') else 'This event has not started yet.', expected=True)
         if 'akamaized' in video_url:
-            # For some videos hosted on Akamai's CDN (possibly AES-encrypted
-            # ones?), a session needs to at least be made via Conviva's API
+            # For some videos hosted on Akamai's CDN (possibly AES-encrypted ones?), a session needs to at least be made via Conviva's API
             conviva_json_data = {
                 **self._CONVIVA_JSON_TEMPLATE,
                 'url': video_url,
                 'sst': int(time.time()),
             }
             conviva_json_res = self._download_json(
-                'https://ff84ae928c3b33064b76dec08f12500465e59a6f.cws.conviva.com/0/wsg',
-                display_id,
-                'Creating Conviva session',
-                'Failed to create Conviva session',
-                fatal=False,
-                data=json.dumps(conviva_json_data).encode())
+                'https://ff84ae928c3b33064b76dec08f12500465e59a6f.cws.conviva.com/0/wsg', display_id,
+                'Creating Conviva session', 'Failed to create Conviva session',
+                fatal=False, data=json.dumps(conviva_json_data).encode())
             if conviva_json_res and conviva_json_res.get('err') != 'ok':
-                self.report_warning('Conviva said: {}'.format(
-                    str(conviva_json_res.get('err'))))
+                self.report_warning('Conviva said: {}'.format(str(conviva_json_res.get('err'))))
 
         video_meta, meta_paths = self._call_api(
             f'https://api.rctiplus.com/api/v1/{video_type}/{video_id}', display_id, 'Downloading video metadata')
 
-        thumbnails, image_path = [], meta_paths.get(
-            'image_path', 'https://rstatic.akamaized.net/media/')
+        thumbnails, image_path = [], meta_paths.get('image_path', 'https://rstatic.akamaized.net/media/')
         if video_meta.get('portrait_image'):
             thumbnails.append({
                 'id': 'portrait_image',
-                # 2000px seems to be the highest resolution that can be given
-                'url': '{}{}{}'.format(image_path, 2000, video_meta['portrait_image']),
+                'url': '{}{}{}'.format(image_path, 2000, video_meta['portrait_image']),  # 2000px seems to be the highest resolution that can be given
             })
         if video_meta.get('landscape_image'):
-            thumbnails.append({'id': 'landscape_image', 'url': '{}{}{}'.format(
-                image_path, 2000, video_meta['landscape_image']), })
+            thumbnails.append({
+                'id': 'landscape_image',
+                'url': '{}{}{}'.format(image_path, 2000, video_meta['landscape_image']),
+            })
         try:
-            formats = self._extract_m3u8_formats(
-                video_url, display_id, 'mp4', headers={
-                    'Referer': 'https://www.rctiplus.com/'})
+            formats = self._extract_m3u8_formats(video_url, display_id, 'mp4', headers={'Referer': 'https://www.rctiplus.com/'})
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                self.raise_geo_restricted(
-                    countries=['ID'], metadata_available=True)
+                self.raise_geo_restricted(countries=['ID'], metadata_available=True)
             else:
                 raise e
         for f in formats:
             if 'akamaized' in f['url'] or 'cloudfront' in f['url']:
-                # Referer header is required for akamai/cloudfront CDNs
-                f.setdefault('http_headers', {})[
-                    'Referer'] = 'https://www.rctiplus.com/'
+                f.setdefault('http_headers', {})['Referer'] = 'https://www.rctiplus.com/'  # Referer header is required for akamai/cloudfront CDNs
 
         return {
             'id': video_meta.get('product_id') or video_json.get('product_id'),
-            'title': dict_get(
-                video_meta,
-                ('title',
-                 'name')) or dict_get(
-                video_json,
-                ('content_name',
-                 'assets_name')),
+            'title': dict_get(video_meta, ('title', 'name')) or dict_get(video_json, ('content_name', 'assets_name')),
             'display_id': display_id,
             'description': video_meta.get('summary'),
             'timestamp': video_meta.get('release_date') or video_json.get('start_date'),
             'duration': video_meta.get('duration'),
-            'categories': [
-                video_meta['genre']] if video_meta.get('genre') else None,
+            'categories': [video_meta['genre']] if video_meta.get('genre') else None,
             'average_rating': video_meta.get('star_rating'),
             'series': video_meta.get('program_title') or video_json.get('program_title'),
             'season_number': video_meta.get('season'),
@@ -285,12 +257,7 @@ class RCTIPlusSeriesIE(RCTIPlusBaseIE):
     def suitable(cls, url):
         return False if RCTIPlusIE.suitable(url) else super().suitable(url)
 
-    def _entries(
-            self,
-            url,
-            display_id=None,
-            note='Downloading entries JSON',
-            metadata={}):
+    def _entries(self, url, display_id=None, note='Downloading entries JSON', metadata={}):
         total_pages = 0
         try:
             total_pages = self._call_api(
@@ -324,12 +291,7 @@ class RCTIPlusSeriesIE(RCTIPlusBaseIE):
                     **metadata,
                 }
 
-    def _series_entries(
-            self,
-            series_id,
-            display_id=None,
-            video_type=None,
-            metadata={}):
+    def _series_entries(self, series_id, display_id=None, video_type=None, metadata={}):
         if not video_type or video_type in 'episodes':
             try:
                 seasons_list = self._call_api(
@@ -353,14 +315,13 @@ class RCTIPlusSeriesIE(RCTIPlusBaseIE):
                 display_id, 'Downloading clip entries', metadata)
 
     def _real_extract(self, url):
-        series_id, display_id, video_type = self._match_valid_url(
-            url).group('id', 'display_id', 'type')
+        series_id, display_id, video_type = self._match_valid_url(url).group('id', 'display_id', 'type')
         if video_type:
             self.report_warning(
                 f'Only {video_type} will be downloaded. '
                 f'To download everything from the series, remove "/{video_type}" from the URL')
 
-        series_meta, meta_paths = self._call_api(
+        series_meta, _ = self._call_api(
             f'https://api.rctiplus.com/api/v1/program/{series_id}/detail', display_id, 'Downloading series metadata')
         metadata = {
             'age_limit': try_get(series_meta, lambda x: self._AGE_RATINGS[x['age_restriction'][0]['code']]),
@@ -370,16 +331,8 @@ class RCTIPlusSeriesIE(RCTIPlusBaseIE):
                                  expected_type=lambda x: strip_or_none(x) or None),
         }
         return self.playlist_result(
-            self._series_entries(
-                series_id,
-                display_id,
-                video_type,
-                metadata),
-            series_id,
-            series_meta.get('title'),
-            series_meta.get('summary'),
-            display_id=display_id,
-            **metadata)
+            self._series_entries(series_id, display_id, video_type, metadata), series_id,
+            series_meta.get('title'), series_meta.get('summary'), display_id=display_id, **metadata)
 
 
 class RCTIPlusTVIE(RCTIPlusBaseIE):
@@ -417,6 +370,4 @@ class RCTIPlusTVIE(RCTIPlusBaseIE):
         video_type, video_id = self._search_regex(
             r'url\s*:\s*["\']https://api\.rctiplus\.com/api/v./(?P<type>[^/]+)/(?P<id>\d+)/url',
             webpage, 'video link', group=('type', 'id'))
-        return self.url_result(
-            f'https://www.rctiplus.com/{video_type}/{video_id}/{tv_id}',
-            'RCTIPlus')
+        return self.url_result(f'https://www.rctiplus.com/{video_type}/{video_id}/{tv_id}', 'RCTIPlus')

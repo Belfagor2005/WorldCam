@@ -31,8 +31,7 @@ class OdnoklassnikiIE(InfoExtractor):
                     )
                     (?P<id>[\d-]+)
                 '''
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//(?:odnoklassniki|ok)\.ru/videoembed/.+?)\1']
+    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//(?:odnoklassniki|ok)\.ru/videoembed/.+?)\1']
     _TESTS = [{
         'note': 'Coub embedded',
         'url': 'http://ok.ru/video/1484130554189',
@@ -134,8 +133,7 @@ class OdnoklassnikiIE(InfoExtractor):
             'channel': 'BornToReact',
         },
     }, {
-        # YouTube embed (metadata, provider == USER_YOUTUBE, no
-        # metadata.movie.title field)
+        # YouTube embed (metadata, provider == USER_YOUTUBE, no metadata.movie.title field)
         'url': 'http://ok.ru/video/62036049272859-0',
         'info_dict': {
             'id': '62036049272859-0',
@@ -272,20 +270,16 @@ class OdnoklassnikiIE(InfoExtractor):
         # Direct link from boosty
         if (error == 'The author of this video has not been found or is blocked'
                 and not smuggled.get('referrer') and mode == 'videoembed'):
-            return self._extract_desktop(smuggle_url(
-                url, {'referrer': 'https://boosty.to'}))
+            return self._extract_desktop(smuggle_url(url, {'referrer': 'https://boosty.to'}))
         elif error:
             raise ExtractorError(error, expected=True)
         elif '>Access to this video is restricted</div>' in webpage:
             self.raise_login_required()
 
         player = self._parse_json(
-            unescapeHTML(
-                self._search_regex(
-                    rf'data-options=(?P<quote>["\'])(?P<player>{{.+?{video_id}.+?}})(?P=quote)',
-                    webpage,
-                    'player',
-                    group='player')),
+            unescapeHTML(self._search_regex(
+                rf'data-options=(?P<quote>["\'])(?P<player>{{.+?{video_id}.+?}})(?P=quote)',
+                webpage, 'player', group='player')),
             video_id)
 
         # embedded external player
@@ -314,8 +308,7 @@ class OdnoklassnikiIE(InfoExtractor):
         # here and it's going to be extracted later by an extractor that
         # will process the actual embed.
         provider = metadata.get('provider')
-        title = movie['title'] if provider == 'UPLOADED_ODKL' else movie.get(
-            'title')
+        title = movie['title'] if provider == 'UPLOADED_ODKL' else movie.get('title')
 
         thumbnail = movie.get('poster')
         duration = int_or_none(movie.get('duration'))
@@ -336,8 +329,7 @@ class OdnoklassnikiIE(InfoExtractor):
         like_count = int_or_none(metadata.get('likeCount'))
 
         subtitles = {}
-        for sub in traverse_obj(
-                metadata, ('movie', 'subtitleTracks', ...), expected_type=dict):
+        for sub in traverse_obj(metadata, ('movie', 'subtitleTracks', ...), expected_type=dict):
             sub_url = sub.get('url')
             if not sub_url:
                 continue
@@ -359,14 +351,6 @@ class OdnoklassnikiIE(InfoExtractor):
             'start_time': start_time,
             'subtitles': subtitles,
         }
-
-        # pladform
-        if provider == 'OPEN_GRAPH':
-            info.update({
-                '_type': 'url_transparent',
-                'url': movie['contentId'],
-            })
-            return info
 
         if provider == 'USER_YOUTUBE':
             info.update({
@@ -394,8 +378,7 @@ class OdnoklassnikiIE(InfoExtractor):
                 m3u8_id='hls', fatal=False))
             self._clear_cookies(m3u8_url)
 
-        for mpd_id, mpd_key in [
-                ('dash', 'ondemandDash'), ('webm', 'metadataWebmUrl')]:
+        for mpd_id, mpd_key in [('dash', 'ondemandDash'), ('webm', 'metadataWebmUrl')]:
             mpd_url = metadata.get(mpd_key)
             if mpd_url:
                 formats.extend(self._extract_mpd_formats(
@@ -431,9 +414,7 @@ class OdnoklassnikiIE(InfoExtractor):
         if not formats:
             payment_info = metadata.get('paymentInfo')
             if payment_info:
-                self.raise_no_formats(
-                    'This video is paid, subscribe to download it',
-                    expected=True)
+                self.raise_no_formats('This video is paid, subscribe to download it', expected=True)
 
         info['formats'] = formats
         return info

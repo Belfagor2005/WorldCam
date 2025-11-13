@@ -59,14 +59,10 @@ class AirTVIE(InfoExtractor):
 
     def _get_formats_and_subtitle(self, json_data, video_id):
         formats, subtitles = [], {}
-        for source in traverse_obj(
-                json_data, 'sources', 'sources_desktop', ...):
-            ext = determine_ext(
-                source.get('src'), mimetype2ext(
-                    source.get('type')))
+        for source in traverse_obj(json_data, 'sources', 'sources_desktop', ...):
+            ext = determine_ext(source.get('src'), mimetype2ext(source.get('type')))
             if ext == 'm3u8':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                    source.get('src'), video_id)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(source.get('src'), video_id)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
@@ -77,15 +73,12 @@ class AirTVIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
 
-        nextjs_json = self._search_nextjs_data(webpage, display_id)[
-            'props']['pageProps']['initialState']['videos'][display_id]
+        nextjs_json = self._search_nextjs_data(webpage, display_id)['props']['pageProps']['initialState']['videos'][display_id]
         if nextjs_json.get('youtube_id'):
             return self.url_result(
-                f'https://www.youtube.com/watch?v={nextjs_json.get("youtube_id")}',
-                YoutubeIE)
+                f'https://www.youtube.com/watch?v={nextjs_json.get("youtube_id")}', YoutubeIE)
 
-        formats, subtitles = self._get_formats_and_subtitle(
-            nextjs_json, display_id)
+        formats, subtitles = self._get_formats_and_subtitle(nextjs_json, display_id)
         return {
             'id': display_id,
             'title': nextjs_json.get('title') or self._html_search_meta('og:title', webpage),

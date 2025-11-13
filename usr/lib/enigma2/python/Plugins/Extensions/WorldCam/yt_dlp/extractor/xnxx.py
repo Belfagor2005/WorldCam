@@ -11,26 +11,28 @@ from ..utils import (
 
 class XNXXIE(InfoExtractor):
     _VALID_URL = r'https?://(?:video|www)\.xnxx3?\.com/video-?(?P<id>[0-9a-z]+)/'
-    _TESTS = [{'url': 'http://www.xnxx.com/video-55awb78/skyrim_test_video',
-               'md5': '7583e96c15c0f21e9da3453d9920fbba',
-               'info_dict': {'id': '55awb78',
-                             'ext': 'mp4',
-                             'title': 'Skyrim Test Video',
-                             'thumbnail': r're:^https?://.*\.jpg',
-                             'duration': 469,
-                             'view_count': int,
-                             'age_limit': 18,
-                             },
-               },
-              {'url': 'http://video.xnxx.com/video1135332/lida_naked_funny_actress_5_',
-               'only_matching': True,
-               },
-              {'url': 'http://www.xnxx.com/video-55awb78/',
-               'only_matching': True,
-               },
-              {'url': 'http://www.xnxx3.com/video-55awb78/',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://www.xnxx.com/video-55awb78/skyrim_test_video',
+        'md5': '7583e96c15c0f21e9da3453d9920fbba',
+        'info_dict': {
+            'id': '55awb78',
+            'ext': 'mp4',
+            'title': 'Skyrim Test Video',
+            'thumbnail': r're:^https?://.*\.jpg',
+            'duration': 469,
+            'view_count': int,
+            'age_limit': 18,
+        },
+    }, {
+        'url': 'http://video.xnxx.com/video1135332/lida_naked_funny_actress_5_',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.xnxx.com/video-55awb78/',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.xnxx3.com/video-55awb78/',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -47,8 +49,7 @@ class XNXXIE(InfoExtractor):
 
         formats = []
         for mobj in re.finditer(
-            r'setVideo(?:Url(?P<id>Low|High)|HLS)\s*\(\s*(?P<q>["\'])(?P<url>(?:https?:)?//.+?)(?P=q)',
-                webpage):
+                r'setVideo(?:Url(?P<id>Low|High)|HLS)\s*\(\s*(?P<q>["\'])(?P<url>(?:https?:)?//.+?)(?P=q)', webpage):
             format_url = mobj.group('url')
             if determine_ext(format_url) == 'm3u8':
                 formats.extend(self._extract_m3u8_formats(

@@ -79,32 +79,22 @@ class RedGifsBaseIE(InfoExtractor):
                 headers = dict(self._API_HEADERS)
                 headers['x-customheader'] = f'https://www.redgifs.com/watch/{video_id}'
                 data = self._download_json(
-                    f'https://api.redgifs.com/v2/{ep}',
-                    video_id,
-                    headers=headers,
-                    **kwargs)
+                    f'https://api.redgifs.com/v2/{ep}', video_id, headers=headers, **kwargs)
                 break
             except ExtractorError as e:
-                if first_attempt and isinstance(
-                        e.cause, HTTPError) and e.cause.status == 401:
+                if first_attempt and isinstance(e.cause, HTTPError) and e.cause.status == 401:
                     del self._API_HEADERS['authorization']  # refresh the token
                     continue
                 raise
 
         if 'error' in data:
-            raise ExtractorError(
-                f'RedGifs said: {data["error"]}',
-                expected=True,
-                video_id=video_id)
+            raise ExtractorError(f'RedGifs said: {data["error"]}', expected=True, video_id=video_id)
         return data
 
     def _fetch_page(self, ep, video_id, query, page):
         query['page'] = page + 1
         data = self._call_api(
-            ep,
-            video_id,
-            query=query,
-            note=f'Downloading JSON metadata page {page + 1}')
+            ep, video_id, query=query, note=f'Downloading JSON metadata page {page + 1}')
 
         for entry in data['gifs']:
             yield self._parse_gif_data(entry)
@@ -119,14 +109,8 @@ class RedGifsBaseIE(InfoExtractor):
     def _paged_entries(self, ep, item_id, query, fields):
         page = int_or_none(query.get('page', (None,))[0])
         page_fetcher = functools.partial(
-            self._fetch_page,
-            ep,
-            item_id,
-            self._prepare_api_query(
-                query,
-                fields))
-        return page_fetcher(page) if page else OnDemandPagedList(
-            page_fetcher, self._PAGE_SIZE)
+            self._fetch_page, ep, item_id, self._prepare_api_query(query, fields))
+        return page_fetcher(page) if page else OnDemandPagedList(page_fetcher, self._PAGE_SIZE)
 
 
 class RedGifsIE(RedGifsBaseIE):
@@ -184,9 +168,7 @@ class RedGifsIE(RedGifsBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url).lower()
         video_info = self._call_api(
-            f'gifs/{video_id}?views=yes',
-            video_id,
-            note='Downloading video info')
+            f'gifs/{video_id}?views=yes', video_id, note='Downloading video info')
         return self._parse_gif_data(video_info['gif'])
 
 
@@ -194,28 +176,35 @@ class RedGifsSearchIE(RedGifsBaseIE):
     IE_DESC = 'Redgifs search'
     _VALID_URL = r'https?://(?:www\.)?redgifs\.com/browse\?(?P<query>[^#]+)'
     _PAGE_SIZE = 80
-    _TESTS = [{'url': 'https://www.redgifs.com/browse?tags=Lesbian',
-               'info_dict': {'id': 'tags=Lesbian',
-                             'title': 'Lesbian',
-                             'description': 'RedGifs search for Lesbian, ordered by trending',
-                             },
-               'playlist_mincount': 100,
-               },
-              {'url': 'https://www.redgifs.com/browse?type=g&order=latest&tags=Lesbian',
-               'info_dict': {'id': 'type=g&order=latest&tags=Lesbian',
-                             'title': 'Lesbian',
-                             'description': 'RedGifs search for Lesbian, ordered by latest',
-                             },
-               'playlist_mincount': 100,
-               },
-              {'url': 'https://www.redgifs.com/browse?type=g&order=latest&tags=Lesbian&page=2',
-               'info_dict': {'id': 'type=g&order=latest&tags=Lesbian&page=2',
-                             'title': 'Lesbian',
-                             'description': 'RedGifs search for Lesbian, ordered by latest',
-                             },
-               'playlist_count': 80,
-               },
-              ]
+    _TESTS = [
+        {
+            'url': 'https://www.redgifs.com/browse?tags=Lesbian',
+            'info_dict': {
+                'id': 'tags=Lesbian',
+                'title': 'Lesbian',
+                'description': 'RedGifs search for Lesbian, ordered by trending',
+            },
+            'playlist_mincount': 100,
+        },
+        {
+            'url': 'https://www.redgifs.com/browse?type=g&order=latest&tags=Lesbian',
+            'info_dict': {
+                'id': 'type=g&order=latest&tags=Lesbian',
+                'title': 'Lesbian',
+                'description': 'RedGifs search for Lesbian, ordered by latest',
+            },
+            'playlist_mincount': 100,
+        },
+        {
+            'url': 'https://www.redgifs.com/browse?type=g&order=latest&tags=Lesbian&page=2',
+            'info_dict': {
+                'id': 'type=g&order=latest&tags=Lesbian&page=2',
+                'title': 'Lesbian',
+                'description': 'RedGifs search for Lesbian, ordered by latest',
+            },
+            'playlist_count': 80,
+        },
+    ]
 
     def _real_extract(self, url):
         query_str = self._match_valid_url(url).group('query')
@@ -234,50 +223,55 @@ class RedGifsSearchIE(RedGifsBaseIE):
         })
 
         return self.playlist_result(
-            entries,
-            query_str,
-            tags,
-            f'RedGifs search for {tags}, ordered by {order}')
+            entries, query_str, tags, f'RedGifs search for {tags}, ordered by {order}')
 
 
 class RedGifsUserIE(RedGifsBaseIE):
     IE_DESC = 'Redgifs user'
     _VALID_URL = r'https?://(?:www\.)?redgifs\.com/users/(?P<username>[^/?#]+)(?:\?(?P<query>[^#]+))?'
     _PAGE_SIZE = 80
-    _TESTS = [{'url': 'https://www.redgifs.com/users/lamsinka89',
-               'info_dict': {'id': 'lamsinka89',
-                             'title': 'lamsinka89',
-                             'description': 'RedGifs user lamsinka89, ordered by recent',
-                             },
-               'playlist_mincount': 391,
-               },
-              {'url': 'https://www.redgifs.com/users/lamsinka89?page=3',
-               'info_dict': {'id': 'lamsinka89?page=3',
-                             'title': 'lamsinka89',
-                             'description': 'RedGifs user lamsinka89, ordered by recent',
-                             },
-               'playlist_count': 80,
-               },
-              {'url': 'https://www.redgifs.com/users/lamsinka89?order=best&type=g',
-               'info_dict': {'id': 'lamsinka89?order=best&type=g',
-                             'title': 'lamsinka89',
-                             'description': 'RedGifs user lamsinka89, ordered by best',
-                             },
-               'playlist_mincount': 391,
-               },
-              {'url': 'https://www.redgifs.com/users/ignored52',
-               'note': 'https://github.com/yt-dlp/yt-dlp/issues/7382',
-               'info_dict': {'id': 'ignored52',
-                             'title': 'ignored52',
-                             'description': 'RedGifs user ignored52, ordered by recent',
-                             },
-               'playlist_mincount': 121,
-               },
-              ]
+    _TESTS = [
+        {
+            'url': 'https://www.redgifs.com/users/lamsinka89',
+            'info_dict': {
+                'id': 'lamsinka89',
+                'title': 'lamsinka89',
+                'description': 'RedGifs user lamsinka89, ordered by recent',
+            },
+            'playlist_mincount': 391,
+        },
+        {
+            'url': 'https://www.redgifs.com/users/lamsinka89?page=3',
+            'info_dict': {
+                'id': 'lamsinka89?page=3',
+                'title': 'lamsinka89',
+                'description': 'RedGifs user lamsinka89, ordered by recent',
+            },
+            'playlist_count': 80,
+        },
+        {
+            'url': 'https://www.redgifs.com/users/lamsinka89?order=best&type=g',
+            'info_dict': {
+                'id': 'lamsinka89?order=best&type=g',
+                'title': 'lamsinka89',
+                'description': 'RedGifs user lamsinka89, ordered by best',
+            },
+            'playlist_mincount': 391,
+        },
+        {
+            'url': 'https://www.redgifs.com/users/ignored52',
+            'note': 'https://github.com/yt-dlp/yt-dlp/issues/7382',
+            'info_dict': {
+                'id': 'ignored52',
+                'title': 'ignored52',
+                'description': 'RedGifs user ignored52, ordered by recent',
+            },
+            'playlist_mincount': 121,
+        },
+    ]
 
     def _real_extract(self, url):
-        username, query_str = self._match_valid_url(
-            url).group('username', 'query')
+        username, query_str = self._match_valid_url(url).group('username', 'query')
         playlist_id = f'{username}?{query_str}' if query_str else username
 
         query = urllib.parse.parse_qs(query_str)
@@ -289,7 +283,4 @@ class RedGifsUserIE(RedGifsBaseIE):
         })
 
         return self.playlist_result(
-            entries,
-            playlist_id,
-            username,
-            f'RedGifs user {username}, ordered by {order}')
+            entries, playlist_id, username, f'RedGifs user {username}, ordered by {order}')

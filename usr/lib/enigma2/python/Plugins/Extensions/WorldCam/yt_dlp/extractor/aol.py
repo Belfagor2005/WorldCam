@@ -86,11 +86,7 @@ class AolIE(YahooIE):  # XXX: Do not subclass from concrete IE
             f'https://feedapi.b2c.on.aol.com/v1.0/app/videos/aolon/{video_id}/details',
             video_id)['response']
         if response['statusText'] != 'Ok':
-            raise ExtractorError(
-                '{} said: {}'.format(
-                    self.IE_NAME,
-                    response['statusText']),
-                expected=True)
+            raise ExtractorError('{} said: {}'.format(self.IE_NAME, response['statusText']), expected=True)
 
         video_data = response['data']
         formats = []

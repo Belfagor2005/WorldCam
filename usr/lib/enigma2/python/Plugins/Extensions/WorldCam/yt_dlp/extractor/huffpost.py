@@ -17,8 +17,7 @@ class HuffPostIE(InfoExtractor):
             HPLEmbedPlayer/\?segmentId=
         )
         (?P<id>[0-9a-f]+)'''
-    _EMBED_REGEX = [
-        r'<iframe[^>]+?src=(["\'])(?P<url>https?://embed\.live\.huffingtonpost\.com/.+?)\1']
+    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>https?://embed\.live\.huffingtonpost\.com/.+?)\1']
 
     _TEST = {
         'url': 'http://live.huffingtonpost.com/r/segment/legalese-it/52dd3e4b02a7602131000677',
@@ -46,8 +45,8 @@ class HuffPostIE(InfoExtractor):
 
         video_title = data['title']
         duration = parse_duration(data.get('running_time'))
-        upload_date = unified_strdate(data.get('schedule', {}).get(
-            'starts_at') or data.get('segment_start_date_time'))
+        upload_date = unified_strdate(
+            data.get('schedule', {}).get('starts_at') or data.get('segment_start_date_time'))
         description = data.get('description')
 
         thumbnails = []
@@ -62,20 +61,15 @@ class HuffPostIE(InfoExtractor):
 
         formats = []
         sources = data.get('sources', {})
-        live_sources = list(sources.get('live', {}).items()) + \
-            list(sources.get('live_again', {}).items())
+        live_sources = list(sources.get('live', {}).items()) + list(sources.get('live_again', {}).items())
         for key, url in live_sources:
             ext = determine_ext(url)
             if ext == 'm3u8':
                 formats.extend(self._extract_m3u8_formats(
                     url, video_id, ext='mp4', m3u8_id='hls', fatal=False))
             elif ext == 'f4m':
-                formats.extend(
-                    self._extract_f4m_formats(
-                        url + '?hdcore=2.9.5',
-                        video_id,
-                        f4m_id='hds',
-                        fatal=False))
+                formats.extend(self._extract_f4m_formats(
+                    url + '?hdcore=2.9.5', video_id, f4m_id='hds', fatal=False))
             else:
                 formats.append({
                     'format': key,

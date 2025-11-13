@@ -11,8 +11,7 @@ class YapFilesIE(InfoExtractor):
     _WORKING = False
     _YAPFILES_URL = r'//(?:(?:www|api)\.)?yapfiles\.ru/get_player/*\?.*?\bv=(?P<id>\w+)'
     _VALID_URL = rf'https?:{_YAPFILES_URL}'
-    _EMBED_REGEX = [
-        rf'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?{_YAPFILES_URL}.*?)\1']
+    _EMBED_REGEX = [rf'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?{_YAPFILES_URL}.*?)\1']
     _TESTS = [{
         # with hd
         'url': 'http://www.yapfiles.ru/get_player/?v=vMDE1NjcyNDUt0413',
@@ -28,6 +27,15 @@ class YapFilesIE(InfoExtractor):
         # without hd
         'url': 'https://api.yapfiles.ru/get_player/?uid=video_player_1872528&plroll=1&adv=1&v=vMDE4NzI1Mjgt690b',
         'only_matching': True,
+    }]
+    _WEBPAGE_TESTS = [{
+        # FIXME: Update _VALID_URL
+        'url': 'https://www.yapfiles.ru/show/3397030/e34b69aa03829d513d7dc3ace6ec9631.mp4.html',
+        'info_dict': {
+            'id': 'vMDE4NzI1Mjgt690b',
+            'ext': 'mp4',
+            'title': 'Котята',
+        },
     }]
 
     def _real_extract(self, url):

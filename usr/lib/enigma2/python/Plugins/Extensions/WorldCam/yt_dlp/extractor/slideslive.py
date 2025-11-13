@@ -248,35 +248,17 @@ class SlidesLiveIE(InfoExtractor):
             'skip_download': 'm3u8',
         },
     }, {
-        # /v3/ slides, .jpg and .png, service_name = youtube
+        # /v3/ slides, .jpg and .png, formerly service_name = youtube, now native
         'url': 'https://slideslive.com/embed/38932460/',
         'info_dict': {
-            'id': 'RTPdrgkyTiE',
-            'display_id': '38932460',
+            'id': '38932460',
             'ext': 'mp4',
             'title': 'Active Learning for Hierarchical Multi-Label Classification',
-            'description': 'Watch full version of this video at https://slideslive.com/38932460.',
-            'channel': 'SlidesLive Videos - A',
-            'channel_id': 'UC62SdArr41t_-_fX40QCLRw',
-            'channel_url': 'https://www.youtube.com/channel/UC62SdArr41t_-_fX40QCLRw',
-            'uploader': 'SlidesLive Videos - A',
-            'uploader_id': '@slideslivevideos-a6075',
-            'uploader_url': 'https://www.youtube.com/@slideslivevideos-a6075',
-            'upload_date': '20200903',
-            'timestamp': 1697805922,
-            'duration': 942,
-            'age_limit': 0,
-            'live_status': 'not_live',
-            'playable_in_embed': True,
-            'availability': 'unlisted',
-            'categories': ['People & Blogs'],
-            'tags': [],
-            'channel_follower_count': int,
-            'like_count': int,
-            'view_count': int,
-            'thumbnail': r're:^https?://.*\.(?:jpg|png|webp)',
-            'thumbnails': 'count:21',
+            'duration': 941,
+            'thumbnail': r're:https?://.+/.+\.(?:jpg|png)',
             'chapters': 'count:20',
+            'timestamp': 1708338974,
+            'upload_date': '20240219',
         },
         'params': {
             'skip_download': 'm3u8',
@@ -334,9 +316,7 @@ class SlidesLiveIE(InfoExtractor):
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
         # Reference: https://slideslive.com/embed_presentation.js
-        for embed_id in re.findall(
-            r'(?s)new\s+SlidesLiveEmbed\s*\([^)]+\bpresentationId:\s*["\'](\d+)["\']',
-                webpage):
+        for embed_id in re.findall(r'(?s)new\s+SlidesLiveEmbed\s*\([^)]+\bpresentationId:\s*["\'](\d+)["\']', webpage):
             url_parsed = urllib.parse.urlparse(url)
             origin = f'{url_parsed.scheme}://{url_parsed.netloc}'
             yield update_url_query(
@@ -381,17 +361,11 @@ class SlidesLiveIE(InfoExtractor):
         # Some values are stringified JSON arrays
         for key in ('video_servers', 'subtitles'):
             if key in m3u8_dict:
-                m3u8_dict[key] = self._parse_json(
-                    m3u8_dict[key], None, fatal=False) or []
+                m3u8_dict[key] = self._parse_json(m3u8_dict[key], None, fatal=False) or []
 
         return m3u8_dict
 
-    def _extract_formats_and_duration(
-            self,
-            cdn_hostname,
-            path,
-            video_id,
-            skip_duration=False):
+    def _extract_formats_and_duration(self, cdn_hostname, path, video_id, skip_duration=False):
         formats, duration = [], None
 
         hls_formats = self._extract_m3u8_formats(
@@ -404,10 +378,7 @@ class SlidesLiveIE(InfoExtractor):
             formats.extend(hls_formats)
 
         dash_formats = self._extract_mpd_formats(
-            f'https://{cdn_hostname}/{path}/master.mpd',
-            video_id,
-            mpd_id='dash',
-            fatal=False)
+            f'https://{cdn_hostname}/{path}/master.mpd', video_id, mpd_id='dash', fatal=False)
         if dash_formats:
             if not duration and not skip_duration:
                 duration = self._extract_mpd_vod_duration(
@@ -425,20 +396,18 @@ class SlidesLiveIE(InfoExtractor):
                 'Origin': ('embed_container_origin', -1)}))
         redirect_url = urlh.url
         if 'domain_not_allowed' in redirect_url:
-            domain = traverse_obj(
-                parse_qs(redirect_url), ('allowed_domains[]', ...), get_all=False)
+            domain = traverse_obj(parse_qs(redirect_url), ('allowed_domains[]', ...), get_all=False)
             if not domain:
                 raise ExtractorError(
-                    'This is an embed-only presentation. Try passing --referer',
-                    expected=True)
-            webpage, _ = self._download_embed_webpage_handle(
-                video_id, headers={
-                    'Referer': f'https://{domain}/', 'Origin': f'https://{domain}', })
+                    'This is an embed-only presentation. Try passing --referer', expected=True)
+            webpage, _ = self._download_embed_webpage_handle(video_id, headers={
+                'Referer': f'https://{domain}/',
+                'Origin': f'https://{domain}',
+            })
 
-        player_token = self._search_regex(
-            r'data-player-token="([^"]+)"', webpage, 'player token')
+        player_token = self._search_regex(r'data-player-token="([^"]+)"', webpage, 'player token')
         player_data = self._download_webpage(
-            f'https://ben.slideslive.com/player/{video_id}', video_id,
+            f'https://slideslive.com/player/{video_id}', video_id,
             note='Downloading player info', query={'player_token': player_token})
         player_info = self._extract_custom_m3u8_info(player_data)
 
@@ -458,36 +427,22 @@ class SlidesLiveIE(InfoExtractor):
             if slide_quality:
                 slide_ext_default = '.jpg'
                 slide_url_template = f'https://cdn.slideslive.com/data/presentations/%s/slides/{slide_quality}/%s%s'
-            for slide_id, slide in enumerate(traverse_obj(
-                    slides, ('slides', ...), expected_type=dict), 1):
-                slides_info.append(
-                    (slide_id, traverse_obj(
-                        slide, ('image', 'name')), traverse_obj(
-                        slide, ('image', 'extname'), default=slide_ext_default), int_or_none(
-                        slide.get('time'), scale=1000)))
+            for slide_id, slide in enumerate(traverse_obj(slides, ('slides', ...), expected_type=dict), 1):
+                slides_info.append((
+                    slide_id, traverse_obj(slide, ('image', 'name')),
+                    traverse_obj(slide, ('image', 'extname'), default=slide_ext_default),
+                    int_or_none(slide.get('time'), scale=1000)))
 
         if not slides and player_info.get('slides_xml_url'):
             slides = self._download_xml(
-                player_info['slides_xml_url'],
-                video_id,
-                fatal=False,
-                note='Downloading slides XML',
-                errnote='Failed to download slides info')
+                player_info['slides_xml_url'], video_id, fatal=False,
+                note='Downloading slides XML', errnote='Failed to download slides info')
             if isinstance(slides, xml.etree.ElementTree.Element):
                 slide_url_template = 'https://cdn.slideslive.com/data/presentations/%s/slides/big/%s%s'
                 for slide_id, slide in enumerate(slides.findall('./slide')):
-                    slides_info.append(
-                        (slide_id,
-                         xpath_text(
-                             slide,
-                             './slideName',
-                             'name'),
-                            '.jpg',
-                            int_or_none(
-                             xpath_text(
-                                 slide,
-                                 './timeSec',
-                                 'time'))))
+                    slides_info.append((
+                        slide_id, xpath_text(slide, './slideName', 'name'), '.jpg',
+                        int_or_none(xpath_text(slide, './timeSec', 'time'))))
 
         chapters, thumbnails = [], []
         if url_or_none(player_info.get('thumbnail')):
@@ -504,8 +459,7 @@ class SlidesLiveIE(InfoExtractor):
             })
 
         subtitles = {}
-        for sub in traverse_obj(
-                player_info, ('subtitles', ...), expected_type=dict):
+        for sub in traverse_obj(player_info, ('subtitles', ...), expected_type=dict):
             webvtt_url = url_or_none(sub.get('webvtt_url'))
             if not webvtt_url:
                 continue
@@ -516,12 +470,8 @@ class SlidesLiveIE(InfoExtractor):
 
         info = {
             'id': video_id,
-            'title': player_info.get('title') or self._html_search_meta(
-                'title',
-                webpage,
-                default=''),
-            'timestamp': unified_timestamp(
-                player_info.get('timestamp')),
+            'title': player_info.get('title') or self._html_search_meta('title', webpage, default=''),
+            'timestamp': unified_timestamp(player_info.get('timestamp')),
             'is_live': player_info.get('playlist_type') != 'vod',
             'thumbnails': thumbnails,
             'chapters': chapters,
@@ -557,18 +507,13 @@ class SlidesLiveIE(InfoExtractor):
             yield info
 
             service_data = self._download_json(
-                f'https://ben.slideslive.com/player/{video_id}/slides_video_service_data',
-                video_id,
-                fatal=False,
-                query={
+                f'https://slideslive.com/player/{video_id}/slides_video_service_data',
+                video_id, fatal=False, query={
                     'player_token': player_token,
                     'videos': ','.join(video_slides),
-                },
-                note='Downloading video slides info',
-                errnote='Failed to download video slides info') or {}
+                }, note='Downloading video slides info', errnote='Failed to download video slides info') or {}
 
-            for slide_id, slide in enumerate(
-                    traverse_obj(slides, ('slides', ...)), 1):
+            for slide_id, slide in enumerate(traverse_obj(slides, ('slides', ...)), 1):
                 if traverse_obj(slide, ('video', 'service')) != 'yoda':
                     continue
                 video_path = traverse_obj(slide, ('video', 'id'))
@@ -588,5 +533,4 @@ class SlidesLiveIE(InfoExtractor):
                     'formats': formats,
                 }
 
-        return self.playlist_result(
-            entries(), f'{video_id}-playlist', info['title'])
+        return self.playlist_result(entries(), f'{video_id}-playlist', info['title'])

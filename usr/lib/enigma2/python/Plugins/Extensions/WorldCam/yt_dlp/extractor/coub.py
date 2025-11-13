@@ -48,10 +48,7 @@ class CoubIE(InfoExtractor):
 
         if coub.get('error'):
             raise ExtractorError(
-                '{} said: {}'.format(
-                    self.IE_NAME,
-                    coub['error']),
-                expected=True)
+                '{} said: {}'.format(self.IE_NAME, coub['error']), expected=True)
 
         title = coub['title']
 
@@ -109,19 +106,15 @@ class CoubIE(InfoExtractor):
 
         thumbnail = coub.get('picture')
         duration = float_or_none(coub.get('duration'))
-        timestamp = parse_iso8601(
-            coub.get('published_at') or coub.get('created_at'))
+        timestamp = parse_iso8601(coub.get('published_at') or coub.get('created_at'))
         uploader = coub.get('channel', {}).get('title')
         uploader_id = coub.get('channel', {}).get('permalink')
 
-        view_count = int_or_none(
-            coub.get('views_count') or coub.get('views_increase_count'))
+        view_count = int_or_none(coub.get('views_count') or coub.get('views_increase_count'))
         like_count = int_or_none(coub.get('likes_count'))
         repost_count = int_or_none(coub.get('recoubs_count'))
 
-        age_restricted = coub.get(
-            'age_restricted',
-            coub.get('age_restricted_by_admin'))
+        age_restricted = coub.get('age_restricted', coub.get('age_restricted_by_admin'))
         if age_restricted is not None:
             age_limit = 18 if age_restricted is True else 0
         else:

@@ -11,8 +11,7 @@ from ..utils import (
 )
 
 
-class AMPIE(
-        InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
+class AMPIE(InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
     # parse Akamai Adaptive Media Player feed
     def _extract_feed_info(self, url):
         feed = self._download_json(
@@ -20,18 +19,14 @@ class AMPIE(
             'Unable to download Akamai AMP feed', transform_source=strip_jsonp)
         item = feed.get('channel', {}).get('item')
         if not item:
-            raise ExtractorError(
-                '{} said: {}'.format(
-                    self.IE_NAME,
-                    feed['error']))
+            raise ExtractorError('{} said: {}'.format(self.IE_NAME, feed['error']))
 
         video_id = item['guid']
 
         def get_media_node(name, default=None):
             media_name = f'media-{name}'
             media_group = item.get('media-group') or item
-            return media_group.get(media_name) or item.get(
-                media_name) or item.get(name, default)
+            return media_group.get(media_name) or item.get(media_name) or item.get(name, default)
 
         thumbnails = []
         media_thumbnail = get_media_node('thumbnail')
@@ -92,10 +87,7 @@ class AMPIE(
                     'ext': ext,
                 })
 
-        timestamp = unified_timestamp(
-            item.get('pubDate'),
-            ' ') or parse_iso8601(
-            item.get('dc-date'))
+        timestamp = unified_timestamp(item.get('pubDate'), ' ') or parse_iso8601(item.get('dc-date'))
 
         return {
             'id': video_id,
@@ -103,10 +95,7 @@ class AMPIE(
             'description': get_media_node('description'),
             'thumbnails': thumbnails,
             'timestamp': timestamp,
-            'duration': int_or_none(
-                media_content[0].get(
-                    '@attributes',
-                    {}).get('duration')),
+            'duration': int_or_none(media_content[0].get('@attributes', {}).get('duration')),
             'subtitles': subtitles,
             'formats': formats,
         }

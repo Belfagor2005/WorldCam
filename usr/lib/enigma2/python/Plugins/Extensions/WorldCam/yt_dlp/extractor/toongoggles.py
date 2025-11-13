@@ -35,11 +35,7 @@ class ToonGogglesIE(InfoExtractor):
             'show_meta': 1,
             'version': 7.0,
         })
-        return self._download_json(
-            'http://api.toongoggles.com/' +
-            action,
-            page_id,
-            query=query)
+        return self._download_json('http://api.toongoggles.com/' + action, page_id, query=query)
 
     def _parse_episode_data(self, episode_data):
         title = episode_data['episode_name']
@@ -77,5 +73,4 @@ class ToonGogglesIE(InfoExtractor):
             entries = []
             for episode_data in show_data.get('objects', []):
                 entries.append(self._parse_episode_data(episode_data))
-            return self.playlist_result(
-                entries, show_id, show_data.get('show_name'))
+            return self.playlist_result(entries, show_id, show_data.get('show_name'))

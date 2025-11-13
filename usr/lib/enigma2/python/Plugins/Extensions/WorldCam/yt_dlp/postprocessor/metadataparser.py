@@ -64,16 +64,14 @@ class MetadataParserPP(PostProcessor):
     def interpretter(self, inp, out):
         def f(info):
             data_to_parse = self._downloader.evaluate_outtmpl(template, info)
-            self.write_debug(
-                f'Searching for {out_re.pattern!r} in {template!r}')
+            self.write_debug(f'Searching for {out_re.pattern!r} in {template!r}')
             match = out_re.search(data_to_parse)
             if match is None:
                 self.to_screen(f'Could not interpret {inp!r} as {out!r}')
                 return
             for attribute, value in filter_dict(match.groupdict()).items():
                 info[attribute] = value
-                self.to_screen(
-                    f'Parsed {attribute} from {template!r}: {value!r}')
+                self.to_screen(f'Parsed {attribute} from {template!r}: {value!r}')
 
         template = self.field_to_template(inp)
         out_re = re.compile(self.format_to_regex(out))
@@ -87,12 +85,9 @@ class MetadataParserPP(PostProcessor):
                 self.to_screen(f'Video does not have a {field}')
                 return
             elif not isinstance(val, str):
-                self.report_warning(
-                    f'Cannot replace in field {field} since it is a {
-                        type(val).__name__}')
+                self.report_warning(f'Cannot replace in field {field} since it is a {type(val).__name__}')
                 return
-            self.write_debug(
-                f'Replacing all {search!r} in {field} with {replace!r}')
+            self.write_debug(f'Replacing all {search!r} in {field} with {replace!r}')
             info[field], n = search_re.subn(replace, val)
             if n:
                 self.to_screen(f'Changed {field} to: {info[field]}')
@@ -124,9 +119,7 @@ class MetadataFromFieldPP(MetadataParserPP):
 # Deprecated
 class MetadataFromTitlePP(MetadataParserPP):
     def __init__(self, downloader, titleformat):
-        super().__init__(
-            downloader, [
-                (self.Actions.INTERPRET, 'title', titleformat)])
+        super().__init__(downloader, [(self.Actions.INTERPRET, 'title', titleformat)])
         self.deprecation_warning(
             'yt_dlp.postprocessor.MetadataFromTitlePP is deprecated '
             'and may be removed in a future version. Use yt_dlp.postprocessor.MetadataFromFieldPP instead')

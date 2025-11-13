@@ -35,14 +35,9 @@ class Mx3BaseIE(InfoExtractor):
     def _extract_formats(self, track_id):
         formats = []
         for fmt in self._FORMATS:
-            format_url = f'https://{
-                self._DOMAIN}/tracks/{track_id}/{
-                fmt["url"]}'
+            format_url = f'https://{self._DOMAIN}/tracks/{track_id}/{fmt["url"]}'
             urlh = self._request_webpage(
-                HEADRequest(format_url),
-                track_id,
-                fatal=False,
-                expected_status=404,
+                HEADRequest(format_url), track_id, fatal=False, expected_status=404,
                 note=f'Checking for format {fmt["format_id"]}')
             if urlh and urlh.status == 200:
                 formats.append({
@@ -57,10 +52,7 @@ class Mx3BaseIE(InfoExtractor):
         track_id = self._match_id(url)
         webpage = self._download_webpage(url, track_id)
         more_info = get_element_by_class('single-more-info', webpage)
-        data = self._download_json(
-            f'https://{self._DOMAIN}/t/{track_id}.json',
-            track_id,
-            fatal=False)
+        data = self._download_json(f'https://{self._DOMAIN}/t/{track_id}.json', track_id, fatal=False)
 
         def get_info_field(name):
             return self._html_search_regex(

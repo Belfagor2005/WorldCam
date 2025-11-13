@@ -19,11 +19,8 @@ from ..utils import (
 class CBSBaseIE(ThePlatformFeedIE):  # XXX: Do not subclass from concrete IE
     def _parse_smil_subtitles(self, smil, namespace=None, subtitles_lang='en'):
         subtitles = {}
-        for k, ext in [('sMPTE-TTCCURL', 'tt'), ('ClosedCaptionURL',
-                                                 'ttml'), ('webVTTCaptionURL', 'vtt')]:
-            cc_e = find_xpath_attr(
-                smil, self._xpath_ns(
-                    './/param', namespace), 'name', k)
+        for k, ext in [('sMPTE-TTCCURL', 'tt'), ('ClosedCaptionURL', 'ttml'), ('webVTTCaptionURL', 'vtt')]:
+            cc_e = find_xpath_attr(smil, self._xpath_ns('.//param', namespace), 'name', k)
             if cc_e is not None:
                 cc_url = cc_e.get('value')
                 if cc_url:
@@ -33,12 +30,7 @@ class CBSBaseIE(ThePlatformFeedIE):  # XXX: Do not subclass from concrete IE
                     })
         return subtitles
 
-    def _extract_common_video_info(
-            self,
-            content_id,
-            asset_types,
-            mpx_acc,
-            extra_info):
+    def _extract_common_video_info(self, content_id, asset_types, mpx_acc, extra_info):
         tp_path = f'dJ5BDC/media/guid/{mpx_acc}/{content_id}'
         tp_release_url = f'https://link.theplatform.com/s/{tp_path}'
         info = self._extract_theplatform_metadata(tp_path, content_id)
@@ -77,8 +69,7 @@ class CBSBaseIE(ThePlatformFeedIE):  # XXX: Do not subclass from concrete IE
 
     def _extract_video_info(self, *args, **kwargs):
         # Extract assets + metadata and call _extract_common_video_info
-        raise NotImplementedError(
-            'This method must be implemented by subclasses')
+        raise NotImplementedError('This method must be implemented by subclasses')
 
     def _real_extract(self, url):
         return self._extract_video_info(self._match_id(url))
@@ -142,13 +133,7 @@ class CBSIE(CBSBaseIE):
             'https://can.cbs.com/thunder/player/videoPlayerService.php',
             content_id, query={'partner': site, 'contentId': content_id})
         video_data = xpath_element(items_data, './/item')
-        title = xpath_text(
-            video_data,
-            'videoTitle',
-            'title') or xpath_text(
-            video_data,
-            'videotitle',
-            'title')
+        title = xpath_text(video_data, 'videoTitle', 'title') or xpath_text(video_data, 'videotitle', 'title')
 
         asset_types = {}
         has_drm = False
@@ -159,8 +144,7 @@ class CBSIE(CBSBaseIE):
                 'assetTypes': asset_type,
             }
             if not asset_type:
-                # fallback for content_ids that videoPlayerService doesn't
-                # return anything for
+                # fallback for content_ids that videoPlayerService doesn't return anything for
                 asset_type = 'fallback'
                 query['formats'] = 'M3U+none,MPEG4,M3U+appleHlsEncryption,MP3'
                 del query['assetTypes']
@@ -284,13 +268,9 @@ class ParamountPressExpressIE(InfoExtractor):
         webpage = self._download_webpage(url, display_id)
         video_id = self._search_regex(
             r'\bvideo_id\s*=\s*["\'](\d+)["\']\s*,', webpage, 'Brightcove ID')
-        token = self._search_regex(
-            r'\btoken\s*=\s*["\']([\w.-]+)["\']', webpage, 'token')
+        token = self._search_regex(r'\btoken\s*=\s*["\']([\w.-]+)["\']', webpage, 'token')
 
-        player = extract_attributes(
-            get_element_html_by_id(
-                'vcbrightcoveplayer',
-                webpage) or '')
+        player = extract_attributes(get_element_html_by_id('vcbrightcoveplayer', webpage) or '')
         account_id = player.get('data-account') or '6055873637001'
         player_id = player.get('data-player') or 'OtLKgXlO9F'
         embed = player.get('data-embed') or 'default'

@@ -25,20 +25,14 @@ class DFBIE(InfoExtractor):
             f'http://tv.dfb.de/server/hd_video.php?play={video_id}',
             display_id)
         video_info = player_info.find('video')
-        stream_access_url = self._proto_relative_url(
-            video_info.find('url').text.strip())
+        stream_access_url = self._proto_relative_url(video_info.find('url').text.strip())
 
         formats = []
-        # see http://tv.dfb.de/player/js/ajax.js for the method to extract m3u8
-        # formats
-        for sa_url in (
-                stream_access_url,
-                stream_access_url +
-                '&area=&format=iphone'):
+        # see http://tv.dfb.de/player/js/ajax.js for the method to extract m3u8 formats
+        for sa_url in (stream_access_url, stream_access_url + '&area=&format=iphone'):
             stream_access_info = self._download_xml(sa_url, display_id)
             token_el = stream_access_info.find('token')
-            manifest_url = token_el.attrib['url'] + \
-                '?' + 'hdnea=' + token_el.attrib['auth']
+            manifest_url = token_el.attrib['url'] + '?' + 'hdnea=' + token_el.attrib['auth']
             if '.f4m' in manifest_url:
                 formats.extend(self._extract_f4m_formats(
                     manifest_url + '&hdcore=3.2.0',

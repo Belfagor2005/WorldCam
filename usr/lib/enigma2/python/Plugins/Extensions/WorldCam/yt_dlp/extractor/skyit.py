@@ -46,17 +46,10 @@ class SkyItBaseIE(InfoExtractor):
             'id': video_id,
             'title': video.get('title'),
             'formats': formats,
-            'thumbnail': dict_get(
-                video,
-                ('video_still',
-                 'video_still_medium',
-                 'thumb')),
+            'thumbnail': dict_get(video, ('video_still', 'video_still_medium', 'thumb')),
             'description': video.get('short_desc') or None,
-            'timestamp': unified_timestamp(
-                video.get('create_date')),
-            'duration': int_or_none(
-                video.get('duration_sec')) or parse_duration(
-                    video.get('duration')),
+            'timestamp': unified_timestamp(video.get('create_date')),
+            'duration': int_or_none(video.get('duration_sec')) or parse_duration(video.get('duration')),
             'is_live': is_live,
         }
 
@@ -130,8 +123,7 @@ class SkyItVideoLiveIE(SkyItBaseIE):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        asset_id = str(self._search_nextjs_data(webpage, display_id)[
-                       'props']['initialState']['livePage']['content']['asset_id'])
+        asset_id = str(self._search_nextjs_data(webpage, display_id)['props']['initialState']['livePage']['content']['asset_id'])
         livestream = self._download_json(
             'https://apid.sky.it/vdp/v1/getLivestream',
             asset_id, query={'id': asset_id})
@@ -221,7 +213,7 @@ class CieloTVItIE(SkyItIE):  # XXX: Do not subclass from concrete IE
 
 class TV8ItIE(SkyItVideoIE):  # XXX: Do not subclass from concrete IE
     IE_NAME = 'tv8.it'
-    _VALID_URL = r'https?://(?:www\.)?tv8\.it/(?:show)?video/[0-9a-z-]+-(?P<id>\d+)'
+    _VALID_URL = r'https?://(?:www\.)?tv8\.it/(?:show)?video/(?:[0-9a-z-]+-)?(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://www.tv8.it/video/ogni-mattina-ucciso-asino-di-andrea-lo-cicero-630529',
         'md5': '9ab906a3f75ea342ed928442f9dabd21',
@@ -235,6 +227,19 @@ class TV8ItIE(SkyItVideoIE):  # XXX: Do not subclass from concrete IE
             'thumbnail': 'https://videoplatform.sky.it/still/2020/11/18/1605717753954_ogni-mattina-ucciso-asino-di-andrea-lo-cicero_videostill_1.jpg',
         },
         'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://www.tv8.it/video/964361',
+        'md5': '1e58e807154658a16edc29e45be38107',
+        'info_dict': {
+            'id': '964361',
+            'ext': 'mp4',
+            'title': 'GialappaShow - S.4 Ep.2',
+            'description': 'md5:60bb4ff5af18bbeeaedabc1de5f9e1e2',
+            'duration': 8030,
+            'thumbnail': 'https://videoplatform.sky.it/captures/494/2024/11/06/964361/964361_1730888412914_thumb_494.jpg',
+            'timestamp': 1730821499,
+            'upload_date': '20241105',
+        },
     }]
     _DOMAIN = 'mtv8'
 
@@ -260,8 +265,7 @@ class TV8ItLiveIE(SkyItBaseIE):
         livestream = self._download_json(
             'https://apid.sky.it/vdp/v1/getLivestream', video_id,
             'Downloading manifest JSON', query={'id': '7'})
-        metadata = self._download_json(
-            'https://tv8.it/api/getStreaming', video_id, fatal=False)
+        metadata = self._download_json('https://tv8.it/api/getStreaming', video_id, fatal=False)
 
         return {
             **self._parse_video(livestream, video_id),
@@ -299,8 +303,7 @@ class TV8ItPlaylistIE(InfoExtractor):
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
         webpage = self._download_webpage(url, playlist_id)
-        data = self._search_nextjs_data(webpage, playlist_id)[
-            'props']['pageProps']['data']
+        data = self._search_nextjs_data(webpage, playlist_id)['props']['pageProps']['data']
         entries = [self.url_result(
             urljoin('https://tv8.it', card['href']), ie=TV8ItIE,
             **traverse_obj(card, {
@@ -311,10 +314,8 @@ class TV8ItPlaylistIE(InfoExtractor):
             }))
             for card in traverse_obj(data, ('lastContent', 'cards', lambda _, v: v['href']))]
 
-        return self.playlist_result(
-            entries, playlist_id, **traverse_obj(
-                data, ('card', 'desktop', {
-                    'description': (
-                        'description', 'html', {clean_html}), 'thumbnail': (
-                        'image', 'src', {url_or_none}), 'title': (
-                        'title', 'text', {str}), })))
+        return self.playlist_result(entries, playlist_id, **traverse_obj(data, ('card', 'desktop', {
+            'description': ('description', 'html', {clean_html}),
+            'thumbnail': ('image', 'src', {url_or_none}),
+            'title': ('title', 'text', {str}),
+        })))

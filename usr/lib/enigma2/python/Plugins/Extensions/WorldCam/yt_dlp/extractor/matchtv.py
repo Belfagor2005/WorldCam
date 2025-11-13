@@ -24,21 +24,12 @@ class MatchTVIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = 'matchtv-live'
-        webpage = self._download_webpage(
-            'https://video.matchtv.ru/iframe/channel/106', video_id)
+        webpage = self._download_webpage('https://video.matchtv.ru/iframe/channel/106', video_id)
         video_url = self._html_search_regex(
-            r'data-config="config=(https?://[^?"]+)[?"]',
-            webpage,
-            'video URL').replace(
-            '/feed/',
-            '/media/') + '.m3u8'
+            r'data-config="config=(https?://[^?"]+)[?"]', webpage, 'video URL').replace('/feed/', '/media/') + '.m3u8'
         return {
             'id': video_id,
             'title': 'Матч ТВ - Прямой эфир',
             'is_live': True,
-            'formats': self._extract_m3u8_formats(
-                video_url,
-                video_id,
-                'mp4',
-                live=True),
+            'formats': self._extract_m3u8_formats(video_url, video_id, 'mp4', live=True),
         }

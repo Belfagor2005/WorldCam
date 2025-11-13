@@ -87,19 +87,12 @@ class PiaproIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        category_id = self._search_regex(
-            r'categoryId=(.+)">', webpage, 'category ID')
+        category_id = self._search_regex(r'categoryId=(.+)">', webpage, 'category ID')
         if category_id not in ('1', '2', '21', '22', '23', '24', '25'):
-            raise ExtractorError(
-                'The URL does not contain audio.',
-                expected=True)
+            raise ExtractorError('The URL does not contain audio.', expected=True)
 
         def extract_info(name, description):
-            return self._search_regex(
-                rf'{name}[：:]\s*([\d\s,:/]+)\s*</p>',
-                webpage,
-                description,
-                default=None)
+            return self._search_regex(rf'{name}[：:]\s*([\d\s,:/]+)\s*</p>', webpage, description, default=None)
 
         return {
             'id': video_id,

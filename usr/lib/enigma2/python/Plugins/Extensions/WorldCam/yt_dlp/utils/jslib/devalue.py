@@ -32,10 +32,8 @@ _ARRAY_TYPE_LOOKUP = {
 }
 
 
-def parse_iter(parsed: typing.Any, /, *,
-               revivers: dict[str, collections.abc.Callable[[list], typing.Any]] | None = None):
-    # based on
-    # https://github.com/Rich-Harris/devalue/blob/f3fd2aa93d79f21746555671f955a897335edb1b/src/parse.js
+def parse_iter(parsed: typing.Any, /, *, revivers: dict[str, collections.abc.Callable[[list], typing.Any]] | None = None):
+    # based on https://github.com/Rich-Harris/devalue/blob/f3fd2aa93d79f21746555671f955a897335edb1b/src/parse.js
     resolved = {
         -1: None,
         -2: None,
@@ -94,15 +92,13 @@ def parse_iter(parsed: typing.Any, /, *,
                         yield IndexError(f'{value[0]!r} cannot point to itself (index: {source})')
                         continue
                     # inverse order: resolve index, revive value
-                    stack.append(
-                        (target, index, (value[0], value[1], reviver)))
+                    stack.append((target, index, (value[0], value[1], reviver)))
                     stack.append((target, index, value[1]))
                     continue
 
                 elif value[0] == 'Date':
                     try:
-                        result = dt.datetime.fromtimestamp(
-                            parse_iso8601(value[1]), tz=dt.timezone.utc)
+                        result = dt.datetime.fromtimestamp(parse_iso8601(value[1]), tz=dt.timezone.utc)
                     except Exception:
                         yield ValueError(f'invalid date: {value[1]!r}')
                         result = None
@@ -114,7 +110,7 @@ def parse_iter(parsed: typing.Any, /, *,
 
                 elif value[0] == 'Map':
                     result = []
-                    for key, new_source in zip(*(iter(value[1:]),) * 2):
+                    for key, new_source in zip(*(iter(value[1:]),) * 2, strict=True):
                         pair = [None, None]
                         stack.append((pair, 0, key))
                         stack.append((pair, 1, new_source))
@@ -133,7 +129,7 @@ def parse_iter(parsed: typing.Any, /, *,
 
                 elif value[0] == 'null':
                     result = {}
-                    for key, new_source in zip(*(iter(value[1:]),) * 2):
+                    for key, new_source in zip(*(iter(value[1:]),) * 2, strict=True):
                         stack.append((result, key, new_source))
 
                 elif value[0] in _ARRAY_TYPE_LOOKUP:
@@ -162,8 +158,7 @@ def parse_iter(parsed: typing.Any, /, *,
     return return_value[0]
 
 
-def parse(parsed: typing.Any, /, *,
-          revivers: dict[str, collections.abc.Callable[[typing.Any], typing.Any]] | None = None):
+def parse(parsed: typing.Any, /, *, revivers: dict[str, collections.abc.Callable[[typing.Any], typing.Any]] | None = None):
     generator = parse_iter(parsed, revivers=revivers)
     while True:
         try:

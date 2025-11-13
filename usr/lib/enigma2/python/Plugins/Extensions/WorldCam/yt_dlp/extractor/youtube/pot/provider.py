@@ -58,13 +58,13 @@ class PoTokenRequest:
     visitor_data: str | None = None
     data_sync_id: str | None = None
     video_id: str | None = None
+    # Internal, YouTube experiment on whether to bind GVS PO Token to video_id.
+    _gvs_bind_to_video_id: bool = False
 
     # Networking parameters
-    request_cookiejar: YoutubeDLCookieJar = dataclasses.field(
-        default_factory=YoutubeDLCookieJar)
+    request_cookiejar: YoutubeDLCookieJar = dataclasses.field(default_factory=YoutubeDLCookieJar)
     request_proxy: str | None = None
-    request_headers: HTTPHeaderDict = dataclasses.field(
-        default_factory=HTTPHeaderDict)
+    request_headers: HTTPHeaderDict = dataclasses.field(default_factory=HTTPHeaderDict)
     request_timeout: float | None = None
     request_source_address: str | None = None
     request_verify_tls: bool = True
@@ -121,15 +121,12 @@ class PoTokenProvider(IEContentProvider, abc.ABC, suffix='PTP'):
     # If making external requests to websites (i.e. to youtube.com)
     #  using another library or service (i.e., not _request_webpage),
     #  add the request features that are supported.
-    # If only using _request_webpage to make external requests, set this to
-    # None.
-    _SUPPORTED_EXTERNAL_REQUEST_FEATURES: tuple[ExternalRequestFeature] | None = (
-    )
+    # If only using _request_webpage to make external requests, set this to None.
+    _SUPPORTED_EXTERNAL_REQUEST_FEATURES: tuple[ExternalRequestFeature] | None = ()
 
     def __validate_request(self, request: PoTokenRequest):
         if not self.is_available():
-            raise PoTokenProviderRejectedRequest(
-                f'{self.PROVIDER_NAME} is not available')
+            raise PoTokenProviderRejectedRequest(f'{self.PROVIDER_NAME} is not available')
 
         # Validate request using built-in settings
         if (
@@ -137,19 +134,15 @@ class PoTokenProvider(IEContentProvider, abc.ABC, suffix='PTP'):
             and request.context not in self._SUPPORTED_CONTEXTS
         ):
             raise PoTokenProviderRejectedRequest(
-                f'PO Token Context "{
-                    request.context}" is not supported by {
-                    self.PROVIDER_NAME}')
+                f'PO Token Context "{request.context}" is not supported by {self.PROVIDER_NAME}')
 
         if self._SUPPORTED_CLIENTS is not None:
             client_name = traverse_obj(
                 request.innertube_context, ('client', 'clientName'))
             if client_name not in self._SUPPORTED_CLIENTS:
                 raise PoTokenProviderRejectedRequest(
-                    f'Client "{client_name}" is not supported by {
-                        self.PROVIDER_NAME}. ' f'Supported clients: {
-                        ", ".join(
-                            self._SUPPORTED_CLIENTS) or "none"}')
+                    f'Client "{client_name}" is not supported by {self.PROVIDER_NAME}. '
+                    f'Supported clients: {", ".join(self._SUPPORTED_CLIENTS) or "none"}')
 
         self.__validate_external_request_features(request)
 
@@ -207,12 +200,7 @@ class PoTokenProvider(IEContentProvider, abc.ABC, suffix='PTP'):
 
     # Helper functions
 
-    def _request_webpage(
-            self,
-            request: Request,
-            pot_request: PoTokenRequest | None = None,
-            note=None,
-            **kwargs) -> Response:
+    def _request_webpage(self, request: Request, pot_request: PoTokenRequest | None = None, note=None, **kwargs) -> Response:
         """Make a request using the internal HTTP Client.
         Use this instead of calling requests, urllib3 or other HTTP client libraries directly!
 
@@ -232,14 +220,11 @@ class PoTokenProvider(IEContentProvider, abc.ABC, suffix='PTP'):
         # Most of these will already be used by the configured ydl instance,
         # however, the YouTube extractor may override some.
         if pot_request is not None:
-            req.headers = HTTPHeaderDict(
-                pot_request.request_headers, req.headers)
-            req.proxies = req.proxies or (
-                {'all': pot_request.request_proxy} if pot_request.request_proxy else {})
+            req.headers = HTTPHeaderDict(pot_request.request_headers, req.headers)
+            req.proxies = req.proxies or ({'all': pot_request.request_proxy} if pot_request.request_proxy else {})
 
             if pot_request.request_cookiejar is not None:
-                req.extensions['cookiejar'] = req.extensions.get(
-                    'cookiejar', pot_request.request_cookiejar)
+                req.extensions['cookiejar'] = req.extensions.get('cookiejar', pot_request.request_cookiejar)
 
         if note is not False:
             self.logger.info(str(note) if note else 'Requesting webpage')
@@ -265,8 +250,7 @@ def provider_bug_report_message(provider: IEContentProvider, before=';'):
     return f'{before} {msg}' if before else msg
 
 
-def register_preference(
-        *providers: type[PoTokenProvider]) -> typing.Callable[[Preference], Preference]:
+def register_preference(*providers: type[PoTokenProvider]) -> typing.Callable[[Preference], Preference]:
     """Register a preference for a PoTokenProvider"""
     return register_preference_generic(
         PoTokenProvider,

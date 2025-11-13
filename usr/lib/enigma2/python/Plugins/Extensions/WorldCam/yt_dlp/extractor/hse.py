@@ -17,16 +17,12 @@ class HSEShowBaseIE(InfoExtractor):
 
     def _extract_formats_and_subtitles(self, sources, video_id):
         if not sources:
-            raise ExtractorError(
-                'No video found',
-                expected=True,
-                video_id=video_id)
+            raise ExtractorError('No video found', expected=True, video_id=video_id)
         formats, subtitles = [], {}
         for src in sources:
             if src['mimetype'] != 'application/x-mpegURL':
                 continue
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                src['url'], video_id, ext='mp4')
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(src['url'], video_id, ext='mp4')
             formats.extend(fmts)
             subtitles = self._merge_subtitles(subtitles, subs)
         return formats, subtitles
@@ -60,15 +56,9 @@ class HSEShowIE(HSEShowBaseIE):
             'title': show.get('title') or video_id,
             'formats': formats,
             'timestamp': unified_timestamp(f'{show.get("date")} {show.get("hour")}:00'),
-            'thumbnail': traverse_obj(
-                json_data,
-                ('tvShowVideo',
-                 'poster')),
+            'thumbnail': traverse_obj(json_data, ('tvShowVideo', 'poster')),
             'channel': self._search_regex(
-                r'tvShow \| ([A-Z0-9]+)_',
-                show.get('actionFieldText') or '',
-                video_id,
-                fatal=False),
+                r'tvShow \| ([A-Z0-9]+)_', show.get('actionFieldText') or '', video_id, fatal=False),
             'uploader': show.get('presenter'),
             'subtitles': subtitles,
         }
@@ -90,30 +80,14 @@ class HSEProductIE(HSEShowBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         json_data = self._extract_redux_data(url, video_id)
-        video = traverse_obj(
-            json_data,
-            ('productContent',
-             'productContent',
-             'videos',
-             0)) or {}
-        formats, subtitles = self._extract_formats_and_subtitles(
-            video.get('sources'), video_id)
+        video = traverse_obj(json_data, ('productContent', 'productContent', 'videos', 0)) or {}
+        formats, subtitles = self._extract_formats_and_subtitles(video.get('sources'), video_id)
 
         return {
             'id': video_id,
-            'title': traverse_obj(
-                json_data,
-                ('productDetail',
-                 'product',
-                 'name',
-                 'short')) or video_id,
+            'title': traverse_obj(json_data, ('productDetail', 'product', 'name', 'short')) or video_id,
             'formats': formats,
             'subtitles': subtitles,
             'thumbnail': video.get('poster'),
-            'uploader': traverse_obj(
-                json_data,
-                ('productDetail',
-                 'product',
-                 'brand',
-                 'brandName')),
+            'uploader': traverse_obj(json_data, ('productDetail', 'product', 'brand', 'brandName')),
         }

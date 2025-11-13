@@ -62,6 +62,20 @@ class ArcPublishingIE(InfoExtractor):
         'url': 'arcpublishing:tronc:460f2931-8130-4719-8ea1-ffcb2d7cb685',
         'only_matching': True,
     }]
+    _WEBPAGE_TESTS = [{
+        'url': 'https://www.uppermichiganssource.com/2025/07/18/scattered-showers-storms-bring-heavy-rain-potential/',
+        'info_dict': {
+            'id': '508116f7-e999-48db-b7c2-60a04842679b',
+            'ext': 'mp4',
+            'title': 'Scattered showers & storms bring heavy rain potential',
+            'description': 'Scattered showers & storms bring heavy rain potential',
+            'duration': 2016,
+            'thumbnail': r're:https?://.+\.jpg',
+            'timestamp': 1752881287,
+            'upload_date': '20250718',
+        },
+        'expected_warnings': ['Ignoring subtitle tracks found in the HLS manifest'],
+    }]
     _POWA_DEFAULTS = [
         (['cmg', 'prisa'], '%s-config-prod.api.cdn.arcpublishing.com/video'),
         ([
@@ -75,9 +89,7 @@ class ArcPublishingIE(InfoExtractor):
     def _extract_embed_urls(cls, url, webpage):
         entries = []
         # https://arcpublishing.atlassian.net/wiki/spaces/POWA/overview
-        for powa_el in re.findall(
-            rf'(<div[^>]+class="[^"]*\bpowa\b[^"]*"[^>]+data-uuid="{ArcPublishingIE._UUID_REGEX}"[^>]*>)',
-                webpage):
+        for powa_el in re.findall(rf'(<div[^>]+class="[^"]*\bpowa\b[^"]*"[^>]+data-uuid="{ArcPublishingIE._UUID_REGEX}"[^>]*>)', webpage):
             powa = extract_attributes(powa_el) or {}
             org = powa.get('data-org')
             uuid = powa.get('data-uuid')
@@ -132,8 +144,7 @@ class ArcPublishingIE(InfoExtractor):
                     if not height:
                         continue
                     vbr = self._search_regex(
-                        r'[_x]%d[_-](\d+)' %
-                        height, f['url'], 'vbr', default=None)
+                        r'[_x]%d[_-](\d+)' % height, f['url'], 'vbr', default=None)
                     if vbr:
                         f['vbr'] = int(vbr)
                 formats.extend(m3u8_formats)
@@ -150,11 +161,7 @@ class ArcPublishingIE(InfoExtractor):
                 })
 
         subtitles = {}
-        for subtitle in (
-            try_get(
-                video,
-                lambda x: x['subtitles']['urls'],
-                list) or []):
+        for subtitle in (try_get(video, lambda x: x['subtitles']['urls'], list) or []):
             subtitle_url = subtitle.get('url')
             if subtitle_url:
                 subtitles.setdefault('en', []).append({'url': subtitle_url})
@@ -162,18 +169,11 @@ class ArcPublishingIE(InfoExtractor):
         return {
             'id': uuid,
             'title': title,
-            'thumbnail': try_get(
-                video,
-                lambda x: x['promo_image']['url']),
-            'description': try_get(
-                video,
-                lambda x: x['subheadlines']['basic']),
+            'thumbnail': try_get(video, lambda x: x['promo_image']['url']),
+            'description': try_get(video, lambda x: x['subheadlines']['basic']),
             'formats': formats,
-            'duration': int_or_none(
-                video.get('duration'),
-                100),
-            'timestamp': parse_iso8601(
-                video.get('created_date')),
+            'duration': int_or_none(video.get('duration'), 100),
+            'timestamp': parse_iso8601(video.get('created_date')),
             'subtitles': subtitles,
             'is_live': is_live,
         }

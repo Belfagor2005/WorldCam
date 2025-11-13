@@ -39,8 +39,7 @@ class DrTalksIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        next_data = self._search_nextjs_data(
-            webpage, video_id)['props']['pageProps']['data']['video']
+        next_data = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['data']['video']
 
         return self.url_result(
             next_data['videos']['brightcoveVideoLink'], BrightcoveNewIE, video_id,

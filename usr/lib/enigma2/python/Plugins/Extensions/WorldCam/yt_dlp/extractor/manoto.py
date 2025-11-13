@@ -46,32 +46,20 @@ class ManotoTVIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        episode_json = self._download_json(
-            _API_URL.format(
-                'showmodule',
-                'episodedetails',
-                video_id),
-            video_id)
+        episode_json = self._download_json(_API_URL.format('showmodule', 'episodedetails', video_id), video_id)
         details = episode_json.get('details', {})
-        formats = self._extract_m3u8_formats(
-            details.get('videoM3u8Url'), video_id, 'mp4')
+        formats = self._extract_m3u8_formats(details.get('videoM3u8Url'), video_id, 'mp4')
         return {
             'id': video_id,
             'series': details.get('showTitle'),
-            'season_number': int_or_none(
-                details.get('analyticsSeasonNumber')),
-            'episode_number': int_or_none(
-                details.get('episodeNumber')),
+            'season_number': int_or_none(details.get('analyticsSeasonNumber')),
+            'episode_number': int_or_none(details.get('episodeNumber')),
             'episode_id': details.get('analyticsEpisodeTitle'),
-            'duration': int_or_none(
-                details.get('durationInMinutes'),
-                invscale=60),
+            'duration': int_or_none(details.get('durationInMinutes'), invscale=60),
             'view_count': details.get('viewCount'),
-            'categories': [
-                details.get('videoCategory')],
+            'categories': [details.get('videoCategory')],
             'title': details.get('episodeTitle'),
-            'description': clean_html(
-                details.get('episodeDescription')),
+            'description': clean_html(details.get('episodeDescription')),
             'thumbnail': details.get('episodelandscapeImgIxUrl'),
             'formats': formats,
         }
@@ -92,36 +80,21 @@ class ManotoTVShowIE(InfoExtractor):
 
     def _real_extract(self, url):
         show_id = self._match_id(url)
-        show_json = self._download_json(
-            _API_URL.format(
-                'showmodule',
-                'details',
-                show_id),
-            show_id)
+        show_json = self._download_json(_API_URL.format('showmodule', 'details', show_id), show_id)
         show_details = show_json.get('details', {})
         title = show_details.get('showTitle')
         description = show_details.get('showSynopsis')
 
-        series_json = self._download_json(_API_URL.format(
-            'showmodule', 'serieslist', show_id), show_id)
-        playlist_id = str(
-            traverse_obj(
-                series_json, ('details', 'list', 0, 'id')))
+        series_json = self._download_json(_API_URL.format('showmodule', 'serieslist', show_id), show_id)
+        playlist_id = str(traverse_obj(series_json, ('details', 'list', 0, 'id')))
 
-        playlist_json = self._download_json(
-            _API_URL.format(
-                'showmodule',
-                'episodelist',
-                playlist_id),
-            playlist_id)
+        playlist_json = self._download_json(_API_URL.format('showmodule', 'episodelist', playlist_id), playlist_id)
         playlist = traverse_obj(playlist_json, ('details', 'list')) or []
 
         entries = [
             self.url_result(
-                'https://www.manototv.com/episode/{}'.format(
-                    item['slideID']),
-                ie=ManotoTVIE.ie_key(),
-                video_id=item['slideID']) for item in playlist]
+                'https://www.manototv.com/episode/{}'.format(item['slideID']), ie=ManotoTVIE.ie_key(), video_id=item['slideID'])
+            for item in playlist]
         return self.playlist_result(entries, show_id, title, description)
 
 
@@ -143,16 +116,10 @@ class ManotoTVLiveIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = 'live'
-        json = self._download_json(
-            _API_URL.format(
-                'livemodule',
-                'details',
-                ''),
-            video_id)
+        json = self._download_json(_API_URL.format('livemodule', 'details', ''), video_id)
         details = json.get('details', {})
         video_url = details.get('liveUrl')
-        formats = self._extract_m3u8_formats(
-            video_url, video_id, 'mp4', live=True)
+        formats = self._extract_m3u8_formats(video_url, video_id, 'mp4', live=True)
         return {
             'id': video_id,
             'title': 'Manoto TV Live',

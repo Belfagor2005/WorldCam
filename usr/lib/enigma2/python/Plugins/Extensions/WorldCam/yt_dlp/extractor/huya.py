@@ -7,12 +7,13 @@ import urllib.parse
 from .common import InfoExtractor
 from ..utils import (
     ExtractorError,
+    clean_html,
     int_or_none,
     parse_duration,
     str_or_none,
     try_get,
     unescapeHTML,
-    unified_strdate,
+    update_url,
     update_url_query,
     url_or_none,
 )
@@ -22,8 +23,8 @@ from ..utils.traversal import traverse_obj
 class HuyaLiveIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.|m\.)?huya\.com/(?!(?:video/play/))(?P<id>[^/#?&]+)(?:\D|$)'
     IE_NAME = 'huya:live'
-    IE_DESC = 'huya.com'
-    TESTS = [{
+    IE_DESC = '虎牙直播'
+    _TESTS = [{
         'url': 'https://www.huya.com/572329',
         'info_dict': {
             'id': '572329',
@@ -59,21 +60,11 @@ class HuyaLiveIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id=video_id)
-        stream_data = self._search_json(
-            r'stream:\s',
-            webpage,
-            'stream',
-            video_id=video_id,
-            default=None)
-        room_info = try_get(
-            stream_data,
-            lambda x: x['data'][0]['gameLiveInfo'])
+        stream_data = self._search_json(r'stream:\s', webpage, 'stream', video_id=video_id, default=None)
+        room_info = try_get(stream_data, lambda x: x['data'][0]['gameLiveInfo'])
         if not room_info:
-            raise ExtractorError(
-                'Can not extract the room info',
-                expected=True)
-        title = room_info.get('roomName') or room_info.get(
-            'introduction') or self._html_extract_title(webpage)
+            raise ExtractorError('Can not extract the room info', expected=True)
+        title = room_info.get('roomName') or room_info.get('introduction') or self._html_extract_title(webpage)
         screen_type = room_info.get('screenType')
         live_source_type = room_info.get('liveSourceType')
         stream_info_list = stream_data['data'][0]['gameStreamInfoList']
@@ -86,10 +77,7 @@ class HuyaLiveIE(InfoExtractor):
                 continue
             stream_name = stream_info.get('sStreamName')
             re_secret = not screen_type and live_source_type in (0, 8, 13)
-            params = dict(
-                urllib.parse.parse_qsl(
-                    unescapeHTML(
-                        stream_info['sFlvAntiCode'])))
+            params = dict(urllib.parse.parse_qsl(unescapeHTML(stream_info['sFlvAntiCode'])))
             fm, ss = '', ''
             if re_secret:
                 fm, ss = self.encrypt(params, stream_info, stream_name)
@@ -147,8 +135,7 @@ class HuyaLiveIE(InfoExtractor):
             't': '100',
         })
         fm = base64.b64decode(params['fm']).decode().split('_', 1)[0]
-        ss = hashlib.md5(
-            '|'.join([params['seqid'], params['ctype'], params['t']]))
+        ss = hashlib.md5('|'.join([params['seqid'], params['ctype'], params['t']]))
         return fm, ss
 
 
@@ -163,68 +150,94 @@ class HuyaVideoIE(InfoExtractor):
             'id': '1002412640',
             'ext': 'mp4',
             'title': '8月3日',
-            'thumbnail': r're:https?://.*\.jpg',
-            'duration': 14,
+            'categories': ['主机游戏'],
+            'duration': 14.0,
             'uploader': '虎牙-ATS欧卡车队青木',
             'uploader_id': '1564376151',
             'upload_date': '20240803',
             'view_count': int,
             'comment_count': int,
             'like_count': int,
+            'thumbnail': r're:https?://.+\.jpg',
+            'timestamp': 1722675433,
         },
-    },
-        {
+    }, {
         'url': 'https://www.huya.com/video/play/556054543.html',
         'info_dict': {
             'id': '556054543',
             'ext': 'mp4',
             'title': '我不挑事 也不怕事',
-            'thumbnail': r're:https?://.*\.jpg',
-            'duration': 1864,
+            'categories': ['英雄联盟'],
+            'description': 'md5:58184869687d18ce62dc7b4b2ad21201',
+            'duration': 1864.0,
             'uploader': '卡尔',
             'uploader_id': '367138632',
             'upload_date': '20210811',
             'view_count': int,
             'comment_count': int,
             'like_count': int,
+            'tags': 'count:4',
+            'thumbnail': r're:https?://.+\.jpg',
+            'timestamp': 1628675950,
+        },
+    }, {
+        # Only m3u8 available
+        'url': 'https://www.huya.com/video/play/1063345618.html',
+        'info_dict': {
+            'id': '1063345618',
+            'ext': 'mp4',
+            'title': '峡谷第一中！黑铁上钻石顶级教学对抗elo',
+            'categories': ['英雄联盟'],
+            'comment_count': int,
+            'duration': 21603.0,
+            'like_count': int,
+            'thumbnail': r're:https?://.+\.jpg',
+            'timestamp': 1749668803,
+            'upload_date': '20250611',
+            'uploader': '北枫CC',
+            'uploader_id': '2183525275',
+            'view_count': int,
         },
     }]
 
     def _real_extract(self, url: str):
         video_id = self._match_id(url)
-        video_data = self._download_json(
-            'https://liveapi.huya.com/moment/getMomentContent', video_id,
-            query={'videoId': video_id})['data']['moment']['videoInfo']
+        moment = self._download_json(
+            'https://liveapi.huya.com/moment/getMomentContent',
+            video_id, query={'videoId': video_id})['data']['moment']
 
         formats = []
-        for definition in traverse_obj(
-            video_data,
-            ('definitions',
-             lambda _,
-             v: url_or_none(
-                 v['url']))):
-            formats.append({
-                'url': definition['url'],
-                **traverse_obj(definition, {
-                    'format_id': ('defName', {str}),
-                    'width': ('width', {int_or_none}),
-                    'height': ('height', {int_or_none}),
+        for definition in traverse_obj(moment, (
+            'videoInfo', 'definitions', lambda _, v: url_or_none(v['m3u8']),
+        )):
+            fmts = self._extract_m3u8_formats(definition['m3u8'], video_id, 'mp4', fatal=False)
+            for fmt in fmts:
+                fmt.update(**traverse_obj(definition, {
                     'filesize': ('size', {int_or_none}),
-                }),
-            })
+                    'format_id': ('defName', {str}),
+                    'height': ('height', {int_or_none}),
+                    'quality': ('definition', {int_or_none}),
+                    'width': ('width', {int_or_none}),
+                }))
+            formats.extend(fmts)
 
         return {
             'id': video_id,
             'formats': formats,
-            **traverse_obj(video_data, {
+            **traverse_obj(moment, {
+                'comment_count': ('commentCount', {int_or_none}),
+                'description': ('content', {clean_html}, filter),
+                'like_count': ('favorCount', {int_or_none}),
+                'timestamp': ('cTime', {int_or_none}),
+            }),
+            **traverse_obj(moment, ('videoInfo', {
                 'title': ('videoTitle', {str}),
-                'thumbnail': ('videoCover', {url_or_none}),
+                'categories': ('category', {str}, filter, all, filter),
                 'duration': ('videoDuration', {parse_duration}),
+                'tags': ('tags', ..., {str}, filter, all, filter),
+                'thumbnail': (('videoBigCover', 'videoCover'), {url_or_none}, {update_url(query=None)}, any),
                 'uploader': ('nickName', {str}),
                 'uploader_id': ('uid', {str_or_none}),
-                'upload_date': ('videoUploadTime', {unified_strdate}),
                 'view_count': ('videoPlayNum', {int_or_none}),
-                'comment_count': ('videoCommentNum', {int_or_none}),
-                'like_count': ('favorCount', {int_or_none}),
-            }),
+            })),
         }

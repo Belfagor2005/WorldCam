@@ -17,78 +17,83 @@ class KikaIE(InfoExtractor):
     _GEO_COUNTRIES = ['DE']
 
     _TESTS = [{
-        'url': 'https://www.kika.de/logo/videos/logo-vom-samstag-einunddreissig-august-zweitausendvierundzwanzig-100',
-        'md5': 'fbfc8da483719ef06f396e5e5b938c69',
+        # Video without season/episode info
+        'url': 'https://www.kika.de/logo/videos/logo-vom-dienstag-achtundzwanzig-oktober-zweitausendfuenfundzwanzig-100',
+        'md5': '4a9f6e0f9c6bfcc82394c294f186d6db',
         'info_dict': {
-            'id': 'logo-vom-samstag-einunddreissig-august-zweitausendvierundzwanzig-100',
+            'id': 'logo-vom-dienstag-achtundzwanzig-oktober-zweitausendfuenfundzwanzig-100',
             'ext': 'mp4',
-            'upload_date': '20240831',
-            'timestamp': 1725126600,
-            'season_number': 2024,
-            'modified_date': '20240831',
-            'episode': 'Episode 476',
-            'episode_number': 476,
-            'season': 'Season 2024',
-            'duration': 634,
-            'title': 'logo! vom Samstag, 31. August 2024',
-            'modified_timestamp': 1725129983,
+            'title': 'logo! vom Dienstag, 28. Oktober 2025',
+            'description': 'md5:4d28b92cef423bec99740ffaa3e7ec04',
+            'duration': 651,
+            'timestamp': 1761678000,
+            'upload_date': '20251028',
+            'modified_timestamp': 1761682624,
+            'modified_date': '20251028',
         },
     }, {
+        # Video with season/episode info
+        # Also: Video with subtitles
         'url': 'https://www.kika.de/kaltstart/videos/video92498',
-        'md5': '710ece827e5055094afeb474beacb7aa',
+        'md5': 'e58073070acb195906c55c4ad31dceb3',
         'info_dict': {
             'id': 'video92498',
             'ext': 'mp4',
             'title': '7. Wo ist Leo?',
             'description': 'md5:fb48396a5b75068bcac1df74f1524920',
             'duration': 436,
+            'season': 'Season 1',
+            'season_number': 1,
+            'episode': 'Episode 7',
+            'episode_number': 7,
             'timestamp': 1702926876,
             'upload_date': '20231218',
-            'episode_number': 7,
-            'modified_date': '20240319',
             'modified_timestamp': 1710880610,
-            'episode': 'Episode 7',
-            'season_number': 1,
-            'season': 'Season 1',
+            'modified_date': '20240319',
+            'subtitles': 'count:1',
         },
     }, {
-        'url': 'https://www.kika.de/bernd-das-brot/astrobrot/videos/video90088',
-        'md5': 'ffd1b700d7de0a6616a1d08544c77294',
+        # Video without subtitles
+        'url': 'https://www.kika.de/die-pfefferkoerner/videos/abgezogen-102',
+        'md5': '62e97961ce5343c19f0f330a1b6dd736',
         'info_dict': {
-            'id': 'video90088',
+            'id': 'abgezogen-102',
             'ext': 'mp4',
-            'upload_date': '20221102',
-            'timestamp': 1667390580,
-            'duration': 197,
-            'modified_timestamp': 1711093771,
-            'episode_number': 8,
-            'title': 'Es ist nicht leicht, ein Astrobrot zu sein',
-            'modified_date': '20240322',
-            'description': 'md5:d3641deaf1b5515a160788b2be4159a9',
-            'season_number': 1,
-            'episode': 'Episode 8',
+            'title': '1. Abgezogen',
+            'description': 'md5:42d87963364391f9f8eba8affcb30bd2',
+            'duration': 1574,
             'season': 'Season 1',
+            'season_number': 1,
+            'episode': 'Episode 1',
+            'episode_number': 1,
+            'timestamp': 1735382700,
+            'upload_date': '20241228',
+            'modified_timestamp': 1757344051,
+            'modified_date': '20250908',
+            'subtitles': 'count:0',
         },
     }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        doc = self._download_json(
-            f'https://www.kika.de/_next-api/proxy/v1/videos/{video_id}', video_id)
+        doc = self._download_json(f'https://www.kika.de/_next-api/proxy/v1/videos/{video_id}', video_id)
         video_assets = self._download_json(doc['assets']['url'], video_id)
 
         subtitles = {}
-        if ttml_resource := url_or_none(video_assets.get('videoSubtitle')):
-            subtitles['de'] = [{
-                'url': ttml_resource,
-                'ext': 'ttml',
-            }]
-        if webvtt_resource := url_or_none(video_assets.get('webvttUrl')):
-            subtitles.setdefault('de', []).append({
-                'url': webvtt_resource,
-                'ext': 'vtt',
-            })
+        # Subtitle API endpoints may be present in the JSON even if there are no subtitles.
+        # They then return HTTP 200 with invalid data. So we must check explicitly.
+        if doc.get('hasSubtitle'):
+            if ttml_resource := url_or_none(video_assets.get('videoSubtitle')):
+                subtitles['de'] = [{
+                    'url': ttml_resource,
+                    'ext': 'ttml',
+                }]
+            if webvtt_resource := url_or_none(video_assets.get('webvttUrl')):
+                subtitles.setdefault('de', []).append({
+                    'url': webvtt_resource,
+                    'ext': 'vtt',
+                })
 
         return {
             'id': video_id,
@@ -108,12 +113,7 @@ class KikaIE(InfoExtractor):
         }
 
     def _extract_formats(self, media_info, video_id):
-        for media in traverse_obj(
-            media_info,
-            ('assets',
-             lambda _,
-             v: url_or_none(
-                 v['url']))):
+        for media in traverse_obj(media_info, ('assets', lambda _, v: url_or_none(v['url']))):
             stream_url = media['url']
             ext = determine_ext(stream_url)
             if ext == 'm3u8':
@@ -126,8 +126,7 @@ class KikaIE(InfoExtractor):
                     **traverse_obj(media, {
                         'width': ('frameWidth', {int_or_none}),
                         'height': ('frameHeight', {int_or_none}),
-                        # NB: filesize is 0 if unknown, bitrate is -1 if
-                        # unknown
+                        # NB: filesize is 0 if unknown, bitrate is -1 if unknown
                         'filesize': ('fileSize', {int_or_none}, filter),
                         'abr': ('bitrateAudio', {int_or_none}, {lambda x: None if x == -1 else x}),
                         'vbr': ('bitrateVideo', {int_or_none}, {lambda x: None if x == -1 else x}),
@@ -150,13 +149,8 @@ class KikaPlaylistIE(InfoExtractor):
 
     def _entries(self, playlist_url, playlist_id):
         for page in itertools.count(1):
-            data = self._download_json(
-                playlist_url,
-                playlist_id,
-                note=f'Downloading page {page}')
-            for item in traverse_obj(
-                data, ('content', lambda _, v: url_or_none(
-                    v['api']['url']))):
+            data = self._download_json(playlist_url, playlist_id, note=f'Downloading page {page}')
+            for item in traverse_obj(data, ('content', lambda _, v: url_or_none(v['api']['url']))):
                 yield self.url_result(
                     item['api']['url'], ie=KikaIE,
                     **traverse_obj(item, {
@@ -176,9 +170,5 @@ class KikaPlaylistIE(InfoExtractor):
             f'https://www.kika.de/_next-api/proxy/v1/brands/{playlist_id}', playlist_id)
 
         return self.playlist_result(
-            self._entries(
-                brand_data['videoSubchannel']['videosPageUrl'],
-                playlist_id),
-            playlist_id,
-            title=brand_data.get('title'),
-            description=brand_data.get('description'))
+            self._entries(brand_data['videoSubchannel']['videosPageUrl'], playlist_id),
+            playlist_id, title=brand_data.get('title'), description=brand_data.get('description'))

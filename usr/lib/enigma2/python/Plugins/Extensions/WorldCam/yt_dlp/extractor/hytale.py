@@ -34,10 +34,7 @@ class HytaleIE(InfoExtractor):
 
     def _real_initialize(self):
         media_webpage = self._download_webpage(
-            'https://hytale.com/media',
-            None,
-            note='Downloading list of media',
-            fatal=False) or ''
+            'https://hytale.com/media', None, note='Downloading list of media', fatal=False) or ''
 
         clips_json = traverse_obj(
             self._search_json(
@@ -45,8 +42,7 @@ class HytaleIE(InfoExtractor):
                 media_webpage, 'clips json', None),
             ('media', 'clips')) or []
 
-        self._titles = {clip.get('src'): clip.get('caption')
-                        for clip in clips_json}
+        self._titles = {clip.get('src'): clip.get('caption') for clip in clips_json}
 
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
@@ -60,5 +56,4 @@ class HytaleIE(InfoExtractor):
                 webpage)
         ]
 
-        return self.playlist_result(
-            entries, playlist_id, self._og_search_title(webpage))
+        return self.playlist_result(entries, playlist_id, self._og_search_title(webpage))

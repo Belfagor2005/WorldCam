@@ -29,8 +29,7 @@ class WistiaBaseIE(InfoExtractor):
         video_password = self.get_param('videopassword')
         embed_config = self._download_json(
             base_url + '.json', config_id, headers={
-                # Some videos require this.
-                'Referer': referer if referer.startswith('http') else base_url,
+                'Referer': referer if referer.startswith('http') else base_url,  # Some videos require this.
             }, query=filter_dict({'password': video_password}))
 
         error = traverse_obj(embed_config, 'error')
@@ -44,8 +43,7 @@ class WistiaBaseIE(InfoExtractor):
             if video_password:
                 raise ExtractorError('Invalid video password', expected=True)
             raise ExtractorError(
-                'This content is password-protected. Use the --video-password option',
-                expected=True)
+                'This content is password-protected. Use the --video-password option', expected=True)
 
         return embed_config
 
@@ -72,8 +70,7 @@ class WistiaBaseIE(InfoExtractor):
                 continue
             astatus = a.get('status')
             atype = a.get('type')
-            if (astatus is not None and astatus != 2) or atype in (
-                    'preview', 'storyboard'):
+            if (astatus is not None and astatus != 2) or atype in ('preview', 'storyboard'):
                 continue
             elif atype in ('still', 'still_image'):
                 thumbnails.append({
@@ -129,8 +126,9 @@ class WistiaBaseIE(InfoExtractor):
             language = caption.get('language')
             if not language:
                 continue
-            subtitles[language] = [{'url': self._EMBED_BASE_URL +
-                                    'captions/' + video_id + '.vtt?language=' + language, }]
+            subtitles[language] = [{
+                'url': self._EMBED_BASE_URL + 'captions/' + video_id + '.vtt?language=' + language,
+            }]
 
         return {
             'id': video_id,
@@ -163,17 +161,13 @@ class WistiaBaseIE(InfoExtractor):
 
     @classmethod
     def _extract_url_media_id(cls, url):
-        mobj = re.search(
-            r'(?:wmediaid|wvideo(?:id)?)]?=(?P<id>[a-z0-9]{10})',
-            urllib.parse.unquote_plus(url))
+        mobj = re.search(r'(?:wmediaid|wvideo(?:id)?)]?=(?P<id>[a-z0-9]{10})', urllib.parse.unquote_plus(url))
         if mobj:
             return mobj.group('id')
 
 
 class WistiaIE(WistiaBaseIE):
-    _VALID_URL = rf'(?:wistia:|{
-        WistiaBaseIE._VALID_URL_BASE}(?:iframe|medias)/){
-        WistiaBaseIE._VALID_ID_REGEX}'
+    _VALID_URL = rf'(?:wistia:|{WistiaBaseIE._VALID_URL_BASE}(?:iframe|medias)/){WistiaBaseIE._VALID_ID_REGEX}'
     _EMBED_REGEX = [
         r'''(?x)
             <(?:meta[^>]+?content|(?:iframe|script)[^>]+?src)=["\']
@@ -199,12 +193,12 @@ class WistiaIE(WistiaBaseIE):
         'info_dict': {
             'id': 'a6ndpko1wg',
             'ext': 'mp4',
-            'title': 'Episode 2: Boxed Water\'s retention is thirsty',
+            'title': 'BXO-S02-E02-Boxed_Water-v4.mp4',
             'upload_date': '20210324',
-            'description': 'md5:da5994c2c2d254833b412469d9666b7a',
+            'description': 'md5:3b9296a45aa46010767451b3691b1105',
             'duration': 966.0,
             'timestamp': 1616614369,
-            'thumbnail': 'https://embed-ssl.wistia.com/deliveries/53dc60239348dc9b9fba3755173ea4c2.png',
+            'thumbnail': r're:https?://embed(?:-ssl)?\.wistia\.com/.+\.(?:jpg|png)',
         },
     }, {
         'url': 'wistia:5vd7p4bct5',
@@ -217,7 +211,7 @@ class WistiaIE(WistiaBaseIE):
             'upload_date': '20220915',
             'timestamp': 1663258727,
             'duration': 623.019,
-            'thumbnail': r're:https?://embed(?:-ssl)?.wistia.com/.+\.jpg$',
+            'thumbnail': r're:https?://embed(?:-ssl)?\.wistia\.com/.+\.(?:jpg|png)',
         },
     }, {
         'url': 'wistia:sh7fpupwlt',
@@ -232,7 +226,6 @@ class WistiaIE(WistiaBaseIE):
         'url': 'http://fast.wistia.net/embed/medias/sh7fpupwlt.json',
         'only_matching': True,
     }]
-
     _WEBPAGE_TESTS = [{
         'url': 'https://www.weidert.com/blog/wistia-channels-video-marketing-tool',
         'info_dict': {
@@ -243,8 +236,9 @@ class WistiaIE(WistiaBaseIE):
             'timestamp': 1618974400,
             'description': 'md5:27abc99a758573560be72600ef95cece',
             'upload_date': '20210421',
-            'thumbnail': 'https://embed-ssl.wistia.com/deliveries/6c551820ae950cdee2306d6cbe9ef742.jpg',
+            'thumbnail': r're:https?://embed(?:-ssl)?\.wistia\.com/.+\.(?:jpg|png)',
         },
+        'skip': 'Invalid URL',
     }, {
         'url': 'https://study.com/academy/lesson/north-american-exploration-failed-colonies-of-spain-france-england.html#lesson',
         'md5': 'b9676d24bf30945d97060638fbfe77f0',
@@ -255,9 +249,19 @@ class WistiaIE(WistiaBaseIE):
             'upload_date': '20220915',
             'timestamp': 1663258727,
             'duration': 623.019,
-            'thumbnail': 'https://embed-ssl.wistia.com/deliveries/83e6ec693e2c05a0ce65809cbaead86a.jpg',
+            'thumbnail': r're:https?://embed(?:-ssl)?\.wistia\.com/.+\.(?:jpg|png)',
             'description': 'a Paywall Videos video',
         },
+    }, {
+        'url': 'https://support.wistia.com/en/articles/8233354-embedding-your-media',
+        'info_dict': {
+            'id': '8233354-embedding-your-media',
+            'title': 'Embedding Your Media | Wistia Help Center',
+            'age_limit': 0,
+            'description': 'md5:32a5edc0e266cd61e2d15be28873d614',
+            'thumbnail': r're:https?://downloads\.intercomcdn\.com/.+\.jpg',
+        },
+        'playlist_count': 2,
     }]
 
     def _real_extract(self, url):
@@ -271,9 +275,8 @@ class WistiaIE(WistiaBaseIE):
         for match in cls._extract_wistia_async_embed(webpage):
             if match.group('type') != 'wistia_channel':
                 urls.append('wistia:{}'.format(match.group('id')))
-        for match in re.finditer(
-            r'(?:data-wistia-?id=["\']|Wistia\.embed\(["\']|id=["\']wistia_)(?P<id>[a-z0-9]{10})',
-                webpage):
+        for match in re.finditer(r'(?:data-wistia-?id=["\']|Wistia\.embed\(["\']|id=["\']wistia_)(?P<id>[a-z0-9]{10})',
+                                 webpage):
             urls.append('wistia:{}'.format(match.group('id')))
         if not WistiaChannelIE._extract_embed_urls(url, webpage):  # Fallback
             media_id = cls._extract_url_media_id(url)
@@ -283,17 +286,15 @@ class WistiaIE(WistiaBaseIE):
 
 
 class WistiaPlaylistIE(WistiaBaseIE):
-    _VALID_URL = rf'{
-        WistiaBaseIE._VALID_URL_BASE}playlists/{
-        WistiaBaseIE._VALID_ID_REGEX}'
+    _VALID_URL = rf'{WistiaBaseIE._VALID_URL_BASE}playlists/{WistiaBaseIE._VALID_ID_REGEX}'
 
-    _TEST = {
+    _TESTS = [{
         'url': 'https://fast.wistia.net/embed/playlists/aodt9etokc',
         'info_dict': {
             'id': 'aodt9etokc',
         },
         'playlist_count': 3,
-    }
+    }]
 
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
@@ -310,9 +311,7 @@ class WistiaPlaylistIE(WistiaBaseIE):
 
 
 class WistiaChannelIE(WistiaBaseIE):
-    _VALID_URL = rf'(?:wistiachannel:|{
-        WistiaBaseIE._VALID_URL_BASE}channel/){
-        WistiaBaseIE._VALID_ID_REGEX}'
+    _VALID_URL = rf'(?:wistiachannel:|{WistiaBaseIE._VALID_URL_BASE}channel/){WistiaBaseIE._VALID_ID_REGEX}'
 
     _TESTS = [{
         # JSON Embed API returns 403, should fall back to webpage
@@ -323,7 +322,7 @@ class WistiaChannelIE(WistiaBaseIE):
             'description': 'Learn all things Copysmith via short and informative videos!',
         },
         'playlist_mincount': 7,
-        'expected_warnings': ['falling back to webpage'],
+        'skip': 'Invalid URL',
     }, {
         'url': 'https://fast.wistia.net/embed/channel/3802iirk0l',
         'info_dict': {
@@ -338,7 +337,7 @@ class WistiaChannelIE(WistiaBaseIE):
             'id': 'sp5dqjzw3n',
             'ext': 'mp4',
             'title': 'The Roof S2: The Modern CRO',
-            'thumbnail': 'https://embed-ssl.wistia.com/deliveries/dadfa9233eaa505d5e0c85c23ff70741.png',
+            'thumbnail': r're:https?://embed(?:-ssl)?\.wistia\.com/.+\.(?:jpg|png)',
             'duration': 86.487,
             'description': 'A sales leader on The Roof? Man, they really must be letting anyone up here this season.\n',
             'timestamp': 1619790290,
@@ -354,6 +353,7 @@ class WistiaChannelIE(WistiaBaseIE):
             'description': 'md5:14a8a93a1dbe236718e6a59f8c8c7bae',
         },
         'playlist_mincount': 30,
+        'skip': 'Site no longer embeds Wistia playlists',
     }, {
         # section instead of div
         'url': 'https://360learning.com/studio/onboarding-joei/',
@@ -373,37 +373,26 @@ class WistiaChannelIE(WistiaBaseIE):
             'upload_date': '20220530',
             'description': 'Learn how to help your company improve and achieve your product related goals.',
             'duration': 1854.39,
-            'thumbnail': 'https://embed-ssl.wistia.com/deliveries/12fd19e56413d9d6f04e2185c16a6f8854e25226.png',
+            'thumbnail': r're:https?://embed(?:-ssl)?\.wistia\.com/.+\.(?:jpg|png)',
         },
-        'params': {'noplaylist': True, 'skip_download': True},
+        'skip': 'Invalid URL',
     }]
 
     def _real_extract(self, url):
         channel_id = self._match_id(url)
         media_id = self._extract_url_media_id(url)
-        if not self._yes_playlist(
-                channel_id,
-                media_id,
-                playlist_label='channel'):
+        if not self._yes_playlist(channel_id, media_id, playlist_label='channel'):
             return self.url_result(f'wistia:{media_id}', 'Wistia')
 
         try:
             data = self._download_embed_config('channel', channel_id, url)
         except (ExtractorError, HTTPError):
             # Some channels give a 403 from the JSON API
-            self.report_warning(
-                'Failed to download channel data from API, falling back to webpage.')
-            webpage = self._download_webpage(
-                f'https://fast.wistia.net/embed/channel/{channel_id}', channel_id)
+            self.report_warning('Failed to download channel data from API, falling back to webpage.')
+            webpage = self._download_webpage(f'https://fast.wistia.net/embed/channel/{channel_id}', channel_id)
             data = self._parse_json(
-                self._search_regex(
-                    rf'wchanneljsonp-{channel_id}\'\]\s*=[^\"]*\"([A-Za-z0-9=/]*)',
-                    webpage,
-                    'jsonp',
-                    channel_id),
-                channel_id,
-                transform_source=lambda x: urllib.parse.unquote_plus(
-                    base64.b64decode(x).decode('utf-8')))
+                self._search_regex(rf'wchanneljsonp-{channel_id}\'\]\s*=[^\"]*\"([A-Za-z0-9=/]*)', webpage, 'jsonp', channel_id),
+                channel_id, transform_source=lambda x: urllib.parse.unquote_plus(base64.b64decode(x).decode('utf-8')))
 
         # XXX: can there be more than one series?
         series = traverse_obj(data, ('series', 0), default={})
@@ -415,10 +404,7 @@ class WistiaChannelIE(WistiaBaseIE):
         ]
 
         return self.playlist_result(
-            entries,
-            channel_id,
-            playlist_title=series.get('title'),
-            playlist_description=series.get('description'))
+            entries, channel_id, playlist_title=series.get('title'), playlist_description=series.get('description'))
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):

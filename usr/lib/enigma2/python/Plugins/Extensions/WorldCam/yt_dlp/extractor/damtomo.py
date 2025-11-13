@@ -7,42 +7,22 @@ from ..utils import ExtractorError, clean_html, int_or_none, try_get, unified_st
 class DamtomoBaseIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage, handle = self._download_webpage_handle(
-            self._WEBPAGE_URL_TMPL %
-            video_id, video_id, encoding='sjis')
+        webpage, handle = self._download_webpage_handle(self._WEBPAGE_URL_TMPL % video_id, video_id, encoding='sjis')
 
         if handle.url == 'https://www.clubdam.com/sorry/':
-            raise ExtractorError(
-                'You are rate-limited. Try again later.',
-                expected=True)
+            raise ExtractorError('You are rate-limited. Try again later.', expected=True)
         if '<h2>予期せぬエラーが発生しました。</h2>' in webpage:
-            raise ExtractorError(
-                'There is an error on server-side. Try again later.',
-                expected=True)
+            raise ExtractorError('There is an error on server-side. Try again later.', expected=True)
 
-        description = self._search_regex(
-            r'(?m)<div id="public_comment">\s*<p>\s*([^<]*?)\s*</p>',
-            webpage,
-            'description',
-            default=None)
-        uploader_id = self._search_regex(
-            r'<a href="https://www\.clubdam\.com/app/damtomo/member/info/Profile\.do\?damtomoId=([^"]+)"',
-            webpage,
-            'uploader_id',
-            default=None)
+        description = self._search_regex(r'(?m)<div id="public_comment">\s*<p>\s*([^<]*?)\s*</p>', webpage, 'description', default=None)
+        uploader_id = self._search_regex(r'<a href="https://www\.clubdam\.com/app/damtomo/member/info/Profile\.do\?damtomoId=([^"]+)"', webpage, 'uploader_id', default=None)
 
         data_dict = {
-            mobj.group('class'): re.sub(
-                r'\s+',
-                ' ',
-                clean_html(
-                    mobj.group('value'))) for mobj in re.finditer(
-                r'(?s)<(p|div)\s+class="(?P<class>[^" ]+?)">(?P<value>.+?)</\1>',
-                webpage)}
+            mobj.group('class'): re.sub(r'\s+', ' ', clean_html(mobj.group('value')))
+            for mobj in re.finditer(r'(?s)<(p|div)\s+class="(?P<class>[^" ]+?)">(?P<value>.+?)</\1>', webpage)}
 
         # since videos do not have title, give the name of song instead
-        data_dict['user_name'] = re.sub(
-            r'\s*さん\s*$', '', data_dict['user_name'])
+        data_dict['user_name'] = re.sub(r'\s*さん\s*$', '', data_dict['user_name'])
         title = data_dict.get('song_title')
 
         stream_tree = self._download_xml(
@@ -62,24 +42,9 @@ class DamtomoBaseIE(InfoExtractor):
             'uploader_id': uploader_id,
             'description': description,
             'uploader': data_dict.get('user_name'),
-            'upload_date': unified_strdate(
-                self._search_regex(
-                    r'(\d{4}/\d{2}/\d{2})',
-                    data_dict.get('date'),
-                    'upload_date',
-                    default=None)),
-            'view_count': int_or_none(
-                self._search_regex(
-                    r'(\d+)',
-                    data_dict['audience'],
-                    'view_count',
-                    default=None)),
-            'like_count': int_or_none(
-                self._search_regex(
-                    r'(\d+)',
-                    data_dict['nice'],
-                    'like_count',
-                    default=None)),
+            'upload_date': unified_strdate(self._search_regex(r'(\d{4}/\d{2}/\d{2})', data_dict.get('date'), 'upload_date', default=None)),
+            'view_count': int_or_none(self._search_regex(r'(\d+)', data_dict['audience'], 'view_count', default=None)),
+            'like_count': int_or_none(self._search_regex(r'(\d+)', data_dict['nice'], 'like_count', default=None)),
             'track': title,
             'artist': data_dict.get('song_artist'),
             'formats': formats,

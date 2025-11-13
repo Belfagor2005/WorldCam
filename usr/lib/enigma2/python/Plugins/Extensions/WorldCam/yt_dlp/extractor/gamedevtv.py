@@ -71,19 +71,15 @@ class GameDevTVDashboardIE(InfoExtractor):
                 }).encode())
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
-                raise ExtractorError(
-                    'Invalid username/password', expected=True)
+                raise ExtractorError('Invalid username/password', expected=True)
             raise
 
-        self._API_HEADERS['Authorization'] = f'{
-            response["token_type"]} {
-            response["access_token"]}'
+        self._API_HEADERS['Authorization'] = f'{response["token_type"]} {response["access_token"]}'
 
     def _real_initialize(self):
         if not self._API_HEADERS.get('Authorization'):
             self.raise_login_required(
-                'This content is only available with purchase',
-                method='password')
+                'This content is only available with purchase', method='password')
 
     def _entries(self, data, course_id, course_info, selected_lecture):
         for section in traverse_obj(data, ('sections', ..., {dict})):
@@ -92,14 +88,10 @@ class GameDevTVDashboardIE(InfoExtractor):
                 'season': ('title', {str}),
                 'season_number': ('order', {int_or_none}),
             })
-            for lecture in traverse_obj(
-                section, ('lectures', lambda _, v: url_or_none(
-                    v['video']['playListUrl']))):
-                if selected_lecture and str(
-                        lecture.get('id')) != selected_lecture:
+            for lecture in traverse_obj(section, ('lectures', lambda _, v: url_or_none(v['video']['playListUrl']))):
+                if selected_lecture and str(lecture.get('id')) != selected_lecture:
                     continue
-                display_id = join_nonempty(
-                    course_id, section_info.get('season_id'), lecture.get('id'))
+                display_id = join_nonempty(course_id, section_info.get('season_id'), lecture.get('id'))
                 formats, subtitles = self._extract_m3u8_formats_and_subtitles(
                     lecture['video']['playListUrl'], display_id, 'mp4', m3u8_id='hls')
                 yield {
@@ -126,8 +118,7 @@ class GameDevTVDashboardIE(InfoExtractor):
                 }
 
     def _real_extract(self, url):
-        course_id, lecture_id = self._match_valid_url(
-            url).group('course_id', 'lecture_id')
+        course_id, lecture_id = self._match_valid_url(url).group('course_id', 'lecture_id')
         data = self._download_json(
             f'https://api.gamedev.tv/api/courses/my/{course_id}', course_id,
             headers=self._API_HEADERS)['data']

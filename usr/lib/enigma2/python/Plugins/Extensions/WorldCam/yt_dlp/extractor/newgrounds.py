@@ -126,15 +126,9 @@ class NewgroundsIE(InfoExtractor):
     _LOGIN_URL = 'https://www.newgrounds.com/passport'
 
     def _perform_login(self, username, password):
-        login_webpage = self._download_webpage(
-            self._LOGIN_URL, None, 'Downloading login page')
-        login_url = urljoin(
-            self._LOGIN_URL,
-            self._search_regex(
-                r'<form action="([^"]+)"',
-                login_webpage,
-                'login endpoint',
-                default=None))
+        login_webpage = self._download_webpage(self._LOGIN_URL, None, 'Downloading login page')
+        login_url = urljoin(self._LOGIN_URL, self._search_regex(
+            r'<form action="([^"]+)"', login_webpage, 'login endpoint', default=None))
         result = self._download_json(login_url, None, 'Logging in', headers={
             'Accept': 'application/json',
             'Referer': self._LOGIN_URL,
@@ -145,18 +139,14 @@ class NewgroundsIE(InfoExtractor):
             'password': password,
         }))
         if errors := traverse_obj(result, ('errors', ..., {str})):
-            raise ExtractorError(
-                ', '.join(errors) or 'Unknown Error',
-                expected=True)
+            raise ExtractorError(', '.join(errors) or 'Unknown Error', expected=True)
 
     def _real_extract(self, url):
         media_id = self._match_id(url)
         try:
             webpage = self._download_webpage(url, media_id)
         except ExtractorError as error:
-            if isinstance(
-                    error.cause,
-                    HTTPError) and error.cause.status == 401:
+            if isinstance(error.cause, HTTPError) and error.cause.status == 401:
                 self.raise_login_required()
             raise
 
@@ -171,19 +161,15 @@ class NewgroundsIE(InfoExtractor):
             }]
 
         else:
-            json_video = self._download_json(
-                f'https://www.newgrounds.com/portal/video/{media_id}',
-                media_id,
-                headers={
-                    'Accept': 'application/json',
-                    'Referer': url,
-                    'X-Requested-With': 'XMLHttpRequest',
-                })
+            json_video = self._download_json(f'https://www.newgrounds.com/portal/video/{media_id}', media_id, headers={
+                'Accept': 'application/json',
+                'Referer': url,
+                'X-Requested-With': 'XMLHttpRequest',
+            })
 
             formats = []
             uploader = traverse_obj(json_video, ('author', {str}))
-            for format_id, sources in traverse_obj(
-                    json_video, ('sources', {dict.items}, ...)):
+            for format_id, sources in traverse_obj(json_video, ('sources', {dict.items}, ...)):
                 quality = int_or_none(format_id[:-1])
                 formats.extend({
                     'format_id': format_id,
@@ -198,18 +184,11 @@ class NewgroundsIE(InfoExtractor):
                 fatal=False)
 
         if len(formats) == 1:
-            formats[0]['filesize'] = int_or_none(
-                self._html_search_regex(
-                    r'"filesize"\s*:\s*["\']?([\d]+)["\']?,',
-                    webpage,
-                    'filesize',
-                    default=None))
+            formats[0]['filesize'] = int_or_none(self._html_search_regex(
+                r'"filesize"\s*:\s*["\']?([\d]+)["\']?,', webpage, 'filesize', default=None))
 
             video_type_description = self._html_search_regex(
-                r'"description"\s*:\s*["\']?([^"\']+)["\']?,',
-                webpage,
-                'media type',
-                default=None)
+                r'"description"\s*:\s*["\']?([^"\']+)["\']?,', webpage, 'media type', default=None)
             if video_type_description == 'Audio File':
                 formats[0]['vcodec'] = 'none'
 
@@ -275,9 +254,7 @@ class NewgroundsPlaylistIE(InfoExtractor):
                 r'(<a[^>]+\bhref=["\'][^"\']+((?:portal/view|audio/listen)/(\d+))[^>]+>)',
                 webpage):
             a_class = extract_attributes(a).get('class')
-            if a_class not in (
-                'item-portalsubmission',
-                    'item-audiosubmission'):
+            if a_class not in ('item-portalsubmission', 'item-audiosubmission'):
                 continue
             entries.append(
                 self.url_result(

@@ -35,9 +35,7 @@ class TrillerBaseIE(InfoExtractor):
             data=json.dumps({'username': username}, separators=(',', ':')).encode()), 'status')
 
         if user_check:  # endpoint returns `"status":false` if username exists
-            raise ExtractorError(
-                'Unable to login: Invalid username',
-                expected=True)
+            raise ExtractorError('Unable to login: Invalid username', expected=True)
 
         login = self._download_json(
             f'{self._API_BASE_URL}/user/auth', None, note='Logging in', fatal=False,
@@ -48,8 +46,7 @@ class TrillerBaseIE(InfoExtractor):
 
         if not login.get('auth_token'):
             if login.get('error') == 1008:
-                raise ExtractorError(
-                    'Unable to login: Incorrect password', expected=True)
+                raise ExtractorError('Unable to login: Incorrect password', expected=True)
             raise ExtractorError('Unable to login')
 
         self._API_HEADERS['Authorization'] = f'Bearer {login["auth_token"]}'
@@ -69,21 +66,14 @@ class TrillerBaseIE(InfoExtractor):
             'timestamp': ('timestamp', {unified_timestamp}),
         }))
 
-    def _parse_video_info(
-            self,
-            video_info,
-            username,
-            user_id,
-            display_id=None):
+    def _parse_video_info(self, video_info, username, user_id, display_id=None):
         video_id = str(video_info['id'])
         display_id = display_id or video_info.get('video_uuid')
 
         if traverse_obj(video_info, (
                 None, ('transcoded_url', 'video_url', 'stream_url', 'audio_url'),
                 {lambda x: re.search(r'/copyright/', x)}), get_all=False):
-            self.raise_no_formats(
-                'This video has been removed due to licensing restrictions',
-                expected=True)
+            self.raise_no_formats('This video has been removed due to licensing restrictions', expected=True)
 
         def format_info(url):
             return {
@@ -95,20 +85,10 @@ class TrillerBaseIE(InfoExtractor):
         formats = []
 
         if determine_ext(video_info.get('transcoded_url')) == 'm3u8':
-            formats.extend(
-                self._extract_m3u8_formats(
-                    video_info['transcoded_url'],
-                    video_id,
-                    'mp4',
-                    m3u8_id='hls',
-                    fatal=False))
+            formats.extend(self._extract_m3u8_formats(
+                video_info['transcoded_url'], video_id, 'mp4', m3u8_id='hls', fatal=False))
 
-        for video in traverse_obj(
-            video_info,
-            ('video_set',
-             lambda _,
-             v: url_or_none(
-                 v['url']))):
+        for video in traverse_obj(video_info, ('video_set', lambda _, v: url_or_none(v['url']))):
             formats.append({
                 **format_info(video['url']),
                 **parse_resolution(video.get('resolution')),
@@ -116,11 +96,7 @@ class TrillerBaseIE(InfoExtractor):
                 'vbr': int_or_none(video.get('bitrate'), 1000),
             })
 
-        video_url = traverse_obj(
-            video_info,
-            'video_url',
-            'stream_url',
-            expected_type=url_or_none)
+        video_url = traverse_obj(video_info, 'video_url', 'stream_url', expected_type=url_or_none)
         if video_url:
             formats.append({
                 **format_info(video_url),
@@ -136,8 +112,7 @@ class TrillerBaseIE(InfoExtractor):
         if audio_url:
             formats.append(format_info(audio_url))
 
-        comment_count = traverse_obj(
-            video_info, ('comment_count', {int_or_none}))
+        comment_count = traverse_obj(video_info, ('comment_count', {int_or_none}))
 
         return {
             'id': video_id,
@@ -243,8 +218,7 @@ class TrillerIE(TrillerBaseIE):
     }]
 
     def _real_extract(self, url):
-        username, display_id = self._match_valid_url(
-            url).group('username', 'id')
+        username, display_id = self._match_valid_url(url).group('username', 'id')
 
         video_info = self._download_json(
             f'{self._API_BASE_URL}/api/videos/{display_id}', display_id,
@@ -276,21 +250,15 @@ class TrillerUserIE(TrillerBaseIE):
     def _real_initialize(self):
         if not self._API_HEADERS.get('Authorization'):
             guest = self._download_json(
-                f'{self._API_BASE_URL}/user/create_guest',
-                None,
-                note='Creating guest session',
-                data=b'',
-                headers=self._API_HEADERS,
-                query={
+                f'{self._API_BASE_URL}/user/create_guest', None,
+                note='Creating guest session', data=b'', headers=self._API_HEADERS, query={
                     'platform': 'Web',
                     'app_version': '',
                 })
             if not guest.get('auth_token'):
-                raise ExtractorError(
-                    'Unable to fetch required auth token for user extraction')
+                raise ExtractorError('Unable to fetch required auth token for user extraction')
 
-            self._API_HEADERS['Authorization'] = f'Bearer {
-                guest["auth_token"]}'
+            self._API_HEADERS['Authorization'] = f'Bearer {guest["auth_token"]}'
 
     def _entries(self, username, user_id, limit=6):
         query = {'limit': limit}
@@ -303,42 +271,28 @@ class TrillerUserIE(TrillerBaseIE):
             for video in traverse_obj(videos, ('videos', ...)):
                 yield self._parse_video_info(video, username, user_id)
 
-            query['before_time'] = traverse_obj(
-                videos, ('videos', -1, 'timestamp'))
+            query['before_time'] = traverse_obj(videos, ('videos', -1, 'timestamp'))
             if not query['before_time']:
                 break
 
     def _real_extract(self, url):
         username = self._match_id(url)
 
-        user_info = traverse_obj(
-            self._download_json(
-                f'{self._API_BASE_URL}/api/users/by_username/{username}',
-                username,
-                note='Downloading user info',
-                headers=self._API_HEADERS),
-            ('user',
-             {dict})) or {}
+        user_info = traverse_obj(self._download_json(
+            f'{self._API_BASE_URL}/api/users/by_username/{username}',
+            username, note='Downloading user info', headers=self._API_HEADERS), ('user', {dict})) or {}
 
-        if user_info.get('private') and user_info.get(
-                'followed_by_me') not in (True, 'true'):
+        if user_info.get('private') and user_info.get('followed_by_me') not in (True, 'true'):
             raise ExtractorError('This user profile is private', expected=True)
         elif traverse_obj(user_info, (('blocked_by_user', 'blocking_user'), {bool}), get_all=False):
-            raise ExtractorError(
-                'The author of the video is blocked',
-                expected=True)
+            raise ExtractorError('The author of the video is blocked', expected=True)
 
         user_id = str_or_none(user_info.get('user_id'))
         if not user_id:
             raise ExtractorError('Unable to extract user ID')
 
         return self.playlist_result(
-            self._entries(
-                username,
-                user_id),
-            user_id,
-            username,
-            thumbnail=user_info.get('avatar_url'))
+            self._entries(username, user_id), user_id, username, thumbnail=user_info.get('avatar_url'))
 
 
 class TrillerShortIE(InfoExtractor):
@@ -369,9 +323,7 @@ class TrillerShortIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        real_url = self._request_webpage(
-            HEADRequest(url), self._match_id(url)).url
-        if self.suitable(
-                real_url):  # Prevent infinite loop in case redirect fails
+        real_url = self._request_webpage(HEADRequest(url), self._match_id(url)).url
+        if self.suitable(real_url):  # Prevent infinite loop in case redirect fails
             raise UnsupportedError(real_url)
         return self.url_result(real_url)

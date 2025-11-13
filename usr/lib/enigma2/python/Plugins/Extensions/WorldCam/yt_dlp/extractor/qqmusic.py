@@ -22,10 +22,7 @@ from ..utils import (
 
 class QQMusicBaseIE(InfoExtractor):
     def _get_cookie(self, key, default=None):
-        return getattr(
-            self._get_cookies('https://y.qq.com').get(key),
-            'value',
-            default)
+        return getattr(self._get_cookies('https://y.qq.com').get(key), 'value', default)
 
     def _get_g_tk(self):
         n = 5381
@@ -49,13 +46,8 @@ class QQMusicBaseIE(InfoExtractor):
 
     def _download_init_data(self, url, mid, fatal=True):
         webpage = self._download_webpage(url, mid, fatal=fatal)
-        return self._search_json(
-            r'window\.__INITIAL_DATA__\s*=',
-            webpage,
-            'init data',
-            mid,
-            transform_source=js_to_json,
-            fatal=fatal)
+        return self._search_json(r'window\.__INITIAL_DATA__\s*=', webpage,
+                                 'init data', mid, transform_source=js_to_json, fatal=fatal)
 
     def _make_fcu_req(self, req_dict, mid, headers={}, **kwargs):
         return self._download_json(
@@ -187,20 +179,12 @@ class QQMusicIE(QQMusicBaseIE):
 
         code = traverse_obj(data, ('req_1', 'code', {int}))
         if code != 0:
-            raise ExtractorError(
-                f'Failed to download format info, error code {
-                    code or "unknown"}')
+            raise ExtractorError(f'Failed to download format info, error code {code or "unknown"}')
         formats = []
-        for media_info in traverse_obj(
-            data,
-            ('req_1',
-             'data',
-             'midurlinfo',
-             lambda _,
-             v: v['songmid'] == mid and v['purl']),
+        for media_info in traverse_obj(data, (
+            'req_1', 'data', 'midurlinfo', lambda _, v: v['songmid'] == mid and v['purl']),
         ):
-            format_key = traverse_obj(
-                media_info, ('filename', {str}, {lambda x: x[:4]}))
+            format_key = traverse_obj(media_info, ('filename', {str}, {lambda x: x[:4]}))
             format_info = self._FORMATS.get(format_key) or {}
             format_id = format_info.get('name')
             formats.append({
@@ -218,11 +202,8 @@ class QQMusicIE(QQMusicBaseIE):
             self.raise_login_required()
 
         if traverse_obj(data, ('req_2', 'code')):
-            self.report_warning(
-                f'Failed to download lyric, error {data["req_2"]["code"]!r}')
-        lrc_content = traverse_obj(
-            data, ('req_2', 'data', 'lyric', {
-                lambda x: base64.b64decode(x).decode('utf-8')}))
+            self.report_warning(f'Failed to download lyric, error {data["req_2"]["code"]!r}')
+        lrc_content = traverse_obj(data, ('req_2', 'data', 'lyric', {lambda x: base64.b64decode(x).decode('utf-8')}))
 
         info_dict = {
             'id': mid,
@@ -242,10 +223,8 @@ class QQMusicIE(QQMusicBaseIE):
             }), get_all=False),
         }
         if lrc_content:
-            info_dict['subtitles'] = {'origin': [
-                {'ext': 'lrc', 'data': lrc_content}]}
-            info_dict['description'] = join_nonempty(
-                info_dict.get('description'), lrc_content, delim='\n')
+            info_dict['subtitles'] = {'origin': [{'ext': 'lrc', 'data': lrc_content}]}
+            info_dict['description'] = join_nonempty(info_dict.get('description'), lrc_content, delim='\n')
         return info_dict
 
 
@@ -308,14 +287,12 @@ class QQMusicSingerIE(QQMusicBaseIE):
         init_data = self._download_init_data(url, mid, fatal=False)
 
         return self.playlist_result(
-            OnDemandPagedList(
-                functools.partial(
-                    self._fetch_page, mid, self._PAGE_SIZE), self._PAGE_SIZE), mid, **traverse_obj(
-                init_data, ('singerDetail', {
-                    'title': (
-                        'basic_info', 'name', {str}), 'description': (
-                            'ex_info', 'desc', {str}), 'thumbnail': (
-                                'pic', 'pic', {url_or_none}), })))
+            OnDemandPagedList(functools.partial(self._fetch_page, mid, self._PAGE_SIZE), self._PAGE_SIZE),
+            mid, **traverse_obj(init_data, ('singerDetail', {
+                'title': ('basic_info', 'name', {str}),
+                'description': ('ex_info', 'desc', {str}),
+                'thumbnail': ('pic', 'pic', {url_or_none}),
+            })))
 
 
 class QQPlaylistBaseIE(InfoExtractor):
@@ -443,15 +420,12 @@ class QQMusicPlaylistIE(QQPlaylistBaseIE):
                 join_nonempty('code', 'subcode', from_dict=list_json),
                 list_json.get('msg'), delim=': '))
 
-        entries = self._extract_entries(
-            list_json, ('cdlist', 0, 'songlist', ...))
+        entries = self._extract_entries(list_json, ('cdlist', 0, 'songlist', ...))
 
-        return self.playlist_result(
-            entries, list_id, **traverse_obj(
-                list_json, ('cdlist', 0, {
-                    'title': (
-                        'dissname', {str}), 'description': (
-                        'desc', {clean_html}), })))
+        return self.playlist_result(entries, list_id, **traverse_obj(list_json, ('cdlist', 0, {
+            'title': ('dissname', {str}),
+            'description': ('desc', {clean_html}),
+        })))
 
 
 class QQMusicVideoIE(QQMusicBaseIE):
@@ -503,24 +477,19 @@ class QQMusicVideoIE(QQMusicBaseIE):
                 'param': {'vids': [video_id]},
             },
         }, video_id, headers=self.geo_verification_headers())
-        if traverse_obj(
-            video_info,
-            ('mvInfo',
-             'data',
-             video_id,
-             'play_forbid_reason')) == 3:
+        if traverse_obj(video_info, ('mvInfo', 'data', video_id, 'play_forbid_reason')) == 3:
             self.raise_geo_restricted()
 
         return {
-            'id': video_id, 'formats': self._parse_url_formats(
-                traverse_obj(
-                    video_info, ('mvUrl', 'data', video_id))), **traverse_obj(
-                video_info, ('mvInfo', 'data', video_id, {
-                    'title': (
-                        'name', {str}), 'description': (
-                            'desc', {str}), 'thumbnail': (
-                                'cover_pic', {url_or_none}), 'release_timestamp': (
-                                    'pubdate', {int_or_none}), 'duration': (
-                                        'duration', {int_or_none}), 'creators': (
-                                            'singers', ..., 'name', {str}), 'view_count': (
-                                                'playcnt', {int_or_none}), })), }
+            'id': video_id,
+            'formats': self._parse_url_formats(traverse_obj(video_info, ('mvUrl', 'data', video_id))),
+            **traverse_obj(video_info, ('mvInfo', 'data', video_id, {
+                'title': ('name', {str}),
+                'description': ('desc', {str}),
+                'thumbnail': ('cover_pic', {url_or_none}),
+                'release_timestamp': ('pubdate', {int_or_none}),
+                'duration': ('duration', {int_or_none}),
+                'creators': ('singers', ..., 'name', {str}),
+                'view_count': ('playcnt', {int_or_none}),
+            })),
+        }

@@ -11,16 +11,14 @@ class MirrativBaseIE(InfoExtractor):
     def assert_error(self, response):
         error_message = traverse_obj(response, ('status', 'error'))
         if error_message:
-            raise ExtractorError(
-                f'Mirrativ says: {error_message}',
-                expected=True)
+            raise ExtractorError(f'Mirrativ says: {error_message}', expected=True)
 
 
 class MirrativIE(MirrativBaseIE):
     IE_NAME = 'mirrativ'
     _VALID_URL = r'https?://(?:www\.)?mirrativ\.com/live/(?P<id>[^/?#&]+)'
 
-    TESTS = [{
+    _TESTS = [{
         'url': 'https://mirrativ.com/live/UQomuS7EMgHoxRHjEhNiHw',
         'info_dict': {
             'id': 'UQomuS7EMgHoxRHjEhNiHw',
@@ -44,21 +42,14 @@ class MirrativIE(MirrativBaseIE):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(
-            f'https://www.mirrativ.com/live/{video_id}', video_id)
-        live_response = self._download_json(
-            f'https://www.mirrativ.com/api/live/live?live_id={video_id}', video_id)
+        webpage = self._download_webpage(f'https://www.mirrativ.com/live/{video_id}', video_id)
+        live_response = self._download_json(f'https://www.mirrativ.com/api/live/live?live_id={video_id}', video_id)
         self.assert_error(live_response)
 
-        hls_url = dict_get(
-            live_response,
-            ('archive_url_hls',
-             'streaming_url_hls'))
+        hls_url = dict_get(live_response, ('archive_url_hls', 'streaming_url_hls'))
         is_live = bool(live_response.get('is_live'))
         if not hls_url:
-            raise ExtractorError(
-                'Neither archive nor live is available.',
-                expected=True)
+            raise ExtractorError('Neither archive nor live is available.', expected=True)
 
         formats = self._extract_m3u8_formats(
             hls_url, video_id,
@@ -67,32 +58,19 @@ class MirrativIE(MirrativBaseIE):
 
         return {
             'id': video_id,
-            'title': self._og_search_title(
-                webpage,
-                default=None) or self._search_regex(
-                r'<title>\s*(.+?) - Mirrativ\s*</title>',
-                webpage) or live_response.get('title'),
+            'title': self._og_search_title(webpage, default=None) or self._search_regex(
+                r'<title>\s*(.+?) - Mirrativ\s*</title>', webpage) or live_response.get('title'),
             'is_live': is_live,
             'description': live_response.get('description'),
             'formats': formats,
             'thumbnail': live_response.get('image_url'),
-            'uploader': traverse_obj(
-                live_response,
-                ('owner',
-                 'name')),
-            'uploader_id': traverse_obj(
-                live_response,
-                ('owner',
-                 'user_id')),
-            'duration': try_get(
-                live_response,
-                lambda x: x['ended_at'] -
-                x['started_at']) if not is_live else None,
+            'uploader': traverse_obj(live_response, ('owner', 'name')),
+            'uploader_id': traverse_obj(live_response, ('owner', 'user_id')),
+            'duration': try_get(live_response, lambda x: x['ended_at'] - x['started_at']) if not is_live else None,
             'view_count': live_response.get('total_viewer_num'),
             'release_timestamp': live_response.get('started_at'),
             'timestamp': live_response.get('created_at'),
-            'was_live': bool(
-                live_response.get('is_archive')),
+            'was_live': bool(live_response.get('is_archive')),
         }
 
 
@@ -102,9 +80,7 @@ class MirrativUserIE(MirrativBaseIE):
 
     _TESTS = [{
         # Live archive is available up to 3 days
-        # see:
-        # https://helpfeel.com/mirrativ/%E9%8C%B2%E7%94%BB-5e26d3ad7b59ef0017fb49ac
-        # (Japanese)
+        # see: https://helpfeel.com/mirrativ/%E9%8C%B2%E7%94%BB-5e26d3ad7b59ef0017fb49ac (Japanese)
         'url': 'https://www.mirrativ.com/user/110943130',
         'note': 'multiple archives available',
         'only_matching': True,
@@ -114,8 +90,7 @@ class MirrativUserIE(MirrativBaseIE):
         page = 1
         while page is not None:
             api_response = self._download_json(
-                f'https://www.mirrativ.com/api/live/live_history?user_id={user_id}&page={page}',
-                user_id,
+                f'https://www.mirrativ.com/api/live/live_history?user_id={user_id}&page={page}', user_id,
                 note=f'Downloading page {page}')
             self.assert_error(api_response)
             lives = api_response.get('lives')

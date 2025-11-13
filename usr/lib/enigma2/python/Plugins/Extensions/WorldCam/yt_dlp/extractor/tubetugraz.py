@@ -17,10 +17,7 @@ class TubeTuGrazBaseIE(InfoExtractor):
     def _perform_login(self, username, password):
         urlh = self._request_webpage(
             'https://tube.tugraz.at/Shibboleth.sso/Login?target=/paella/ui/index.html',
-            None,
-            fatal=False,
-            note='downloading login page',
-            errnote='unable to fetch login page')
+            None, fatal=False, note='downloading login page', errnote='unable to fetch login page')
         if not urlh:
             return
 
@@ -61,43 +58,20 @@ class TubeTuGrazBaseIE(InfoExtractor):
 
     def _extract_episode(self, episode_info):
         video_id = episode_info.get('id')
-        formats = list(
-            self._extract_formats(
-                traverse_obj(
-                    episode_info,
-                    ('mediapackage',
-                     'media',
-                     'track')),
-                video_id))
+        formats = list(self._extract_formats(
+            traverse_obj(episode_info, ('mediapackage', 'media', 'track')), video_id))
 
-        title = traverse_obj(
-            episode_info, ('mediapackage', 'title'), 'dcTitle')
-        series_title = traverse_obj(
-            episode_info, ('mediapackage', 'seriestitle'))
-        creator = ', '.join(
-            variadic(
-                traverse_obj(
-                    episode_info,
-                    ('mediapackage',
-                     'creators',
-                     'creator'),
-                    'dcCreator',
-                    default='')))
+        title = traverse_obj(episode_info, ('mediapackage', 'title'), 'dcTitle')
+        series_title = traverse_obj(episode_info, ('mediapackage', 'seriestitle'))
+        creator = ', '.join(variadic(traverse_obj(
+            episode_info, ('mediapackage', 'creators', 'creator'), 'dcCreator', default='')))
         return {
             'id': video_id,
             'title': title,
             'creator': creator or None,
-            'duration': traverse_obj(
-                episode_info,
-                ('mediapackage',
-                 'duration'),
-                'dcExtent'),
+            'duration': traverse_obj(episode_info, ('mediapackage', 'duration'), 'dcExtent'),
             'series': series_title,
-            'series_id': traverse_obj(
-                episode_info,
-                ('mediapackage',
-                 'series'),
-                'dcIsPartOf'),
+            'series_id': traverse_obj(episode_info, ('mediapackage', 'series'), 'dcIsPartOf'),
             'episode': series_title and title,
             'formats': formats,
         }
@@ -162,8 +136,10 @@ class TubeTuGrazIE(TubeTuGrazBaseIE):
     IE_DESC = 'tube.tugraz.at'
 
     _VALID_URL = r'''(?x)
-        https?://tube\.tugraz\.at/paella/ui/watch.html\?id=
-        (?P<id>[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12})
+        https?://tube\.tugraz\.at/(?:
+            paella/ui/watch\.html\?(?:[^#]*&)?id=|
+            portal/watch/
+        )(?P<id>[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12})
     '''
     _TESTS = [
         {
@@ -175,9 +151,9 @@ class TubeTuGrazIE(TubeTuGrazBaseIE):
                 'title': '#6 (23.11.2017)',
                 'episode': '#6 (23.11.2017)',
                 'series': '[INB03001UF] Einführung in die strukturierte Programmierung',
-                'creator': 'Safran C',
                 'duration': 3295818,
                 'series_id': 'b1192fff-2aa7-4bf0-a5cf-7b15c3bd3b34',
+                'creators': ['Safran C'],
             },
         }, {
             'url': 'https://tube.tugraz.at/paella/ui/watch.html?id=2df6d787-e56a-428d-8ef4-d57f07eef238',
@@ -188,25 +164,19 @@ class TubeTuGrazIE(TubeTuGrazBaseIE):
                 'ext': 'mp4',
             },
             'expected_warnings': ['Extractor failed to obtain "title"'],
+        }, {
+            # Portal URL format
+            'url': 'https://tube.tugraz.at/portal/watch/ab28ec60-8cbe-4f1a-9b96-a95add56c612',
+            'only_matching': True,
         },
     ]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         episode_data = self._download_json(
-            self._API_EPISODE,
-            video_id,
-            query={
-                'id': video_id,
-                'limit': 1},
-            note='Downloading episode metadata')
+            self._API_EPISODE, video_id, query={'id': video_id, 'limit': 1}, note='Downloading episode metadata')
 
-        episode_info = traverse_obj(
-            episode_data,
-            ('search-results',
-             'result'),
-            default={
-                'id': video_id})
+        episode_info = traverse_obj(episode_data, ('search-results', 'result'), default={'id': video_id})
         return self._extract_episode(episode_info)
 
 
@@ -278,14 +248,10 @@ class TubeTuGrazSeriesIE(TubeTuGrazBaseIE):
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
         episodes_data = self._download_json(
-            self._API_EPISODE, playlist_id, query={
-                'sid': playlist_id}, note='Downloading episode list')
+            self._API_EPISODE, playlist_id, query={'sid': playlist_id}, note='Downloading episode list')
         series_data = self._download_json(
-            'https://tube.tugraz.at/series/series.json',
-            playlist_id,
-            fatal=False,
-            note='downloading series metadata',
-            errnote='failed to download series metadata',
+            'https://tube.tugraz.at/series/series.json', playlist_id, fatal=False,
+            note='downloading series metadata', errnote='failed to download series metadata',
             query={
                 'seriesId': playlist_id,
                 'count': 1,

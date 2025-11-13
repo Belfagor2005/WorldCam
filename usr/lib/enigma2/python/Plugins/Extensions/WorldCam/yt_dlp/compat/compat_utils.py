@@ -12,23 +12,11 @@ _Package = collections.namedtuple('Package', ('name', 'version'))
 
 def get_package_info(module):
     return _Package(
-        name=getattr(
-            module,
-            '_yt_dlp__identifier',
-            module.__name__),
-        version=str(
-            next(
-                filter(
-                    None,
-                    (getattr(
-                        module,
-                        attr,
-                        None) for attr in (
-                            '_yt_dlp__version',
-                            '__version__',
-                            'version_string',
-                            'version'))),
-                None)))
+        name=getattr(module, '_yt_dlp__identifier', module.__name__),
+        version=str(next(filter(None, (
+            getattr(module, attr, None)
+            for attr in ('_yt_dlp__version', '__version__', 'version_string', 'version')
+        )), None)))
 
 
 def _is_package(module):
@@ -56,8 +44,7 @@ class EnhancedModule(types.ModuleType):
         return ret.fget() if isinstance(ret, property) else ret
 
 
-def passthrough_module(
-        parent, child, allowed_attributes=(..., ), *, callback=lambda _: None):
+def passthrough_module(parent, child, allowed_attributes=(..., ), *, callback=lambda _: None):
     """Passthrough parent module into a child module, creating the parent if necessary"""
     def __getattr__(attr):
         if _is_package(parent):
@@ -66,8 +53,7 @@ def passthrough_module(
 
         ret = from_child(attr)
         if ret is _NO_ATTRIBUTE:
-            raise AttributeError(
-                f'module {parent.__name__} has no attribute {attr}')
+            raise AttributeError(f'module {parent.__name__} has no attribute {attr}')
         callback(attr)
         return ret
 
@@ -83,11 +69,8 @@ def passthrough_module(
 
         if _is_package(child):
             with contextlib.suppress(ImportError):
-                return passthrough_module(
-                    f'{parent.__name__}.{attr}',
-                    importlib.import_module(
-                        f'.{attr}',
-                        child.__name__))
+                return passthrough_module(f'{parent.__name__}.{attr}',
+                                          importlib.import_module(f'.{attr}', child.__name__))
 
         with contextlib.suppress(AttributeError):
             return getattr(child, attr)

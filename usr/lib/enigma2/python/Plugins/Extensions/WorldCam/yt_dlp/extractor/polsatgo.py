@@ -38,9 +38,7 @@ class PolsatGoIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        media = self._call_api(
-            'navigation', video_id, 'prePlayData', {
-                'mediaId': video_id})['mediaItem']
+        media = self._call_api('navigation', video_id, 'prePlayData', {'mediaId': video_id})['mediaItem']
 
         formats = list(self._extract_formats(
             try_get(media, lambda x: x['playback']['mediaSources']), video_id))
@@ -83,9 +81,6 @@ class PolsatGoIE(InfoExtractor):
             headers={'Content-type': 'application/json'})
         if not res.get('result'):
             if res['error']['code'] == 13404:
-                raise ExtractorError(
-                    'This video is either unavailable in your region or is DRM protected',
-                    expected=True)
-            raise ExtractorError(
-                f'Solorz said: {res["error"]["message"]} - {res["error"]["data"]["userMessage"]}')
+                raise ExtractorError('This video is either unavailable in your region or is DRM protected', expected=True)
+            raise ExtractorError(f'Solorz said: {res["error"]["message"]} - {res["error"]["data"]["userMessage"]}')
         return res['result']

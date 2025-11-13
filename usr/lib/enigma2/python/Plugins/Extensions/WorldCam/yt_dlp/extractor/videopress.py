@@ -15,8 +15,7 @@ class VideoPressIE(InfoExtractor):
     _ID_REGEX = r'[\da-zA-Z]{8}'
     _PATH_REGEX = r'video(?:\.word)?press\.com/embed/'
     _VALID_URL = rf'https?://{_PATH_REGEX}(?P<id>{_ID_REGEX})'
-    _EMBED_REGEX = [
-        rf'<iframe[^>]+src=["\'](?P<url>(?:https?://)?{_PATH_REGEX}{_ID_REGEX})']
+    _EMBED_REGEX = [rf'<iframe[^>]+src=["\'](?P<url>(?:https?://)?{_PATH_REGEX}{_ID_REGEX})']
     _TESTS = [{
         'url': 'https://videopress.com/embed/kUJmAcSf',
         'md5': '706956a6c875873d51010921310e4bc6',
@@ -24,8 +23,9 @@ class VideoPressIE(InfoExtractor):
             'id': 'kUJmAcSf',
             'ext': 'mp4',
             'title': 'VideoPress Demo',
-            'thumbnail': r're:^https?://.*\.jpg',
-            'duration': 634.6,
+            'description': '',
+            'duration': 635.0,
+            'thumbnail': r're:https?://videos\.files\.wordpress\.com/.+\.jpg',
             'timestamp': 1434983935,
             'upload_date': '20150622',
             'age_limit': 0,
@@ -37,6 +37,20 @@ class VideoPressIE(InfoExtractor):
     }, {
         'url': 'https://video.wordpress.com/embed/kUJmAcSf',
         'only_matching': True,
+    }]
+    _WEBPAGE_TESTS = [{
+        'url': 'https://wordpress.com/support/videopress/',
+        'info_dict': {
+            'id': 'BZHMfMfN',
+            'ext': 'mp4',
+            'title': 'videopress example',
+            'age_limit': 0,
+            'description': '',
+            'duration': 19.796,
+            'thumbnail': r're:https?://videos\.files\.wordpress\.com/.+\.jpg',
+            'timestamp': 1748969554,
+            'upload_date': '20250603',
+        },
     }]
 
     def _real_extract(self, url):

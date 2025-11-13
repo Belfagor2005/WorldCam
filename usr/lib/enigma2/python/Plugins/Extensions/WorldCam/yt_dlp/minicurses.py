@@ -50,8 +50,7 @@ def format_text(text, f):
             bg_color = f'0;10{bg_color[1:]}'
             tokens.pop()
         if tokens[-1] != 'ON':
-            raise SyntaxError(
-                f'Invalid format {f.split(" ON ", 1)[1]!r} in {f!r}')
+            raise SyntaxError(f'Invalid format {f.split(" ON ", 1)[1]!r} in {f!r}')
         bg_color = f'\033[{bg_color}m'
         tokens.pop()
 
@@ -64,16 +63,13 @@ def format_text(text, f):
         if tokens and tokens[-1] == 'LIGHT':
             fg_color = f'9{fg_color[1:]}'
             tokens.pop()
-        fg_style = tokens.pop(
-        ) if tokens and tokens[-1] in _TEXT_STYLES else 'NORMAL'
+        fg_style = tokens.pop() if tokens and tokens[-1] in _TEXT_STYLES else 'NORMAL'
         fg_color = f'\033[{_TEXT_STYLES[fg_style]};{fg_color}m'
         if tokens:
             raise SyntaxError(f'Invalid format {" ".join(tokens)!r} in {f!r}')
 
     if fg_color or bg_color:
-        text = text.replace(
-            CONTROL_SEQUENCES['RESET'],
-            f'{fg_color}{bg_color}')
+        text = text.replace(CONTROL_SEQUENCES['RESET'], f'{fg_color}{bg_color}')
         return f'{fg_color}{bg_color}{text}{CONTROL_SEQUENCES["RESET"]}'
     else:
         return text
@@ -151,10 +147,7 @@ class MultilinePrinter(MultilinePrinterBase):
     @lock
     def print_at_line(self, text, pos):
         if self._HAVE_FULLCAP:
-            self.write(
-                *self._move_cursor(pos),
-                CONTROL_SEQUENCES['ERASE_LINE'],
-                text)
+            self.write(*self._move_cursor(pos), CONTROL_SEQUENCES['ERASE_LINE'], text)
             return
 
         text = self._add_line_number(text, pos)
@@ -183,10 +176,7 @@ class MultilinePrinter(MultilinePrinterBase):
 
         if self._HAVE_FULLCAP:
             self.write(
-                *
-                text,
-                CONTROL_SEQUENCES['ERASE_LINE'],
-                f'{CONTROL_SEQUENCES["UP"]}{CONTROL_SEQUENCES["ERASE_LINE"]}' *
-                self.maximum)
+                *text, CONTROL_SEQUENCES['ERASE_LINE'],
+                f'{CONTROL_SEQUENCES["UP"]}{CONTROL_SEQUENCES["ERASE_LINE"]}' * self.maximum)
         else:
             self.write('\r', ' ' * self._lastlength, '\r')

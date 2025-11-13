@@ -79,8 +79,8 @@ class LibraryOfCongressIE(InfoExtractor):
         derivative = data['derivatives'][0]
         media_url = derivative['derivativeUrl']
 
-        title = derivative.get('shortName') or data.get(
-            'shortName') or self._og_search_title(webpage)
+        title = derivative.get('shortName') or data.get('shortName') or self._og_search_title(
+            webpage)
 
         # Following algorithm was extracted from setAVSource js function
         # found in webpage
@@ -101,10 +101,7 @@ class LibraryOfCongressIE(InfoExtractor):
                 'quality': 1,
             })
         http_format = {
-            'url': re.sub(
-                r'(://[^/]+/)(?:[^/]+/)*(?:mp4|mp3):',
-                r'\1',
-                media_url),
+            'url': re.sub(r'(://[^/]+/)(?:[^/]+/)*(?:mp4|mp3):', r'\1', media_url),
             'format_id': 'http',
             'quality': 1,
         }
@@ -114,8 +111,7 @@ class LibraryOfCongressIE(InfoExtractor):
 
         download_urls = set()
         for m in re.finditer(
-            r'<option[^>]+value=(["\'])(?P<url>.+?)\1[^>]+data-file-download=[^>]+>\s*(?P<id>.+?)(?:(?:&nbsp;|\s+)\((?P<size>.+?)\))?\s*<',
-                webpage):
+                r'<option[^>]+value=(["\'])(?P<url>.+?)\1[^>]+data-file-download=[^>]+>\s*(?P<id>.+?)(?:(?:&nbsp;|\s+)\((?P<size>.+?)\))?\s*<', webpage):
             format_id = m.group('id').lower()
             if format_id in ('gif', 'jpeg'):
                 continue

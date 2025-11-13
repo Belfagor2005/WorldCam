@@ -27,19 +27,13 @@ class NewsyIE(InfoExtractor):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        data_json = self._parse_json(
-            self._html_search_regex(
-                r'data-video-player\s?=\s?"({[^"]+})">',
-                webpage,
-                'data'),
-            display_id,
-            js_to_json)
+        data_json = self._parse_json(self._html_search_regex(
+            r'data-video-player\s?=\s?"({[^"]+})">', webpage, 'data'), display_id, js_to_json)
         ld_json = self._search_json_ld(webpage, display_id, fatal=False)
 
         formats, subtitles = [], {}
         if data_json.get('stream'):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                data_json['stream'], display_id)
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(data_json['stream'], display_id)
             formats.extend(fmts)
             subtitles = self._merge_subtitles(subtitles, subs)
         return merge_dicts(ld_json, {

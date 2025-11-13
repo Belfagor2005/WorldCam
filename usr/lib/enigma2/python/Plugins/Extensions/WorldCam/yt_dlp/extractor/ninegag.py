@@ -1,6 +1,5 @@
 from .common import InfoExtractor
 from ..utils import (
-    ExtractorError,
     determine_ext,
     int_or_none,
     traverse_obj,
@@ -61,10 +60,10 @@ class NineGagIE(InfoExtractor):
         post = self._download_json(
             'https://9gag.com/v1/post', post_id, query={
                 'id': post_id,
-            })['data']['post']
+            }, impersonate=True)['data']['post']
 
         if post.get('type') != 'Animated':
-            raise ExtractorError(
+            self.raise_no_formats(
                 'The given url does not contain a video',
                 expected=True)
 
@@ -99,8 +98,7 @@ class NineGagIE(InfoExtractor):
             elif ext in ('webm', 'mp4'):
                 if not duration:
                     duration = int_or_none(image.get('duration'))
-                common['acodec'] = 'none' if image.get(
-                    'hasAudio') == 0 else None
+                common['acodec'] = 'none' if image.get('hasAudio') == 0 else None
                 for vcodec in ('vp8', 'vp9', 'h265'):
                     c_url = image.get(vcodec + 'Url')
                     if not c_url:

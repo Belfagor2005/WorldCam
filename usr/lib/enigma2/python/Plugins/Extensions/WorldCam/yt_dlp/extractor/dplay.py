@@ -13,6 +13,7 @@ from ..utils import (
     try_get,
     unified_timestamp,
 )
+from ..utils.traversal import traverse_obj
 
 
 class DPlayBaseIE(InfoExtractor):
@@ -46,18 +47,11 @@ class DPlayBaseIE(InfoExtractor):
             self.raise_geo_restricted(countries=geo_countries)
         elif error_code in ('access.denied.missingpackage', 'invalid.token'):
             raise ExtractorError(
-                'This video is only available for registered users. You may want to use --cookies.',
-                expected=True)
+                'This video is only available for registered users. You may want to use --cookies.', expected=True)
         raise ExtractorError(info['errors'][0]['detail'], expected=True)
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
-        headers['Authorization'] = self._get_auth(
-            disco_base, display_id, realm, False)
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
+        headers['Authorization'] = self._get_auth(disco_base, display_id, realm, False)
 
     def _download_video_playback_info(self, disco_base, video_id, headers):
         streaming = self._download_json(
@@ -71,14 +65,7 @@ class DPlayBaseIE(InfoExtractor):
             })
         return streaming_list
 
-    def _get_disco_api_info(
-            self,
-            url,
-            display_id,
-            disco_host,
-            realm,
-            country,
-            domain=''):
+    def _get_disco_api_info(self, url, display_id, disco_host, realm, country, domain=''):
         country = self.get_param('geo_bypass_country') or country
         geo_countries = [country.upper()]
         self._initialize_geo_bypass({
@@ -327,10 +314,8 @@ class DPlayIE(DPlayBaseIE):
         mobj = self._match_valid_url(url)
         display_id = mobj.group('id')
         domain = remove_start(mobj.group('domain'), 'www.')
-        country = mobj.group('country') or mobj.group(
-            'subdomain_country') or mobj.group('plus_country')
-        host = 'disco-api.' + \
-            domain if domain[0] == 'd' else 'eu2-prod.disco-api.com'
+        country = mobj.group('country') or mobj.group('subdomain_country') or mobj.group('plus_country')
+        host = 'disco-api.' + domain if domain[0] == 'd' else 'eu2-prod.disco-api.com'
         return self._get_disco_api_info(
             url, display_id, host, 'dplay' + country, country, domain)
 
@@ -340,12 +325,7 @@ class DiscoveryPlusBaseIE(DPlayBaseIE):
 
     _DISCO_CLIENT_VER = '27.43.0'
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
         headers.update({
             'x-disco-params': f'realm={realm},siteLookupKey={self._PRODUCT}',
             'x-disco-client': f'WEB:UNKNOWN:{self._PRODUCT}:{self._DISCO_CLIENT_VER}',
@@ -365,8 +345,7 @@ class DiscoveryPlusBaseIE(DPlayBaseIE):
             }).encode())['data']['attributes']['streaming']
 
     def _real_extract(self, url):
-        return self._get_disco_api_info(
-            url, self._match_id(url), **self._DISCO_API_PARAMS)
+        return self._get_disco_api_info(url, self._match_id(url), **self._DISCO_API_PARAMS)
 
 
 class HGTVDeIE(DiscoveryPlusBaseIE):
@@ -400,12 +379,7 @@ class HGTVDeIE(DiscoveryPlusBaseIE):
         'country': 'de',
     }
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
         headers.update({
             'x-disco-params': f'realm={realm}',
             'x-disco-client': 'Alps:HyogaPlayer:0.0.0',
@@ -414,8 +388,7 @@ class HGTVDeIE(DiscoveryPlusBaseIE):
 
 
 class GoDiscoveryIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:go\.)?discovery\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:go\.)?discovery\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://go.discovery.com/video/in-the-eye-of-the-storm-discovery-atve-us/trapped-in-a-twister',
         'info_dict': {
@@ -462,8 +435,7 @@ class GoDiscoveryIE(DiscoveryPlusBaseIE):
 
 
 class TravelChannelIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:watch\.)?travelchannel\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:watch\.)?travelchannel\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://watch.travelchannel.com/video/the-dead-files-travel-channel/protect-the-children',
         'info_dict': {
@@ -510,8 +482,7 @@ class TravelChannelIE(DiscoveryPlusBaseIE):
 
 
 class CookingChannelIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:watch\.)?cookingchanneltv\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:watch\.)?cookingchanneltv\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://watch.cookingchanneltv.com/video/bobbys-triple-threat-food-network-atve-us/titans-vs-marcus-samuelsson',
         'info_dict': {
@@ -558,8 +529,7 @@ class CookingChannelIE(DiscoveryPlusBaseIE):
 
 
 class HGTVUsaIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:watch\.)?hgtv\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:watch\.)?hgtv\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://watch.hgtv.com/video/flip-or-flop-the-final-flip-hgtv-atve-us/flip-or-flop-the-final-flip',
         'info_dict': {
@@ -602,8 +572,7 @@ class HGTVUsaIE(DiscoveryPlusBaseIE):
 
 
 class FoodNetworkIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:watch\.)?foodnetwork\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:watch\.)?foodnetwork\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://watch.foodnetwork.com/video/guys-grocery-games-food-network/wild-in-the-aisles',
         'info_dict': {
@@ -650,8 +619,7 @@ class FoodNetworkIE(DiscoveryPlusBaseIE):
 
 
 class DestinationAmericaIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?destinationamerica\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:www\.)?destinationamerica\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://www.destinationamerica.com/video/bbq-pit-wars-destination-america/smoke-on-the-water',
         'info_dict': {
@@ -698,8 +666,7 @@ class DestinationAmericaIE(DiscoveryPlusBaseIE):
 
 
 class InvestigationDiscoveryIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?investigationdiscovery\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:www\.)?investigationdiscovery\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://www.investigationdiscovery.com/video/deadly-influence-the-social-media-murders-investigation-discovery-atve-us/rip-bianca',
         'info_dict': {
@@ -746,41 +713,43 @@ class InvestigationDiscoveryIE(DiscoveryPlusBaseIE):
 
 
 class AmHistoryChannelIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?ahctv\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
-    _TESTS = [{'url': 'https://www.ahctv.com/video/blood-and-fury-americas-civil-war-ahc/battle-of-bull-run',
-               'info_dict': {'id': '2139199',
-                             'display_id': 'blood-and-fury-americas-civil-war-ahc/battle-of-bull-run',
-                             'ext': 'mp4',
-                             'title': 'Battle of Bull Run',
-                             'description': 'Two untested armies clash in the first real battle of the Civil War.',
-                             'season_number': 1,
-                             'season': 'Season 1',
-                             'episode_number': 1,
-                             'episode': 'Episode 1',
-                             'series': 'Blood and Fury: America\'s Civil War',
-                             'duration': 2612.509,
-                             'upload_date': '20220923',
-                             'timestamp': 1663905600,
-                             'creators': ['AHC'],
-                             'tags': [],
-                             'thumbnail': 'https://us1-prod-images.disco-api.com/2020/05/11/4af61bd7-d705-3108-82c4-1a6e541e20fa.jpeg',
-                             },
-               },
-              {'url': 'https://www.ahctv.com/video/modern-sniper-ahc/army',
-               'info_dict': {'id': '2309730',
-                             'display_id': 'modern-sniper-ahc/army',
-                             'ext': 'mp4',
-                             'title': 'Army',
-                             'description': 'Snipers today face challenges their predecessors couldve only dreamed of.',
-                             'season_number': 1,
-                             'episode_number': 1,
-                             },
-               'skip': 'Available for Premium users',
-               },
-              {'url': 'https://www.ahctv.com/video/modern-sniper-ahc/army',
-               'only_matching': True,
-               }]
+    _VALID_URL = r'https?://(?:www\.)?ahctv\.com/video' + DPlayBaseIE._PATH_REGEX
+    _TESTS = [{
+        'url': 'https://www.ahctv.com/video/blood-and-fury-americas-civil-war-ahc/battle-of-bull-run',
+        'info_dict': {
+            'id': '2139199',
+            'display_id': 'blood-and-fury-americas-civil-war-ahc/battle-of-bull-run',
+            'ext': 'mp4',
+            'title': 'Battle of Bull Run',
+            'description': 'Two untested armies clash in the first real battle of the Civil War.',
+            'season_number': 1,
+            'season': 'Season 1',
+            'episode_number': 1,
+            'episode': 'Episode 1',
+            'series': 'Blood and Fury: America\'s Civil War',
+            'duration': 2612.509,
+            'upload_date': '20220923',
+            'timestamp': 1663905600,
+            'creators': ['AHC'],
+            'tags': [],
+            'thumbnail': 'https://us1-prod-images.disco-api.com/2020/05/11/4af61bd7-d705-3108-82c4-1a6e541e20fa.jpeg',
+        },
+    }, {
+        'url': 'https://www.ahctv.com/video/modern-sniper-ahc/army',
+        'info_dict': {
+            'id': '2309730',
+            'display_id': 'modern-sniper-ahc/army',
+            'ext': 'mp4',
+            'title': 'Army',
+            'description': 'Snipers today face challenges their predecessors couldve only dreamed of.',
+            'season_number': 1,
+            'episode_number': 1,
+        },
+        'skip': 'Available for Premium users',
+    }, {
+        'url': 'https://www.ahctv.com/video/modern-sniper-ahc/army',
+        'only_matching': True,
+    }]
 
     _PRODUCT = 'ahc'
     _DISCO_API_PARAMS = {
@@ -791,8 +760,7 @@ class AmHistoryChannelIE(DiscoveryPlusBaseIE):
 
 
 class ScienceChannelIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?sciencechannel\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:www\.)?sciencechannel\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://www.sciencechannel.com/video/spaces-deepest-secrets-science-atve-us/mystery-of-the-dead-planets',
         'info_dict': {
@@ -839,41 +807,43 @@ class ScienceChannelIE(DiscoveryPlusBaseIE):
 
 
 class DiscoveryLifeIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?discoverylife\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
-    _TESTS = [{'url': 'https://www.discoverylife.com/video/er-files-discovery-life-atve-us/sweet-charity',
-               'info_dict': {'id': '2347614',
-                             'display_id': 'er-files-discovery-life-atve-us/sweet-charity',
-                             'ext': 'mp4',
-                             'title': 'Sweet Charity',
-                             'description': 'The staff at Charity Hospital treat a serious foot infection.',
-                             'season_number': 1,
-                             'season': 'Season 1',
-                             'episode_number': 1,
-                             'episode': 'Episode 1',
-                             'series': 'ER Files',
-                             'duration': 2364.261,
-                             'upload_date': '20230721',
-                             'timestamp': 1689912000,
-                             'creators': ['Discovery Life'],
-                             'tags': [],
-                             'thumbnail': 'https://us1-prod-images.disco-api.com/2021/03/16/4b6f0124-360b-3546-b6a4-5552db886b86.jpeg',
-                             },
-               },
-              {'url': 'https://www.discoverylife.com/video/surviving-death-discovery-life-atve-us/bodily-trauma',
-               'info_dict': {'id': '2218238',
-                             'display_id': 'surviving-death-discovery-life-atve-us/bodily-trauma',
-                             'ext': 'mp4',
-                             'title': 'Bodily Trauma',
-                             'description': 'Meet three people who tested the limits of the human body.',
-                             'season_number': 1,
-                             'episode_number': 2,
-                             },
-               'skip': 'Available for Premium users',
-               },
-              {'url': 'https://www.discoverylife.com/video/surviving-death-discovery-life-atve-us/bodily-trauma',
-               'only_matching': True,
-               }]
+    _VALID_URL = r'https?://(?:www\.)?discoverylife\.com/video' + DPlayBaseIE._PATH_REGEX
+    _TESTS = [{
+        'url': 'https://www.discoverylife.com/video/er-files-discovery-life-atve-us/sweet-charity',
+        'info_dict': {
+            'id': '2347614',
+            'display_id': 'er-files-discovery-life-atve-us/sweet-charity',
+            'ext': 'mp4',
+            'title': 'Sweet Charity',
+            'description': 'The staff at Charity Hospital treat a serious foot infection.',
+            'season_number': 1,
+            'season': 'Season 1',
+            'episode_number': 1,
+            'episode': 'Episode 1',
+            'series': 'ER Files',
+            'duration': 2364.261,
+            'upload_date': '20230721',
+            'timestamp': 1689912000,
+            'creators': ['Discovery Life'],
+            'tags': [],
+            'thumbnail': 'https://us1-prod-images.disco-api.com/2021/03/16/4b6f0124-360b-3546-b6a4-5552db886b86.jpeg',
+        },
+    }, {
+        'url': 'https://www.discoverylife.com/video/surviving-death-discovery-life-atve-us/bodily-trauma',
+        'info_dict': {
+            'id': '2218238',
+            'display_id': 'surviving-death-discovery-life-atve-us/bodily-trauma',
+            'ext': 'mp4',
+            'title': 'Bodily Trauma',
+            'description': 'Meet three people who tested the limits of the human body.',
+            'season_number': 1,
+            'episode_number': 2,
+        },
+        'skip': 'Available for Premium users',
+    }, {
+        'url': 'https://www.discoverylife.com/video/surviving-death-discovery-life-atve-us/bodily-trauma',
+        'only_matching': True,
+    }]
 
     _PRODUCT = 'dlf'
     _DISCO_API_PARAMS = {
@@ -884,8 +854,7 @@ class DiscoveryLifeIE(DiscoveryPlusBaseIE):
 
 
 class AnimalPlanetIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?animalplanet\.com/video' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:www\.)?animalplanet\.com/video' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://www.animalplanet.com/video/mysterious-creatures-with-forrest-galante-animal-planet-atve-us/the-demon-of-peru',
         'info_dict': {
@@ -933,39 +902,42 @@ class AnimalPlanetIE(DiscoveryPlusBaseIE):
 
 class TLCIE(DiscoveryPlusBaseIE):
     _VALID_URL = r'https?://(?:go\.)?tlc\.com/video' + DPlayBaseIE._PATH_REGEX
-    _TESTS = [{'url': 'https://go.tlc.com/video/90-day-the-last-resort-tlc-atve-us/the-last-chance',
-               'info_dict': {'id': '5186422',
-                             'display_id': '90-day-the-last-resort-tlc-atve-us/the-last-chance',
-                             'ext': 'mp4',
-                             'title': 'The Last Chance',
-                             'description': 'Infidelity shakes Kalani and Asuelu\'s world, and Angela threatens divorce.',
-                             'season_number': 1,
-                             'season': 'Season 1',
-                             'episode_number': 1,
-                             'episode': 'Episode 1',
-                             'series': '90 Day: The Last Resort',
-                             'duration': 5123.91,
-                             'upload_date': '20230815',
-                             'timestamp': 1692061200,
-                             'creators': ['TLC'],
-                             'tags': [],
-                             'thumbnail': 'https://us1-prod-images.disco-api.com/2023/08/08/0ee367e2-ac76-334d-bf23-dbf796696a24.jpeg',
-                             },
-               },
-              {'url': 'https://go.tlc.com/video/my-600-lb-life-tlc/melissas-story-part-1',
-               'info_dict': {'id': '2206540',
-                             'display_id': 'my-600-lb-life-tlc/melissas-story-part-1',
-                             'ext': 'mp4',
-                             'title': 'Melissas Story (Part 1)',
-                             'description': 'At 650 lbs, Melissa is ready to begin her seven-year weight loss journey.',
-                             'season_number': 1,
-                             'episode_number': 1,
-                             },
-               'skip': 'Available for Premium users',
-               },
-              {'url': 'https://go.tlc.com/video/my-600-lb-life-tlc/melissas-story-part-1',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://go.tlc.com/video/90-day-the-last-resort-tlc-atve-us/the-last-chance',
+        'info_dict': {
+            'id': '5186422',
+            'display_id': '90-day-the-last-resort-tlc-atve-us/the-last-chance',
+            'ext': 'mp4',
+            'title': 'The Last Chance',
+            'description': 'Infidelity shakes Kalani and Asuelu\'s world, and Angela threatens divorce.',
+            'season_number': 1,
+            'season': 'Season 1',
+            'episode_number': 1,
+            'episode': 'Episode 1',
+            'series': '90 Day: The Last Resort',
+            'duration': 5123.91,
+            'upload_date': '20230815',
+            'timestamp': 1692061200,
+            'creators': ['TLC'],
+            'tags': [],
+            'thumbnail': 'https://us1-prod-images.disco-api.com/2023/08/08/0ee367e2-ac76-334d-bf23-dbf796696a24.jpeg',
+        },
+    }, {
+        'url': 'https://go.tlc.com/video/my-600-lb-life-tlc/melissas-story-part-1',
+        'info_dict': {
+            'id': '2206540',
+            'display_id': 'my-600-lb-life-tlc/melissas-story-part-1',
+            'ext': 'mp4',
+            'title': 'Melissas Story (Part 1)',
+            'description': 'At 650 lbs, Melissa is ready to begin her seven-year weight loss journey.',
+            'season_number': 1,
+            'episode_number': 1,
+        },
+        'skip': 'Available for Premium users',
+    }, {
+        'url': 'https://go.tlc.com/video/my-600-lb-life-tlc/melissas-story-part-1',
+        'only_matching': True,
+    }]
 
     _PRODUCT = 'tlc'
     _DISCO_API_PARAMS = {
@@ -976,43 +948,39 @@ class TLCIE(DiscoveryPlusBaseIE):
 
 
 class DiscoveryPlusIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?discoveryplus\.com/(?!it/)(?:(?P<country>[a-z]{2})/)?video(?:/sport|/olympics)?' + \
-        DPlayBaseIE._PATH_REGEX
-    _TESTS = [{'url': 'https://www.discoveryplus.com/video/property-brothers-forever-home/food-and-family',
-               'info_dict': {'id': '1140794',
-                             'display_id': 'property-brothers-forever-home/food-and-family',
-                             'ext': 'mp4',
-                             'title': 'Food and Family',
-                             'description': 'The brothers help a Richmond family expand their single-level home.',
-                             'duration': 2583.113,
-                             'timestamp': 1609304400,
-                             'upload_date': '20201230',
-                             'creator': 'HGTV',
-                             'series': 'Property Brothers: Forever Home',
-                             'season_number': 1,
-                             'episode_number': 1,
-                             },
-               'skip': 'Available for Premium users',
-               },
-              {'url': 'https://discoveryplus.com/ca/video/bering-sea-gold-discovery-ca/goldslingers',
-               'only_matching': True,
-               },
-              {'url': 'https://www.discoveryplus.com/gb/video/sport/eurosport-1-british-eurosport-1-british-sport/6-hours-of-spa-review',
-               'only_matching': True,
-               },
-              {'url': 'https://www.discoveryplus.com/gb/video/olympics/dplus-sport-dplus-sport-sport/rugby-sevens-australia-samoa',
-               'only_matching': True,
-               }]
+    _VALID_URL = r'https?://(?:www\.)?discoveryplus\.com/(?!it/)(?:(?P<country>[a-z]{2})/)?video(?:/sport|/olympics)?' + DPlayBaseIE._PATH_REGEX
+    _TESTS = [{
+        'url': 'https://www.discoveryplus.com/video/property-brothers-forever-home/food-and-family',
+        'info_dict': {
+            'id': '1140794',
+            'display_id': 'property-brothers-forever-home/food-and-family',
+            'ext': 'mp4',
+            'title': 'Food and Family',
+            'description': 'The brothers help a Richmond family expand their single-level home.',
+            'duration': 2583.113,
+            'timestamp': 1609304400,
+            'upload_date': '20201230',
+            'creator': 'HGTV',
+            'series': 'Property Brothers: Forever Home',
+            'season_number': 1,
+            'episode_number': 1,
+        },
+        'skip': 'Available for Premium users',
+    }, {
+        'url': 'https://discoveryplus.com/ca/video/bering-sea-gold-discovery-ca/goldslingers',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.discoveryplus.com/gb/video/sport/eurosport-1-british-eurosport-1-british-sport/6-hours-of-spa-review',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.discoveryplus.com/gb/video/olympics/dplus-sport-dplus-sport-sport/rugby-sevens-australia-samoa',
+        'only_matching': True,
+    }]
 
     _PRODUCT = None
     _DISCO_API_PARAMS = None
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
         headers.update({
             'x-disco-params': f'realm={realm},siteLookupKey={self._PRODUCT}',
             'x-disco-client': f'WEB:UNKNOWN:dplus_us:{self._DISCO_CLIENT_VER}',
@@ -1039,13 +1007,11 @@ class DiscoveryPlusIE(DiscoveryPlusBaseIE):
                 'country': country,
             }
 
-        return self._get_disco_api_info(
-            url, video_id, **self._DISCO_API_PARAMS)
+        return self._get_disco_api_info(url, video_id, **self._DISCO_API_PARAMS)
 
 
 class DiscoveryPlusIndiaIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?discoveryplus\.in/videos?' + \
-        DPlayBaseIE._PATH_REGEX
+    _VALID_URL = r'https?://(?:www\.)?discoveryplus\.in/videos?' + DPlayBaseIE._PATH_REGEX
     _TESTS = [{
         'url': 'https://www.discoveryplus.in/videos/how-do-they-do-it/fugu-and-more?seasonId=8&type=EPISODE',
         'info_dict': {
@@ -1079,12 +1045,7 @@ class DiscoveryPlusIndiaIE(DiscoveryPlusBaseIE):
         'domain': 'https://www.discoveryplus.in/',
     }
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
         headers.update({
             'x-disco-params': f'realm={realm}',
             'x-disco-client': f'WEB:UNKNOWN:{self._PRODUCT}:17.0.0',
@@ -1093,88 +1054,146 @@ class DiscoveryPlusIndiaIE(DiscoveryPlusBaseIE):
 
 
 class DiscoveryNetworksDeIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?(?P<domain>(?:tlc|dmax)\.de|dplay\.co\.uk)/(?:programme|show|sendungen)/(?P<programme>[^/]+)/(?:video/)?(?P<alternate_id>[^/]+)'
+    _VALID_URL = r'https?://(?:www\.)?(?P<domain>(?:tlc|dmax)\.de)/(?:programme|show|sendungen)/(?P<programme>[^/?#]+)/(?:video/)?(?P<alternate_id>[^/?#]+)'
 
-    _TESTS = [{'url': 'https://dmax.de/sendungen/goldrausch-in-australien/german-gold',
-               'info_dict': {'id': '4756322',
-                             'ext': 'mp4',
-                             'title': 'German Gold',
-                             'description': 'md5:f3073306553a8d9b40e6ac4cdbf09fc6',
-                             'display_id': 'goldrausch-in-australien/german-gold',
-                             'episode': 'Episode 1',
-                             'episode_number': 1,
-                             'season': 'Season 5',
-                             'season_number': 5,
-                             'series': 'Goldrausch in Australien',
-                             'duration': 2648.0,
-                             'upload_date': '20230517',
-                             'timestamp': 1684357500,
-                             'creators': ['DMAX'],
-                             'thumbnail': 'https://eu1-prod-images.disco-api.com/2023/05/09/f72fb510-7992-3b12-af7f-f16a2c22d1e3.jpeg',
-                             'tags': ['schatzsucher',
-                                      'schatz',
-                                      'nugget',
-                                      'bodenschätze',
-                                      'down under',
-                                      'australien',
-                                      'goldrausch'],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'url': 'https://www.tlc.de/programme/breaking-amish/video/die-welt-da-drauen/DCB331270001100',
-               'info_dict': {'id': '78867',
-                             'ext': 'mp4',
-                             'title': 'Die Welt da draußen',
-                             'description': 'md5:61033c12b73286e409d99a41742ef608',
-                             'timestamp': 1554069600,
-                             'upload_date': '20190331',
-                             'creator': 'TLC',
-                             'season': 'Season 1',
-                             'series': 'Breaking Amish',
-                             'episode_number': 1,
-                             'tags': ['new york',
-                                      'großstadt',
-                                      'amische',
-                                      'landleben',
-                                      'modern',
-                                      'infos',
-                                      'tradition',
-                                      'herausforderung'],
-                             'display_id': 'breaking-amish/die-welt-da-drauen',
-                             'episode': 'Episode 1',
-                             'duration': 2625.024,
-                             'season_number': 1,
-                             'thumbnail': r're:https://.+\.jpg',
-                             },
-               'skip': '404 Not Found',
-               },
-              {'url': 'https://www.dmax.de/programme/dmax-highlights/video/tuning-star-sidney-hoffmann-exklusiv-bei-dmax/191023082312316',
-               'only_matching': True,
-               },
-              {'url': 'https://www.dplay.co.uk/show/ghost-adventures/video/hotel-leger-103620/EHD_280313B',
-               'only_matching': True,
-               },
-              {'url': 'https://tlc.de/sendungen/breaking-amish/die-welt-da-drauen/',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://dmax.de/sendungen/goldrausch-in-australien/german-gold',
+        'info_dict': {
+            'id': '4756322',
+            'ext': 'mp4',
+            'title': 'German Gold',
+            'description': 'md5:f3073306553a8d9b40e6ac4cdbf09fc6',
+            'display_id': 'goldrausch-in-australien/german-gold',
+            'episode': 'Episode 1',
+            'episode_number': 1,
+            'season': 'Season 5',
+            'season_number': 5,
+            'series': 'Goldrausch in Australien',
+            'duration': 2648.0,
+            'upload_date': '20230517',
+            'timestamp': 1684357500,
+            'creators': ['DMAX'],
+            'thumbnail': 'https://eu1-prod-images.disco-api.com/2023/05/09/f72fb510-7992-3b12-af7f-f16a2c22d1e3.jpeg',
+            'tags': ['schatzsucher', 'schatz', 'nugget', 'bodenschätze', 'down under', 'australien', 'goldrausch'],
+            'categories': ['Gold', 'Schatzsucher'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://www.tlc.de/programme/breaking-amish/video/die-welt-da-drauen/DCB331270001100',
+        'info_dict': {
+            'id': '78867',
+            'ext': 'mp4',
+            'title': 'Die Welt da draußen',
+            'description': 'md5:61033c12b73286e409d99a41742ef608',
+            'timestamp': 1554069600,
+            'upload_date': '20190331',
+            'creator': 'TLC',
+            'season': 'Season 1',
+            'series': 'Breaking Amish',
+            'episode_number': 1,
+            'tags': ['new york', 'großstadt', 'amische', 'landleben', 'modern', 'infos', 'tradition', 'herausforderung'],
+            'display_id': 'breaking-amish/die-welt-da-drauen',
+            'episode': 'Episode 1',
+            'duration': 2625.024,
+            'season_number': 1,
+            'thumbnail': r're:https://.+\.jpg',
+        },
+        'skip': '404 Not Found',
+    }, {
+        'url': 'https://www.dmax.de/programme/dmax-highlights/video/tuning-star-sidney-hoffmann-exklusiv-bei-dmax/191023082312316',
+        'only_matching': True,
+    }, {
+        'url': 'https://tlc.de/sendungen/breaking-amish/die-welt-da-drauen/',
+        'only_matching': True,
+    }, {
+        'url': 'https://dmax.de/sendungen/feuerwache-3-alarm-in-muenchen/24-stunden-auf-der-feuerwache-3',
+        'info_dict': {
+            'id': '8873549',
+            'ext': 'mp4',
+            'title': '24 Stunden auf der Feuerwache 3',
+            'description': 'md5:f3084ef6170bfb79f9a6e0c030e09330',
+            'display_id': 'feuerwache-3-alarm-in-muenchen/24-stunden-auf-der-feuerwache-3',
+            'episode': 'Episode 1',
+            'episode_number': 1,
+            'season': 'Season 1',
+            'season_number': 1,
+            'series': 'Feuerwache 3 - Alarm in München',
+            'duration': 2632.0,
+            'upload_date': '20251016',
+            'timestamp': 1760645100,
+            'creators': ['DMAX'],
+            'thumbnail': 'https://eu1-prod-images.disco-api.com/2025/10/14/0bdee68c-a8d8-33d9-9204-16eb61108552.jpeg',
+            'tags': [],
+            'categories': ['DMAX Originals', 'Jobs', 'Blaulicht'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://tlc.de/sendungen/ghost-adventures/der-poltergeist-im-kostumladen',
+        'info_dict': {
+            'id': '4550602',
+            'ext': 'mp4',
+            'title': 'Der Poltergeist im Kostümladen',
+            'description': 'md5:20b52b9736a0a3a7873d19a238fad7fc',
+            'display_id': 'ghost-adventures/der-poltergeist-im-kostumladen',
+            'episode': 'Episode 1',
+            'episode_number': 1,
+            'season': 'Season 25',
+            'season_number': 25,
+            'series': 'Ghost Adventures',
+            'duration': 2493.0,
+            'upload_date': '20241223',
+            'timestamp': 1734948900,
+            'creators': ['TLC'],
+            'thumbnail': 'https://eu1-prod-images.disco-api.com/2023/04/05/59941d26-a81b-365f-829f-69d8cd81fd0f.jpeg',
+            'tags': [],
+            'categories': ['Paranormal', 'Gruselig!'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://tlc.de/sendungen/evil-gesichter-des-boesen/das-geheimnis-meines-bruders',
+        'info_dict': {
+            'id': '7792288',
+            'ext': 'mp4',
+            'title': 'Das Geheimnis meines Bruders',
+            'description': 'md5:3167550bb582eb9c92875c86a0a20882',
+            'display_id': 'evil-gesichter-des-boesen/das-geheimnis-meines-bruders',
+            'episode': 'Episode 1',
+            'episode_number': 1,
+            'season': 'Season 1',
+            'season_number': 1,
+            'series': 'Evil - Gesichter des Bösen',
+            'duration': 2626.0,
+            'upload_date': '20240926',
+            'timestamp': 1727388000,
+            'creators': ['TLC'],
+            'thumbnail': 'https://eu1-prod-images.disco-api.com/2024/11/29/e9f3e3ae-74ec-3631-81b7-fc7bbe844741.jpeg',
+            'tags': 'count:13',
+            'categories': ['True Crime', 'Mord'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }]
 
     def _real_extract(self, url):
         domain, programme, alternate_id = self._match_valid_url(url).groups()
-        country = 'GB' if domain == 'dplay.co.uk' else 'DE'
-        realm = 'questuk' if country == 'GB' else domain.replace('.', '')
-        return self._get_disco_api_info(
-            url,
-            f'{programme}/{alternate_id}',
-            'eu1-prod.disco-api.com',
-            realm,
-            country)
+        display_id = f'{programme}/{alternate_id}'
+        meta = self._download_json(
+            f'https://de-api.loma-cms.com/feloma/videos/{alternate_id}/',
+            display_id, query={
+                'environment': domain.split('.')[0],
+                'v': '2',
+                'filter[show.slug]': programme,
+            }, fatal=False)
+        video_id = traverse_obj(meta, ('uid', {str}, {lambda s: s[-7:]})) or display_id
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
+        disco_api_info = self._get_disco_api_info(
+            url, video_id, 'eu1-prod.disco-api.com', domain.replace('.', ''), 'DE')
+        disco_api_info['display_id'] = display_id
+        disco_api_info['categories'] = traverse_obj(meta, (
+            'taxonomies', lambda _, v: v['category'] == 'genre', 'title', {str.strip}, filter, all, filter))
+
+        return disco_api_info
+
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
         headers.update({
             'x-disco-params': f'realm={realm}',
             'x-disco-client': 'Alps:HyogaPlayer:0.0.0',
@@ -1189,35 +1208,22 @@ class DiscoveryPlusShowBaseIE(DPlayBaseIE):
             'x-disco-client': self._X_CLIENT,
             'x-disco-params': f'realm={self._REALM}',
             'referer': self._DOMAIN,
-            'Authentication': self._get_auth(
-                self._BASE_API,
-                None,
-                self._REALM),
+            'Authentication': self._get_auth(self._BASE_API, None, self._REALM),
         }
         show_json = self._download_json(
             f'{self._BASE_API}cms/routes/{self._SHOW_STR}/{show_name}?include=default',
             video_id=show_name, headers=headers)['included'][self._INDEX]['attributes']['component']
         show_id = show_json['mandatoryParams'].split('=')[-1]
-        season_url = self._BASE_API + \
-            'content/videos?sort=episodeNumber&filter[seasonNumber]={}&filter[show.id]={}&page[size]=100&page[number]={}'
+        season_url = self._BASE_API + 'content/videos?sort=episodeNumber&filter[seasonNumber]={}&filter[show.id]={}&page[size]=100&page[number]={}'
         for season in show_json['filters'][0]['options']:
             season_id = season['id']
             total_pages, page_num = 1, 0
             while page_num < total_pages:
                 season_json = self._download_json(
-                    season_url.format(
-                        season_id,
-                        show_id,
-                        str(
-                            page_num + 1)),
-                    show_name,
-                    headers=headers,
-                    note='Downloading season {} JSON metadata{}'.format(
-                        season_id,
-                        f' page {page_num}' if page_num else ''))
+                    season_url.format(season_id, show_id, str(page_num + 1)), show_name, headers=headers,
+                    note='Downloading season {} JSON metadata{}'.format(season_id, f' page {page_num}' if page_num else ''))
                 if page_num == 0:
-                    total_pages = try_get(
-                        season_json, lambda x: x['meta']['totalPages'], int) or 1
+                    total_pages = try_get(season_json, lambda x: x['meta']['totalPages'], int) or 1
                 episodes_json = season_json['data']
                 for episode in episodes_json:
                     video_path = episode['attributes']['path']
@@ -1228,26 +1234,24 @@ class DiscoveryPlusShowBaseIE(DPlayBaseIE):
 
     def _real_extract(self, url):
         show_name = self._match_valid_url(url).group('show_name')
-        return self.playlist_result(
-            self._entries(show_name),
-            playlist_id=show_name)
+        return self.playlist_result(self._entries(show_name), playlist_id=show_name)
 
 
 class DiscoveryPlusItalyIE(DiscoveryPlusBaseIE):
-    _VALID_URL = r'https?://(?:www\.)?discoveryplus\.com/it/video(?:/sport|/olympics)?' + \
-        DPlayBaseIE._PATH_REGEX
-    _TESTS = [{'url': 'https://www.discoveryplus.com/it/video/i-signori-della-neve/stagione-2-episodio-1-i-preparativi',
-               'only_matching': True,
-               },
-              {'url': 'https://www.discoveryplus.com/it/video/super-benny/trailer',
-               'only_matching': True,
-               },
-              {'url': 'https://www.discoveryplus.com/it/video/olympics/dplus-sport-dplus-sport-sport/water-polo-greece-italy',
-               'only_matching': True,
-               },
-              {'url': 'https://www.discoveryplus.com/it/video/sport/dplus-sport-dplus-sport-sport/lisa-vittozzi-allinferno-e-ritorno',
-               'only_matching': True,
-               }]
+    _VALID_URL = r'https?://(?:www\.)?discoveryplus\.com/it/video(?:/sport|/olympics)?' + DPlayBaseIE._PATH_REGEX
+    _TESTS = [{
+        'url': 'https://www.discoveryplus.com/it/video/i-signori-della-neve/stagione-2-episodio-1-i-preparativi',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.discoveryplus.com/it/video/super-benny/trailer',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.discoveryplus.com/it/video/olympics/dplus-sport-dplus-sport-sport/water-polo-greece-italy',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.discoveryplus.com/it/video/sport/dplus-sport-dplus-sport-sport/lisa-vittozzi-allinferno-e-ritorno',
+        'only_matching': True,
+    }]
 
     _PRODUCT = 'dplus_it'
     _DISCO_API_PARAMS = {
@@ -1256,12 +1260,7 @@ class DiscoveryPlusItalyIE(DiscoveryPlusBaseIE):
         'country': 'it',
     }
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
         headers.update({
             'x-disco-params': f'realm={realm},siteLookupKey={self._PRODUCT}',
             'x-disco-client': f'WEB:UNKNOWN:dplus_us:{self._DISCO_CLIENT_VER}',

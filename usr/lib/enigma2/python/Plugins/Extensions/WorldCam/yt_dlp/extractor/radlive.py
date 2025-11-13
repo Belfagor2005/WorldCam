@@ -49,25 +49,19 @@ class RadLiveIE(InfoExtractor):
 
         webpage = self._download_webpage(url, video_id)
 
-        content_info = json.loads(
-            self._search_regex(
-                r'<script[^>]*type=([\'"])application/json\1[^>]*>(?P<json>{.+?})</script>',
-                webpage,
-                'video info',
-                group='json'))['props']['pageProps']['initialContentData']
+        content_info = json.loads(self._search_regex(
+            r'<script[^>]*type=([\'"])application/json\1[^>]*>(?P<json>{.+?})</script>',
+            webpage, 'video info', group='json'))['props']['pageProps']['initialContentData']
         video_info = content_info[content_type]
 
         if not video_info:
-            raise ExtractorError(
-                'Unable to extract video info, make sure the URL is valid')
+            raise ExtractorError('Unable to extract video info, make sure the URL is valid')
 
-        formats = self._extract_m3u8_formats(
-            video_info['assets']['videos'][0]['url'], video_id)
+        formats = self._extract_m3u8_formats(video_info['assets']['videos'][0]['url'], video_id)
 
         data = video_info.get('structured_data', {})
 
-        release_date = unified_timestamp(
-            traverse_obj(data, ('releasedEvent', 'startDate')))
+        release_date = unified_timestamp(traverse_obj(data, ('releasedEvent', 'startDate')))
         channel = next(iter(content_info.get('channels', [])), {})
         channel_id = channel.get('lrn', '').split(':')[-1] or None
 
@@ -75,23 +69,14 @@ class RadLiveIE(InfoExtractor):
             'id': video_id,
             'title': video_info['title'],
             'formats': formats,
-            'language': traverse_obj(
-                data,
-                ('potentialAction',
-                 'target',
-                 'inLanguage')),
-            'thumbnail': traverse_obj(
-                data,
-                ('image',
-                 'contentUrl')),
+            'language': traverse_obj(data, ('potentialAction', 'target', 'inLanguage')),
+            'thumbnail': traverse_obj(data, ('image', 'contentUrl')),
             'description': data.get('description'),
             'release_timestamp': release_date,
             'channel': channel.get('name'),
             'channel_id': channel_id,
-            'channel_url': format_field(
-                channel_id,
-                None,
-                'https://rad.live/content/channel/%s'),
+            'channel_url': format_field(channel_id, None, 'https://rad.live/content/channel/%s'),
+
         }
         if content_type == 'episode':
             result.update({
@@ -125,12 +110,9 @@ class RadLiveSeasonIE(RadLiveIE):  # XXX: Do not subclass from concrete IE
         season_id = self._match_id(url)
         webpage = self._download_webpage(url, season_id)
 
-        content_info = json.loads(
-            self._search_regex(
-                r'<script[^>]*type=([\'"])application/json\1[^>]*>(?P<json>{.+?})</script>',
-                webpage,
-                'video info',
-                group='json'))['props']['pageProps']['initialContentData']
+        content_info = json.loads(self._search_regex(
+            r'<script[^>]*type=([\'"])application/json\1[^>]*>(?P<json>{.+?})</script>',
+            webpage, 'video info', group='json'))['props']['pageProps']['initialContentData']
         video_info = content_info['season']
 
         entries = [{
@@ -144,8 +126,7 @@ class RadLiveSeasonIE(RadLiveIE):  # XXX: Do not subclass from concrete IE
             'ie_key': RadLiveIE.ie_key(),
         } for episode in video_info['episodes']]
 
-        return self.playlist_result(
-            entries, season_id, video_info.get('title'))
+        return self.playlist_result(entries, season_id, video_info.get('title'))
 
 
 class RadLiveChannelIE(RadLiveIE):  # XXX: Do not subclass from concrete IE
@@ -188,8 +169,7 @@ query WebChannelListing ($lrn: ID!) {
 
         data = traverse_obj(graphql, ('data', 'channel'))
         if not data:
-            raise ExtractorError(
-                'Unable to extract video info, make sure the URL is valid')
+            raise ExtractorError('Unable to extract video info, make sure the URL is valid')
 
         entries = [{
             '_type': 'url_transparent',

@@ -56,10 +56,8 @@ class NZOnScreenIE(InfoExtractor):
     }]
 
     def _extract_formats(self, playlist):
-        for quality, (id_, url) in enumerate(
-            traverse_obj(
-                playlist, ('h264', {
-                'lo': 'lo_res', 'hi': 'hi_res'}), expected_type=url_or_none).items()):
+        for quality, (id_, url) in enumerate(traverse_obj(
+                playlist, ('h264', {'lo': 'lo_res', 'hi': 'hi_res'}), expected_type=url_or_none).items()):
             yield {
                 'url': url,
                 'format_id': id_,
@@ -74,34 +72,20 @@ class NZOnScreenIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        playlist = self._parse_json(
-            self._html_search_regex(
-                r'data-video-config=\'([^\']+)\'',
-                webpage,
-                'media data'),
-            video_id)
+        playlist = self._parse_json(self._html_search_regex(
+            r'data-video-config=\'([^\']+)\'', webpage, 'media data'), video_id)
 
         return {
             'id': playlist['uuid'],
             'display_id': video_id,
-            'title': strip_or_none(
-                playlist.get('label')),
-            'description': strip_or_none(
-                playlist.get('description')),
-            'alt_title': strip_or_none(
-                remove_end(
-                    self._html_extract_title(
-                        webpage,
-                        default=None) or self._og_search_title(webpage),
-                    ' | NZ On Screen')),
-            'thumbnail': traverse_obj(
-                playlist,
-                ('thumbnail',
-                 'path')),
-            'duration': float_or_none(
-                playlist.get('duration')),
-            'formats': list(
-                self._extract_formats(playlist)),
+            'title': strip_or_none(playlist.get('label')),
+            'description': strip_or_none(playlist.get('description')),
+            'alt_title': strip_or_none(remove_end(
+                self._html_extract_title(webpage, default=None) or self._og_search_title(webpage),
+                ' | NZ On Screen')),
+            'thumbnail': traverse_obj(playlist, ('thumbnail', 'path')),
+            'duration': float_or_none(playlist.get('duration')),
+            'formats': list(self._extract_formats(playlist)),
             'http_headers': {
                 'Referer': 'https://www.nzonscreen.com/',
                 'Origin': 'https://www.nzonscreen.com/',

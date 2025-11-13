@@ -34,20 +34,11 @@ class ZDFBaseIE(InfoExtractor):
     def _get_api_token(self):
         # As of 2025-03, this API is used by the Android app for getting tokens.
         # An equivalent token could be extracted from the webpage should the API become unavailable.
-        # For now this allows the extractor to avoid dealing with Next.js
-        # hydration data.
+        # For now this allows the extractor to avoid dealing with Next.js hydration data.
         if not self._token_cache:
-            self._token_cache.update(
-                self.cache.load(
-                    *self._TOKEN_CACHE_PARAMS,
-                    default={}))
+            self._token_cache.update(self.cache.load(*self._TOKEN_CACHE_PARAMS, default={}))
 
-        if traverse_obj(
-                self._token_cache,
-                ('expires',
-                 {int_or_none}),
-                default=0) < int(
-                time.time()):
+        if traverse_obj(self._token_cache, ('expires', {int_or_none}), default=0) < int(time.time()):
             self._token_cache.update(self._download_json(
                 'https://zdf-prod-futura.zdf.de/mediathekV2/token', None,
                 'Downloading API token', 'Failed to download API token'))
@@ -64,8 +55,7 @@ class ZDFBaseIE(InfoExtractor):
         if not aspect_ratio or not isinstance(aspect_ratio, str):
             return None
         mobj = re.match(r'(?P<width>\d+):(?P<height>\d+)', aspect_ratio)
-        return int(mobj.group('width')) / \
-            int(mobj.group('height')) if mobj else None
+        return int(mobj.group('width')) / int(mobj.group('height')) if mobj else None
 
     def _extract_chapters(self, data):
         return traverse_obj(data, (lambda _, v: v['anchorOffset'], {
@@ -89,18 +79,9 @@ class ZDFBaseIE(InfoExtractor):
         return subtitles
 
     def _expand_ptmd_template(self, api_base_url, template):
-        return urljoin(
-            api_base_url,
-            template.replace(
-                '{playerId}',
-                'android_native_6'))
+        return urljoin(api_base_url, template.replace('{playerId}', 'android_native_6'))
 
-    def _extract_ptmd(
-            self,
-            ptmd_urls,
-            video_id,
-            api_token=None,
-            aspect_ratio=None):
+    def _extract_ptmd(self, ptmd_urls, video_id, api_token=None, aspect_ratio=None):
         content_id = None
         duration = None
         formats, src_captions = [], []
@@ -108,8 +89,7 @@ class ZDFBaseIE(InfoExtractor):
 
         for ptmd_url in variadic(ptmd_urls):
             ptmd_url, smuggled_data = unsmuggle_url(ptmd_url, {})
-            # Is it a DGS variant? (*D*eutsche *G*ebärden*s*prache' / German
-            # Sign Language)
+            # Is it a DGS variant? (*D*eutsche *G*ebärden*s*prache' / German Sign Language)
             is_dgs = smuggled_data.get('vod_media_type') == 'DGS'
             ptmd = self._call_api(ptmd_url, video_id, 'PTMD data', api_token)
 
@@ -120,29 +100,17 @@ class ZDFBaseIE(InfoExtractor):
                 # https://tmd.phoenix.de/tmd/2/android_native_6/vod/ptmd/phoenix/221215_phx_spitzbergen
                 or self._search_regex(r'/vod/ptmd/[^/?#]+/(\w+)', ptmd_url, 'content ID', default=None))
             # If this is_dgs, then it's from ZDFIE and it only uses content_id for _old_archive_ids,
-            # and the old version of the extractor didn't extract DGS variants,
-            # so ignore basename
+            # and the old version of the extractor didn't extract DGS variants, so ignore basename
             if not content_id and not is_dgs:
                 content_id = basename
 
             if not duration:
-                duration = traverse_obj(
-                    ptmd, ('attributes', 'duration', 'value', {
-                        float_or_none(
-                            scale=1000)}))
+                duration = traverse_obj(ptmd, ('attributes', 'duration', 'value', {float_or_none(scale=1000)}))
             src_captions += traverse_obj(ptmd, ('captions', ..., {dict}))
 
-            for stream in traverse_obj(
-                    ptmd, ('priorityList', ..., 'formitaeten', ..., {dict})):
-                for quality in traverse_obj(
-                        stream, ('qualities', ..., {dict})):
-                    for variant in traverse_obj(
-                        quality,
-                        ('audio',
-                         'tracks',
-                         lambda _,
-                         v: url_or_none(
-                             v['uri']))):
+            for stream in traverse_obj(ptmd, ('priorityList', ..., 'formitaeten', ..., {dict})):
+                for quality in traverse_obj(stream, ('qualities', ..., {dict})):
+                    for variant in traverse_obj(quality, ('audio', 'tracks', lambda _, v: url_or_none(v['uri']))):
                         format_url = variant['uri']
                         if format_url in seen_urls:
                             continue
@@ -152,10 +120,8 @@ class ZDFBaseIE(InfoExtractor):
                             fmts = self._extract_m3u8_formats(
                                 format_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
                         elif ext in ('mp4', 'webm'):
-                            height = int_or_none(
-                                quality.get('highestVerticalResolution'))
-                            width = round(
-                                aspect_ratio * height) if aspect_ratio and height else None
+                            height = int_or_none(quality.get('highestVerticalResolution'))
+                            width = round(aspect_ratio * height) if aspect_ratio and height else None
                             fmts = [{
                                 'url': format_url,
                                 **parse_codecs(quality.get('mimeCodec')),
@@ -165,8 +131,7 @@ class ZDFBaseIE(InfoExtractor):
                                 'tbr': int_or_none(self._search_regex(r'_(\d+)k_', format_url, 'tbr', default=None)),
                             }]
                         else:
-                            self.report_warning(
-                                f'Skipping unsupported extension "{ext}"', video_id=video_id)
+                            self.report_warning(f'Skipping unsupported extension "{ext}"', video_id=video_id)
                             fmts = []
 
                         f_class = variant.get('class')
@@ -266,8 +231,7 @@ class ZDFIE(ZDFBaseIE):
         },
         'params': {'skip_download': True},
     }, {
-        # Standalone video (i.e. not part of a playlist), legacy URL before
-        # website redesign in 2025-03
+        # Standalone video (i.e. not part of a playlist), legacy URL before website redesign in 2025-03
         'url': 'https://www.zdf.de/dokumentation/dokumentation-sonstige/sylt-deutschlands-edles-nordlicht-100.html',
         'info_dict': {
             'id': 'sylt-deutschlands-edles-nordlicht-100',
@@ -327,8 +291,7 @@ class ZDFIE(ZDFBaseIE):
         },
         'params': {'skip_download': True},
     }, {
-        # Video belongs to a playlist, legacy URL before website redesign in
-        # 2025-03
+        # Video belongs to a playlist, legacy URL before website redesign in 2025-03
         'url': 'https://www.zdf.de/dokumentation/terra-x/die-magie-der-farben-von-koenigspurpur-und-jeansblau-100.html',
         'md5': '1eda17eb40a9ead3046326e10b9c5973',
         'info_dict': {
@@ -370,8 +333,7 @@ class ZDFIE(ZDFBaseIE):
             'episode_number': 370,
             'timestamp': 1639946700,
             'upload_date': '20211219',
-            # Videos with sign language variants must not have a 'dgs' suffix
-            # on their old archive IDs.
+            # Videos with sign language variants must not have a 'dgs' suffix on their old archive IDs.
             '_old_archive_ids': ['zdf 211219_sendung_hjo'],
         },
     }, {
@@ -390,8 +352,7 @@ class ZDFIE(ZDFBaseIE):
             '_old_archive_ids': ['zdf 250330_clip_2_bdi'],
         },
     }, {
-        # FUNK video (hosted on a different CDN, has atypical PTMD and HLS
-        # files)
+        # FUNK video (hosted on a different CDN, has atypical PTMD and HLS files)
         'url': 'https://www.zdf.de/funk/druck-11790/funk-alles-ist-verzaubert-102.html',
         'md5': '57af4423db0455a3975d2dc4578536bc',
         'info_dict': {
@@ -451,8 +412,7 @@ class ZDFIE(ZDFBaseIE):
         },
         'params': {'skip_download': 'geo-restricted http format'},
     }, {
-        # Same as
-        # https://www.phoenix.de/sendungen/ereignisse/corona-nachgehakt/wohin-fuehrt-der-protest-in-der-pandemie-a-2050630.html
+        # Same as https://www.phoenix.de/sendungen/ereignisse/corona-nachgehakt/wohin-fuehrt-der-protest-in-der-pandemie-a-2050630.html
         'url': 'https://www.zdf.de/politik/phoenix-sendungen/wohin-fuehrt-der-protest-in-der-pandemie-100.html',
         'only_matching': True,
     }, {
@@ -460,8 +420,7 @@ class ZDFIE(ZDFBaseIE):
         'url': 'https://www.zdf.de/dokumentation/ab-18/10-wochen-sommer-102.html',
         'only_matching': True,
     }, {
-        # Same as
-        # https://www.phoenix.de/sendungen/dokumentationen/gesten-der-maechtigen-i-a-89468.html?ref=suche
+        # Same as https://www.phoenix.de/sendungen/dokumentationen/gesten-der-maechtigen-i-a-89468.html?ref=suche
         'url': 'https://www.zdf.de/politik/phoenix-sendungen/die-gesten-der-maechtigen-100.html',
         'only_matching': True,
     }, {
@@ -469,8 +428,7 @@ class ZDFIE(ZDFBaseIE):
         'url': 'https://www.zdf.de/filme/filme-sonstige/der-hauptmann-112.html',
         'only_matching': True,
     }, {
-        # Same as https://www.3sat.de/wissen/nano/nano-21-mai-2019-102.html,
-        # equal media ids
+        # Same as https://www.3sat.de/wissen/nano/nano-21-mai-2019-102.html, equal media ids
         'url': 'https://www.zdf.de/wissen/nano/nano-21-mai-2019-102.html',
         'only_matching': True,
     }, {
@@ -542,8 +500,7 @@ query VideoByCanonical($canonical: String!) {
 
     def _extract_ptmd(self, *args, **kwargs):
         ptmd_data = super()._extract_ptmd(*args, **kwargs)
-        # This was the video id before the graphql redesign, other extractors
-        # still use it as such
+        # This was the video id before the graphql redesign, other extractors still use it as such
         old_archive_id = ptmd_data.pop('id')
         ptmd_data['_old_archive_ids'] = [make_archive_id(self, old_archive_id)]
         return ptmd_data
@@ -552,8 +509,7 @@ query VideoByCanonical($canonical: String!) {
     # They are on a separate website for which GraphQL often doesn't return results.
     # The API used here is no longer in use by official clients and likely deprecated.
     # Long-term, news documents probably should use the API used by the mobile apps:
-    # https://zdf-prod-futura.zdf.de/news/documents/ (note 'news' vs
-    # 'mediathekV2')
+    # https://zdf-prod-futura.zdf.de/news/documents/ (note 'news' vs 'mediathekV2')
     def _extract_fallback(self, document_id):
         video = self._download_json(
             f'https://zdf-prod-futura.zdf.de/mediathekV2/document/{document_id}',
@@ -566,8 +522,7 @@ query VideoByCanonical($canonical: String!) {
             {url_or_none}, any, {require('PTMD URL')}))
 
         thumbnails = []
-        for thumbnail_key, thumbnail in traverse_obj(
-                document, ('teaserBild', {dict.items}, ...)):
+        for thumbnail_key, thumbnail in traverse_obj(document, ('teaserBild', {dict.items}, ...)):
             thumbnail_url = traverse_obj(thumbnail, ('url', {url_or_none}))
             if not thumbnail_url:
                 continue
@@ -605,24 +560,14 @@ query VideoByCanonical($canonical: String!) {
 
         aspect_ratio = None
         ptmd_urls = []
-        for node in traverse_obj(
-            video_data,
-            ('currentMedia',
-             'nodes',
-             lambda _,
-             v: v['ptmdTemplate'])):
-            ptmd_url = self._expand_ptmd_template(
-                'https://api.zdf.de', node['ptmdTemplate'])
-            # Smuggle vod_media_type so that _extract_ptmd is aware of 'DGS'
-            # variants
+        for node in traverse_obj(video_data, ('currentMedia', 'nodes', lambda _, v: v['ptmdTemplate'])):
+            ptmd_url = self._expand_ptmd_template('https://api.zdf.de', node['ptmdTemplate'])
+            # Smuggle vod_media_type so that _extract_ptmd is aware of 'DGS' variants
             if vod_media_type := node.get('vodMediaType'):
-                ptmd_url = smuggle_url(
-                    ptmd_url, {
-                        'vod_media_type': vod_media_type})
+                ptmd_url = smuggle_url(ptmd_url, {'vod_media_type': vod_media_type})
             ptmd_urls.append(ptmd_url)
             if not aspect_ratio:
-                aspect_ratio = self._parse_aspect_ratio(
-                    node.get('aspectRatio'))
+                aspect_ratio = self._parse_aspect_ratio(node.get('aspectRatio'))
 
         return {
             **traverse_obj(video_data, {
@@ -729,14 +674,7 @@ class ZDFChannelIE(ZDFBaseIE):
     def suitable(cls, url):
         return False if ZDFIE.suitable(url) else super().suitable(url)
 
-    def _fetch_page(
-            self,
-            playlist_id,
-            canonical_id,
-            season_idx,
-            season_number,
-            page_number,
-            cursor=None):
+    def _fetch_page(self, playlist_id, canonical_id, season_idx, season_number, page_number, cursor=None):
         return self._download_graphql(
             playlist_id, f'season {season_number} page {page_number} JSON', query={
                 'operationName': 'seasonByCanonical',
@@ -754,12 +692,7 @@ class ZDFChannelIE(ZDFBaseIE):
                 }),
             })['data']['smartCollectionByCanonical']
 
-    def _entries(
-            self,
-            playlist_id,
-            canonical_id,
-            season_numbers,
-            requested_season_number):
+    def _entries(self, playlist_id, canonical_id, season_numbers, requested_season_number):
         for season_idx, season_number in enumerate(season_numbers):
             if requested_season_number is not None and requested_season_number != season_number:
                 continue
@@ -767,24 +700,13 @@ class ZDFChannelIE(ZDFBaseIE):
             cursor = None
             for page_number in itertools.count(1):
                 page = self._fetch_page(
-                    playlist_id,
-                    canonical_id,
-                    season_idx,
-                    season_number,
-                    page_number,
-                    cursor)
+                    playlist_id, canonical_id, season_idx, season_number, page_number, cursor)
 
                 nodes = traverse_obj(page, ('seasons', 'nodes', ...))
 
-                for episode in traverse_obj(
-                    nodes,
-                    (...,
-                     'episodes',
-                     'nodes',
-                     lambda _,
-                     v: url_or_none(
-                         v['sharingUrl']),
-                     )):
+                for episode in traverse_obj(nodes, (
+                    ..., 'episodes', 'nodes', lambda _, v: url_or_none(v['sharingUrl']),
+                )):
                     yield self.url_result(
                         episode['sharingUrl'], ZDFIE,
                         **traverse_obj(episode, {
@@ -796,10 +718,8 @@ class ZDFChannelIE(ZDFBaseIE):
                             'season_number': ('episodeInfo', 'seasonNumber', {int_or_none}),
                         }))
 
-                page_info = traverse_obj(
-                    nodes, (-1, 'episodes', 'pageInfo', {dict})) or {}
-                if not page_info.get(
-                        'hasNextPage') or not page_info.get('endCursor'):
+                page_info = traverse_obj(nodes, (-1, 'episodes', 'pageInfo', {dict})) or {}
+                if not page_info.get('hasNextPage') or not page_info.get('endCursor'):
                     break
                 cursor = page_info['endCursor']
 
@@ -807,12 +727,9 @@ class ZDFChannelIE(ZDFBaseIE):
         canonical_id = self._match_id(url)
         # Make sure to get the correct ID in case of redirects
         urlh = self._request_webpage(url, canonical_id)
-        canonical_id = self._search_regex(
-            self._VALID_URL, urlh.url, 'channel id', group='id')
-        season_number = traverse_obj(
-            parse_qs(url), ('staffel', -1, {int_or_none}))
-        playlist_id = join_nonempty(
-            canonical_id, season_number and f's{season_number}')
+        canonical_id = self._search_regex(self._VALID_URL, urlh.url, 'channel id', group='id')
+        season_number = traverse_obj(parse_qs(url), ('staffel', -1, {int_or_none}))
+        playlist_id = join_nonempty(canonical_id, season_number and f's{season_number}')
 
         collection_data = self._download_graphql(
             playlist_id, 'smart collection data', query={
@@ -829,19 +746,16 @@ class ZDFChannelIE(ZDFBaseIE):
                 }),
             })['data']['smartCollectionByCanonical']
         video_data = traverse_obj(collection_data, ('video', {dict})) or {}
-        season_numbers = traverse_obj(
-            collection_data, ('seasons', 'seasons', ..., 'number', {int_or_none}))
+        season_numbers = traverse_obj(collection_data, ('seasons', 'seasons', ..., 'number', {int_or_none}))
 
-        if not self._yes_playlist(season_numbers and playlist_id, url_or_none(
-                video_data.get('sharingUrl')) and video_data.get('canonical'), ):
-            return self.url_result(
-                video_data['sharingUrl'],
-                ZDFIE,
-                video_data['canonical'])
+        if not self._yes_playlist(
+            season_numbers and playlist_id,
+            url_or_none(video_data.get('sharingUrl')) and video_data.get('canonical'),
+        ):
+            return self.url_result(video_data['sharingUrl'], ZDFIE, video_data['canonical'])
 
         if season_number is not None and season_number not in season_numbers:
-            raise ExtractorError(
-                f'Season {season_number} was not found in the collection data')
+            raise ExtractorError(f'Season {season_number} was not found in the collection data')
 
         return self.playlist_result(
             self._entries(playlist_id, canonical_id, season_numbers, season_number),

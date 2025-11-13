@@ -121,8 +121,7 @@ class SafariIE(SafariBaseIE):
             partner_id = self._PARTNER_ID
             ui_id = self._UICONF_ID
         else:
-            video_id = '{}-{}'.format(mobj.group('course_id'),
-                                      mobj.group('part'))
+            video_id = '{}-{}'.format(mobj.group('course_id'), mobj.group('part'))
 
             webpage, urlh = self._download_webpage_handle(url, video_id)
 
@@ -158,10 +157,8 @@ class SafariIE(SafariBaseIE):
                 if session:
                     query['flashvars[ks]'] = session
 
-        return self.url_result(
-            update_url_query(
-                'https://cdnapisec.kaltura.com/html5/html5lib/v2.37.1/mwEmbedFrame.php',
-                query),
+        return self.url_result(update_url_query(
+            'https://cdnapisec.kaltura.com/html5/html5lib/v2.37.1/mwEmbedFrame.php', query),
             'Kaltura')
 
 
@@ -186,8 +183,7 @@ class SafariApiIE(SafariBaseIE):
         if 'library/view' in web_url:
             web_url = web_url.replace('library/view', 'videos')
             natural_keys = part['natural_key']
-            web_url = f'{web_url.rsplit("/",
-                                        1)[0]}/{natural_keys[0]}-{natural_keys[1][:-5]}'
+            web_url = f'{web_url.rsplit("/", 1)[0]}/{natural_keys[0]}-{natural_keys[1][:-5]}'
         return self.url_result(web_url, SafariIE.ie_key())
 
 

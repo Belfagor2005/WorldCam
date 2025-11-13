@@ -15,20 +15,15 @@ class MindsBaseIE(InfoExtractor):
         api_url = 'https://www.minds.com/api/' + path
         token = self._get_cookies(api_url).get('XSRF-TOKEN')
         return self._download_json(
-            api_url,
-            video_id,
-            f'Downloading {resource} JSON metadata',
-            headers={
+            api_url, video_id, f'Downloading {resource} JSON metadata', headers={
                 'Referer': 'https://www.minds.com/',
                 'X-XSRF-TOKEN': token.value if token else '',
-            },
-            query=query)
+            }, query=query)
 
 
 class MindsIE(MindsBaseIE):
     IE_NAME = 'minds'
-    _VALID_URL = MindsBaseIE._VALID_URL_BASE + \
-        r'(?:media|newsfeed|archive/view)/(?P<id>[0-9]+)'
+    _VALID_URL = MindsBaseIE._VALID_URL_BASE + r'(?:media|newsfeed|archive/view)/(?P<id>[0-9]+)'
     _TESTS = [{
         'url': 'https://www.minds.com/media/100000000000086822',
         'md5': '215a658184a419764852239d4970b045',
@@ -116,28 +111,17 @@ class MindsIE(MindsBaseIE):
             'id': video_id,
             'title': entity.get('title') or video_id,
             'formats': formats,
-            'description': clean_html(
-                entity.get('description')) or None,
-            'license': str_or_none(
-                entity.get('license')),
-            'timestamp': int_or_none(
-                entity.get('time_created')),
-            'uploader': strip_or_none(
-                owner.get('name')),
+            'description': clean_html(entity.get('description')) or None,
+            'license': str_or_none(entity.get('license')),
+            'timestamp': int_or_none(entity.get('time_created')),
+            'uploader': strip_or_none(owner.get('name')),
             'uploader_id': uploader_id,
-            'uploader_url': format_field(
-                uploader_id,
-                None,
-                'https://www.minds.com/%s'),
-            'view_count': int_or_none(
-                entity.get('play:count')),
-            'like_count': int_or_none(
-                entity.get('thumbs:up:count')),
-            'dislike_count': int_or_none(
-                entity.get('thumbs:down:count')),
+            'uploader_url': format_field(uploader_id, None, 'https://www.minds.com/%s'),
+            'view_count': int_or_none(entity.get('play:count')),
+            'like_count': int_or_none(entity.get('thumbs:up:count')),
+            'dislike_count': int_or_none(entity.get('thumbs:down:count')),
             'tags': tags,
-            'comment_count': int_or_none(
-                entity.get('comments:count')),
+            'comment_count': int_or_none(entity.get('comments:count')),
             'thumbnail': thumbnail,
         }
 
@@ -161,8 +145,7 @@ class MindsFeedBaseIE(MindsBaseIE):
                     'https://www.minds.com/newsfeed/' + guid,
                     MindsIE.ie_key(), guid)
             query['from_timestamp'] = data['load-next']
-            if not (query['from_timestamp'] and len(
-                    entities) == self._PAGE_SIZE):
+            if not (query['from_timestamp'] and len(entities) == self._PAGE_SIZE):
                 break
             i += 1
 
@@ -181,8 +164,7 @@ class MindsFeedBaseIE(MindsBaseIE):
 class MindsChannelIE(MindsFeedBaseIE):
     _FEED_TYPE = 'channel'
     IE_NAME = 'minds:' + _FEED_TYPE
-    _VALID_URL = MindsBaseIE._VALID_URL_BASE + \
-        r'(?!(?:newsfeed|media|api|archive|groups)/)(?P<id>[^/?&#]+)'
+    _VALID_URL = MindsBaseIE._VALID_URL_BASE + r'(?!(?:newsfeed|media|api|archive|groups)/)(?P<id>[^/?&#]+)'
     _FEED_PATH = 'channel'
     _TEST = {
         'url': 'https://www.minds.com/ottman',

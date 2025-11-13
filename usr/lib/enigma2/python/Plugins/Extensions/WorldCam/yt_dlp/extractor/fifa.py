@@ -7,7 +7,7 @@ from ..utils import (
 
 
 class FifaIE(InfoExtractor):
-    _VALID_URL = r'https?://www\.fifa\.com/fifaplus/(?P<locale>\w{2})/watch/([^#?]+/)?(?P<id>\w+)'
+    _VALID_URL = r'https?://www\.fifa\.com/fifaplus/\w{2}/watch/([^#?]+/)?(?P<id>\w+)'
     _TESTS = [{
         'url': 'https://www.fifa.com/fifaplus/en/watch/7on10qPcnyLajDDU3ntg6y',
         'info_dict': {
@@ -51,31 +51,23 @@ class FifaIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_id, locale = self._match_valid_url(url).group('id', 'locale')
+        video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
         preconnect_link = self._search_regex(
-            r'<link\b[^>]+\brel\s*=\s*"preconnect"[^>]+href\s*=\s*"([^"]+)"',
-            webpage,
-            'Preconnect Link')
+            r'<link\b[^>]+\brel\s*=\s*"preconnect"[^>]+href\s*=\s*"([^"]+)"', webpage, 'Preconnect Link')
 
         video_details = self._download_json(
-            f'{preconnect_link}/sections/videoDetails/{video_id}',
-            video_id,
-            'Downloading Video Details',
-            fatal=False)
+            f'{preconnect_link}/sections/videoDetails/{video_id}', video_id, 'Downloading Video Details', fatal=False)
 
         preplay_parameters = self._download_json(
-            f'{preconnect_link}/videoPlayerData/{video_id}',
-            video_id,
-            'Downloading Preplay Parameters')['preplayParameters']
+            f'{preconnect_link}/videoPlayerData/{video_id}', video_id, 'Downloading Preplay Parameters')['preplayParameters']
 
         content_data = self._download_json(
-            'https://content.uplynk.com/preplay/{contentId}/multiple.json?{queryStr}&sig={signature}'.format(
-                **preplay_parameters), video_id, 'Downloading Content Data')
+            'https://content.uplynk.com/preplay/{contentId}/multiple.json?{queryStr}&sig={signature}'.format(**preplay_parameters),
+            video_id, 'Downloading Content Data')
 
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            content_data['playURL'], video_id)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(content_data['playURL'], video_id)
 
         return {
             'id': video_id,

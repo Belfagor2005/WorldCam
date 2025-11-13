@@ -28,11 +28,9 @@ def ssl_load_certs(context: ssl.SSLContext, use_certifi=True):
             context.load_default_certs()
         # Work around the issue in load_default_certs when there are bad certificates. See:
         # https://github.com/yt-dlp/yt-dlp/issues/1060,
-        # https://bugs.python.org/issue35665,
-        # https://bugs.python.org/issue45312
+        # https://bugs.python.org/issue35665, https://bugs.python.org/issue45312
         except ssl.SSLError:
-            # enum_certificates is not present in mingw python. See
-            # https://github.com/yt-dlp/yt-dlp/issues/1151
+            # enum_certificates is not present in mingw python. See https://github.com/yt-dlp/yt-dlp/issues/1151
             if sys.platform == 'win32' and hasattr(ssl, 'enum_certificates'):
                 for storename in ('CA', 'ROOT'):
                     ssl_load_windows_store_certs(context, storename)
@@ -40,14 +38,11 @@ def ssl_load_certs(context: ssl.SSLContext, use_certifi=True):
 
 
 def ssl_load_windows_store_certs(ssl_context, storename):
-    # Code adapted from _load_windows_store_certs in
-    # https://github.com/python/cpython/blob/main/Lib/ssl.py
+    # Code adapted from _load_windows_store_certs in https://github.com/python/cpython/blob/main/Lib/ssl.py
     try:
-        certs = [
-            cert for cert,
-            encoding,
-            trust in ssl.enum_certificates(storename) if encoding == 'x509_asn' and (
-                trust is True or ssl.Purpose.SERVER_AUTH.oid in trust)]
+        certs = [cert for cert, encoding, trust in ssl.enum_certificates(storename)
+                 if encoding == 'x509_asn' and (
+                     trust is True or ssl.Purpose.SERVER_AUTH.oid in trust)]
     except PermissionError:
         return
     for cert in certs:
@@ -70,8 +65,7 @@ def make_socks_proxy_opts(socks_proxy):
         socks_type = ProxyType.SOCKS4A
         rdns = True
     else:
-        raise ValueError(
-            f'Unknown SOCKS proxy version: {url_components.scheme.lower()}')
+        raise ValueError(f'Unknown SOCKS proxy version: {url_components.scheme.lower()}')
 
     def unquote_if_non_empty(s):
         if not s:
@@ -142,8 +136,7 @@ def make_ssl_context(
         # 3. https://github.com/yt-dlp/yt-dlp/pull/5294
         # 4. https://peps.python.org/pep-0644/
         # 5. https://peps.python.org/pep-0644/#libressl-support
-        # 6.
-        # https://github.com/yt-dlp/yt-dlp/commit/5b9f253fa0aee996cf1ed30185d4b502e00609c4#commitcomment-89054368
+        # 6. https://github.com/yt-dlp/yt-dlp/commit/5b9f253fa0aee996cf1ed30185d4b502e00609c4#commitcomment-89054368
         context.set_ciphers(
             '@SECLEVEL=2:ECDH+AESGCM:ECDH+CHACHA20:ECDH+AES:DHE+AES:!aNULL:!eNULL:!aDSS:!SHA1:!AESCCM')
         context.minimum_version = ssl.TLSVersion.TLSv1_2
@@ -189,12 +182,9 @@ class InstanceStoreMixin:
         self.__instances.clear()
 
 
-def add_accept_encoding_header(
-        headers: HTTPHeaderDict,
-        supported_encodings: Iterable[str]):
+def add_accept_encoding_header(headers: HTTPHeaderDict, supported_encodings: Iterable[str]):
     if 'Accept-Encoding' not in headers:
-        headers['Accept-Encoding'] = ', '.join(
-            supported_encodings) or 'identity'
+        headers['Accept-Encoding'] = ', '.join(supported_encodings) or 'identity'
 
 
 def wrap_request_errors(func):
@@ -210,7 +200,7 @@ def wrap_request_errors(func):
 
 
 def _socket_connect(ip_addr, timeout, source_address):
-    af, socktype, proto, canonname, sa = ip_addr
+    af, socktype, proto, _canonname, sa = ip_addr
     sock = socket.socket(af, socktype, proto)
     try:
         if timeout is not socket._GLOBAL_DEFAULT_TIMEOUT:
@@ -224,13 +214,8 @@ def _socket_connect(ip_addr, timeout, source_address):
         raise
 
 
-def create_socks_proxy_socket(
-        dest_addr,
-        proxy_args,
-        proxy_ip_addr,
-        timeout,
-        source_address):
-    af, socktype, proto, canonname, sa = proxy_ip_addr
+def create_socks_proxy_socket(dest_addr, proxy_args, proxy_ip_addr, timeout, source_address):
+    af, socktype, proto, _canonname, sa = proxy_ip_addr
     sock = sockssocket(af, socktype, proto)
     try:
         connect_proxy_args = proxy_args.copy()
@@ -266,9 +251,8 @@ def create_connection(
         ip_addrs = [addr for addr in ip_addrs if addr[0] == af]
         if not ip_addrs:
             raise OSError(
-                f'No remote IPv{
-                    4 if af == socket.AF_INET else 6} addresses available for connect. ' f'Can\'t use "{
-                    source_address[0]}" as source address')
+                f'No remote IPv{4 if af == socket.AF_INET else 6} addresses available for connect. '
+                f'Can\'t use "{source_address[0]}" as source address')
 
     err = None
     for ip_addr in ip_addrs:

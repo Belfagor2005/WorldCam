@@ -115,8 +115,7 @@ class DaumClipIE(DaumBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if DaumPlaylistIE.suitable(
-            url) or DaumUserIE.suitable(url) else super().suitable(url)
+        return False if DaumPlaylistIE.suitable(url) or DaumUserIE.suitable(url) else super().suitable(url)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -124,8 +123,7 @@ class DaumClipIE(DaumBaseIE):
             self._KAKAO_EMBED_BASE + video_id, 'Kakao', video_id)
 
 
-class DaumListIE(
-        InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
+class DaumListIE(InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
     def _get_entries(self, list_id, list_id_type):
         name = None
         entries = []
@@ -154,9 +152,7 @@ class DaumListIE(
         if 'clipid' in query_dict:
             clip_id = query_dict['clipid'][0]
             if not self._yes_playlist(list_id, clip_id):
-                return self.url_result(
-                    DaumClipIE._URL_TEMPLATE %
-                    clip_id, 'DaumClip')
+                return self.url_result(DaumClipIE._URL_TEMPLATE % clip_id, 'DaumClip')
 
 
 class DaumPlaylistIE(DaumListIE):
@@ -207,36 +203,41 @@ class DaumUserIE(DaumListIE):
     _VALID_URL = r'https?://(?:m\.)?tvpot\.daum\.net/mypot/(?:View|Top)\.(?:do|tv)\?.*?ownerid=(?P<id>[0-9a-zA-Z]+)'
     IE_NAME = 'daum.net:user'
 
-    _TESTS = [{'url': 'http://tvpot.daum.net/mypot/View.do?ownerid=o2scDLIVbHc0',
-               'info_dict': {'id': 'o2scDLIVbHc0',
-                             'title': '마이 리틀 텔레비전',
-                             },
-               'playlist_mincount': 213,
-               },
-              {'url': 'http://tvpot.daum.net/mypot/View.do?ownerid=o2scDLIVbHc0&clipid=73801156',
-               'info_dict': {'id': '73801156',
-                             'ext': 'mp4',
-                             'title': '[미공개] 김구라, 오만석이 부릅니다 \'오케피\' - 마이 리틀 텔레비전 20160116',
-                             'upload_date': '20160117',
-                             'description': 'md5:5e91d2d6747f53575badd24bd62b9f36',
-                             },
-               'params': {'noplaylist': True,
-                          'skip_download': True,
-                          },
-               },
-              {'note': 'Playlist url has ownerid and playlistid, playlistid takes precedence',
-               'url': 'http://tvpot.daum.net/mypot/View.do?ownerid=o2scDLIVbHc0&playlistid=6196631',
-               'info_dict': {'id': '6196631',
-                             'title': '마이 리틀 텔레비전 - 20160109',
-                             },
-               'playlist_count': 11,
-               },
-              {'url': 'http://tvpot.daum.net/mypot/Top.do?ownerid=o2scDLIVbHc0',
-               'only_matching': True,
-               },
-              {'url': 'http://m.tvpot.daum.net/mypot/Top.tv?ownerid=45x1okb1If50&playlistid=3569733',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://tvpot.daum.net/mypot/View.do?ownerid=o2scDLIVbHc0',
+        'info_dict': {
+            'id': 'o2scDLIVbHc0',
+            'title': '마이 리틀 텔레비전',
+        },
+        'playlist_mincount': 213,
+    }, {
+        'url': 'http://tvpot.daum.net/mypot/View.do?ownerid=o2scDLIVbHc0&clipid=73801156',
+        'info_dict': {
+            'id': '73801156',
+            'ext': 'mp4',
+            'title': '[미공개] 김구라, 오만석이 부릅니다 \'오케피\' - 마이 리틀 텔레비전 20160116',
+            'upload_date': '20160117',
+            'description': 'md5:5e91d2d6747f53575badd24bd62b9f36',
+        },
+        'params': {
+            'noplaylist': True,
+            'skip_download': True,
+        },
+    }, {
+        'note': 'Playlist url has ownerid and playlistid, playlistid takes precedence',
+        'url': 'http://tvpot.daum.net/mypot/View.do?ownerid=o2scDLIVbHc0&playlistid=6196631',
+        'info_dict': {
+            'id': '6196631',
+            'title': '마이 리틀 텔레비전 - 20160109',
+        },
+        'playlist_count': 11,
+    }, {
+        'url': 'http://tvpot.daum.net/mypot/Top.do?ownerid=o2scDLIVbHc0',
+        'only_matching': True,
+    }, {
+        'url': 'http://m.tvpot.daum.net/mypot/Top.tv?ownerid=45x1okb1If50&playlistid=3569733',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         list_id = self._match_id(url)
@@ -248,9 +249,7 @@ class DaumUserIE(DaumListIE):
         query_dict = parse_qs(url)
         if 'playlistid' in query_dict:
             playlist_id = query_dict['playlistid'][0]
-            return self.url_result(
-                DaumPlaylistIE._URL_TEMPLATE %
-                playlist_id, 'DaumPlaylist')
+            return self.url_result(DaumPlaylistIE._URL_TEMPLATE % playlist_id, 'DaumPlaylist')
 
         name, entries = self._get_entries(list_id, 'ownerid')
 

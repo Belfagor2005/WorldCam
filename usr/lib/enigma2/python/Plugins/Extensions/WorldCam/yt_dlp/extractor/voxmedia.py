@@ -26,29 +26,18 @@ class VoxMediaVolumeIE(InfoExtractor):
             'title': player_setup.get('title') or video_data.get('title_short'),
             'description': video_data.get('description_long') or video_data.get('description_short'),
             'thumbnail': formatted_metadata.get('thumbnail') or video_data.get('brightcove_thumbnail'),
-            'timestamp': unified_timestamp(
-                formatted_metadata.get('video_publish_date')),
+            'timestamp': unified_timestamp(formatted_metadata.get('video_publish_date')),
         }
-        asset = try_get(
-            setup,
-            lambda x: x['embed_assets']['chorus'],
-            dict) or {}
+        asset = try_get(setup, lambda x: x['embed_assets']['chorus'], dict) or {}
 
         formats = []
         hls_url = asset.get('hls_url')
         if hls_url:
-            formats.extend(
-                self._extract_m3u8_formats(
-                    hls_url,
-                    video_id,
-                    'mp4',
-                    'm3u8_native',
-                    m3u8_id='hls',
-                    fatal=False))
+            formats.extend(self._extract_m3u8_formats(
+                hls_url, video_id, 'mp4', 'm3u8_native', m3u8_id='hls', fatal=False))
         mp4_url = asset.get('mp4_url')
         if mp4_url:
-            tbr = self._search_regex(
-                r'-(\d+)k\.', mp4_url, 'bitrate', default=None)
+            tbr = self._search_regex(r'-(\d+)k\.', mp4_url, 'bitrate', default=None)
             format_id = 'http'
             if tbr:
                 format_id += '-' + tbr
@@ -67,10 +56,8 @@ class VoxMediaVolumeIE(InfoExtractor):
             if not provider_video_id:
                 continue
             if provider_video_type == 'brightcove':
-                # TODO: Find embed example or confirm that Vox has stopped
-                # using Brightcove
-                raise ExtractorError(
-                    'Vox Brightcove embeds are currently unsupported')
+                # TODO: Find embed example or confirm that Vox has stopped using Brightcove
+                raise ExtractorError('Vox Brightcove embeds are currently unsupported')
             else:
                 info.update({
                     '_type': 'url_transparent',
@@ -83,9 +70,9 @@ class VoxMediaVolumeIE(InfoExtractor):
 
 class VoxMediaIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?(?:(?:theverge|vox|sbnation|eater|polygon|curbed|racked|funnyordie)\.com|recode\.net)/(?:[^/]+/)*(?P<id>[^/?]+)'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+?src="(?P<url>https?://(?:www\.)?funnyordie\.com/embed/[^"]+)"']
+    _EMBED_REGEX = [r'<iframe[^>]+?src="(?P<url>https?://(?:www\.)?funnyordie\.com/embed/[^"]+)"']
     _TESTS = [{
+        # FIXME: Unsupported iframe embed
         # Volume embed, Youtube
         'url': 'http://www.theverge.com/2014/6/27/5849272/material-world-how-google-discovered-what-software-is-made-of',
         'info_dict': {
@@ -170,16 +157,21 @@ class VoxMediaIE(InfoExtractor):
         }],
         'skip': 'Page no longer contain videos',
     }]
+    _WEBPAGE_TESTS = [{
+        'url': 'http://www.theguardian.com/world/2014/mar/11/obama-zach-galifianakis-between-two-ferns',
+        'info_dict': {
+            'id': '18e820ec3f',
+            'ext': 'mp4',
+            'title': 'Between Two Ferns with Zach Galifianakis: President Barack Obama',
+        },
+        'skip': 'Invalid URL',
+    }]
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = urllib.parse.unquote(self._download_webpage(url, display_id))
 
-        def create_entry(
-                provider_video_id,
-                provider_video_type,
-                title=None,
-                description=None):
+        def create_entry(provider_video_id, provider_video_type, title=None, description=None):
             video_url = {
                 'youtube': '%s',
                 'volume': 'http://volume.vox-cdn.com/embed/%s',
@@ -205,26 +197,16 @@ class VoxMediaIE(InfoExtractor):
                 provider_video_id = video_data.get('provider_video_id')
                 provider_video_type = video_data.get('provider_video_type')
                 if provider_video_id and provider_video_type:
-                    entries.append(
-                        create_entry(
-                            provider_video_id,
-                            provider_video_type,
-                            video_data.get('title'),
-                            video_data.get('description')))
+                    entries.append(create_entry(
+                        provider_video_id, provider_video_type,
+                        video_data.get('title'), video_data.get('description')))
 
         volume_uuid = self._search_regex(
-            r'data-volume-uuid="([^"]+)"',
-            webpage,
-            'volume uuid',
-            default=None)
+            r'data-volume-uuid="([^"]+)"', webpage, 'volume uuid', default=None)
         if volume_uuid:
             entries.append(create_entry(volume_uuid, 'volume'))
 
         if len(entries) == 1:
             return entries[0]
         else:
-            return self.playlist_result(
-                entries,
-                display_id,
-                self._og_search_title(webpage),
-                self._og_search_description(webpage))
+            return self.playlist_result(entries, display_id, self._og_search_title(webpage), self._og_search_description(webpage))

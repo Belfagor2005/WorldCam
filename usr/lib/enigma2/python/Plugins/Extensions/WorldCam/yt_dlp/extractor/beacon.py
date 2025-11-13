@@ -42,38 +42,20 @@ class BeaconTvIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        content_data = traverse_obj(
-            self._search_nextjs_data(
-                webpage,
-                video_id),
-            ('props',
-                'pageProps',
-                '__APOLLO_STATE__',
-                lambda k,
-                v: k.startswith('Content:') and v['slug'] == video_id,
-                any))
+        content_data = traverse_obj(self._search_nextjs_data(webpage, video_id), (
+            'props', 'pageProps', '__APOLLO_STATE__',
+            lambda k, v: k.startswith('Content:') and v['slug'] == video_id, any))
         if not content_data:
             raise ExtractorError('Failed to extract content data')
 
-        jwplayer_data = traverse_obj(content_data,
-                                     ((('contentVideo',
-                                        'video',
-                                        'videoData'),
-                                       ('contentPodcast',
-                                        'podcast',
-                                         'audioData')),
-                                         {json.loads},
-                                         {dict},
-                                         any))
+        jwplayer_data = traverse_obj(content_data, (
+            (('contentVideo', 'video', 'videoData'),
+             ('contentPodcast', 'podcast', 'audioData')), {json.loads}, {dict}, any))
         if not jwplayer_data:
-            if content_data.get('contentType') not in (
-                    'videoPodcast', 'video', 'podcast'):
-                raise ExtractorError(
-                    'Content is not a video/podcast', expected=True)
-            if traverse_obj(content_data, ('contentTier', '__ref')
-                            ) != 'MemberTier:65b258d178f89be87b4dc0a4':
-                self.raise_login_required(
-                    'This video/podcast is for members only')
+            if content_data.get('contentType') not in ('videoPodcast', 'video', 'podcast'):
+                raise ExtractorError('Content is not a video/podcast', expected=True)
+            if traverse_obj(content_data, ('contentTier', '__ref')) != 'MemberTier:65b258d178f89be87b4dc0a4':
+                self.raise_login_required('This video/podcast is for members only')
             raise ExtractorError('Failed to extract content')
 
         return {

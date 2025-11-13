@@ -29,10 +29,8 @@ class RadioDeIE(InfoExtractor):
 
         broadcast = self._parse_json(jscode, radio_id)
         title = broadcast['name']
-        description = broadcast.get(
-            'description') or broadcast.get('shortDescription')
-        thumbnail = broadcast.get('picture4Url') or broadcast.get(
-            'picture4TransUrl') or broadcast.get('logo100x100')
+        description = broadcast.get('description') or broadcast.get('shortDescription')
+        thumbnail = broadcast.get('picture4Url') or broadcast.get('picture4TransUrl') or broadcast.get('logo100x100')
 
         formats = [{
             'url': stream['streamUrl'],

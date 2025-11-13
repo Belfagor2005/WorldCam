@@ -42,9 +42,7 @@ class PlatziBaseIE(InfoExtractor):
 
         login = self._parse_json(
             self._search_regex(
-                r'login\s*=\s*({.+?})(?:\s*;|\s*</script)',
-                login_error,
-                'login'),
+                r'login\s*=\s*({.+?})(?:\s*;|\s*</script)', login_error, 'login'),
             None)
 
         for kind in ('error', 'password', 'nonFields'):

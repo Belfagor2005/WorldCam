@@ -1,4 +1,5 @@
 import os
+import sys
 
 from .common import PostProcessor
 from ..utils import (
@@ -33,7 +34,16 @@ class XAttrMetadataPP(PostProcessor):
         # (e.g., 4kB on ext4), and we don't want to have the other ones fail
         'user.dublincore.description': 'description',
         # 'user.xdg.comment': 'description',
+        'com.apple.metadata:kMDItemWhereFroms': 'webpage_url',
     }
+
+    APPLE_PLIST_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+\t<string>%s</string>
+</array>
+</plist>'''
 
     def run(self, info):
         mtime = os.stat(info['filepath']).st_mtime
@@ -44,6 +54,11 @@ class XAttrMetadataPP(PostProcessor):
                 if value:
                     if infoname == 'upload_date':
                         value = hyphenate_date(value)
+                    elif xattrname == 'com.apple.metadata:kMDItemWhereFroms':
+                        # Colon in xattr name throws errors on Windows/NTFS and Linux
+                        if sys.platform != 'darwin':
+                            continue
+                        value = self.APPLE_PLIST_TEMPLATE % value
                     write_xattr(info['filepath'], xattrname, value.encode())
 
             except XAttrUnavailableError as e:
@@ -54,13 +69,11 @@ class XAttrMetadataPP(PostProcessor):
                         'There\'s no disk space left, disk quota exceeded or filesystem xattr limit exceeded. '
                         f'Extended attribute "{xattrname}" was not written.')
                 elif e.reason == 'VALUE_TOO_LONG':
-                    self.report_warning(
-                        f'Unable to write extended attribute "{xattrname}" due to too long values.')
+                    self.report_warning(f'Unable to write extended attribute "{xattrname}" due to too long values.')
                 else:
                     tip = ('You need to use NTFS' if os.name == 'nt'
                            else 'You may have to enable them in your "/etc/fstab"')
-                    raise PostProcessingError(
-                        f'This filesystem doesn\'t support extended attributes. {tip}')
+                    raise PostProcessingError(f'This filesystem doesn\'t support extended attributes. {tip}')
 
         self.try_utime(info['filepath'], mtime, mtime)
         return [], info

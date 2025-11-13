@@ -53,10 +53,8 @@ class CondeNastIE(InfoExtractor):
                 (?:script|inline)/video
             )/(?P<id>[0-9a-f]{{24}})(?:/(?P<player_id>[0-9a-f]{{24}}))?(?:.+?\btarget=(?P<target>[^&]+))?|
             (?P<type>watch|series|video)/(?P<display_id>[^/?#]+)
-        )'''.format(
-        '|'.join(_SITES.keys()))
-    IE_DESC = 'Condé Nast media group: {}'.format(
-        ', '.join(sorted(_SITES.values())))
+        )'''.format('|'.join(_SITES.keys()))
+    IE_DESC = 'Condé Nast media group: {}'.format(', '.join(sorted(_SITES.values())))
 
     _EMBED_REGEX = [r'''(?x)
         <(?:iframe|script)[^>]+?src=(["\'])(?P<url>
@@ -99,6 +97,24 @@ class CondeNastIE(InfoExtractor):
             'timestamp': 1442434920,
         },
     }, {
+        # FIXME: Subtitles
+        'url': 'https://www.vanityfair.com/video/watch/vf-quiz-show-squid-game-s3',
+        'info_dict': {
+            'id': '6862f999c1afbc5ff06b4803',
+            'ext': 'mp4',
+            'title': '\'Squid Game\' Cast Tests How Well They Know Each Other',
+            'categories': ['Arts & Culture', 'Hollywood'],
+            'description': 'md5:7a9c668a1fc87648e77da13842ec1534',
+            'duration': 955,
+            'season': 'Season 1',
+            'series': 'Quizzing Each Other',
+            'tags': 'count:2',
+            'thumbnail': r're:https?://dwgyu36up6iuz\.cloudfront\.net/.+\.jpg',
+            'timestamp': 1751341306,
+            'upload_date': '20250701',
+            'uploader': 'vanityfair',
+        },
+    }, {
         'url': 'https://player.cnevids.com/inline/video/59138decb57ac36b83000005.js?target=js-cne-player',
         'only_matching': True,
     }, {
@@ -113,27 +129,17 @@ class CondeNastIE(InfoExtractor):
         url_object = urllib.parse.urlparse(url)
         base_url = f'{url_object.scheme}://{url_object.netloc}'
         m_paths = re.finditer(
-            r'(?s)<p class="cne-thumb-title">.*?<a href="(/watch/.+?)["\?]',
-            webpage)
+            r'(?s)<p class="cne-thumb-title">.*?<a href="(/watch/.+?)["\?]', webpage)
         paths = orderedSet(m.group(1) for m in m_paths)
-        entries = [
-            self.url_result(
-                urljoin(
-                    base_url,
-                    path),
-                'CondeNast') for path in paths]
+        entries = [self.url_result(urljoin(base_url, path), 'CondeNast') for path in paths]
         return self.playlist_result(entries, playlist_title=title)
 
     def _extract_video_params(self, webpage, display_id):
         query = self._parse_json(
             self._search_regex(
-                r'(?s)var\s+params\s*=\s*({.+?})[;,]',
-                webpage,
-                'player params',
+                r'(?s)var\s+params\s*=\s*({.+?})[;,]', webpage, 'player params',
                 default='{}'),
-            display_id,
-            transform_source=js_to_json,
-            fatal=False)
+            display_id, transform_source=js_to_json, fatal=False)
         if query:
             query['videoId'] = self._search_regex(
                 r'(?:data-video-id=|currentVideoId\s*=\s*)["\']([\da-f]+)',
@@ -230,8 +236,7 @@ class CondeNastIE(InfoExtractor):
         }
 
     def _real_extract(self, url):
-        video_id, player_id, target, url_type, display_id = self._match_valid_url(
-            url).groups()
+        video_id, player_id, target, url_type, display_id = self._match_valid_url(url).groups()
 
         if video_id:
             return self._extract_video({

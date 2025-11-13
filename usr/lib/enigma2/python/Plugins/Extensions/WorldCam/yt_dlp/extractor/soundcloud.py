@@ -25,22 +25,55 @@ from ..utils.traversal import traverse_obj
 
 class SoundcloudEmbedIE(InfoExtractor):
     _VALID_URL = r'https?://(?:w|player|p)\.soundcloud\.com/player/?.*?\burl=(?P<id>.+)'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?://)?(?:w\.)?soundcloud\.com/player.+?)\1']
-    _TEST = {
-        # from
-        # https://www.soundi.fi/uutiset/ennakkokuuntelussa-timo-kaukolammen-station-to-station-to-station-julkaisua-juhlitaan-tanaan-g-livelabissa/
+    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?://)?(?:w\.)?soundcloud\.com/player.+?)\1']
+    _TESTS = [{
+        # from https://www.soundi.fi/uutiset/ennakkokuuntelussa-timo-kaukolammen-station-to-station-to-station-julkaisua-juhlitaan-tanaan-g-livelabissa/
         'url': 'https://w.soundcloud.com/player/?visual=true&url=https%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F922213810&show_artwork=true&maxwidth=640&maxheight=960&dnt=1&secret_token=s-ziYey',
         'only_matching': True,
-    }
+    }]
+    _WEBPAGE_TESTS = [{
+        'url': 'https://news.sophos.com/en-us/2023/08/10/s3-ep147-what-if-you-type-in-your-password-during-a-meeting/',
+        'info_dict': {
+            'id': '1588847423',
+            'ext': 'm4a',
+            'title': 'S3 Ep147: What if you type in your password during a meeting?',
+            'artists': ['Naked Security'],
+            'description': 'md5:6931a0630b920413c8c904407bf4b3b2',
+            'duration': 942.762,
+            'genres': ['Technology'],
+            'license': 'all-rights-reserved',
+            'repost_count': int,
+            'tags': 'count:4',
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'timestamp': 1691624365,
+            'track': 'S3 Ep147: What if you type in your password during a meeting?',
+            'upload_date': '20230809',
+            'uploader': 'Naked Security',
+            'uploader_id': '61390843',
+            'uploader_url': 'https://soundcloud.com/sophossecurity',
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://www.guitarplayer.com/lessons/november-2023-guitar-player-lesson-audio',
+        'info_dict': {
+            'id': '1695754080',
+            'title': 'A Tribute to Brian Setzer’s Guitar Mastery',
+            'album': 'A Tribute to Brian Setzer’s Guitar Mastery',
+            'album_artists': ['Guitar Player'],
+            'album_type': 'playlist',
+            'description': '',
+            'uploader': 'Guitar Player',
+            'uploader_id': '489924156',
+        },
+        'playlist_mincount': 7,
+    }]
 
     def _real_extract(self, url):
         query = parse_qs(url)
         api_url = query['url'][0]
         secret_token = query.get('secret_token')
         if secret_token:
-            api_url = update_url_query(
-                api_url, {'secret_token': secret_token[0]})
+            api_url = update_url_query(api_url, {'secret_token': secret_token[0]})
         return self.url_result(api_url)
 
 
@@ -71,13 +104,7 @@ class SoundcloudBaseIE(InfoExtractor):
         'original': 0,
     }
 
-    _DEFAULT_FORMATS = [
-        'http_aac',
-        'hls_aac',
-        'http_opus',
-        'hls_opus',
-        'http_mp3',
-        'hls_mp3']
+    _DEFAULT_FORMATS = ['http_aac', 'hls_aac', 'http_opus', 'hls_opus', 'http_mp3', 'hls_mp3']
 
     @functools.cached_property
     def _is_requested(self):
@@ -115,11 +142,7 @@ class SoundcloudBaseIE(InfoExtractor):
             try:
                 return self._download_json(*args, **kwargs)
             except ExtractorError as e:
-                if isinstance(
-                        e.cause,
-                        HTTPError) and e.cause.status in (
-                        401,
-                        403):
+                if isinstance(e.cause, HTTPError) and e.cause.status in (401, 403):
                     self._store_client_id(None)
                     self._update_client_id()
                     continue
@@ -129,8 +152,7 @@ class SoundcloudBaseIE(InfoExtractor):
                 raise
 
     def _initialize_pre_login(self):
-        self._CLIENT_ID = self.cache.load(
-            'soundcloud', 'client_id') or 'a3e059563d7fd3372b49b37f00a00bcf'
+        self._CLIENT_ID = self.cache.load('soundcloud', 'client_id') or 'a3e059563d7fd3372b49b37f00a00bcf'
 
     def _verify_oauth_token(self, token):
         if self._request_webpage(
@@ -140,15 +162,12 @@ class SoundcloudBaseIE(InfoExtractor):
             self._HEADERS['Authorization'] = f'OAuth {token}'
             self.report_login()
         else:
-            self.report_warning(
-                'Provided authorization token is invalid. Continuing as guest')
+            self.report_warning('Provided authorization token is invalid. Continuing as guest')
 
     def _real_initialize(self):
         if self._HEADERS:
             return
-        if token := try_call(
-            lambda: self._get_cookies(
-                self._BASE_URL)['oauth_token'].value):
+        if token := try_call(lambda: self._get_cookies(self._BASE_URL)['oauth_token'].value):
             self._verify_oauth_token(token)
 
     def _perform_login(self, username, password):
@@ -206,8 +225,7 @@ class SoundcloudBaseIE(InfoExtractor):
         c = 5
         n = '0763ed7314c69015fd4a0dc16bbf4b90'  # _KEY
         y = '8'  # _REV
-        # _USER_AGENT
-        r = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'
+        r = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'  # _USER_AGENT
         e = user  # _USERNAME
         t = clid  # _CLIENT_ID
 
@@ -224,12 +242,7 @@ class SoundcloudBaseIE(InfoExtractor):
         # c is not even needed
         return f'{y}:{d}:{m:x}:{c}'
 
-    def _extract_info_dict(
-            self,
-            info,
-            full_title=None,
-            secret_token=None,
-            extract_flat=False):
+    def _extract_info_dict(self, info, full_title=None, secret_token=None, extract_flat=False):
         track_id = str(info['id'])
 
         format_urls = set()
@@ -239,43 +252,33 @@ class SoundcloudBaseIE(InfoExtractor):
         if secret_token:
             query['secret_token'] = secret_token
 
-        if not extract_flat and info.get(
-                'downloadable') and info.get('has_downloads_left'):
+        if not extract_flat and info.get('downloadable') and info.get('has_downloads_left'):
             try:
-                # Do not use _call_api(); HTTP Error codes have different
-                # meanings for this request
+                # Do not use _call_api(); HTTP Error codes have different meanings for this request
                 download_data = self._download_json(
-                    f'{self._API_V2_BASE}tracks/{track_id}/download',
-                    track_id,
-                    'Downloading original download format info JSON',
-                    query=query,
-                    headers=self._HEADERS)
+                    f'{self._API_V2_BASE}tracks/{track_id}/download', track_id,
+                    'Downloading original download format info JSON', query=query, headers=self._HEADERS)
             except ExtractorError as e:
                 if isinstance(e.cause, HTTPError) and e.cause.status == 401:
                     self.report_warning(
                         'Original download format is only available '
                         f'for registered users. {self._login_hint()}')
                 elif isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                    self.write_debug(
-                        'Original download format is not available for this client')
+                    self.write_debug('Original download format is not available for this client')
                 else:
                     self.report_warning(e.msg)
                 download_data = None
 
-            if redirect_url := traverse_obj(
-                    download_data, ('redirectUri', {url_or_none})):
+            if redirect_url := traverse_obj(download_data, ('redirectUri', {url_or_none})):
                 urlh = self._request_webpage(
-                    HEADRequest(redirect_url),
-                    track_id,
-                    'Checking original download format availability',
-                    'Original download format is not available',
-                    fatal=False)
+                    HEADRequest(redirect_url), track_id, 'Checking original download format availability',
+                    'Original download format is not available', fatal=False)
                 if urlh:
                     format_url = urlh.url
                     format_urls.add(format_url)
                     formats.append({
                         'format_id': 'download',
-                        'ext': urlhandle_detect_ext(urlh, default='mp3'),
+                        'ext': urlhandle_detect_ext(urlh),
                         'filesize': int_or_none(urlh.headers.get('Content-Length')),
                         'url': format_url,
                         'quality': 10,
@@ -287,13 +290,7 @@ class SoundcloudBaseIE(InfoExtractor):
             return not url or url in format_urls
 
         # New API
-        for t in traverse_obj(
-            info,
-            ('media',
-             'transcodings',
-             lambda _,
-             v: url_or_none(
-                 v['url']) and v['preset'])):
+        for t in traverse_obj(info, ('media', 'transcodings', lambda _, v: url_or_none(v['url']) and v['preset'])):
             if extract_flat:
                 break
             format_url = t['url']
@@ -313,16 +310,13 @@ class SoundcloudBaseIE(InfoExtractor):
 
             short_identifier = f'{protocol}_{preset_base}'
             if preset_base == 'abr':
-                self.write_debug(
-                    f'Skipping broken "{short_identifier}" format')
+                self.write_debug(f'Skipping broken "{short_identifier}" format')
                 continue
             if not self._is_requested(short_identifier):
-                self.write_debug(
-                    f'"{short_identifier}" is not a requested format, skipping')
+                self.write_debug(f'"{short_identifier}" is not a requested format, skipping')
                 continue
 
-            # XXX: if not extract_flat, 429 error must be caught where
-            # _extract_info_dict is called
+            # XXX: if not extract_flat, 429 error must be caught where _extract_info_dict is called
             stream_url = traverse_obj(self._call_api(
                 format_url, track_id, f'Downloading {short_identifier} format info JSON',
                 query=query, headers=self._HEADERS), ('url', {url_or_none}))
@@ -331,26 +325,19 @@ class SoundcloudBaseIE(InfoExtractor):
             format_urls.add(stream_url)
 
             mime_type = traverse_obj(t, ('format', 'mime_type', {str}))
-            codec = self._search_regex(
-                r'codecs="([^"]+)"', mime_type, 'codec', default=None)
-            ext = {'mp4a': 'm4a', 'opus': 'opus', }.get(
-                codec[:4] if codec else None) or mimetype2ext(mime_type, default=None)
+            codec = self._search_regex(r'codecs="([^"]+)"', mime_type, 'codec', default=None)
+            ext = {
+                'mp4a': 'm4a',
+                'opus': 'opus',
+            }.get(codec[:4] if codec else None) or mimetype2ext(mime_type, default=None)
             if not ext or ext == 'm3u8':
                 ext = preset_base
 
             is_premium = t.get('quality') == 'hq'
             abr = int_or_none(
-                self._search_regex(
-                    r'(\d+)k$',
-                    preset,
-                    'abr',
-                    default=None) or self._search_regex(
-                    r'\.(\d+)\.(?:opus|mp3)[/?]',
-                    stream_url,
-                    'abr',
-                    default=None) or (
-                    256 if (
-                        is_premium and 'aac' in preset) else None))
+                self._search_regex(r'(\d+)k$', preset, 'abr', default=None)
+                or self._search_regex(r'\.(\d+)\.(?:opus|mp3)[/?]', stream_url, 'abr', default=None)
+                or (256 if (is_premium and 'aac' in preset) else None))
 
             is_preview = (t.get('snipped')
                           or '/preview/' in format_url
@@ -384,16 +371,11 @@ class SoundcloudBaseIE(InfoExtractor):
         if url_or_none(thumbnail):
             if mobj := re.search(self._IMAGE_REPL_RE, thumbnail):
                 for image_id, size in self._ARTWORK_MAP.items():
-                    # Soundcloud serves JPEG regardless of URL's ext *except*
-                    # for "original" thumb
-                    ext = mobj.group(
-                        'ext') if image_id == 'original' else 'jpg'
+                    # Soundcloud serves JPEG regardless of URL's ext *except* for "original" thumb
+                    ext = mobj.group('ext') if image_id == 'original' else 'jpg'
                     i = {
                         'id': image_id,
-                        'url': re.sub(
-                            self._IMAGE_REPL_RE,
-                            f'-{image_id}.{ext}',
-                            thumbnail),
+                        'url': re.sub(self._IMAGE_REPL_RE, f'-{image_id}.{ext}', thumbnail),
                     }
                     if image_id == 'tiny' and not artwork_url:
                         size = 18
@@ -456,280 +438,264 @@ class SoundcloudIE(SoundcloudBaseIE):
                             (?P<title>[\w\d-]+)
                             (?:/(?P<token>(?!(?:albums|sets|recommended))[^?]+?))?
                             (?:[?].*)?$)
-                       |(?:api(?:-v2)?\.soundcloud\.com/tracks/(?P<track_id>\d+)
+                       |(?:api(?:-v2)?\.soundcloud\.com/tracks/(?:soundcloud%3Atracks%3A)?(?P<track_id>\d+)
                           (?:/?\?secret_token=(?P<secret_token>[^&]+))?)
                     )
                     '''
     IE_NAME = 'soundcloud'
-    _TESTS = [
-        {
-            'url': 'http://soundcloud.com/ethmusic/lostin-powers-she-so-heavy',
-            'md5': 'de9bac153e7427a7333b4b0c1b6a18d2',
-            'info_dict': {
-                'id': '62986583',
-                'ext': 'opus',
-                'title': 'Lostin Powers - She so Heavy (SneakPreview) Adrian Ackers Blueprint 1',
-                'track': 'Lostin Powers - She so Heavy (SneakPreview) Adrian Ackers Blueprint 1',
-                'description': 'No Downloads untill we record the finished version this weekend, i was too pumped n i had to post it , earl is prolly gonna b hella p.o\'d',
-                'uploader': 'E.T. ExTerrestrial Music',
-                'uploader_id': '1571244',
-                'timestamp': 1349920598,
-                'upload_date': '20121011',
-                'duration': 143.216,
-                'license': 'all-rights-reserved',
-                'view_count': int,
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'thumbnail': 'https://i1.sndcdn.com/artworks-000031955188-rwb18x-original.jpg',
-                'uploader_url': 'https://soundcloud.com/ethmusic',
-                'tags': 'count:14',
-            },
+    _TESTS = [{
+        'url': 'http://soundcloud.com/ethmusic/lostin-powers-she-so-heavy',
+        'md5': 'de9bac153e7427a7333b4b0c1b6a18d2',
+        'info_dict': {
+            'id': '62986583',
+            'ext': 'opus',
+            'title': 'Lostin Powers - She so Heavy (SneakPreview) Adrian Ackers Blueprint 1',
+            'track': 'Lostin Powers - She so Heavy (SneakPreview) Adrian Ackers Blueprint 1',
+            'description': 'md5:7b6074e00887ad79f59b647c8fb6d5ae',
+            'uploader': 'E.T. ExTerrestrial Music',
+            'uploader_id': '1571244',
+            'timestamp': 1349920598,
+            'upload_date': '20121011',
+            'duration': 143.216,
+            'license': 'all-rights-reserved',
+            'view_count': int,
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'uploader_url': 'https://soundcloud.com/ethmusic',
+            'tags': 'count:14',
         },
-        # geo-restricted
-        {
-            'url': 'https://soundcloud.com/the-concept-band/goldrushed-mastered?in=the-concept-band/sets/the-royal-concept-ep',
-            'info_dict': {
-                'id': '47127627',
-                'ext': 'opus',
-                'title': 'Goldrushed',
-                'track': 'Goldrushed',
-                'description': 'From Stockholm Sweden\r\nPovel / Magnus / Filip / David\r\nwww.theroyalconcept.com',
-                'uploader': 'The Royal Concept',
-                'uploader_id': '9615865',
-                'timestamp': 1337635207,
-                'upload_date': '20120521',
-                'duration': 227.103,
-                'license': 'all-rights-reserved',
-                'view_count': int,
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'uploader_url': 'https://soundcloud.com/the-concept-band',
-                'thumbnail': 'https://i1.sndcdn.com/artworks-v8bFHhXm7Au6-0-original.jpg',
-                'genres': ['Alternative'],
-                'artists': ['The Royal Concept'],
-                'tags': [],
-            },
+    }, {
+        # Geo-restricted
+        'url': 'https://soundcloud.com/the-concept-band/goldrushed-mastered?in=the-concept-band/sets/the-royal-concept-ep',
+        'info_dict': {
+            'id': '47127627',
+            'ext': 'opus',
+            'title': 'Goldrushed',
+            'track': 'Goldrushed',
+            'description': 'md5:c0080b79a3710811d60234f94f391a40',
+            'uploader': 'The Royal Concept',
+            'uploader_id': '9615865',
+            'timestamp': 1337635207,
+            'upload_date': '20120521',
+            'duration': 227.103,
+            'license': 'all-rights-reserved',
+            'view_count': int,
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'uploader_url': 'https://soundcloud.com/the-concept-band',
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'genres': ['Alternative'],
+            'artists': ['The Royal Concept'],
+            'tags': [],
         },
+    }, {
         # private link
-        {
-            'url': 'https://soundcloud.com/jaimemf/youtube-dl-test-video-a-y-baw/s-8Pjrp',
-            'md5': 'aa0dd32bfea9b0c5ef4f02aacd080604',
-            'info_dict': {
-                'id': '123998367',
-                'ext': 'mp3',
-                'title': 'Youtube - Dl Test Video \'\' Ä↭',
-                'track': 'Youtube - Dl Test Video \'\' Ä↭',
-                'description': 'test chars:  "\'/\\ä↭',
-                'uploader': 'jaimeMF',
-                'uploader_id': '69767071',
-                'timestamp': 1386604920,
-                'upload_date': '20131209',
-                'duration': 9.927,
-                'license': 'all-rights-reserved',
-                'view_count': int,
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'uploader_url': 'https://soundcloud.com/jaimemf',
-                'thumbnail': 'https://a1.sndcdn.com/images/default_avatar_large.png',
-                'genres': ['youtubedl'],
-                'tags': [],
-            },
+        'url': 'https://soundcloud.com/jaimemf/youtube-dl-test-video-a-y-baw/s-8Pjrp',
+        'md5': 'aa0dd32bfea9b0c5ef4f02aacd080604',
+        'info_dict': {
+            'id': '123998367',
+            'ext': 'mp3',
+            'title': 'Youtube - Dl Test Video \'\' Ä↭',
+            'track': 'Youtube - Dl Test Video \'\' Ä↭',
+            'description': 'md5:610b729ee06ac4cedaa28607212948f3',
+            'uploader': 'jaimeMF',
+            'uploader_id': '69767071',
+            'timestamp': 1386604920,
+            'upload_date': '20131209',
+            'duration': 9.927,
+            'license': 'all-rights-reserved',
+            'view_count': int,
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'uploader_url': 'https://soundcloud.com/jaimemf',
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'genres': ['youtubedl'],
+            'tags': [],
         },
+    }, {
         # private link (alt format)
-        {
-            'url': 'https://api.soundcloud.com/tracks/123998367?secret_token=s-8Pjrp',
-            'md5': 'aa0dd32bfea9b0c5ef4f02aacd080604',
-            'info_dict': {
-                'id': '123998367',
-                'ext': 'mp3',
-                'title': 'Youtube - Dl Test Video \'\' Ä↭',
-                'track': 'Youtube - Dl Test Video \'\' Ä↭',
-                'description': 'test chars:  "\'/\\ä↭',
-                'uploader': 'jaimeMF',
-                'uploader_id': '69767071',
-                'timestamp': 1386604920,
-                'upload_date': '20131209',
-                'duration': 9.927,
-                'license': 'all-rights-reserved',
-                'view_count': int,
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'uploader_url': 'https://soundcloud.com/jaimemf',
-                'thumbnail': 'https://a1.sndcdn.com/images/default_avatar_large.png',
-                'genres': ['youtubedl'],
-                'tags': [],
-            },
+        'url': 'https://api.soundcloud.com/tracks/123998367?secret_token=s-8Pjrp',
+        'md5': 'aa0dd32bfea9b0c5ef4f02aacd080604',
+        'info_dict': {
+            'id': '123998367',
+            'ext': 'mp3',
+            'title': 'Youtube - Dl Test Video \'\' Ä↭',
+            'track': 'Youtube - Dl Test Video \'\' Ä↭',
+            'description': 'md5:610b729ee06ac4cedaa28607212948f3',
+            'uploader': 'jaimeMF',
+            'uploader_id': '69767071',
+            'timestamp': 1386604920,
+            'upload_date': '20131209',
+            'duration': 9.927,
+            'license': 'all-rights-reserved',
+            'view_count': int,
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'uploader_url': 'https://soundcloud.com/jaimemf',
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'genres': ['youtubedl'],
+            'tags': [],
         },
+    }, {
         # downloadable song
-        {
-            'url': 'https://soundcloud.com/the80m/the-following',
-            # wav: '9ffcddb08c87d74fb5808a3c183a1d04'
-            'md5': 'ecb87d7705d5f53e6c02a63760573c75',
-            'info_dict': {
-                'id': '343609555',
-                'ext': 'opus',  # wav original available with auth
-                'title': 'The Following',
-                'track': 'The Following',
-                'description': '',
-                'uploader': '80M',
-                'uploader_id': '312384765',
-                'uploader_url': 'https://soundcloud.com/the80m',
-                'upload_date': '20170922',
-                'timestamp': 1506120436,
-                'duration': 397.228,
-                'thumbnail': 'https://i1.sndcdn.com/artworks-000243916348-ktoo7d-original.jpg',
-                'license': 'all-rights-reserved',
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'view_count': int,
-                'genres': ['Dance & EDM'],
-                'artists': ['80M'],
-                'tags': ['80M', 'EDM', 'Dance', 'Music'],
-            },
-            'expected_warnings': ['Original download format is only available for registered users'],
+        'url': 'https://soundcloud.com/the80m/the-following',
+        'md5': 'ecb87d7705d5f53e6c02a63760573c75',  # wav: '9ffcddb08c87d74fb5808a3c183a1d04'
+        'info_dict': {
+            'id': '343609555',
+            'ext': 'opus',  # wav original available with auth
+            'title': 'The Following',
+            'track': 'The Following',
+            'description': '',
+            'uploader': '80M',
+            'uploader_id': '312384765',
+            'uploader_url': 'https://soundcloud.com/the80m',
+            'upload_date': '20170922',
+            'timestamp': 1506120436,
+            'duration': 397.228,
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'license': 'all-rights-reserved',
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'view_count': int,
+            'genres': ['Dance & EDM'],
+            'artists': ['80M'],
+            'tags': 'count:4',
         },
+        'expected_warnings': ['Original download format is only available for registered users'],
+    }, {
         # private link, downloadable format
         # tags with spaces (e.g. "Uplifting Trance", "Ori Uplift")
-        {
-            'url': 'https://soundcloud.com/oriuplift/uponly-238-no-talking-wav/s-AyZUd',
-            # wav: '64a60b16e617d41d0bef032b7f55441e'
-            'md5': '2e1530d0e9986a833a67cb34fc90ece0',
-            'info_dict': {
-                'id': '340344461',
-                'ext': 'opus',  # wav original available with auth
-                'title': 'Uplifting Only 238 [No Talking] (incl. Alex Feed Guestmix) (Aug 31, 2017) [wav]',
-                'track': 'Uplifting Only 238 [No Talking] (incl. Alex Feed Guestmix) (Aug 31, 2017) [wav]',
-                'description': 'md5:fa20ee0fca76a3d6df8c7e57f3715366',
-                'uploader': 'Ori Uplift Music',
-                'uploader_id': '12563093',
-                'timestamp': 1504206263,
-                'upload_date': '20170831',
-                'duration': 7449.096,
-                'license': 'all-rights-reserved',
-                'view_count': int,
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'thumbnail': 'https://i1.sndcdn.com/artworks-000240712245-kedn4p-original.jpg',
-                'uploader_url': 'https://soundcloud.com/oriuplift',
-                'genres': ['Trance'],
-                'artists': ['Ori Uplift'],
-                'tags': ['Orchestral', 'Emotional', 'Uplifting Trance', 'Trance', 'Ori Uplift', 'UpOnly'],
-            },
-            'expected_warnings': ['Original download format is only available for registered users'],
+        'url': 'https://soundcloud.com/oriuplift/uponly-238-no-talking-wav/s-AyZUd',
+        'md5': '2e1530d0e9986a833a67cb34fc90ece0',  # wav: '64a60b16e617d41d0bef032b7f55441e'
+        'info_dict': {
+            'id': '340344461',
+            'ext': 'opus',  # wav original available with auth
+            'title': 'Uplifting Only 238 [No Talking] (incl. Alex Feed Guestmix) (Aug 31, 2017) [wav]',
+            'track': 'Uplifting Only 238 [No Talking] (incl. Alex Feed Guestmix) (Aug 31, 2017) [wav]',
+            'description': 'md5:fa20ee0fca76a3d6df8c7e57f3715366',
+            'uploader': 'Ori Uplift Music',
+            'uploader_id': '12563093',
+            'timestamp': 1504206263,
+            'upload_date': '20170831',
+            'duration': 7449.096,
+            'license': 'all-rights-reserved',
+            'view_count': int,
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'uploader_url': 'https://soundcloud.com/oriuplift',
+            'genres': ['Trance'],
+            'artists': ['Ori Uplift'],
+            'tags': 'count:6',
         },
+        'expected_warnings': ['Original download format is only available for registered users'],
+    }, {
         # no album art, use avatar pic for thumbnail
-        {
-            'url': 'https://soundcloud.com/garyvee/sideways-prod-mad-real',
-            'md5': '59c7872bc44e5d99b7211891664760c2',
-            'info_dict': {
-                'id': '309699954',
-                'ext': 'mp3',
-                'title': 'Sideways (Prod. Mad Real)',
-                'track': 'Sideways (Prod. Mad Real)',
-                'description': 'md5:d41d8cd98f00b204e9800998ecf8427e',
-                'uploader': 'garyvee',
-                'uploader_id': '2366352',
-                'timestamp': 1488152409,
-                'upload_date': '20170226',
-                'duration': 207.012,
-                'thumbnail': r're:https?://.*\.jpg',
-                'license': 'all-rights-reserved',
-                'view_count': int,
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'uploader_url': 'https://soundcloud.com/garyvee',
-                'artists': ['MadReal'],
-                'tags': [],
-            },
-            'params': {
-                'skip_download': True,
-            },
+        'url': 'https://soundcloud.com/garyvee/sideways-prod-mad-real',
+        'md5': '59c7872bc44e5d99b7211891664760c2',
+        'info_dict': {
+            'id': '309699954',
+            'ext': 'mp3',
+            'title': 'Sideways (Prod. Mad Real)',
+            'track': 'Sideways (Prod. Mad Real)',
+            'description': 'md5:d41d8cd98f00b204e9800998ecf8427e',
+            'uploader': 'garyvee',
+            'uploader_id': '2366352',
+            'timestamp': 1488152409,
+            'upload_date': '20170226',
+            'duration': 207.012,
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'license': 'all-rights-reserved',
+            'view_count': int,
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'uploader_url': 'https://soundcloud.com/garyvee',
+            'artists': ['MadReal'],
+            'tags': [],
         },
-        {
-            'url': 'https://soundcloud.com/giovannisarani/mezzo-valzer',
-            'md5': '8227c3473a4264df6b02ad7e5b7527ac',
-            'info_dict': {
-                'id': '583011102',
-                'ext': 'opus',
-                'title': 'Mezzo Valzer',
-                'track': 'Mezzo Valzer',
-                'description': 'md5:f4d5f39d52e0ccc2b4f665326428901a',
-                'uploader': 'Giovanni Sarani',
-                'uploader_id': '3352531',
-                'timestamp': 1551394171,
-                'upload_date': '20190228',
-                'duration': 180.157,
-                'thumbnail': r're:https?://.*\.jpg',
-                'license': 'all-rights-reserved',
-                'view_count': int,
-                'like_count': int,
-                'comment_count': int,
-                'repost_count': int,
-                'genres': ['Piano'],
-                'uploader_url': 'https://soundcloud.com/giovannisarani',
-                'tags': 'count:10',
-            },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://soundcloud.com/giovannisarani/mezzo-valzer',
+        'md5': '8227c3473a4264df6b02ad7e5b7527ac',
+        'info_dict': {
+            'id': '583011102',
+            'ext': 'm4a',
+            'title': 'Mezzo Valzer',
+            'track': 'Mezzo Valzer',
+            'description': 'md5:f4d5f39d52e0ccc2b4f665326428901a',
+            'uploader': 'Giovanni Sarani',
+            'uploader_id': '3352531',
+            'timestamp': 1551394171,
+            'upload_date': '20190228',
+            'duration': 180.134,
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'license': 'all-rights-reserved',
+            'view_count': int,
+            'like_count': int,
+            'comment_count': int,
+            'repost_count': int,
+            'genres': ['Piano'],
+            'uploader_url': 'https://soundcloud.com/giovannisarani',
+            'tags': 'count:10',
         },
+        'params': {'skip_download': 'm3u8'},
+    }, {
         # .png "original" artwork, 160kbps m4a HLS format
-        {
-            'url': 'https://soundcloud.com/skorxh/audio-dealer',
-            'info_dict': {
-                'id': '2011421339',
-                'ext': 'm4a',
-                'title': 'audio dealer',
-                'description': '',
-                'uploader': '$KORCH',
-                'uploader_id': '150292288',
-                'uploader_url': 'https://soundcloud.com/skorxh',
-                'comment_count': int,
-                'view_count': int,
-                'like_count': int,
-                'repost_count': int,
-                'duration': 213.469,
-                'tags': [],
-                'artists': ['$KORXH'],
-                'track': 'audio dealer',
-                'timestamp': 1737143201,
-                'upload_date': '20250117',
-                'license': 'all-rights-reserved',
-                'thumbnail': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-original.png',
-                'thumbnails': [
-                    {'id': 'mini', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-mini.jpg'},
-                    {'id': 'tiny', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-tiny.jpg'},
-                    {'id': 'small', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-small.jpg'},
-                    {'id': 'badge', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-badge.jpg'},
-                    {'id': 't67x67',
-                     'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-t67x67.jpg'},
-                    {'id': 'large', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-large.jpg'},
-                    {'id': 't300x300',
-                     'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-t300x300.jpg'},
-                    {'id': 'crop', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-crop.jpg'},
-                    {'id': 't500x500',
-                     'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-t500x500.jpg'},
-                    {'id': 'original',
-                     'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-original.png'},
-                ],
-            },
-            'params': {'skip_download': 'm3u8', 'format': 'hls_aac_160k'},
+        'url': 'https://soundcloud.com/skorxh/audio-dealer',
+        'info_dict': {
+            'id': '2011421339',
+            'ext': 'm4a',
+            'title': 'audio dealer',
+            'description': '',
+            'uploader': '$KORCH',
+            'uploader_id': '150292288',
+            'uploader_url': 'https://soundcloud.com/skorxh',
+            'comment_count': int,
+            'view_count': int,
+            'like_count': int,
+            'repost_count': int,
+            'duration': 213.469,
+            'tags': [],
+            'artists': ['$KORXH'],
+            'track': 'audio dealer',
+            'timestamp': 1737143201,
+            'upload_date': '20250117',
+            'license': 'all-rights-reserved',
+            'thumbnail': r're:https?://[ai]1\.sndcdn\.com/.+\.(?:jpg|png)',
+            'thumbnails': [
+                {'id': 'mini', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-mini.jpg'},
+                {'id': 'tiny', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-tiny.jpg'},
+                {'id': 'small', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-small.jpg'},
+                {'id': 'badge', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-badge.jpg'},
+                {'id': 't67x67', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-t67x67.jpg'},
+                {'id': 'large', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-large.jpg'},
+                {'id': 't300x300', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-t300x300.jpg'},
+                {'id': 'crop', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-crop.jpg'},
+                {'id': 't500x500', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-t500x500.jpg'},
+                {'id': 'original', 'url': 'https://i1.sndcdn.com/artworks-a1wKGMYNreDLTMrT-fGjRiw-original.png'},
+            ],
         },
-        {
-            # AAC HQ format available (account with active subscription needed)
-            'url': 'https://soundcloud.com/wandw/the-chainsmokers-ft-daya-dont-let-me-down-ww-remix-1',
-            'only_matching': True,
-        },
-        {
-            # Go+ (account with active subscription needed)
-            'url': 'https://soundcloud.com/taylorswiftofficial/look-what-you-made-me-do',
-            'only_matching': True,
-        },
-    ]
+        'params': {'skip_download': 'm3u8', 'format': 'hls_aac_160k'},
+    }, {
+        # AAC HQ format available (account with active subscription needed)
+        'url': 'https://soundcloud.com/wandw/the-chainsmokers-ft-daya-dont-let-me-down-ww-remix-1',
+        'only_matching': True,
+    }, {
+        # Go+ (account with active subscription needed)
+        'url': 'https://soundcloud.com/taylorswiftofficial/look-what-you-made-me-do',
+        'only_matching': True,
+    }, {
+        'url': 'https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A1083788353',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         mobj = self._match_valid_url(url)
@@ -744,19 +710,14 @@ class SoundcloudIE(SoundcloudBaseIE):
             if token:
                 query['secret_token'] = token
         else:
-            full_title = resolve_title = '{}/{}'.format(
-                *mobj.group('uploader', 'title'))
+            full_title = resolve_title = '{}/{}'.format(*mobj.group('uploader', 'title'))
             token = mobj.group('token')
             if token:
                 resolve_title += f'/{token}'
             info_json_url = self._resolv_url(self._BASE_URL + resolve_title)
 
         info = self._call_api(
-            info_json_url,
-            full_title,
-            'Downloading info JSON',
-            query=query,
-            headers=self._HEADERS)
+            info_json_url, full_title, 'Downloading info JSON', query=query, headers=self._HEADERS)
 
         for retry in self.RetryManager():
             try:
@@ -798,13 +759,8 @@ class SoundcloudPlaylistBaseIE(SoundcloudBaseIE):
                 url = self._API_V2_BASE + 'tracks/' + track_id
                 if token:
                     url += '?secret_token=' + token
-            entries.append(
-                self.url_result(
-                    url,
-                    SoundcloudIE.ie_key(),
-                    track_id,
-                    url_transparent=True,
-                    **album_info))
+            entries.append(self.url_result(
+                url, SoundcloudIE.ie_key(), track_id, url_transparent=True, **album_info))
         return self.playlist_result(
             entries, playlist_id,
             playlist.get('title'),
@@ -860,9 +816,7 @@ class SoundcloudSetIE(SoundcloudPlaylistBaseIE):
 
         if 'errors' in info:
             msgs = (str(err['error_message']) for err in info['errors'])
-            raise ExtractorError(
-                'unable to download video webpage: {}'.format(
-                    ','.join(msgs)))
+            raise ExtractorError('unable to download video webpage: {}'.format(','.join(msgs)))
 
         return self._extract_set(info, token)
 
@@ -895,8 +849,7 @@ class SoundcloudPagedPlaylistBaseIE(SoundcloudBaseIE):
                 except ExtractorError as e:
                     # Downloading page may result in intermittent 502 HTTP error
                     # See https://github.com/yt-dlp/yt-dlp/issues/872
-                    if not isinstance(
-                            e.cause, HTTPError) or e.cause.status != 502:
+                    if not isinstance(e.cause, HTTPError) or e.cause.status != 502:
                         raise
                     retry.error = e
                     continue
@@ -910,9 +863,7 @@ class SoundcloudPagedPlaylistBaseIE(SoundcloudBaseIE):
                         return self.url_result(
                             permalink_url,
                             SoundcloudIE.ie_key() if SoundcloudIE.suitable(permalink_url) else None,
-                            str_or_none(
-                                cand.get('id')),
-                            cand.get('title'))
+                            str_or_none(cand.get('id')), cand.get('title'))
 
             for e in response['collection'] or []:
                 yield resolve_entry(e, e.get('track'), e.get('playlist'))
@@ -982,7 +933,7 @@ class SoundcloudUserIE(SoundcloudPagedPlaylistBaseIE):
             'id': '7098329',
             'title': 'Grynpyret (Spotlight)',
         },
-        'playlist_mincount': 1,
+        'playlist_mincount': 0,
     }, {
         'url': 'https://soundcloud.com/one-thousand-and-one/comments',
         'info_dict': {
@@ -1034,10 +985,7 @@ class SoundcloudUserPermalinkIE(SoundcloudPagedPlaylistBaseIE):
     def _real_extract(self, url):
         user_id = self._match_id(url)
         user = self._call_api(
-            self._resolv_url(url),
-            user_id,
-            'Downloading user info',
-            headers=self._HEADERS)
+            self._resolv_url(url), user_id, 'Downloading user info', headers=self._HEADERS)
 
         return self._extract_playlist(
             f'{self._API_V2_BASE}users/{user["id"]}/tracks', str(user['id']), user.get('username'))
@@ -1058,10 +1006,7 @@ class SoundcloudTrackStationIE(SoundcloudPagedPlaylistBaseIE):
     def _real_extract(self, url):
         track_name = self._match_id(url)
 
-        track = self._call_api(
-            self._resolv_url(url),
-            track_name,
-            headers=self._HEADERS)
+        track = self._call_api(self._resolv_url(url), track_name, headers=self._HEADERS)
         track_id = self._search_regex(
             r'soundcloud:track-stations:(\d+)', track['id'], 'track id')
 
@@ -1079,7 +1024,7 @@ class SoundcloudRelatedIE(SoundcloudPagedPlaylistBaseIE):
             'id': '1084577272',
             'title': 'Sexapil - Pingers 5 (Recommended)',
         },
-        'playlist_mincount': 50,
+        'playlist_mincount': 49,
     }, {
         'url': 'https://soundcloud.com/wajang/sexapil-pingers-5/albums',
         'info_dict': {
@@ -1114,10 +1059,8 @@ class SoundcloudRelatedIE(SoundcloudPagedPlaylistBaseIE):
                 str(err['error_message']) for err in track['errors']), expected=True)
 
         return self._extract_playlist(
-            self._API_V2_BASE + self._BASE_URL_MAP[relation] %
-            track['id'], str(
-                track['id']), '{} ({})'.format(
-                track.get('title') or slug, relation.capitalize()))
+            self._API_V2_BASE + self._BASE_URL_MAP[relation] % track['id'], str(track['id']),
+            '{} ({})'.format(track.get('title') or slug, relation.capitalize()))
 
 
 class SoundcloudPlaylistIE(SoundcloudPlaylistBaseIE):
@@ -1128,7 +1071,7 @@ class SoundcloudPlaylistIE(SoundcloudPlaylistBaseIE):
         'info_dict': {
             'id': '4110309',
             'title': 'TILT Brass - Bowery Poetry Club, August \'03 [Non-Site SCR 02]',
-            'description': 're:.*?TILT Brass - Bowery Poetry Club',
+            'description': 'md5:e4373f7177fe3db292a8552b4ec41bc6',
             'uploader': 'Non-Site Records',
             'uploader_id': '33660914',
             'album_artists': ['Non-Site Records'],
@@ -1148,13 +1091,8 @@ class SoundcloudPlaylistIE(SoundcloudPlaylistBaseIE):
             query['secret_token'] = token
 
         data = self._call_api(
-            self._API_V2_BASE +
-            'playlists/' +
-            playlist_id,
-            playlist_id,
-            'Downloading playlist',
-            query=query,
-            headers=self._HEADERS)
+            self._API_V2_BASE + 'playlists/' + playlist_id,
+            playlist_id, 'Downloading playlist', query=query, headers=self._HEADERS)
 
         return self._extract_set(data, token)
 

@@ -1,5 +1,6 @@
 from .common import InfoExtractor
 from ..utils import (
+    clean_html,
     clean_podcast_url,
     int_or_none,
     parse_iso8601,
@@ -17,7 +18,7 @@ class ApplePodcastsIE(InfoExtractor):
             'ext': 'mp3',
             'title': 'Ferreck Dawn - To The Break of Dawn 117',
             'episode': 'Ferreck Dawn - To The Break of Dawn 117',
-            'description': 'md5:1fc571102f79dbd0a77bfd71ffda23bc',
+            'description': 'md5:8c4f5c2c30af17ed6a98b0b9daf15b76',
             'upload_date': '20240812',
             'timestamp': 1723449600,
             'duration': 3596,
@@ -57,34 +58,22 @@ class ApplePodcastsIE(InfoExtractor):
         server_data = self._search_json(
             r'<script [^>]*\bid=["\']serialized-server-data["\'][^>]*>', webpage,
             'server data', episode_id, contains_pattern=r'\[{(?s:.+)}\]')[0]['data']
-        model_data = traverse_obj(
-            server_data,
-            ('headerButtonItems',
-             lambda _,
-             v: v['$kind'] == 'bookmark' and v['modelType'] == 'EpisodeOffer',
-                'model',
-                {dict},
-                any))
+        model_data = traverse_obj(server_data, (
+            'headerButtonItems', lambda _, v: v['$kind'] == 'share' and v['modelType'] == 'EpisodeLockup',
+            'model', {dict}, any))
 
-        return {'id': episode_id,
-                **self._json_ld(traverse_obj(server_data,
-                                             ('seoData',
-                                              'schemaContent',
-                                              {dict})) or self._yield_json_ld(webpage,
-                                                                              episode_id,
-                                                                              fatal=False),
-                                episode_id,
-                                fatal=False),
-                **traverse_obj(model_data,
-                               {'title': ('title',
-                                          {str}),
-                                'url': ('streamUrl',
-                                        {clean_podcast_url}),
-                                'timestamp': ('releaseDate',
-                                              {parse_iso8601}),
-                                'duration': ('duration',
-                                             {int_or_none}),
-                                }),
-                'thumbnail': self._og_search_thumbnail(webpage),
-                'vcodec': 'none',
-                }
+        return {
+            'id': episode_id,
+            **self._json_ld(
+                traverse_obj(server_data, ('seoData', 'schemaContent', {dict}))
+                or self._yield_json_ld(webpage, episode_id, fatal=False), episode_id, fatal=False),
+            **traverse_obj(model_data, {
+                'title': ('title', {str}),
+                'description': ('summary', {clean_html}),
+                'url': ('playAction', 'episodeOffer', 'streamUrl', {clean_podcast_url}),
+                'timestamp': ('releaseDate', {parse_iso8601}),
+                'duration': ('duration', {int_or_none}),
+            }),
+            'thumbnail': self._og_search_thumbnail(webpage),
+            'vcodec': 'none',
+        }

@@ -16,23 +16,37 @@ class ViqeoIE(InfoExtractor):
                         )
                         (?P<id>[\da-f]+)
                     '''
-    _EMBED_REGEX = [
-        r'<iframe[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//cdn\.viqeo\.tv/embed/*\?.*?\bvid=[\da-f]+.*?)\1']
-    _TESTS = [{'url': 'https://cdn.viqeo.tv/embed/?vid=cde96f09d25f39bee837',
-               'md5': 'a169dd1a6426b350dca4296226f21e76',
-               'info_dict': {'id': 'cde96f09d25f39bee837',
-                             'ext': 'mp4',
-                             'title': 'cde96f09d25f39bee837',
-                             'thumbnail': r're:^https?://.*\.jpg$',
-                             'duration': 76,
-                             },
-               },
-              {'url': 'viqeo:cde96f09d25f39bee837',
-               'only_matching': True,
-               },
-              {'url': 'https://api.viqeo.tv/v1/data/startup?video%5B%5D=71bbec412ade45c3216c&profile=112',
-               'only_matching': True,
-               }]
+    _EMBED_REGEX = [r'<iframe[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//cdn\.viqeo\.tv/embed/*\?.*?\bvid=[\da-f]+.*?)\1']
+    _TESTS = [{
+        'url': 'https://cdn.viqeo.tv/embed/?vid=cde96f09d25f39bee837',
+        'md5': 'a169dd1a6426b350dca4296226f21e76',
+        'info_dict': {
+            'id': 'cde96f09d25f39bee837',
+            'ext': 'mp4',
+            'title': 'cde96f09d25f39bee837',
+            'thumbnail': r're:https?://.+\.jpg',
+            'duration': 76,
+        },
+    }, {
+        'url': 'viqeo:cde96f09d25f39bee837',
+        'only_matching': True,
+    }, {
+        'url': 'https://api.viqeo.tv/v1/data/startup?video%5B%5D=71bbec412ade45c3216c&profile=112',
+        'only_matching': True,
+    }]
+    _WEBPAGE_TESTS = [{
+        'url': 'https://viqeo.tv/',
+        'info_dict': {
+            'id': 'viqeo',
+            'title': 'Viqeo video platform',
+            'age_limit': 0,
+            'description': 'md5:e8e06e20df92ed66febeaef2533a0d5d',
+            'thumbnail': r're:https?://static\.tildacdn\.com/.+\.png',
+            'timestamp': 1751479769,
+            'upload_date': '20250702',
+        },
+        'playlist_count': 3,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)

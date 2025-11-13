@@ -149,14 +149,14 @@ class FlvReader(io.BytesIO):
         segments_count = self.read_unsigned_char()
         segments = []
         for _ in range(segments_count):
-            box_size, box_type, box_data = self.read_box_info()
+            _box_size, box_type, box_data = self.read_box_info()
             assert box_type == b'asrt'
             segment = FlvReader(box_data).read_asrt()
             segments.append(segment)
         fragments_run_count = self.read_unsigned_char()
         fragments = []
         for _ in range(fragments_run_count):
-            box_size, box_type, box_data = self.read_box_info()
+            _box_size, box_type, box_data = self.read_box_info()
             assert box_type == b'afrt'
             fragments.append(FlvReader(box_data).read_afrt())
 
@@ -167,7 +167,7 @@ class FlvReader(io.BytesIO):
         }
 
     def read_bootstrap_info(self):
-        total_size, box_type, box_data = self.read_box_info()
+        _, box_type, box_data = self.read_box_info()
         assert box_type == b'abst'
         return FlvReader(box_data).read_abst()
 
@@ -260,8 +260,7 @@ class F4mFD(FragmentFD):
             for e in (doc.findall(_add_ns('drmAdditionalHeader'))
                       + doc.findall(_add_ns('drmAdditionalHeaderSet'))):
                 # If id attribute is missing it's valid for all media nodes
-                # without drmAdditionalHeaderId or drmAdditionalHeaderSetId
-                # attribute
+                # without drmAdditionalHeaderId or drmAdditionalHeaderSetId attribute
                 if 'id' not in e.attrib:
                     self.report_error('Missing ID in f4m DRM')
             media = remove_encrypted_media(media)
@@ -279,8 +278,7 @@ class F4mFD(FragmentFD):
         while (not fragments_list) and (retries > 0):
             boot_info = self._get_bootstrap_from_url(bootstrap_url)
             fragments_list = build_fragments_list(boot_info)
-            fragments_list = [
-                f for f in fragments_list if f[1] > latest_fragment]
+            fragments_list = [f for f in fragments_list if f[1] > latest_fragment]
             if not fragments_list:
                 # Retry after a while
                 time.sleep(5.0)
@@ -296,8 +294,7 @@ class F4mFD(FragmentFD):
         # with bootstrap url attribute (e.g. dummy inline bootstrap info
         # contains whitespace characters in [1]). We will prefer bootstrap
         # url over inline bootstrap info when present.
-        # 1.
-        # http://live-1-1.rutube.ru/stream/1024/HDS/SD/C2NKsS85HQNckgn5HdEmOQ/1454167650/S-s604419906/move/four/dirs/upper/1024-576p.f4m
+        # 1. http://live-1-1.rutube.ru/stream/1024/HDS/SD/C2NKsS85HQNckgn5HdEmOQ/1454167650/S-s604419906/move/four/dirs/upper/1024-576p.f4m
         bootstrap_url = node.get('url')
         if bootstrap_url:
             bootstrap_url = urllib.parse.urljoin(
@@ -319,9 +316,7 @@ class F4mFD(FragmentFD):
         # Some manifests may be malformed, e.g. prosiebensat1 generated manifests
         # (see https://github.com/ytdl-org/youtube-dl/issues/6215#issuecomment-121704244
         # and https://github.com/ytdl-org/youtube-dl/issues/7823)
-        manifest = fix_xml_ampersands(
-            urlh.read().decode(
-                'utf-8', 'ignore')).strip()
+        manifest = fix_xml_ampersands(urlh.read().decode('utf-8', 'ignore')).strip()
 
         doc = compat_etree_fromstring(manifest)
         formats = [(int(f.attrib.get('bitrate', -1)), f)
@@ -329,9 +324,9 @@ class F4mFD(FragmentFD):
         if requested_bitrate is None or len(formats) == 1:
             # get the best format
             formats = sorted(formats, key=lambda f: f[0])
-            rate, media = formats[-1]
+            _, media = formats[-1]
         else:
-            rate, media = next(filter(
+            _, media = next(filter(
                 lambda f: int(f[0]) == requested_bitrate, formats))
 
         # Prefer baseURL for relative URLs as per 11.2 of F4M 3.0 spec.
@@ -354,8 +349,7 @@ class F4mFD(FragmentFD):
             # We only download the first fragment
             fragments_list = fragments_list[:1]
         total_frags = len(fragments_list)
-        # For some akamai manifests we'll need to add a query to the fragment
-        # url
+        # For some akamai manifests we'll need to add a query to the fragment url
         akamai_pv = xpath_text(doc, _add_ns('pv-2.0'))
 
         ctx = {
@@ -391,11 +385,9 @@ class F4mFD(FragmentFD):
                 query.append(akamai_pv.strip(';'))
             if info_dict.get('extra_param_to_segment_url'):
                 query.append(info_dict['extra_param_to_segment_url'])
-            url_parsed = base_url_parsed._replace(
-                path=base_url_parsed.path + name, query='&'.join(query))
+            url_parsed = base_url_parsed._replace(path=base_url_parsed.path + name, query='&'.join(query))
             try:
-                success = self._download_fragment(
-                    ctx, url_parsed.geturl(), info_dict)
+                success = self._download_fragment(ctx, url_parsed.geturl(), info_dict)
                 if not success:
                     return False
                 down_data = self._read_fragment(ctx)
@@ -408,8 +400,7 @@ class F4mFD(FragmentFD):
                             # In tests, segments may be truncated, and thus
                             # FlvReader may not be able to parse the whole
                             # chunk. If so, write the segment as is
-                            # See
-                            # https://github.com/ytdl-org/youtube-dl/issues/9214
+                            # See https://github.com/ytdl-org/youtube-dl/issues/9214
                             dest_stream.write(down_data)
                             break
                         raise
@@ -427,12 +418,10 @@ class F4mFD(FragmentFD):
                     raise
 
             if not fragments_list and not test and live and bootstrap_url:
-                fragments_list = self._update_live_fragments(
-                    bootstrap_url, frag_i)
+                fragments_list = self._update_live_fragments(bootstrap_url, frag_i)
                 total_frags += len(fragments_list)
                 if fragments_list and (fragments_list[0][1] > frag_i + 1):
-                    msg = 'Missed %d fragments' % (
-                        fragments_list[0][1] - (frag_i + 1))
+                    msg = 'Missed %d fragments' % (fragments_list[0][1] - (frag_i + 1))
                     self.report_warning(msg)
 
         return self._finish_frag_download(ctx, info_dict)

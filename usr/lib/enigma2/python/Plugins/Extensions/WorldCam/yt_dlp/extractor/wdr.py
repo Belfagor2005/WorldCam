@@ -36,8 +36,7 @@ class WDRIE(InfoExtractor):
 
     def _asset_url(self, wdr_id):
         id_len = max(len(wdr_id), 5)
-        return ''.join(('https:', self.__API_URL_TPL %
-                       (wdr_id[:id_len - 4], wdr_id), '.js'))
+        return ''.join(('https:', self.__API_URL_TPL % (wdr_id[:id_len - 4], wdr_id), '.js'))
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -119,15 +118,12 @@ class WDRIE(InfoExtractor):
                 })
 
         return {
-            'id': tracker_data.get(
-                'trackerClipId',
-                video_id),
+            'id': tracker_data.get('trackerClipId', video_id),
             'title': title,
             'alt_title': tracker_data.get('trackerClipSubcategory'),
             'formats': formats,
             'subtitles': subtitles,
-            'upload_date': unified_strdate(
-                tracker_data.get('trackerClipAirTime')),
+            'upload_date': unified_strdate(tracker_data.get('trackerClipAirTime')),
             'is_live': is_live,
         }
 
@@ -135,8 +131,7 @@ class WDRIE(InfoExtractor):
 class WDRPageIE(WDRIE):  # XXX: Do not subclass from concrete IE
     _MAUS_REGEX = r'https?://(?:www\.)wdrmaus.de/(?:[^/]+/)*?(?P<maus_id>[^/?#.]+)(?:/?|/index\.php5|\.php5)$'
     _PAGE_REGEX = r'/(?:mediathek/)?(?:[^/]+/)*(?P<display_id>[^/]+)\.html'
-    _VALID_URL = r'https?://(?:www\d?\.)?(?:(?:kinder\.)?wdr\d?|sportschau)\.de' + \
-        _PAGE_REGEX + '|' + _MAUS_REGEX
+    _VALID_URL = r'https?://(?:www\d?\.)?(?:(?:kinder\.)?wdr\d?|sportschau)\.de' + _PAGE_REGEX + '|' + _MAUS_REGEX
 
     _TESTS = [
         {
@@ -267,8 +262,7 @@ class WDRPageIE(WDRIE):  # XXX: Do not subclass from concrete IE
 
     def _real_extract(self, url):
         mobj = self._match_valid_url(url)
-        display_id = dict_get(
-            mobj.groupdict(), ('display_id', 'maus_id'), 'wdrmaus')
+        display_id = dict_get(mobj.groupdict(), ('display_id', 'maus_id'), 'wdrmaus')
         webpage = self._download_webpage(url, display_id)
 
         entries = []
@@ -294,20 +288,17 @@ class WDRPageIE(WDRIE):  # XXX: Do not subclass from concrete IE
             jsonp_url = try_get(
                 media_link_obj, lambda x: x['mediaObj']['url'], str)
             if jsonp_url:
-                # metadata, or player JS with ['ref'] giving WDR id, or just
-                # media, perhaps
+                # metadata, or player JS with ['ref'] giving WDR id, or just media, perhaps
                 clip_id = media_link_obj['mediaObj'].get('ref')
                 if jsonp_url.endswith('.assetjsonp'):
                     asset = self._download_json(
                         jsonp_url, display_id, fatal=False, transform_source=strip_jsonp)
-                    clip_id = try_get(
-                        asset, lambda x: x['trackerData']['trackerClipId'], str)
+                    clip_id = try_get(asset, lambda x: x['trackerData']['trackerClipId'], str)
                 if clip_id:
                     jsonp_url = self._asset_url(clip_id[4:])
                 entries.append(self.url_result(jsonp_url, ie=WDRIE.ie_key()))
 
-        # Playlist (e.g.
-        # https://www1.wdr.de/mediathek/video/sendungen/aktuelle-stunde/aktuelle-stunde-120.html)
+        # Playlist (e.g. https://www1.wdr.de/mediathek/video/sendungen/aktuelle-stunde/aktuelle-stunde-120.html)
         if not entries:
             entries = [
                 self.url_result(
@@ -338,8 +329,7 @@ class WDRElefantIE(InfoExtractor):
         display_id = self._match_id(url)
 
         # Table of Contents seems to always be at this address, so fetch it directly.
-        # The website fetches configurationJS.php5, which links to
-        # tableOfContentsJS.php5.
+        # The website fetches configurationJS.php5, which links to tableOfContentsJS.php5.
         table_of_contents = self._download_json(
             'https://www.wdrmaus.de/elefantenseite/data/tableOfContentsJS.php5',
             display_id)

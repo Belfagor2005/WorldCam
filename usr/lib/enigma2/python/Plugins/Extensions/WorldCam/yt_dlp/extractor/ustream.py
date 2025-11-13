@@ -17,8 +17,7 @@ from ..utils import (
 class UstreamIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?(?:ustream\.tv|video\.ibm\.com)/(?P<type>recorded|embed|embed/recorded)/(?P<id>\d+)'
     IE_NAME = 'ustream'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+?src=(["\'])(?P<url>https?://(?:www\.)?(?:ustream\.tv|video\.ibm\.com)/embed/.+?)\1']
+    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>https?://(?:www\.)?(?:ustream\.tv|video\.ibm\.com)/embed/.+?)\1']
     _TESTS = [{
         'url': 'http://www.ustream.tv/recorded/20274954',
         'md5': '088f151799e8f572f84eb62f17d73e5c',
@@ -74,16 +73,14 @@ class UstreamIE(InfoExtractor):
         def num_to_hex(n):
             return hex(n)[2:]
 
-        def rnd(x): return random.randrange(int(x))
+        rnd = lambda x: random.randrange(int(x))
 
         if not extra_note:
             extra_note = ''
 
         conn_info = self._download_json(
             f'http://r{rnd(1e8)}-1-{video_id}-recorded-lp-live.ums.ustream.tv/1/ustream',
-            video_id,
-            note='Downloading connection info' +
-            extra_note,
+            video_id, note='Downloading connection info' + extra_note,
             query={
                 'type': 'viewer',
                 'appId': app_id_ver[0],
@@ -105,8 +102,8 @@ class UstreamIE(InfoExtractor):
         # Sometimes the return dict does not have 'stream'
         for trial_count in range(3):
             stream_info = self._get_stream_info(
-                url, video_id, app_id_ver, extra_note=f' (try {
-                    trial_count + 1})' if trial_count > 0 else '')
+                url, video_id, app_id_ver,
+                extra_note=f' (try {trial_count + 1})' if trial_count > 0 else '')
             if 'stream' in stream_info[0]['args'][0]:
                 return stream_info[0]['args'][0]['stream']
         return []
@@ -119,11 +116,11 @@ class UstreamIE(InfoExtractor):
         for stream in dash_stream_info['streams']:
             # Use only one provider to avoid too many formats
             provider = dash_stream_info['providers'][0]
-            fragments = [{'url': resolve_dash_template(
-                provider['url'] + stream['initUrl'], 0, dash_stream_info['hashes']['0']), }]
-            for idx in range(
-                    dash_stream_info['videoLength'] //
-                    dash_stream_info['chunkTime']):
+            fragments = [{
+                'url': resolve_dash_template(
+                    provider['url'] + stream['initUrl'], 0, dash_stream_info['hashes']['0']),
+            }]
+            for idx in range(dash_stream_info['videoLength'] // dash_stream_info['chunkTime']):
                 fragments.append({
                     'url': resolve_dash_template(
                         provider['url'] + stream['segmentUrl'], idx,
@@ -161,8 +158,7 @@ class UstreamIE(InfoExtractor):
         m = self._match_valid_url(url)
         video_id = m.group('id')
 
-        # some sites use this embed format (see:
-        # https://github.com/ytdl-org/youtube-dl/issues/2990)
+        # some sites use this embed format (see: https://github.com/ytdl-org/youtube-dl/issues/2990)
         if m.group('type') == 'embed/recorded':
             video_id = m.group('id')
             desktop_url = 'http://www.ustream.tv/recorded/' + video_id
@@ -174,9 +170,7 @@ class UstreamIE(InfoExtractor):
                 r'ustream\.vars\.offAirContentVideoIds=([^;]+);', webpage,
                 'content video IDs'), video_id)
             return self.playlist_result(
-                (self.url_result(
-                    'http://www.ustream.tv/recorded/' + u,
-                    'Ustream') for u in content_video_ids),
+                (self.url_result('http://www.ustream.tv/recorded/' + u, 'Ustream') for u in content_video_ids),
                 video_id)
 
         params = self._download_json(
@@ -264,10 +258,7 @@ class UstreamChannelIE(InfoExtractor):
             reply = self._download_json(
                 urllib.parse.urljoin(BASE, next_url), display_id,
                 note=f'Downloading video information (next: {len(video_ids) + 1})')
-            video_ids.extend(
-                re.findall(
-                    r'data-content-id="(\d.*)"',
-                    reply['data']))
+            video_ids.extend(re.findall(r'data-content-id="(\d.*)"', reply['data']))
             next_url = reply['nextUrl']
 
         entries = [

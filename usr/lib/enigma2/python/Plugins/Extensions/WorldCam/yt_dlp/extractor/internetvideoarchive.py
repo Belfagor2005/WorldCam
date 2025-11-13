@@ -41,8 +41,7 @@ class InternetVideoArchiveIE(InfoExtractor):
             'm3u8_native', m3u8_id='hls', fatal=False)
         file_url = formats[0]['url']
         if '.ism/' in file_url:
-            def replace_url(x): return re.sub(
-                r'\.ism/[^?]+', '.ism/' + x, file_url)
+            replace_url = lambda x: re.sub(r'\.ism/[^?]+', '.ism/' + x, file_url)
             formats.extend(self._extract_f4m_formats(
                 replace_url('.f4m'), video_id, f4m_id='hds', fatal=False))
             formats.extend(self._extract_mpd_formats(

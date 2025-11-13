@@ -3,7 +3,6 @@
 An attribute "_yt_dlp__identifier" may be inserted into the module if it uses an ambiguous namespace"""
 
 try:
-    from . import Cryptodome
     import brotlicffi as brotli
 except ImportError:
     try:
@@ -44,8 +43,7 @@ except Exception as _err:
 
 try:
     import sqlite3
-    # We need to get the underlying `sqlite` version, see
-    # https://github.com/yt-dlp/yt-dlp/issues/8152
+    # We need to get the underlying `sqlite` version, see https://github.com/yt-dlp/yt-dlp/issues/8152
     sqlite3._yt_dlp__version = sqlite3.sqlite_version
 except ImportError:
     # although sqlite3 is part of the standard library, it is possible to compile Python without
@@ -81,10 +79,15 @@ try:
 except ImportError:
     curl_cffi = None
 
+from . import Cryptodome
 
-all_dependencies = {
-    k: v for k,
-    v in globals().items() if not k.startswith('_')}
+try:
+    import yt_dlp_ejs
+except ImportError:
+    yt_dlp_ejs = None
+
+
+all_dependencies = {k: v for k, v in globals().items() if not k.startswith('_')}
 available_dependencies = {k: v for k, v in all_dependencies.items() if v}
 
 

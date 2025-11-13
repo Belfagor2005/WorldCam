@@ -6,6 +6,7 @@ from ..utils import ExtractorError, clean_html, int_or_none
 
 
 class TFOIE(InfoExtractor):
+    _WORKING = False
     _GEO_COUNTRIES = ['CA']
     _VALID_URL = r'https?://(?:www\.)?tfo\.org/(?:en|fr)/(?:[^/]+/){2}(?P<id>\d+)'
     _TEST = {
@@ -23,24 +24,15 @@ class TFOIE(InfoExtractor):
         video_id = self._match_id(url)
         self._request_webpage(HEADRequest('http://www.tfo.org/'), video_id)
         infos = self._download_json(
-            'http://www.tfo.org/api/web/video/get_infos',
-            video_id,
-            data=json.dumps(
-                {
-                    'product_id': video_id,
-                }).encode(),
-            headers={
+            'http://www.tfo.org/api/web/video/get_infos', video_id, data=json.dumps({
+                'product_id': video_id,
+            }).encode(), headers={
                 'X-tfo-session': self._get_cookies('http://www.tfo.org/')['tfo-session'].value,
             })
         if infos.get('success') == 0:
             if infos.get('code') == 'ErrGeoBlocked':
                 self.raise_geo_restricted(countries=self._GEO_COUNTRIES)
-            raise ExtractorError(
-                '{} said: {}'.format(
-                    self.IE_NAME,
-                    clean_html(
-                        infos['msg'])),
-                expected=True)
+            raise ExtractorError('{} said: {}'.format(self.IE_NAME, clean_html(infos['msg'])), expected=True)
         video_data = infos['data']
 
         return {

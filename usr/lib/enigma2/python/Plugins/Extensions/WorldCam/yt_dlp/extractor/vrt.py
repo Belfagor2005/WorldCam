@@ -14,7 +14,7 @@ from ..utils import (
     get_element_html_by_class,
     int_or_none,
     jwt_decode_hs256,
-    jwt_encode_hs256,
+    jwt_encode,
     make_archive_id,
     merge_dicts,
     parse_age_limit,
@@ -46,22 +46,18 @@ class VRTBaseIE(InfoExtractor):
             'version': '5.1.1-prod-2025-02-14T08:44:16"',
         },
     }
-    # From https://player.vrt.be/vrtnws/js/main.js &
-    # https://player.vrt.be/ketnet/js/main.8cdb11341bcb79e4cd44.js
+    # From https://player.vrt.be/vrtnws/js/main.js & https://player.vrt.be/ketnet/js/main.8cdb11341bcb79e4cd44.js
     _JWT_KEY_ID = '0-0Fp51UZykfaiCJrfTE3+oMI8zvDteYfPtR+2n1R+z8w='
     _JWT_SIGNING_KEY = 'b5f500d55cb44715107249ccd8a5c0136cfb2788dbb71b90a4f142423bacaf38'  # -dev
     # player-stag.vrt.be key:    d23987504521ae6fbf2716caca6700a24bb1579477b43c84e146b279de5ca595
-    # player.vrt.be key:
-    # 2a9251d782700769fb856da5725daf38661874ca6f80ae7dc2b05ec1a81a24ae
+    # player.vrt.be key:         2a9251d782700769fb856da5725daf38661874ca6f80ae7dc2b05ec1a81a24ae
 
     def _extract_formats_and_subtitles(self, data, video_id):
         if traverse_obj(data, 'drm'):
             self.report_drm(video_id)
 
         formats, subtitles = [], {}
-        for target in traverse_obj(
-            data, ('targetUrls', lambda _, v: url_or_none(
-                v['url']) and v['type'])):
+        for target in traverse_obj(data, ('targetUrls', lambda _, v: url_or_none(v['url']) and v['type'])):
             format_type = target['type'].upper()
             format_url = target['url']
             if format_type in ('HLS', 'HLS_AES'):
@@ -88,22 +84,13 @@ class VRTBaseIE(InfoExtractor):
                     'url': format_url,
                 })
 
-        for sub in traverse_obj(
-            data,
-            ('subtitleUrls',
-             lambda _,
-             v: v['url'] and v['type'] == 'CLOSED')):
+        for sub in traverse_obj(data, ('subtitleUrls', lambda _, v: v['url'] and v['type'] == 'CLOSED')):
             subtitles.setdefault('nl', []).append({'url': sub['url']})
 
         return formats, subtitles
 
     def _call_api(self, video_id, client='null', id_token=None, version='v2'):
-        player_info = {
-            'exp': (
-                round(
-                    time.time(),
-                    3) + 900),
-            **self._PLAYER_INFO}
+        player_info = {'exp': (round(time.time(), 3) + 900), **self._PLAYER_INFO}
         player_token = self._download_json(
             f'https://media-services-public.vrt.be/vualto-video-aggregator-web/rest/external/{version}/tokens',
             video_id, 'Downloading player token', 'Failed to download player token', headers={
@@ -111,14 +98,13 @@ class VRTBaseIE(InfoExtractor):
                 'Content-Type': 'application/json',
             }, data=json.dumps({
                 'identityToken': id_token or '',
-                'playerInfo': jwt_encode_hs256(player_info, self._JWT_SIGNING_KEY, headers={
+                'playerInfo': jwt_encode(player_info, self._JWT_SIGNING_KEY, headers={
                     'kid': self._JWT_KEY_ID,
-                }).decode(),
+                }),
             }, separators=(',', ':')).encode())['vrtPlayerToken']
 
         return self._download_json(
-            # The URL below redirects to
-            # https://media-services-public.vrt.be/media-aggregator/{version}/media-items/{video_id}
+            # The URL below redirects to https://media-services-public.vrt.be/media-aggregator/{version}/media-items/{video_id}
             f'https://media-services-public.vrt.be/vualto-video-aggregator-web/rest/external/{version}/videos/{video_id}',
             video_id, 'Downloading API JSON', 'Failed to download API JSON', query={
                 'vrtPlayerToken': player_token,
@@ -160,23 +146,16 @@ class VRTIE(VRTBaseIE):
     def _real_extract(self, url):
         site, display_id = self._match_valid_url(url).groups()
         webpage = self._download_webpage(url, display_id)
-        attrs = extract_attributes(
-            get_element_html_by_class(
-                'vrtvideo', webpage) or '')
+        attrs = extract_attributes(get_element_html_by_class('vrtvideo', webpage) or '')
 
         asset_id = attrs.get('data-video-id') or attrs['data-videoid']
-        publication_id = traverse_obj(
-            attrs, 'data-publication-id', 'data-publicationid')
+        publication_id = traverse_obj(attrs, 'data-publication-id', 'data-publicationid')
         if publication_id:
             asset_id = f'{publication_id}${asset_id}'
-        client = traverse_obj(
-            attrs,
-            'data-client-code',
-            'data-client') or self._CLIENT_MAP[site]
+        client = traverse_obj(attrs, 'data-client-code', 'data-client') or self._CLIENT_MAP[site]
 
         data = self._call_api(asset_id, client)
-        formats, subtitles = self._extract_formats_and_subtitles(
-            data, asset_id)
+        formats, subtitles = self._extract_formats_and_subtitles(data, asset_id)
 
         description = self._html_search_meta(
             ['og:description', 'twitter:description', 'description'], webpage)
@@ -330,41 +309,28 @@ class VrtNUIE(VRTBaseIE):
             return access_token, video_token
 
         if has_credentials:
-            access_token, video_token = self.cache.load(
-                self._NETRC_MACHINE, 'token_data', default=(None, None))
+            access_token, video_token = self.cache.load(self._NETRC_MACHINE, 'token_data', default=(None, None))
 
             if (access_token and not self._is_jwt_token_expired(access_token)
                     and video_token and not self._is_jwt_token_expired(video_token)):
                 self.write_debug('Restored tokens from cache')
-                self._set_cookie(
-                    self._TOKEN_COOKIE_DOMAIN,
-                    self._ACCESS_TOKEN_COOKIE_NAME,
-                    access_token)
-                self._set_cookie(
-                    self._TOKEN_COOKIE_DOMAIN,
-                    self._VIDEO_TOKEN_COOKIE_NAME,
-                    video_token)
+                self._set_cookie(self._TOKEN_COOKIE_DOMAIN, self._ACCESS_TOKEN_COOKIE_NAME, access_token)
+                self._set_cookie(self._TOKEN_COOKIE_DOMAIN, self._VIDEO_TOKEN_COOKIE_NAME, video_token)
                 return access_token, video_token
 
         if not self._get_vrt_cookie(self._REFRESH_TOKEN_COOKIE_NAME):
             return None, None
 
         self._request_webpage(
-            'https://www.vrt.be/vrtmax/sso/refresh',
-            None,
-            note='Refreshing tokens',
-            errnote='Failed to refresh tokens',
-            fatal=False)
+            'https://www.vrt.be/vrtmax/sso/refresh', None,
+            note='Refreshing tokens', errnote='Failed to refresh tokens', fatal=False)
 
         access_token = self._get_vrt_cookie(self._ACCESS_TOKEN_COOKIE_NAME)
         video_token = self._get_vrt_cookie(self._VIDEO_TOKEN_COOKIE_NAME)
 
         if not access_token or not video_token:
             self.cache.store(self._NETRC_MACHINE, 'refresh_token', None)
-            self.cookiejar.clear(
-                self._TOKEN_COOKIE_DOMAIN,
-                '/vrtmax/sso',
-                self._REFRESH_TOKEN_COOKIE_NAME)
+            self.cookiejar.clear(self._TOKEN_COOKIE_DOMAIN, '/vrtmax/sso', self._REFRESH_TOKEN_COOKIE_NAME)
             msg = 'Refreshing of tokens failed'
             if not has_credentials:
                 self.report_warning(msg)
@@ -373,15 +339,13 @@ class VrtNUIE(VRTBaseIE):
             return self._perform_login(*self._get_login_info())
 
         if has_credentials:
-            self.cache.store(self._NETRC_MACHINE, 'token_data',
-                             (access_token, video_token))
+            self.cache.store(self._NETRC_MACHINE, 'token_data', (access_token, video_token))
 
         return access_token, video_token
 
     def _get_vrt_cookie(self, cookie_name):
         # Refresh token cookie is scoped to /vrtmax/sso, others are scoped to /
-        return try_call(lambda: self._get_cookies(
-            'https://www.vrt.be/vrtmax/sso')[cookie_name].value)
+        return try_call(lambda: self._get_cookies('https://www.vrt.be/vrtmax/sso')[cookie_name].value)
 
     @staticmethod
     def _is_jwt_token_expired(token):
@@ -390,26 +354,18 @@ class VrtNUIE(VRTBaseIE):
     def _perform_login(self, username, password):
         refresh_token = self._get_vrt_cookie(self._REFRESH_TOKEN_COOKIE_NAME)
         if refresh_token and not self._is_jwt_token_expired(refresh_token):
-            self.write_debug(
-                'Using refresh token from logged-in cookies; skipping login with credentials')
+            self.write_debug('Using refresh token from logged-in cookies; skipping login with credentials')
             return
 
-        refresh_token = self.cache.load(
-            self._NETRC_MACHINE, 'refresh_token', default=None)
+        refresh_token = self.cache.load(self._NETRC_MACHINE, 'refresh_token', default=None)
         if refresh_token and not self._is_jwt_token_expired(refresh_token):
             self.write_debug('Restored refresh token from cache')
-            self._set_cookie(
-                self._TOKEN_COOKIE_DOMAIN,
-                self._REFRESH_TOKEN_COOKIE_NAME,
-                refresh_token,
-                path='/vrtmax/sso')
+            self._set_cookie(self._TOKEN_COOKIE_DOMAIN, self._REFRESH_TOKEN_COOKIE_NAME, refresh_token, path='/vrtmax/sso')
             return
 
         self._request_webpage(
-            'https://www.vrt.be/vrtmax/sso/login',
-            None,
-            note='Getting session cookies',
-            errnote='Failed to get session cookies')
+            'https://www.vrt.be/vrtmax/sso/login', None,
+            note='Getting session cookies', errnote='Failed to get session cookies')
 
         login_data = self._download_json(
             'https://login.vrt.be/perform_login', None, data=json.dumps({
@@ -421,9 +377,7 @@ class VrtNUIE(VRTBaseIE):
                 'Oidcxsrf': self._get_cookies('https://login.vrt.be')['OIDCXSRF'].value,
             }, note='Logging in', errnote='Login failed', expected_status=403)
         if login_data.get('errorCode'):
-            raise ExtractorError(
-                f'Login failed: {login_data.get("errorMessage")}',
-                expected=True)
+            raise ExtractorError(f'Login failed: {login_data.get("errorMessage")}', expected=True)
 
         self._request_webpage(
             login_data['redirectUrl'], None,
@@ -436,8 +390,7 @@ class VrtNUIE(VRTBaseIE):
         if not all((access_token, video_token, refresh_token)):
             raise ExtractorError('Unable to extract token cookie values')
 
-        self.cache.store(self._NETRC_MACHINE, 'token_data',
-                         (access_token, video_token))
+        self.cache.store(self._NETRC_MACHINE, 'token_data', (access_token, video_token))
         self.cache.store(self._NETRC_MACHINE, 'refresh_token', refresh_token)
 
         return access_token, video_token
@@ -465,23 +418,17 @@ class VrtNUIE(VRTBaseIE):
         video_id = metadata['player']['modes'][0]['streamId']
 
         try:
-            streaming_info = self._call_api(
-                video_id, 'vrtnu-web@PROD', id_token=video_token)
+            streaming_info = self._call_api(video_id, 'vrtnu-web@PROD', id_token=video_token)
         except ExtractorError as e:
-            if not video_token and isinstance(
-                    e.cause, HTTPError) and e.cause.status == 404:
+            if not video_token and isinstance(e.cause, HTTPError) and e.cause.status == 404:
                 self.raise_login_required()
             raise
 
-        formats, subtitles = self._extract_formats_and_subtitles(
-            streaming_info, video_id)
+        formats, subtitles = self._extract_formats_and_subtitles(streaming_info, video_id)
 
         code = traverse_obj(streaming_info, ('code', {str}))
         if not formats and code:
-            if code in (
-                'CONTENT_AVAILABLE_ONLY_FOR_BE_RESIDENTS',
-                'CONTENT_AVAILABLE_ONLY_IN_BE',
-                    'CONTENT_UNAVAILABLE_VIA_PROXY'):
+            if code in ('CONTENT_AVAILABLE_ONLY_FOR_BE_RESIDENTS', 'CONTENT_AVAILABLE_ONLY_IN_BE', 'CONTENT_UNAVAILABLE_VIA_PROXY'):
                 self.raise_geo_restricted(countries=['BE'])
             elif code in ('CONTENT_AVAILABLE_ONLY_FOR_BE_RESIDENTS_AND_EXPATS', 'CONTENT_IS_AGE_RESTRICTED', 'CONTENT_REQUIRES_AUTHENTICATION'):
                 self.raise_login_required()
@@ -535,39 +482,22 @@ class DagelijkseKostIE(VRTBaseIE):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
         video_id = self._html_search_regex(
-            r'data-url=(["\'])(?P<id>(?:(?!\1).)+)\1',
-            webpage,
-            'video id',
-            group='id')
+            r'data-url=(["\'])(?P<id>(?:(?!\1).)+)\1', webpage, 'video id', group='id')
 
         data = self._call_api(video_id, 'dako@prod', version='v1')
-        formats, subtitles = self._extract_formats_and_subtitles(
-            data, video_id)
+        formats, subtitles = self._extract_formats_and_subtitles(data, video_id)
 
         return {
             'id': video_id,
             'formats': formats,
             'subtitles': subtitles,
             'display_id': display_id,
-            'title': strip_or_none(
-                get_element_by_class(
-                    'dish-metadata__title',
-                    webpage) or self._html_search_meta(
-                    'twitter:title',
-                    webpage)),
-            'description': clean_html(
-                get_element_by_class(
-                    'dish-description',
-                    webpage)) or self._html_search_meta(
-                [
-                    'description',
-                    'twitter:description',
-                    'og:description'],
-                webpage),
-            '_old_archive_ids': [
-                make_archive_id(
-                    'Canvas',
-                    video_id)],
+            'title': strip_or_none(get_element_by_class(
+                'dish-metadata__title', webpage) or self._html_search_meta('twitter:title', webpage)),
+            'description': clean_html(get_element_by_class(
+                'dish-description', webpage)) or self._html_search_meta(
+                ['description', 'twitter:description', 'og:description'], webpage),
+            '_old_archive_ids': [make_archive_id('Canvas', video_id)],
         }
 
 
@@ -597,8 +527,7 @@ class Radio1BeIE(VRTBaseIE):
 
     def _extract_video_entries(self, next_js_data, display_id):
         video_data = traverse_obj(
-            next_js_data, ((None, ('paragraphs', ...)), {
-                lambda x: x if x['mediaReference'] else None}))
+            next_js_data, ((None, ('paragraphs', ...)), {lambda x: x if x['mediaReference'] else None}))
         for data in video_data:
             media_reference = data['mediaReference']
             formats, subtitles = self._extract_formats_and_subtitles(
@@ -617,8 +546,7 @@ class Radio1BeIE(VRTBaseIE):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        next_js_data = self._search_nextjs_data(
-            webpage, display_id)['props']['pageProps']['item']
+        next_js_data = self._search_nextjs_data(webpage, display_id)['props']['pageProps']['item']
 
         return self.playlist_result(
             self._extract_video_entries(next_js_data, display_id), **merge_dicts(traverse_obj(

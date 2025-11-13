@@ -47,20 +47,12 @@ class UlizaPlayerIE(InfoExtractor):
             note='Fetching player data', errnote='Unable to fetch player data')
 
         m3u8_url = self._search_regex(
-            r'["\'](https://vms-api\.p\.uliza\.jp/v1/prog-index\.m3u8[^"\']+)',
-            player_data,
-            'm3u8 url')
+            r'["\'](https://vms-api\.p\.uliza\.jp/v1/prog-index\.m3u8[^"\']+)', player_data, 'm3u8 url')
         video_id = parse_qs(m3u8_url).get('ss', [display_id])[0]
 
         formats = self._extract_m3u8_formats(m3u8_url, video_id)
         m3u8_type = self._search_regex(
-            r'/hls/(dvr|video)/',
-            traverse_obj(
-                formats,
-                (0,
-                 'url')),
-            'm3u8 type',
-            default=None)
+            r'/hls/(dvr|video)/', traverse_obj(formats, (0, 'url')), 'm3u8 type', default=None)
         return {
             'id': video_id,
             'title': video_id,
@@ -109,10 +101,7 @@ class UlizaPortalIE(InfoExtractor):
 
         expires = int_or_none(traverse_obj(parse_qs(url), ('expires', 0)))
         if expires and expires <= time_seconds():
-            raise ExtractorError(
-                'The link is expired',
-                video_id=video_id,
-                expected=True)
+            raise ExtractorError('The link is expired', video_id=video_id, expected=True)
 
         webpage = self._download_webpage(url, video_id)
 

@@ -7,6 +7,7 @@ from .common import InfoExtractor
 from ..utils import (
     KNOWN_EXTENSIONS,
     ExtractorError,
+    clean_html,
     extract_attributes,
     float_or_none,
     int_or_none,
@@ -19,13 +20,12 @@ from ..utils import (
     url_or_none,
     urljoin,
 )
-from ..utils.traversal import find_element, traverse_obj
+from ..utils.traversal import find_element, find_elements, traverse_obj
 
 
 class BandcampIE(InfoExtractor):
     _VALID_URL = r'https?://(?P<uploader>[^/]+)\.bandcamp\.com/track/(?P<id>[^/?#&]+)'
-    _EMBED_REGEX = [
-        r'<meta property="og:url"[^>]*?content="(?P<url>.*?bandcamp\.com.*?)"']
+    _EMBED_REGEX = [r'<meta property="og:url"[^>]*?content="(?P<url>.*?bandcamp\.com.*?)"']
     _TESTS = [{
         'url': 'http://youtube-dl.bandcamp.com/track/youtube-dl-test-song',
         'md5': 'c557841d5e50261777a6585648adf439',
@@ -36,14 +36,12 @@ class BandcampIE(InfoExtractor):
             'duration': 9.8485,
             'uploader': 'youtube-dl "\'/\\ä↭',
             'upload_date': '20121129',
+            'thumbnail': r're:https?://f4\.bcbits\.com/img/.+\.jpg',
             'timestamp': 1354224127,
             'track': 'youtube-dl "\'/\\ä↭ - youtube-dl test song "\'/\\ä↭',
-            'album_artist': 'youtube-dl "\'/\\ä↭',
             'track_id': '1812978515',
-            'artist': 'youtube-dl "\'/\\ä↭',
             'uploader_url': 'https://youtube-dl.bandcamp.com',
             'uploader_id': 'youtube-dl',
-            'thumbnail': 'https://f4.bcbits.com/img/a3216802731_5.jpg',
             'artists': ['youtube-dl "\'/\\ä↭'],
             'album_artists': ['youtube-dl "\'/\\ä↭'],
         },
@@ -54,10 +52,9 @@ class BandcampIE(InfoExtractor):
         'info_dict': {
             'id': '2650410135',
             'ext': 'm4a',
-            'acodec': r're:[fa]lac',
             'title': 'Ben Prunty - Lanius (Battle)',
-            'thumbnail': r're:^https?://.*\.jpg$',
             'uploader': 'Ben Prunty',
+            'thumbnail': r're:https?://f4\.bcbits\.com/img/.+\.jpg',
             'timestamp': 1396508491,
             'upload_date': '20140403',
             'release_timestamp': 1396483200,
@@ -66,11 +63,12 @@ class BandcampIE(InfoExtractor):
             'track': 'Lanius (Battle)',
             'track_number': 1,
             'track_id': '2650410135',
-            'artist': 'Ben Prunty',
-            'album_artist': 'Ben Prunty',
             'album': 'FTL: Advanced Edition Soundtrack',
             'uploader_url': 'https://benprunty.bandcamp.com',
             'uploader_id': 'benprunty',
+            'tags': ['soundtrack', 'chiptunes', 'cinematic', 'electronic', 'video game music', 'California'],
+            'artists': ['Ben Prunty'],
+            'album_artists': ['Ben Prunty'],
         },
     }, {
         # no free download, mp3 128
@@ -80,8 +78,8 @@ class BandcampIE(InfoExtractor):
             'id': '2584466013',
             'ext': 'mp3',
             'title': 'Mastodon - Hail to Fire',
-            'thumbnail': r're:^https?://.*\.jpg$',
             'uploader': 'Mastodon',
+            'thumbnail': r're:https?://f4\.bcbits\.com/img/.+\.jpg',
             'timestamp': 1322005399,
             'upload_date': '20111122',
             'release_timestamp': 1076112000,
@@ -90,11 +88,12 @@ class BandcampIE(InfoExtractor):
             'track': 'Hail to Fire',
             'track_number': 5,
             'track_id': '2584466013',
-            'artist': 'Mastodon',
-            'album_artist': 'Mastodon',
             'album': 'Call of the Mastodon',
             'uploader_url': 'https://relapsealumni.bandcamp.com',
             'uploader_id': 'relapsealumni',
+            'tags': ['Philadelphia'],
+            'artists': ['Mastodon'],
+            'album_artists': ['Mastodon'],
         },
     }, {
         # track from compilation album (artist/album_artist difference)
@@ -104,8 +103,8 @@ class BandcampIE(InfoExtractor):
             'id': '1978174799',
             'ext': 'mp3',
             'title': 'submerse - submerse - Safehouse',
-            'thumbnail': r're:^https?://.*\.jpg$',
             'uploader': 'submerse',
+            'thumbnail': r're:https?://f4\.bcbits\.com/img/.+\.jpg',
             'timestamp': 1480779297,
             'upload_date': '20161203',
             'release_timestamp': 1481068800,
@@ -114,20 +113,40 @@ class BandcampIE(InfoExtractor):
             'track': 'submerse - Safehouse',
             'track_number': 3,
             'track_id': '1978174799',
-            'artist': 'submerse',
-            'album_artist': 'Diskotopia',
             'album': 'DSK F/W 2016-2017 Free Compilation',
             'uploader_url': 'https://diskotopia.bandcamp.com',
             'uploader_id': 'diskotopia',
+            'tags': ['Japan'],
+            'artists': ['submerse'],
+            'album_artists': ['Diskotopia'],
+        },
+    }]
+    _WEBPAGE_TESTS = [{
+        # FIXME: Embed detection
+        'url': 'https://www.punknews.org/article/85809/stay-inside-super-sonic',
+        'info_dict': {
+            'id': '2475540375',
+            'ext': 'mp3',
+            'title': 'Stay Inside - Super Sonic',
+            'album': 'Lunger',
+            'album_artists': ['Stay Inside'],
+            'artists': ['Stay Inside'],
+            'duration': 166.157,
+            'release_date': '20251003',
+            'release_timestamp': 1759449600.0,
+            'thumbnail': r're:https?://f4\.bcbits\.com/img/.+\.jpg',
+            'timestamp': 1749473029.0,
+            'track': 'Super Sonic',
+            'track_id': '2475540375',
+            'track_number': 3,
+            'upload_date': '20250609',
+            'uploader': 'Stay Inside',
+            'uploader_id': 'stayinside',
+            'uploader_url': 'https://stayinside.bandcamp.com',
         },
     }]
 
-    def _extract_data_attr(
-            self,
-            webpage,
-            video_id,
-            attr='tralbum',
-            fatal=True):
+    def _extract_data_attr(self, webpage, video_id, attr='tralbum', fatal=True):
         return self._parse_json(self._html_search_regex(
             rf'data-{attr}=(["\'])({{.+?}})\1', webpage,
             attr + ' data', group=2), video_id, fatal=fatal)
@@ -168,8 +187,7 @@ class BandcampIE(InfoExtractor):
 
         embed = self._extract_data_attr(webpage, title, 'embed', False)
         current = tralbum.get('current') or {}
-        artist = embed.get('artist') or current.get(
-            'artist') or tralbum.get('artist')
+        artist = embed.get('artist') or current.get('artist') or tralbum.get('artist')
         album_artist = self._html_search_regex(
             r'<h3 class="albumTitle">[\S\s]*?by\s*<span>\s*<a href="[^>]+">\s*([^>]+?)\s*</a>',
             webpage, 'album artist', fatal=False)
@@ -250,8 +268,7 @@ class BandcampIE(InfoExtractor):
             'uploader_id': uploader,
             'uploader_url': f'https://{uploader}.bandcamp.com',
             'timestamp': timestamp,
-            'release_timestamp': unified_timestamp(
-                tralbum.get('album_release_date')),
+            'release_timestamp': unified_timestamp(tralbum.get('album_release_date')),
             'duration': duration,
             'track': track,
             'track_number': track_number,
@@ -260,6 +277,7 @@ class BandcampIE(InfoExtractor):
             'album': embed.get('album_title'),
             'album_artist': album_artist,
             'formats': formats,
+            'tags': traverse_obj(webpage, ({find_elements(cls='tag')}, ..., {clean_html})),
         }
 
 
@@ -276,10 +294,10 @@ class BandcampAlbumIE(BandcampIE):  # XXX: Do not subclass from concrete IE
                     'id': '1353101989',
                     'ext': 'mp3',
                     'title': 'Blazo - Intro',
+                    'thumbnail': r're:https?://f4\.bcbits\.com/img/.+\.jpg',
                     'timestamp': 1311756226,
                     'upload_date': '20110727',
                     'uploader': 'Blazo',
-                    'thumbnail': 'https://f4.bcbits.com/img/a1721150828_5.jpg',
                     'album_artists': ['Blazo'],
                     'uploader_url': 'https://blazo.bandcamp.com',
                     'release_date': '20110727',
@@ -299,6 +317,7 @@ class BandcampAlbumIE(BandcampIE):  # XXX: Do not subclass from concrete IE
                     'id': '38097443',
                     'ext': 'mp3',
                     'title': 'Blazo - Kero One - Keep It Alive (Blazo remix)',
+                    'thumbnail': r're:https?://f4\.bcbits\.com/img/.+\.jpg',
                     'timestamp': 1311757238,
                     'upload_date': '20110727',
                     'uploader': 'Blazo',
@@ -312,7 +331,6 @@ class BandcampAlbumIE(BandcampIE):  # XXX: Do not subclass from concrete IE
                     'uploader_id': 'blazo',
                     'album_artists': ['Blazo'],
                     'artists': ['Blazo'],
-                    'thumbnail': 'https://f4.bcbits.com/img/a1721150828_5.jpg',
                     'release_timestamp': 1311724800.0,
                 },
             },

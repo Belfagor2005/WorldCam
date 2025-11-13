@@ -64,9 +64,7 @@ class PodbayFMChannelIE(InfoExtractor):
     def _fetch_page(self, channel_id, pagenum):
         return self._download_json(
             f'https://podbay.fm/api/podcast?reverse=true&page={pagenum}&slug={channel_id}',
-            f'Downloading channel JSON page {
-                pagenum + 1}',
-            channel_id)['podcast']
+            f'Downloading channel JSON page {pagenum + 1}', channel_id)['podcast']
 
     @staticmethod
     def _results_from_page(channel_id, page):
@@ -84,11 +82,7 @@ class PodbayFMChannelIE(InfoExtractor):
         first_page = self._fetch_page(channel_id, 0)
         entries = OnDemandPagedList(
             lambda pagenum: self._results_from_page(
-                channel_id,
-                self._fetch_page(
-                    channel_id,
-                    pagenum) if pagenum else first_page),
+                channel_id, self._fetch_page(channel_id, pagenum) if pagenum else first_page),
             self._PAGE_SIZE)
 
-        return self.playlist_result(
-            entries, channel_id, first_page.get('title'))
+        return self.playlist_result(entries, channel_id, first_page.get('title'))

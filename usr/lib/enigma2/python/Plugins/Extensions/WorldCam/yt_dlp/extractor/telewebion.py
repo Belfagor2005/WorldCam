@@ -67,35 +67,19 @@ class TelewebionIE(InfoExtractor):
     ):
         parameters = ''
         if variables:
-            parameters = ', '.join(
-                f'${name}: {type_}' for name, (type_, _) in variables.items())
+            parameters = ', '.join(f'${name}: {type_}' for name, (type_, _) in variables.items())
             parameters = f'({parameters})'
 
-        result = self._download_json(
-            'https://graph.telewebion.com/graphql',
-            video_id,
-            note,
-            data=json.dumps(
-                {
-                    'operationName': operation,
-                    'query': f'query {operation}{parameters} @cacheControl(maxAge: 60) {{{query}\n}}\n',
-                    'variables': {
-                        name: value for name,
-                        (_,
-                         value) in (
-                            variables or {}).items()},
-                },
-                separators=(
-                    ',',
-                    ':')).encode(),
-            headers={
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            })
+        result = self._download_json('https://graph.telewebion.com/graphql', video_id, note, data=json.dumps({
+            'operationName': operation,
+            'query': f'query {operation}{parameters} @cacheControl(maxAge: 60) {{{query}\n}}\n',
+            'variables': {name: value for name, (_, value) in (variables or {}).items()},
+        }, separators=(',', ':')).encode(), headers={
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        })
         if not result or traverse_obj(result, 'errors'):
-            message = ', '.join(
-                traverse_obj(
-                    result, ('errors', ..., 'message', {str})))
+            message = ', '.join(traverse_obj(result, ('errors', ..., 'message', {str})))
             raise ExtractorError(message or 'Unknown GraphQL API error')
 
         return result['data']
@@ -105,8 +89,7 @@ class TelewebionIE(InfoExtractor):
         if not video_id.startswith('0x'):
             video_id = hex(int(video_id))
 
-        episode_data = self._call_graphql_api(
-            'getEpisodeDetail', video_id, textwrap.dedent('''
+        episode_data = self._call_graphql_api('getEpisodeDetail', video_id, textwrap.dedent('''
             queryEpisode(filter: {EpisodeID: $EpisodeId}, first: 1) {
               title
               program {
@@ -127,9 +110,7 @@ class TelewebionIE(InfoExtractor):
                 name
               }
             }
-        '''), {
-                'EpisodeId': (
-                    '[ID!]', video_id)})
+        '''), {'EpisodeId': ('[ID!]', video_id)})
 
         info_dict = traverse_obj(episode_data, ('queryEpisode', 0, {
             'title': ('title', {str}),

@@ -39,8 +39,7 @@ class KrasViewIE(InfoExtractor):
         video_url = flashvars['url']
         title = self._og_search_title(webpage)
         description = self._og_search_description(webpage, default=None)
-        thumbnail = flashvars.get(
-            'image') or self._og_search_thumbnail(webpage)
+        thumbnail = flashvars.get('image') or self._og_search_thumbnail(webpage)
         duration = int_or_none(flashvars.get('duration'))
         width = int_or_none(self._og_search_property(
             'video:width', webpage, 'video width', default=None))
