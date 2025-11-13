@@ -5,7 +5,8 @@ from ..utils import float_or_none
 
 class VocarooIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?(?:vocaroo\.com|voca\.ro)/(?:embed/)?(?P<id>\w+)'
-    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?://)?(?:www\.)?vocaroo\.com/embed/.+?)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?://)?(?:www\.)?vocaroo\.com/embed/.+?)\1']
     _TESTS = [
         {
             'url': 'https://vocaroo.com/1de8yA3LNe77',
@@ -51,13 +52,16 @@ class VocarooIE(InfoExtractor):
 
         url = f'https://{media_subdomain}.vocaroo.com/mp3/{audio_id}'
         http_headers = {'Referer': 'https://vocaroo.com/'}
-        resp = self._request_webpage(HEADRequest(url), audio_id, headers=http_headers)
+        resp = self._request_webpage(
+            HEADRequest(url), audio_id, headers=http_headers)
         return {
             'id': audio_id,
             'title': '',
             'url': url,
             'ext': 'mp3',
-            'timestamp': float_or_none(resp.headers.get('x-bz-upload-timestamp'), scale=1000),
+            'timestamp': float_or_none(
+                resp.headers.get('x-bz-upload-timestamp'),
+                scale=1000),
             'vcodec': 'none',
             'http_headers': http_headers,
         }

@@ -27,9 +27,13 @@ class PlayPlusTVIE(InfoExtractor):
     _profile_id = None
 
     def _call_api(self, resource, video_id=None, query=None):
-        return self._download_json('https://api.playplus.tv/api/media/v2/get' + resource, video_id, headers={
-            'Authorization': 'Bearer ' + self._token,
-        }, query=query)
+        return self._download_json(
+            'https://api.playplus.tv/api/media/v2/get' + resource,
+            video_id,
+            headers={
+                'Authorization': 'Bearer ' + self._token,
+            },
+            query=query)
 
     def _perform_login(self, username, password):
         req = PUTRequest(
@@ -44,8 +48,11 @@ class PlayPlusTVIE(InfoExtractor):
             self._token = self._download_json(req, None)['token']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
-                raise ExtractorError(self._parse_json(
-                    e.cause.response.read(), None)['errorMessage'], expected=True)
+                raise ExtractorError(
+                    self._parse_json(
+                        e.cause.response.read(),
+                        None)['errorMessage'],
+                    expected=True)
             raise
 
         self._profile = self._call_api('Profiles')['list'][0]['_id']
@@ -92,9 +99,14 @@ class PlayPlusTVIE(InfoExtractor):
             'title': title,
             'formats': formats,
             'thumbnails': thumbnails,
-            'description': clean_html(media.get('description')) or media.get('shortDescription'),
-            'timestamp': int_or_none(media.get('publishDate'), 1000),
-            'view_count': int_or_none(media.get('numberOfViews')),
-            'comment_count': int_or_none(media.get('numberOfComments')),
+            'description': clean_html(
+                media.get('description')) or media.get('shortDescription'),
+            'timestamp': int_or_none(
+                media.get('publishDate'),
+                1000),
+            'view_count': int_or_none(
+                media.get('numberOfViews')),
+            'comment_count': int_or_none(
+                media.get('numberOfComments')),
             'tags': media.get('tags'),
         }

@@ -77,7 +77,9 @@ class VrSquareIE(InfoExtractor):
                 f'{self._BASE_URL}/webApi/play/url/{video_id}', video_id)
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 500:
-                raise ExtractorError('VR SQUARE app-only videos are not supported', expected=True)
+                raise ExtractorError(
+                    'VR SQUARE app-only videos are not supported',
+                    expected=True)
             raise
 
         return {
@@ -153,8 +155,8 @@ class VrSquareSearchIE(VrSquarePlaylistBaseIE):
     def _real_extract(self, url):
         search_query = parse_qs(url)['w'][0]
 
-        return self.playlist_result(
-            self._entries('/ajax/web-search', search_query, {'w': search_query}), search_query)
+        return self.playlist_result(self._entries(
+            '/ajax/web-search', search_query, {'w': search_query}), search_query)
 
 
 class VrSquareSectionIE(VrSquarePlaylistBaseIE):
@@ -182,4 +184,8 @@ class VrSquareSectionIE(VrSquarePlaylistBaseIE):
         webpage = self._download_webpage(url, playlist_id)
 
         return self.playlist_result(
-            self._fetch_vids(webpage), playlist_id, self._html_search_meta('og:title', webpage))
+            self._fetch_vids(webpage),
+            playlist_id,
+            self._html_search_meta(
+                'og:title',
+                webpage))

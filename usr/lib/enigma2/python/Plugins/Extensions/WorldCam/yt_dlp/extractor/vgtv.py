@@ -170,7 +170,8 @@ class VGTVIE(XstreamIE):  # XXX: Do not subclass from concrete IE
         mobj = self._match_valid_url(url)
         video_id = mobj.group('id')
         host = mobj.group('host')
-        appname = self._HOST_TO_APPNAME[host] if host else mobj.group('appname')
+        appname = self._HOST_TO_APPNAME[host] if host else mobj.group(
+            'appname')
         vendor = self._APP_NAME_TO_VENDOR[appname]
 
         data = self._download_json(
@@ -195,8 +196,14 @@ class VGTVIE(XstreamIE):  # XXX: Do not subclass from concrete IE
 
         hls_url = streams.get('hls')
         if hls_url:
-            formats.extend(self._extract_m3u8_formats(
-                hls_url, video_id, 'mp4', live=is_live, m3u8_id='hls', fatal=False))
+            formats.extend(
+                self._extract_m3u8_formats(
+                    hls_url,
+                    video_id,
+                    'mp4',
+                    live=is_live,
+                    m3u8_id='hls',
+                    fatal=False))
 
         hds_url = streams.get('hds')
         if hds_url:

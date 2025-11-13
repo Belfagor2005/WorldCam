@@ -37,18 +37,24 @@ class IxiguaIE(InfoExtractor):
         if not js_data:
             if self._cookies_passed:
                 raise ExtractorError('Failed to get SSR_HYDRATED_DATA')
-            raise ExtractorError('Cookies (not necessarily logged in) are needed', expected=True)
+            raise ExtractorError(
+                'Cookies (not necessarily logged in) are needed',
+                expected=True)
 
         return self._parse_json(
-            js_data.replace('window._SSR_HYDRATED_DATA=', ''), video_id, transform_source=js_to_json)
+            js_data.replace(
+                'window._SSR_HYDRATED_DATA=',
+                ''),
+            video_id,
+            transform_source=js_to_json)
 
     def _media_selector(self, json_data):
         for path, override in (
-            (('video_list', ), {}),
-            (('dynamic_video', 'dynamic_video_list'), {'acodec': 'none'}),
-            (('dynamic_video', 'dynamic_audio_list'), {'vcodec': 'none', 'ext': 'm4a'}),
-        ):
-            for media in traverse_obj(json_data, (..., *path, lambda _, v: v['main_url'])):
+            (('video_list', ), {}), (('dynamic_video', 'dynamic_video_list'), {
+                'acodec': 'none'}), (('dynamic_video', 'dynamic_audio_list'), {
+                'vcodec': 'none', 'ext': 'm4a'}), ):
+            for media in traverse_obj(
+                    json_data, (..., *path, lambda _, v: v['main_url'])):
                 yield {
                     'url': base64.b64decode(media['main_url']).decode(),
                     'width': int_or_none(media.get('vwidth')),
@@ -64,7 +70,8 @@ class IxiguaIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        json_data = self._get_json_data(webpage, video_id)['anyVideo']['gidInformation']['packerData']['video']
+        json_data = self._get_json_data(webpage, video_id)[
+            'anyVideo']['gidInformation']['packerData']['video']
 
         formats = list(self._media_selector(json_data.get('videoResource')))
         return {

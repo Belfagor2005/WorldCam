@@ -26,9 +26,12 @@ class CellebriteIE(VidyardBaseIE):
             raise ExtractorError('No Vidyard video embeds found on page')
 
         video_id = url_basename(vidyard_url)
-        info = self._process_video_json(self._fetch_video_json(video_id)['chapters'][0], video_id)
+        info = self._process_video_json(
+            self._fetch_video_json(video_id)['chapters'][0], video_id)
         if info.get('display_id'):
-            info['_old_archive_ids'] = [make_archive_id(self, info['display_id'])]
+            info['_old_archive_ids'] = [
+                make_archive_id(
+                    self, info['display_id'])]
         if thumbnail := self._og_search_thumbnail(webpage, default=None):
             info.setdefault('thumbnails', []).append({'url': thumbnail})
 

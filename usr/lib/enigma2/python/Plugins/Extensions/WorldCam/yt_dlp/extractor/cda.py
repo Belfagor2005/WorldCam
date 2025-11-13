@@ -152,8 +152,10 @@ class CDAIE(InfoExtractor):
         self._API_HEADERS['User-Agent'] = f'pl.cda 1.0 (version {app_version}; Android {android_version}; {phone_model})'
 
         cached_bearer = self.cache.load(self._BEARER_CACHE, username) or {}
-        if cached_bearer.get('valid_until', 0) > dt.datetime.now().timestamp() + 5:
-            self._API_HEADERS['Authorization'] = f'Bearer {cached_bearer["token"]}'
+        if cached_bearer.get('valid_until',
+                             0) > dt.datetime.now().timestamp() + 5:
+            self._API_HEADERS['Authorization'] = f'Bearer {
+                cached_bearer["token"]}'
             return
 
         password_hash = base64.urlsafe_b64encode(hmac.new(
@@ -174,7 +176,8 @@ class CDAIE(InfoExtractor):
             'token': token_res['access_token'],
             'valid_until': token_res['expires_in'] + dt.datetime.now().timestamp(),
         })
-        self._API_HEADERS['Authorization'] = f'Bearer {token_res["access_token"]}'
+        self._API_HEADERS['Authorization'] = f'Bearer {
+            token_res["access_token"]}'
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -198,9 +201,11 @@ class CDAIE(InfoExtractor):
             'filesize': quality.get('length'),
         } for quality in meta['qualities'] if quality.get('file')]
 
-        if meta.get('premium') and not meta.get('premium_free') and not formats:
+        if meta.get('premium') and not meta.get(
+                'premium_free') and not formats:
             raise ExtractorError(
-                'Video requires CDA Premium - subscription needed', expected=True)
+                'Video requires CDA Premium - subscription needed',
+                expected=True)
 
         return {
             'id': video_id,
@@ -221,14 +226,20 @@ class CDAIE(InfoExtractor):
             f'{self._BASE_URL}/video/{video_id}/vfilm', video_id)
 
         if 'Ten film jest dostępny dla użytkowników premium' in webpage:
-            self.raise_login_required('This video is only available for premium users')
+            self.raise_login_required(
+                'This video is only available for premium users')
 
-        if re.search(r'niedostępn[ey] w(?:&nbsp;|\s+)Twoim kraju\s*<', webpage):
+        if re.search(
+            r'niedostępn[ey] w(?:&nbsp;|\s+)Twoim kraju\s*<',
+                webpage):
             self.raise_geo_restricted()
 
         need_confirm_age = False
-        if self._html_search_regex(r'(<button[^>]+name="[^"]*age_confirm[^"]*")',
-                                   webpage, 'birthday validate form', default=None):
+        if self._html_search_regex(
+            r'(<button[^>]+name="[^"]*age_confirm[^"]*")',
+            webpage,
+            'birthday validate form',
+                default=None):
             webpage = self._download_age_confirm_page(
                 urlh.url, video_id, note='Confirming age')
             need_confirm_age = True
@@ -242,7 +253,10 @@ class CDAIE(InfoExtractor):
         ''', webpage, 'uploader', default=None, group='uploader')
         average_rating = self._search_regex(
             (r'<(?:span|meta)[^>]+itemprop=(["\'])ratingValue\1[^>]*>(?P<rating_value>[0-9.]+)',
-             r'<span[^>]+\bclass=["\']rating["\'][^>]*>(?P<rating_value>[0-9.]+)'), webpage, 'rating', fatal=False,
+             r'<span[^>]+\bclass=["\']rating["\'][^>]*>(?P<rating_value>[0-9.]+)'),
+            webpage,
+            'rating',
+            fatal=False,
             group='rating_value')
 
         info_dict = {
@@ -261,7 +275,14 @@ class CDAIE(InfoExtractor):
 
         # Source: https://www.cda.pl/js/player.js?t=1606154898
         def decrypt_file(a):
-            for p in ('_XDDD', '_CDA', '_ADC', '_CXD', '_QWE', '_Q5', '_IKSDE'):
+            for p in (
+                '_XDDD',
+                '_CDA',
+                '_ADC',
+                '_CXD',
+                '_QWE',
+                '_Q5',
+                    '_IKSDE'):
                 a = a.replace(p, '')
             a = urllib.parse.unquote(a)
             b = []
@@ -289,16 +310,19 @@ class CDAIE(InfoExtractor):
                 return
             video = player_data.get('video')
             if not video or 'file' not in video:
-                self.report_warning(f'Unable to extract {version} version information')
+                self.report_warning(
+                    f'Unable to extract {version} version information')
                 return
             video_quality = video.get('quality')
             qualities = video.get('qualities', {})
-            video_quality = next((k for k, v in qualities.items() if v == video_quality), video_quality)
+            video_quality = next(
+                (k for k, v in qualities.items() if v == video_quality), video_quality)
             if video.get('file'):
                 if video['file'].startswith('uggc'):
                     video['file'] = codecs.decode(video['file'], 'rot_13')
                     if video['file'].endswith('adc.mp4'):
-                        video['file'] = video['file'].replace('adc.mp4', '.mp4')
+                        video['file'] = video['file'].replace(
+                            'adc.mp4', '.mp4')
                 elif not video['file'].startswith('http'):
                     video['file'] = decrypt_file(video['file'])
                 info_dict['formats'].append({
@@ -309,8 +333,16 @@ class CDAIE(InfoExtractor):
             for quality, cda_quality in qualities.items():
                 if quality == video_quality:
                     continue
-                data = {'jsonrpc': '2.0', 'method': 'videoGetLink', 'id': 2,
-                        'params': [video_id, cda_quality, video.get('ts'), video.get('hash2'), {}]}
+                data = {
+                    'jsonrpc': '2.0',
+                    'method': 'videoGetLink',
+                    'id': 2,
+                    'params': [
+                        video_id,
+                        cda_quality,
+                        video.get('ts'),
+                        video.get('hash2'),
+                        {}]}
                 data = json.dumps(data).encode()
                 response = self._download_json(
                     f'https://www.cda.pl/video/{video_id}', video_id, headers={
@@ -357,7 +389,8 @@ class CDAIE(InfoExtractor):
             if not webpage:
                 # Manually report warning because empty page is returned when
                 # invalid version is requested.
-                self.report_warning(f'Unable to download {resolution} version information')
+                self.report_warning(
+                    f'Unable to download {resolution} version information')
                 continue
 
             extract_format(webpage, resolution)
@@ -368,34 +401,27 @@ class CDAIE(InfoExtractor):
 class CDAFolderIE(InfoExtractor):
     _MAX_PAGE_SIZE = 36
     _VALID_URL = r'https?://(?:www\.)?cda\.pl/(?P<channel>[\w-]+)/folder/(?P<id>\d+)'
-    _TESTS = [
-        {
-            'url': 'https://www.cda.pl/domino264/folder/31188385',
-            'info_dict': {
-                'id': '31188385',
-                'title': 'SERIA DRUGA',
-            },
-            'playlist_mincount': 13,
-        },
-        {
-            'url': 'https://www.cda.pl/smiechawaTV/folder/2664592/vfilm',
-            'info_dict': {
-                'id': '2664592',
-                'title': 'VideoDowcipy - wszystkie odcinki',
-            },
-            'playlist_mincount': 71,
-        },
-        {
-            'url': 'https://www.cda.pl/DeliciousBeauty/folder/19129979/vfilm',
-            'info_dict': {
-                'id': '19129979',
-                'title': 'TESTY KOSMETYKÓW',
-            },
-            'playlist_mincount': 139,
-        }, {
-            'url': 'https://www.cda.pl/FILMY-SERIALE-ANIME-KRESKOWKI-BAJKI/folder/18493422',
-            'only_matching': True,
-        }]
+    _TESTS = [{'url': 'https://www.cda.pl/domino264/folder/31188385',
+               'info_dict': {'id': '31188385',
+                             'title': 'SERIA DRUGA',
+                             },
+               'playlist_mincount': 13,
+               },
+              {'url': 'https://www.cda.pl/smiechawaTV/folder/2664592/vfilm',
+               'info_dict': {'id': '2664592',
+                             'title': 'VideoDowcipy - wszystkie odcinki',
+                             },
+               'playlist_mincount': 71,
+               },
+              {'url': 'https://www.cda.pl/DeliciousBeauty/folder/19129979/vfilm',
+               'info_dict': {'id': '19129979',
+                             'title': 'TESTY KOSMETYKÓW',
+                             },
+               'playlist_mincount': 139,
+               },
+              {'url': 'https://www.cda.pl/FILMY-SERIALE-ANIME-KRESKOWKI-BAJKI/folder/18493422',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         folder_id, channel = self._match_valid_url(url).group('id', 'channel')

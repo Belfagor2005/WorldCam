@@ -61,9 +61,12 @@ class CrackedIE(InfoExtractor):
         if timestamp:
             timestamp = parse_iso8601(timestamp[:-6])
 
-        view_count = str_to_int(self._html_search_regex(
-            r'<span\s+class="?views"? id="?viewCounts"?>([\d,\.]+) Views</span>',
-            webpage, 'view count', fatal=False))
+        view_count = str_to_int(
+            self._html_search_regex(
+                r'<span\s+class="?views"? id="?viewCounts"?>([\d,\.]+) Views</span>',
+                webpage,
+                'view count',
+                fatal=False))
         comment_count = str_to_int(self._html_search_regex(
             r'<span\s+id="?commentCounts"?>([\d,\.]+)</span>',
             webpage, 'comment count', fatal=False))

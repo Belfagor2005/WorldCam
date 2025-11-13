@@ -9,7 +9,8 @@ class BoxCastVideoIE(InfoExtractor):
             channel/\w+\?(?:[^#]+&)?b=|
             video-portal/(?:\w+/){2}
         )(?P<id>[\w-]+)'''
-    _EMBED_REGEX = [r'<iframe[^>]+src=["\'](?P<url>https?://boxcast\.tv/view-embed/[\w-]+)']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=["\'](?P<url>https?://boxcast\.tv/view-embed/[\w-]+)']
     _TESTS = [{
         'url': 'https://boxcast.tv/view-embed/in-the-midst-of-darkness-light-prevails-an-interdisciplinary-symposium-ozmq5eclj50ujl4bmpwx',
         'info_dict': {
@@ -64,17 +65,30 @@ class BoxCastVideoIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
         webpage_json_data = self._search_json(
-            r'var\s*BOXCAST_PRELOAD\s*=', webpage, 'broadcast data', display_id,
-            transform_source=js_to_json, default={})
+            r'var\s*BOXCAST_PRELOAD\s*=',
+            webpage,
+            'broadcast data',
+            display_id,
+            transform_source=js_to_json,
+            default={})
 
-        # Ref: https://support.boxcast.com/en/articles/4235158-build-a-custom-viewer-experience-with-boxcast-api
+        # Ref:
+        # https://support.boxcast.com/en/articles/4235158-build-a-custom-viewer-experience-with-boxcast-api
         broadcast_json_data = (
-            traverse_obj(webpage_json_data, ('broadcast', 'data'))
-            or self._download_json(f'https://api.boxcast.com/broadcasts/{display_id}', display_id))
+            traverse_obj(
+                webpage_json_data,
+                ('broadcast',
+                 'data')) or self._download_json(
+                f'https://api.boxcast.com/broadcasts/{display_id}',
+                display_id))
         view_json_data = (
-            traverse_obj(webpage_json_data, ('view', 'data'))
-            or self._download_json(f'https://api.boxcast.com/broadcasts/{display_id}/view',
-                                   display_id, fatal=False) or {})
+            traverse_obj(
+                webpage_json_data,
+                ('view',
+                 'data')) or self._download_json(
+                f'https://api.boxcast.com/broadcasts/{display_id}/view',
+                display_id,
+                fatal=False) or {})
 
         formats, subtitles = [], {}
         if view_json_data.get('status') == 'recorded':

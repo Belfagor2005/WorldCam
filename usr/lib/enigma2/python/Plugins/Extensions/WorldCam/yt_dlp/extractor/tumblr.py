@@ -368,7 +368,8 @@ class TumblrIE(InfoExtractor):
             self._ACCESS_TOKEN = self._search_regex(
                 r'"API_TOKEN":\s*"(\w+)"', login_page, 'API access token', fatal=False)
         if not self._ACCESS_TOKEN:
-            self.report_warning('Failed to get access token; metadata will be missing and some videos may not work')
+            self.report_warning(
+                'Failed to get access token; metadata will be missing and some videos may not work')
 
     def _perform_login(self, username, password):
         if not self._ACCESS_TOKEN:
@@ -399,7 +400,10 @@ class TumblrIE(InfoExtractor):
             response = _call_login()
         if traverse_obj(response, 'error'):
             raise ExtractorError(
-                f'API returned error {": ".join(traverse_obj(response, (("error", "error_description"), {str})))}')
+                f'API returned error {
+                    ": ".join(
+                        traverse_obj(
+                            response, (("error", "error_description"), {str})))}')
 
     def _real_extract(self, url):
         blog_1, blog_2, video_id = self._match_valid_url(url).groups()
@@ -407,7 +411,8 @@ class TumblrIE(InfoExtractor):
 
         url = f'http://{blog}.tumblr.com/post/{video_id}'
         webpage, urlh = self._download_webpage_handle(
-            url, video_id, headers={'User-Agent': 'WhatsApp/2.0'})  # whatsapp ua bypasses problems
+            url, video_id, headers={
+                'User-Agent': 'WhatsApp/2.0'})  # whatsapp ua bypasses problems
 
         redirect_url = urlh.url
 
@@ -416,26 +421,38 @@ class TumblrIE(InfoExtractor):
             redirect_url, 'redirect', default=None))
 
         if api_only and not self._ACCESS_TOKEN:
-            raise ExtractorError('Cannot get data for dashboard-only post without access token')
+            raise ExtractorError(
+                'Cannot get data for dashboard-only post without access token')
 
         post_json = {}
         if self._ACCESS_TOKEN:
             post_json = traverse_obj(
                 self._download_json(
                     f'https://www.tumblr.com/api/v2/blog/{blog}/posts/{video_id}/permalink',
-                    video_id, headers={'Authorization': f'Bearer {self._ACCESS_TOKEN}'}, fatal=False),
-                ('response', 'timeline', 'elements', 0, {dict})) or {}
-        content_json = traverse_obj(post_json, ((('trail', 0), None), 'content', ..., {dict}))
+                    video_id,
+                    headers={
+                        'Authorization': f'Bearer {
+                            self._ACCESS_TOKEN}'},
+                    fatal=False),
+                ('response',
+                 'timeline',
+                 'elements',
+                 0,
+                 {dict})) or {}
+        content_json = traverse_obj(
+            post_json, ((('trail', 0), None), 'content', ..., {dict}))
 
         # the url we're extracting from might be an original post or it might be a reblog.
         # if it's a reblog, og:description will be the reblogger's comment, not the uploader's.
-        # content_json is always the op, so if it exists but has no text, there's no description
+        # content_json is always the op, so if it exists but has no text,
+        # there's no description
         if content_json:
             description = '\n\n'.join(
                 item.get('text') for item in content_json if item.get('type') == 'text') or None
         else:
             description = self._og_search_description(webpage, default=None)
-        uploader_id = traverse_obj(post_json, 'reblogged_root_name', 'blog_name')
+        uploader_id = traverse_obj(
+            post_json, 'reblogged_root_name', 'blog_name')
 
         info_dict = {
             'id': video_id,
@@ -461,20 +478,26 @@ class TumblrIE(InfoExtractor):
         ignored_providers = set()
         unknown_providers = set()
 
-        for video_json in traverse_obj(content_json, lambda _, v: v['type'] in ('video', 'audio')):
+        for video_json in traverse_obj(
+            content_json,
+            lambda _,
+            v: v['type'] in (
+                'video',
+                'audio')):
             media_json = video_json.get('media') or {}
-            if api_only and not media_json.get('url') and not video_json.get('url'):
-                raise ExtractorError('Failed to find video data for dashboard-only post')
+            if api_only and not media_json.get(
+                    'url') and not video_json.get('url'):
+                raise ExtractorError(
+                    'Failed to find video data for dashboard-only post')
             provider = video_json.get('provider')
 
             if provider in ('tumblr', None):
                 fallback_format = {
-                    'url': media_json.get('url') or video_url,
-                    'width': int_or_none(
-                        media_json.get('width') or self._og_search_property('video:width', webpage, default=None)),
-                    'height': int_or_none(
-                        media_json.get('height') or self._og_search_property('video:height', webpage, default=None)),
-                }
+                    'url': media_json.get('url') or video_url, 'width': int_or_none(
+                        media_json.get('width') or self._og_search_property(
+                            'video:width', webpage, default=None)), 'height': int_or_none(
+                        media_json.get('height') or self._og_search_property(
+                            'video:height', webpage, default=None)), }
                 continue
             elif provider in self._unsupported_providers:
                 ignored_providers.add(provider)
@@ -488,7 +511,8 @@ class TumblrIE(InfoExtractor):
 
         duration = None
 
-        # iframes can supply duration and sometimes additional formats, so check for one
+        # iframes can supply duration and sometimes additional formats, so
+        # check for one
         iframe_url = self._search_regex(
             fr'src=\'(https?://www\.tumblr\.com/video/{blog}/{video_id}/[^\']+)\'',
             webpage, 'iframe url', default=None)
@@ -508,7 +532,8 @@ class TumblrIE(InfoExtractor):
                 hd_url = options.get('hdUrl')
                 if hd_url:
                     # there are multiple formats; extract them
-                    # ignore other sources of width/height data as they may be wrong
+                    # ignore other sources of width/height data as they may be
+                    # wrong
                     sources = []
                     sd_url = self._search_regex(
                         r'<source[^>]+src=(["\'])(?P<url>.+?)\1', iframe,
@@ -540,14 +565,25 @@ class TumblrIE(InfoExtractor):
 
         if ignored_providers:
             if not entries:
-                raise ExtractorError(f'None of embed providers are supported: {", ".join(ignored_providers)!s}', video_id=video_id, expected=True)
+                raise ExtractorError(
+                    f'None of embed providers are supported: {
+                        ", ".join(ignored_providers)!s}',
+                    video_id=video_id,
+                    expected=True)
             else:
-                self.report_warning(f'Skipped embeds from unsupported providers: {", ".join(ignored_providers)!s}', video_id)
+                self.report_warning(
+                    f'Skipped embeds from unsupported providers: {
+                        ", ".join(ignored_providers)!s}', video_id)
         if unknown_providers:
-            self.report_warning(f'Unrecognized providers, please report: {", ".join(unknown_providers)!s}', video_id)
+            self.report_warning(
+                f'Unrecognized providers, please report: {
+                    ", ".join(unknown_providers)!s}', video_id)
 
         if not entries:
-            self.raise_no_formats('No video could be found in this post', expected=True, video_id=video_id)
+            self.raise_no_formats(
+                'No video could be found in this post',
+                expected=True,
+                video_id=video_id)
         if len(entries) == 1:
             return {
                 **info_dict,

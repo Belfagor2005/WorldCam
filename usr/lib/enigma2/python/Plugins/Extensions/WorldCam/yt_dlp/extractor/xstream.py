@@ -61,12 +61,15 @@ class XstreamIE(InfoExtractor):
 
         formats = []
         media_group = entry.find(xpath_with_ns('./media:group', NS_MAP))
-        for media_content in media_group.findall(xpath_with_ns('./media:content', NS_MAP)):
+        for media_content in media_group.findall(
+                xpath_with_ns('./media:content', NS_MAP)):
             media_url = media_content.get('url')
             if not media_url:
                 continue
             tbr = int_or_none(media_content.get('bitrate'))
-            mobj = re.search(r'^(?P<url>rtmp://[^/]+/(?P<app>[^/]+))/(?P<playpath>.+)$', media_url)
+            mobj = re.search(
+                r'^(?P<url>rtmp://[^/]+/(?P<app>[^/]+))/(?P<playpath>.+)$',
+                media_url)
             if mobj:
                 formats.append({
                     'url': mobj.group('url'),

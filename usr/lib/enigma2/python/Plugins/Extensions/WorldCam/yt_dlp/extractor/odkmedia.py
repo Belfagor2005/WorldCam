@@ -54,7 +54,8 @@ class OnDemandChinaEpisodeIE(InfoExtractor):
         }'''
 
     def _real_extract(self, url):
-        program_slug, display_id, ep_number = self._match_valid_url(url).group('series', 'id', 'ep')
+        program_slug, display_id, ep_number = self._match_valid_url(
+            url).group('series', 'id', 'ep')
         webpage = self._download_webpage(url, display_id)
 
         video_info = self._download_json(
@@ -75,17 +76,21 @@ class OnDemandChinaEpisodeIE(InfoExtractor):
                 headers={'Authorization': '', 'service-name': 'odc'})
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError):
-                error_data = self._parse_json(e.cause.response.read(), display_id)['detail']
+                error_data = self._parse_json(
+                    e.cause.response.read(), display_id)['detail']
                 raise GeoRestrictedError(error_data)
 
         formats, subtitles = [], {}
         for source in traverse_obj(source_json, ('sources', ...)):
             if source.get('type') == 'hls':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(source.get('url'), display_id)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                    source.get('url'), display_id)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
-                self.report_warning(f'Unsupported format {source.get("type")}', display_id)
+                self.report_warning(
+                    f'Unsupported format {
+                        source.get("type")}', display_id)
 
         return {
             'id': str(video_info['id']),

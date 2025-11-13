@@ -87,13 +87,15 @@ class NYTimesBaseIE(InfoExtractor):
         urls = []
         formats = []
         subtitles = {}
-        for video in traverse_obj(content_media_json, ('renditions', ..., {dict})):
+        for video in traverse_obj(
+                content_media_json, ('renditions', ..., {dict})):
             video_url = video.get('url')
             format_id = video.get('type')
             if not video_url or format_id == 'thumbs' or video_url in urls:
                 continue
             urls.append(video_url)
-            ext = mimetype2ext(video.get('mimetype')) or determine_ext(video_url)
+            ext = mimetype2ext(
+                video.get('mimetype')) or determine_ext(video_url)
             if ext == 'm3u8':
                 m3u8_fmts, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
                     video_url, video_id, 'mp4', 'm3u8_native',
@@ -119,7 +121,8 @@ class NYTimesBaseIE(InfoExtractor):
 
     def _extract_video(self, media_id):
         data = self._call_api(media_id)
-        formats, subtitles = self._extract_formats_and_subtitles(media_id, data)
+        formats, subtitles = self._extract_formats_and_subtitles(
+            media_id, data)
 
         return {
             'id': media_id,
@@ -138,7 +141,8 @@ class NYTimesBaseIE(InfoExtractor):
 
 class NYTimesIE(NYTimesBaseIE):
     _VALID_URL = r'https?://(?:(?:www\.)?nytimes\.com/video/(?:[^/]+/)+?|graphics8\.nytimes\.com/bcvideo/\d+(?:\.\d+)?/iframe/embed\.html\?videoId=)(?P<id>\d+)'
-    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//graphics8\.nytimes\.com/bcvideo/[^/]+/iframe/embed\.html.+?)\1>']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//graphics8\.nytimes\.com/bcvideo/[^/]+/iframe/embed\.html.+?)\1>']
     _TESTS = [{
         'url': 'http://www.nytimes.com/video/opinion/100000002847155/verbatim-what-is-a-photocopier.html?playlistId=100000001150263',
         'md5': 'a553aa344014e3723d33893d89d4defc',
@@ -246,15 +250,19 @@ class NYTimesArticleIE(NYTimesBaseIE):
     }]
 
     def _extract_content_from_block(self, block):
-        details = traverse_obj(block, {
-            'id': ('sourceId', {str}),
-            'uploader': ('bylines', ..., 'renderedRepresentation', {str}),
-            'duration': (None, (('duration', {float_or_none(scale=1000)}), ('length', {int_or_none}))),
-            'timestamp': ('firstPublished', {parse_iso8601}),
-            'series': ('podcastSeries', {str}),
-        }, get_all=False)
+        details = traverse_obj(
+            block, {
+                'id': (
+                    'sourceId', {str}), 'uploader': (
+                    'bylines', ..., 'renderedRepresentation', {str}), 'duration': (
+                    None, (('duration', {
+                        float_or_none(
+                            scale=1000)}), ('length', {int_or_none}))), 'timestamp': (
+                                'firstPublished', {parse_iso8601}), 'series': (
+                                    'podcastSeries', {str}), }, get_all=False)
 
-        formats, subtitles = self._extract_formats_and_subtitles(details.get('id'), block)
+        formats, subtitles = self._extract_formats_and_subtitles(
+            details.get('id'), block)
         # audio articles will have an url and no formats
         url = traverse_obj(block, ('fileUrl', {url_or_none}))
         if not formats and url:
@@ -272,18 +280,28 @@ class NYTimesArticleIE(NYTimesBaseIE):
         page_id = self._match_id(url)
         webpage = self._download_webpage(url, page_id, impersonate=True)
         art_json = self._search_json(
-            r'window\.__preloadedData\s*=', webpage, 'media details', page_id,
-            transform_source=lambda x: x.replace('undefined', 'null'))['initialData']['data']['article']
+            r'window\.__preloadedData\s*=',
+            webpage,
+            'media details',
+            page_id,
+            transform_source=lambda x: x.replace(
+                'undefined',
+                'null'))['initialData']['data']['article']
         content = art_json['sprinkledBody']['content']
 
         blocks = []
-        block_filter = lambda k, v: k == 'media' and v['__typename'] in ('Video', 'Audio')
-        if lede_media_block := traverse_obj(content, (..., 'ledeMedia', block_filter, any)):
+
+        def block_filter(
+            k, v): return k == 'media' and v['__typename'] in (
+            'Video', 'Audio')
+        if lede_media_block := traverse_obj(
+                content, (..., 'ledeMedia', block_filter, any)):
             lede_media_block.setdefault('sourceId', art_json.get('sourceId'))
             blocks.append(lede_media_block)
         blocks.extend(traverse_obj(content, (..., block_filter)))
         if not blocks:
-            raise ExtractorError('Unable to extract any media blocks from webpage')
+            raise ExtractorError(
+                'Unable to extract any media blocks from webpage')
 
         common_info = {
             'title': remove_end(self._html_extract_title(webpage), ' - The New York Times'),
@@ -298,7 +316,10 @@ class NYTimesArticleIE(NYTimesBaseIE):
 
         entries = []
         for block in blocks:
-            entries.append(merge_dicts(self._extract_content_from_block(block), common_info))
+            entries.append(
+                merge_dicts(
+                    self._extract_content_from_block(block),
+                    common_info))
 
         if len(entries) > 1:
             return self.playlist_result(entries, page_id, **common_info)
@@ -350,12 +371,18 @@ class NYTimesCookingIE(NYTimesBaseIE):
         page_id = self._match_id(url)
         webpage = self._download_webpage(url, page_id)
         title = self._html_search_meta(['og:title', 'twitter:title'], webpage)
-        description = self._html_search_meta(['og:description', 'twitter:description'], webpage)
+        description = self._html_search_meta(
+            ['og:description', 'twitter:description'], webpage)
 
         lead_video_id = self._search_regex(
             r'data-video-player-id="(\d+)"></div>', webpage, 'lead video')
         media_ids = traverse_obj(
-            get_elements_html_by_class('video-item', webpage), (..., {extract_attributes}, 'data-video-id'))
+            get_elements_html_by_class(
+                'video-item',
+                webpage),
+            (...,
+             {extract_attributes},
+                'data-video-id'))
 
         if media_ids:
             media_ids.append(lead_video_id)
@@ -417,7 +444,8 @@ class NYTimesCookingRecipeIE(InfoExtractor):
     def _real_extract(self, url):
         page_id = self._match_id(url)
         webpage = self._download_webpage(url, page_id)
-        recipe_data = self._search_nextjs_data(webpage, page_id)['props']['pageProps']['recipe']
+        recipe_data = self._search_nextjs_data(
+            webpage, page_id)['props']['pageProps']['recipe']
 
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             recipe_data['videoSrc'], page_id, 'mp4', m3u8_id='hls')

@@ -82,12 +82,18 @@ class PinterestBaseIE(InfoExtractor):
                 if not format_url or format_url in urls:
                     continue
                 urls.append(format_url)
-                duration = float_or_none(format_dict.get('duration'), scale=1000)
+                duration = float_or_none(
+                    format_dict.get('duration'), scale=1000)
                 ext = determine_ext(format_url)
                 if 'hls' in format_id.lower() or ext == 'm3u8':
-                    formats.extend(self._extract_m3u8_formats(
-                        format_url, video_id, 'mp4', entry_protocol='m3u8_native',
-                        m3u8_id=format_id, fatal=False))
+                    formats.extend(
+                        self._extract_m3u8_formats(
+                            format_url,
+                            video_id,
+                            'mp4',
+                            entry_protocol='m3u8_native',
+                            m3u8_id=format_id,
+                            fatal=False))
                 else:
                     formats.append({
                         'url': format_url,
@@ -109,7 +115,8 @@ class PinterestBaseIE(InfoExtractor):
 
 
 class PinterestIE(PinterestBaseIE):
-    _VALID_URL = rf'{PinterestBaseIE._VALID_URL_BASE}/pin/(?:[\w-]+--)?(?P<id>\d+)'
+    _VALID_URL = rf'{
+        PinterestBaseIE._VALID_URL_BASE}/pin/(?:[\w-]+--)?(?P<id>\d+)'
     _TESTS = [{
         # formats found in data['videos']
         'url': 'https://www.pinterest.com/pin/664281013778109217/',
@@ -206,7 +213,8 @@ class PinterestIE(PinterestBaseIE):
 
 
 class PinterestCollectionIE(PinterestBaseIE):
-    _VALID_URL = rf'{PinterestBaseIE._VALID_URL_BASE}/(?P<username>[^/]+)/(?P<id>[^/?#&]+)'
+    _VALID_URL = rf'{
+        PinterestBaseIE._VALID_URL_BASE}/(?P<username>[^/]+)/(?P<id>[^/?#&]+)'
     _TESTS = [{
         'url': 'https://www.pinterest.ca/mashal0407/cool-diys/',
         'info_dict': {

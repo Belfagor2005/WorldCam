@@ -29,7 +29,8 @@ plugin_ies_overrides = Indirect(defaultdict(list))
 
 # Misc
 IN_CLI = Indirect(False)
-LAZY_EXTRACTORS = Indirect(None)  # `False`=force, `None`=disabled, `True`=enabled
+# `False`=force, `None`=disabled, `True`=enabled
+LAZY_EXTRACTORS = Indirect(None)
 WINDOWS_VT_MODE = Indirect(False if os.name == 'nt' else None)
 
 # JS Runtimes

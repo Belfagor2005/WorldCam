@@ -42,16 +42,25 @@ class TelecincoBaseIE(InfoExtractor):
                     **geo_headers,
                 })['tokens']['1']['cdn']
         except ExtractorError as error:
-            if isinstance(error.cause, HTTPError) and error.cause.status == 403:
+            if isinstance(
+                    error.cause,
+                    HTTPError) and error.cause.status == 403:
                 error_code = traverse_obj(
-                    self._webpage_read_content(error.cause.response, caronte['cerbero'], video_id, fatal=False),
-                    ({json.loads}, 'code', {int}))
+                    self._webpage_read_content(
+                        error.cause.response, caronte['cerbero'], video_id, fatal=False), ({
+                            json.loads}, 'code', {int}))
                 if error_code in (4036, 4038, 40313):
                     self.raise_geo_restricted(countries=['ES'])
             raise
 
         formats = self._extract_m3u8_formats(
-            update_url(stream, query=cdn), video_id, 'mp4', m3u8_id='hls', headers=geo_headers)
+            update_url(
+                stream,
+                query=cdn),
+            video_id,
+            'mp4',
+            m3u8_id='hls',
+            headers=geo_headers)
 
         return {
             'id': video_id,
@@ -144,12 +153,14 @@ class TelecincoIE(TelecincoBaseIE):
         article = self._search_json(
             r'window\.\$REACTBASE_STATE\.article(?:_multisite)?\s*=',
             webpage, 'article', display_id)['article']
-        description = traverse_obj(article, ('leadParagraph', {clean_html}, filter))
+        description = traverse_obj(
+            article, ('leadParagraph', {clean_html}, filter))
 
         if article.get('editorialType') != 'VID':
             entries = []
 
-            for p in traverse_obj(article, ((('opening', all), 'body'), lambda _, v: v['content'])):
+            for p in traverse_obj(
+                    article, ((('opening', all), 'body'), lambda _, v: v['content'])):
                 content = p['content']
                 type_ = p.get('type')
                 if type_ == 'paragraph' and isinstance(content, str):
@@ -158,8 +169,9 @@ class TelecincoIE(TelecincoBaseIE):
                     entries.append(self._parse_content(content, url))
 
             return self.playlist_result(
-                entries, str_or_none(article.get('id')),
-                traverse_obj(article, ('title', {str})), clean_html(description))
+                entries, str_or_none(
+                    article.get('id')), traverse_obj(
+                    article, ('title', {str})), clean_html(description))
 
         info = self._parse_content(article['opening']['content'], url)
         info['description'] = description

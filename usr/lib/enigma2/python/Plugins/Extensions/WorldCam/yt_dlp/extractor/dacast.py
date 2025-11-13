@@ -20,7 +20,8 @@ class DacastBaseIE(InfoExtractor):
 
     @classproperty
     def _VALID_URL(cls):
-        return fr'https?://iframe\.dacast\.com/{cls._URL_TYPE}/(?P<user_id>[\w-]+)/(?P<id>[\w-]+)'
+        return fr'https?://iframe\.dacast\.com/{
+            cls._URL_TYPE}/(?P<user_id>[\w-]+)/(?P<id>[\w-]+)'
 
     @classproperty
     def _EMBED_REGEX(cls):
@@ -31,13 +32,16 @@ class DacastBaseIE(InfoExtractor):
     @classmethod
     def _get_url_from_id(cls, content_id):
         user_id, media_id = content_id.split(f'-{cls._URL_TYPE}-')
-        return f'https://iframe.dacast.com/{cls._URL_TYPE}/{user_id}/{media_id}'
+        return f'https://iframe.dacast.com/{
+            cls._URL_TYPE}/{user_id}/{media_id}'
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
         yield from super()._extract_embed_urls(url, webpage)
         for content_id in re.findall(
-                rf'<script[^>]+\bsrc=["\']https://player\.dacast\.com/js/player\.js\?contentId=([\w-]+-{cls._URL_TYPE}-[\w-]+)["\']', webpage):
+                rf'<script[^>]+\bsrc=["\']https://player\.dacast\.com/js/player\.js\?contentId=([\w-]+-{
+                    cls._URL_TYPE}-[\w-]+)["\']',
+                webpage):
             yield cls._get_url_from_id(content_id)
 
 
@@ -88,11 +92,17 @@ class DacastVODIE(DacastBaseIE):
     @functools.cached_property
     def _usp_signing_secret(self):
         player_js = self._download_webpage(
-            'https://player.dacast.com/js/player.js', None, 'Downloading player JS')
-        # Rotates every so often, but hardcode a fallback in case of JS change/breakage before rotation
+            'https://player.dacast.com/js/player.js',
+            None,
+            'Downloading player JS')
+        # Rotates every so often, but hardcode a fallback in case of JS
+        # change/breakage before rotation
         return self._search_regex(
-            r'\bUSP_SIGNING_SECRET\s*=\s*(["\'])(?P<secret>(?:(?!\1).)+)', player_js,
-            'usp signing secret', group='secret', fatal=False) or 'hGDtqMKYVeFdofrAfFmBcrsakaZELajI'
+            r'\bUSP_SIGNING_SECRET\s*=\s*(["\'])(?P<secret>(?:(?!\1).)+)',
+            player_js,
+            'usp signing secret',
+            group='secret',
+            fatal=False) or 'hGDtqMKYVeFdofrAfFmBcrsakaZELajI'
 
     def _real_extract(self, url):
         user_id, video_id = self._match_valid_url(url).group('user_id', 'id')
@@ -101,7 +111,11 @@ class DacastVODIE(DacastBaseIE):
             'provider': 'universe',
             **traverse_obj(url, ({parse_qs}, 'uss_token', {'signedKey': -1})),
         }
-        info = self._download_json(self._API_INFO_URL, video_id, query=query, fatal=False)
+        info = self._download_json(
+            self._API_INFO_URL,
+            video_id,
+            query=query,
+            fatal=False)
         access = self._download_json(
             'https://playback.dacast.com/content/access', video_id,
             note='Downloading access JSON', query=query, expected_status=403)
@@ -126,7 +140,8 @@ class DacastVODIE(DacastBaseIE):
 
         for retry in self.RetryManager():
             try:
-                formats = self._extract_m3u8_formats(hls_url, video_id, 'mp4', m3u8_id='hls')
+                formats = self._extract_m3u8_formats(
+                    hls_url, video_id, 'mp4', m3u8_id='hls')
             except ExtractorError as e:
                 # CDN will randomly respond with 403
                 if isinstance(e.cause, HTTPError) and e.cause.status == 403:
@@ -167,16 +182,27 @@ class DacastPlaylistIE(DacastBaseIE):
     }]
 
     def _real_extract(self, url):
-        user_id, playlist_id = self._match_valid_url(url).group('user_id', 'id')
+        user_id, playlist_id = self._match_valid_url(
+            url).group('user_id', 'id')
         info = self._download_json(
-            self._API_INFO_URL, playlist_id, note='Downloading playlist JSON', query={
+            self._API_INFO_URL,
+            playlist_id,
+            note='Downloading playlist JSON',
+            query={
                 'contentId': f'{user_id}-playlist-{playlist_id}',
                 'provider': 'universe',
             })['contentInfo']
 
         def entries(info):
-            for video in traverse_obj(info, ('features', 'playlist', 'contents', lambda _, v: v['id'])):
+            for video in traverse_obj(
+                info,
+                ('features',
+                 'playlist',
+                 'contents',
+                 lambda _,
+                 v: v['id'])):
                 yield self.url_result(
                     DacastVODIE._get_url_from_id(video['id']), DacastVODIE, video['id'], video.get('title'))
 
-        return self.playlist_result(entries(info), playlist_id, info.get('title'))
+        return self.playlist_result(
+            entries(info), playlist_id, info.get('title'))

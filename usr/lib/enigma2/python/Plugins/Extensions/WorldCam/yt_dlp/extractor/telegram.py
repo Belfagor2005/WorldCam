@@ -82,9 +82,15 @@ class TelegramEmbedIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        channel_id, msg_id = self._match_valid_url(url).group('channel_id', 'id')
+        channel_id, msg_id = self._match_valid_url(
+            url).group('channel_id', 'id')
         embed = self._download_webpage(
-            url, msg_id, query={'embed': '1', 'single': []}, note='Downloading embed frame')
+            url,
+            msg_id,
+            query={
+                'embed': '1',
+                'single': []},
+            note='Downloading embed frame')
 
         def clean_text(html_class, html):
             text = clean_html(get_element_by_class(html_class, html))
@@ -94,14 +100,22 @@ class TelegramEmbedIE(InfoExtractor):
         message = {
             'title': description or '',
             'description': description,
-            'channel': clean_text('tgme_widget_message_author', embed),
+            'channel': clean_text(
+                'tgme_widget_message_author',
+                embed),
             'channel_id': channel_id,
-            'timestamp': unified_timestamp(self._search_regex(
-                r'<time[^>]*datetime="([^"]*)"', embed, 'timestamp', fatal=False)),
+            'timestamp': unified_timestamp(
+                self._search_regex(
+                    r'<time[^>]*datetime="([^"]*)"',
+                    embed,
+                    'timestamp',
+                    fatal=False)),
         }
 
         videos = []
-        for video in re.findall(r'<a class="tgme_widget_message_video_player(?s:.+?)</time>', embed):
+        for video in re.findall(
+            r'<a class="tgme_widget_message_video_player(?s:.+?)</time>',
+                embed):
             video_url = self._search_regex(
                 r'<video[^>]+src="([^"]+)"', video, 'video URL', fatal=False)
             webpage_url = self._search_regex(
@@ -126,11 +140,17 @@ class TelegramEmbedIE(InfoExtractor):
             })
 
         playlist_id = None
-        if len(videos) > 1 and 'single' not in parse_qs(url, keep_blank_values=True):
+        if len(videos) > 1 and 'single' not in parse_qs(
+                url, keep_blank_values=True):
             playlist_id = f'{channel_id}-{msg_id}'
 
         if self._yes_playlist(playlist_id, msg_id):
             return self.playlist_result(
-                videos, playlist_id, format_field(message, 'channel', f'%s {msg_id}'), description)
+                videos, playlist_id, format_field(
+                    message, 'channel', f'%s {msg_id}'), description)
         else:
-            return traverse_obj(videos, lambda _, x: x['id'] == msg_id, get_all=False)
+            return traverse_obj(
+                videos,
+                lambda _,
+                x: x['id'] == msg_id,
+                get_all=False)

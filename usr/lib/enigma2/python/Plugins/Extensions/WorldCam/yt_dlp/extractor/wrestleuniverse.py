@@ -41,7 +41,8 @@ class WrestleUniverseBaseIE(InfoExtractor):
     @property
     def _TOKEN(self):
         if not self._REAL_TOKEN or not self._TOKEN_EXPIRY:
-            token = try_call(lambda: self._get_cookies('https://www.wrestle-universe.com/')['token'].value)
+            token = try_call(lambda: self._get_cookies(
+                'https://www.wrestle-universe.com/')['token'].value)
             if not token and not self._REFRESH_TOKEN:
                 self.raise_login_required()
             self._TOKEN = token
@@ -49,7 +50,8 @@ class WrestleUniverseBaseIE(InfoExtractor):
         if not self._REAL_TOKEN or self._TOKEN_EXPIRY <= int(time.time()):
             if not self._REFRESH_TOKEN:
                 raise ExtractorError(
-                    'Expired token. Refresh your cookies in browser and try again', expected=True)
+                    'Expired token. Refresh your cookies in browser and try again',
+                    expected=True)
             self._refresh_token()
 
         return self._REAL_TOKEN
@@ -58,7 +60,8 @@ class WrestleUniverseBaseIE(InfoExtractor):
     def _TOKEN(self, value):
         self._REAL_TOKEN = value
 
-        expiry = traverse_obj(value, ({jwt_decode_hs256}, 'exp', {int_or_none}))
+        expiry = traverse_obj(
+            value, ({jwt_decode_hs256}, 'exp', {int_or_none}))
         if not expiry:
             raise ExtractorError('There was a problem with the auth token')
         self._TOKEN_EXPIRY = expiry
@@ -74,7 +77,9 @@ class WrestleUniverseBaseIE(InfoExtractor):
         token = traverse_obj(login, ('idToken', {str}))
         if not token:
             raise ExtractorError(
-                f'Unable to log in: {traverse_obj(login, ("error", "message"))}', expected=True)
+                f'Unable to log in: {
+                    traverse_obj(
+                        login, ("error", "message"))}', expected=True)
         self._REFRESH_TOKEN = traverse_obj(login, ('refreshToken', {str}))
         if not self._REFRESH_TOKEN:
             self.report_warning('No refresh token was granted')
@@ -84,7 +89,8 @@ class WrestleUniverseBaseIE(InfoExtractor):
         if self._DEVICE_ID:
             return
 
-        self._DEVICE_ID = self._configuration_arg('device_id', [None], ie_key=self._NETRC_MACHINE)[0]
+        self._DEVICE_ID = self._configuration_arg(
+            'device_id', [None], ie_key=self._NETRC_MACHINE)[0]
         if not self._DEVICE_ID:
             self._DEVICE_ID = self.cache.load(self._NETRC_MACHINE, 'device_id')
             if self._DEVICE_ID:
@@ -105,12 +111,24 @@ class WrestleUniverseBaseIE(InfoExtractor):
             })
         if traverse_obj(refresh, ('refresh_token', {str})):
             self._REFRESH_TOKEN = refresh['refresh_token']
-        token = traverse_obj(refresh, 'access_token', 'id_token', expected_type=str)
+        token = traverse_obj(
+            refresh,
+            'access_token',
+            'id_token',
+            expected_type=str)
         if not token:
             raise ExtractorError('No auth token returned from refresh request')
         self._TOKEN = token
 
-    def _call_api(self, video_id, param='', msg='API', auth=True, data=None, query={}, fatal=True):
+    def _call_api(
+            self,
+            video_id,
+            param='',
+            msg='API',
+            auth=True,
+            data=None,
+            query={},
+            fatal=True):
         headers = {'CA-CID': ''}
         if data:
             headers['Content-Type'] = 'application/json;charset=utf-8'
@@ -122,11 +140,21 @@ class WrestleUniverseBaseIE(InfoExtractor):
             note=f'Downloading {msg} JSON', errnote=f'Failed to download {msg} JSON',
             data=data, headers=headers, query=query, fatal=fatal)
 
-    def _call_encrypted_api(self, video_id, param='', msg='API', data={}, query={}, fatal=True):
+    def _call_encrypted_api(
+            self,
+            video_id,
+            param='',
+            msg='API',
+            data={},
+            query={},
+            fatal=True):
         if not Cryptodome.RSA:
-            raise ExtractorError('pycryptodomex not found. Please install', expected=True)
+            raise ExtractorError(
+                'pycryptodomex not found. Please install',
+                expected=True)
         private_key = Cryptodome.RSA.generate(2048)
-        cipher = Cryptodome.PKCS1_OAEP.new(private_key, hashAlgo=Cryptodome.SHA1)
+        cipher = Cryptodome.PKCS1_OAEP.new(
+            private_key, hashAlgo=Cryptodome.SHA1)
 
         def decrypt(data):
             if not data:
@@ -136,7 +164,8 @@ class WrestleUniverseBaseIE(InfoExtractor):
             except (ValueError, binascii.Error) as e:
                 raise ExtractorError(f'Could not decrypt data: {e}')
 
-        token = base64.b64encode(private_key.public_key().export_key('DER')).decode()
+        token = base64.b64encode(
+            private_key.public_key().export_key('DER')).decode()
         api_json = self._call_api(video_id, param, msg, data={
             'deviceId': self._DEVICE_ID,
             'token': token,
@@ -145,22 +174,37 @@ class WrestleUniverseBaseIE(InfoExtractor):
         return api_json, decrypt
 
     def _download_metadata(self, url, video_id, lang, props_keys):
-        metadata = self._call_api(video_id, msg='metadata', query={'al': lang or 'ja'}, auth=False, fatal=False)
+        metadata = self._call_api(
+            video_id, msg='metadata', query={
+                'al': lang or 'ja'}, auth=False, fatal=False)
         if not metadata:
             webpage = self._download_webpage(url, video_id)
-            nextjs_data = self._search_nextjs_data(webpage, video_id, fatal=False)
-            metadata = traverse_obj(nextjs_data, (
-                'props', 'pageProps', *variadic(props_keys, (str, bytes, dict, set)), {dict})) or {}
+            nextjs_data = self._search_nextjs_data(
+                webpage, video_id, fatal=False)
+            metadata = traverse_obj(
+                nextjs_data,
+                ('props',
+                 'pageProps',
+                 *
+                 variadic(
+                     props_keys,
+                     (str,
+                      bytes,
+                      dict,
+                      set)),
+                    {dict})) or {}
         return metadata
 
     def _get_formats(self, data, path, video_id=None):
         hls_url = traverse_obj(data, path, get_all=False)
         if not hls_url and not data.get('canWatch'):
             self.raise_no_formats(
-                'This account does not have access to the requested content', expected=True)
+                'This account does not have access to the requested content',
+                expected=True)
         elif not hls_url:
             self.raise_no_formats('No supported formats found')
-        return self._extract_m3u8_formats(hls_url, video_id, 'mp4', m3u8_id='hls', live=True)
+        return self._extract_m3u8_formats(
+            hls_url, video_id, 'mp4', m3u8_id='hls', live=True)
 
 
 class WrestleUniverseVODIE(WrestleUniverseBaseIE):
@@ -190,28 +234,31 @@ class WrestleUniverseVODIE(WrestleUniverseBaseIE):
 
     def _real_extract(self, url):
         lang, video_id = self._match_valid_url(url).group('lang', 'id')
-        metadata = self._download_metadata(url, video_id, lang, 'videoEpisodeFallbackData')
-        video_data = self._call_api(video_id, ':watch', 'watch', data={'deviceId': self._DEVICE_ID})
+        metadata = self._download_metadata(
+            url, video_id, lang, 'videoEpisodeFallbackData')
+        video_data = self._call_api(
+            video_id, ':watch', 'watch', data={
+                'deviceId': self._DEVICE_ID})
 
         return {
-            'id': video_id,
-            'formats': self._get_formats(video_data, ('protocolHls', 'url', {url_or_none}), video_id),
-            **traverse_obj(metadata, {
-                'title': ('displayName', {str}),
-                'description': ('description', {str}),
-                'channel': ('labels', 'group', {str}),
-                'location': ('labels', 'venue', {str}),
-                'timestamp': ('watchStartTime', {int_or_none}),
-                'thumbnail': ('keyVisualUrl', {url_or_none}),
-                'cast': ('casts', ..., 'displayName', {str}),
-                'duration': ('duration', {int}),
-                'chapters': ('videoChapters', lambda _, v: isinstance(v.get('start'), int), {
-                    'title': ('displayName', {str}),
-                    'start_time': ('start', {int}),
-                    'end_time': ('end', {int}),
-                }),
-            }),
-        }
+            'id': video_id, 'formats': self._get_formats(
+                video_data, ('protocolHls', 'url', {url_or_none}), video_id), **traverse_obj(
+                metadata, {
+                    'title': (
+                        'displayName', {str}), 'description': (
+                        'description', {str}), 'channel': (
+                            'labels', 'group', {str}), 'location': (
+                                'labels', 'venue', {str}), 'timestamp': (
+                                    'watchStartTime', {int_or_none}), 'thumbnail': (
+                                        'keyVisualUrl', {url_or_none}), 'cast': (
+                                            'casts', ..., 'displayName', {str}), 'duration': (
+                                                'duration', {int}), 'chapters': (
+                                                    'videoChapters', lambda _, v: isinstance(
+                                                        v.get('start'), int), {
+                                                            'title': (
+                                                                'displayName', {str}), 'start_time': (
+                                                                    'start', {int}), 'end_time': (
+                                                                        'end', {int}), }), }), }
 
 
 class WrestleUniversePPVIE(WrestleUniverseBaseIE):
@@ -269,19 +316,20 @@ class WrestleUniversePPVIE(WrestleUniverseBaseIE):
 
     def _real_extract(self, url):
         lang, video_id = self._match_valid_url(url).group('lang', 'id')
-        metadata = self._download_metadata(url, video_id, lang, 'eventFallbackData')
+        metadata = self._download_metadata(
+            url, video_id, lang, 'eventFallbackData')
 
         info = {
-            'id': video_id,
-            **traverse_obj(metadata, {
-                'title': ('displayName', {str}),
-                'description': ('description', {str}),
-                'channel': ('labels', 'group', {str}),
-                'location': ('labels', 'venue', {str}),
-                'timestamp': ('startTime', {int_or_none}),
-                'thumbnails': (('keyVisualUrl', 'alterKeyVisualUrl', 'heroKeyVisualUrl'), {'url': {url_or_none}}),
-            }),
-        }
+            'id': video_id, **traverse_obj(
+                metadata, {
+                    'title': (
+                        'displayName', {str}), 'description': (
+                        'description', {str}), 'channel': (
+                        'labels', 'group', {str}), 'location': (
+                            'labels', 'venue', {str}), 'timestamp': (
+                                'startTime', {int_or_none}), 'thumbnails': (
+                                    ('keyVisualUrl', 'alterKeyVisualUrl', 'heroKeyVisualUrl'), {
+                                        'url': {url_or_none}}), }), }
 
         ended_time = traverse_obj(metadata, ('endedTime', {int_or_none}))
         if info.get('timestamp') and ended_time:
@@ -290,14 +338,18 @@ class WrestleUniversePPVIE(WrestleUniverseBaseIE):
         video_data, decrypt = self._call_encrypted_api(
             video_id, ':watchArchive', 'watch archive', data={'method': 1})
         # 'chromecastUrls' can be only partial videos, avoid
-        info['formats'] = self._get_formats(video_data, ('hls', (('urls', ...), 'url'), {url_or_none}), video_id)
+        info['formats'] = self._get_formats(
+            video_data, ('hls', (('urls', ...), 'url'), {url_or_none}), video_id)
         for f in info['formats']:
-            # bitrates are exaggerated in PPV playlists, so avoid wrong/huge filesize_approx values
+            # bitrates are exaggerated in PPV playlists, so avoid wrong/huge
+            # filesize_approx values
             if f.get('tbr'):
                 f['tbr'] = int(f['tbr'] / 2.5)
-            # prefer variants with the same basename as the master playlist to avoid partial streams
+            # prefer variants with the same basename as the master playlist to
+            # avoid partial streams
             f['format_id'] = url_basename(f['url']).partition('.')[0]
-            if not f['format_id'].startswith(url_basename(f['manifest_url']).partition('.')[0]):
+            if not f['format_id'].startswith(
+                    url_basename(f['manifest_url']).partition('.')[0]):
                 f['preference'] = -10
 
         hls_aes_key = traverse_obj(video_data, ('hls', 'key', {decrypt}))
@@ -307,6 +359,7 @@ class WrestleUniversePPVIE(WrestleUniverseBaseIE):
                 'iv': traverse_obj(video_data, ('hls', 'iv', {decrypt})),
             }
         elif traverse_obj(video_data, ('hls', 'encryptType', {int})):
-            self.report_warning('HLS AES-128 key was not found in API response')
+            self.report_warning(
+                'HLS AES-128 key was not found in API response')
 
         return info

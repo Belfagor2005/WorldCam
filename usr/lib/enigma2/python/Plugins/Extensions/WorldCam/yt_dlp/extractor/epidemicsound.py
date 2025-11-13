@@ -98,7 +98,8 @@ class EpidemicSoundIE(InfoExtractor):
             is_sfx and 'kosmos-id', video_id, delim='/'), video_id)
 
         thumbnails = traverse_obj(json_data, [('imageUrl', 'cover')])
-        thumb_base_url = traverse_obj(json_data, ('coverArt', 'baseUrl', {url_or_none}))
+        thumb_base_url = traverse_obj(
+            json_data, ('coverArt', 'baseUrl', {url_or_none}))
         if thumb_base_url:
             thumbnails.extend(traverse_obj(json_data, (
                 'coverArt', 'sizes', ..., {thumb_base_url.__add__})))

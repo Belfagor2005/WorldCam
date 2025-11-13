@@ -1322,7 +1322,8 @@ class PeerTubeIE(InfoExtractor):
                     )
                     (?P<id>{_UUID_RE})
                     '''
-    _EMBED_REGEX = [r'''(?x)<iframe[^>]+\bsrc=["\'](?P<url>(?:https?:)?//{_INSTANCES_RE}/videos/embed/{cls._UUID_RE})''']
+    _EMBED_REGEX = [
+        r'''(?x)<iframe[^>]+\bsrc=["\'](?P<url>(?:https?:)?//{_INSTANCES_RE}/videos/embed/{cls._UUID_RE})''']
     _TESTS = [{
         'url': 'https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d',
         'md5': '8563064d245a4be5705bddb22bb00a28',
@@ -1453,39 +1454,45 @@ class PeerTubeIE(InfoExtractor):
         'url': 'peertube:framatube.org:b37a5b9f-e6b5-415c-b700-04a5cd6ec205',
         'only_matching': True,
     }]
-    _WEBPAGE_TESTS = [{
-        'url': 'https://video.macver.org/w/6gvhZpUGQVd4SQ6oYDc9pC',
-        'info_dict': {
-            'id': '6gvhZpUGQVd4SQ6oYDc9pC',
-            'ext': 'mp4',
-            'title': 'Minecraft, but if you say a block, it gets deleted',
-            'categories': ['Gaming'],
-            'channel': 'Waffle Irons Gaming',
-            'channel_id': '4',
-            'channel_url': 'https://video.macver.org/video-channels/waffle_irons',
-            'description': 'md5:eda8daf64b0dadd00cc248f28eef213c',
-            'dislike_count': int,
-            'duration': 1643,
-            'license': 'Attribution - Non Commercial',
-            'like_count': int,
-            'tags': 'count:1',
-            'thumbnail': r're:https?://video\.macver\.org/lazy-static/thumbnails/.+\.jpg',
-            'timestamp': 1751142352,
-            'upload_date': '20250628',
-            'uploader': 'Bog',
-            'uploader_id': '3',
-            'uploader_url': 'https://video.macver.org/accounts/bog',
-            'view_count': int,
-        },
-        'expected_warnings': ['HTTP Error 400: Bad Request', 'Ignoring subtitle tracks found in the HLS manifest'],
-        'params': {'skip_download': 'm3u8'},
-    }]
+    _WEBPAGE_TESTS = [
+        {
+            'url': 'https://video.macver.org/w/6gvhZpUGQVd4SQ6oYDc9pC',
+            'info_dict': {
+                'id': '6gvhZpUGQVd4SQ6oYDc9pC',
+                'ext': 'mp4',
+                'title': 'Minecraft, but if you say a block, it gets deleted',
+                'categories': ['Gaming'],
+                'channel': 'Waffle Irons Gaming',
+                'channel_id': '4',
+                'channel_url': 'https://video.macver.org/video-channels/waffle_irons',
+                'description': 'md5:eda8daf64b0dadd00cc248f28eef213c',
+                'dislike_count': int,
+                'duration': 1643,
+                'license': 'Attribution - Non Commercial',
+                'like_count': int,
+                'tags': 'count:1',
+                'thumbnail': r're:https?://video\.macver\.org/lazy-static/thumbnails/.+\.jpg',
+                'timestamp': 1751142352,
+                'upload_date': '20250628',
+                'uploader': 'Bog',
+                'uploader_id': '3',
+                'uploader_url': 'https://video.macver.org/accounts/bog',
+                'view_count': int,
+            },
+            'expected_warnings': [
+                'HTTP Error 400: Bad Request',
+                'Ignoring subtitle tracks found in the HLS manifest'],
+            'params': {
+                'skip_download': 'm3u8'},
+        }]
 
     @staticmethod
     def _extract_peertube_url(webpage, source_url):
         mobj = re.match(
-            rf'https?://(?P<host>[^/]+)/(?:videos/(?:watch|embed)|w)/(?P<id>{PeerTubeIE._UUID_RE})', source_url)
-        if mobj and any(p in webpage for p in (
+            rf'https?://(?P<host>[^/]+)/(?:videos/(?:watch|embed)|w)/(?P<id>{
+                PeerTubeIE._UUID_RE})', source_url)
+        if mobj and any(
+            p in webpage for p in (
                 'meta property="og:platform" content="PeerTube"',
                 '<title>PeerTube<',
                 'There will be other non JS-based clients to access PeerTube',
@@ -1502,7 +1509,14 @@ class PeerTubeIE(InfoExtractor):
         if peertube_url:
             return [peertube_url]
 
-    def _call_api(self, host, video_id, path, note=None, errnote=None, fatal=True):
+    def _call_api(
+            self,
+            host,
+            video_id,
+            path,
+            note=None,
+            errnote=None,
+            fatal=True):
         return self._download_json(
             self._API_BASE % (host, video_id, path), video_id,
             note=note, errnote=errnote, fatal=fatal)
@@ -1576,11 +1590,15 @@ class PeerTubeIE(InfoExtractor):
         if description and len(description) >= 250:
             # description is shortened
             full_description = self._call_api(
-                host, video_id, 'description', note='Downloading description JSON',
+                host,
+                video_id,
+                'description',
+                note='Downloading description JSON',
                 fatal=False)
 
             if isinstance(full_description, dict):
-                description = str_or_none(full_description.get('description')) or description
+                description = str_or_none(
+                    full_description.get('description')) or description
 
         subtitles = self.extract_subtitles(host, video_id)
 
@@ -1643,56 +1661,51 @@ class PeerTubePlaylistIE(InfoExtractor):
                         https?://(?P<host>{})/(?P<type>(?:{}))/
                     (?P<id>[^/]+)
                     '''.format(PeerTubeIE._INSTANCES_RE, '|'.join(_TYPES.keys()))
-    _TESTS = [{
-        'url': 'https://peertube.debian.social/w/p/hFdJoTuyhNJVa1cDWd1d12',
-        'info_dict': {
-            'id': 'hFdJoTuyhNJVa1cDWd1d12',
-            'description': 'Diversas palestras do Richard Stallman no Brasil.',
-            'title': 'Richard Stallman no Brasil',
-            'channel': 'debianbrazilteam',
-            'channel_id': 1522,
-            'thumbnail': r're:https?://peertube\.debian\.social/lazy-static/thumbnails/.+\.jpg',
-            'timestamp': 1599676222,
-            'upload_date': '20200909',
-        },
-        'playlist_mincount': 9,
-    }, {
-        'url': 'https://peertube2.cpy.re/a/chocobozzz/videos',
-        'info_dict': {
-            'id': 'chocobozzz',
-            'title': 'chocobozzz',
-            'channel': 'chocobozzz',
-            'channel_id': 37855,
-            'thumbnail': '',
-            'timestamp': 1553874564,
-            'upload_date': '20190329',
-        },
-        'playlist_mincount': 2,
-    }, {
-        'url': 'https://framatube.org/c/bf54d359-cfad-4935-9d45-9d6be93f63e8/videos',
-        'info_dict': {
-            'id': 'bf54d359-cfad-4935-9d45-9d6be93f63e8',
-            'title': 'Les vidéos de Framasoft',
-            'channel': 'framasoft',
-            'channel_id': 3,
-            'thumbnail': '',
-            'timestamp': 1519917377,
-            'upload_date': '20180301',
-        },
-        'playlist_mincount': 345,
-    }, {
-        'url': 'https://peertube2.cpy.re/c/blender_open_movies@video.blender.org/videos',
-        'info_dict': {
-            'id': 'blender_open_movies@video.blender.org',
-            'title': 'Official Blender Open Movies',
-            'channel': 'blender',
-            'channel_id': 1926,
-            'thumbnail': '',
-            'timestamp': 1540472902,
-            'upload_date': '20181025',
-        },
-        'playlist_mincount': 11,
-    }]
+    _TESTS = [{'url': 'https://peertube.debian.social/w/p/hFdJoTuyhNJVa1cDWd1d12',
+               'info_dict': {'id': 'hFdJoTuyhNJVa1cDWd1d12',
+                             'description': 'Diversas palestras do Richard Stallman no Brasil.',
+                             'title': 'Richard Stallman no Brasil',
+                             'channel': 'debianbrazilteam',
+                             'channel_id': 1522,
+                             'thumbnail': r're:https?://peertube\.debian\.social/lazy-static/thumbnails/.+\.jpg',
+                             'timestamp': 1599676222,
+                             'upload_date': '20200909',
+                             },
+               'playlist_mincount': 9,
+               },
+              {'url': 'https://peertube2.cpy.re/a/chocobozzz/videos',
+               'info_dict': {'id': 'chocobozzz',
+                             'title': 'chocobozzz',
+                             'channel': 'chocobozzz',
+                             'channel_id': 37855,
+                             'thumbnail': '',
+                             'timestamp': 1553874564,
+                             'upload_date': '20190329',
+                             },
+               'playlist_mincount': 2,
+               },
+              {'url': 'https://framatube.org/c/bf54d359-cfad-4935-9d45-9d6be93f63e8/videos',
+               'info_dict': {'id': 'bf54d359-cfad-4935-9d45-9d6be93f63e8',
+                             'title': 'Les vidéos de Framasoft',
+                             'channel': 'framasoft',
+                             'channel_id': 3,
+                             'thumbnail': '',
+                             'timestamp': 1519917377,
+                             'upload_date': '20180301',
+                             },
+               'playlist_mincount': 345,
+               },
+              {'url': 'https://peertube2.cpy.re/c/blender_open_movies@video.blender.org/videos',
+               'info_dict': {'id': 'blender_open_movies@video.blender.org',
+                             'title': 'Official Blender Open Movies',
+                             'channel': 'blender',
+                             'channel_id': 1926,
+                             'thumbnail': '',
+                             'timestamp': 1540472902,
+                             'upload_date': '20181025',
+                             },
+               'playlist_mincount': 11,
+               }]
     _API_BASE = 'https://%s/api/v1/%s/%s%s'
     _PAGE_SIZE = 30
 
@@ -1707,29 +1720,52 @@ class PeerTubePlaylistIE(InfoExtractor):
             f'/videos?sort=-createdAt&start={self._PAGE_SIZE * (page - 1)}&count={self._PAGE_SIZE}&nsfw=both',
             playlist_type, note=f'Downloading page {page}').get('data', [])
         for video in video_data:
-            short_uuid = video.get('shortUUID') or try_get(video, lambda x: x['video']['shortUUID'])
-            video_title = video.get('name') or try_get(video, lambda x: x['video']['name'])
+            short_uuid = video.get('shortUUID') or try_get(
+                video, lambda x: x['video']['shortUUID'])
+            video_title = video.get('name') or try_get(
+                video, lambda x: x['video']['name'])
             yield self.url_result(
                 f'https://{host}/w/{short_uuid}', PeerTubeIE.ie_key(),
                 video_id=short_uuid, video_title=video_title)
 
     def _extract_playlist(self, host, playlist_type, playlist_id):
-        info = self.call_api(host, playlist_id, '', playlist_type, note='Downloading playlist information', fatal=False)
+        info = self.call_api(
+            host,
+            playlist_id,
+            '',
+            playlist_type,
+            note='Downloading playlist information',
+            fatal=False)
 
         playlist_title = info.get('displayName')
         playlist_description = info.get('description')
         playlist_timestamp = unified_timestamp(info.get('createdAt'))
-        channel = try_get(info, lambda x: x['ownerAccount']['name']) or info.get('displayName')
-        channel_id = try_get(info, lambda x: x['ownerAccount']['id']) or info.get('id')
+        channel = try_get(
+            info, lambda x: x['ownerAccount']['name']) or info.get('displayName')
+        channel_id = try_get(
+            info, lambda x: x['ownerAccount']['id']) or info.get('id')
         thumbnail = format_field(info, 'thumbnailPath', f'https://{host}%s')
 
-        entries = OnDemandPagedList(functools.partial(
-            self.fetch_page, host, playlist_id, playlist_type), self._PAGE_SIZE)
+        entries = OnDemandPagedList(
+            functools.partial(
+                self.fetch_page,
+                host,
+                playlist_id,
+                playlist_type),
+            self._PAGE_SIZE)
 
         return self.playlist_result(
-            entries, playlist_id, playlist_title, playlist_description,
-            timestamp=playlist_timestamp, channel=channel, channel_id=channel_id, thumbnail=thumbnail)
+            entries,
+            playlist_id,
+            playlist_title,
+            playlist_description,
+            timestamp=playlist_timestamp,
+            channel=channel,
+            channel_id=channel_id,
+            thumbnail=thumbnail)
 
     def _real_extract(self, url):
-        playlist_type, host, playlist_id = self._match_valid_url(url).group('type', 'host', 'id')
-        return self._extract_playlist(host, self._TYPES[playlist_type], playlist_id)
+        playlist_type, host, playlist_id = self._match_valid_url(
+            url).group('type', 'host', 'id')
+        return self._extract_playlist(
+            host, self._TYPES[playlist_type], playlist_id)

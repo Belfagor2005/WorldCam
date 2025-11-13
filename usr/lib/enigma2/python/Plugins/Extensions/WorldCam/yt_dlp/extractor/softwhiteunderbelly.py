@@ -50,16 +50,22 @@ class SoftWhiteUnderbellyIE(InfoExtractor):
     }]
 
     def _perform_login(self, username, password):
-        signin_page = self._download_webpage(self._LOGIN_URL, None, 'Fetching authenticity token')
+        signin_page = self._download_webpage(
+            self._LOGIN_URL, None, 'Fetching authenticity token')
         self._download_webpage(
-            self._LOGIN_URL, None, 'Logging in',
-            data=urlencode_postdata({
-                'email': username,
-                'password': password,
-                'authenticity_token': self._html_search_regex(
-                    r'name=["\']authenticity_token["\']\s+value=["\']([^"\']+)', signin_page, 'authenticity_token'),
-                'utf8': True,
-            }),
+            self._LOGIN_URL,
+            None,
+            'Logging in',
+            data=urlencode_postdata(
+                {
+                    'email': username,
+                    'password': password,
+                    'authenticity_token': self._html_search_regex(
+                        r'name=["\']authenticity_token["\']\s+value=["\']([^"\']+)',
+                        signin_page,
+                        'authenticity_token'),
+                    'utf8': True,
+                }),
         )
 
     def _real_extract(self, url):
@@ -67,21 +73,30 @@ class SoftWhiteUnderbellyIE(InfoExtractor):
 
         webpage = self._download_webpage(url, display_id)
         if '<div id="watch-unauthorized"' in webpage:
-            if self._get_cookies('https://www.softwhiteunderbelly.com').get('_session'):
-                raise ExtractorError('This account is not subscribed to this content', expected=True)
+            if self._get_cookies(
+                    'https://www.softwhiteunderbelly.com').get('_session'):
+                raise ExtractorError(
+                    'This account is not subscribed to this content',
+                    expected=True)
             self.raise_login_required()
 
         embed_url, embed_id = self._html_search_regex(
             r'embed_url:\s*["\'](?P<url>https?://embed\.vhx\.tv/videos/(?P<id>\d+)[^"\']*)',
             webpage, 'embed url', group=('url', 'id'))
 
-        return {
-            '_type': 'url_transparent',
-            'ie_key': VHXEmbedIE.ie_key(),
-            'url': VHXEmbedIE._smuggle_referrer(embed_url, 'https://www.softwhiteunderbelly.com'),
-            'id': embed_id,
-            'display_id': display_id,
-            'title': traverse_obj(webpage, ({find_element(id='watch-info')}, {find_element(cls='video-title')}, {clean_html})),
-            'description': self._html_search_meta('description', webpage, default=None),
-            'thumbnail': update_url(self._og_search_thumbnail(webpage) or '', query=None) or None,
-        }
+        return {'_type': 'url_transparent',
+                'ie_key': VHXEmbedIE.ie_key(),
+                'url': VHXEmbedIE._smuggle_referrer(embed_url,
+                                                    'https://www.softwhiteunderbelly.com'),
+                'id': embed_id,
+                'display_id': display_id,
+                'title': traverse_obj(webpage,
+                                      ({find_element(id='watch-info')},
+                                       {find_element(cls='video-title')},
+                                       {clean_html})),
+                'description': self._html_search_meta('description',
+                                                      webpage,
+                                                      default=None),
+                'thumbnail': update_url(self._og_search_thumbnail(webpage) or '',
+                                        query=None) or None,
+                }

@@ -20,7 +20,8 @@ from ..utils import (
 class YahooIE(InfoExtractor):
     IE_DESC = 'Yahoo screen and movies'
     _VALID_URL = r'(?P<url>https?://(?:(?P<country>[a-zA-Z]{2}(?:-[a-zA-Z]{2})?|malaysia)\.)?(?:[\da-zA-Z_-]+\.)?yahoo\.com/(?:[^/]+/)*(?P<id>[^?&#]*-[0-9]+(?:-[a-z]+)?)\.html)'
-    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>https?://(?:screen|movies)\.yahoo\.com/.+?\.html\?format=embed)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+?src=(["\'])(?P<url>https?://(?:screen|movies)\.yahoo\.com/.+?\.html\?format=embed)\1']
 
     _TESTS = [{
         'url': 'http://screen.yahoo.com/julian-smith-travis-legg-watch-214727115.html',
@@ -103,7 +104,8 @@ class YahooIE(InfoExtractor):
         'url': 'https://tw.news.yahoo.com/-100120367.html',
         'only_matching': True,
     }, {
-        # Query result is embedded in webpage, but explicit request to video API fails with geo restriction
+        # Query result is embedded in webpage, but explicit request to video
+        # API fails with geo restriction
         'url': 'https://screen.yahoo.com/community/communitary-community-episode-1-ladders-154501237.html',
         'md5': '4fbafb9c9b6f07aa8f870629f6671b35',
         'info_dict': {
@@ -301,15 +303,18 @@ class YahooIE(InfoExtractor):
                         entries.append(self.url_result(iframe_url))
 
             if item.get('type') == 'storywithleadvideo':
-                iframe_url = try_get(item, lambda x: x['meta']['player']['url'])
+                iframe_url = try_get(
+                    item, lambda x: x['meta']['player']['url'])
                 if iframe_url:
                     entries.append(self.url_result(iframe_url))
                 else:
-                    self.report_warning("Yahoo didn't provide an iframe url for this storywithleadvideo")
+                    self.report_warning(
+                        "Yahoo didn't provide an iframe url for this storywithleadvideo")
 
             if items.get('markup'):
                 entries.extend(
-                    self.url_result(yt_url) for yt_url in YoutubeIE._extract_embed_urls(url, items['markup']))
+                    self.url_result(yt_url) for yt_url in YoutubeIE._extract_embed_urls(
+                        url, items['markup']))
 
             return self.playlist_result(
                 entries, item.get('uuid'),
@@ -328,9 +333,11 @@ class YahooSearchIE(SearchInfoExtractor):
 
     def _search_results(self, query):
         for pagenum in itertools.count(0):
-            result_url = f'http://video.search.yahoo.com/search/?p={urllib.parse.quote_plus(query)}&fr=screen&o=js&gs=0&b={pagenum * 30}'
-            info = self._download_json(result_url, query,
-                                       note='Downloading results page ' + str(pagenum + 1))
+            result_url = f'http://video.search.yahoo.com/search/?p={
+                urllib.parse.quote_plus(query)}&fr=screen&o=js&gs=0&b={
+                pagenum * 30}'
+            info = self._download_json(
+                result_url, query, note='Downloading results page ' + str(pagenum + 1))
             yield from (self.url_result(result['rurl']) for result in info['results'])
             if info['m']['last'] >= info['m']['total'] - 1:
                 break
@@ -361,7 +368,8 @@ class YahooJapanNewsIE(InfoExtractor):
     def _extract_formats(self, json_data, content_id):
         formats = []
 
-        for vid in traverse_obj(json_data, ('ResultSet', 'Result', ..., 'VideoUrlSet', 'VideoUrl', ...)) or []:
+        for vid in traverse_obj(
+                json_data, ('ResultSet', 'Result', ..., 'VideoUrlSet', 'VideoUrl', ...)) or []:
             delivery = vid.get('delivery')
             url = url_or_none(vid.get('Url'))
             if not delivery or not url:
@@ -387,41 +395,72 @@ class YahooJapanNewsIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        preloaded_state = self._search_json(r'__PRELOADED_STATE__\s*=', webpage, 'preloaded state', video_id)
+        preloaded_state = self._search_json(
+            r'__PRELOADED_STATE__\s*=', webpage, 'preloaded state', video_id)
 
         content_id = traverse_obj(
             preloaded_state, ('articleDetail', 'paragraphs', ..., 'objectItems', ..., 'video', 'vid'),
             get_all=False, expected_type=int)
         if content_id is None:
-            raise ExtractorError('This article does not contain a video', expected=True)
+            raise ExtractorError(
+                'This article does not contain a video',
+                expected=True)
 
         HOST = 'news.yahoo.co.jp'
-        space_id = traverse_obj(preloaded_state, ('pageData', 'spaceId'), expected_type=str)
+        space_id = traverse_obj(
+            preloaded_state, ('pageData', 'spaceId'), expected_type=str)
         json_data = self._download_json(
             f'https://feapi-yvpub.yahooapis.jp/v1/content/{content_id}',
-            video_id, query={
+            video_id,
+            query={
                 'appid': 'dj0zaiZpPVZMTVFJR0FwZWpiMyZzPWNvbnN1bWVyc2VjcmV0Jng9YjU-',
                 'output': 'json',
                 'domain': HOST,
-                'ak': hashlib.md5('_'.join((space_id, HOST)).encode()).hexdigest() if space_id else '',
+                'ak': hashlib.md5(
+                    '_'.join(
+                        (space_id,
+                         HOST)).encode()).hexdigest() if space_id else '',
                 'device_type': '1100',
             })
 
         title = (
-            traverse_obj(preloaded_state,
-                         ('articleDetail', 'headline'), ('pageData', 'pageParam', 'title'),
-                         expected_type=str)
-            or self._html_search_meta(('og:title', 'twitter:title'), webpage, 'title', default=None)
-            or self._html_extract_title(webpage))
+            traverse_obj(
+                preloaded_state,
+                ('articleDetail',
+                 'headline'),
+                ('pageData',
+                 'pageParam',
+                 'title'),
+                expected_type=str) or self._html_search_meta(
+                ('og:title',
+                 'twitter:title'),
+                webpage,
+                'title',
+                default=None) or self._html_extract_title(webpage))
         description = (
-            traverse_obj(preloaded_state, ('pageData', 'description'), expected_type=str)
-            or self._html_search_meta(
-                ('og:description', 'description', 'twitter:description'),
-                webpage, 'description', default=None))
+            traverse_obj(
+                preloaded_state,
+                ('pageData',
+                 'description'),
+                expected_type=str) or self._html_search_meta(
+                ('og:description',
+                 'description',
+                 'twitter:description'),
+                webpage,
+                'description',
+                default=None))
         thumbnail = (
-            traverse_obj(preloaded_state, ('pageData', 'ogpImage'), expected_type=str)
-            or self._og_search_thumbnail(webpage, default=None)
-            or self._html_search_meta('twitter:image', webpage, 'thumbnail', default=None))
+            traverse_obj(
+                preloaded_state,
+                ('pageData',
+                 'ogpImage'),
+                expected_type=str) or self._og_search_thumbnail(
+                webpage,
+                default=None) or self._html_search_meta(
+                'twitter:image',
+                webpage,
+                'thumbnail',
+                default=None))
 
         return {
             'id': video_id,

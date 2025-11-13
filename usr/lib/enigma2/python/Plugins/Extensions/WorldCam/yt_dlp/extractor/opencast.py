@@ -38,7 +38,9 @@ class OpencastBaseIE(InfoExtractor):
     _UUID_RE = r'[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}'
 
     def _call_api(self, host, video_id, **kwargs):
-        return self._download_json(self._API_BASE % (host, video_id), video_id, **kwargs)
+        return self._download_json(
+            self._API_BASE %
+            (host, video_id), video_id, **kwargs)
 
     def _parse_mediapackage(self, video):
         video_id = video.get('id')
@@ -55,16 +57,38 @@ class OpencastBaseIE(InfoExtractor):
             transport = track.get('transport')
 
             if transport == 'DASH' or ext == 'mpd':
-                formats.extend(self._extract_mpd_formats(href, video_id, mpd_id='dash', fatal=False))
+                formats.extend(
+                    self._extract_mpd_formats(
+                        href,
+                        video_id,
+                        mpd_id='dash',
+                        fatal=False))
             elif transport == 'HLS' or ext == 'm3u8':
-                formats.extend(self._extract_m3u8_formats(
-                    href, video_id, m3u8_id='hls', entry_protocol='m3u8_native', fatal=False))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        href,
+                        video_id,
+                        m3u8_id='hls',
+                        entry_protocol='m3u8_native',
+                        fatal=False))
             elif transport == 'HDS' or ext == 'f4m':
-                formats.extend(self._extract_f4m_formats(href, video_id, f4m_id='hds', fatal=False))
+                formats.extend(
+                    self._extract_f4m_formats(
+                        href,
+                        video_id,
+                        f4m_id='hds',
+                        fatal=False))
             elif transport == 'SMOOTH':
-                formats.extend(self._extract_ism_formats(href, video_id, ism_id='smooth', fatal=False))
+                formats.extend(
+                    self._extract_ism_formats(
+                        href,
+                        video_id,
+                        ism_id='smooth',
+                        fatal=False))
             elif ext == 'smil':
-                formats.extend(self._extract_smil_formats(href, video_id, fatal=False))
+                formats.extend(
+                    self._extract_smil_formats(
+                        href, video_id, fatal=False))
             else:
                 track_obj = {
                     'url': href,
@@ -80,7 +104,8 @@ class OpencastBaseIE(InfoExtractor):
                 }
 
                 if transport == 'RTMP':
-                    m_obj = re.search(r'(?:rtmp://[^/]+/(?P<app>[^/]+))/(?P<ext>.+):(?P<playpath>.+)', href)
+                    m_obj = re.search(
+                        r'(?:rtmp://[^/]+/(?P<app>[^/]+))/(?P<ext>.+):(?P<playpath>.+)', href)
                     if not m_obj:
                         continue
                     track_obj.update({
@@ -131,8 +156,8 @@ class OpencastIE(OpencastBaseIE):
 
     def _real_extract(self, url):
         host, video_id = self._match_valid_url(url).group('host', 'id')
-        return self._parse_mediapackage(
-            self._call_api(host, video_id)['search-results']['result']['mediapackage'])
+        return self._parse_mediapackage(self._call_api(host, video_id)[
+            'search-results']['result']['mediapackage'])
 
 
 class OpencastPlaylistIE(OpencastBaseIE):
@@ -144,32 +169,25 @@ class OpencastPlaylistIE(OpencastBaseIE):
 
     _API_BASE = 'https://%s/search/episode.json?sid=%s'
 
-    _TESTS = [
-        {
-            'url': 'https://oc-video1.ruhr-uni-bochum.de/engage/ui/index.html?epFrom=cf68a4a1-36b1-4a53-a6ba-61af5705a0d0',
-            'info_dict': {
-                'id': 'cf68a4a1-36b1-4a53-a6ba-61af5705a0d0',
-                'title': 'Kryptographie - WiSe 15/16',
-            },
-            'playlist_mincount': 29,
-        },
-        {
-            'url': 'https://oc-video1.ruhr-uni-bochum.de/ltitools/index.html?subtool=series&series=cf68a4a1-36b1-4a53-a6ba-61af5705a0d0&lng=de',
-            'info_dict': {
-                'id': 'cf68a4a1-36b1-4a53-a6ba-61af5705a0d0',
-                'title': 'Kryptographie - WiSe 15/16',
-            },
-            'playlist_mincount': 29,
-        },
-        {
-            'url': 'https://electures.uni-muenster.de/engage/ui/index.html?e=1&p=1&epFrom=39391d10-a711-4d23-b21d-afd2ed7d758c',
-            'info_dict': {
-                'id': '39391d10-a711-4d23-b21d-afd2ed7d758c',
-                'title': '021670 Theologische Themen bei Hans Blumenberg WiSe 2017/18',
-            },
-            'playlist_mincount': 13,
-        },
-    ]
+    _TESTS = [{'url': 'https://oc-video1.ruhr-uni-bochum.de/engage/ui/index.html?epFrom=cf68a4a1-36b1-4a53-a6ba-61af5705a0d0',
+               'info_dict': {'id': 'cf68a4a1-36b1-4a53-a6ba-61af5705a0d0',
+                             'title': 'Kryptographie - WiSe 15/16',
+                             },
+               'playlist_mincount': 29,
+               },
+              {'url': 'https://oc-video1.ruhr-uni-bochum.de/ltitools/index.html?subtool=series&series=cf68a4a1-36b1-4a53-a6ba-61af5705a0d0&lng=de',
+               'info_dict': {'id': 'cf68a4a1-36b1-4a53-a6ba-61af5705a0d0',
+                             'title': 'Kryptographie - WiSe 15/16',
+                             },
+               'playlist_mincount': 29,
+               },
+              {'url': 'https://electures.uni-muenster.de/engage/ui/index.html?e=1&p=1&epFrom=39391d10-a711-4d23-b21d-afd2ed7d758c',
+               'info_dict': {'id': '39391d10-a711-4d23-b21d-afd2ed7d758c',
+                             'title': '021670 Theologische Themen bei Hans Blumenberg WiSe 2017/18',
+                             },
+               'playlist_mincount': 13,
+               },
+              ]
 
     def _real_extract(self, url):
         host, video_id = self._match_valid_url(url).group('host', 'id')
@@ -180,4 +198,6 @@ class OpencastPlaylistIE(OpencastBaseIE):
             if episode.get('mediapackage')
         ]
 
-        return self.playlist_result(entries, video_id, traverse_obj(entries, (0, 'series')))
+        return self.playlist_result(
+            entries, video_id, traverse_obj(
+                entries, (0, 'series')))

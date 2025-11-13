@@ -63,7 +63,8 @@ class TVPIE(InfoExtractor):
             'thumbnail': r're:https://.+',
         },
     }, {
-        # TVPlayer 2 in client-side rendered website (regional; window.__newsData)
+        # TVPlayer 2 in client-side rendered website (regional;
+        # window.__newsData)
         'url': 'https://warszawa.tvp.pl/25804446/studio-yayo',
         'info_dict': {
             'id': '25804446',
@@ -77,7 +78,8 @@ class TVPIE(InfoExtractor):
         },
         'skip': 'Geo-blocked outside PL',
     }, {
-        # TVPlayer 2 in client-side rendered website (tvp.info; window.__videoData)
+        # TVPlayer 2 in client-side rendered website (tvp.info;
+        # window.__videoData)
         'url': 'https://www.tvp.info/52880236/09042021-0800',
         'info_dict': {
             'id': '52880236',
@@ -101,7 +103,8 @@ class TVPIE(InfoExtractor):
         },
     }, {
         # ABC-specific video embeding
-        # moved to https://bajkowakraina.tvp.pl/wideo/50981130,teleranek,51027049,zubr,51116450
+        # moved to
+        # https://bajkowakraina.tvp.pl/wideo/50981130,teleranek,51027049,zubr,51116450
         'url': 'https://abc.tvp.pl/48636269/zubry-odc-124',
         'info_dict': {
             'id': '48320456',
@@ -154,11 +157,15 @@ class TVPIE(InfoExtractor):
         ], webpage, 'website data')
         if not website_data:
             return None
-        return self._parse_json(website_data, page_id, transform_source=js_to_json)
+        return self._parse_json(
+            website_data,
+            page_id,
+            transform_source=js_to_json)
 
     def _extract_vue_video(self, video_data, page_id=None):
         if isinstance(video_data, str):
-            video_data = self._parse_json(video_data, page_id, transform_source=js_to_json)
+            video_data = self._parse_json(
+                video_data, page_id, transform_source=js_to_json)
         thumbnails = []
         image = video_data.get('image')
         if image:
@@ -218,13 +225,15 @@ class TVPIE(InfoExtractor):
 
         yield from extract_videos(website_data)
 
-        if website_data.get('items_total_count') > website_data.get('items_per_page'):
+        if website_data.get('items_total_count') > website_data.get(
+                'items_per_page'):
             for page in itertools.count(2):
                 page_website_data = self._parse_vue_website_data(
                     self._download_webpage(url, page_id, note=f'Downloading page #{page}',
                                            query={'page': page}),
                     page_id)
-                if not page_website_data.get('videos') and not page_website_data.get('items'):
+                if not page_website_data.get(
+                        'videos') and not page_website_data.get('items'):
                     break
                 yield from extract_videos(page_website_data)
 
@@ -233,10 +242,12 @@ class TVPIE(InfoExtractor):
         webpage, urlh = self._download_webpage_handle(url, page_id)
 
         # The URL may redirect to a VOD
-        # example: https://vod.tvp.pl/48463890/wadowickie-spotkania-z-janem-pawlem-ii
+        # example:
+        # https://vod.tvp.pl/48463890/wadowickie-spotkania-z-janem-pawlem-ii
         for ie_cls in (TVPVODSeriesIE, TVPVODVideoIE):
             if ie_cls.suitable(urlh.url):
-                return self.url_result(urlh.url, ie=ie_cls.ie_key(), video_id=page_id)
+                return self.url_result(
+                    urlh.url, ie=ie_cls.ie_key(), video_id=page_id)
 
         if re.search(
                 r'window\.__(?:video|news|website|directory)Data\s*=',
@@ -280,7 +291,8 @@ class TVPStreamIE(InfoExtractor):
         'url': 'tvpstream:39821455',
         'only_matching': True,
     }, {
-        # the default stream when you provide no channel_id, most probably TVP Info
+        # the default stream when you provide no channel_id, most probably TVP
+        # Info
         'url': 'tvpstream:',
         'only_matching': True,
     }, {
@@ -290,13 +302,23 @@ class TVPStreamIE(InfoExtractor):
 
     def _real_extract(self, url):
         channel_id = self._match_id(url)
-        channel_url = self._proto_relative_url(f'//stream.tvp.pl/?channel_id={channel_id}' or 'default')
-        webpage = self._download_webpage(channel_url, channel_id or 'default', 'Downloading channel webpage')
+        channel_url = self._proto_relative_url(
+            f'//stream.tvp.pl/?channel_id={channel_id}' or 'default')
+        webpage = self._download_webpage(
+            channel_url,
+            channel_id or 'default',
+            'Downloading channel webpage')
         channels = self._search_json(
             r'window\.__channels\s*=', webpage, 'channel list', channel_id,
             contains_pattern=r'\[\s*{(?s:.+)}\s*]')
-        channel = traverse_obj(channels, (lambda _, v: channel_id == str(v['id'])), get_all=False) if channel_id else channels[0]
-        audition = traverse_obj(channel, ('items', lambda _, v: v['is_live'] is True), get_all=False)
+        channel = traverse_obj(channels, (lambda _, v: channel_id == str(
+            v['id'])), get_all=False) if channel_id else channels[0]
+        audition = traverse_obj(
+            channel,
+            ('items',
+             lambda _,
+             v: v['is_live'] is True),
+            get_all=False)
         return {
             '_type': 'url_transparent',
             'id': channel_id or channel['id'],
@@ -379,7 +401,8 @@ class TVPEmbedIE(InfoExtractor):
         ))
 
         webpage = self._download_webpage(
-            f'https://www.tvp.pl/sess/TVPlayer2/api.php?id={video_id}&@method=getTvpConfig&@callback={callback}', video_id)
+            f'https://www.tvp.pl/sess/TVPlayer2/api.php?id={video_id}&@method=getTvpConfig&@callback={callback}',
+            video_id)
 
         # stripping JSONP padding
         datastr = webpage[15 + len(callback):-3]
@@ -388,7 +411,8 @@ class TVPEmbedIE(InfoExtractor):
             error_desc = traverse_obj(error, (0, 'desc'))
 
             if error_desc == 'Obiekt wymaga płatności':
-                raise ExtractorError('Video requires payment and log-in, but log-in is not implemented')
+                raise ExtractorError(
+                    'Video requires payment and log-in, but log-in is not implemented')
 
             raise ExtractorError(error_desc or 'unexpected JSON error')
 
@@ -397,7 +421,8 @@ class TVPEmbedIE(InfoExtractor):
         is_live = try_get(info, lambda x: x['isLive'], bool)
 
         if info.get('isGeoBlocked'):
-            # actual country list is not provided, we just assume it's always available in PL
+            # actual country list is not provided, we just assume it's always
+            # available in PL
             self.raise_geo_restricted(countries=['PL'])
 
         formats = []
@@ -407,16 +432,37 @@ class TVPEmbedIE(InfoExtractor):
                 continue
             ext = determine_ext(video_url, None)
             if ext == 'm3u8':
-                formats.extend(self._extract_m3u8_formats(video_url, video_id, m3u8_id='hls', fatal=False, live=is_live))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        video_url,
+                        video_id,
+                        m3u8_id='hls',
+                        fatal=False,
+                        live=is_live))
             elif ext == 'mpd':
                 if is_live:
                     # doesn't work with either ffmpeg or native downloader
                     continue
-                formats.extend(self._extract_mpd_formats(video_url, video_id, mpd_id='dash', fatal=False))
+                formats.extend(
+                    self._extract_mpd_formats(
+                        video_url,
+                        video_id,
+                        mpd_id='dash',
+                        fatal=False))
             elif ext == 'f4m':
-                formats.extend(self._extract_f4m_formats(video_url, video_id, f4m_id='hds', fatal=False))
+                formats.extend(
+                    self._extract_f4m_formats(
+                        video_url,
+                        video_id,
+                        f4m_id='hds',
+                        fatal=False))
             elif video_url.endswith('.ism/manifest'):
-                formats.extend(self._extract_ism_formats(video_url, video_id, ism_id='mss', fatal=False))
+                formats.extend(
+                    self._extract_ism_formats(
+                        video_url,
+                        video_id,
+                        ism_id='mss',
+                        fatal=False))
             else:
                 formats.append({
                     'format_id': 'direct',
@@ -443,7 +489,10 @@ class TVPEmbedIE(InfoExtractor):
         age_limit = try_get(info, lambda x: x['ageGroup']['minAge'], int)
         if age_limit == 1:
             age_limit = 0
-        duration = try_get(info, lambda x: x['duration'], int) if not is_live else None
+        duration = try_get(
+            info,
+            lambda x: x['duration'],
+            int) if not is_live else None
 
         subtitles = {}
         for sub in content.get('subtitles') or []:
@@ -482,14 +531,17 @@ class TVPVODBaseIE(InfoExtractor):
     _API_BASE_URL = 'https://vod.tvp.pl/api/products'
 
     def _call_api(self, resource, video_id, query={}, **kwargs):
-        is_valid = lambda x: 200 <= x < 300
+        def is_valid(x): return 200 <= x < 300
         document, urlh = self._download_json_handle(
             f'{self._API_BASE_URL}/{resource}', video_id,
             query={'lang': 'pl', 'platform': 'BROWSER', **query},
             expected_status=lambda x: is_valid(x) or 400 <= x < 500, **kwargs)
         if is_valid(urlh.status):
             return document
-        raise ExtractorError(f'Woronicza said: {document.get("code")} (HTTP {urlh.status})')
+        raise ExtractorError(
+            f'Woronicza said: {
+                document.get("code")} (HTTP {
+                urlh.status})')
 
     def _parse_video(self, video, with_url=True):
         info_dict = traverse_obj(video, {
@@ -501,7 +553,8 @@ class TVPVODBaseIE(InfoExtractor):
             'series': ('season', 'serial', 'title', {str_or_none}),
             'thumbnails': ('images', ..., ..., {'url': ('url', {url_or_none})}),
         })
-        info_dict['description'] = clean_html(dict_get(video, ('lead', 'description')))
+        info_dict['description'] = clean_html(
+            dict_get(video, ('lead', 'description')))
         if with_url:
             info_dict.update({
                 '_type': 'url',
@@ -515,85 +568,92 @@ class TVPVODVideoIE(TVPVODBaseIE):
     IE_NAME = 'tvp:vod'
     _VALID_URL = r'https?://vod\.tvp\.pl/(?P<category>[a-z\d-]+,\d+)/[a-z\d-]+(?<!-odcinki)(?:-odcinki,\d+/odcinek--?\d+,S-?\d+E-?\d+)?,(?P<id>\d+)/?(?:[?#]|$)'
 
-    _TESTS = [{
-        'url': 'https://vod.tvp.pl/dla-dzieci,24/laboratorium-alchemika-odcinki,309338/odcinek-24,S01E24,311357',
-        'info_dict': {
-            'id': '311357',
-            'ext': 'mp4',
-            'title': 'Tusze termiczne. Jak zobaczyć niewidoczne. Odcinek 24',
-            'description': 'md5:1d4098d3e537092ccbac1abf49b7cd4c',
-            'duration': 300,
-            'episode_number': 24,
-            'episode': 'Episode 24',
-            'age_limit': 0,
-            'series': 'Laboratorium alchemika',
-            'thumbnail': 're:https?://.+',
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://vod.tvp.pl/filmy-dokumentalne,163/ukrainski-sluga-narodu,339667',
-        'info_dict': {
-            'id': '339667',
-            'ext': 'mp4',
-            'title': 'Ukraiński sługa narodu',
-            'description': 'md5:b7940c0a8e439b0c81653a986f544ef3',
-            'age_limit': 12,
-            'duration': 3051,
-            'thumbnail': 're:https?://.+',
-            'subtitles': 'count:2',
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'note': 'embed fails with "payment required"',
-        'url': 'https://vod.tvp.pl/seriale,18/polowanie-na-cmy-odcinki,390116/odcinek-7,S01E07,398869',
-        'info_dict': {
-            'id': '398869',
-            'ext': 'mp4',
-            'title': 'odc. 7',
-            'description': 'md5:dd2bb33f023dc5c2fbaddfbe4cb5dba0',
-            'duration': 2750,
-            'age_limit': 16,
-            'series': 'Polowanie na ćmy',
-            'episode_number': 7,
-            'episode': 'Episode 7',
-            'thumbnail': 're:https?://.+',
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://vod.tvp.pl/live,1/tvp-world,399731',
-        'info_dict': {
-            'id': '399731',
-            'ext': 'mp4',
-            'title': r're:TVP WORLD \d{4}-\d{2}-\d{2} \d{2}:\d{2}',
-            'live_status': 'is_live',
-            'thumbnail': 're:https?://.+',
-        },
-    }, {
-        'url': 'https://vod.tvp.pl/informacje-i-publicystyka,205/konskie-2025-debata-przedwyborcza-odcinki,2028435/odcinek--1,S01E-1,2028419',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://vod.tvp.pl/dla-dzieci,24/laboratorium-alchemika-odcinki,309338/odcinek-24,S01E24,311357',
+               'info_dict': {'id': '311357',
+                             'ext': 'mp4',
+                             'title': 'Tusze termiczne. Jak zobaczyć niewidoczne. Odcinek 24',
+                             'description': 'md5:1d4098d3e537092ccbac1abf49b7cd4c',
+                             'duration': 300,
+                             'episode_number': 24,
+                             'episode': 'Episode 24',
+                             'age_limit': 0,
+                             'series': 'Laboratorium alchemika',
+                             'thumbnail': 're:https?://.+',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://vod.tvp.pl/filmy-dokumentalne,163/ukrainski-sluga-narodu,339667',
+               'info_dict': {'id': '339667',
+                             'ext': 'mp4',
+                             'title': 'Ukraiński sługa narodu',
+                             'description': 'md5:b7940c0a8e439b0c81653a986f544ef3',
+                             'age_limit': 12,
+                             'duration': 3051,
+                             'thumbnail': 're:https?://.+',
+                             'subtitles': 'count:2',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'note': 'embed fails with "payment required"',
+               'url': 'https://vod.tvp.pl/seriale,18/polowanie-na-cmy-odcinki,390116/odcinek-7,S01E07,398869',
+               'info_dict': {'id': '398869',
+                             'ext': 'mp4',
+                             'title': 'odc. 7',
+                             'description': 'md5:dd2bb33f023dc5c2fbaddfbe4cb5dba0',
+                             'duration': 2750,
+                             'age_limit': 16,
+                             'series': 'Polowanie na ćmy',
+                             'episode_number': 7,
+                             'episode': 'Episode 7',
+                             'thumbnail': 're:https?://.+',
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://vod.tvp.pl/live,1/tvp-world,399731',
+               'info_dict': {'id': '399731',
+                             'ext': 'mp4',
+                             'title': r're:TVP WORLD \d{4}-\d{2}-\d{2} \d{2}:\d{2}',
+                             'live_status': 'is_live',
+                             'thumbnail': 're:https?://.+',
+                             },
+               },
+              {'url': 'https://vod.tvp.pl/informacje-i-publicystyka,205/konskie-2025-debata-przedwyborcza-odcinki,2028435/odcinek--1,S01E-1,2028419',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         category, video_id = self._match_valid_url(url).group('category', 'id')
 
         is_live = category == 'live,1'
         entity = 'lives' if is_live else 'vods'
-        info_dict = self._parse_video(self._call_api(f'{entity}/{video_id}', video_id), with_url=False)
+        info_dict = self._parse_video(
+            self._call_api(
+                f'{entity}/{video_id}',
+                video_id),
+            with_url=False)
 
-        playlist = self._call_api(f'{video_id}/videos/playlist', video_id, query={'videoType': 'MOVIE'})
+        playlist = self._call_api(
+            f'{video_id}/videos/playlist',
+            video_id,
+            query={
+                'videoType': 'MOVIE'})
 
         info_dict['formats'] = []
-        for manifest_url in traverse_obj(playlist, ('sources', 'HLS', ..., 'src')):
-            info_dict['formats'].extend(self._extract_m3u8_formats(manifest_url, video_id, fatal=False))
-        for manifest_url in traverse_obj(playlist, ('sources', 'DASH', ..., 'src')):
-            info_dict['formats'].extend(self._extract_mpd_formats(manifest_url, video_id, fatal=False))
+        for manifest_url in traverse_obj(
+                playlist, ('sources', 'HLS', ..., 'src')):
+            info_dict['formats'].extend(
+                self._extract_m3u8_formats(
+                    manifest_url, video_id, fatal=False))
+        for manifest_url in traverse_obj(
+                playlist, ('sources', 'DASH', ..., 'src')):
+            info_dict['formats'].extend(
+                self._extract_mpd_formats(
+                    manifest_url, video_id, fatal=False))
 
         info_dict['subtitles'] = {}
         for sub in playlist.get('subtitles') or []:
             info_dict['subtitles'].setdefault(sub.get('language') or 'und', []).append({
-                'url': sub['url'],
-                'ext': 'ttml',
-            })
+                'url': sub['url'], 'ext': 'ttml', })
 
         info_dict['is_live'] = is_live
 
@@ -604,22 +664,20 @@ class TVPVODSeriesIE(TVPVODBaseIE):
     IE_NAME = 'tvp:vod:series'
     _VALID_URL = r'https?://vod\.tvp\.pl/[a-z\d-]+,\d+/[a-z\d-]+-odcinki,(?P<id>\d+)(?:\?[^#]+)?(?:#.+)?$'
 
-    _TESTS = [{
-        'url': 'https://vod.tvp.pl/seriale,18/ranczo-odcinki,316445',
-        'info_dict': {
-            'id': '316445',
-            'title': 'Ranczo',
-            'age_limit': 12,
-            'categories': ['seriale'],
-        },
-        'playlist_count': 130,
-    }, {
-        'url': 'https://vod.tvp.pl/programy,88/rolnik-szuka-zony-odcinki,284514',
-        'only_matching': True,
-    }, {
-        'url': 'https://vod.tvp.pl/dla-dzieci,24/laboratorium-alchemika-odcinki,309338',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://vod.tvp.pl/seriale,18/ranczo-odcinki,316445',
+               'info_dict': {'id': '316445',
+                             'title': 'Ranczo',
+                             'age_limit': 12,
+                             'categories': ['seriale'],
+                             },
+               'playlist_count': 130,
+               },
+              {'url': 'https://vod.tvp.pl/programy,88/rolnik-szuka-zony-odcinki,284514',
+               'only_matching': True,
+               },
+              {'url': 'https://vod.tvp.pl/dla-dzieci,24/laboratorium-alchemika-odcinki,309338',
+               'only_matching': True,
+               }]
 
     def _entries(self, seasons, playlist_id):
         for season in seasons:
@@ -637,8 +695,11 @@ class TVPVODSeriesIE(TVPVODBaseIE):
             f'vods/serials/{playlist_id}/seasons', playlist_id,
             note='Downloading season list')
         return self.playlist_result(
-            self._entries(seasons, playlist_id), playlist_id, strip_or_none(metadata.get('title')),
-            clean_html(traverse_obj(metadata, ('description', 'lead'), expected_type=strip_or_none)),
-            categories=[traverse_obj(metadata, ('mainCategory', 'name'))],
-            age_limit=int_or_none(metadata.get('rating')),
-        )
+            self._entries(
+                seasons, playlist_id), playlist_id, strip_or_none(
+                metadata.get('title')), clean_html(
+                traverse_obj(
+                    metadata, ('description', 'lead'), expected_type=strip_or_none)), categories=[
+                        traverse_obj(
+                            metadata, ('mainCategory', 'name'))], age_limit=int_or_none(
+                                metadata.get('rating')), )

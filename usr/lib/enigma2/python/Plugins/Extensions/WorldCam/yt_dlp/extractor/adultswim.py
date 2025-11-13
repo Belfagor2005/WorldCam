@@ -164,12 +164,17 @@ class AdultSwimIE(TurnerBaseIE):
                 extract_data = self._download_json(
                     'https://www.adultswim.com/api/shows/v1/videos/' + video_id,
                     video_id, query={'fields': 'stream'}, fatal=False) or {}
-                assets = try_get(extract_data, lambda x: x['data']['video']['stream']['assets'], list) or []
+                assets = try_get(
+                    extract_data,
+                    lambda x: x['data']['video']['stream']['assets'],
+                    list) or []
                 for asset in assets:
                     asset_url = asset.get('url')
                     if not asset_url:
                         continue
-                    ext = determine_ext(asset_url, mimetype2ext(asset.get('mime_type')))
+                    ext = determine_ext(
+                        asset_url, mimetype2ext(
+                            asset.get('mime_type')))
                     if ext == 'm3u8':
                         fmts, subs = self._extract_m3u8_formats_and_subtitles(
                             asset_url, video_id, 'mp4', m3u8_id='hls', fatal=False)

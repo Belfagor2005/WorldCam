@@ -28,9 +28,11 @@ class MegaphoneIE(InfoExtractor):
         author = self._og_search_property('audio:artist', webpage)
         thumbnail = self._og_search_thumbnail(webpage)
 
-        episode_json = self._search_regex(r'(?s)var\s+episode\s*=\s*(\{.+?\});', webpage, 'episode JSON')
+        episode_json = self._search_regex(
+            r'(?s)var\s+episode\s*=\s*(\{.+?\});', webpage, 'episode JSON')
         episode_data = self._parse_json(episode_json, video_id, js_to_json)
-        video_url = self._proto_relative_url(episode_data['mediaUrl'], 'https:')
+        video_url = self._proto_relative_url(
+            episode_data['mediaUrl'], 'https:')
 
         formats = [{
             'url': video_url,

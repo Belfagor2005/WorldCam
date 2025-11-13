@@ -9,27 +9,26 @@ from ..utils import (
 class RENTVIE(InfoExtractor):
     _WORKING = False
     _VALID_URL = r'(?:rentv:|https?://(?:www\.)?ren\.tv/(?:player|video/epizod)/)(?P<id>\d+)'
-    _TESTS = [{
-        'url': 'http://ren.tv/video/epizod/118577',
-        'md5': 'd91851bf9af73c0ad9b2cdf76c127fbb',
-        'info_dict': {
-            'id': '118577',
-            'ext': 'mp4',
-            'title': 'Документальный спецпроект: "Промывка мозгов. Технологии XXI века"',
-            'timestamp': 1472230800,
-            'upload_date': '20160826',
-        },
-    }, {
-        'url': 'http://ren.tv/player/118577',
-        'only_matching': True,
-    }, {
-        'url': 'rentv:118577',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://ren.tv/video/epizod/118577',
+               'md5': 'd91851bf9af73c0ad9b2cdf76c127fbb',
+               'info_dict': {'id': '118577',
+                             'ext': 'mp4',
+                             'title': 'Документальный спецпроект: "Промывка мозгов. Технологии XXI века"',
+                             'timestamp': 1472230800,
+                             'upload_date': '20160826',
+                             },
+               },
+              {'url': 'http://ren.tv/player/118577',
+               'only_matching': True,
+               },
+              {'url': 'rentv:118577',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage('http://ren.tv/player/' + video_id, video_id)
+        webpage = self._download_webpage(
+            'http://ren.tv/player/' + video_id, video_id)
         config = self._parse_json(self._search_regex(
             r'config\s*=\s*({.+})\s*;', webpage, 'config'), video_id)
         title = config['title']
@@ -99,5 +98,10 @@ class RENTVArticleIE(InfoExtractor):
             if not media_id:
                 continue
             media_id = str(media_id)
-            entries.append(self.url_result('rentv:' + media_id, 'RENTV', media_id))
+            entries.append(
+                self.url_result(
+                    'rentv:' +
+                    media_id,
+                    'RENTV',
+                    media_id))
         return self.playlist_result(entries, display_id)

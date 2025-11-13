@@ -23,7 +23,10 @@ class SexuIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
 
         jwvideo = self._parse_json(
-            self._search_regex(r'\.setup\(\s*({.+?})\s*\);', webpage, 'jwvideo'),
+            self._search_regex(
+                r'\.setup\(\s*({.+?})\s*\);',
+                webpage,
+                'jwvideo'),
             video_id)
 
         sources = jwvideo['sources']

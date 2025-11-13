@@ -25,7 +25,8 @@ class LaracastsBaseIE(InfoExtractor):
 
     def _parse_episode(self, episode):
         if not traverse_obj(episode, 'vimeoId'):
-            self.raise_login_required('This video is only available for subscribers.')
+            self.raise_login_required(
+                'This video is only available for subscribers.')
         return self.url_result(
             VimeoIE._smuggle_referrer(
                 f'https://player.vimeo.com/video/{episode["vimeoId"]}', 'https://laracasts.com/'),
@@ -65,12 +66,15 @@ class LaracastsIE(LaracastsBaseIE):
             'uploader_id': 'user20182673',
             'uploader_url': 'https://vimeo.com/user20182673',
         },
-        'expected_warnings': ['Failed to parse XML'],  # TODO: Remove when vimeo extractor is fixed
+        # TODO: Remove when vimeo extractor is fixed
+        'expected_warnings': ['Failed to parse XML'],
     }]
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
-        return self._parse_episode(self._get_prop_data(url, display_id)['lesson'])
+        return self._parse_episode(
+            self._get_prop_data(
+                url, display_id)['lesson'])
 
 
 class LaracastsPlaylistIE(LaracastsBaseIE):
@@ -110,5 +114,7 @@ class LaracastsPlaylistIE(LaracastsBaseIE):
             }),
         }
 
-        return self.playlist_result(traverse_obj(
-            series, ('chapters', ..., 'episodes', lambda _, v: v['vimeoId'], {self._parse_episode})), **metadata)
+        return self.playlist_result(
+            traverse_obj(
+                series, ('chapters', ..., 'episodes', lambda _, v: v['vimeoId'], {
+                    self._parse_episode})), **metadata)

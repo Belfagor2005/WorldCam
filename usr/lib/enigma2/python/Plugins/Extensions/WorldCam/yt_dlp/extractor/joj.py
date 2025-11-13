@@ -15,7 +15,8 @@ class JojIE(InfoExtractor):
                     )
                     (?P<id>[^/?#^]+)
                 '''
-    _EMBED_REGEX = [r'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//media\.joj\.sk/embed/(?:(?!\1).)+)\1']
+    _EMBED_REGEX = [
+        r'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//media\.joj\.sk/embed/(?:(?!\1).)+)\1']
     _TESTS = [{
         'url': 'https://media.joj.sk/embed/a388ec4c-6019-4a4a-9312-b1bee194e932',
         'info_dict': {
@@ -60,10 +61,16 @@ class JojIE(InfoExtractor):
         webpage = self._download_webpage(
             f'https://media.joj.sk/embed/{video_id}', video_id)
 
-        title = (self._search_json(r'videoTitle\s*:', webpage, 'title', video_id,
-                                   contains_pattern=r'["\'].+["\']', default=None)
-                 or self._html_extract_title(webpage, default=None)
-                 or self._og_search_title(webpage))
+        title = (
+            self._search_json(
+                r'videoTitle\s*:',
+                webpage,
+                'title',
+                video_id,
+                contains_pattern=r'["\'].+["\']',
+                default=None) or self._html_extract_title(
+                webpage,
+                default=None) or self._og_search_title(webpage))
 
         bitrates = self._parse_json(
             self._search_regex(
