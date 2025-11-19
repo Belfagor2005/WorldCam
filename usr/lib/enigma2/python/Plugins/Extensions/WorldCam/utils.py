@@ -331,9 +331,7 @@ class FavoritesManager:
                     if "youtube.com" in fav["url"] or "youtu.be" in fav["url"]:
                         # YouTube streams require special handling
                         service_type = 5001  # HLS
-                        service_url = f"http://localhost:8000/proxy.m3u8?url={
-                            quote(
-                                fav['url'])}"
+                        service_url = f"http://localhost:8000/proxy.m3u8?url={quote(fav['url'])}"
                     else:
                         service_type = 4097  # HTTP
                         # service_url = fav["url"]
@@ -917,6 +915,29 @@ class AspectManager:
         except (ValueError, TypeError, Exception) as e:
             print("[ERROR] Failed to get aspect ratio:", str(e))
             return 0  # Default 4:3
+
+    def set_aspect(self, aspect_ratio):
+        """Set aspect ratio based on string (e.g., '16:9', '4:3')"""
+        try:
+            aspect_map = {
+                "4:3": 0,
+                "16:9": 1,
+                "16:10": 2,
+                "auto": 3
+            }
+            
+            if aspect_ratio in aspect_map:
+                new_aspect = aspect_map[aspect_ratio]
+                print("[INFO] Setting aspect ratio to:", aspect_ratio, "(", new_aspect, ")")
+                AVSwitch().setAspectRatio(new_aspect)
+                return True
+            else:
+                print("[ERROR] Unknown aspect ratio:", aspect_ratio)
+                return False
+                
+        except Exception as e:
+            print("[ERROR] Failed to set aspect ratio:", str(e))
+            return False
 
     def restore_aspect(self):
         """Restore original aspect ratio"""
