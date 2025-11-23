@@ -47,8 +47,7 @@ class CBCIE(InfoExtractor):
         },
         'skip': 'Geo-restricted to Canada',
     }, {
-        # with clipId, feed available via tpfeed.cbc.ca and
-        # feed.theplatform.com
+        # with clipId, feed available via tpfeed.cbc.ca and feed.theplatform.com
         'url': 'http://www.cbc.ca/22minutes/videos/22-minutes-update/22-minutes-update-episode-4',
         'md5': '162adfa070274b144f4fdc3c3b8207db',
         'info_dict': {
@@ -106,8 +105,7 @@ class CBCIE(InfoExtractor):
         # multiple CBC.APP.Caffeine.initInstance(...)
         'url': 'http://www.cbc.ca/news/canada/calgary/dog-indoor-exercise-winter-1.3928238',
         'info_dict': {
-            # FIXME: actual title includes " | CBC News"
-            'title': 'Keep Rover active during the deep freeze with doggie pushups and other fun indoor tasks',
+            'title': 'Keep Rover active during the deep freeze with doggie pushups and other fun indoor tasks',  # FIXME: actual title includes " | CBC News"
             'id': 'dog-indoor-exercise-winter-1.3928238',
             'description': 'md5:c18552e41726ee95bd75210d1ca9194c',
         },
@@ -123,8 +121,7 @@ class CBCIE(InfoExtractor):
                 f'http://tpfeed.cbc.ca/f/ExhSPC/vms_5akSXx4Ng_Zn?byCustomValue={{:mpsReleases}}{{{clip_id}}}',
                 clip_id, fatal=False)
             if feed:
-                media_id = try_get(
-                    feed, lambda x: x['entries'][0]['guid'], str)
+                media_id = try_get(feed, lambda x: x['entries'][0]['guid'], str)
             if not media_id:
                 media_id = self._download_json(
                     'http://feed.theplatform.com/f/h9dtGB/punlNGjMlc1F?fields=id&byContent=byReleases%3DbyId%253D' + clip_id,
@@ -134,20 +131,12 @@ class CBCIE(InfoExtractor):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        title = (
-            self._og_search_title(
-                webpage,
-                default=None) or self._html_search_meta(
-                'twitter:title',
-                webpage,
-                'title',
-                default=None) or self._html_extract_title(webpage))
+        title = (self._og_search_title(webpage, default=None)
+                 or self._html_search_meta('twitter:title', webpage, 'title', default=None)
+                 or self._html_extract_title(webpage))
         entries = [
-            self._extract_player_init(
-                player_init,
-                display_id) for player_init in re.findall(
-                r'CBC\.APP\.Caffeine\.initInstance\(({.+?})\);',
-                webpage)]
+            self._extract_player_init(player_init, display_id)
+            for player_init in re.findall(r'CBC\.APP\.Caffeine\.initInstance\(({.+?})\);', webpage)]
         media_ids = []
         for media_id_re in (
                 r'<iframe[^>]+src="[^"]+?mediaId=(\d+)"',
@@ -222,8 +211,7 @@ class CBCPlayerIE(InfoExtractor):
         },
         'params': {'skip_download': 'm3u8'},
     }, {
-        # Redirected from
-        # http://www.cbc.ca/player/AudioMobile/All%20in%20a%20Weekend%20Montreal/ID/2657632011/
+        # Redirected from http://www.cbc.ca/player/AudioMobile/All%20in%20a%20Weekend%20Montreal/ID/2657632011/
         'url': 'https://www.cbc.ca/player/play/1.2985700',
         'md5': 'e5e708c34ae6fca156aafe17c43e8b75',
         'info_dict': {
@@ -386,31 +374,15 @@ class CBCPlayerIE(InfoExtractor):
     }]
 
     def _parse_param(self, asset_data, name):
-        return traverse_obj(
-            asset_data,
-            ('params',
-             lambda _,
-             v: v['name'] == name,
-                'value',
-                {str},
-                any))
+        return traverse_obj(asset_data, ('params', lambda _, v: v['name'] == name, 'value', {str}, any))
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(
-            f'https://www.cbc.ca/player/play/{video_id}', video_id)
+        webpage = self._download_webpage(f'https://www.cbc.ca/player/play/{video_id}', video_id)
         data = self._search_json(
-            r'window\.__INITIAL_STATE__\s*=',
-            webpage,
-            'initial state',
-            video_id)['video']['currentClip']
+            r'window\.__INITIAL_STATE__\s*=', webpage, 'initial state', video_id)['video']['currentClip']
         assets = traverse_obj(
-            data,
-            ('media',
-             'assets',
-             lambda _,
-             v: url_or_none(
-                 v['key']) and v['type']))
+            data, ('media', 'assets', lambda _, v: url_or_none(v['key']) and v['type']))
 
         if not assets and (media_id := traverse_obj(data, ('mediaId', {str}))):
             # XXX: Deprecated; CBC is migrating off of ThePlatform
@@ -422,20 +394,13 @@ class CBCPlayerIE(InfoExtractor):
                         'force_smil_url': True,
                     }),
                 'id': media_id,
-                # Prioritize direct http formats over HLS
-                '_format_sort_fields': ('res', 'proto'),
+                '_format_sort_fields': ('res', 'proto'),  # Prioritize direct http formats over HLS
             }
 
         is_live = traverse_obj(data, ('media', 'streamType', {str})) == 'Live'
         formats, subtitles = [], {}
 
-        for sub in traverse_obj(
-            data,
-            ('media',
-             'textTracks',
-             lambda _,
-             v: url_or_none(
-                 v['src']))):
+        for sub in traverse_obj(data, ('media', 'textTracks', lambda _, v: url_or_none(v['src']))):
             subtitles.setdefault(sub.get('language') or 'und', []).append({
                 'url': sub['src'],
                 'name': sub.get('label'),
@@ -445,42 +410,31 @@ class CBCPlayerIE(InfoExtractor):
             asset_key = asset['key']
             asset_type = asset['type']
             if asset_type != 'medianet':
-                self.report_warning(
-                    f'Skipping unsupported asset type "{asset_type}": {asset_key}')
+                self.report_warning(f'Skipping unsupported asset type "{asset_type}": {asset_key}')
                 continue
-            asset_data = self._download_json(
-                asset_key, video_id, f'Downloading {asset_type} JSON')
+            asset_data = self._download_json(asset_key, video_id, f'Downloading {asset_type} JSON')
             ext = mimetype2ext(self._parse_param(asset_data, 'contentType'))
             if ext == 'm3u8':
                 fmts, subs = self._extract_m3u8_formats_and_subtitles(
                     asset_data['url'], video_id, 'mp4', m3u8_id='hls', live=is_live)
                 formats.extend(fmts)
-                # Avoid slow/error-prone webvtt-over-m3u8 if direct https vtt
-                # is available
+                # Avoid slow/error-prone webvtt-over-m3u8 if direct https vtt is available
                 if not subtitles:
                     self._merge_subtitles(subs, target=subtitles)
                 if is_live or not fmts:
                     continue
                 # Check for direct https mp4 format
-                best_video_fmt = traverse_obj(
-                    fmts, (lambda _, v: v.get('vcodec') != 'none' and v['tbr'], all, {
-                        functools.partial(
-                            sorted, key=lambda x: x['tbr'])}, -1, {dict})) or {}
+                best_video_fmt = traverse_obj(fmts, (
+                    lambda _, v: v.get('vcodec') != 'none' and v['tbr'], all,
+                    {functools.partial(sorted, key=lambda x: x['tbr'])}, -1, {dict})) or {}
                 base_url = self._search_regex(
-                    r'(https?://[^?#]+?/)hdntl=',
-                    best_video_fmt.get('url'),
-                    'base url',
-                    default=None)
+                    r'(https?://[^?#]+?/)hdntl=', best_video_fmt.get('url'), 'base url', default=None)
                 if not base_url or '/live/' in base_url:
                     continue
-                mp4_url = base_url + \
-                    replace_extension(url_basename(best_video_fmt['url']), 'mp4')
+                mp4_url = base_url + replace_extension(url_basename(best_video_fmt['url']), 'mp4')
                 if self._request_webpage(
-                    HEADRequest(mp4_url),
-                    video_id,
-                    'Checking for https format',
-                    errnote=False,
-                        fatal=False):
+                        HEADRequest(mp4_url), video_id, 'Checking for https format',
+                        errnote=False, fatal=False):
                     formats.append({
                         **best_video_fmt,
                         'url': mp4_url,
@@ -496,21 +450,14 @@ class CBCPlayerIE(InfoExtractor):
                     'vcodec': 'none' if self._parse_param(asset_data, 'mediaType') == 'audio' else None,
                 })
 
-        chapters = traverse_obj(
-            data, ('media', 'chapters', lambda _, v: float(
-                v['startTime']) is not None, {
-                'start_time': (
-                    'startTime', {
-                        float_or_none(
-                            scale=1000)}), 'end_time': (
-                    'endTime', {
-                        float_or_none(
-                            scale=1000)}), 'title': (
-                    'name', {str}), }))
-        # Filter out pointless single chapters with start_time==0 and no
-        # end_time
-        if len(chapters) == 1 and not (chapters[0].get(
-                'start_time') or chapters[0].get('end_time')):
+        chapters = traverse_obj(data, (
+            'media', 'chapters', lambda _, v: float(v['startTime']) is not None, {
+                'start_time': ('startTime', {float_or_none(scale=1000)}),
+                'end_time': ('endTime', {float_or_none(scale=1000)}),
+                'title': ('name', {str}),
+            }))
+        # Filter out pointless single chapters with start_time==0 and no end_time
+        if len(chapters) == 1 and not (chapters[0].get('start_time') or chapters[0].get('end_time')):
             chapters = []
 
         return {
@@ -557,22 +504,12 @@ class CBCPlayerPlaylistIE(InfoExtractor):
         playlist_id = urllib.parse.unquote(self._match_id(url)).lower()
         webpage = self._download_webpage(url, playlist_id)
         json_content = self._search_json(
-            r'window\.__INITIAL_STATE__\s*=',
-            webpage,
-            'initial state',
-            playlist_id)
+            r'window\.__INITIAL_STATE__\s*=', webpage, 'initial state', playlist_id)
 
         def entries():
-            for video_id in traverse_obj(
-                json_content,
-                ('video',
-                 'clipsByCategory',
-                 lambda k,
-                 _: k.lower() == playlist_id,
-                 'items',
-                 ...,
-                 'id',
-                 )):
+            for video_id in traverse_obj(json_content, (
+                'video', 'clipsByCategory', lambda k, _: k.lower() == playlist_id, 'items', ..., 'id',
+            )):
                 yield self.url_result(f'https://www.cbc.ca/player/play/{video_id}', CBCPlayerIE)
 
         return self.playlist_result(entries(), playlist_id)
@@ -590,10 +527,7 @@ class CBCGemBaseIE(InfoExtractor):
     def _extract_item_info(self, item_info):
         episode_number = None
         title = traverse_obj(item_info, ('title', {str}))
-        if title and (
-            mobj := re.match(
-                r'(?P<episode>\d+)\. (?P<title>.+)',
-                title)):
+        if title and (mobj := re.match(r'(?P<episode>\d+)\. (?P<title>.+)', title)):
             episode_number = int_or_none(mobj.group('episode'))
             title = mobj.group('title')
 
@@ -643,8 +577,7 @@ class CBCGemIE(CBCGemBaseIE):
         },
         'params': {'format': 'bv'},
     }, {
-        # This video requires an account in the browser, but works fine in
-        # yt-dlp
+        # This video requires an account in the browser, but works fine in yt-dlp
         'url': 'https://gem.cbc.ca/media/schitts-creek/s01e01',
         'info_dict': {
             'id': 'schitts-creek/s01e01',
@@ -680,11 +613,8 @@ class CBCGemIE(CBCGemBaseIE):
     @functools.cached_property
     def _ropc_settings(self):
         return self._download_json(
-            'https://services.radio-canada.ca/ott/catalog/v1/gem/settings',
-            None,
-            'Downloading site settings',
-            query={
-                'device': 'web'})['identityManagement']['ropc']
+            'https://services.radio-canada.ca/ott/catalog/v1/gem/settings', None,
+            'Downloading site settings', query={'device': 'web'})['identityManagement']['ropc']
 
     def _is_jwt_expired(self, token):
         return jwt_decode_hs256(token)['exp'] - time.time() < 300
@@ -698,9 +628,7 @@ class CBCGemIE(CBCGemBaseIE):
             }))
         self._refresh_token = response['refresh_token']
         self._access_token = response['access_token']
-        self.cache.store(
-            self._NETRC_MACHINE, 'token_data', [
-                self._refresh_token, self._access_token])
+        self.cache.store(self._NETRC_MACHINE, 'token_data', [self._refresh_token, self._access_token])
 
     def _perform_login(self, username, password):
         if not self._refresh_token:
@@ -710,8 +638,7 @@ class CBCGemIE(CBCGemBaseIE):
         if self._refresh_token and self._access_token:
             self.write_debug('Using cached refresh token')
             if not self._claims_token:
-                self._claims_token = self.cache.load(
-                    self._NETRC_MACHINE, 'claims_token')
+                self._claims_token = self.cache.load(self._NETRC_MACHINE, 'claims_token')
             return
 
         try:
@@ -722,8 +649,7 @@ class CBCGemIE(CBCGemBaseIE):
             }, note='Logging in')
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 400:
-                raise ExtractorError(
-                    'Invalid username and/or password', expected=True)
+                raise ExtractorError('Invalid username and/or password', expected=True)
             raise
 
     def _fetch_access_token(self):
@@ -735,11 +661,8 @@ class CBCGemIE(CBCGemBaseIE):
                 })
             except ExtractorError:
                 self._refresh_token, self._access_token = None, None
-                self.cache.store(
-                    self._NETRC_MACHINE, 'token_data', [
-                        None, None])
-                self.report_warning(
-                    'Refresh token has been invalidated; retrying with credentials')
+                self.cache.store(self._NETRC_MACHINE, 'token_data', [None, None])
+                self.report_warning('Refresh token has been invalidated; retrying with credentials')
                 self._perform_login(*self._get_login_info())
 
         return self._access_token
@@ -753,18 +676,14 @@ class CBCGemIE(CBCGemBaseIE):
                 'https://services.radio-canada.ca/ott/subscription/v2/gem/Subscriber/profile',
                 None, 'Downloading claims token', query={'device': 'web'},
                 headers={'Authorization': f'Bearer {self._fetch_access_token()}'})['claimsToken']
-            self.cache.store(
-                self._NETRC_MACHINE,
-                'claims_token',
-                self._claims_token)
+            self.cache.store(self._NETRC_MACHINE, 'claims_token', self._claims_token)
         else:
             self.write_debug('Using cached claims token')
 
         return self._claims_token
 
     def _real_extract(self, url):
-        video_id, season_number = self._match_valid_url(
-            url).group('id', 'season')
+        video_id, season_number = self._match_valid_url(url).group('id', 'season')
         video_info = self._call_show_api(video_id)
         item_info = traverse_obj(video_info, (
             'content', ..., 'lineups', ..., 'items',
@@ -793,16 +712,10 @@ class CBCGemIE(CBCGemBaseIE):
         elif m3u8_info.get('errorCode') == 35:
             self.raise_login_required(method='password')
         elif m3u8_info.get('errorCode') != 0:
-            raise ExtractorError(
-                f'{self.IE_NAME} said: {m3u8_info.get("errorCode")} - {m3u8_info.get("message")}')
+            raise ExtractorError(f'{self.IE_NAME} said: {m3u8_info.get("errorCode")} - {m3u8_info.get("message")}')
 
         formats = self._extract_m3u8_formats(
-            m3u8_info['url'],
-            video_id,
-            'mp4',
-            m3u8_id='hls',
-            query={
-                'manifestType': ''})
+            m3u8_info['url'], video_id, 'mp4', m3u8_id='hls', query={'manifestType': ''})
         self._remove_duplicate_formats(formats)
 
         for fmt in formats:
@@ -851,15 +764,13 @@ class CBCGemPlaylistIE(CBCGemBaseIE):
     }]
 
     def _entries(self, season_info):
-        for episode in traverse_obj(
-                season_info, ('items', lambda _, v: v['url'])):
+        for episode in traverse_obj(season_info, ('items', lambda _, v: v['url'])):
             yield self.url_result(
                 f'https://gem.cbc.ca/media/{episode["url"]}', CBCGemIE,
                 **self._extract_item_info(episode))
 
     def _real_extract(self, url):
-        season_id, show, season = self._match_valid_url(
-            url).group('id', 'show', 'season')
+        season_id, show, season = self._match_valid_url(url).group('id', 'show', 'season')
         show_info = self._call_show_api(show, display_id=season_id)
         season_info = traverse_obj(show_info, (
             'content', ..., 'lineups',
@@ -949,11 +860,9 @@ class CBCGemLiveIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        video_info = self._search_nextjs_data(
-            webpage, video_id)['props']['pageProps']['data']
+        video_info = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['data']
 
-        # Three types of video_info JSON: info in root, freeTv stream/item,
-        # event replay
+        # Three types of video_info JSON: info in root, freeTv stream/item, event replay
         if not video_info.get('formattedIdMedia'):
             if traverse_obj(video_info, ('event', 'key')) == video_id:
                 video_info = video_info['event']
@@ -965,25 +874,18 @@ class CBCGemLiveIE(InfoExtractor):
         video_stream_id = video_info.get('formattedIdMedia')
         if not video_stream_id:
             raise ExtractorError(
-                'Couldn\'t find video metadata, maybe this livestream is now offline',
-                expected=True)
+                'Couldn\'t find video metadata, maybe this livestream is now offline', expected=True)
 
-        live_status = 'was_live' if video_info.get(
-            'isVodEnabled') else 'is_live'
-        release_timestamp = traverse_obj(
-            video_info, ('airDate', {parse_iso8601}))
+        live_status = 'was_live' if video_info.get('isVodEnabled') else 'is_live'
+        release_timestamp = traverse_obj(video_info, ('airDate', {parse_iso8601}))
 
         if live_status == 'is_live' and release_timestamp and release_timestamp > time.time():
             formats = []
             live_status = 'is_upcoming'
-            self.raise_no_formats(
-                'This livestream has not yet started',
-                expected=True)
+            self.raise_no_formats('This livestream has not yet started', expected=True)
         else:
             stream_data = self._download_json(
-                'https://services.radio-canada.ca/media/validation/v2/',
-                video_id,
-                query={
+                'https://services.radio-canada.ca/media/validation/v2/', video_id, query={
                     'appCode': 'medianetlive',
                     'connectionType': 'hd',
                     'deviceType': 'ipad',
@@ -1044,13 +946,10 @@ class CBCListenIE(InfoExtractor):
         video_id = self._match_id(url)
 
         response = self._download_json(
-            f'https://www.cbc.ca/listen/api/v1/clips/{video_id}',
-            video_id,
-            fatal=False)
+            f'https://www.cbc.ca/listen/api/v1/clips/{video_id}', video_id, fatal=False)
         data = traverse_obj(response, ('data', {dict}))
         if not data:
-            self.report_warning(
-                'API failed to return data. Falling back to webpage parsing')
+            self.report_warning('API failed to return data. Falling back to webpage parsing')
             webpage = self._download_webpage(url, video_id)
             preloaded_state = self._search_json(
                 r'window\.__PRELOADED_STATE__\s*=', webpage, 'preloaded state',

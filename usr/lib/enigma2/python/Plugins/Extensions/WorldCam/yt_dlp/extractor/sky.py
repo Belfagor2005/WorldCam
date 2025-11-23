@@ -18,8 +18,7 @@ class SkyBaseIE(InfoExtractor):
             video_id = sdc['data-video-id']
             account_id = sdc.get('data-account-id') or '6058004172001'
             player_id = sdc.get('data-player-id') or 'RC9PQUaJ6'
-            video_url = self.BRIGHTCOVE_URL_TEMPLATE % (
-                account_id, player_id, video_id)
+            video_url = self.BRIGHTCOVE_URL_TEMPLATE % (account_id, player_id, video_id)
             ie_key = 'BrightcoveNew'
 
         return {
@@ -44,21 +43,23 @@ class SkyBaseIE(InfoExtractor):
 class SkySportsIE(SkyBaseIE):
     IE_NAME = 'sky:sports'
     _VALID_URL = r'https?://(?:www\.)?skysports\.com/watch/video/([^/]+/)*(?P<id>[0-9]+)'
-    _TESTS = [{'url': 'http://www.skysports.com/watch/video/10328419/bale-its-our-time-to-shine',
-               'md5': '77d59166cddc8d3cb7b13e35eaf0f5ec',
-               'info_dict': {'id': 'o3eWJnNDE6l7kfNO8BOoBlRxXRQ4ANNQ',
-                             'ext': 'mp4',
-                             'title': 'Bale: It\'s our time to shine',
-                             'description': 'md5:e88bda94ae15f7720c5cb467e777bb6d',
-                             },
-               'add_ie': ['BrightcoveNew'],
-               },
-              {'url': 'https://www.skysports.com/watch/video/sports/f1/12160544/abu-dhabi-gp-the-notebook',
-               'only_matching': True,
-               },
-              {'url': 'https://www.skysports.com/watch/video/tv-shows/12118508/rainford-brent-how-ace-programme-helps',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://www.skysports.com/watch/video/10328419/bale-its-our-time-to-shine',
+        'md5': '77d59166cddc8d3cb7b13e35eaf0f5ec',
+        'info_dict': {
+            'id': 'o3eWJnNDE6l7kfNO8BOoBlRxXRQ4ANNQ',
+            'ext': 'mp4',
+            'title': 'Bale: It\'s our time to shine',
+            'description': 'md5:e88bda94ae15f7720c5cb467e777bb6d',
+        },
+        'add_ie': ['BrightcoveNew'],
+    }, {
+        'url': 'https://www.skysports.com/watch/video/sports/f1/12160544/abu-dhabi-gp-the-notebook',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.skysports.com/watch/video/tv-shows/12118508/rainford-brent-how-ace-programme-helps',
+        'only_matching': True,
+    }]
 
 
 class SkyNewsIE(SkyBaseIE):

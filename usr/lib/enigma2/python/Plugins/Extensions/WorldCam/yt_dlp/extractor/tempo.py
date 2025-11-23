@@ -50,8 +50,7 @@ class IVXPlayerIE(InfoExtractor):
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
-        # more info at
-        # https://player.ivideosmart.com/ivsplayer/v4/dist/js/loader.js
+        # more info at https://player.ivideosmart.com/ivsplayer/v4/dist/js/loader.js
         mobj = re.search(
             r'<ivs-player\s*[^>]+data-ivs-key\s*=\s*"(?P<player_key>[\w]+)\s*[^>]+\bdata-ivs-vid="(?P<video_id>[\w-]+)',
             webpage)
@@ -60,11 +59,9 @@ class IVXPlayerIE(InfoExtractor):
             raise cls.StopExtraction
 
     def _real_extract(self, url):
-        video_id, player_key = self._match_valid_url(
-            url).group('video_id', 'player_key')
+        video_id, player_key = self._match_valid_url(url).group('video_id', 'player_key')
         json_data = self._download_json(
-            f'https://ivxplayer.ivideosmart.com/prod/video/{video_id}?key={player_key}',
-            video_id)
+            f'https://ivxplayer.ivideosmart.com/prod/video/{video_id}?key={player_key}', video_id)
 
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             json_data['player']['video_url'], video_id)
@@ -103,25 +100,15 @@ class TempoIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
 
-        _, video_id, player_key = next(
-            IVXPlayerIE._extract_embed_urls(
-                url, webpage)).split(':')
+        _, video_id, player_key = next(IVXPlayerIE._extract_embed_urls(url, webpage)).split(':')
 
         json_ld_data = self._search_json_ld(webpage, display_id)
 
         return self.url_result(
-            f'ivxplayer:{video_id}:{player_key}',
-            display_id=display_id,
-            thumbnail=self._html_search_meta(
-                'twitter:image:src',
-                webpage) or self._og_search_thumbnail(webpage),
-            tags=try_call(
-                lambda: self._html_search_meta(
-                    'keywords',
-                    webpage).split(',')),
-            description=(
-                json_ld_data.get('description') or self._html_search_meta(
-                        ('description',
-                         'twitter:description'),
-                    webpage) or self._og_search_description(webpage)),
+            f'ivxplayer:{video_id}:{player_key}', display_id=display_id,
+            thumbnail=self._html_search_meta('twitter:image:src', webpage) or self._og_search_thumbnail(webpage),
+            tags=try_call(lambda: self._html_search_meta('keywords', webpage).split(',')),
+            description=(json_ld_data.get('description')
+                         or self._html_search_meta(('description', 'twitter:description'), webpage)
+                         or self._og_search_description(webpage)),
             url_transparent=True)

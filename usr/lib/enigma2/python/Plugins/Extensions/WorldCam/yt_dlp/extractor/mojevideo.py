@@ -86,8 +86,7 @@ class MojevideoIE(InfoExtractor):
 
         video_id_dec = self._search_regex(
             r'\bvId\s*=\s*(\d+)', webpage, 'video id', fatal=False) or str(int(video_id, 16))
-        video_exp = self._search_regex(
-            r'\bvEx\s*=\s*["\'](\d+)', webpage, 'video expiry')
+        video_exp = self._search_regex(r'\bvEx\s*=\s*["\'](\d+)', webpage, 'video expiry')
         video_hashes = self._search_json(
             r'\bvHash\s*=', webpage, 'video hashes', video_id,
             contains_pattern=r'\[(?s:.+)\]', transform_source=js_to_json)

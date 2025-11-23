@@ -110,28 +110,22 @@ class CallinIE(InfoExtractor):
         if app_slug and show_slug and '/' in show_slug:
             show_slug = show_slug.rsplit('/', 1)[1]
             show_json_url = f'https://www.callin.com/_next/data/{app_slug}/show/{show_slug}.json'
-            show_json = self._download_json(
-                show_json_url, display_id, fatal=False)
+            show_json = self._download_json(show_json_url, display_id, fatal=False)
 
         host = (traverse_obj(show_json, ('pageProps', 'show', 'hosts', 0))
                 or traverse_obj(episode, ('speakers', 0)))
 
         host_nick = traverse_obj(host, ('linkObj', 'resourceUrl'))
-        host_nick = host_nick.rsplit(
-            '/',
-            1)[1] if (
-            host_nick and '/' in host_nick) else None
+        host_nick = host_nick.rsplit('/', 1)[1] if (host_nick and '/' in host_nick) else None
 
         cast = list(filter(None, [
             self.try_get_user_name(u) for u in
             traverse_obj(episode, (('speakers', 'callerTags'), ...)) or []
         ]))
 
-        episode_list = traverse_obj(
-            show_json, ('pageProps', 'show', 'episodes')) or []
+        episode_list = traverse_obj(show_json, ('pageProps', 'show', 'episodes')) or []
         episode_number = next(
-            (len(episode_list) - i for i,
-             e in enumerate(episode_list) if e.get('id') == video_id),
+            (len(episode_list) - i for i, e in enumerate(episode_list) if e.get('id') == video_id),
             None)
 
         return {

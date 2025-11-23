@@ -13,67 +13,76 @@ class BRIE(InfoExtractor):
     IE_DESC = 'Bayerischer Rundfunk'
     _VALID_URL = r'(?P<base_url>https?://(?:www\.)?br(?:-klassik)?\.de)/(?:[a-z0-9\-_]+/)+(?P<id>[a-z0-9\-_]+)\.html'
 
-    _TESTS = [{'url': 'http://www.br.de/mediathek/video/sendungen/abendschau/betriebliche-altersvorsorge-104.html',
-               'md5': '83a0477cf0b8451027eb566d88b51106',
-               'info_dict': {'id': '48f656ef-287e-486f-be86-459122db22cc',
-                             'ext': 'mp4',
-                             'title': 'Die böse Überraschung',
-                             'description': 'md5:ce9ac81b466ce775b8018f6801b48ac9',
-                             'duration': 180,
-                             'uploader': 'Reinhard Weber',
-                             'upload_date': '20150422',
-                             },
-               'skip': '404 not found',
-               },
-              {'url': 'http://www.br.de/nachrichten/oberbayern/inhalt/muenchner-polizeipraesident-schreiber-gestorben-100.html',
-               'md5': 'af3a3a4aa43ff0ce6a89504c67f427ef',
-               'info_dict': {'id': 'a4b83e34-123d-4b81-9f4e-c0d3121a4e05',
-                             'ext': 'flv',
-                             'title': 'Manfred Schreiber ist tot',
-                             'description': 'md5:b454d867f2a9fc524ebe88c3f5092d97',
-                             'duration': 26,
-                             },
-               'skip': '404 not found',
-               },
-              {'url': 'https://www.br-klassik.de/audio/peeping-tom-premierenkritik-dance-festival-muenchen-100.html',
-               'md5': '8b5b27c0b090f3b35eac4ab3f7a73d3d',
-               'info_dict': {'id': '74c603c9-26d3-48bb-b85b-079aeed66e0b',
-                             'ext': 'aac',
-                             'title': 'Kurzweilig und sehr bewegend',
-                             'description': 'md5:0351996e3283d64adeb38ede91fac54e',
-                             'duration': 296,
-                             },
-               'skip': '404 not found',
-               },
-              {'url': 'http://www.br.de/radio/bayern1/service/team/videos/team-video-erdelt100.html',
-               'md5': 'dbab0aef2e047060ea7a21fc1ce1078a',
-               'info_dict': {'id': '6ba73750-d405-45d3-861d-1ce8c524e059',
-                             'ext': 'mp4',
-                             'title': 'Umweltbewusster Häuslebauer',
-                             'description': 'md5:d52dae9792d00226348c1dbb13c9bae2',
-                             'duration': 116,
-                             },
-               },
-              {'url': 'http://www.br.de/fernsehen/br-alpha/sendungen/kant-fuer-anfaenger/kritik-der-reinen-vernunft/kant-kritik-01-metaphysik100.html',
-               'md5': '23bca295f1650d698f94fc570977dae3',
-               'info_dict': {'id': 'd982c9ce-8648-4753-b358-98abb8aec43d',
-                             'ext': 'mp4',
-                             'title': 'Folge 1 - Metaphysik',
-                             'description': 'md5:bb659990e9e59905c3d41e369db1fbe3',
-                             'duration': 893,
-                             'uploader': 'Eva Maria Steimle',
-                             'upload_date': '20170208',
-                             },
-               },
-              ]
+    _TESTS = [
+        {
+            'url': 'http://www.br.de/mediathek/video/sendungen/abendschau/betriebliche-altersvorsorge-104.html',
+            'md5': '83a0477cf0b8451027eb566d88b51106',
+            'info_dict': {
+                'id': '48f656ef-287e-486f-be86-459122db22cc',
+                'ext': 'mp4',
+                'title': 'Die böse Überraschung',
+                'description': 'md5:ce9ac81b466ce775b8018f6801b48ac9',
+                'duration': 180,
+                'uploader': 'Reinhard Weber',
+                'upload_date': '20150422',
+            },
+            'skip': '404 not found',
+        },
+        {
+            'url': 'http://www.br.de/nachrichten/oberbayern/inhalt/muenchner-polizeipraesident-schreiber-gestorben-100.html',
+            'md5': 'af3a3a4aa43ff0ce6a89504c67f427ef',
+            'info_dict': {
+                'id': 'a4b83e34-123d-4b81-9f4e-c0d3121a4e05',
+                'ext': 'flv',
+                'title': 'Manfred Schreiber ist tot',
+                'description': 'md5:b454d867f2a9fc524ebe88c3f5092d97',
+                'duration': 26,
+            },
+            'skip': '404 not found',
+        },
+        {
+            'url': 'https://www.br-klassik.de/audio/peeping-tom-premierenkritik-dance-festival-muenchen-100.html',
+            'md5': '8b5b27c0b090f3b35eac4ab3f7a73d3d',
+            'info_dict': {
+                'id': '74c603c9-26d3-48bb-b85b-079aeed66e0b',
+                'ext': 'aac',
+                'title': 'Kurzweilig und sehr bewegend',
+                'description': 'md5:0351996e3283d64adeb38ede91fac54e',
+                'duration': 296,
+            },
+            'skip': '404 not found',
+        },
+        {
+            'url': 'http://www.br.de/radio/bayern1/service/team/videos/team-video-erdelt100.html',
+            'md5': 'dbab0aef2e047060ea7a21fc1ce1078a',
+            'info_dict': {
+                'id': '6ba73750-d405-45d3-861d-1ce8c524e059',
+                'ext': 'mp4',
+                'title': 'Umweltbewusster Häuslebauer',
+                'description': 'md5:d52dae9792d00226348c1dbb13c9bae2',
+                'duration': 116,
+            },
+        },
+        {
+            'url': 'http://www.br.de/fernsehen/br-alpha/sendungen/kant-fuer-anfaenger/kritik-der-reinen-vernunft/kant-kritik-01-metaphysik100.html',
+            'md5': '23bca295f1650d698f94fc570977dae3',
+            'info_dict': {
+                'id': 'd982c9ce-8648-4753-b358-98abb8aec43d',
+                'ext': 'mp4',
+                'title': 'Folge 1 - Metaphysik',
+                'description': 'md5:bb659990e9e59905c3d41e369db1fbe3',
+                'duration': 893,
+                'uploader': 'Eva Maria Steimle',
+                'upload_date': '20170208',
+            },
+        },
+    ]
 
     def _real_extract(self, url):
         base_url, display_id = self._match_valid_url(url).groups()
         page = self._download_webpage(url, display_id)
         xml_url = self._search_regex(
-            r"return BRavFramework\.register\(BRavFramework\('avPlayer_(?:[a-f0-9-]{36})'\)\.setup\({dataURL:'(/(?:[a-z0-9\-]+/)+[a-z0-9/~_.-]+)'}\)\);",
-            page,
-            'XMLURL')
+            r"return BRavFramework\.register\(BRavFramework\('avPlayer_(?:[a-f0-9-]{36})'\)\.setup\({dataURL:'(/(?:[a-z0-9\-]+/)+[a-z0-9/~_.-]+)'}\)\);", page, 'XMLURL')
         xml = self._download_xml(base_url + xml_url, display_id)
 
         medias = []
@@ -94,8 +103,7 @@ class BRIE(InfoExtractor):
             }
             broadcast_date = xpath_text(xml_media, 'broadcastDate')
             if broadcast_date:
-                media['upload_date'] = ''.join(
-                    reversed(broadcast_date.split('.')))
+                media['upload_date'] = ''.join(reversed(broadcast_date.split('.')))
             medias.append(media)
 
         if len(medias) > 1:
@@ -112,22 +120,11 @@ class BRIE(InfoExtractor):
             format_url = xpath_text(asset, ['downloadUrl', 'url'])
             asset_type = asset.get('type')
             if asset_type.startswith('HDS'):
-                formats.extend(
-                    self._extract_f4m_formats(
-                        format_url +
-                        '?hdcore=3.2.0',
-                        media_id,
-                        f4m_id='hds',
-                        fatal=False))
+                formats.extend(self._extract_f4m_formats(
+                    format_url + '?hdcore=3.2.0', media_id, f4m_id='hds', fatal=False))
             elif asset_type.startswith('HLS'):
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        format_url,
-                        media_id,
-                        'mp4',
-                        'm3u8_native',
-                        m3u8_id='hds',
-                        fatal=False))
+                formats.extend(self._extract_m3u8_formats(
+                    format_url, media_id, 'mp4', 'm3u8_native', m3u8_id='hds', fatal=False))
             else:
                 format_info = {
                     'ext': xpath_text(asset, 'mediaType'),

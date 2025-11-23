@@ -31,9 +31,7 @@ class VideofyMeIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        config = self._download_json(
-            f'http://vf-player-info-loader.herokuapp.com/{video_id}.json',
-            video_id)['videoinfo']
+        config = self._download_json(f'http://vf-player-info-loader.herokuapp.com/{video_id}.json', video_id)['videoinfo']
 
         video = config.get('video')
         blog = config.get('blog', {})
@@ -44,18 +42,10 @@ class VideofyMeIE(InfoExtractor):
             'url': video['sources']['source']['url'],
             'thumbnail': video.get('thumb'),
             'description': video.get('description'),
-            'timestamp': parse_iso8601(
-                video.get('date')),
+            'timestamp': parse_iso8601(video.get('date')),
             'uploader': blog.get('name'),
             'uploader_id': blog.get('identifier'),
-            'view_count': int_or_none(
-                self._search_regex(
-                    r'([0-9]+)',
-                    video.get('views'),
-                    'view count',
-                    fatal=False)),
-            'like_count': int_or_none(
-                video.get('likes')),
-            'comment_count': int_or_none(
-                video.get('nrOfComments')),
+            'view_count': int_or_none(self._search_regex(r'([0-9]+)', video.get('views'), 'view count', fatal=False)),
+            'like_count': int_or_none(video.get('likes')),
+            'comment_count': int_or_none(video.get('nrOfComments')),
         }

@@ -84,13 +84,11 @@ class JWPlatformIE(InfoExtractor):
             # <input value=URL> is used by hyland.com
             # if we find <iframe>, dont look for <input>
             ret = re.findall(
-                rf'<{tag}[^>]+?{key}=\\?["\']?((?:https?:)?//(?:content\.jwplatform|cdn\.jwplayer)\.com/players/[a-zA-Z0-9]{8} )',
+                rf'<{tag}[^>]+?{key}=\\?["\']?((?:https?:)?//(?:content\.jwplatform|cdn\.jwplayer)\.com/players/[a-zA-Z0-9]{{8}})',
                 webpage)
             if ret:
                 return ret
-        mobj = re.search(
-            r'<div\b[^>]* data-video-jw-id="([a-zA-Z0-9]{8})"',
-            webpage)
+        mobj = re.search(r'<div\b[^>]* data-video-jw-id="([a-zA-Z0-9]{8})"', webpage)
         if mobj:
             return [f'jwplatform:{mobj.group(1)}']
 
@@ -100,6 +98,5 @@ class JWPlatformIE(InfoExtractor):
             'countries': smuggled_data.get('geo_countries'),
         })
         video_id = self._match_id(url)
-        json_data = self._download_json(
-            'https://cdn.jwplayer.com/v2/media/' + video_id, video_id)
+        json_data = self._download_json('https://cdn.jwplayer.com/v2/media/' + video_id, video_id)
         return self._parse_jwplayer_data(json_data, video_id)

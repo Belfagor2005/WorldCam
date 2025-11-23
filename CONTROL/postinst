@@ -1,0 +1,36 @@
+#!/bin/sh
+# WorldCam Post-Installation Script
+
+echo ""
+echo "****************************************"
+echo "*        WorldCam Installation         *"
+echo "****************************************"
+echo "*   Please restart Enigma2 to complete *"
+echo "*         the installation process     *"
+echo "****************************************"
+echo "*         Enjoy the plugin!            *"
+echo "****************************************"
+echo ""
+
+# Create YouTube cookies file
+mkdir -p /etc/enigma2
+echo -e "# Netscape HTTP Cookie File\n.youtube.com\tTRUE\t/\tTRUE\t2147483647\tCONSENT\tYES+cb.20210615-14-p0.it+FX+294\n.youtube.com\tTRUE\t/\tTRUE\t2147483647\tPREF\tf1=50000000" > /etc/enigma2/yt_cookies.txt
+
+# Set correct permissions for the plugin
+if [ -d "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam" ]; then
+    chmod -R 755 "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam"
+fi
+
+echo ""
+echo "*******************************************"
+echo "*         Installation finished!          *"
+echo "*******************************************"
+echo "*    Don't forget to restart Enigma2      *"
+echo "*        to activate the plugin           *"
+echo "*******************************************"
+echo ""
+
+# Wait a moment for user to read
+sleep 2
+
+exit 0

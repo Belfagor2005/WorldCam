@@ -35,13 +35,10 @@ class PiramideTVIE(InfoExtractor):
 
     def _extract_video(self, video_id):
         video_data = self._download_json(
-            f'https://hermes.piramide.tv/video/data/{video_id}',
-            video_id,
-            fatal=False)
+            f'https://hermes.piramide.tv/video/data/{video_id}', video_id, fatal=False)
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             f'https://cdn.piramide.tv/video/{video_id}/manifest.m3u8', video_id, fatal=False)
-        next_video = traverse_obj(
-            video_data, ('video', 'next_video', 'id', {str}))
+        next_video = traverse_obj(video_data, ('video', 'next_video', 'id', {str}))
         return next_video, {
             'id': video_id,
             'formats': formats,
@@ -87,8 +84,7 @@ class PiramideTVChannelIE(InfoExtractor):
 
     def _entries(self, channel_name):
         videos = self._download_json(
-            f'https://hermes.piramide.tv/channel/list/{channel_name}/date/100000',
-            channel_name)
+            f'https://hermes.piramide.tv/channel/list/{channel_name}/date/100000', channel_name)
         for video in traverse_obj(videos, ('videos', lambda _, v: v['id'])):
             yield self.url_result(smuggle_url(
                 f'https://piramide.tv/video/{video["id"]}', {'force_noplaylist': True}),

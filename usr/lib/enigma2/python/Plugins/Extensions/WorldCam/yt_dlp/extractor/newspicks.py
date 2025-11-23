@@ -46,26 +46,19 @@ class NewsPicksIE(InfoExtractor):
 
     def _real_extract(self, url):
         series_id = self._match_id(url)
-        video_id = traverse_obj(
-            parse_qs(url), ('movieId', -1, {str}, {require('movie ID')}))
+        video_id = traverse_obj(parse_qs(url), ('movieId', -1, {str}, {require('movie ID')}))
         webpage = self._download_webpage(url, video_id)
 
-        fragment = self._search_nextjs_data(
-            webpage, video_id)['props']['pageProps']['fragment']
+        fragment = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['fragment']
         movie = fragment['movie']
 
-        if traverse_obj(
-                movie, ('viewable', {str})) == 'PARTIAL_FREE' and not traverse_obj(
-                movie, ('canWatch', {bool})):
+        if traverse_obj(movie, ('viewable', {str})) == 'PARTIAL_FREE' and not traverse_obj(movie, ('canWatch', {bool})):
             self.report_warning(
                 'Full video is for Premium members. Without cookies, '
                 f'only the preview is downloaded. {self._login_hint()}', video_id)
 
-        m3u8_url = traverse_obj(
-            movie, ('movieUrl', {url_or_none}, {
-                require('m3u8 URL')}))
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            m3u8_url, video_id, 'mp4')
+        m3u8_url = traverse_obj(movie, ('movieUrl', {url_or_none}, {require('m3u8 URL')}))
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, 'mp4')
 
         return {
             'id': video_id,

@@ -19,11 +19,11 @@ class PeriscopeBaseIE(InfoExtractor):
 
     def _parse_broadcast_data(self, broadcast, video_id):
         title = broadcast.get('status') or 'Periscope Broadcast'
-        uploader = broadcast.get(
-            'user_display_name') or broadcast.get('username')
+        uploader = broadcast.get('user_display_name') or broadcast.get('username')
         title = f'{uploader} - {title}' if uploader else title
-        thumbnails = [{'url': broadcast[image], } for image in (
-            'image_url', 'image_url_medium', 'image_url_small') if broadcast.get(image)]
+        thumbnails = [{
+            'url': broadcast[image],
+        } for image in ('image_url', 'image_url_medium', 'image_url_small') if broadcast.get(image)]
 
         return {
             'id': broadcast.get('id') or video_id,
@@ -45,9 +45,7 @@ class PeriscopeBaseIE(InfoExtractor):
 
     @staticmethod
     def _extract_common_format_info(broadcast):
-        return broadcast.get('state').lower(), int_or_none(
-            broadcast.get('width')), int_or_none(
-            broadcast.get('height'))
+        return broadcast.get('state').lower(), int_or_none(broadcast.get('width')), int_or_none(broadcast.get('height'))
 
     @staticmethod
     def _add_width_and_height(f, width, height):
@@ -55,15 +53,7 @@ class PeriscopeBaseIE(InfoExtractor):
             if not f.get(key):
                 f[key] = val
 
-    def _extract_pscp_m3u8_formats(
-            self,
-            m3u8_url,
-            video_id,
-            format_id,
-            state,
-            width,
-            height,
-            fatal=True):
+    def _extract_pscp_m3u8_formats(self, m3u8_url, video_id, format_id, state, width, height, fatal=True):
         m3u8_formats = self._extract_m3u8_formats(
             m3u8_url, video_id, 'mp4',
             entry_protocol='m3u8_native'
@@ -80,8 +70,7 @@ class PeriscopeIE(PeriscopeBaseIE):
     IE_DESC = 'Periscope'
     IE_NAME = 'periscope'
     _VALID_URL = r'https?://(?:www\.)?(?:periscope|pscp)\.tv/[^/]+/(?P<id>[^/?#]+)'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=([\'"])(?P<url>(?:https?:)?//(?:www\.)?(?:periscope|pscp)\.tv/(?:(?!\1).)+)\1']
+    _EMBED_REGEX = [r'<iframe[^>]+src=([\'"])(?P<url>(?:https?:)?//(?:www\.)?(?:periscope|pscp)\.tv/(?:(?!\1).)+)\1']
     # Alive example URLs can be found here https://www.periscope.tv/
     _TESTS = [{
         'url': 'https://www.periscope.tv/w/aJUQnjY3MjA3ODF8NTYxMDIyMDl2zCg2pECBgwTqRpQuQD352EMPTKQjT4uqlM3cgWFA-g==',
@@ -127,13 +116,7 @@ class PeriscopeIE(PeriscopeBaseIE):
 
         video_urls = set()
         formats = []
-        for format_id in (
-            'replay',
-            'rtmp',
-            'hls',
-            'https_hls',
-            'lhls',
-                'lhlsweb'):
+        for format_id in ('replay', 'rtmp', 'hls', 'https_hls', 'lhls', 'lhlsweb'):
             video_url = stream.get(format_id + '_url')
             if not video_url or video_url in video_urls:
                 continue

@@ -158,18 +158,9 @@ class MediasetIE(ThePlatformBaseIE):
     }]
 
     def _parse_smil_formats_and_subtitles(
-            self,
-            smil,
-            smil_url,
-            video_id,
-            namespace=None,
-            f4m_params=None,
-            transform_rtmp_url=None):
+            self, smil, smil_url, video_id, namespace=None, f4m_params=None, transform_rtmp_url=None):
         for video in smil.findall(self._xpath_ns('.//video', namespace)):
-            video.attrib['src'] = re.sub(
-                r'(https?://vod05)t(-mediaset-it\.akamaized\.net/.+?.mpd)\?.+',
-                r'\1\2',
-                video.attrib['src'])
+            video.attrib['src'] = re.sub(r'(https?://vod05)t(-mediaset-it\.akamaized\.net/.+?.mpd)\?.+', r'\1\2', video.attrib['src'])
         return super()._parse_smil_formats_and_subtitles(
             smil, smil_url, video_id, namespace, f4m_params, transform_rtmp_url)
 
@@ -182,10 +173,7 @@ class MediasetIE(ThePlatformBaseIE):
             if not f.get('has_drm') and f.get('manifest_url'):
                 has_nondrm = True
 
-        nodrm_manifest = re.sub(
-            r'_sampleaes/(\w+)_fp_',
-            r'/\1_no_',
-            drm_manifest)
+        nodrm_manifest = re.sub(r'_sampleaes/(\w+)_fp_', r'/\1_no_', drm_manifest)
         if has_nondrm or nodrm_manifest == drm_manifest:
             return
 
@@ -316,17 +304,11 @@ class MediasetShowIE(MediasetIE):  # XXX: Do not subclass from concrete IE
                 playlist_title=entry['mediasetprogram$subBrandDescription'])
 
     def _real_extract(self, url):
-        playlist_id, st, sb = self._match_valid_url(
-            url).group('id', 'st', 'sb')
+        playlist_id, st, sb = self._match_valid_url(url).group('id', 'st', 'sb')
         if not sb:
             page = self._download_webpage(url, st or playlist_id)
-            entries = [
-                self.url_result(
-                    urljoin(
-                        'https://mediasetinfinity.mediaset.it',
-                        url)) for url in re.findall(
-                    r'href="([^<>=]+SE\d{12},ST\d{12},sb\d{9})">[^<]+<',
-                    page)]
+            entries = [self.url_result(urljoin('https://mediasetinfinity.mediaset.it', url))
+                       for url in re.findall(r'href="([^<>=]+SE\d{12},ST\d{12},sb\d{9})">[^<]+<', page)]
             title = self._html_extract_title(page).split('|')[0].strip()
             return self.playlist_result(entries, st or playlist_id, title)
 

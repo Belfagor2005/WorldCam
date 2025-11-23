@@ -49,10 +49,8 @@ class AngelIE(InfoExtractor):
 
         # Angel uses cloudinary in the background and supports image transformations.
         # We remove these transformations and return the source file
-        base_thumbnail_url = url_or_none(
-            self._og_search_thumbnail(webpage)) or json_ld.pop('thumbnails')
+        base_thumbnail_url = url_or_none(self._og_search_thumbnail(webpage)) or json_ld.pop('thumbnails')
         if base_thumbnail_url:
-            info_dict['thumbnail'] = re.sub(
-                r'(/upload)/.+(/angel-app/.+)$', r'\1\2', base_thumbnail_url)
+            info_dict['thumbnail'] = re.sub(r'(/upload)/.+(/angel-app/.+)$', r'\1\2', base_thumbnail_url)
 
         return merge_dicts(info_dict, json_ld)

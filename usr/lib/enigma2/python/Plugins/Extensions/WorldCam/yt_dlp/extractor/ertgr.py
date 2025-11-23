@@ -25,9 +25,7 @@ class ERTFlixBaseIE(InfoExtractor):
             self, video_id, method='Player/AcquireContent', api_version=1,
             param_headers=None, data=None, headers=None, **params):
         platform_codename = {'platformCodename': 'www'}
-        headers_as_param = {
-            'X-Api-Date-Format': 'iso',
-            'X-Api-Camel-Case': False}
+        headers_as_param = {'X-Api-Date-Format': 'iso', 'X-Api-Camel-Case': False}
         headers_as_param.update(param_headers or {})
         headers = headers or {}
         if data:
@@ -51,11 +49,8 @@ class ERTFlixBaseIE(InfoExtractor):
             data={'RequestedTiles': requested_tiles})
         tiles = try_get(tiles_response, lambda x: x['Tiles'], list) or []
         if tile_ids:
-            if sorted([tile['Id'] for tile in tiles]
-                      ) != sorted(requested_tile_ids):
-                raise ExtractorError(
-                    'Requested tiles not found',
-                    video_id=video_id)
+            if sorted([tile['Id'] for tile in tiles]) != sorted(requested_tile_ids):
+                raise ExtractorError('Requested tiles not found', video_id=video_id)
             return tiles
         try:
             return next(tile for tile in tiles if tile['Id'] == video_id)
@@ -119,65 +114,68 @@ class ERTFlixIE(ERTFlixBaseIE):
     IE_NAME = 'ertflix'
     IE_DESC = 'ERTFLIX videos'
     _VALID_URL = r'https?://www\.ertflix\.gr/(?:[^/]+/)?(?:series|vod)/(?P<id>[a-z]{3}\.\d+)'
-    _TESTS = [{'url': 'https://www.ertflix.gr/vod/vod.173258-aoratoi-ergates',
-               'md5': '6479d5e60fd7e520b07ba5411dcdd6e7',
-               'info_dict': {'id': 'aoratoi-ergates',
-                             'ext': 'mp4',
-                             'title': 'md5:c1433d598fbba0211b0069021517f8b4',
-                             'description': 'md5:01a64d113c31957eb7eb07719ab18ff4',
-                             'thumbnail': r're:https?://.+\.jpg',
-                             'episode_id': 'vod.173258',
-                             'timestamp': 1639648800,
-                             'upload_date': '20211216',
-                             'duration': 3166,
-                             'age_limit': 8,
-                             },
-               'skip': 'Invalid URL',
-               },
-              {'url': 'https://www.ertflix.gr/series/ser.3448-monogramma',
-               'info_dict': {'id': 'ser.3448',
-                             'age_limit': 8,
-                             'title': 'Monogramma',
-                             'description': 'md5:e30cc640e6463da87f210a8ed10b2439',
-                             },
-               'playlist_mincount': 64,
-               },
-              {'url': 'https://www.ertflix.gr/series/ser.3448-monogramma?season=1',
-               'info_dict': {'id': 'ser.3448',
-                             'age_limit': 8,
-                             'title': 'Monogramma',
-                             'description': 'md5:e30cc640e6463da87f210a8ed10b2439',
-                             },
-               'playlist_mincount': 66,
-               },
-              {'url': 'https://www.ertflix.gr/series/ser.3448-monogramma?season=1&season=2021%20-%202022',
-               'info_dict': {'id': 'ser.3448',
-                             'age_limit': 8,
-                             'title': 'Monogramma',
-                             'description': 'md5:e30cc640e6463da87f210a8ed10b2439',
-                             },
-               'playlist_mincount': 25,
-               },
-              {'url': 'https://www.ertflix.gr/series/ser.164991-to-diktuo-1?season=1-9',
-               'info_dict': {'id': 'ser.164991',
-                             'age_limit': 8,
-                             'title': 'The Network',
-                             'description': 'The first Greek show featuring topics exclusively around the internet.',
-                             },
-               'playlist_mincount': 0,
-               },
-              {'url': 'https://www.ertflix.gr/en/vod/vod.127652-ta-kalytera-mas-chronia-ep1-mia-volta-sto-feggari',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://www.ertflix.gr/vod/vod.173258-aoratoi-ergates',
+        'md5': '6479d5e60fd7e520b07ba5411dcdd6e7',
+        'info_dict': {
+            'id': 'aoratoi-ergates',
+            'ext': 'mp4',
+            'title': 'md5:c1433d598fbba0211b0069021517f8b4',
+            'description': 'md5:01a64d113c31957eb7eb07719ab18ff4',
+            'thumbnail': r're:https?://.+\.jpg',
+            'episode_id': 'vod.173258',
+            'timestamp': 1639648800,
+            'upload_date': '20211216',
+            'duration': 3166,
+            'age_limit': 8,
+        },
+        'skip': 'Invalid URL',
+    }, {
+        'url': 'https://www.ertflix.gr/series/ser.3448-monogramma',
+        'info_dict': {
+            'id': 'ser.3448',
+            'age_limit': 8,
+            'title': 'Monogramma',
+            'description': 'md5:e30cc640e6463da87f210a8ed10b2439',
+        },
+        'playlist_mincount': 64,
+    }, {
+        'url': 'https://www.ertflix.gr/series/ser.3448-monogramma?season=1',
+        'info_dict': {
+            'id': 'ser.3448',
+            'age_limit': 8,
+            'title': 'Monogramma',
+            'description': 'md5:e30cc640e6463da87f210a8ed10b2439',
+        },
+        'playlist_mincount': 66,
+    }, {
+        'url': 'https://www.ertflix.gr/series/ser.3448-monogramma?season=1&season=2021%20-%202022',
+        'info_dict': {
+            'id': 'ser.3448',
+            'age_limit': 8,
+            'title': 'Monogramma',
+            'description': 'md5:e30cc640e6463da87f210a8ed10b2439',
+        },
+        'playlist_mincount': 25,
+    }, {
+        'url': 'https://www.ertflix.gr/series/ser.164991-to-diktuo-1?season=1-9',
+        'info_dict': {
+            'id': 'ser.164991',
+            'age_limit': 8,
+            'title': 'The Network',
+            'description': 'The first Greek show featuring topics exclusively around the internet.',
+        },
+        'playlist_mincount': 0,
+    }, {
+        'url': 'https://www.ertflix.gr/en/vod/vod.127652-ta-kalytera-mas-chronia-ep1-mia-volta-sto-feggari',
+        'only_matching': True,
+    }]
 
     def _extract_episode(self, episode):
         codename = try_get(episode, lambda x: x['Codename'], str)
         title = episode.get('Title')
-        description = clean_html(
-            dict_get(
-                episode, ('ShortDescription', 'TinyDescription')))
-        if not codename or not title or not episode.get(
-                'HasPlayableStream', True):
+        description = clean_html(dict_get(episode, ('ShortDescription', 'TinyDescription')))
+        if not codename or not title or not episode.get('HasPlayableStream', True):
             return
         thumbnail = next((
             url_or_none(thumb.get('Url'))
@@ -205,48 +203,34 @@ class ERTFlixIE(ERTFlixBaseIE):
             or (info_dict.get('IsAdultContent') and 18)
             or (info_dict.get('IsKidsContent') and 0))
 
-    def _extract_series(
-            self,
-            video_id,
-            season_titles=None,
-            season_numbers=None):
-        media_info = self._call_api(
-            video_id, method='Tile/GetSeriesDetails', id=video_id)
+    def _extract_series(self, video_id, season_titles=None, season_numbers=None):
+        media_info = self._call_api(video_id, method='Tile/GetSeriesDetails', id=video_id)
 
         series = try_get(media_info, lambda x: x['Series'], dict) or {}
         series_info = {
             'age_limit': self._parse_age_rating(series),
             'title': series.get('Title'),
-            'description': dict_get(
-                series,
-                ('ShortDescription',
-                 'TinyDescription')),
+            'description': dict_get(series, ('ShortDescription', 'TinyDescription')),
         }
         if season_numbers:
             season_titles = season_titles or []
             for season in try_get(series, lambda x: x['Seasons'], list) or []:
-                if season.get(
-                        'SeasonNumber') in season_numbers and season.get('Title'):
+                if season.get('SeasonNumber') in season_numbers and season.get('Title'):
                     season_titles.append(season['Title'])
 
         def gen_episode(m_info, season_titles):
-            for episode_group in try_get(
-                    m_info, lambda x: x['EpisodeGroups'], list) or []:
-                if season_titles and episode_group.get(
-                        'Title') not in season_titles:
+            for episode_group in try_get(m_info, lambda x: x['EpisodeGroups'], list) or []:
+                if season_titles and episode_group.get('Title') not in season_titles:
                     continue
-                episodes = try_get(
-                    episode_group, lambda x: x['Episodes'], list)
+                episodes = try_get(episode_group, lambda x: x['Episodes'], list)
                 if not episodes:
                     continue
                 season_info = {
                     'season': episode_group.get('Title'),
-                    'season_number': int_or_none(
-                        episode_group.get('SeasonNumber')),
+                    'season_number': int_or_none(episode_group.get('SeasonNumber')),
                 }
                 try:
-                    episodes = [(int(ep['EpisodeNumber']), ep)
-                                for ep in episodes]
+                    episodes = [(int(ep['EpisodeNumber']), ep) for ep in episodes]
                     episodes.sort()
                 except (KeyError, ValueError):
                     episodes = enumerate(episodes, 1)
@@ -259,11 +243,7 @@ class ERTFlixIE(ERTFlixBaseIE):
                     yield info
 
         return self.playlist_result(
-            gen_episode(
-                media_info,
-                season_titles),
-            playlist_id=video_id,
-            **series_info)
+            gen_episode(media_info, season_titles), playlist_id=video_id, **series_info)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -288,11 +268,9 @@ class ERTFlixIE(ERTFlixBaseIE):
 class ERTWebtvEmbedIE(InfoExtractor):
     IE_NAME = 'ertwebtv:embed'
     IE_DESC = 'ert.gr webtv embedded videos'
-    _BASE_PLAYER_URL_RE = re.escape(
-        '//www.ert.gr/webtv/live-uni/vod/dt-uni-vod.php')
+    _BASE_PLAYER_URL_RE = re.escape('//www.ert.gr/webtv/live-uni/vod/dt-uni-vod.php')
     _VALID_URL = rf'https?:{_BASE_PLAYER_URL_RE}\?([^#]+&)?f=(?P<id>[^#&]+)'
-    _EMBED_REGEX = [
-        rf'<iframe[^>]+?src=(?P<_q1>["\'])(?P<url>(?:https?:)?{_BASE_PLAYER_URL_RE}\?(?:(?!(?P=_q1)).)+)(?P=_q1)']
+    _EMBED_REGEX = [rf'<iframe[^>]+?src=(?P<_q1>["\'])(?P<url>(?:https?:)?{_BASE_PLAYER_URL_RE}\?(?:(?!(?P=_q1)).)+)(?P=_q1)']
 
     _TESTS = [{
         'url': 'https://www.ert.gr/webtv/live-uni/vod/dt-uni-vod.php?f=trailers/E2251_TO_DIKTYO_E09_16-01_1900.mp4&bgimg=/photos/2022/1/to_diktio_ep09_i_istoria_tou_diadiktiou_stin_Ellada_1021x576.jpg',

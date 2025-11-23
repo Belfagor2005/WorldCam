@@ -73,42 +73,29 @@ class RTPIE(InfoExtractor):
     def _fetch_auth_token(self):
         if self._AUTH_TOKEN:
             return self._AUTH_TOKEN
-        self._AUTH_TOKEN = traverse_obj(
-            self._download_json(
-                Request(
-                    'https://rtpplayapi.rtp.pt/play/api/2/token-manager',
-                    headers={
-                        'Accept': '*/*',
-                        'rtp-play-auth': 'RTPPLAY_MOBILE_IOS',
-                        'rtp-play-auth-hash': 'fac9c328b2f27e26e03d7f8942d66c05b3e59371e16c2a079f5c83cc801bd3ee',
-                        'rtp-play-auth-timestamp': '2145973229682',
-                        'User-Agent': self._USER_AGENT,
-                    },
-                    extensions={
-                        'keep_header_casing': True}),
-                None,
-                note='Fetching guest auth token',
-                errnote='Could not fetch guest auth token',
-                fatal=False),
-            ('token',
-             'token',
-             {str}))
+        self._AUTH_TOKEN = traverse_obj(self._download_json(Request(
+            'https://rtpplayapi.rtp.pt/play/api/2/token-manager',
+            headers={
+                'Accept': '*/*',
+                'rtp-play-auth': 'RTPPLAY_MOBILE_IOS',
+                'rtp-play-auth-hash': 'fac9c328b2f27e26e03d7f8942d66c05b3e59371e16c2a079f5c83cc801bd3ee',
+                'rtp-play-auth-timestamp': '2145973229682',
+                'User-Agent': self._USER_AGENT,
+            }, extensions={'keep_header_casing': True}), None,
+            note='Fetching guest auth token', errnote='Could not fetch guest auth token',
+            fatal=False), ('token', 'token', {str}))
         return self._AUTH_TOKEN
 
     @staticmethod
     def _cleanup_media_url(url):
         if urllib.parse.urlparse(url).netloc == 'streaming-ondemand.rtp.pt':
             return None
-        return url.replace(
-            '/drm-fps/', '/hls/').replace('/drm-dash/', '/dash/')
+        return url.replace('/drm-fps/', '/hls/').replace('/drm-dash/', '/dash/')
 
     def _extract_formats(self, media_urls, episode_id):
         formats = []
         subtitles = {}
-        for media_url in set(
-            traverse_obj(
-                media_urls, (..., {url_or_none}, {
-                self._cleanup_media_url}))):
+        for media_url in set(traverse_obj(media_urls, (..., {url_or_none}, {self._cleanup_media_url}))):
             ext = determine_ext(media_url)
             if ext == 'm3u8':
                 fmts, subs = self._extract_m3u8_formats_and_subtitles(
@@ -141,19 +128,12 @@ class RTPIE(InfoExtractor):
             }, fatal=False), 'result', {dict})
         if not episode_data:
             return
-        asset_urls = traverse_obj(
-            episode_data, ('assets', 0, 'asset_url', {dict}))
-        media_urls = traverse_obj(asset_urls, ((
-            (('hls', 'dash'), 'stream_url'), ('multibitrate', ('url_hls', 'url_dash'))),))
+        asset_urls = traverse_obj(episode_data, ('assets', 0, 'asset_url', {dict}))
+        media_urls = traverse_obj(asset_urls, (
+            ((('hls', 'dash'), 'stream_url'), ('multibitrate', ('url_hls', 'url_dash'))),))
         formats, subtitles = self._extract_formats(media_urls, episode_id)
 
-        for sub_data in traverse_obj(
-            asset_urls,
-            ('subtitles',
-             'vtt_list',
-             lambda _,
-             v: url_or_none(
-                 v['file']))):
+        for sub_data in traverse_obj(asset_urls, ('subtitles', 'vtt_list', lambda _, v: url_or_none(v['file']))):
             subtitles.setdefault(sub_data.get('code') or 'pt', []).append({
                 'url': sub_data['file'],
                 'name': sub_data.get('language'),
@@ -197,13 +177,8 @@ class RTPIE(InfoExtractor):
 
         formats = []
         subtitles = {}
-        media_urls = traverse_obj(
-            re.findall(
-                r'(?:var\s+f\s*=|RTPPlayer\({[^}]+file:)\s*({[^}]+}|"[^"]+")', webpage), (-1, (({
-                    self.__unobfuscate}, {js_to_json}, {
-                    json.loads}, {
-                    dict.values}, ...), {
-                        json.loads})))
+        media_urls = traverse_obj(re.findall(r'(?:var\s+f\s*=|RTPPlayer\({[^}]+file:)\s*({[^}]+}|"[^"]+")', webpage), (
+            -1, (({self.__unobfuscate}, {js_to_json}, {json.loads}, {dict.values}, ...), {json.loads})))
         formats, subtitles = self._extract_formats(media_urls, episode_id)
 
         return {
@@ -217,8 +192,5 @@ class RTPIE(InfoExtractor):
         }
 
     def _real_extract(self, url):
-        program_id, episode_id = self._match_valid_url(
-            url).group('program_id', 'id')
-        return self._extract_from_api(
-            program_id, episode_id) or self._extract_from_html(
-            url, episode_id)
+        program_id, episode_id = self._match_valid_url(url).group('program_id', 'id')
+        return self._extract_from_api(program_id, episode_id) or self._extract_from_html(url, episode_id)

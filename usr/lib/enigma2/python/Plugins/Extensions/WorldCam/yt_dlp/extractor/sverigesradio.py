@@ -31,17 +31,9 @@ class SverigesRadioBaseIE(InfoExtractor):
             webpage = self._download_webpage(url, display_id)
             audio_id = (
                 traverse_obj(
-                    get_element_html_by_class(
-                        'audio-button',
-                        webpage),
-                    ({extract_attributes},
-                     ('data-audio-id',
-                        'data-publication-id')),
-                    get_all=False) or self._parse_json(
-                    get_element_by_id(
-                        'gtm-metadata',
-                        webpage),
-                    display_id)['pageId'])
+                    get_element_html_by_class('audio-button', webpage),
+                    ({extract_attributes}, ('data-audio-id', 'data-publication-id')), get_all=False)
+                or self._parse_json(get_element_by_id('gtm-metadata', webpage), display_id)['pageId'])
 
         query = {
             'id': audio_id,
@@ -67,12 +59,9 @@ class SverigesRadioBaseIE(InfoExtractor):
             urls.append(audio_url)
             ext = determine_ext(audio_url)
             coding_format = audio_url_data.get('codingFormat')
-            abr = int_or_none(
-                self._search_regex(
-                    r'_a(\d+)\.m4a',
-                    audio_url,
-                    'audio bitrate',
-                    default=None)) or self._CODING_FORMAT_TO_ABR_MAP.get(coding_format)
+            abr = int_or_none(self._search_regex(
+                r'_a(\d+)\.m4a', audio_url, 'audio bitrate',
+                default=None)) or self._CODING_FORMAT_TO_ABR_MAP.get(coding_format)
             formats.append({
                 'abr': abr,
                 'acodec': self._EXT_TO_CODEC_MAP.get(ext),

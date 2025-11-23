@@ -1,7 +1,29 @@
 #!/bin/sh
+# WorldCam Post-Removal Cleanup Script
 
-if [ -d /usr/lib/enigma2/python/Plugins/Extensions/WorldCam ]; then
-  rm -rf /usr/lib/enigma2/python/Plugins/Extensions/WorldCam > /dev/null 2>&1
+PLUGIN_DIR="/usr/lib/enigma2/python/Plugins/Extensions/WorldCam"
+LOG_FILE="/tmp/worldcam_install.log"
+
+echo "$(date) - WorldCam post-removal cleanup started" >> "$LOG_FILE"
+
+# Remove plugin directory
+if [ -d "$PLUGIN_DIR" ]; then
+    echo "Removing WorldCam plugin files..." >> "$LOG_FILE"
+    rm -rf "$PLUGIN_DIR" && \
+    echo "Plugin files removed successfully" >> "$LOG_FILE"
+else
+    echo "Plugin directory not found, already removed" >> "$LOG_FILE"
 fi
 
+# Clean up temporary files
+if [ -f "/tmp/worldcam.conf.backup" ]; then
+    rm -f "/tmp/worldcam.conf.backup" && \
+    echo "Removed backup config" >> "$LOG_FILE"
+fi
+
+# Clean up compiled Python files
+find /usr/lib/enigma2 -name "*WorldCam*.pyc" -delete 2>/dev/null && \
+echo "Cleaned up compiled Python files" >> "$LOG_FILE"
+
+echo "$(date) - Post-removal cleanup completed" >> "$LOG_FILE"
 exit 0

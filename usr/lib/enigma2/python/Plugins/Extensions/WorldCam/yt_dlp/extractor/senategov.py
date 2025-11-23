@@ -15,8 +15,7 @@ from ..utils.traversal import traverse_obj
 class SenateISVPIE(InfoExtractor):
     IE_NAME = 'senate.gov:isvp'
     _VALID_URL = r'https?://(?:www\.)?senate\.gov/isvp/?\?(?P<qs>.+)'
-    _EMBED_REGEX = [
-        r"<iframe[^>]+src=['\"](?P<url>https?://www\.senate\.gov/isvp/?\?[^'\"]+)['\"]"]
+    _EMBED_REGEX = [r"<iframe[^>]+src=['\"](?P<url>https?://www\.senate\.gov/isvp/?\?[^'\"]+)['\"]"]
 
     _TESTS = [{
         'url': 'http://www.senate.gov/isvp/?comm=judiciary&type=live&stt=&filename=judiciary031715&auto_play=false&wmode=transparent&poster=http%3A%2F%2Fwww.judiciary.senate.gov%2Fthemes%2Fjudiciary%2Fimages%2Fvideo-poster-flash-fit.png',
@@ -120,16 +119,14 @@ class SenateISVPIE(InfoExtractor):
 
         stream_num, stream_domain, stream_id, msl3 = self._COMMITTEES[committee]
 
-        urls_alternatives = [
-            f'https://www-senate-gov-media-srs.akamaized.net/hls/live/{stream_id}/{committee}/{filename}/master.m3u8',
-            f'https://www-senate-gov-msl3archive.akamaized.net/{msl3}/{filename}_1/master.m3u8',
-            f'{stream_domain}/i/{filename}_1@{stream_num}/master.m3u8',
-            f'{stream_domain}/i/{filename}.mp4/master.m3u8']
+        urls_alternatives = [f'https://www-senate-gov-media-srs.akamaized.net/hls/live/{stream_id}/{committee}/{filename}/master.m3u8',
+                             f'https://www-senate-gov-msl3archive.akamaized.net/{msl3}/{filename}_1/master.m3u8',
+                             f'{stream_domain}/i/{filename}_1@{stream_num}/master.m3u8',
+                             f'{stream_domain}/i/{filename}.mp4/master.m3u8']
         formats = []
         subtitles = {}
         for video_url in urls_alternatives:
-            formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-                video_url, video_id, ext='mp4', fatal=False)
+            formats, subtitles = self._extract_m3u8_formats_and_subtitles(video_url, video_id, ext='mp4', fatal=False)
             if formats:
                 break
 
@@ -151,94 +148,92 @@ class SenateGovIE(InfoExtractor):
         'intelligence', 'inaugural', 'judiciary', 'rules', 'sbc', 'veterans',
     )))
     _VALID_URL = rf'https?://(?:www\.)?(?:{_SUBDOMAIN_RE})\.senate\.gov'
-    _TESTS = [{'url': 'https://www.help.senate.gov/hearings/vaccines-saving-lives-ensuring-confidence-and-protecting-public-health',
-               'info_dict': {'id': 'help090920',
-                             'display_id': 'vaccines-saving-lives-ensuring-confidence-and-protecting-public-health',
-                             'title': 'Vaccines: Saving Lives, Ensuring Confidence, and Protecting Public Health',
-                             'description': 'Full Committee Hearing on September 9, 2020 at 6:00 AM',
-                             'ext': 'mp4',
-                             'age_limit': 0,
-                             'thumbnail': r're:https?://.+\.(?:jpe?g|png)',
-                             '_old_archive_ids': ['senategov help090920'],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'url': 'https://www.appropriations.senate.gov/hearings/watch?hearingid=B8A25434-5056-A066-6020-1F68CB75F0CD',
-               'info_dict': {'id': 'appropsA051518',
-                             'display_id': 'watch?hearingid=B8A25434-5056-A066-6020-1F68CB75F0CD',
-                             'title': 'Review of the FY2019 Budget Request for the U.S. Army',
-                             'ext': 'mp4',
-                             'age_limit': 0,
-                             'thumbnail': r're:https?://.+\.(?:jpe?g|png)',
-                             '_old_archive_ids': ['senategov appropsA051518'],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               'expected_warnings': ['Failed to download m3u8 information'],
-               },
-              {'url': 'https://www.banking.senate.gov/hearings/21st-century-communities-public-transportation-infrastructure-investment-and-fast-act-reauthorization',
-               'info_dict': {'id': 'banking041521',
-                             'display_id': '21st-century-communities-public-transportation-infrastructure-investment-and-fast-act-reauthorization',
-                             'title': '21st Century Communities: Public Transportation Infrastructure Investment and FAST Act Reauthorization',
-                             'description': 'The Official website of The United States Committee on Banking, Housing, and Urban Affairs',
-                             'ext': 'mp4',
-                             'thumbnail': r're:https?://.+\.(?:jpe?g|png)',
-                             'age_limit': 0,
-                             '_old_archive_ids': ['senategov banking041521'],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'url': 'https://www.agriculture.senate.gov/hearings/hemp-production-and-the-2018-farm-bill',
-               'only_matching': True,
-               },
-              {'url': 'https://www.aging.senate.gov/hearings/the-older-americans-act-the-local-impact-of-the-law-and-the-upcoming-reauthorization',
-               'only_matching': True,
-               },
-              {'url': 'https://www.budget.senate.gov/hearings/improving-care-lowering-costs-achieving-health-care-efficiency',
-               'only_matching': True,
-               },
-              {'url': 'https://www.commerce.senate.gov/2024/12/communications-networks-safety-and-security',
-               'only_matching': True,
-               },
-              {'url': 'https://www.energy.senate.gov/hearings/2024/2/full-committee-hearing-to-examine',
-               'only_matching': True,
-               },
-              {'url': 'https://www.epw.senate.gov/public/index.cfm/hearings?ID=F63083EA-2C13-498C-B548-341BED68C209',
-               'only_matching': True,
-               },
-              {'url': 'https://www.foreign.senate.gov/hearings/american-diplomacy-and-global-leadership-review-of-the-fy25-state-department-budget-request',
-               'only_matching': True,
-               },
-              {'url': 'https://www.intelligence.senate.gov/hearings/foreign-threats-elections-2024-%E2%80%93-roles-and-responsibilities-us-tech-providers',
-               'only_matching': True,
-               },
-              {'url': 'https://www.inaugural.senate.gov/52nd-inaugural-ceremonies/',
-               'only_matching': True,
-               },
-              {'url': 'https://www.rules.senate.gov/hearings/02/07/2023/business-meeting',
-               'only_matching': True,
-               },
-              {'url': 'https://www.sbc.senate.gov/public/index.cfm/hearings?ID=5B13AA6B-8279-45AF-B54B-94156DC7A2AB',
-               'only_matching': True,
-               },
-              {'url': 'https://www.veterans.senate.gov/2024/5/frontier-health-care-ensuring-veterans-access-no-matter-where-they-live',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://www.help.senate.gov/hearings/vaccines-saving-lives-ensuring-confidence-and-protecting-public-health',
+        'info_dict': {
+            'id': 'help090920',
+            'display_id': 'vaccines-saving-lives-ensuring-confidence-and-protecting-public-health',
+            'title': 'Vaccines: Saving Lives, Ensuring Confidence, and Protecting Public Health',
+            'description': 'Full Committee Hearing on September 9, 2020 at 6:00 AM',
+            'ext': 'mp4',
+            'age_limit': 0,
+            'thumbnail': r're:https?://.+\.(?:jpe?g|png)',
+            '_old_archive_ids': ['senategov help090920'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://www.appropriations.senate.gov/hearings/watch?hearingid=B8A25434-5056-A066-6020-1F68CB75F0CD',
+        'info_dict': {
+            'id': 'appropsA051518',
+            'display_id': 'watch?hearingid=B8A25434-5056-A066-6020-1F68CB75F0CD',
+            'title': 'Review of the FY2019 Budget Request for the U.S. Army',
+            'ext': 'mp4',
+            'age_limit': 0,
+            'thumbnail': r're:https?://.+\.(?:jpe?g|png)',
+            '_old_archive_ids': ['senategov appropsA051518'],
+        },
+        'params': {'skip_download': 'm3u8'},
+        'expected_warnings': ['Failed to download m3u8 information'],
+    }, {
+        'url': 'https://www.banking.senate.gov/hearings/21st-century-communities-public-transportation-infrastructure-investment-and-fast-act-reauthorization',
+        'info_dict': {
+            'id': 'banking041521',
+            'display_id': '21st-century-communities-public-transportation-infrastructure-investment-and-fast-act-reauthorization',
+            'title': '21st Century Communities: Public Transportation Infrastructure Investment and FAST Act Reauthorization',
+            'description': 'The Official website of The United States Committee on Banking, Housing, and Urban Affairs',
+            'ext': 'mp4',
+            'thumbnail': r're:https?://.+\.(?:jpe?g|png)',
+            'age_limit': 0,
+            '_old_archive_ids': ['senategov banking041521'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://www.agriculture.senate.gov/hearings/hemp-production-and-the-2018-farm-bill',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.aging.senate.gov/hearings/the-older-americans-act-the-local-impact-of-the-law-and-the-upcoming-reauthorization',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.budget.senate.gov/hearings/improving-care-lowering-costs-achieving-health-care-efficiency',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.commerce.senate.gov/2024/12/communications-networks-safety-and-security',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.energy.senate.gov/hearings/2024/2/full-committee-hearing-to-examine',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.epw.senate.gov/public/index.cfm/hearings?ID=F63083EA-2C13-498C-B548-341BED68C209',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.foreign.senate.gov/hearings/american-diplomacy-and-global-leadership-review-of-the-fy25-state-department-budget-request',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.intelligence.senate.gov/hearings/foreign-threats-elections-2024-%E2%80%93-roles-and-responsibilities-us-tech-providers',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.inaugural.senate.gov/52nd-inaugural-ceremonies/',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.rules.senate.gov/hearings/02/07/2023/business-meeting',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.sbc.senate.gov/public/index.cfm/hearings?ID=5B13AA6B-8279-45AF-B54B-94156DC7A2AB',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.veterans.senate.gov/2024/5/frontier-health-care-ensuring-veterans-access-no-matter-where-they-live',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         display_id = self._generic_id(url)
         webpage = self._download_webpage(url, display_id)
-        url_info = next(
-            SenateISVPIE.extract_from_webpage(
-                self._downloader, url, webpage), None)
+        url_info = next(SenateISVPIE.extract_from_webpage(self._downloader, url, webpage), None)
         if not url_info:
             raise UnsupportedError(url)
 
         title = self._html_search_regex(
-            (*self._og_regexes('title'),
-             r'(?s)<title>([^<]*?)</title>'),
-            webpage,
-            'video title',
-            fatal=False)
+            (*self._og_regexes('title'), r'(?s)<title>([^<]*?)</title>'), webpage, 'video title', fatal=False)
 
         return {
             **url_info,

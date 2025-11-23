@@ -47,20 +47,16 @@ class FujiTVFODPlus7IE(InfoExtractor):
                 f'https://fod-sp.fujitv.co.jp/apps/api/episode/detail/?ep_id={video_id}&is_premium=false',
                 video_id, headers={'x-authorization': f'Bearer {token.value}'}, fatal=False)
         else:
-            self.report_warning(
-                f'The token cookie is needed to extract video metadata. {
-                    self._login_hint("cookies")}')
+            self.report_warning(f'The token cookie is needed to extract video metadata. {self._login_hint("cookies")}')
         formats, subtitles = [], {}
-        src_json = self._download_json(
-            f'{self._BASE_URL}abrjson_v2/tv_android/{video_id}', video_id)
+        src_json = self._download_json(f'{self._BASE_URL}abrjson_v2/tv_android/{video_id}', video_id)
         for src in src_json['video_selector']:
             if not src.get('url'):
                 continue
-            fmt, subs = self._extract_m3u8_formats_and_subtitles(
-                src['url'], video_id, 'ts')
+            fmt, subs = self._extract_m3u8_formats_and_subtitles(src['url'], video_id, 'ts')
             for f in fmt:
-                f.update(dict(zip(('height', 'width'), self._BITRATE_MAP.get(
-                    f.get('tbr'), ()), strict=False)))
+                f.update(dict(zip(('height', 'width'),
+                                  self._BITRATE_MAP.get(f.get('tbr'), ()), strict=False)))
             formats.extend(fmt)
             subtitles = self._merge_subtitles(subtitles, subs)
 
@@ -72,9 +68,6 @@ class FujiTVFODPlus7IE(InfoExtractor):
             'description': json_info.get('ep_description'),
             'formats': formats,
             'subtitles': subtitles,
-            'thumbnail': f'{
-                self._BASE_URL}img/program/{series_id}/episode/{video_id}_a.jpg',
-            '_format_sort_fields': (
-                'tbr',
-            ),
+            'thumbnail': f'{self._BASE_URL}img/program/{series_id}/episode/{video_id}_a.jpg',
+            '_format_sort_fields': ('tbr', ),
         }

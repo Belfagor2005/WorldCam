@@ -76,8 +76,7 @@ def install_missing_packages(missing, logger=None):
         subprocess.call(["opkg", "update"])
         for pkg in OPKG_PACKAGES:
             name = pkg.replace("{py}", python_variant)
-            base = name.split("/")[-1].replace("enigma2-plugin-extensions-",
-                                               "").replace("{py}-", "").replace(python_variant + "-", "")
+            base = name.split("/")[-1].replace("enigma2-plugin-extensions-", "").replace("{py}-", "").replace(python_variant + "-", "")
             if base in missing or base.split("-")[0] in missing:
                 cmd = ["opkg", "install", name]
                 if logger:

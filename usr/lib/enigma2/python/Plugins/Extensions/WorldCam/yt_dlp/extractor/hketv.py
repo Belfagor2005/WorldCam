@@ -70,19 +70,14 @@ class HKETVIE(InfoExtractor):
 
         title = (
             self._html_search_meta(
-                ('ed_title',
-                 'search.ed_title'),
-                webpage,
-                default=None) or self._search_regex(
+                ('ed_title', 'search.ed_title'), webpage, default=None)
+            or self._search_regex(
                 r'data-favorite_title_(?:eng|chi)=(["\'])(?P<id>(?:(?!\1).)+)\1',
-                webpage,
-                'title',
-                default=None,
-                group='url') or self._html_search_regex(
-                r'<h1>([^<]+)</h1>',
-                webpage,
-                'title',
-                default=None) or self._og_search_title(webpage))
+                webpage, 'title', default=None, group='url')
+            or self._html_search_regex(
+                r'<h1>([^<]+)</h1>', webpage, 'title', default=None)
+            or self._og_search_title(webpage)
+        )
 
         file_id = self._search_regex(
             r'post_var\[["\']file_id["\']\s*\]\s*=\s*(.+?);',

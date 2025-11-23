@@ -22,38 +22,32 @@ developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGR
 
 
 def _(txt):
-    """
-    Translate the given text using gettext, with fallback and debug print.
-    """
-    if not txt:
-        return ""
-    translated = gettext.dgettext(PluginLanguageDomain, txt)
-    if translated:
-        return translated
-    print(
-        "[%s] fallback to default translation for %s" %
-        (PluginLanguageDomain, txt))
-    return gettext.gettext(txt)
+	"""
+	Translate the given text using gettext, with fallback and debug print.
+	"""
+	if not txt:
+		return ""
+	translated = gettext.dgettext(PluginLanguageDomain, txt)
+	if translated:
+		return translated
+	print("[%s] fallback to default translation for %s" % (PluginLanguageDomain, txt))
+	return gettext.gettext(txt)
 
 
 def paypal():
-    return _(
-        "Like this plugin?\n"
-        "Buy me a coffee by scanning QR code.\n"
-        "Your support keeps development alive!\n"
-    )
+	return _(
+		"Like this plugin?\n"
+		"Buy me a coffee by scanning QR code.\n"
+		"Your support keeps development alive!\n"
+	)
 
 
 def localeInit():
-    """
-    Initialize locale environment and bind plugin's translation domain.
-    """
-    environ["LANGUAGE"] = language.getLanguage()[:2]
-    gettext.bindtextdomain(
-        PluginLanguageDomain,
-        resolveFilename(
-            SCOPE_PLUGINS,
-            PluginLanguagePath))
+	"""
+	Initialize locale environment and bind plugin's translation domain.
+	"""
+	environ["LANGUAGE"] = language.getLanguage()[:2]
+	gettext.bindtextdomain(PluginLanguageDomain, resolveFilename(SCOPE_PLUGINS, PluginLanguagePath))
 
 
 localeInit()

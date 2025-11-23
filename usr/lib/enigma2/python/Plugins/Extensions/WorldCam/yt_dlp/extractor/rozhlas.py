@@ -59,12 +59,7 @@ class RozhlasIE(InfoExtractor):
 class RozhlasBaseIE(InfoExtractor):
     def _extract_formats(self, entry, audio_id):
         formats = []
-        for audio in traverse_obj(
-            entry,
-            ('audioLinks',
-             lambda _,
-             v: url_or_none(
-                 v['url']))):
+        for audio in traverse_obj(entry, ('audioLinks', lambda _, v: url_or_none(v['url']))):
             ext = audio.get('variant')
             for retry in self.RetryManager():
                 if retry.attempt > 1:
@@ -86,8 +81,7 @@ class RozhlasBaseIE(InfoExtractor):
                             'vcodec': 'none',
                         })
                 except ExtractorError as e:
-                    if isinstance(e.cause,
-                                  HTTPError) and e.cause.status == 429:
+                    if isinstance(e.cause, HTTPError) and e.cause.status == 429:
                         retry.error = e.cause
                     else:
                         self.report_warning(e.msg)
@@ -213,39 +207,27 @@ class RozhlasVltavaIE(RozhlasBaseIE):
 
     def _extract_video(self, entry):
         audio_id = entry['meta']['ga']['contentId']
-        chapter_number = traverse_obj(
-            entry, ('meta', 'ga', 'contentSerialPart', {int_or_none}))
+        chapter_number = traverse_obj(entry, ('meta', 'ga', 'contentSerialPart', {int_or_none}))
 
-        return {'id': audio_id,
-                'chapter': traverse_obj(entry,
-                                        ('meta',
-                                         'ga',
-                                         'contentNameShort')) if chapter_number else None,
-                'chapter_number': chapter_number,
-                'formats': self._extract_formats(entry,
-                                                 audio_id),
-                **traverse_obj(entry,
-                               {'title': ('meta',
-                                          'ga',
-                                          'contentName'),
-                                'description': 'title',
-                                'duration': ('duration',
-                                             {int_or_none}),
-                                   'artist': ('meta',
-                                              'ga',
-                                              'contentAuthor'),
-                                   'channel_id': ('meta',
-                                                  'ga',
-                                                  'contentCreator'),
-                                }),
-                }
+        return {
+            'id': audio_id,
+            'chapter': traverse_obj(entry, ('meta', 'ga', 'contentNameShort')) if chapter_number else None,
+            'chapter_number': chapter_number,
+            'formats': self._extract_formats(entry, audio_id),
+            **traverse_obj(entry, {
+                'title': ('meta', 'ga', 'contentName'),
+                'description': 'title',
+                'duration': ('duration', {int_or_none}),
+                'artist': ('meta', 'ga', 'contentAuthor'),
+                'channel_id': ('meta', 'ga', 'contentCreator'),
+            }),
+        }
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        # FIXME: Use get_element_text_and_html_by_tag when it accepts less
-        # strict html
+        # FIXME: Use get_element_text_and_html_by_tag when it accepts less strict html
         data = self._parse_json(extract_attributes(self._search_regex(
             r'(<div class="mujRozhlasPlayer" data-player=\'[^\']+\'>)',
             webpage, 'player'))['data-player'], video_id)['data']
@@ -319,10 +301,8 @@ class MujRozhlasIE(RozhlasBaseIE):
 
     def _call_api(self, path, item_id, msg='API JSON'):
         return self._download_json(
-            f'https://api.mujrozhlas.cz/{path}/{item_id}',
-            item_id,
-            note=f'Downloading {msg}',
-            errnote=f'Failed to download {msg}')['data']
+            f'https://api.mujrozhlas.cz/{path}/{item_id}', item_id,
+            note=f'Downloading {msg}', errnote=f'Failed to download {msg}')['data']
 
     def _extract_audio_entry(self, entry):
         audio_id = entry['meta']['ga']['contentId']
@@ -349,8 +329,7 @@ class MujRozhlasIE(RozhlasBaseIE):
             episodes = self._download_json(
                 api_url, playlist_id, note=f'Downloading episodes page {page}',
                 errnote=f'Failed to download episodes page {page}', fatal=False)
-            for episode in traverse_obj(
-                    episodes, ('data', lambda _, v: v['meta']['ga']['contentId'])):
+            for episode in traverse_obj(episodes, ('data', lambda _, v: v['meta']['ga']['contentId'])):
                 yield self._extract_audio_entry(episode)
             api_url = traverse_obj(episodes, ('links', 'next', {url_or_none}))
             if not api_url:
@@ -359,11 +338,7 @@ class MujRozhlasIE(RozhlasBaseIE):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        info = self._search_json(
-            r'\bvar\s+dl\s*=',
-            webpage,
-            'info json',
-            display_id)
+        info = self._search_json(r'\bvar\s+dl\s*=', webpage, 'info json', display_id)
 
         entity = info['siteEntityBundle']
 
@@ -372,12 +347,8 @@ class MujRozhlasIE(RozhlasBaseIE):
                 'episodes', info['contentId'], 'episode info API JSON'))
 
         elif entity in ('show', 'serial'):
-            playlist_id = info['contentShow'].split(
-                ':')[0] if entity == 'show' else info['contentId']
-            data = self._call_api(
-                f'{entity}s',
-                playlist_id,
-                f'{entity} playlist JSON')
+            playlist_id = info['contentShow'].split(':')[0] if entity == 'show' else info['contentId']
+            data = self._call_api(f'{entity}s', playlist_id, f'{entity} playlist JSON')
             api_url = data['relationships']['episodes']['links']['related']
             return self.playlist_result(
                 self._entries(api_url, playlist_id), playlist_id,

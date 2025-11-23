@@ -42,14 +42,10 @@ class SteamIE(InfoExtractor):
 
         self._set_cookie('store.steampowered.com', 'wants_mature_content', '1')
         self._set_cookie('store.steampowered.com', 'birthtime', '946652401')
-        self._set_cookie(
-            'store.steampowered.com',
-            'lastagecheckage',
-            '1-January-2000')
+        self._set_cookie('store.steampowered.com', 'lastagecheckage', '1-January-2000')
 
         webpage = self._download_webpage(url, app_id)
-        app_name = traverse_obj(
-            webpage, ({find_element(cls='apphub_AppName')}, {clean_html}))
+        app_name = traverse_obj(webpage, ({find_element(cls='apphub_AppName')}, {clean_html}))
 
         entries = []
         for data_prop in traverse_obj(webpage, (
@@ -57,17 +53,14 @@ class SteamIE(InfoExtractor):
             ..., {extract_attributes}, 'data-props', {json.loads}, {dict},
         )):
             formats = []
-            if hls_manifest := traverse_obj(
-                    data_prop, ('hlsManifest', {url_or_none})):
+            if hls_manifest := traverse_obj(data_prop, ('hlsManifest', {url_or_none})):
                 formats.extend(self._extract_m3u8_formats(
                     hls_manifest, app_id, 'mp4', m3u8_id='hls', fatal=False))
-            for dash_manifest in traverse_obj(
-                    data_prop, ('dashManifests', ..., {url_or_none})):
+            for dash_manifest in traverse_obj(data_prop, ('dashManifests', ..., {url_or_none})):
                 formats.extend(self._extract_mpd_formats(
                     dash_manifest, app_id, mpd_id='dash', fatal=False))
 
-            movie_id = traverse_obj(
-                data_prop, ('id', {trim_str(start='highlight_movie_')}))
+            movie_id = traverse_obj(data_prop, ('id', {trim_str(start='highlight_movie_')}))
             entries.append({
                 'id': movie_id,
                 'title': join_nonempty(app_name, 'video', movie_id, delim=' '),
@@ -155,11 +148,9 @@ class SteamCommunityIE(InfoExtractor):
             r'var\s+rgMovieFlashvars\s*=', webpage, 'flashvars',
             file_id, default={}, transform_source=js_to_json)
         youtube_id = (
-            traverse_obj(
-                flashvars, (..., 'YOUTUBE_VIDEO_ID', {str}, any)) or traverse_obj(
-                webpage, ({
-                    find_element(
-                        cls='movieFrame modal', html=True)}, {extract_attributes}, 'id', {str})))
+            traverse_obj(flashvars, (..., 'YOUTUBE_VIDEO_ID', {str}, any))
+            or traverse_obj(webpage, (
+                {find_element(cls='movieFrame modal', html=True)}, {extract_attributes}, 'id', {str})))
         if not youtube_id:
             raise ExtractorError('No video found', expected=True)
 
@@ -188,8 +179,7 @@ class SteamCommunityBroadcastIE(InfoExtractor):
             'https://steamcommunity.com/broadcast/getbroadcastmpd/',
             video_id, query={'steamid': f'{video_id}'})
 
-        formats, subs = self._extract_m3u8_formats_and_subtitles(
-            json_data['hls_url'], video_id)
+        formats, subs = self._extract_m3u8_formats_and_subtitles(json_data['hls_url'], video_id)
 
         ''' # We cannot download live dash atm
         mpd_formats, mpd_subs = self._extract_mpd_formats_and_subtitles(json_data['url'], video_id)

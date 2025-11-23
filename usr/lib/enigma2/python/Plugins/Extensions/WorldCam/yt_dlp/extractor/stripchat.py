@@ -27,8 +27,7 @@ class StripchatIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(
-            url, video_id, headers=self.geo_verification_headers())
+        webpage = self._download_webpage(url, video_id, headers=self.geo_verification_headers())
         data = self._search_json(
             r'<script\b[^>]*>\s*window\.__PRELOADED_STATE__\s*=',
             webpage, 'data', video_id, transform_source=lowercase_escape)
@@ -42,19 +41,16 @@ class StripchatIE(InfoExtractor):
 
         formats = []
         # HLS hosts are currently found in .configV3.static.features.hlsFallback.fallbackDomains[]
-        # The rest of the path is for backwards compatibility and to guard
-        # against A/B testing
-        for host in traverse_obj(data, ((('config', 'data'), ('configV3', 'static')), ((
-                ('features', 'featuresV2'), 'hlsFallback', 'fallbackDomains', ...), 'hlsStreamHost'))):
+        # The rest of the path is for backwards compatibility and to guard against A/B testing
+        for host in traverse_obj(data, ((('config', 'data'), ('configV3', 'static')), (
+                (('features', 'featuresV2'), 'hlsFallback', 'fallbackDomains', ...), 'hlsStreamHost'))):
             formats = self._extract_m3u8_formats(
                 f'https://edge-hls.{host}/hls/{model_id}/master/{model_id}_auto.m3u8',
                 video_id, ext='mp4', m3u8_id='hls', fatal=False, live=True)
             if formats:
                 break
         if not formats:
-            self.raise_no_formats(
-                'Unable to extract stream host',
-                video_id=video_id)
+            self.raise_no_formats('Unable to extract stream host', video_id=video_id)
 
         return {
             'id': video_id,
@@ -62,7 +58,6 @@ class StripchatIE(InfoExtractor):
             'description': self._og_search_description(webpage),
             'is_live': True,
             'formats': formats,
-            # Stripchat declares the RTA meta-tag, but in an non-standard
-            # format so _rta_search() can't be used
+            # Stripchat declares the RTA meta-tag, but in an non-standard format so _rta_search() can't be used
             'age_limit': 18,
         }

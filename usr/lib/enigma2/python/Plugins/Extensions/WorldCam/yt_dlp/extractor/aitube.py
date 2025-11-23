@@ -37,8 +37,7 @@ class AitubeKZVideoIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        nextjs_data = self._search_nextjs_data(
-            webpage, video_id)['props']['pageProps']['videoInfo']
+        nextjs_data = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['videoInfo']
         json_ld_data = self._search_json_ld(webpage, video_id)
 
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(

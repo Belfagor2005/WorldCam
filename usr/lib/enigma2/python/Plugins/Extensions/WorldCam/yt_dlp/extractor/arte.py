@@ -136,9 +136,7 @@ class ArteTVIE(ArteTVBaseIE):
                 suffix = ('acc' if url.endswith('-MAL.m3u8')
                           else 'forced' if '_VO' not in url
                           else None)
-                updated_subs.setdefault(
-                    join_nonempty(
-                        lang, suffix), []).append(fmt)
+                updated_subs.setdefault(join_nonempty(lang, suffix), []).append(fmt)
         return updated_subs
 
     def _real_extract(self, url):
@@ -151,27 +149,21 @@ class ArteTVIE(ArteTVBaseIE):
             'x-validated-age': '18',
         })
 
-        geoblocking = traverse_obj(
-            config, ('data', 'attributes', 'restriction', 'geoblocking')) or {}
+        geoblocking = traverse_obj(config, ('data', 'attributes', 'restriction', 'geoblocking')) or {}
         if geoblocking.get('restrictedArea'):
-            raise GeoRestrictedError(
-                f'Video restricted to {
-                    geoblocking["code"]!r}', countries=self._COUNTRIES_MAP.get(
-                    geoblocking['code'], ('DE', 'FR')))
+            raise GeoRestrictedError(f'Video restricted to {geoblocking["code"]!r}',
+                                     countries=self._COUNTRIES_MAP.get(geoblocking['code'], ('DE', 'FR')))
 
         if not traverse_obj(config, ('data', 'attributes', 'rights')):
             # Eg: https://www.arte.tv/de/videos/097407-215-A/28-minuten
-            # Eg:
-            # https://www.arte.tv/es/videos/104351-002-A/serviteur-du-peuple-1-23
+            # Eg: https://www.arte.tv/es/videos/104351-002-A/serviteur-du-peuple-1-23
             raise ExtractorError(
-                'Video is not available in this language edition of Arte or broadcast rights expired',
-                expected=True)
+                'Video is not available in this language edition of Arte or broadcast rights expired', expected=True)
 
         formats, subtitles = [], {}
         secondary_formats = []
         for stream in config['data']['attributes']['streams']:
-            # official player contains code like
-            # `e.get("versions")[0].eStat.ml5`
+            # official player contains code like `e.get("versions")[0].eStat.ml5`
             stream_version = stream['versions'][0]
             stream_version_code = stream_version['eStat']['ml5']
 
@@ -179,28 +171,15 @@ class ArteTVIE(ArteTVBaseIE):
             m = self._VERSION_CODE_RE.match(stream_version_code)
             if m:
                 lang_pref = int(''.join('01'[x] for x in (
-                    m.group('vlang') == language_code,
-                    # we prefer voice in the requested language
-                    not m.group('audio_desc'),
-                    # and not the audio description version
-                    # but if voice is not in the requested language, at least
-                    # choose the original voice
-                    bool(m.group('original_voice')),
-                    # if subtitles are present, we prefer them in the requested
-                    # language
-                    m.group('sub_lang') == language_code,
-                    # but we prefer no subtitles otherwise
-                    not m.group('has_sub'),
-                    # and we prefer not the hard-of-hearing subtitles if there
-                    # are subtitles
-                    not m.group('sdh_sub'),
+                    m.group('vlang') == language_code,      # we prefer voice in the requested language
+                    not m.group('audio_desc'),              # and not the audio description version
+                    bool(m.group('original_voice')),        # but if voice is not in the requested language, at least choose the original voice
+                    m.group('sub_lang') == language_code,   # if subtitles are present, we prefer them in the requested language
+                    not m.group('has_sub'),                 # but we prefer no subtitles otherwise
+                    not m.group('sdh_sub'),                 # and we prefer not the hard-of-hearing subtitles if there are subtitles
                 )))
 
-            short_label = traverse_obj(
-                stream_version,
-                'shortLabel',
-                expected_type=str,
-                default='?')
+            short_label = traverse_obj(stream_version, 'shortLabel', expected_type=str, default='?')
             if 'HLS' in stream['protocol']:
                 fmts, subs = self._extract_m3u8_formats_and_subtitles(
                     stream['url'], video_id=video_id, ext='mp4', m3u8_id=stream_version_code, fatal=False)
@@ -226,9 +205,7 @@ class ArteTVIE(ArteTVBaseIE):
                 })
 
             else:
-                self.report_warning(
-                    f'Skipping stream with unknown protocol {
-                        stream["protocol"]}')
+                self.report_warning(f'Skipping stream with unknown protocol {stream["protocol"]}')
 
         formats.extend(secondary_formats)
         self._remove_duplicate_formats(formats)
@@ -261,8 +238,7 @@ class ArteTVIE(ArteTVBaseIE):
 
 class ArteTVEmbedIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?arte\.tv/player/v\d+/index\.php\?.*?\bjson_url=.+'
-    _EMBED_REGEX = [
-        r'<(?:iframe|script)[^>]+src=(["\'])(?P<url>(?:https?:)?//(?:www\.)?arte\.tv/player/v\d+/index\.php\?.*?\bjson_url=.+?)\1']
+    _EMBED_REGEX = [r'<(?:iframe|script)[^>]+src=(["\'])(?P<url>(?:https?:)?//(?:www\.)?arte\.tv/player/v\d+/index\.php\?.*?\bjson_url=.+?)\1']
     _TESTS = [{
         'url': 'https://www.arte.tv/player/v5/index.php?json_url=https%3A%2F%2Fapi.arte.tv%2Fapi%2Fplayer%2Fv2%2Fconfig%2Fde%2F100605-013-A&lang=de&autoplay=true&mute=0100605-013-A',
         'info_dict': {
@@ -311,8 +287,7 @@ class ArteTVEmbedIE(InfoExtractor):
 
 
 class ArteTVPlaylistIE(ArteTVBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{
-        ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>RC-\d{{6}})'
+    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>RC-\d{{6}})'
     _TESTS = [{
         'url': 'https://www.arte.tv/en/videos/RC-016954/earn-a-living/',
         'only_matching': True,
@@ -342,15 +317,13 @@ class ArteTVPlaylistIE(ArteTVBaseIE):
             'duration': int_or_none(traverse_obj(video, ('duration', 'seconds'))),
         } for video in traverse_obj(playlist, ('items', lambda _, v: v['config']['url']))]
 
-        return self.playlist_result(
-            entries, playlist_id, traverse_obj(
-                playlist, ('metadata', 'title')), traverse_obj(
-                playlist, ('metadata', 'description')))
+        return self.playlist_result(entries, playlist_id,
+                                    traverse_obj(playlist, ('metadata', 'title')),
+                                    traverse_obj(playlist, ('metadata', 'description')))
 
 
 class ArteTVCategoryIE(ArteTVBaseIE):
-    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{
-        ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>[\w-]+(?:/[\w-]+)*)/?\s*$'
+    _VALID_URL = rf'https?://(?:www\.)?arte\.tv/(?P<lang>{ArteTVBaseIE._ARTE_LANGUAGES})/videos/(?P<id>[\w-]+(?:/[\w-]+)*)/?\s*$'
     _TESTS = [{
         'url': 'https://www.arte.tv/en/videos/politics-and-society/',
         'info_dict': {
@@ -381,15 +354,7 @@ class ArteTVCategoryIE(ArteTVBaseIE):
             if any(ie.suitable(video) for ie in (ArteTVIE, ArteTVPlaylistIE)):
                 items.append(video)
 
-        title = strip_or_none(
-            self._generic_title(
-                '', webpage, default='').rsplit(
-                '|', 1)[0]) or None
+        title = strip_or_none(self._generic_title('', webpage, default='').rsplit('|', 1)[0]) or None
 
-        return self.playlist_from_matches(
-            items,
-            playlist_id=playlist_id,
-            playlist_title=title,
-            description=self._og_search_description(
-                webpage,
-                default=None))
+        return self.playlist_from_matches(items, playlist_id=playlist_id, playlist_title=title,
+                                          description=self._og_search_description(webpage, default=None))

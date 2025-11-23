@@ -28,18 +28,14 @@ class ZetlandDKArticleIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        display_id, uploader_id = self._match_valid_url(
-            url).group('id', 'uploader_id')
+        display_id, uploader_id = self._match_valid_url(url).group('id', 'uploader_id')
         webpage = self._download_webpage(url, display_id)
 
-        next_js_data = self._search_nextjs_data(webpage, display_id)[
-            'props']['pageProps']
-        story_data = traverse_obj(
-            next_js_data, ('initialState', 'consume', 'story', 'story'))
+        next_js_data = self._search_nextjs_data(webpage, display_id)['props']['pageProps']
+        story_data = traverse_obj(next_js_data, ('initialState', 'consume', 'story', 'story'))
 
         formats = []
-        for audio_url in traverse_obj(
-                story_data, ('story_content', 'meta', 'audioFiles', ..., {url_or_none})):
+        for audio_url in traverse_obj(story_data, ('story_content', 'meta', 'audioFiles', ..., {url_or_none})):
             formats.append({
                 'url': audio_url,
                 'vcodec': 'none',

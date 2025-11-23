@@ -15,10 +15,8 @@ class AudiusBaseIE(InfoExtractor):
             if response_data is not None:
                 return response_data
             if len(response) == 1 and 'message' in response:
-                raise ExtractorError(
-                    'API error: {}'.format(
-                        response['message']),
-                    expected=True)
+                raise ExtractorError('API error: {}'.format(response['message']),
+                                     expected=True)
         raise ExtractorError('Unexpected API response')
 
     def _select_api_base(self):
@@ -50,13 +48,9 @@ class AudiusBaseIE(InfoExtractor):
             return url.replace(title, fixed_title)
         return url
 
-    def _api_request(
-            self,
-            path,
-            item_id=None,
-            note='Downloading JSON metadata',
-            errnote='Unable to download JSON metadata',
-            expected_status=None):
+    def _api_request(self, path, item_id=None, note='Downloading JSON metadata',
+                     errnote='Unable to download JSON metadata',
+                     expected_status=None):
         if self._API_BASE is None:
             self._select_api_base()
         try:
@@ -66,9 +60,8 @@ class AudiusBaseIE(InfoExtractor):
         except ExtractorError as exc:
             # some of Audius API hosts may not work as expected and return HTML
             if 'Failed to parse JSON' in str(exc):
-                raise ExtractorError(
-                    'An error occurred while receiving data. Try again',
-                    expected=True)
+                raise ExtractorError('An error occurred while receiving data. Try again',
+                                     expected=True)
             raise exc
         return self._get_response_data(response)
 
@@ -82,8 +75,7 @@ class AudiusIE(AudiusBaseIE):
     IE_DESC = 'Audius.co'
     _TESTS = [
         {
-            # URL from Chrome address bar which replace backslash to forward
-            # slash
+            # URL from Chrome address bar which replace backslash to forward slash
             'url': 'https://audius.co/test_acc/t%D0%B5%D0%B5%D0%B5est-1.%5E_%7B%7D/%22%3C%3E.%E2%84%96~%60-198631',
             'md5': '92c35d3e754d5a0f17eef396b0d33582',
             'info_dict': {
@@ -227,9 +219,7 @@ class AudiusPlaylistIE(AudiusBaseIE):
         url = self._prepare_url(url, title)
         playlist_response = self._resolve_url(url, title)
 
-        if not isinstance(
-                playlist_response,
-                list) or len(playlist_response) != 1:
+        if not isinstance(playlist_response, list) or len(playlist_response) != 1:
             raise ExtractorError('Unexpected API response')
 
         playlist_data = playlist_response[0]
@@ -253,8 +243,7 @@ class AudiusPlaylistIE(AudiusBaseIE):
                                     playlist_data.get('description'))
 
 
-class AudiusProfileIE(
-        AudiusPlaylistIE):  # XXX: Do not subclass from concrete IE
+class AudiusProfileIE(AudiusPlaylistIE):  # XXX: Do not subclass from concrete IE
     IE_NAME = 'audius:artist'
     IE_DESC = 'Audius.co profile/artist pages'
     _VALID_URL = r'https?://(?:www)?audius\.co/(?P<id>[^\/]+)/?(?:[?#]|$)'
@@ -272,17 +261,11 @@ class AudiusProfileIE(
         self._select_api_base()
         profile_id = self._match_id(url)
         try:
-            _profile_data = self._api_request(
-                '/full/users/handle/' + profile_id, profile_id)
+            _profile_data = self._api_request('/full/users/handle/' + profile_id, profile_id)
         except ExtractorError as e:
             raise ExtractorError('Could not download profile info; ' + str(e))
         profile_audius_id = _profile_data[0]['id']
         profile_bio = _profile_data[0].get('bio')
 
-        api_call = self._api_request(
-            f'/full/users/handle/{profile_id}/tracks', profile_id)
-        return self.playlist_result(
-            self._build_playlist(api_call),
-            profile_audius_id,
-            profile_id,
-            profile_bio)
+        api_call = self._api_request(f'/full/users/handle/{profile_id}/tracks', profile_id)
+        return self.playlist_result(self._build_playlist(api_call), profile_audius_id, profile_id, profile_bio)

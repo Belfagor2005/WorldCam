@@ -1,7 +1,25 @@
 #!/bin/sh
+# WorldCam Post-Installation Script
 
-if [ -d /usr/lib/enigma2/python/Plugins/Extensions/WorldCam ]; then
-  rm -rf /usr/lib/enigma2/python/Plugins/Extensions/WorldCam > /dev/null 2>&1
+LOG_FILE="/tmp/worldcam_install.log"
+
+echo "$(date) - WorldCam post-installation started" >> "$LOG_FILE"
+
+# Set correct permissions
+if [ -d "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam" ]; then
+    chmod -R 755 "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam"
+    echo "Permissions set" >> "$LOG_FILE"
 fi
 
+# Restore backup config if exists
+if [ -f "/tmp/worldcam.conf.backup" ]; then
+    cp "/tmp/worldcam.conf.backup" "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/worldcam.conf" 2>/dev/null && \
+    echo "Configuration restored from backup" >> "$LOG_FILE"
+    rm -f "/tmp/worldcam.conf.backup"
+fi
+
+echo "WorldCam plugin installed successfully" >> "$LOG_FILE"
+echo "Restart Enigma2 to complete installation" >> "$LOG_FILE"
+
+echo "$(date) - Post-installation completed" >> "$LOG_FILE"
 exit 0

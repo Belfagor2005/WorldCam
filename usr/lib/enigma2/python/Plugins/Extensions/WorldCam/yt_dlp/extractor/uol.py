@@ -14,47 +14,50 @@ from ..utils import (
 class UOLIE(InfoExtractor):
     IE_NAME = 'uol.com.br'
     _VALID_URL = r'https?://(?:.+?\.)?uol\.com\.br/.*?(?:(?:mediaId|v)=|view/(?:[a-z0-9]+/)?|video(?:=|/(?:\d{4}/\d{2}/\d{2}/)?))(?P<id>\d+|[\w-]+-[A-Z0-9]+)'
-    _TESTS = [{'url': 'http://player.mais.uol.com.br/player_video_v3.swf?mediaId=15951931',
-               'md5': '4f1e26683979715ff64e4e29099cf020',
-               'info_dict': {'id': '15951931',
-                             'ext': 'mp4',
-                             'title': 'Miss simpatia é encontrada morta',
-                             'description': 'md5:3f8c11a0c0556d66daf7e5b45ef823b2',
-                             'timestamp': 1470421860,
-                             'upload_date': '20160805',
-                             },
-               },
-              {'url': 'http://tvuol.uol.com.br/video/incendio-destroi-uma-das-maiores-casas-noturnas-de-londres-04024E9A3268D4C95326',
-               'md5': '2850a0e8dfa0a7307e04a96c5bdc5bc2',
-               'info_dict': {'id': '15954259',
-                             'ext': 'mp4',
-                             'title': 'Incêndio destrói uma das maiores casas noturnas de Londres',
-                             'description': 'Em Londres, um incêndio destruiu uma das maiores boates da cidade. Não há informações sobre vítimas.',
-                             'timestamp': 1470674520,
-                             'upload_date': '20160808',
-                             },
-               },
-              {'url': 'http://mais.uol.com.br/static/uolplayer/index.html?mediaId=15951931',
-               'only_matching': True,
-               },
-              {'url': 'http://mais.uol.com.br/view/15954259',
-               'only_matching': True,
-               },
-              {'url': 'http://noticias.band.uol.com.br/brasilurgente/video/2016/08/05/15951931/miss-simpatia-e-encontrada-morta.html',
-               'only_matching': True,
-               },
-              {'url': 'http://videos.band.uol.com.br/programa.asp?e=noticias&pr=brasil-urgente&v=15951931&t=Policia-desmonte-base-do-PCC-na-Cracolandia',
-               'only_matching': True,
-               },
-              {'url': 'http://mais.uol.com.br/view/cphaa0gl2x8r/incendio-destroi-uma-das-maiores-casas-noturnas-de-londres-04024E9A3268D4C95326',
-               'only_matching': True,
-               },
-              {'url': 'http://noticias.uol.com.br//videos/assistir.htm?video=rafaela-silva-inspira-criancas-no-judo-04024D983968D4C95326',
-               'only_matching': True,
-               },
-              {'url': 'http://mais.uol.com.br/view/e0qbgxid79uv/15275470',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://player.mais.uol.com.br/player_video_v3.swf?mediaId=15951931',
+        'md5': '4f1e26683979715ff64e4e29099cf020',
+        'info_dict': {
+            'id': '15951931',
+            'ext': 'mp4',
+            'title': 'Miss simpatia é encontrada morta',
+            'description': 'md5:3f8c11a0c0556d66daf7e5b45ef823b2',
+            'timestamp': 1470421860,
+            'upload_date': '20160805',
+        },
+    }, {
+        'url': 'http://tvuol.uol.com.br/video/incendio-destroi-uma-das-maiores-casas-noturnas-de-londres-04024E9A3268D4C95326',
+        'md5': '2850a0e8dfa0a7307e04a96c5bdc5bc2',
+        'info_dict': {
+            'id': '15954259',
+            'ext': 'mp4',
+            'title': 'Incêndio destrói uma das maiores casas noturnas de Londres',
+            'description': 'Em Londres, um incêndio destruiu uma das maiores boates da cidade. Não há informações sobre vítimas.',
+            'timestamp': 1470674520,
+            'upload_date': '20160808',
+        },
+    }, {
+        'url': 'http://mais.uol.com.br/static/uolplayer/index.html?mediaId=15951931',
+        'only_matching': True,
+    }, {
+        'url': 'http://mais.uol.com.br/view/15954259',
+        'only_matching': True,
+    }, {
+        'url': 'http://noticias.band.uol.com.br/brasilurgente/video/2016/08/05/15951931/miss-simpatia-e-encontrada-morta.html',
+        'only_matching': True,
+    }, {
+        'url': 'http://videos.band.uol.com.br/programa.asp?e=noticias&pr=brasil-urgente&v=15951931&t=Policia-desmonte-base-do-PCC-na-Cracolandia',
+        'only_matching': True,
+    }, {
+        'url': 'http://mais.uol.com.br/view/cphaa0gl2x8r/incendio-destroi-uma-das-maiores-casas-noturnas-de-londres-04024E9A3268D4C95326',
+        'only_matching': True,
+    }, {
+        'url': 'http://noticias.uol.com.br//videos/assistir.htm?video=rafaela-silva-inspira-criancas-no-judo-04024D983968D4C95326',
+        'only_matching': True,
+    }, {
+        'url': 'http://mais.uol.com.br/view/e0qbgxid79uv/15275470',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)

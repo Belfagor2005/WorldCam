@@ -54,15 +54,12 @@ class ImgGamingBaseIE(InfoExtractor):
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
                 raise ExtractorError(
-                    self._parse_json(
-                        e.cause.response.read().decode(),
-                        media_id)['messages'][0],
+                    self._parse_json(e.cause.response.read().decode(), media_id)['messages'][0],
                     expected=True)
             raise
 
     def _real_extract(self, url):
-        domain, media_type, media_id, playlist_id = self._match_valid_url(
-            url).groups()
+        domain, media_type, media_id, playlist_id = self._match_valid_url(url).groups()
 
         if playlist_id:
             if self._yes_playlist(playlist_id, media_id):
@@ -71,8 +68,7 @@ class ImgGamingBaseIE(InfoExtractor):
         if media_type == 'playlist':
             playlist = self._call_api('vod/playlist/', media_id)
             entries = []
-            for video in try_get(playlist,
-                                 lambda x: x['videos']['vods']) or []:
+            for video in try_get(playlist, lambda x: x['videos']['vods']) or []:
                 video_id = str_or_none(video.get('id'))
                 if not video_id:
                     continue
@@ -93,11 +89,7 @@ class ImgGamingBaseIE(InfoExtractor):
 
         formats = []
         for proto in ('hls', 'dash'):
-            media_url = video_data.get(
-                proto +
-                'Url') or try_get(
-                video_data,
-                lambda x: x[proto]['url'])
+            media_url = video_data.get(proto + 'Url') or try_get(video_data, lambda x: x[proto]['url'])
             if not media_url:
                 continue
             if proto == 'hls':
@@ -105,10 +97,7 @@ class ImgGamingBaseIE(InfoExtractor):
                     media_url, media_id, 'mp4', live=is_live,
                     m3u8_id='hls', fatal=False, headers=self._MANIFEST_HEADERS)
                 for f in m3u8_formats:
-                    f.setdefault(
-                        'http_headers',
-                        {}).update(
-                        self._MANIFEST_HEADERS)
+                    f.setdefault('http_headers', {}).update(self._MANIFEST_HEADERS)
                     formats.append(f)
             else:
                 formats.extend(self._extract_mpd_formats(

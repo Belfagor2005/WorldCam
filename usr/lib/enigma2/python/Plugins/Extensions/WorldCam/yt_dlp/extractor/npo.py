@@ -255,8 +255,7 @@ class NPOIE(InfoExtractor):
             if not stream_url or stream_url in format_urls:
                 continue
             format_urls.add(stream_url)
-            if stream.get('protection') is not None or stream.get(
-                    'keySystemOptions') is not None:
+            if stream.get('protection') is not None or stream.get('keySystemOptions') is not None:
                 drm = True
                 continue
             stream_type = stream.get('type')
@@ -385,8 +384,7 @@ class NPORadioIE(InfoExtractor):
 
     @classmethod
     def suitable(cls, url):
-        return False if NPORadioFragmentIE.suitable(
-            url) else super().suitable(url)
+        return False if NPORadioFragmentIE.suitable(url) else super().suitable(url)
 
     @staticmethod
     def _html_get_attribute_regex(attribute):
@@ -401,10 +399,7 @@ class NPORadioIE(InfoExtractor):
             self._html_get_attribute_regex('data-channel'), webpage, 'title')
 
         stream = self._parse_json(
-            self._html_search_regex(
-                self._html_get_attribute_regex('data-streams'),
-                webpage,
-                'data-streams'),
+            self._html_search_regex(self._html_get_attribute_regex('data-streams'), webpage, 'data-streams'),
             video_id)
 
         codec = stream.get('codec')
@@ -452,16 +447,12 @@ class NPORadioFragmentIE(InfoExtractor):
         }
 
 
-class NPODataMidEmbedIE(
-        InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
+class NPODataMidEmbedIE(InfoExtractor):  # XXX: Conventionally, base classes should end with BaseIE/InfoExtractor
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
         video_id = self._search_regex(
-            r'data-mid=(["\'])(?P<id>(?:(?!\1).)+)\1',
-            webpage,
-            'video_id',
-            group='id')
+            r'data-mid=(["\'])(?P<id>(?:(?!\1).)+)\1', webpage, 'video_id', group='id')
         return {
             '_type': 'url_transparent',
             'ie_key': 'NPO',
@@ -531,9 +522,8 @@ class NPOPlaylistBaseIE(NPOIE):  # XXX: Do not subclass from concrete IE
 class VPROIE(NPOPlaylistBaseIE):
     IE_NAME = 'vpro'
     _VALID_URL = r'https?://(?:www\.)?(?:(?:tegenlicht\.)?vpro|2doc)\.nl/(?:[^/]+/)*(?P<id>[^/]+)\.html'
-    _PLAYLIST_TITLE_RE = (
-        r'<h1[^>]+class=["\'].*?\bmedia-platform-title\b.*?["\'][^>]*>([^<]+)',
-        r'<h5[^>]+class=["\'].*?\bmedia-platform-subtitle\b.*?["\'][^>]*>([^<]+)')
+    _PLAYLIST_TITLE_RE = (r'<h1[^>]+class=["\'].*?\bmedia-platform-title\b.*?["\'][^>]*>([^<]+)',
+                          r'<h5[^>]+class=["\'].*?\bmedia-platform-subtitle\b.*?["\'][^>]*>([^<]+)')
     _PLAYLIST_ENTRY_RE = r'data-media-id="([^"]+)"'
 
     _TESTS = [

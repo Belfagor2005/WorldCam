@@ -40,15 +40,7 @@ class MTVServicesBaseIE(InfoExtractor):
             'countryCode': ('countryCode', {str}),
         })
 
-    def _call_auth_api(
-            self,
-            path,
-            config,
-            display_id=None,
-            note=None,
-            data=None,
-            headers=None,
-            query=None):
+    def _call_auth_api(self, path, config, display_id=None, note=None, data=None, headers=None, query=None):
         headers = {
             'Accept': 'application/json',
             'Client-Description': 'deviceName=Chrome Windows;deviceType=desktop;system=Windows NT 10.0',
@@ -65,28 +57,18 @@ class MTVServicesBaseIE(InfoExtractor):
             note=note or 'Calling authentication API', data=data,
             headers=headers, query={**self._get_auth_suite_data(config), **(query or {})})
 
-    def _get_fresh_access_token(
-            self,
-            config,
-            display_id=None,
-            force_refresh=False):
+    def _get_fresh_access_token(self, config, display_id=None, force_refresh=False):
         resource_id = config['resourceId']
-        # resource_id should already be in _token_cache since _get_media_token
-        # is the caller
+        # resource_id should already be in _token_cache since _get_media_token is the caller
         tokens = self._token_cache[resource_id]
 
         access_token = tokens.get(self._ACCESS_TOKEN_KEY)
-        if not force_refresh and access_token and not self._jwt_is_expired(
-                access_token):
+        if not force_refresh and access_token and not self._jwt_is_expired(access_token):
             return access_token
 
         if self._REFRESH_TOKEN_KEY not in tokens:
             response = self._call_auth_api(
-                'accessToken',
-                config,
-                display_id,
-                'Retrieving auth tokens',
-                data=b'')
+                'accessToken', config, display_id, 'Retrieving auth tokens', data=b'')
         else:
             response = self._call_auth_api(
                 'accessToken/refresh', config, display_id, 'Refreshing auth tokens',
@@ -104,8 +86,7 @@ class MTVServicesBaseIE(InfoExtractor):
         if resource_id in self._token_cache:
             tokens = self._token_cache[resource_id]
         else:
-            tokens = self._token_cache[resource_id] = self.cache.load(
-                self._CACHE_SECTION, resource_id) or {}
+            tokens = self._token_cache[resource_id] = self.cache.load(self._CACHE_SECTION, resource_id) or {}
 
         media_token = tokens.get(self._MEDIA_TOKEN_KEY)
         if media_token and not self._jwt_is_expired(media_token):
@@ -113,37 +94,32 @@ class MTVServicesBaseIE(InfoExtractor):
 
         access_token = self._get_fresh_access_token(config, display_id)
         if not jwt_decode_hs256(access_token).get('accessMethods'):
-            # MTVServices uses a custom AdobePass oauth flow which is
-            # incompatible with AdobePassIE
+            # MTVServices uses a custom AdobePass oauth flow which is incompatible with AdobePassIE
             mso_id = self.get_param('ap_mso')
             if not mso_id:
                 raise ExtractorError(
                     'This video is only available for users of participating TV providers. '
                     'Use --ap-mso to specify Adobe Pass Multiple-system operator Identifier and pass '
-                    'cookies from a browser session where you are signed-in to your provider.',
-                    expected=True)
+                    'cookies from a browser session where you are signed-in to your provider.', expected=True)
 
             auth_suite_data = json.dumps(
-                self._get_auth_suite_data(config), separators=(
-                    ',', ':')).encode()
-            callback_url = update_url_query(
-                config['callbackURL'], {
-                    'authSuiteData': urllib.parse.quote(
-                        base64.b64encode(auth_suite_data).decode()), 'mvpdCode': mso_id, })
+                self._get_auth_suite_data(config), separators=(',', ':')).encode()
+            callback_url = update_url_query(config['callbackURL'], {
+                'authSuiteData': urllib.parse.quote(base64.b64encode(auth_suite_data).decode()),
+                'mvpdCode': mso_id,
+            })
             auth_url = self._call_auth_api(
                 f'mvpd/{mso_id}/login', config, display_id,
                 'Retrieving provider authentication URL',
                 query={'callbackUrl': callback_url},
                 headers={'Authorization': f'Bearer {access_token}'})['authenticationUrl']
-            res = self._download_webpage_handle(
-                auth_url, display_id, 'Downloading provider auth page')
+            res = self._download_webpage_handle(auth_url, display_id, 'Downloading provider auth page')
             # XXX: The following "provider-specific code" likely only works if mso_id == Comcast_SSO
             # BEGIN provider-specific code
             redirect_url = self._search_json(
                 r'initInterstitialRedirect\(', res[0], 'redirect JSON',
                 display_id, transform_source=js_to_json)['continue']
-            urlh = self._request_webpage(
-                redirect_url, display_id, 'Requesting provider redirect page')
+            urlh = self._request_webpage(redirect_url, display_id, 'Requesting provider redirect page')
             authorization_code = parse_qs(urlh.url)['authorizationCode'][-1]
             # END provider-specific code
             self._call_auth_api(
@@ -151,8 +127,7 @@ class MTVServicesBaseIE(InfoExtractor):
                 'Submitting authorization code to MTVNServices',
                 query={'authorizationCode': authorization_code}, data=b'',
                 headers={'Authorization': f'Bearer {access_token}'})
-            access_token = self._get_fresh_access_token(
-                config, display_id, force_refresh=True)
+            access_token = self._get_fresh_access_token(config, display_id, force_refresh=True)
 
         tokens[self._MEDIA_TOKEN_KEY] = self._call_auth_api(
             'mediaToken', config, display_id, 'Fetching media token', data={
@@ -171,10 +146,7 @@ class MTVServicesBaseIE(InfoExtractor):
                 update_url(url, query=None), display_id,
                 query={'json': 'true'})
         except ExtractorError as e:
-            if isinstance(
-                    e.cause,
-                    HTTPError) and e.cause.status == 404 and not self.suitable(
-                    e.cause.response.url):
+            if isinstance(e.cause, HTTPError) and e.cause.status == 404 and not self.suitable(e.cause.response.url):
                 self.raise_geo_restricted(countries=self._GEO_COUNTRIES)
             raise
 
@@ -193,41 +165,24 @@ class MTVServicesBaseIE(InfoExtractor):
 
         mgid = video_detail['mgid']
         video_id = mgid.rpartition(':')[2]
-        service_url = traverse_obj(video_detail, ('videoServiceUrl', {
-                                   url_or_none}, {update_url(query=None)}))
+        service_url = traverse_obj(video_detail, ('videoServiceUrl', {url_or_none}, {update_url(query=None)}))
         if not service_url:
-            raise ExtractorError(
-                'This content is no longer available',
-                expected=True)
+            raise ExtractorError('This content is no longer available', expected=True)
 
         headers = {}
         if video_detail.get('authRequired'):
             # The vast majority of provider-locked content has been moved to Paramount+
-            # BetIE is the only extractor that is currently known to reach this
-            # code path
-            video_config = traverse_obj(flex_wrapper,
-                                        ('children',
-                                         lambda _,
-                                         v: v['type'] == 'AuthSuiteWrapper',
-                                            'props',
-                                            'videoConfig',
-                                            {dict},
-                                            any,
-                                            {require('video config')}))
-            config = traverse_obj(
-                data, ('props', 'authSuiteConfig', {dict}, {
-                    require('auth suite config')}))
-            headers['X-VIA-TVE-MEDIATOKEN'] = self._get_media_token(
-                video_config, config, display_id)
+            # BetIE is the only extractor that is currently known to reach this code path
+            video_config = traverse_obj(flex_wrapper, (
+                'children', lambda _, v: v['type'] == 'AuthSuiteWrapper',
+                'props', 'videoConfig', {dict}, any, {require('video config')}))
+            config = traverse_obj(data, (
+                'props', 'authSuiteConfig', {dict}, {require('auth suite config')}))
+            headers['X-VIA-TVE-MEDIATOKEN'] = self._get_media_token(video_config, config, display_id)
 
         stream_info = self._download_json(
-            service_url,
-            video_id,
-            'Downloading API JSON',
-            'Unable to download API JSON',
-            query={
-                'clientPlatform': 'desktop'},
-            headers=headers)['stitchedstream']
+            service_url, video_id, 'Downloading API JSON', 'Unable to download API JSON',
+            query={'clientPlatform': 'desktop'}, headers=headers)['stitchedstream']
 
         manifest_type = stream_info['manifesttype']
         if manifest_type == 'hls':
@@ -237,8 +192,7 @@ class MTVServicesBaseIE(InfoExtractor):
             formats, subtitles = self._extract_mpd_formats_and_subtitles(
                 stream_info['source'], video_id, mpd_id=manifest_type)
         else:
-            self.raise_no_formats(
-                f'Unsupported manifest type "{manifest_type}"')
+            self.raise_no_formats(f'Unsupported manifest type "{manifest_type}"')
             formats, subtitles = [], {}
 
         return {

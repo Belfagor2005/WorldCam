@@ -1,6 +1,4 @@
 from __future__ import annotations
-from curl_cffi.const import CurlECode, CurlOpt
-import curl_cffi.requests
 
 import io
 import itertools
@@ -33,20 +31,14 @@ if curl_cffi is None:
     raise ImportError('curl_cffi is not installed')
 
 
-curl_cffi_version = tuple(
-    map(int, re.split(r'[^\d]+', curl_cffi.__version__)[:3]))
+curl_cffi_version = tuple(map(int, re.split(r'[^\d]+', curl_cffi.__version__)[:3]))
 
-if curl_cffi_version != (
-        0,
-        5,
-        10) and not (
-            0,
-            10) <= curl_cffi_version < (
-                0,
-        14):
+if curl_cffi_version != (0, 5, 10) and not (0, 10) <= curl_cffi_version < (0, 14):
     curl_cffi._yt_dlp__version = f'{curl_cffi.__version__} (unsupported)'
-    raise ImportError(
-        'Only curl_cffi versions 0.5.10, 0.10.x, 0.11.x, 0.12.x, 0.13.x are supported')
+    raise ImportError('Only curl_cffi versions 0.5.10, 0.10.x, 0.11.x, 0.12.x, 0.13.x are supported')
+
+import curl_cffi.requests
+from curl_cffi.const import CurlECode, CurlOpt
 
 
 class CurlCFFIResponseReader(io.IOBase):
@@ -62,9 +54,7 @@ class CurlCFFIResponseReader(io.IOBase):
     def read(self, size=None):
         exception_raised = True
         try:
-            while self._iterator and (
-                size is None or len(
-                    self._buffer) < size):
+            while self._iterator and (size is None or len(self._buffer) < size):
                 chunk = next(self._iterator, None)
                 if chunk is None:
                     self._iterator = None
@@ -78,8 +68,7 @@ class CurlCFFIResponseReader(io.IOBase):
             self._buffer = self._buffer[size:]
 
             # "free" the curl instance if the response is fully read.
-            # curl_cffi doesn't do this automatically and only allows one open
-            # response per thread
+            # curl_cffi doesn't do this automatically and only allows one open response per thread
             if not self._iterator and not self._buffer:
                 self.close()
             exception_raised = False
@@ -113,12 +102,10 @@ class CurlCFFIResponseAdapter(Response):
             return res
         except curl_cffi.requests.errors.RequestsError as e:
             if e.code == CurlECode.PARTIAL_FILE:
-                content_length = e.response and int_or_none(
-                    e.response.headers.get('Content-Length'))
+                content_length = e.response and int_or_none(e.response.headers.get('Content-Length'))
                 raise IncompleteRead(
                     partial=self.fp.bytes_read,
-                    expected=content_length -
-                    self.fp.bytes_read if content_length is not None else None,
+                    expected=content_length - self.fp.bytes_read if content_length is not None else None,
                     cause=e) from e
             raise TransportError(cause=e) from e
 
@@ -178,8 +165,7 @@ BROWSER_TARGETS: dict[tuple[int, ...], dict[str, ImpersonateTarget]] = {
 }
 
 # Needed for curl_cffi < 0.11
-# See:
-# https://github.com/lexiforest/curl_cffi/commit/d2f15c7a31506a08d217fcc04ae7570c39f5f5bb
+# See: https://github.com/lexiforest/curl_cffi/commit/d2f15c7a31506a08d217fcc04ae7570c39f5f5bb
 _TARGETS_COMPAT_LOOKUP = {
     'safari153': 'safari15_3',
     'safari155': 'safari15_5',
@@ -195,13 +181,7 @@ class CurlCFFIRH(ImpersonateRequestHandler, InstanceStoreMixin):
     RH_NAME = 'curl_cffi'
     _SUPPORTED_URL_SCHEMES = ('http', 'https')
     _SUPPORTED_FEATURES = (Features.NO_PROXY, Features.ALL_PROXY)
-    _SUPPORTED_PROXY_SCHEMES = (
-        'http',
-        'https',
-        'socks4',
-        'socks4a',
-        'socks5',
-        'socks5h')
+    _SUPPORTED_PROXY_SCHEMES = ('http', 'https', 'socks4', 'socks4a', 'socks5', 'socks5h')
     _SUPPORTED_IMPERSONATE_TARGET_MAP = {
         target: (
             name if curl_cffi_version >= (0, 11)
@@ -212,8 +192,7 @@ class CurlCFFIRH(ImpersonateRequestHandler, InstanceStoreMixin):
             for version, targets in BROWSER_TARGETS.items()
             if curl_cffi_version >= version
         ), key=lambda x: (
-            # deprioritize mobile targets since they give very different
-            # behavior
+            # deprioritize mobile targets since they give very different behavior
             x[1].os not in ('ios', 'android'),
             # prioritize tor < edge < firefox < safari < chrome
             ('tor', 'edge', 'firefox', 'safari', 'chrome').index(x[1].client),
@@ -233,8 +212,7 @@ class CurlCFFIRH(ImpersonateRequestHandler, InstanceStoreMixin):
         extensions.pop('cookiejar', None)
         extensions.pop('timeout', None)
         # CurlCFFIRH ignores legacy ssl options currently.
-        # Impersonation generally uses a looser SSL configuration than
-        # urllib/requests.
+        # Impersonation generally uses a looser SSL configuration than urllib/requests.
         extensions.pop('legacy_ssl', None)
 
     def send(self, request: Request) -> Response:
@@ -260,8 +238,7 @@ class CurlCFFIRH(ImpersonateRequestHandler, InstanceStoreMixin):
             session.curl.setopt(CurlOpt.NOPROXY, proxies['no'])
             proxies.pop('no', None)
 
-        # curl doesn't support per protocol proxies, so we select the one that
-        # matches the request protocol
+        # curl doesn't support per protocol proxies, so we select the one that matches the request protocol
         proxy = select_proxy(request.url, proxies=proxies)
         if proxy:
             session.curl.setopt(CurlOpt.PROXY, proxy)
@@ -282,19 +259,13 @@ class CurlCFFIRH(ImpersonateRequestHandler, InstanceStoreMixin):
         headers = self._get_impersonate_headers(request)
 
         if self._client_cert:
-            session.curl.setopt(
-                CurlOpt.SSLCERT,
-                self._client_cert['client_certificate'])
-            client_certificate_key = self._client_cert.get(
-                'client_certificate_key')
-            client_certificate_password = self._client_cert.get(
-                'client_certificate_password')
+            session.curl.setopt(CurlOpt.SSLCERT, self._client_cert['client_certificate'])
+            client_certificate_key = self._client_cert.get('client_certificate_key')
+            client_certificate_password = self._client_cert.get('client_certificate_password')
             if client_certificate_key:
                 session.curl.setopt(CurlOpt.SSLKEY, client_certificate_key)
             if client_certificate_password:
-                session.curl.setopt(
-                    CurlOpt.KEYPASSWD,
-                    client_certificate_password)
+                session.curl.setopt(CurlOpt.KEYPASSWD, client_certificate_password)
 
         timeout = self._calculate_timeout(request)
 

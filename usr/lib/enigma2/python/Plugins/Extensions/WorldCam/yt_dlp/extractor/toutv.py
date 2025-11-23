@@ -53,8 +53,7 @@ class TouTvIE(RadioCanadaIE):  # XXX: Do not subclass from concrete IE
                 })['access_token']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
-                error = self._parse_json(
-                    e.cause.response.read().decode(), None)['Message']
+                error = self._parse_json(e.cause.response.read().decode(), None)['Message']
                 raise ExtractorError(error, expected=True)
             raise
         self._claims = self._call_api('validation/v2/getClaims')['claims']
@@ -62,17 +61,14 @@ class TouTvIE(RadioCanadaIE):  # XXX: Do not subclass from concrete IE
     def _real_extract(self, url):
         path = self._match_id(url)
         metadata = self._download_json(
-            f'https://services.radio-canada.ca/toutv/presentation/{path}',
-            path,
-            query={
+            f'https://services.radio-canada.ca/toutv/presentation/{path}', path, query={
                 'client_key': self._CLIENT_KEY,
                 'device': 'web',
                 'version': 4,
             })
         # IsDrm does not necessarily mean the video is DRM protected (see
         # https://github.com/ytdl-org/youtube-dl/issues/13994).
-        if not self.get_param(
-                'allow_unplayable_formats') and metadata.get('IsDrm'):
+        if not self.get_param('allow_unplayable_formats') and metadata.get('IsDrm'):
             self.report_warning('This video is probably DRM protected.', path)
         video_id = metadata['IdMedia']
         details = metadata['Details']

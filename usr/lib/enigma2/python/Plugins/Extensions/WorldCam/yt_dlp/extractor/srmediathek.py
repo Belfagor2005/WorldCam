@@ -70,9 +70,7 @@ class SRMediathekIE(ARDMediathekBaseIE):
         description = self._og_search_description(webpage)
 
         if description == 'Der gewünschte Beitrag ist leider nicht mehr vorhanden.':
-            raise ExtractorError(
-                f'Video {video_id} is no longer available',
-                expected=True)
+            raise ExtractorError(f'Video {video_id} is no longer available', expected=True)
 
         player_url = traverse_obj(webpage, (
             {find_element(tag='div', id=f'player{video_id}', html=True)},

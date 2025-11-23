@@ -31,8 +31,7 @@ class AnvatoIE(InfoExtractor):
     _AUTH_KEY = b'\x31\xc2\x42\x84\x9e\x73\xa0\xce'  # from anvplayer.min.js
 
     _TESTS = [{
-        # from
-        # https://ktla.com/news/99-year-old-woman-learns-to-fly-in-torrance-checks-off-bucket-list-dream/
+        # from https://ktla.com/news/99-year-old-woman-learns-to-fly-in-torrance-checks-off-bucket-list-dream/
         'url': 'anvato:X8POa4zpGZMmeiq0wqiO8IP5rMqQM9VN:8032455',
         'md5': '837718bcfb3a7778d022f857f7a9b19e',
         'info_dict': {
@@ -229,12 +228,9 @@ class AnvatoIE(InfoExtractor):
 
     def _get_video_json(self, access_key, video_id, extracted_token):
         # See et() in anvplayer.min.js, which is an alias of getVideoJSON()
-        video_data_url = f'{
-            self._API_BASE_URL}/mcp/video/{video_id}?anvack={access_key}'
+        video_data_url = f'{self._API_BASE_URL}/mcp/video/{video_id}?anvack={access_key}'
         server_time = self._server_time(access_key, video_id)
-        input_data = f'{server_time}~{
-            md5_text(video_data_url)}~{
-            md5_text(server_time)}'
+        input_data = f'{server_time}~{md5_text(video_data_url)}~{md5_text(server_time)}'
 
         auth_secret = bytes(aes_encrypt(
             list(input_data[:64].encode()), list(self._AUTH_KEY)))
@@ -250,9 +246,7 @@ class AnvatoIE(InfoExtractor):
         if extracted_token is not None:
             api['anvstk2'] = extracted_token
         elif self._ANVACK_TABLE.get(access_key) is not None:
-            api['anvstk'] = md5_text(
-                f'{access_key}|{anvrid}|{server_time}|{
-                    self._ANVACK_TABLE[access_key]}')
+            api['anvstk'] = md5_text(f'{access_key}|{anvrid}|{server_time}|{self._ANVACK_TABLE[access_key]}')
         else:
             api['anvstk2'] = 'default'
 
@@ -278,9 +272,7 @@ class AnvatoIE(InfoExtractor):
             tbr = int_or_none(published_url.get('kbps'))
             a_format = {
                 'url': video_url,
-                'format_id': join_nonempty(
-                    'http',
-                    published_url.get('cdn_name')).lower(),
+                'format_id': join_nonempty('http', published_url.get('cdn_name')).lower(),
                 'tbr': tbr or None,
             }
 
@@ -329,16 +321,13 @@ class AnvatoIE(InfoExtractor):
             'formats': formats,
             'title': video_data.get('def_title'),
             'description': video_data.get('def_description'),
-            'tags': video_data.get(
-                'def_tags',
-                '').split(','),
+            'tags': video_data.get('def_tags', '').split(','),
             'categories': video_data.get('categories'),
             'thumbnail': video_data.get('src_image_url') or video_data.get('thumbnail'),
-            'timestamp': int_or_none(
-                video_data.get('ts_published') or video_data.get('ts_added')),
+            'timestamp': int_or_none(video_data.get(
+                'ts_published') or video_data.get('ts_added')),
             'uploader': video_data.get('mcp_id'),
-            'duration': int_or_none(
-                video_data.get('duration')),
+            'duration': int_or_none(video_data.get('duration')),
             'subtitles': subtitles,
         }
 
@@ -346,11 +335,9 @@ class AnvatoIE(InfoExtractor):
     def _extract_from_webpage(cls, url, webpage):
         for mobj in re.finditer(cls._ANVP_RE, webpage):
             anvplayer_data = unescapeHTML(json.loads(mobj.group('anvp'))) or {}
-            video_id, access_key = anvplayer_data.get(
-                'video'), anvplayer_data.get('accessKey')
+            video_id, access_key = anvplayer_data.get('video'), anvplayer_data.get('accessKey')
             if not access_key:
-                access_key = cls._MCP_TO_ACCESS_KEY_TABLE.get(
-                    (anvplayer_data.get('mcp') or '').lower())
+                access_key = cls._MCP_TO_ACCESS_KEY_TABLE.get((anvplayer_data.get('mcp') or '').lower())
             if not (video_id or '').isdigit() or not access_key:
                 continue
             url = f'anvato:{access_key}:{video_id}'
@@ -364,10 +351,7 @@ class AnvatoIE(InfoExtractor):
             'countries': smuggled_data.get('geo_countries'),
         })
 
-        access_key, video_id = self._match_valid_url(
-            url).group('access_key_or_mcp', 'id')
+        access_key, video_id = self._match_valid_url(url).group('access_key_or_mcp', 'id')
         if access_key not in self._ANVACK_TABLE:
-            access_key = self._MCP_TO_ACCESS_KEY_TABLE.get(
-                access_key) or access_key
-        return self._get_anvato_videos(
-            access_key, video_id, smuggled_data.get('token'))
+            access_key = self._MCP_TO_ACCESS_KEY_TABLE.get(access_key) or access_key
+        return self._get_anvato_videos(access_key, video_id, smuggled_data.get('token'))

@@ -28,8 +28,7 @@ class VideocampusSachsenIE(InfoExtractor):
         'mediathek.htw-berlin.de',  # Hochschule für Technik und Wirtschaft Berlin
         'mediathek.polizei-bw.de',
         'medien.hs-merseburg.de',  # Hochschule Merseburg
-        'mitmedia.manukau.ac.nz',
-        # Manukau Institute of Technology Auckland (NZ)
+        'mitmedia.manukau.ac.nz',  # Manukau Institute of Technology Auckland (NZ)
         'mportal.europa-uni.de',  # Europa-Universität Viadrina
         'pacific.demo.vimp.com',
         'slctv.com',
@@ -49,9 +48,7 @@ class VideocampusSachsenIE(InfoExtractor):
         'video.pareygo.de',
         'video.tu-dortmund.de',  # Technische Universität Dortmund
         'video.tu-freiberg.de',  # Technische Universität Bergakademie Freiberg
-        'videocampus.sachsen.de',
-        # Video Campus Sachsen (gemeinsame Videoplattform sächsischer
-        # Universitäten, Hochschulen und der Berufsakademie Sachsen)
+        'videocampus.sachsen.de',  # Video Campus Sachsen (gemeinsame Videoplattform sächsischer Universitäten, Hochschulen und der Berufsakademie Sachsen)
         'videoportal.uni-freiburg.de',  # Albert-Ludwigs-Universität Freiburg
         'videoportal.vm.uni-freiburg.de',  # Albert-Ludwigs-Universität Freiburg
         'videos.duoc.cl',
@@ -156,10 +153,9 @@ class VideocampusSachsenIE(InfoExtractor):
     ]
 
     def _real_extract(self, url):
-        host, video_id, tmp_id, display_id, embed_id = self._match_valid_url(
-            url).group('host', 'id', 'tmp_id', 'display_id', 'embed_id')
-        webpage = self._download_webpage(
-            url, video_id or tmp_id, fatal=False) or ''
+        host, video_id, tmp_id, display_id, embed_id = self._match_valid_url(url).group(
+            'host', 'id', 'tmp_id', 'display_id', 'embed_id')
+        webpage = self._download_webpage(url, video_id or tmp_id, fatal=False) or ''
 
         if not video_id:
             video_id = embed_id or self._html_search_regex(
@@ -168,20 +164,14 @@ class VideocampusSachsenIE(InfoExtractor):
 
         if not (display_id or tmp_id):
             # Title, description from embedded page's meta wouldn't be correct
-            title = self._html_search_regex(
-                r'<video-js[^>]* data-piwik-title="([^"<]+)"',
-                webpage,
-                'title',
-                fatal=False)
+            title = self._html_search_regex(r'<video-js[^>]* data-piwik-title="([^"<]+)"', webpage, 'title', fatal=False)
             description = None
             thumbnail = None
         else:
-            title = self._html_search_meta(
-                ('og:title', 'twitter:title', 'title'), webpage, fatal=False)
+            title = self._html_search_meta(('og:title', 'twitter:title', 'title'), webpage, fatal=False)
             description = self._html_search_meta(
                 ('og:description', 'twitter:description', 'description'), webpage, fatal=False)
-            thumbnail = self._html_search_meta(
-                ('og:image', 'twitter:image'), webpage, fatal=False)
+            thumbnail = self._html_search_meta(('og:image', 'twitter:image'), webpage, fatal=False)
 
         formats, subtitles = [], {}
         try:
@@ -189,11 +179,7 @@ class VideocampusSachsenIE(InfoExtractor):
                 f'https://{host}/media/hlsMedium/key/{video_id}/format/auto/ext/mp4/learning/0/path/m3u8',
                 video_id, 'mp4', m3u8_id='hls', fatal=True)
         except ExtractorError as e:
-            if not isinstance(
-                    e.cause,
-                    HTTPError) or e.cause.status not in (
-                    404,
-                    500):
+            if not isinstance(e.cause, HTTPError) or e.cause.status not in (404, 500):
                 raise
 
         formats.append({'url': f'https://{host}/getMedium/{video_id}.mp4'})
@@ -250,20 +236,16 @@ class ViMPPlaylistIE(InfoExtractor):
 
     def _fetch_page(self, host, url_part, playlist_id, data, page):
         webpage = self._download_webpage(
-            f'{host}/media/ajax/component/boxList/{url_part}',
-            playlist_id,
-            query={
-                'page': page,
-                'page_only': 1},
-            data=urlencode_postdata(data))
+            f'{host}/media/ajax/component/boxList/{url_part}', playlist_id,
+            query={'page': page, 'page_only': 1}, data=urlencode_postdata(data))
         urls = re.findall(r'"([^"]*/video/[^"]+)"', webpage)
 
         for url in urls:
             yield self.url_result(host + url, VideocampusSachsenIE)
 
     def _real_extract(self, url):
-        host, album_id, name, channel_id, tag_id, mode1, mode2, mode3 = self._match_valid_url(
-            url).group('host', 'album_id', 'name', 'channel_id', 'tag_id', 'mode1', 'mode2', 'mode3')
+        host, album_id, name, channel_id, tag_id, mode1, mode2, mode3 = self._match_valid_url(url).group(
+            'host', 'album_id', 'name', 'channel_id', 'tag_id', 'mode1', 'mode2', 'mode3')
 
         mode = mode1 or mode2 or mode3
         playlist_id = album_id or channel_id or tag_id
@@ -283,18 +265,10 @@ class ViMPPlaylistIE(InfoExtractor):
             'vars[context]': '4' if album_id else '1' if mode == 'category' else '3' if mode == 'album' else '0',
             'vars[context_id]': playlist_id,
             'vars[layout]': 'thumb',
-            'vars[per_page][thumb]': str(
-                self._PAGE_SIZE),
+            'vars[per_page][thumb]': str(self._PAGE_SIZE),
         }
 
         return self.playlist_result(
-            OnDemandPagedList(
-                functools.partial(
-                    self._fetch_page,
-                    host,
-                    url_part,
-                    playlist_id,
-                    data),
-                self._PAGE_SIZE),
-            playlist_title=title,
-            id=f'{mode}-{playlist_id}')
+            OnDemandPagedList(functools.partial(
+                self._fetch_page, host, url_part, playlist_id, data), self._PAGE_SIZE),
+            playlist_title=title, id=f'{mode}-{playlist_id}')

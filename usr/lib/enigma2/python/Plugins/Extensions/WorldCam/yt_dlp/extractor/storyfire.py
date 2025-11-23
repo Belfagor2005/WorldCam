@@ -31,35 +31,24 @@ class StoryFireBaseIE(InfoExtractor):
             'title': title,
             'description': video.get('description'),
             'url': smuggle_url(
-                'https://player.vimeo.com/video/' + vimeo_id,
-                {
+                'https://player.vimeo.com/video/' + vimeo_id, {
                     'referer': 'https://storyfire.com/',
                 }),
             'thumbnail': video.get('storyImage'),
-            'view_count': int_or_none(
-                video.get('views')),
-            'like_count': int_or_none(
-                video.get('likesCount')),
-            'comment_count': int_or_none(
-                video.get('commentsCount')),
-            'duration': int_or_none(
-                video.get('videoDuration')),
-            'timestamp': int_or_none(
-                video.get('publishDate')),
+            'view_count': int_or_none(video.get('views')),
+            'like_count': int_or_none(video.get('likesCount')),
+            'comment_count': int_or_none(video.get('commentsCount')),
+            'duration': int_or_none(video.get('videoDuration')),
+            'timestamp': int_or_none(video.get('publishDate')),
             'uploader': video.get('username'),
             'uploader_id': uploader_id,
-            'uploader_url': format_field(
-                uploader_id,
-                None,
-                'https://storyfire.com/user/%s/video'),
-            'episode_number': int_or_none(
-                video.get('episodeNumber') or video.get('episode_number')),
+            'uploader_url': format_field(uploader_id, None, 'https://storyfire.com/user/%s/video'),
+            'episode_number': int_or_none(video.get('episodeNumber') or video.get('episode_number')),
         }
 
 
 class StoryFireIE(StoryFireBaseIE):
-    _VALID_URL = StoryFireBaseIE._VALID_URL_BASE + \
-        r'video-details/(?P<id>[0-9a-f]{24})'
+    _VALID_URL = StoryFireBaseIE._VALID_URL_BASE + r'video-details/(?P<id>[0-9a-f]{24})'
     _TEST = {
         'url': 'https://storyfire.com/video-details/5df1d132b6378700117f9181',
         'md5': 'caec54b9e4621186d6079c7ec100c1eb',
@@ -117,8 +106,7 @@ class StoryFireUserIE(StoryFireBaseIE):
 
 
 class StoryFireSeriesIE(StoryFireBaseIE):
-    _VALID_URL = StoryFireBaseIE._VALID_URL_BASE + \
-        r'write/series/stories/(?P<id>[^/?&#]+)'
+    _VALID_URL = StoryFireBaseIE._VALID_URL_BASE + r'write/series/stories/(?P<id>[^/?&#]+)'
     _TESTS = [{
         'url': 'https://storyfire.com/write/series/stories/-Lq6MsuIHLODO6d2dDkr/',
         'info_dict': {

@@ -71,17 +71,8 @@ class VidLiiIE(InfoExtractor):
             webpage) or []]
         for source in sources:
             source = urljoin(url, source)
-            height = int(
-                self._search_regex(
-                    r'(\d+).mp4',
-                    source,
-                    'height',
-                    default=360))
-            if self._request_webpage(
-                    HEADRequest(source),
-                    video_id,
-                    f'Checking {height}p url',
-                    errnote=False):
+            height = int(self._search_regex(r'(\d+).mp4', source, 'height', default=360))
+            if self._request_webpage(HEADRequest(source), video_id, f'Checking {height}p url', errnote=False):
                 formats.append({
                     'url': source,
                     'format_id': f'{height}p',
@@ -109,8 +100,7 @@ class VidLiiIE(InfoExtractor):
         uploader = self._search_regex(
             r'<div[^>]+class=["\']wt_person[^>]+>\s*<a[^>]+\bhref=["\']/user/[^>]+>([^<]+)',
             webpage, 'uploader', fatal=False)
-        uploader_url = format_field(
-            uploader, None, 'https://www.vidlii.com/user/%s')
+        uploader_url = format_field(uploader, None, 'https://www.vidlii.com/user/%s')
 
         upload_date = unified_strdate(self._html_search_meta(
             'datePublished', webpage, default=None) or self._search_regex(

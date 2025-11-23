@@ -44,49 +44,17 @@ class PornFlipIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(
             f'https://{self._HOST}/sv/{video_id}', video_id, headers={'host': self._HOST})
-        description = self._html_search_regex(
-            r'&p\[summary\]=(.*?)\s*&p', webpage, 'description', fatal=False)
-        duration = self._search_regex(
-            r'"duration":\s+"([^"]+)",',
-            webpage,
-            'duration',
-            fatal=False)
-        view_count = self._search_regex(
-            r'"interactionCount":\s+"([^"]+)"',
-            webpage,
-            'view_count',
-            fatal=False)
-        title = self._html_search_regex(
-            r'id="mediaPlayerTitleLink"[^>]*>(.+)</a>',
-            webpage,
-            'title',
-            fatal=False)
-        uploader = self._html_search_regex(
-            r'class="title-chanel"[^>]*>[^<]*<a[^>]*>([^<]+)<',
-            webpage,
-            'uploader',
-            fatal=False)
-        upload_date = self._search_regex(
-            r'"uploadDate":\s+"([^"]+)",',
-            webpage,
-            'upload_date',
-            fatal=False)
+        description = self._html_search_regex(r'&p\[summary\]=(.*?)\s*&p', webpage, 'description', fatal=False)
+        duration = self._search_regex(r'"duration":\s+"([^"]+)",', webpage, 'duration', fatal=False)
+        view_count = self._search_regex(r'"interactionCount":\s+"([^"]+)"', webpage, 'view_count', fatal=False)
+        title = self._html_search_regex(r'id="mediaPlayerTitleLink"[^>]*>(.+)</a>', webpage, 'title', fatal=False)
+        uploader = self._html_search_regex(r'class="title-chanel"[^>]*>[^<]*<a[^>]*>([^<]+)<', webpage, 'uploader', fatal=False)
+        upload_date = self._search_regex(r'"uploadDate":\s+"([^"]+)",', webpage, 'upload_date', fatal=False)
         likes = self._html_search_regex(
-            r'class="btn btn-up-rating[^>]*>[^<]*<i[^>]*>[^<]*</i>[^>]*<span[^>]*>[^0-9]*([0-9]+)[^<0-9]*<',
-            webpage,
-            'like_count',
-            fatal=False)
+            r'class="btn btn-up-rating[^>]*>[^<]*<i[^>]*>[^<]*</i>[^>]*<span[^>]*>[^0-9]*([0-9]+)[^<0-9]*<', webpage, 'like_count', fatal=False)
         dislikes = self._html_search_regex(
-            r'class="btn btn-down-rating[^>]*>[^<]*<i[^>]*>[^<]*</i>[^>]*<span[^>]*>[^0-9]*([0-9]+)[^<0-9]*<',
-            webpage,
-            'dislike_count',
-            fatal=False)
-        mpd_url = self._search_regex(
-            r'"([^"]+userscontent.net/dash/[0-9]+/manifest.mpd[^"]*)"',
-            webpage,
-            'mpd_url').replace(
-            '&amp;',
-            '&')
+            r'class="btn btn-down-rating[^>]*>[^<]*<i[^>]*>[^<]*</i>[^>]*<span[^>]*>[^0-9]*([0-9]+)[^<0-9]*<', webpage, 'dislike_count', fatal=False)
+        mpd_url = self._search_regex(r'"([^"]+userscontent.net/dash/[0-9]+/manifest.mpd[^"]*)"', webpage, 'mpd_url').replace('&amp;', '&')
         formats = self._extract_mpd_formats(mpd_url, video_id, mpd_id='dash')
 
         return {
