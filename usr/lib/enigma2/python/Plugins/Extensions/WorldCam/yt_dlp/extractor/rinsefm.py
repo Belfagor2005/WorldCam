@@ -46,7 +46,8 @@ class RinseFMIE(RinseFMBaseIE):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        entry = self._search_nextjs_data(webpage, display_id)['props']['pageProps']['entry']
+        entry = self._search_nextjs_data(webpage, display_id)[
+            'props']['pageProps']['entry']
 
         return self._parse_entry(entry)
 
@@ -72,17 +73,24 @@ class RinseFMArtistPlaylistIE(RinseFMBaseIE):
     }]
 
     def _entries(self, data):
-        for episode in traverse_obj(data, (
-            'props', 'pageProps', 'episodes', lambda _, v: determine_ext(v['fileUrl']) in MEDIA_EXTENSIONS.audio),
+        for episode in traverse_obj(
+            data,
+            ('props',
+             'pageProps',
+             'episodes',
+             lambda _,
+             v: determine_ext(
+                 v['fileUrl']) in MEDIA_EXTENSIONS.audio),
         ):
             yield self._parse_entry(episode)
 
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
         webpage = self._download_webpage(url, playlist_id)
-        title = self._og_search_title(webpage) or self._html_search_meta('title', webpage)
-        description = self._og_search_description(webpage) or self._html_search_meta(
-            'description', webpage)
+        title = self._og_search_title(
+            webpage) or self._html_search_meta('title', webpage)
+        description = self._og_search_description(
+            webpage) or self._html_search_meta('description', webpage)
         data = self._search_nextjs_data(webpage, playlist_id)
 
         return self.playlist_result(

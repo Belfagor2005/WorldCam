@@ -37,8 +37,12 @@ class KaraoketvIE(InfoExtractor):
 
         settings = self._parse_json(
             self._search_regex(
-                r'var\s+settings\s*=\s*({.+?});', video_cdn, 'servers', default='{}'),
-            video_id, fatal=False) or {}
+                r'var\s+settings\s*=\s*({.+?});',
+                video_cdn,
+                'servers',
+                default='{}'),
+            video_id,
+            fatal=False) or {}
 
         servers = settings.get('servers')
         if not servers or not isinstance(servers, list):

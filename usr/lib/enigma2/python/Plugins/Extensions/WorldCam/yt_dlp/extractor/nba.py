@@ -19,7 +19,8 @@ from ..utils import (
 class NBACVPBaseIE(TurnerBaseIE):
     def _extract_nba_cvp_info(self, path, video_id, fatal=False):
         return self._extract_cvp_info(
-            # XXX: The 3rd argument (None) needs to be the AdobePass software_statement
+            # XXX: The 3rd argument (None) needs to be the AdobePass
+            # software_statement
             f'http://secure.nba.com/{path}', video_id, None, {
                 'default': {
                     'media_src': 'http://nba.cdn.turner.com/nba/big',
@@ -46,14 +47,19 @@ class NBAWatchBaseIE(NBACVPBaseIE):
         title = video['name']
 
         formats = []
-        m3u8_url = (self._download_json(
-            'https://watch.nba.com/service/publishpoint', video_id, query={
-                'type': 'video',
-                'format': 'json',
-                'id': video_id,
-            }, headers={
-                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_1 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A402 Safari/604.1',
-            }, fatal=False) or {}).get('path')
+        m3u8_url = (
+            self._download_json(
+                'https://watch.nba.com/service/publishpoint',
+                video_id,
+                query={
+                    'type': 'video',
+                    'format': 'json',
+                    'id': video_id,
+                },
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_1 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A402 Safari/604.1',
+                },
+                fatal=False) or {}).get('path')
         if m3u8_url:
             m3u8_formats = self._extract_m3u8_formats(
                 re.sub(r'_(?:pc|iphone)\.', '.', m3u8_url), video_id, 'mp4',
@@ -71,10 +77,14 @@ class NBAWatchBaseIE(NBACVPBaseIE):
         info = {
             'id': video_id,
             'title': title,
-            'thumbnail': urljoin('https://nbadsdmt.akamaized.net/media/nba/nba/thumbs/', video.get('image')),
+            'thumbnail': urljoin(
+                'https://nbadsdmt.akamaized.net/media/nba/nba/thumbs/',
+                video.get('image')),
             'description': video.get('description'),
-            'duration': int_or_none(video.get('runtime')),
-            'timestamp': parse_iso8601(video.get('releaseDate')),
+            'duration': int_or_none(
+                video.get('runtime')),
+            'timestamp': parse_iso8601(
+                video.get('releaseDate')),
             'tags': video.get('tags'),
         }
 
@@ -119,7 +129,8 @@ class NBAWatchEmbedIE(NBAWatchBaseIE):
 class NBAWatchIE(NBAWatchBaseIE):
     _WORKING = False
     IE_NAME = 'nba:watch'
-    _VALID_URL = NBAWatchBaseIE._VALID_URL_BASE + r'(?:nba/)?video/(?P<id>.+?(?=/index\.html)|(?:[^/]+/)*[^/?#&]+)'
+    _VALID_URL = NBAWatchBaseIE._VALID_URL_BASE + \
+        r'(?:nba/)?video/(?P<id>.+?(?=/index\.html)|(?:[^/]+/)*[^/?#&]+)'
     _TESTS = [{
         'url': 'http://www.nba.com/video/games/nets/2012/12/04/0021200253-okc-bkn-recap.nba/index.html',
         'md5': '9d902940d2a127af3f7f9d2f3dc79c96',
@@ -172,7 +183,8 @@ class NBAWatchIE(NBAWatchBaseIE):
 class NBAWatchCollectionIE(NBAWatchBaseIE):
     _WORKING = False
     IE_NAME = 'nba:watch:collection'
-    _VALID_URL = NBAWatchBaseIE._VALID_URL_BASE + r'list/collection/(?P<id>[^/?#&]+)'
+    _VALID_URL = NBAWatchBaseIE._VALID_URL_BASE + \
+        r'list/collection/(?P<id>[^/?#&]+)'
     _TESTS = [{
         'url': 'https://watch.nba.com/list/collection/season-preview-2020',
         'info_dict': {
@@ -185,8 +197,11 @@ class NBAWatchCollectionIE(NBAWatchBaseIE):
     def _fetch_page(self, collection_id, page):
         page += 1
         videos = self._download_json(
-            'https://content-api-prod.nba.com/public/1/endeavor/video-list/collection/' + collection_id,
-            collection_id, f'Downloading page {page} JSON metadata', query={
+            'https://content-api-prod.nba.com/public/1/endeavor/video-list/collection/' +
+            collection_id,
+            collection_id,
+            f'Downloading page {page} JSON metadata',
+            query={
                 'count': self._PAGE_SIZE,
                 'page': page,
             })['results']['videos']
@@ -275,11 +290,15 @@ class NBABaseIE(NBACVPBaseIE):
             'id': video_id,
             'title': video.get('title') or video.get('headline') or video['shortHeadline'],
             'description': video.get('description'),
-            'timestamp': parse_iso8601(video.get('published')),
+            'timestamp': parse_iso8601(
+                video.get('published')),
         }
 
         subtitles = {}
-        captions = try_get(video, lambda x: x['videoCaptions']['sidecars'], dict) or {}
+        captions = try_get(
+            video,
+            lambda x: x['videoCaptions']['sidecars'],
+            dict) or {}
         for caption_url in captions.values():
             subtitles.setdefault('en', []).append({'url': caption_url})
 
@@ -292,7 +311,8 @@ class NBABaseIE(NBACVPBaseIE):
 
         if extract_all:
             source_url = video.get('videoSource')
-            if source_url and not source_url.startswith('s3://') and self._is_valid_url(source_url, video_id, 'source'):
+            if source_url and not source_url.startswith(
+                    's3://') and self._is_valid_url(source_url, video_id, 'source'):
                 formats.append({
                     'format_id': 'source',
                     'url': source_url,
@@ -315,7 +335,8 @@ class NBABaseIE(NBACVPBaseIE):
                     team + content_xml, video_id, fatal=False)
                 if cvp_info:
                     formats.extend(cvp_info['formats'])
-                    subtitles = self._merge_subtitles(subtitles, cvp_info['subtitles'])
+                    subtitles = self._merge_subtitles(
+                        subtitles, cvp_info['subtitles'])
                     info = merge_dicts(info, cvp_info)
 
         else:
@@ -335,7 +356,10 @@ class NBABaseIE(NBACVPBaseIE):
         else:
             webpage = self._download_webpage(url, display_id)
             display_id = self._search_regex(
-                self._CONTENT_ID_REGEX + r'\s*:\s*"([^"]+)"', webpage, 'video id')
+                self._CONTENT_ID_REGEX +
+                r'\s*:\s*"([^"]+)"',
+                webpage,
+                'video id')
         return self._extract_url_results(team, display_id)
 
 
@@ -357,15 +381,20 @@ class NBAEmbedIE(NBABaseIE):
         team = qs.get('team', [None])[0]
         if not team:
             return self.url_result(
-                'https://watch.nba.com/video/' + content_id, NBAWatchIE.ie_key())
-        video = self._call_api(team, content_id, {'videoid': content_id}, 'video')[0]
+                'https://watch.nba.com/video/' +
+                content_id,
+                NBAWatchIE.ie_key())
+        video = self._call_api(
+            team, content_id, {
+                'videoid': content_id}, 'video')[0]
         return self._extract_video(video, team)
 
 
 class NBAIE(NBABaseIE):
     _WORKING = False
     IE_NAME = 'nba'
-    _VALID_URL = NBABaseIE._VALID_URL_BASE + f'(?!{NBABaseIE._CHANNEL_PATH_REGEX})video/(?P<id>(?:[^/]+/)*[^/?#&]+)'
+    _VALID_URL = NBABaseIE._VALID_URL_BASE + \
+        f'(?!{NBABaseIE._CHANNEL_PATH_REGEX})video/(?P<id>(?:[^/]+/)*[^/?#&]+)'
     _TESTS = [{
         'url': 'https://www.nba.com/bulls/video/teams/bulls/2020/12/04/3478774/1607105587854-20201204schedulereleasefinaldrupal-3478774',
         'info_dict': {
@@ -393,7 +422,8 @@ class NBAIE(NBABaseIE):
 class NBAChannelIE(NBABaseIE):
     _WORKING = False
     IE_NAME = 'nba:channel'
-    _VALID_URL = NBABaseIE._VALID_URL_BASE + f'(?:{NBABaseIE._CHANNEL_PATH_REGEX})/(?P<id>[^/?#&]+)'
+    _VALID_URL = NBABaseIE._VALID_URL_BASE + \
+        f'(?:{NBABaseIE._CHANNEL_PATH_REGEX})/(?P<id>[^/?#&]+)'
     _TESTS = [{
         'url': 'https://www.nba.com/blazers/video/channel/summer_league',
         'info_dict': {

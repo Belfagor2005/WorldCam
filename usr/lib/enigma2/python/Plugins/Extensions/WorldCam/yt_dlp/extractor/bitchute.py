@@ -27,7 +27,8 @@ from ..utils.traversal import traverse_obj
 
 class BitChuteIE(InfoExtractor):
     _VALID_URL = r'https?://(?:(?:www|old)\.)?bitchute\.com/(?:video|embed|torrent/[^/?#]+)/(?P<id>[^/?#&]+)'
-    _EMBED_REGEX = [rf'<(?:script|iframe)[^>]+\bsrc=(["\'])(?P<url>{_VALID_URL})']
+    _EMBED_REGEX = [
+        rf'<(?:script|iframe)[^>]+\bsrc=(["\'])(?P<url>{_VALID_URL})']
     _TESTS = [{
         'url': 'https://www.bitchute.com/video/UGlrF9o9b-Q/',
         'md5': '7e427d7ed7af5a75b5855705ec750e2b',
@@ -109,29 +110,47 @@ class BitChuteIE(InfoExtractor):
 
     def _check_format(self, video_url, video_id):
         urls = orderedSet(
-            re.sub(r'(^https?://)(seed\d+)(?=\.bitchute\.com)', fr'\g<1>{host}', video_url)
-            for host in (r'\g<2>', 'seed122', 'seed125', 'seed126', 'seed128',
-                         'seed132', 'seed150', 'seed151', 'seed152', 'seed153',
-                         'seed167', 'seed171', 'seed177', 'seed305', 'seed307',
-                         'seedp29xb', 'zb10-7gsop1v78'))
+            re.sub(
+                r'(^https?://)(seed\d+)(?=\.bitchute\.com)',
+                fr'\g<1>{host}',
+                video_url) for host in (
+                r'\g<2>',
+                'seed122',
+                'seed125',
+                'seed126',
+                'seed128',
+                'seed132',
+                'seed150',
+                'seed151',
+                'seed152',
+                'seed153',
+                'seed167',
+                'seed171',
+                'seed177',
+                'seed305',
+                'seed307',
+                'seedp29xb',
+                'zb10-7gsop1v78'))
         for url in urls:
             try:
                 response = self._request_webpage(
                     HEADRequest(url), video_id=video_id, note=f'Checking {url}')
             except ExtractorError as e:
-                self.to_screen(f'{video_id}: URL is invalid, skipping: {e.cause}')
+                self.to_screen(
+                    f'{video_id}: URL is invalid, skipping: {
+                        e.cause}')
                 continue
-            return {
-                'url': url,
-                'filesize': int_or_none(response.headers.get('Content-Length')),
-            }
+            return {'url': url, 'filesize': int_or_none(
+                response.headers.get('Content-Length')), }
 
     def _call_api(self, endpoint, data, display_id, fatal=True):
         note = endpoint.rpartition('/')[2]
         try:
             return self._download_json(
-                f'https://api.bitchute.com/api/beta/{endpoint}', display_id,
-                f'Downloading {note} API JSON', f'Unable to download {note} API JSON',
+                f'https://api.bitchute.com/api/beta/{endpoint}',
+                display_id,
+                f'Downloading {note} API JSON',
+                f'Unable to download {note} API JSON',
                 data=json.dumps(data).encode(),
                 headers={
                     'Accept': 'application/json',
@@ -139,10 +158,13 @@ class BitChuteIE(InfoExtractor):
                 })
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                errors = '. '.join(traverse_obj(e.cause.response.read().decode(), (
-                    {json.loads}, 'errors', lambda _, v: v['context'] == 'reason', 'message', {str})))
+                errors = '. '.join(
+                    traverse_obj(
+                        e.cause.response.read().decode(), ({
+                            json.loads}, 'errors', lambda _, v: v['context'] == 'reason', 'message', {str})))
                 if errors and 'location' in errors:
-                    # Can always be fatal since the video/media call will reach this code first
+                    # Can always be fatal since the video/media call will reach
+                    # this code first
                     self.raise_geo_restricted(errors)
             if fatal:
                 raise
@@ -156,7 +178,12 @@ class BitChuteIE(InfoExtractor):
         formats = []
         if determine_ext(media_url) == 'm3u8':
             formats.extend(
-                self._extract_m3u8_formats(media_url, video_id, 'mp4', m3u8_id='hls', live=True))
+                self._extract_m3u8_formats(
+                    media_url,
+                    video_id,
+                    'mp4',
+                    m3u8_id='hls',
+                    live=True))
         else:
             if self.get_param('check_formats') is not False:
                 if fmt := self._check_format(media_url, video_id):
@@ -172,7 +199,9 @@ class BitChuteIE(InfoExtractor):
         video = self._call_api('video', data, video_id, fatal=False)
         channel = None
         if channel_id := traverse_obj(video, ('channel', 'channel_id', {str})):
-            channel = self._call_api('channel', {'channel_id': channel_id}, video_id, fatal=False)
+            channel = self._call_api(
+                'channel', {
+                    'channel_id': channel_id}, video_id, fatal=False)
 
         return {
             **traverse_obj(video, {
@@ -205,52 +234,45 @@ class BitChuteIE(InfoExtractor):
 
 class BitChuteChannelIE(InfoExtractor):
     _VALID_URL = r'https?://(?:(?:www|old)\.)?bitchute\.com/(?P<type>channel|playlist)/(?P<id>[^/?#&]+)'
-    _TESTS = [{
-        'url': 'https://www.bitchute.com/channel/bitchute/',
-        'info_dict': {
-            'id': 'bitchute',
-            'title': 'BitChute',
-            'description': 'md5:2134c37d64fc3a4846787c402956adac',
-        },
-        'playlist': [
-            {
-                'md5': '7e427d7ed7af5a75b5855705ec750e2b',
-                'info_dict': {
-                    'id': 'UGlrF9o9b-Q',
-                    'ext': 'mp4',
-                    'title': 'This is the first video on #BitChute !',
-                    'description': 'md5:a0337e7b1fe39e32336974af8173a034',
-                    'thumbnail': r're:https?://.+/.+\.jpg$',
-                    'uploader': 'BitChute',
-                    'upload_date': '20170103',
-                    'uploader_url': 'https://www.bitchute.com/profile/I5NgtHZn9vPj/',
-                    'channel': 'BitChute',
-                    'channel_url': 'https://www.bitchute.com/channel/bitchute/',
-                    'duration': 16,
-                    'view_count': int,
-                    'uploader_id': 'I5NgtHZn9vPj',
-                    'channel_id': '1VBwRfyNcKdX',
-                    'timestamp': 1483425443,
-                },
-            },
-        ],
-        'params': {
-            'skip_download': True,
-            'playlist_items': '-1',
-        },
-    }, {
-        'url': 'https://www.bitchute.com/playlist/wV9Imujxasw9/',
-        'playlist_mincount': 20,
-        'info_dict': {
-            'id': 'wV9Imujxasw9',
-            'title': 'Bruce MacDonald and "The Light of Darkness"',
-            'description': 'md5:747724ef404eebdfc04277714f81863e',
-        },
-        'skip': '404 Not Found',
-    }, {
-        'url': 'https://old.bitchute.com/playlist/wV9Imujxasw9/',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://www.bitchute.com/channel/bitchute/',
+               'info_dict': {'id': 'bitchute',
+                             'title': 'BitChute',
+                             'description': 'md5:2134c37d64fc3a4846787c402956adac',
+                             },
+               'playlist': [{'md5': '7e427d7ed7af5a75b5855705ec750e2b',
+                             'info_dict': {'id': 'UGlrF9o9b-Q',
+                                           'ext': 'mp4',
+                                           'title': 'This is the first video on #BitChute !',
+                                           'description': 'md5:a0337e7b1fe39e32336974af8173a034',
+                                           'thumbnail': r're:https?://.+/.+\.jpg$',
+                                           'uploader': 'BitChute',
+                                           'upload_date': '20170103',
+                                           'uploader_url': 'https://www.bitchute.com/profile/I5NgtHZn9vPj/',
+                                           'channel': 'BitChute',
+                                           'channel_url': 'https://www.bitchute.com/channel/bitchute/',
+                                           'duration': 16,
+                                           'view_count': int,
+                                           'uploader_id': 'I5NgtHZn9vPj',
+                                           'channel_id': '1VBwRfyNcKdX',
+                                           'timestamp': 1483425443,
+                                           },
+                             },
+                            ],
+               'params': {'skip_download': True,
+                          'playlist_items': '-1',
+                          },
+               },
+              {'url': 'https://www.bitchute.com/playlist/wV9Imujxasw9/',
+               'playlist_mincount': 20,
+               'info_dict': {'id': 'wV9Imujxasw9',
+                             'title': 'Bruce MacDonald and "The Light of Darkness"',
+                             'description': 'md5:747724ef404eebdfc04277714f81863e',
+                             },
+               'skip': '404 Not Found',
+               },
+              {'url': 'https://old.bitchute.com/playlist/wV9Imujxasw9/',
+               'only_matching': True,
+               }]
 
     _TOKEN = 'zyG6tQcGPE5swyAEFLqKUwMuMMuF6IO2DZ6ZDQjGfsL0e4dcTLwqkTTul05Jdve7'
     PAGE_SIZE = 25
@@ -289,9 +311,13 @@ class BitChuteChannelIE(InfoExtractor):
         if not data.get('success'):
             return
         classes = self.HTML_CLASS_NAMES[playlist_type]
-        for video_html in get_elements_html_by_class(classes['container'], data.get('html')):
+        for video_html in get_elements_html_by_class(
+                classes['container'], data.get('html')):
             video_id = self._search_regex(
-                r'<a\s[^>]*\bhref=["\']/video/([^"\'/]+)', video_html, 'video id', default=None)
+                r'<a\s[^>]*\bhref=["\']/video/([^"\'/]+)',
+                video_html,
+                'video id',
+                default=None)
             if not video_id:
                 continue
             yield self.url_result(
@@ -302,14 +328,33 @@ class BitChuteChannelIE(InfoExtractor):
                 view_count=parse_count(clean_html(get_element_by_class('video-views', video_html))))
 
     def _real_extract(self, url):
-        playlist_type, playlist_id = self._match_valid_url(url).group('type', 'id')
-        webpage = self._download_webpage(self._make_url(playlist_id, playlist_type), playlist_id)
+        playlist_type, playlist_id = self._match_valid_url(
+            url).group('type', 'id')
+        webpage = self._download_webpage(
+            self._make_url(
+                playlist_id,
+                playlist_type),
+            playlist_id)
 
-        page_func = functools.partial(self._fetch_page, playlist_id, playlist_type)
+        page_func = functools.partial(
+            self._fetch_page, playlist_id, playlist_type)
         return self.playlist_result(
-            OnDemandPagedList(page_func, self.PAGE_SIZE), playlist_id,
-            title=self._html_extract_title(webpage, default=None),
+            OnDemandPagedList(
+                page_func,
+                self.PAGE_SIZE),
+            playlist_id,
+            title=self._html_extract_title(
+                webpage,
+                default=None),
             description=self._html_search_meta(
-                ('description', 'og:description', 'twitter:description'), webpage, default=None),
-            playlist_count=int_or_none(self._html_search_regex(
-                r'<span>(\d+)\s+videos?</span>', webpage, 'playlist count', default=None)))
+                ('description',
+                 'og:description',
+                 'twitter:description'),
+                webpage,
+                default=None),
+            playlist_count=int_or_none(
+                self._html_search_regex(
+                    r'<span>(\d+)\s+videos?</span>',
+                    webpage,
+                    'playlist count',
+                    default=None)))

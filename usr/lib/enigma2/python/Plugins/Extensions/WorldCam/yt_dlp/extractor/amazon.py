@@ -67,7 +67,10 @@ class AmazonStoreIE(InfoExtractor):
             webpage = self._download_webpage(url, playlist_id)
             try:
                 data_json = self._search_json(
-                    r'var\s?obj\s?=\s?jQuery\.parseJSON\(\'', webpage, 'data', playlist_id,
+                    r'var\s?obj\s?=\s?jQuery\.parseJSON\(\'',
+                    webpage,
+                    'data',
+                    playlist_id,
                     transform_source=js_to_json)
             except ExtractorError as e:
                 retry.error = e
@@ -81,7 +84,10 @@ class AmazonStoreIE(InfoExtractor):
             'height': int_or_none(video.get('videoHeight')),
             'width': int_or_none(video.get('videoWidth')),
         } for video in (data_json.get('videos') or []) if video.get('isVideo') and video.get('url')]
-        return self.playlist_result(entries, playlist_id=playlist_id, playlist_title=data_json.get('title'))
+        return self.playlist_result(
+            entries,
+            playlist_id=playlist_id,
+            playlist_title=data_json.get('title'))
 
 
 class AmazonReviewsIE(InfoExtractor):
@@ -129,9 +135,11 @@ class AmazonReviewsIE(InfoExtractor):
 
         for retry in self.RetryManager():
             webpage = self._download_webpage(url, video_id)
-            review_body = get_element_by_attribute('data-hook', 'review-body', webpage)
+            review_body = get_element_by_attribute(
+                'data-hook', 'review-body', webpage)
             if not review_body:
-                retry.error = ExtractorError('Review body was not found in webpage', expected=True)
+                retry.error = ExtractorError(
+                    'Review body was not found in webpage', expected=True)
 
         formats, subtitles = [], {}
 
@@ -143,7 +151,10 @@ class AmazonReviewsIE(InfoExtractor):
             formats.extend(fmts)
 
         video_url = self._search_regex(
-            r'<input[^>]+\bvalue="([^"]+)"[^>]+\bclass="video-url"', review_body, 'mp4 url', default=None)
+            r'<input[^>]+\bvalue="([^"]+)"[^>]+\bclass="video-url"',
+            review_body,
+            'mp4 url',
+            default=None)
         if url_or_none(video_url):
             formats.append({
                 'url': video_url,
@@ -152,19 +163,39 @@ class AmazonReviewsIE(InfoExtractor):
             })
 
         if not formats:
-            self.raise_no_formats('No video found for this customer review', expected=True)
+            self.raise_no_formats(
+                'No video found for this customer review',
+                expected=True)
 
         return {
             'id': video_id,
-            'title': (clean_html(get_element_by_attribute('data-hook', 'review-title', webpage))
-                      or self._html_extract_title(webpage)),
-            'description': clean_html(traverse_obj(re.findall(
-                r'<span(?:\s+class="cr-original-review-content")?>(.+?)</span>', review_body), -1)),
-            'uploader': clean_html(get_element_by_class('a-profile-name', webpage)),
-            'average_rating': float_or_none(clean_html(get_element_by_attribute(
-                'data-hook', 'review-star-rating', webpage) or '').partition(' ')[0]),
+            'title': (
+                clean_html(
+                    get_element_by_attribute(
+                        'data-hook',
+                        'review-title',
+                        webpage)) or self._html_extract_title(webpage)),
+            'description': clean_html(
+                traverse_obj(
+                    re.findall(
+                        r'<span(?:\s+class="cr-original-review-content")?>(.+?)</span>',
+                        review_body),
+                    -1)),
+            'uploader': clean_html(
+                get_element_by_class(
+                    'a-profile-name',
+                    webpage)),
+            'average_rating': float_or_none(
+                clean_html(
+                    get_element_by_attribute(
+                        'data-hook',
+                        'review-star-rating',
+                        webpage) or '').partition(' ')[0]),
             'thumbnail': self._search_regex(
-                r'data-thumbnail-url="([^"]+)"', review_body, 'thumbnail', default=None),
+                r'data-thumbnail-url="([^"]+)"',
+                review_body,
+                'thumbnail',
+                default=None),
             'formats': formats,
             'subtitles': subtitles,
         }

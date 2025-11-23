@@ -184,17 +184,27 @@ class ERRJupiterIE(InfoExtractor):
             self.report_drm(video_id)
 
         formats, subtitles = [], {}
-        for format_url in set(traverse_obj(media_data, ('src', ('hls', 'hls2', 'hlsNew'), {url_or_none}))):
+        for format_url in set(
+            traverse_obj(
+                media_data,
+                ('src',
+                 ('hls',
+                  'hls2',
+                  'hlsNew'),
+                    {url_or_none}))):
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 format_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
-        for format_url in set(traverse_obj(media_data, ('src', ('dash', 'dashNew'), {url_or_none}))):
+        for format_url in set(
+            traverse_obj(
+                media_data, ('src', ('dash', 'dashNew'), {url_or_none}))):
             fmts, subs = self._extract_mpd_formats_and_subtitles(
                 format_url, video_id, mpd_id='dash', fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
-        if format_url := traverse_obj(media_data, ('src', 'file', {url_or_none})):
+        if format_url := traverse_obj(
+                media_data, ('src', 'file', {url_or_none})):
             formats.append({
                 'url': format_url,
                 'format_id': 'http',

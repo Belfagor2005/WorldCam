@@ -16,10 +16,23 @@ from ..utils.traversal import traverse_obj
 
 
 class TuneInBaseIE(InfoExtractor):
-    def _call_api(self, item_id, endpoint=None, note='Downloading JSON metadata', fatal=False, query=None):
+    def _call_api(
+            self,
+            item_id,
+            endpoint=None,
+            note='Downloading JSON metadata',
+            fatal=False,
+            query=None):
         return self._download_json(
-            join_nonempty('https://api.tunein.com/profiles', item_id, endpoint, delim='/'),
-            item_id, note=note, fatal=fatal, query=query) or {}
+            join_nonempty(
+                'https://api.tunein.com/profiles',
+                item_id,
+                endpoint,
+                delim='/'),
+            item_id,
+            note=note,
+            fatal=fatal,
+            query=query) or {}
 
     def _extract_formats_and_subtitles(self, content_id):
         streams = self._download_json(
@@ -30,9 +43,15 @@ class TuneInBaseIE(InfoExtractor):
             })
 
         formats, subtitles = [], {}
-        for stream in traverse_obj(streams, ('body', lambda _, v: url_or_none(v['url']))):
+        for stream in traverse_obj(
+            streams,
+            ('body',
+             lambda _,
+             v: url_or_none(
+                 v['url']))):
             if stream.get('media_type') == 'hls':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(stream['url'], content_id, fatal=False)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                    stream['url'], content_id, fatal=False)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
@@ -120,7 +139,8 @@ class TuneInPodcastIE(TuneInBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if TuneInPodcastEpisodeIE.suitable(url) else super().suitable(url)
+        return False if TuneInPodcastEpisodeIE.suitable(
+            url) else super().suitable(url)
 
     def _fetch_page(self, url, podcast_id, page=0):
         items = self._call_api(
@@ -137,9 +157,11 @@ class TuneInPodcastIE(TuneInBaseIE):
     def _real_extract(self, url):
         podcast_id = self._match_id(url)
 
-        return self.playlist_result(OnDemandPagedList(
-            functools.partial(self._fetch_page, url, podcast_id), self._PAGE_SIZE),
-            podcast_id, traverse_obj(self._call_api(podcast_id), ('Item', 'Title', {str})))
+        return self.playlist_result(
+            OnDemandPagedList(
+                functools.partial(
+                    self._fetch_page, url, podcast_id), self._PAGE_SIZE), podcast_id, traverse_obj(
+                self._call_api(podcast_id), ('Item', 'Title', {str})))
 
 
 class TuneInPodcastEpisodeIE(TuneInBaseIE):
@@ -182,7 +204,8 @@ class TuneInPodcastEpisodeIE(TuneInBaseIE):
     }]
 
     def _real_extract(self, url):
-        series_id, display_id = self._match_valid_url(url).group('series_id', 'id')
+        series_id, display_id = self._match_valid_url(
+            url).group('series_id', 'id')
         episode_id = f't{display_id}'
         formats, subtitles = self._extract_formats_and_subtitles(episode_id)
 
@@ -210,7 +233,8 @@ class TuneInPodcastEpisodeIE(TuneInBaseIE):
 class TuneInEmbedIE(TuneInBaseIE):
     IE_NAME = 'tunein:embed'
     _VALID_URL = r'https?://tunein\.com/embed/player/(?P<id>[^/?#]+)'
-    _EMBED_REGEX = [r'<iframe\b[^>]+\bsrc=["\'](?P<url>(?:https?:)?//tunein\.com/embed/player/[^/?#"\']+)']
+    _EMBED_REGEX = [
+        r'<iframe\b[^>]+\bsrc=["\'](?P<url>(?:https?:)?//tunein\.com/embed/player/[^/?#"\']+)']
     _TESTS = [{
         'url': 'https://tunein.com/embed/player/s6404/',
         'info_dict': {
@@ -325,7 +349,8 @@ class TuneInShortenerIE(InfoExtractor):
     def _real_extract(self, url):
         redirect_id = self._match_id(url)
         # The server doesn't support HEAD requests
-        urlh = self._request_webpage(url, redirect_id, 'Downloading redirect page')
+        urlh = self._request_webpage(
+            url, redirect_id, 'Downloading redirect page')
         # Need to strip port from URL
         parsed = urllib.parse.urlparse(urlh.url)
         new_url = parsed._replace(netloc=parsed.hostname).geturl()

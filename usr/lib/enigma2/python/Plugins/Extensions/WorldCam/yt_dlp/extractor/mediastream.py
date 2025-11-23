@@ -21,7 +21,9 @@ class MediaStreamBaseIE(InfoExtractor):
             lambda _, v: v['@type'] == 'VideoObject', ('embedUrl', 'contentUrl'),
             {lambda x: x if re.match(rf'{self._BASE_URL_RE}/\w+', x) else None}))
 
-        for mobj in re.finditer(r'<script[^>]+>[^>]*playerMdStream\.mdstreamVideo\(\s*[\'"](?P<video_id>\w+)', webpage):
+        for mobj in re.finditer(
+            r'<script[^>]+>[^>]*playerMdStream\.mdstreamVideo\(\s*[\'"](?P<video_id>\w+)',
+                webpage):
             yield f'{self._EMBED_BASE_URL}/{mobj.group("video_id")}'
 
         yield from re.findall(
@@ -37,7 +39,8 @@ class MediaStreamBaseIE(InfoExtractor):
                     https://mdstrm\.com/(?P<live>live-stream))?
                 ''', webpage):
 
-            video_type = 'live-stream' if mobj.group('video_type') == 'live' or mobj.group('live') else 'embed'
+            video_type = 'live-stream' if mobj.group(
+                'video_type') == 'live' or mobj.group('live') else 'embed'
             yield f'https://mdstrm.com/{video_type}/{mobj.group("video_id")}'
 
 
@@ -118,25 +121,31 @@ class MediaStreamIE(MediaStreamBaseIE):
             if message in webpage:
                 self.raise_geo_restricted()
 
-        player_config = self._search_json(r'window\.MDSTRM\.OPTIONS\s*=', webpage, 'metadata', video_id)
+        player_config = self._search_json(
+            r'window\.MDSTRM\.OPTIONS\s*=', webpage, 'metadata', video_id)
 
         formats, subtitles = [], {}
         for video_format in player_config['src']:
             if video_format == 'hls':
                 params = {
                     'at': 'web-app',
-                    'access_token': traverse_obj(parse_qs(url), ('access_token', 0)),
+                    'access_token': traverse_obj(
+                        parse_qs(url),
+                        ('access_token',
+                         0)),
                 }
-                for name, key in (('MDSTRMUID', 'uid'), ('MDSTRMSID', 'sid'), ('MDSTRMPID', 'pid'), ('VERSION', 'av')):
+                for name, key in (
+                        ('MDSTRMUID', 'uid'), ('MDSTRMSID', 'sid'), ('MDSTRMPID', 'pid'), ('VERSION', 'av')):
                     params[key] = self._search_regex(
                         rf'window\.{name}\s*=\s*["\']([^"\']+)["\'];', webpage, key, default=None)
 
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                    update_url_query(player_config['src'][video_format], filter_dict(params)), video_id)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(update_url_query(
+                    player_config['src'][video_format], filter_dict(params)), video_id)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             elif video_format == 'mpd':
-                fmts, subs = self._extract_mpd_formats_and_subtitles(player_config['src'][video_format], video_id)
+                fmts, subs = self._extract_mpd_formats_and_subtitles(
+                    player_config['src'][video_format], video_id)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
@@ -208,19 +217,42 @@ class WinSportsVideoIE(MediaStreamBaseIE):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
         data = self._search_json(
-            r'<script\s*[^>]+data-drupal-selector="drupal-settings-json">', webpage, 'data', display_id)
+            r'<script\s*[^>]+data-drupal-selector="drupal-settings-json">',
+            webpage,
+            'data',
+            display_id)
 
-        mediastream_url = urljoin(f'{self._EMBED_BASE_URL}/', (
-            traverse_obj(data, (
-                (('settings', 'mediastream_formatter', ..., 'mediastream_id'), 'url'), {str}), get_all=False)
-            or next(self._extract_mediastream_urls(webpage), None)))
+        mediastream_url = urljoin(
+            f'{
+                self._EMBED_BASE_URL}/',
+            (traverse_obj(
+                data,
+                ((('settings',
+                   'mediastream_formatter',
+                   ...,
+                   'mediastream_id'),
+                  'url'),
+                 {str}),
+                get_all=False) or next(
+                self._extract_mediastream_urls(webpage),
+                None)))
 
         if not mediastream_url:
             self.raise_no_formats('No MediaStream embed found in webpage')
 
-        title = clean_html(remove_end(
-            self._search_json_ld(webpage, display_id, expected_type='VideoObject', default={}).get('title')
-            or self._og_search_title(webpage), '| Win Sports'))
+        title = clean_html(
+            remove_end(
+                self._search_json_ld(
+                    webpage,
+                    display_id,
+                    expected_type='VideoObject',
+                    default={}).get('title') or self._og_search_title(webpage),
+                '| Win Sports'))
 
         return self.url_result(
-            mediastream_url, MediaStreamIE, display_id, url_transparent=True, display_id=display_id, video_title=title)
+            mediastream_url,
+            MediaStreamIE,
+            display_id,
+            url_transparent=True,
+            display_id=display_id,
+            video_title=title)

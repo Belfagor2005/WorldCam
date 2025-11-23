@@ -54,7 +54,8 @@ class TVAIE(InfoExtractor):
     def _real_extract(self, url):
         entity_id = self._match_id(url)
         webpage = self._download_webpage(url, entity_id)
-        entity = self._search_nextjs_data(webpage, entity_id)['props']['pageProps']['staticEntity']
+        entity = self._search_nextjs_data(webpage, entity_id)[
+            'props']['pageProps']['staticEntity']
         video_id = entity['videoId']
         episode = strip_or_none(entity.get('name'))
 

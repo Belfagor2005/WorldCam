@@ -167,19 +167,24 @@ class PlaySuisseIE(InfoExtractor):
 
     def _perform_login(self, username, password):
         code_verifier = uuid.uuid4().hex + uuid.uuid4().hex + uuid.uuid4().hex
-        code_challenge = base64.urlsafe_b64encode(
-            hashlib.sha256(code_verifier.encode()).digest()).decode().rstrip('=')
+        code_challenge = base64.urlsafe_b64encode(hashlib.sha256(
+            code_verifier.encode()).digest()).decode().rstrip('=')
 
-        request_id = parse_qs(self._request_webpage(
-            f'{self._LOGIN_BASE}/authz-srv/authz', None, 'Requesting session ID', query={
-                'client_id': self._CLIENT_ID,
-                'redirect_uri': 'https://www.playsuisse.ch/auth',
-                'scope': 'email profile openid offline_access',
-                'response_type': 'code',
-                'code_challenge': code_challenge,
-                'code_challenge_method': 'S256',
-                'view_type': 'login',
-            }).url)['requestId'][0]
+        request_id = parse_qs(
+            self._request_webpage(
+                f'{
+                    self._LOGIN_BASE}/authz-srv/authz',
+                None,
+                'Requesting session ID',
+                query={
+                    'client_id': self._CLIENT_ID,
+                    'redirect_uri': 'https://www.playsuisse.ch/auth',
+                    'scope': 'email profile openid offline_access',
+                    'response_type': 'code',
+                    'code_challenge': code_challenge,
+                    'code_challenge_method': 'S256',
+                    'view_type': 'login',
+                }).url)['requestId'][0]
 
         try:
             exchange_id = self._download_json(
@@ -220,7 +225,12 @@ class PlaySuisseIE(InfoExtractor):
             })).url)['code'][0]
 
         self._ID_TOKEN = self._download_json(
-            f'{self._LOGIN_BASE}/proxy/token', None, 'Downloading token', data=b'', query={
+            f'{
+                self._LOGIN_BASE}/proxy/token',
+            None,
+            'Downloading token',
+            data=b'',
+            query={
                 'client_id': self._CLIENT_ID,
                 'redirect_uri': 'https://www.playsuisse.ch/auth',
                 'code': authorization_code,
@@ -248,7 +258,9 @@ class PlaySuisseIE(InfoExtractor):
             self.raise_login_required(method='password')
 
         media_id = self._match_id(url)
-        media_data = self._get_media_data(media_id, traverse_obj(parse_qs(url), ('locale', 0)))
+        media_data = self._get_media_data(
+            media_id, traverse_obj(
+                parse_qs(url), ('locale', 0)))
         info = self._extract_single(media_data)
         if media_data.get('episodes'):
             info.update({
@@ -258,7 +270,8 @@ class PlaySuisseIE(InfoExtractor):
         return info
 
     def _extract_single(self, media_data):
-        thumbnails = traverse_obj(media_data, lambda k, _: k.startswith('thumbnail'))
+        thumbnails = traverse_obj(
+            media_data, lambda k, _: k.startswith('thumbnail'))
 
         formats, subtitles = [], {}
         for media in traverse_obj(media_data, 'medias', default=[]):

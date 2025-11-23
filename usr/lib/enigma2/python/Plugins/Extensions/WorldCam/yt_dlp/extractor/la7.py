@@ -72,7 +72,9 @@ class LA7IE(InfoExtractor):
             self.report_drm(video_id)
 
         video_path = self._search_regex(
-            r'(/content/[\w/,]+?)\.mp4(?:\.csmil)?/master\.m3u8', webpage, 'video_path')
+            r'(/content/[\w/,]+?)\.mp4(?:\.csmil)?/master\.m3u8',
+            webpage,
+            'video_path')
 
         formats = self._extract_mpd_formats(
             f'{self._HOST}/local/dash/,{video_path}.mp4.urlset/manifest.mpd',
@@ -88,13 +90,12 @@ class LA7IE(InfoExtractor):
                 formats.append(http_f)
 
         return {
-            'id': video_id,
-            'title': self._og_search_title(webpage, default=None),
-            'description': self._og_search_description(webpage, default=None),
-            'thumbnail': self._og_search_thumbnail(webpage, default=None),
-            'formats': formats,
-            'upload_date': unified_strdate(self._search_regex(r'datetime="(.+?)"', webpage, 'upload_date', fatal=False)),
-        }
+            'id': video_id, 'title': self._og_search_title(
+                webpage, default=None), 'description': self._og_search_description(
+                webpage, default=None), 'thumbnail': self._og_search_thumbnail(
+                webpage, default=None), 'formats': formats, 'upload_date': unified_strdate(
+                    self._search_regex(
+                        r'datetime="(.+?)"', webpage, 'upload_date', fatal=False)), }
 
 
 class LA7PodcastEpisodeIE(InfoExtractor):
@@ -200,7 +201,8 @@ class LA7PodcastEpisodeIE(InfoExtractor):
         return self._extract_info(webpage, video_id)
 
 
-class LA7PodcastIE(LA7PodcastEpisodeIE):  # XXX: Do not subclass from concrete IE
+class LA7PodcastIE(
+        LA7PodcastEpisodeIE):  # XXX: Do not subclass from concrete IE
     IE_NAME = 'la7.it:podcast'
     _VALID_URL = r'https?://(?:www\.)?la7\.it/(?P<id>[^/]+)/podcast/?(?:$|[#?])'
 
@@ -219,8 +221,11 @@ class LA7PodcastIE(LA7PodcastEpisodeIE):  # XXX: Do not subclass from concrete I
 
         title = (
             self._html_search_regex(
-                r'<h1.*?>(.+?)</h1>', webpage, 'title', fatal=False, default=None)
-            or self._og_search_title(webpage))
+                r'<h1.*?>(.+?)</h1>',
+                webpage,
+                'title',
+                fatal=False,
+                default=None) or self._og_search_title(webpage))
         ppn = self._search_regex(
             r'window\.ppN\s*=\s*([\'"])(?P<ppn>.+?)\1',
             webpage, 'ppn', group='ppn', default=None)

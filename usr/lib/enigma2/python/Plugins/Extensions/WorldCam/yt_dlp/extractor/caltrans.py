@@ -21,12 +21,29 @@ class CaltransIE(InfoExtractor):
         global_vars = self._search_regex(
             r'<script[^<]+?([^<]+\.m3u8[^<]+)</script>',
             webpage, 'Global Vars')
-        route_place = self._search_regex(r'routePlace\s*=\s*"([^"]+)"', global_vars, 'Route Place', fatal=False)
-        location_name = self._search_regex(r'locationName\s*=\s*"([^"]+)"', global_vars, 'Location Name', fatal=False)
-        poster_url = self._search_regex(r'posterURL\s*=\s*"([^"]+)"', global_vars, 'Poster Url', fatal=False)
-        video_stream = self._search_regex(r'videoStreamURL\s*=\s*"([^"]+)"', global_vars, 'Video Stream URL', fatal=False)
+        route_place = self._search_regex(
+            r'routePlace\s*=\s*"([^"]+)"',
+            global_vars,
+            'Route Place',
+            fatal=False)
+        location_name = self._search_regex(
+            r'locationName\s*=\s*"([^"]+)"',
+            global_vars,
+            'Location Name',
+            fatal=False)
+        poster_url = self._search_regex(
+            r'posterURL\s*=\s*"([^"]+)"',
+            global_vars,
+            'Poster Url',
+            fatal=False)
+        video_stream = self._search_regex(
+            r'videoStreamURL\s*=\s*"([^"]+)"',
+            global_vars,
+            'Video Stream URL',
+            fatal=False)
 
-        formats = self._extract_m3u8_formats(video_stream, video_id, 'ts', live=True)
+        formats = self._extract_m3u8_formats(
+            video_stream, video_id, 'ts', live=True)
 
         return {
             'id': video_id,

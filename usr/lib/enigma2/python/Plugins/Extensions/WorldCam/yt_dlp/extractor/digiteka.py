@@ -23,7 +23,8 @@ class DigitekaIE(InfoExtractor):
             )
             /id
         )/(?P<id>[\d+a-z]+)'''
-    _EMBED_REGEX = [r'<(?:iframe|script)[^>]+src=["\'](?P<url>(?:https?:)?//(?:www\.)?ultimedia\.com/deliver/(?:generic|musique)(?:/[^/]+)*/(?:src|article)/[\d+a-z]+)']
+    _EMBED_REGEX = [
+        r'<(?:iframe|script)[^>]+src=["\'](?P<url>(?:https?:)?//(?:www\.)?ultimedia\.com/deliver/(?:generic|musique)(?:/[^/]+)*/(?:src|article)/[\d+a-z]+)']
     _TESTS = [{
         # news
         'url': 'https://www.ultimedia.com/default/index/videogeneric/id/s8uk0r',

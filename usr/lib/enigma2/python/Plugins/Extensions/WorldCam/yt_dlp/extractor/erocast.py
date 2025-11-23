@@ -39,7 +39,11 @@ class ErocastIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
         data = self._search_json(
-            rf'<script>\s*var song_data_{video_id}\s*=', webpage, 'data', video_id, end_pattern=r'</script>')
+            rf'<script>\s*var song_data_{video_id}\s*=',
+            webpage,
+            'data',
+            video_id,
+            end_pattern=r'</script>')
 
         return {
             'id': video_id,

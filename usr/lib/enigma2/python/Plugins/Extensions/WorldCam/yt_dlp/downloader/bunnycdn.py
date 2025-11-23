@@ -21,7 +21,8 @@ class BunnyCdnFD(FileDownloader):
         fd = HlsFD(self.ydl, self.params)
 
         stop_event = threading.Event()
-        ping_thread = threading.Thread(target=self.ping_thread, args=(stop_event,), kwargs=info_dict['_bunnycdn_ping_data'])
+        ping_thread = threading.Thread(target=self.ping_thread, args=(
+            stop_event,), kwargs=info_dict['_bunnycdn_ping_data'])
         ping_thread.start()
 
         try:
@@ -30,7 +31,8 @@ class BunnyCdnFD(FileDownloader):
             stop_event.set()
 
     def ping_thread(self, stop_event, url, headers, secret, context_id):
-        # Site sends ping every 4 seconds, but this throttles the download. Pinging every 2 seconds seems to work.
+        # Site sends ping every 4 seconds, but this throttles the download.
+        # Pinging every 2 seconds seems to work.
         ping_interval = 2
         # Hard coded resolution as it doesn't seem to matter
         res = 1080
@@ -41,7 +43,8 @@ class BunnyCdnFD(FileDownloader):
             current_time += ping_interval
 
             time = current_time + round(random.random(), 6)
-            md5_hash = hashlib.md5(f'{secret}_{context_id}_{time}_{paused}_{res}'.encode()).hexdigest()
+            md5_hash = hashlib.md5(
+                f'{secret}_{context_id}_{time}_{paused}_{res}'.encode()).hexdigest()
             ping_url = f'{url}?hash={md5_hash}&time={time}&paused={paused}&resolution={res}'
 
             try:

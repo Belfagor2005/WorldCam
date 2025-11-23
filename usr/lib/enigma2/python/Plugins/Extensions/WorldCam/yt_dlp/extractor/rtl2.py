@@ -66,8 +66,15 @@ class RTL2IE(InfoExtractor):
         rtmp_url = video_info.get('streamurl')
         if rtmp_url:
             rtmp_url = rtmp_url.replace('\\', '')
-            stream_url = 'mp4:' + self._html_search_regex(r'/ondemand/(.+)', rtmp_url, 'stream URL')
-            rtmp_conn = ['S:connect', 'O:1', 'NS:pageUrl:' + url, 'NB:fpad:0', 'NN:videoFunction:1', 'O:0']
+            stream_url = 'mp4:' + \
+                self._html_search_regex(r'/ondemand/(.+)', rtmp_url, 'stream URL')
+            rtmp_conn = [
+                'S:connect',
+                'O:1',
+                'NS:pageUrl:' + url,
+                'NB:fpad:0',
+                'NN:videoFunction:1',
+                'O:0']
 
             formats.append({
                 'format_id': 'rtmp',

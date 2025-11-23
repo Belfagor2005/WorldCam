@@ -20,7 +20,8 @@ from ..utils.traversal import subs_list_to_dict, traverse_obj
 
 
 class RTVEBaseIE(InfoExtractor):
-    # Reimplementation of https://js2.rtve.es/pages/app-player/3.5.1/js/pf_video.js
+    # Reimplementation of
+    # https://js2.rtve.es/pages/app-player/3.5.1/js/pf_video.js
     @staticmethod
     def _decrypt_url(png):
         encrypted_data = io.BytesIO(base64.b64decode(png)[8:])
@@ -75,7 +76,8 @@ class RTVEBaseIE(InfoExtractor):
                 d -= 1
         return alphabet
 
-    def _extract_png_formats_and_subtitles(self, video_id, media_type='videos'):
+    def _extract_png_formats_and_subtitles(
+            self, video_id, media_type='videos'):
         formats, subtitles = [], {}
         q = qualities(['Media', 'Alta', 'HQ', 'HD_READY', 'HD_FULL'])
         for manager in ('rtveplayw', 'default'):
@@ -128,75 +130,69 @@ class RTVEALaCartaIE(RTVEBaseIE):
         r'https?://(?:www\.)?rtve\.es/infantil/serie/[^/?#]+/video/[^/?#]+/(?P<id>\d+)',
     ]
 
-    _TESTS = [{
-        'url': 'http://www.rtve.es/alacarta/videos/la-aventura-del-saber/aventuraentornosilla/3088905/',
-        'md5': 'a964547824359a5753aef09d79fe984b',
-        'info_dict': {
-            'id': '3088905',
-            'ext': 'mp4',
-            'title': 'En torno a la silla',
-            'duration': 1216.981,
-            'series': 'La aventura del Saber',
-            'thumbnail': 'https://img2.rtve.es/v/aventuraentornosilla_3088905.png',
-        },
-    }, {
-        'note': 'Live stream',
-        'url': 'http://www.rtve.es/alacarta/videos/television/24h-live/1694255/',
-        'info_dict': {
-            'id': '1694255',
-            'ext': 'mp4',
-            'title': 're:^24H LIVE [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$',
-            'is_live': True,
-            'live_status': 'is_live',
-            'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
-        },
-        'params': {
-            'skip_download': 'live stream',
-        },
-    }, {
-        'url': 'http://www.rtve.es/alacarta/videos/servir-y-proteger/servir-proteger-capitulo-104/4236788/',
-        'md5': 'f3cf0d1902d008c48c793e736706c174',
-        'info_dict': {
-            'id': '4236788',
-            'ext': 'mp4',
-            'title': 'Episodio 104',
-            'duration': 3222.8,
-            'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
-            'series': 'Servir y proteger',
-        },
-    }, {
-        'url': 'http://www.rtve.es/m/alacarta/videos/cuentame-como-paso/cuentame-como-paso-t16-ultimo-minuto-nuestra-vida-capitulo-276/2969138/?media=tve',
-        'only_matching': True,
-    }, {
-        'url': 'http://www.rtve.es/filmoteca/no-do/not-1-introduccion-primer-noticiario-espanol/1465256/',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.rtve.es/play/videos/saber-vivir/07-07-24/16177116/',
-        'md5': 'a5b24fcdfa3ff5cb7908aba53d22d4b6',
-        'info_dict': {
-            'id': '16177116',
-            'ext': 'mp4',
-            'title': 'Saber vivir - 07/07/24',
-            'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
-            'duration': 2162.68,
-            'series': 'Saber vivir',
-        },
-    }, {
-        'url': 'https://www.rtve.es/infantil/serie/agus-lui-churros-crafts/video/gusano/7048976/',
-        'info_dict': {
-            'id': '7048976',
-            'ext': 'mp4',
-            'title': 'Gusano',
-            'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
-            'duration': 292.86,
-            'series': 'Agus & Lui: Churros y Crafts',
-            '_old_archive_ids': ['rtveinfantil 7048976'],
-        },
-    }]
+    _TESTS = [{'url': 'http://www.rtve.es/alacarta/videos/la-aventura-del-saber/aventuraentornosilla/3088905/',
+               'md5': 'a964547824359a5753aef09d79fe984b',
+               'info_dict': {'id': '3088905',
+                             'ext': 'mp4',
+                             'title': 'En torno a la silla',
+                             'duration': 1216.981,
+                             'series': 'La aventura del Saber',
+                             'thumbnail': 'https://img2.rtve.es/v/aventuraentornosilla_3088905.png',
+                             },
+               },
+              {'note': 'Live stream',
+               'url': 'http://www.rtve.es/alacarta/videos/television/24h-live/1694255/',
+               'info_dict': {'id': '1694255',
+                             'ext': 'mp4',
+                             'title': 're:^24H LIVE [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$',
+                             'is_live': True,
+                             'live_status': 'is_live',
+                             'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
+                             },
+               'params': {'skip_download': 'live stream',
+                          },
+               },
+              {'url': 'http://www.rtve.es/alacarta/videos/servir-y-proteger/servir-proteger-capitulo-104/4236788/',
+               'md5': 'f3cf0d1902d008c48c793e736706c174',
+               'info_dict': {'id': '4236788',
+                             'ext': 'mp4',
+                             'title': 'Episodio 104',
+                             'duration': 3222.8,
+                             'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
+                             'series': 'Servir y proteger',
+                             },
+               },
+              {'url': 'http://www.rtve.es/m/alacarta/videos/cuentame-como-paso/cuentame-como-paso-t16-ultimo-minuto-nuestra-vida-capitulo-276/2969138/?media=tve',
+               'only_matching': True,
+               },
+              {'url': 'http://www.rtve.es/filmoteca/no-do/not-1-introduccion-primer-noticiario-espanol/1465256/',
+               'only_matching': True,
+               },
+              {'url': 'https://www.rtve.es/play/videos/saber-vivir/07-07-24/16177116/',
+               'md5': 'a5b24fcdfa3ff5cb7908aba53d22d4b6',
+               'info_dict': {'id': '16177116',
+                             'ext': 'mp4',
+                             'title': 'Saber vivir - 07/07/24',
+                             'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
+                             'duration': 2162.68,
+                             'series': 'Saber vivir',
+                             },
+               },
+              {'url': 'https://www.rtve.es/infantil/serie/agus-lui-churros-crafts/video/gusano/7048976/',
+               'info_dict': {'id': '7048976',
+                             'ext': 'mp4',
+                             'title': 'Gusano',
+                             'thumbnail': r're:https://img2\.rtve\.es/v/.*\.png',
+                             'duration': 292.86,
+                             'series': 'Agus & Lui: Churros y Crafts',
+                             '_old_archive_ids': ['rtveinfantil 7048976'],
+                             },
+               }]
 
     def _get_subtitles(self, video_id):
         subtitle_data = self._download_json(
-            f'https://api2.rtve.es/api/videos/{video_id}/subtitulos.json', video_id,
+            f'https://api2.rtve.es/api/videos/{video_id}/subtitulos.json',
+            video_id,
             'Downloading subtitles info')
         return traverse_obj(subtitle_data, ('page', 'items', ..., {
             'id': ('lang', {str}),
@@ -209,10 +205,14 @@ class RTVEALaCartaIE(RTVEBaseIE):
             f'http://www.rtve.es/api/videos/{video_id}/config/alacarta_videos.json',
             video_id)['page']['items'][0]
         if metadata['state'] == 'DESPU':
-            raise ExtractorError('The video is no longer available', expected=True)
+            raise ExtractorError(
+                'The video is no longer available',
+                expected=True)
         formats, subtitles = self._extract_png_formats_and_subtitles(video_id)
 
-        self._merge_subtitles(self.extract_subtitles(video_id), target=subtitles)
+        self._merge_subtitles(
+            self.extract_subtitles(video_id),
+            target=subtitles)
 
         is_infantil = urllib.parse.urlparse(url).path.startswith('/infantil/')
 
@@ -221,7 +221,10 @@ class RTVEALaCartaIE(RTVEBaseIE):
             'formats': formats,
             'subtitles': subtitles,
             **self._parse_metadata(metadata),
-            '_old_archive_ids': [make_archive_id('rtveinfantil', video_id)] if is_infantil else None,
+            '_old_archive_ids': [
+                make_archive_id(
+                    'rtveinfantil',
+                    video_id)] if is_infantil else None,
         }
 
 
@@ -274,9 +277,11 @@ class RTVEAudioIE(RTVEBaseIE):
     def _real_extract(self, url):
         audio_id = self._match_id(url)
         metadata = self._download_json(
-            f'https://www.rtve.es/api/audios/{audio_id}.json', audio_id)['page']['items'][0]
+            f'https://www.rtve.es/api/audios/{audio_id}.json',
+            audio_id)['page']['items'][0]
 
-        formats, subtitles = self._extract_png_formats_and_subtitles(audio_id, media_type='audios')
+        formats, subtitles = self._extract_png_formats_and_subtitles(
+            audio_id, media_type='audios')
 
         return {
             'id': audio_id,
@@ -294,36 +299,33 @@ class RTVELiveIE(RTVEBaseIE):
         r'https?://(?:www\.)?rtve\.es/play/videos/directo/[^/?#]+/(?P<id>[a-zA-Z0-9-]+)',
     ]
 
-    _TESTS = [{
-        'url': 'http://www.rtve.es/directo/la-1/',
-        'info_dict': {
-            'id': 'la-1',
-            'ext': 'mp4',
-            'live_status': 'is_live',
-            'title': str,
-            'description': str,
-            'thumbnail': r're:https://img\d\.rtve\.es/resources/thumbslive/\d+\.jpg',
-            'timestamp': int,
-            'upload_date': str,
-        },
-        'params': {'skip_download': 'live stream'},
-    }, {
-        'url': 'https://www.rtve.es/play/videos/directo/deportes/tdp/',
-        'info_dict': {
-            'id': 'tdp',
-            'ext': 'mp4',
-            'live_status': 'is_live',
-            'title': str,
-            'description': str,
-            'thumbnail': r're:https://img2\d\.rtve\.es/resources/thumbslive/\d+\.jpg',
-            'timestamp': int,
-            'upload_date': str,
-        },
-        'params': {'skip_download': 'live stream'},
-    }, {
-        'url': 'http://www.rtve.es/play/videos/directo/canales-lineales/la-1/',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://www.rtve.es/directo/la-1/',
+               'info_dict': {'id': 'la-1',
+                             'ext': 'mp4',
+                             'live_status': 'is_live',
+                             'title': str,
+                             'description': str,
+                             'thumbnail': r're:https://img\d\.rtve\.es/resources/thumbslive/\d+\.jpg',
+                             'timestamp': int,
+                             'upload_date': str,
+                             },
+               'params': {'skip_download': 'live stream'},
+               },
+              {'url': 'https://www.rtve.es/play/videos/directo/deportes/tdp/',
+               'info_dict': {'id': 'tdp',
+                             'ext': 'mp4',
+                             'live_status': 'is_live',
+                             'title': str,
+                             'description': str,
+                             'thumbnail': r're:https://img2\d\.rtve\.es/resources/thumbslive/\d+\.jpg',
+                             'timestamp': int,
+                             'upload_date': str,
+                             },
+               'params': {'skip_download': 'live stream'},
+               },
+              {'url': 'http://www.rtve.es/play/videos/directo/canales-lineales/la-1/',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -333,7 +335,8 @@ class RTVELiveIE(RTVEBaseIE):
             r'<div[^>]+class="[^"]*videoPlayer[^"]*"[^>]*data-setup=\'',
             webpage, 'data_setup', video_id)
 
-        formats, subtitles = self._extract_png_formats_and_subtitles(data_setup['idAsset'])
+        formats, subtitles = self._extract_png_formats_and_subtitles(
+            data_setup['idAsset'])
 
         return {
             'id': video_id,
@@ -370,7 +373,9 @@ class RTVETelevisionIE(InfoExtractor):
 
         play_url = self._html_search_meta('contentUrl', webpage)
         if play_url is None:
-            raise ExtractorError('The webpage doesn\'t contain any video', expected=True)
+            raise ExtractorError(
+                'The webpage doesn\'t contain any video',
+                expected=True)
 
         return self.url_result(play_url, ie=RTVEALaCartaIE.ie_key())
 
@@ -400,7 +405,13 @@ class RTVEProgramIE(RTVEBaseIE):
             })
 
     def _entries(self, page_data):
-        for video in traverse_obj(page_data, ('page', 'items', lambda _, v: url_or_none(v['htmlUrl']))):
+        for video in traverse_obj(
+            page_data,
+            ('page',
+             'items',
+             lambda _,
+             v: url_or_none(
+                 v['htmlUrl']))):
             yield self.url_result(
                 video['htmlUrl'], RTVEALaCartaIE, url_transparent=True,
                 **traverse_obj(video, {
@@ -422,13 +433,21 @@ class RTVEProgramIE(RTVEBaseIE):
         program_slug = self._match_id(url)
         program_page = self._download_webpage(url, program_slug)
 
-        program_id = self._html_search_meta('DC.identifier', program_page, 'Program ID', fatal=True)
+        program_id = self._html_search_meta(
+            'DC.identifier', program_page, 'Program ID', fatal=True)
 
         first_page = self._fetch_page(program_id, 1)
-        page_count = traverse_obj(first_page, ('page', 'totalPages', {int})) or 1
+        page_count = traverse_obj(
+            first_page, ('page', 'totalPages', {int})) or 1
 
         entries = InAdvancePagedList(
-            lambda idx: self._entries(self._fetch_page(program_id, idx + 1) if idx else first_page),
-            page_count, self._PAGE_SIZE)
+            lambda idx: self._entries(
+                self._fetch_page(
+                    program_id,
+                    idx +
+                    1) if idx else first_page),
+            page_count,
+            self._PAGE_SIZE)
 
-        return self.playlist_result(entries, program_id, self._html_extract_title(program_page))
+        return self.playlist_result(
+            entries, program_id, self._html_extract_title(program_page))

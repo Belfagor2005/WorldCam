@@ -60,7 +60,8 @@ class AudiMediaIE(InfoExtractor):
                     video_id, f4m_id='hds', fatal=False))
 
             for video_version in video_data.get('video_versions', []):
-                video_version_url = video_version.get('download_url') or video_version.get('stream_url')
+                video_version_url = video_version.get(
+                    'download_url') or video_version.get('stream_url')
                 if not video_version_url:
                     continue
                 f = {
@@ -70,7 +71,8 @@ class AudiMediaIE(InfoExtractor):
                     'abr': int_or_none(video_version.get('audio_bitrate')),
                     'vbr': int_or_none(video_version.get('video_bitrate')),
                 }
-                bitrate = self._search_regex(r'(\d+)k', video_version_url, 'bitrate', default=None)
+                bitrate = self._search_regex(
+                    r'(\d+)k', video_version_url, 'bitrate', default=None)
                 if bitrate:
                     f.update({
                         'format_id': f'http-{bitrate}',

@@ -79,7 +79,8 @@ class LanguageScreen(Screen):
         languages = []
         for code in sorted(self.flag_mapping.keys()):
             name = self.get_english_name(code)
-            entry = LanguageEntryComponent(name, code)  # returns (code, name, png)
+            entry = LanguageEntryComponent(
+                name, code)  # returns (code, name, png)
             languages.append(entry)
 
         self["list"].setList(languages)
@@ -88,15 +89,35 @@ class LanguageScreen(Screen):
     def get_english_name(self, code):
         """Returns the English name of the language"""
         english_names = {
-            "en": "English", "it": "Italian", "ar": "Arabic", "bg": "Bulgarian",
-            "cs": "Czech", "de": "German", "el": "Greek", "es": "Spanish",
-            "fa": "Persian", "fr": "French", "he": "Hebrew", "hr": "Croatian",
-            "hu": "Hungarian", "ja": "Japanese", "ko": "Korean", "mk": "Macedonian",
-            "nl": "Dutch", "pl": "Polish", "pt": "Portuguese", "ro": "Romanian",
-            "ru": "Russian", "sk": "Slovak", "sl": "Slovenian", "sq": "Albanian",
-            "sr": "Serbian", "th": "Thai", "tr": "Turkish", "vi": "Vietnamese",
-            "zh": "Chinese"
-        }
+            "en": "English",
+            "it": "Italian",
+            "ar": "Arabic",
+            "bg": "Bulgarian",
+            "cs": "Czech",
+            "de": "German",
+            "el": "Greek",
+            "es": "Spanish",
+            "fa": "Persian",
+            "fr": "French",
+            "he": "Hebrew",
+            "hr": "Croatian",
+            "hu": "Hungarian",
+            "ja": "Japanese",
+            "ko": "Korean",
+            "mk": "Macedonian",
+            "nl": "Dutch",
+            "pl": "Polish",
+            "pt": "Portuguese",
+            "ro": "Romanian",
+            "ru": "Russian",
+            "sk": "Slovak",
+            "sl": "Slovenian",
+            "sq": "Albanian",
+            "sr": "Serbian",
+            "th": "Thai",
+            "tr": "Turkish",
+            "vi": "Vietnamese",
+            "zh": "Chinese"}
         return english_names.get(code, code.upper())
 
     def selectActiveLanguage(self):

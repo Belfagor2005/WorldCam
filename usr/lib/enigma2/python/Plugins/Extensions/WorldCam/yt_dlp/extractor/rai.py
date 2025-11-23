@@ -41,7 +41,8 @@ class RaiBaseIE(InfoExtractor):
             man_url = f['url']
             if re.search(r'chunklist(?:_b\d+)*_ao[_.]', man_url):  # audio only
                 f['vcodec'] = 'none'
-            elif re.search(r'chunklist(?:_b\d+)*_vo[_.]', man_url):  # video only
+            # video only
+            elif re.search(r'chunklist(?:_b\d+)*_vo[_.]', man_url):
                 f['acodec'] = 'none'
             else:  # video+audio
                 if f['acodec'] == 'none':
@@ -72,14 +73,22 @@ class RaiBaseIE(InfoExtractor):
             self.report_drm(video_id)
 
         is_live = xpath_text(relinker, './is_live', default='N') == 'Y'
-        duration = parse_duration(xpath_text(relinker, './duration', default=None))
-        media_url = xpath_text(relinker, './url[@type="content"]', default=None)
+        duration = parse_duration(
+            xpath_text(
+                relinker,
+                './duration',
+                default=None))
+        media_url = xpath_text(
+            relinker,
+            './url[@type="content"]',
+            default=None)
 
         if not media_url:
             self.raise_no_formats('The relinker returned no media url')
 
         # geo flag is a bit unreliable and not properly set all the time
-        geoprotection = xpath_text(relinker, './geoprotection', default='N') == 'Y'
+        geoprotection = xpath_text(
+            relinker, './geoprotection', default='N') == 'Y'
 
         ext = determine_ext(media_url).lower()
         formats = []
@@ -111,10 +120,17 @@ class RaiBaseIE(InfoExtractor):
             raise ExtractorError(f'Unrecognized media extension "{ext}"')
 
         if (not formats and geoprotection is True) or '/video_no_available.mp4' in media_url:
-            self.raise_geo_restricted(countries=self._GEO_COUNTRIES, metadata_available=True)
+            self.raise_geo_restricted(
+                countries=self._GEO_COUNTRIES,
+                metadata_available=True)
 
         if not audio_only and not is_live:
-            formats.extend(self._create_http_urls(media_url, relinker_url, formats, video_id))
+            formats.extend(
+                self._create_http_urls(
+                    media_url,
+                    relinker_url,
+                    formats,
+                    video_id))
 
         return filter_dict({
             'is_live': is_live,
@@ -146,7 +162,13 @@ class RaiBaseIE(InfoExtractor):
             """check if the target is in the range of number +/- percent"""
             if not number or number < 0:
                 return False
-            return abs(target - number) < min(float(number) * float(pc) / 100.0, roof)
+            return abs(
+                target -
+                number) < min(
+                float(number) *
+                float(pc) /
+                100.0,
+                roof)
 
         def get_format_info(tbr):
             import math
@@ -192,9 +214,16 @@ class RaiBaseIE(InfoExtractor):
         # Check if MP4 download is available
         try:
             self._request_webpage(
-                HEADRequest(_MP4_TMPL % (relinker_url, '*')), video_id, 'Checking MP4 availability')
+                HEADRequest(
+                    _MP4_TMPL %
+                    (relinker_url,
+                     '*')),
+                video_id,
+                'Checking MP4 availability')
         except ExtractorError as e:
-            self.to_screen(f'{video_id}: MP4 direct download is not available: {e.cause}')
+            self.to_screen(
+                f'{video_id}: MP4 direct download is not available: {
+                    e.cause}')
             return []
 
         # filter out single-stream formats
@@ -204,7 +233,8 @@ class RaiBaseIE(InfoExtractor):
         mobj = re.search(_MANIFEST_REG, manifest_url)
         if not mobj:
             return []
-        available_qualities = mobj.group('quality').split(',') if mobj.group('quality') else ['*']
+        available_qualities = mobj.group('quality').split(
+            ',') if mobj.group('quality') else ['*']
 
         formats = []
         for q in filter(None, available_qualities):
@@ -228,7 +258,8 @@ class RaiBaseIE(InfoExtractor):
         STL_EXT = 'stl'
         SRT_EXT = 'srt'
         subtitles = {}
-        subtitles_array = video_data.get('subtitlesArray') or video_data.get('subtitleList') or []
+        subtitles_array = video_data.get(
+            'subtitlesArray') or video_data.get('subtitleList') or []
         for k in ('subtitles', 'subtitlesUrl'):
             subtitles_array.append({'url': video_data.get(k)})
         for subtitle in subtitles_array:
@@ -250,7 +281,8 @@ class RaiBaseIE(InfoExtractor):
 
 
 class RaiPlayIE(RaiBaseIE):
-    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplay\.it/.+?-(?P<id>{RaiBaseIE._UUID_RE}))\.(?:html|json)'
+    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplay\.it/.+?-(?P<id>{
+        RaiBaseIE._UUID_RE}))\.(?:html|json)'
     _TESTS = [{
         'url': 'https://www.raiplay.it/video/2014/04/Report-del-07042014-cb27157f-9dd0-4aee-b788-b1f67643a391.html',
         'md5': '8970abf8caf8aef4696e7b1f2adfc696',
@@ -365,11 +397,17 @@ class RaiPlayIE(RaiBaseIE):
             self.report_drm(video_id)
 
         video = media['video']
-        relinker_info = self._extract_relinker_info(video['content_url'], video_id)
+        relinker_info = self._extract_relinker_info(
+            video['content_url'], video_id)
         date_published = join_nonempty(
-            media.get('date_published'), media.get('time_published'), delim=' ')
+            media.get('date_published'),
+            media.get('time_published'),
+            delim=' ')
         season = media.get('season')
-        alt_title = join_nonempty(media.get('subtitle'), media.get('toptitle'), delim=' - ')
+        alt_title = join_nonempty(
+            media.get('subtitle'),
+            media.get('toptitle'),
+            delim=' - ')
 
         return {
             'id': remove_start(media.get('id'), 'ContentItem-') or video_id,
@@ -455,10 +493,11 @@ class RaiPlayPlaylistIE(InfoExtractor):
         for b in (program.get('blocks') or []):
             for s in (b.get('sets') or []):
                 if extra_id:
-                    if extra_id != join_nonempty(
-                            b.get('name'), s.get('name'), delim='/').replace(' ', '-').upper():
+                    if extra_id != join_nonempty(b.get('name'), s.get(
+                            'name'), delim='/').replace(' ', '-').upper():
                         continue
-                    playlist_title = join_nonempty(playlist_title, s.get('name'), delim=' - ')
+                    playlist_title = join_nonempty(
+                        playlist_title, s.get('name'), delim=' - ')
 
                 s_id = s.get('id')
                 if not s_id:
@@ -483,7 +522,8 @@ class RaiPlayPlaylistIE(InfoExtractor):
 
 
 class RaiPlaySoundIE(RaiBaseIE):
-    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplaysound\.it/.+?-(?P<id>{RaiBaseIE._UUID_RE}))\.(?:html|json)'
+    _VALID_URL = rf'(?P<base>https?://(?:www\.)?raiplaysound\.it/.+?-(?P<id>{
+        RaiBaseIE._UUID_RE}))\.(?:html|json)'
     _TESTS = [{
         'url': 'https://www.raiplaysound.it/audio/2021/12/IL-RUGGITO-DEL-CONIGLIO-1ebae2a7-7cdb-42bb-842e-fe0d193e9707.html',
         'md5': '8970abf8caf8aef4696e7b1f2adfc696',
@@ -529,20 +569,34 @@ class RaiPlaySoundIE(RaiBaseIE):
 
     def _real_extract(self, url):
         base, audio_id = self._match_valid_url(url).group('base', 'id')
-        media = self._download_json(f'{base}.json', audio_id, 'Downloading audio JSON')
-        uid = try_get(media, lambda x: remove_start(remove_start(x['uniquename'], 'ContentItem-'), 'Page-'))
+        media = self._download_json(
+            f'{base}.json', audio_id, 'Downloading audio JSON')
+        uid = try_get(
+            media,
+            lambda x: remove_start(
+                remove_start(
+                    x['uniquename'],
+                    'ContentItem-'),
+                'Page-'))
 
         info = {}
         formats = []
-        relinkers = set(traverse_obj(media, (('downloadable_audio', 'audio', ('live', 'cards', 0, 'audio')), 'url')))
+        relinkers = set(
+            traverse_obj(
+                media, (('downloadable_audio', 'audio', ('live', 'cards', 0, 'audio')), 'url')))
         for r in relinkers:
             info = self._extract_relinker_info(r, audio_id, True)
             formats.extend(info.get('formats'))
 
-        date_published = try_get(media, (lambda x: f'{x["create_date"]} {x.get("create_time") or ""}',
-                                         lambda x: x['live']['create_date']))
+        date_published = try_get(
+            media,
+            (lambda x: f'{
+                x["create_date"]} {
+                x.get("create_time") or ""}',
+                lambda x: x['live']['create_date']))
 
-        podcast_info = traverse_obj(media, 'podcast_info', ('live', 'cards', 0)) or {}
+        podcast_info = traverse_obj(
+            media, 'podcast_info', ('live', 'cards', 0)) or {}
 
         return {
             **info,
@@ -563,7 +617,8 @@ class RaiPlaySoundIE(RaiBaseIE):
         }
 
 
-class RaiPlaySoundLiveIE(RaiPlaySoundIE):  # XXX: Do not subclass from concrete IE
+class RaiPlaySoundLiveIE(
+        RaiPlaySoundIE):  # XXX: Do not subclass from concrete IE
     _VALID_URL = r'(?P<base>https?://(?:www\.)?raiplaysound\.it/(?P<id>[^/?#&]+)$)'
     _TESTS = [{
         'url': 'https://www.raiplaysound.it/radio2',
@@ -605,28 +660,37 @@ class RaiPlaySoundPlaylistIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        base, playlist_id, extra_id = self._match_valid_url(url).group('base', 'id', 'extra_id')
+        base, playlist_id, extra_id = self._match_valid_url(
+            url).group('base', 'id', 'extra_id')
         url = f'{base}.json'
-        program = self._download_json(url, playlist_id, 'Downloading program JSON')
+        program = self._download_json(
+            url, playlist_id, 'Downloading program JSON')
 
         if extra_id:
             extra_id = extra_id.rstrip('/')
             playlist_id += '_' + extra_id.replace('/', '_')
-            path = next(c['path_id'] for c in program.get('filters') or [] if extra_id in c.get('weblink'))
+            path = next(c['path_id'] for c in program.get(
+                'filters') or [] if extra_id in c.get('weblink'))
             program = self._download_json(
-                urljoin('https://www.raiplaysound.it', path), playlist_id, 'Downloading program secondary JSON')
+                urljoin(
+                    'https://www.raiplaysound.it',
+                    path),
+                playlist_id,
+                'Downloading program secondary JSON')
 
         entries = [
             self.url_result(urljoin(base, c['path_id']), ie=RaiPlaySoundIE.ie_key())
             for c in traverse_obj(program, 'cards', ('block', 'cards')) or []
             if c.get('path_id')]
 
-        return self.playlist_result(entries, playlist_id, program.get('title'),
-                                    traverse_obj(program, ('podcast_info', 'description')))
+        return self.playlist_result(
+            entries, playlist_id, program.get('title'), traverse_obj(
+                program, ('podcast_info', 'description')))
 
 
 class RaiIE(RaiBaseIE):
-    _VALID_URL = rf'https?://[^/]+\.(?:rai\.(?:it|tv))/.+?-(?P<id>{RaiBaseIE._UUID_RE})(?:-.+?)?\.html'
+    _VALID_URL = rf'https?://[^/]+\.(?:rai\.(?:it|tv))/.+?-(?P<id>{
+        RaiBaseIE._UUID_RE})(?:-.+?)?\.html'
     _TESTS = [{
         'url': 'https://www.raisport.rai.it/dl/raiSport/media/rassegna-stampa-04a9f4bd-b563-40cf-82a6-aad3529cb4a9.html',
         'info_dict': {
@@ -677,7 +741,8 @@ class RaiIE(RaiBaseIE):
                 }],
             }
         elif 'Video' in media['type']:
-            relinker_info = self._extract_relinker_info(media['mediaUri'], content_id)
+            relinker_info = self._extract_relinker_info(
+                media['mediaUri'], content_id)
         else:
             raise ExtractorError('not a media file')
 
@@ -699,8 +764,10 @@ class RaiIE(RaiBaseIE):
 
 
 class RaiNewsIE(RaiBaseIE):
-    _VALID_URL = rf'https?://(www\.)?rainews\.it/(?!articoli)[^?#]+-(?P<id>{RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
-    _EMBED_REGEX = [rf'<iframe[^>]+data-src="(?P<url>/iframe/[^?#]+?{RaiBaseIE._UUID_RE}\.html)']
+    _VALID_URL = rf'https?://(www\.)?rainews\.it/(?!articoli)[^?#]+-(?P<id>{
+        RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
+    _EMBED_REGEX = [
+        rf'<iframe[^>]+data-src="(?P<url>/iframe/[^?#]+?{RaiBaseIE._UUID_RE}\.html)']
     _TESTS = [{
         # new rainews player (#3911)
         'url': 'https://www.rainews.it/video/2024/02/membri-della-croce-rossa-evacuano-gli-abitanti-di-un-villaggio-nella-regione-ucraina-di-kharkiv-il-filmato-dallucraina--31e8017c-845c-43f5-9c48-245b43c3a079.html',
@@ -742,8 +809,13 @@ class RaiNewsIE(RaiBaseIE):
         webpage = self._download_webpage(url, video_id)
 
         player_data = self._search_json(
-            rf'<rai{self._PLAYER_TAG}-player\s*data=\'', webpage, 'player_data', video_id,
-            transform_source=clean_html, default={})
+            rf'<rai{
+                self._PLAYER_TAG}-player\s*data=\'',
+            webpage,
+            'player_data',
+            video_id,
+            transform_source=clean_html,
+            default={})
         track_info = player_data.get('track_info')
         relinker_url = traverse_obj(player_data, 'mediapolis', 'content_url')
 
@@ -756,20 +828,25 @@ class RaiNewsIE(RaiBaseIE):
             except ExtractorError as e:
                 raise ExtractorError('Relinker URL not found', cause=e)
 
-        relinker_info = self._extract_relinker_info(urljoin(url, relinker_url), video_id)
+        relinker_info = self._extract_relinker_info(
+            urljoin(url, relinker_url), video_id)
 
         return {
             'id': video_id,
             'title': player_data.get('title') or track_info.get('title') or self._og_search_title(webpage),
-            'upload_date': unified_strdate(track_info.get('date')),
-            'uploader': strip_or_none(track_info.get('editor') or None),
+            'upload_date': unified_strdate(
+                track_info.get('date')),
+            'uploader': strip_or_none(
+                track_info.get('editor') or None),
             **relinker_info,
         }
 
 
 class RaiCulturaIE(RaiNewsIE):  # XXX: Do not subclass from concrete IE
-    _VALID_URL = rf'https?://(www\.)?raicultura\.it/(?!articoli)[^?#]+-(?P<id>{RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
-    _EMBED_REGEX = [rf'<iframe[^>]+data-src="(?P<url>/iframe/[^?#]+?{RaiBaseIE._UUID_RE}\.html)']
+    _VALID_URL = rf'https?://(www\.)?raicultura\.it/(?!articoli)[^?#]+-(?P<id>{
+        RaiBaseIE._UUID_RE})(?:-[^/?#]+)?\.html'
+    _EMBED_REGEX = [
+        rf'<iframe[^>]+data-src="(?P<url>/iframe/[^?#]+?{RaiBaseIE._UUID_RE}\.html)']
     _TESTS = [{
         'url': 'https://www.raicultura.it/letteratura/articoli/2018/12/Alberto-Asor-Rosa-Letteratura-e-potere-05ba8775-82b5-45c5-a89d-dd955fbde1fb.html',
         'info_dict': {
@@ -823,7 +900,10 @@ class RaiSudtirolIE(RaiBaseIE):
         webpage = self._download_webpage(url, video_id)
 
         video_date = self._html_search_regex(
-            r'<span class="med_data">(.+?)</span>', webpage, 'video_date', default=None)
+            r'<span class="med_data">(.+?)</span>',
+            webpage,
+            'video_date',
+            default=None)
         video_title = self._html_search_regex([
             r'<span class="med_title">(.+?)</span>', r'title: \'(.+?)\','],
             webpage, 'video_title', default=None)
@@ -851,11 +931,19 @@ class RaiSudtirolIE(RaiBaseIE):
 
         return {
             'id': video_id,
-            'title': join_nonempty(video_title, video_date, delim=' - '),
+            'title': join_nonempty(
+                video_title,
+                video_date,
+                delim=' - '),
             'series': video_title if video_date else None,
             'upload_date': unified_strdate(video_date),
-            'thumbnail': urljoin('https://raisudtirol.rai.it/', self._html_search_regex(
-                r'image: \'(.+?)\'', webpage, 'video_thumb', default=None)),
+            'thumbnail': urljoin(
+                'https://raisudtirol.rai.it/',
+                self._html_search_regex(
+                    r'image: \'(.+?)\'',
+                    webpage,
+                    'video_thumb',
+                    default=None)),
             'uploader': 'raisudtirol',
             'formats': formats,
         }

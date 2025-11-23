@@ -64,16 +64,24 @@ class PiaLiveIE(InfoExtractor):
         title = self._html_extract_title(webpage)
 
         if get_element_html_by_class('play-end', webpage):
-            raise ExtractorError('The video is no longer available', expected=True, video_id=program_code)
+            raise ExtractorError(
+                'The video is no longer available',
+                expected=True,
+                video_id=program_code)
 
-        if start_info := clean_html(get_element_by_class('play-waiting__date', webpage)):
+        if start_info := clean_html(
+            get_element_by_class(
+                'play-waiting__date',
+                webpage)):
             date, time = self._search_regex(
                 r'(?P<date>\d{4}/\d{1,2}/\d{1,2})\([月火水木金土日]\)(?P<time>\d{2}:\d{2})',
                 start_info, 'start_info', fatal=False, group=('date', 'time'))
             if date and time:
                 release_timestamp_str = f'{date} {time} +09:00'
                 release_timestamp = unified_timestamp(release_timestamp_str)
-                self.raise_no_formats(f'The video will be available after {release_timestamp_str}', expected=True)
+                self.raise_no_formats(
+                    f'The video will be available after {release_timestamp_str}',
+                    expected=True)
                 return {
                     'id': program_code,
                     'title': title,
@@ -87,7 +95,9 @@ class PiaLiveIE(InfoExtractor):
         })
         api_data_and_headers = {
             'data': payload,
-            'headers': {'Content-Type': content_type, 'Referer': self._PLAYER_ROOT_URL},
+            'headers': {
+                'Content-Type': content_type,
+                'Referer': self._PLAYER_ROOT_URL},
         }
 
         player_tag_list = self._download_json(
@@ -95,9 +105,15 @@ class PiaLiveIE(InfoExtractor):
             'Fetching player tag list', 'Unable to fetch player tag list', **api_data_and_headers)
 
         return self.url_result(
-            extract_attributes(player_tag_list['data']['movie_one_tag'])['src'],
-            url_transparent=True, title=title, display_id=program_code,
-            __post_extractor=self.extract_comments(program_code, article_code, api_data_and_headers))
+            extract_attributes(
+                player_tag_list['data']['movie_one_tag'])['src'],
+            url_transparent=True,
+            title=title,
+            display_id=program_code,
+            __post_extractor=self.extract_comments(
+                program_code,
+                article_code,
+                api_data_and_headers))
 
     def _get_comments(self, program_code, article_code, api_data_and_headers):
         chat_room_url = traverse_obj(self._download_json(
@@ -107,8 +123,13 @@ class PiaLiveIE(InfoExtractor):
         if not chat_room_url:
             return
         comment_page = self._download_webpage(
-            chat_room_url, program_code, 'Fetching comment page', 'Unable to fetch comment page',
-            fatal=False, headers={'Referer': self._PLAYER_ROOT_URL})
+            chat_room_url,
+            program_code,
+            'Fetching comment page',
+            'Unable to fetch comment page',
+            fatal=False,
+            headers={
+                'Referer': self._PLAYER_ROOT_URL})
         if not comment_page:
             return
         yield from traverse_obj(self._search_json(

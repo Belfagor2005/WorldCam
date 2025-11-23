@@ -24,8 +24,10 @@ class SkylineWebcamsIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
 
         stream_url = self._search_regex(
-            r'(?:url|source)\s*:\s*(["\'])(?P<url>(?:https?:)?//.+?\.m3u8.*?)\1', webpage,
-            'stream url', group='url')
+            r'(?:url|source)\s*:\s*(["\'])(?P<url>(?:https?:)?//.+?\.m3u8.*?)\1',
+            webpage,
+            'stream url',
+            group='url')
 
         title = self._og_search_title(webpage)
         description = self._og_search_description(webpage)

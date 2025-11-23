@@ -33,13 +33,15 @@ class SmotrimBaseIE(InfoExtractor):
         path = f'data{typ.replace("-", "")}/{"uid" if typ == "live" else "id"}'
         data = self._download_json(
             f'https://player.smotrim.ru/iframe/{path}/{item_id}/sid/smotrim', item_id)
-        media = traverse_obj(data, ('data', 'playlist', 'medialist', -1, {dict}))
+        media = traverse_obj(
+            data, ('data', 'playlist', 'medialist', -1, {dict}))
         if traverse_obj(media, ('locked', {bool})):
             self.raise_login_required()
         if error_msg := traverse_obj(media, ('errors', {clean_html})):
             self.raise_geo_restricted(error_msg, countries=self._GEO_COUNTRIES)
 
-        webpage_url = traverse_obj(data, ('data', 'template', 'share_url', {url_or_none}))
+        webpage_url = traverse_obj(
+            data, ('data', 'template', 'share_url', {url_or_none}))
         webpage = self._download_webpage(webpage_url, item_id)
         common = {
             'thumbnail': self._html_search_meta(['og:image', 'twitter:image'], webpage, default=None),
@@ -375,14 +377,17 @@ class SmotrimPlaylistIE(SmotrimBaseIE):
             },
         )
 
-        for link in traverse_obj(items, ('contents', -1, 'list', ..., 'link', {str})):
+        for link in traverse_obj(
+                items, ('contents', -1, 'list', ..., 'link', {str})):
             yield self.url_result(urljoin(self._BASE_URL, link))
 
     def _real_extract(self, url):
-        playlist_type, playlist_id, season = self._match_valid_url(url).group('type', 'id', 'season')
+        playlist_type, playlist_id, season = self._match_valid_url(
+            url).group('type', 'id', 'season')
         key = 'rubricId' if playlist_type == 'podcast' else 'brandId'
         webpage = self._download_webpage(url, playlist_id)
-        playlist_title = self._html_search_meta(['og:title', 'twitter:title'], webpage, default=None)
+        playlist_title = self._html_search_meta(
+            ['og:title', 'twitter:title'], webpage, default=None)
 
         if season:
             return self.playlist_from_matches(traverse_obj(webpage, (
@@ -392,12 +397,21 @@ class SmotrimPlaylistIE(SmotrimBaseIE):
                 {find_element(cls='seasons__item seasons__item--selected')}, {clean_html},
             )), ie=SmotrimIE, getter=urljoin(self._BASE_URL))
 
-        if traverse_obj(webpage, (
-            {find_element(cls='brand-main-item__videos')}, {clean_html}, filter,
-        )):
+        if traverse_obj(
+            webpage, ({
+                find_element(
+                cls='brand-main-item__videos')}, {clean_html}, filter, )):
             endpoint = 'videos'
         else:
             endpoint = 'audios'
 
-        return self.playlist_result(OnDemandPagedList(
-            functools.partial(self._fetch_page, endpoint, key, playlist_id), self._PAGE_SIZE), playlist_id, playlist_title)
+        return self.playlist_result(
+            OnDemandPagedList(
+                functools.partial(
+                    self._fetch_page,
+                    endpoint,
+                    key,
+                    playlist_id),
+                self._PAGE_SIZE),
+            playlist_id,
+            playlist_title)

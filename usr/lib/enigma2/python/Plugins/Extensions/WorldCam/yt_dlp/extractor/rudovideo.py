@@ -11,7 +11,8 @@ from ..utils import (
 
 class RudoVideoIE(InfoExtractor):
     _VALID_URL = r'https?://rudo\.video/(?P<type>vod|podcast|live)/(?P<id>[^/?&#]+)'
-    _EMBED_REGEX = [r'<iframe[^>]+src=[\'"](?P<url>(?:https?:)//rudo\.video/(?:vod|podcast|live)/[^\'"]+)']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=[\'"](?P<url>(?:https?:)//rudo\.video/(?:vod|podcast|live)/[^\'"]+)']
     _TESTS = [{
         'url': 'https://rudo.video/podcast/cz2wrUy8l0o',
         'md5': '28ed82b477708dc5e12e072da2449221',
@@ -92,26 +93,37 @@ class RudoVideoIE(InfoExtractor):
             or self._search_regex(
                 r'<source[^>]+src=[\'"]([^\'"]+)', webpage, 'source url', default=None))
         if not media_url:
-            youtube_url = self._search_regex(r'file:\s*[\'"]((?:https?:)//(?:www\.)?youtube\.com[^\'"]+)',
-                                             webpage, 'youtube url', default=None)
+            youtube_url = self._search_regex(
+                r'file:\s*[\'"]((?:https?:)//(?:www\.)?youtube\.com[^\'"]+)',
+                webpage,
+                'youtube url',
+                default=None)
             if youtube_url:
                 return self.url_result(youtube_url, 'Youtube')
             raise ExtractorError('Unable to extract stream url')
 
         token_array = self._search_json(
-            r'<script>var\s+_\$_[a-zA-Z0-9]+\s*=', webpage, 'access token array', video_id,
-            contains_pattern=r'\[(?s:.+)\]', default=None, transform_source=js_to_json)
+            r'<script>var\s+_\$_[a-zA-Z0-9]+\s*=',
+            webpage,
+            'access token array',
+            video_id,
+            contains_pattern=r'\[(?s:.+)\]',
+            default=None,
+            transform_source=js_to_json)
         if token_array:
-            token_url = traverse_obj(token_array, (..., {url_or_none}), get_all=False)
+            token_url = traverse_obj(
+                token_array, (..., {url_or_none}), get_all=False)
             if not token_url:
                 raise ExtractorError('Invalid access token array')
             access_token = self._download_json(
                 token_url, video_id, note='Downloading access token')['data']['authToken']
-            media_url = update_url_query(media_url, {'auth-token': access_token})
+            media_url = update_url_query(
+                media_url, {'auth-token': access_token})
 
         ext = determine_ext(media_url)
         if ext == 'm3u8':
-            formats = self._extract_m3u8_formats(media_url, video_id, live=is_live)
+            formats = self._extract_m3u8_formats(
+                media_url, video_id, live=is_live)
         elif ext == 'mp3':
             formats = [{
                 'url': media_url,
@@ -122,14 +134,23 @@ class RudoVideoIE(InfoExtractor):
 
         return {
             'id': video_id,
-            'title': (self._search_regex(r'var\s+titleVideo\s*=\s*[\'"]([^\'"]+)',
-                                         webpage, 'title', default=None)
-                      or self._og_search_title(webpage)),
-            'creator': self._search_regex(r'var\s+videoAuthor\s*=\s*[\'"]([^?\'"]+)',
-                                          webpage, 'videoAuthor', default=None),
-            'thumbnail': (self._search_regex(r'var\s+posterIMG\s*=\s*[\'"]([^?\'"]+)',
-                                             webpage, 'thumbnail', default=None)
-                          or self._og_search_thumbnail(webpage)),
+            'title': (
+                self._search_regex(
+                    r'var\s+titleVideo\s*=\s*[\'"]([^\'"]+)',
+                    webpage,
+                    'title',
+                    default=None) or self._og_search_title(webpage)),
+            'creator': self._search_regex(
+                r'var\s+videoAuthor\s*=\s*[\'"]([^?\'"]+)',
+                webpage,
+                'videoAuthor',
+                default=None),
+            'thumbnail': (
+                self._search_regex(
+                    r'var\s+posterIMG\s*=\s*[\'"]([^?\'"]+)',
+                    webpage,
+                    'thumbnail',
+                    default=None) or self._og_search_thumbnail(webpage)),
             'formats': formats,
             'is_live': is_live,
         }

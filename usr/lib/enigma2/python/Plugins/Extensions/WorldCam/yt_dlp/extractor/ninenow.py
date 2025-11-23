@@ -107,7 +107,9 @@ class NineNowIE(InfoExtractor):
         display_id, video_type = self._match_valid_url(url).group('id', 'type')
         webpage = self._download_webpage(url, display_id)
 
-        common_data = get_first(self._search_nextjs_v13_data(webpage, display_id), ('payload', {dict}))
+        common_data = get_first(
+            self._search_nextjs_v13_data(
+                webpage, display_id), ('payload', {dict}))
 
         if traverse_obj(common_data, (video_type, 'video', 'drm', {bool})):
             self.report_drm(display_id)

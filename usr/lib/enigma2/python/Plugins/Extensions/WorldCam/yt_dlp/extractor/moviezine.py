@@ -20,19 +20,24 @@ class MoviezineIE(InfoExtractor):
         video_id = mobj.group('id')
 
         webpage = self._download_webpage(url, video_id)
-        jsplayer = self._download_webpage(f'http://www.moviezine.se/api/player.js?video={video_id}', video_id, 'Downloading js api player')
+        jsplayer = self._download_webpage(
+            f'http://www.moviezine.se/api/player.js?video={video_id}',
+            video_id,
+            'Downloading js api player')
 
-        formats = [{
-            'format_id': 'sd',
-            'url': self._html_search_regex(r'file: "(.+?)",', jsplayer, 'file'),
-            'quality': 0,
-            'ext': 'mp4',
-        }]
+        formats = [{'format_id': 'sd', 'url': self._html_search_regex(
+            r'file: "(.+?)",', jsplayer, 'file'), 'quality': 0, 'ext': 'mp4', }]
 
         return {
             'id': video_id,
-            'title': self._search_regex(r'title: "(.+?)",', jsplayer, 'title'),
-            'thumbnail': self._search_regex(r'image: "(.+?)",', jsplayer, 'image'),
+            'title': self._search_regex(
+                r'title: "(.+?)",',
+                jsplayer,
+                'title'),
+            'thumbnail': self._search_regex(
+                r'image: "(.+?)",',
+                jsplayer,
+                'image'),
             'formats': formats,
             'description': self._og_search_description(webpage),
         }

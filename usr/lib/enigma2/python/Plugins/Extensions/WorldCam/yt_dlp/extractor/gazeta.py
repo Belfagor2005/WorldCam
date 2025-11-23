@@ -38,7 +38,10 @@ class GazetaIE(InfoExtractor):
             embed_url, display_id, 'Downloading embed page')
 
         video_id = self._search_regex(
-            r'<div[^>]*?class="eagleplayer"[^>]*?data-id="([^"]+)"', embed_page, 'video id')
+            r'<div[^>]*?class="eagleplayer"[^>]*?data-id="([^"]+)"',
+            embed_page,
+            'video id')
 
         return self.url_result(
-            f'eagleplatform:gazeta.media.eagleplatform.com:{video_id}', 'EaglePlatform')
+            f'eagleplatform:gazeta.media.eagleplatform.com:{video_id}',
+            'EaglePlatform')

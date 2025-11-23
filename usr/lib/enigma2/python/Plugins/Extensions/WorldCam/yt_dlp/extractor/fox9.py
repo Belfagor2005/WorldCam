@@ -7,8 +7,10 @@ class FOX9IE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         return self.url_result(
-            'anvato:anvato_epfox_app_web_prod_b3373168e12f423f41504f207000188daf88251b:' + video_id,
-            'Anvato', video_id)
+            'anvato:anvato_epfox_app_web_prod_b3373168e12f423f41504f207000188daf88251b:' +
+            video_id,
+            'Anvato',
+            video_id)
 
 
 class FOX9NewsIE(InfoExtractor):
@@ -25,8 +27,12 @@ class FOX9NewsIE(InfoExtractor):
             'timestamp': 1478123580,
             'upload_date': '20161102',
             'uploader': 'EPFOX',
-            'categories': ['News', 'Sports'],
-            'tags': ['news', 'video'],
+            'categories': [
+                'News',
+                'Sports'],
+            'tags': [
+                'news',
+                'video'],
         },
     }
 
@@ -35,4 +41,7 @@ class FOX9NewsIE(InfoExtractor):
         webpage = self._download_webpage(url, display_id)
         anvato_id = self._search_regex(
             r'anvatoId\s*:\s*[\'"](\d+)', webpage, 'anvato id')
-        return self.url_result('https://www.fox9.com/video/' + anvato_id, 'FOX9')
+        return self.url_result(
+            'https://www.fox9.com/video/' +
+            anvato_id,
+            'FOX9')

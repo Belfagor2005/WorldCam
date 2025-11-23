@@ -52,9 +52,13 @@ class WordpressPlaylistEmbedIE(InfoExtractor):
 
     def _extract_from_webpage(self, url, webpage):
         # class should always be "wp-playlist-script"
-        # See: https://core.trac.wordpress.org/browser/trunk/src/wp-includes/media.php#L2930
-        for i, j in enumerate(get_elements_by_class('wp-playlist-script', webpage)):
-            playlist_json = self._parse_json(j, self._generic_id(url), fatal=False, ignore_extra=True, errnote='') or {}
+        # See:
+        # https://core.trac.wordpress.org/browser/trunk/src/wp-includes/media.php#L2930
+        for i, j in enumerate(
+            get_elements_by_class(
+                'wp-playlist-script', webpage)):
+            playlist_json = self._parse_json(j, self._generic_id(
+                url), fatal=False, ignore_extra=True, errnote='') or {}
             if not playlist_json:
                 continue
             entries = [{
@@ -80,7 +84,8 @@ class WordpressMiniAudioPlayerEmbedIE(InfoExtractor):
     _VALID_URL = False
     IE_NAME = 'wordpress:mb.miniAudioPlayer'
     _WEBPAGE_TESTS = [{
-        # Version 1.8.10: https://plugins.trac.wordpress.org/browser/wp-miniaudioplayer/tags/1.8.10
+        # Version 1.8.10:
+        # https://plugins.trac.wordpress.org/browser/wp-miniaudioplayer/tags/1.8.10
         'url': 'https://news.samsung.com/global/over-the-horizon-the-evolution-of-the-samsung-galaxy-brand-sound',
         'info_dict': {
             'id': 'over-the-horizon-the-evolution-of-the-samsung-galaxy-brand-sound',
@@ -100,7 +105,8 @@ class WordpressMiniAudioPlayerEmbedIE(InfoExtractor):
         'playlist_count': 6,
         'params': {'skip_download': True},
     }, {
-        # Version 1.9.3: https://plugins.trac.wordpress.org/browser/wp-miniaudioplayer/tags/1.9.3
+        # Version 1.9.3:
+        # https://plugins.trac.wordpress.org/browser/wp-miniaudioplayer/tags/1.9.3
         'url': 'https://www.booksontape.com/collections/audiobooks-with-teacher-guides/',
         'info_dict': {
             'id': 'audiobooks-with-teacher-guides',
@@ -134,7 +140,9 @@ class WordpressMiniAudioPlayerEmbedIE(InfoExtractor):
             return
         # v1.55 - 1.9.3 has "a[href*='.mp3'] ,a[href*='.m4a']"
         # v1.9.4+ has "a[href*='.mp3']" only
-        file_exts = re.findall(r'a\[href\s*\*=\s*\'\.([a-zA-Z\d]+)\'', mb_player_params)
+        file_exts = re.findall(
+            r'a\[href\s*\*=\s*\'\.([a-zA-Z\d]+)\'',
+            mb_player_params)
         if not file_exts:
             return
 
@@ -144,7 +152,8 @@ class WordpressMiniAudioPlayerEmbedIE(InfoExtractor):
         for title, html in candidates:
             attrs = extract_attributes(html)
             # XXX: not tested - have not found any example of it being used
-            if any(c in (attrs.get('class') or '') for c in re.findall(r'\.not\("\.([^"]+)', mb_player_params)):
+            if any(c in (attrs.get('class') or '')
+                   for c in re.findall(r'\.not\("\.([^"]+)', mb_player_params)):
                 continue
             href = attrs['href']
             yield {

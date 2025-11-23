@@ -16,7 +16,8 @@ def _raw_id(src_url):
 
 class SeznamZpravyIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?seznamzpravy\.cz/iframe/player\?.*\bsrc='
-    _EMBED_REGEX = [r'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//(?:www\.)?seznamzpravy\.cz/iframe/player\?.*?)\1']
+    _EMBED_REGEX = [
+        r'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//(?:www\.)?seznamzpravy\.cz/iframe/player\?.*?)\1']
     _TESTS = [{
         'url': 'https://www.seznamzpravy.cz/iframe/player?duration=241&serviceSlug=zpravy&src=https%3A%2F%2Fv39-a.sdn.szn.cz%2Fv_39%2Fvmd%2F5999c902ea707c67d8e267a9%3Ffl%3Dmdk%2C432f65a0%7C&itemType=video&autoPlay=false&title=Sv%C4%9Bt%20bez%20obalu%3A%20%C4%8Ce%C5%A1t%C3%AD%20voj%C3%A1ci%20na%20mis%C3%ADch%20(kr%C3%A1tk%C3%A1%20verze)&series=Sv%C4%9Bt%20bez%20obalu&serviceName=Seznam%20Zpr%C3%A1vy&poster=%2F%2Fd39-a.sdn.szn.cz%2Fd_39%2Fc_img_F_I%2FR5puJ.jpeg%3Ffl%3Dcro%2C0%2C0%2C1920%2C1080%7Cres%2C1200%2C%2C1%7Cjpg%2C80%2C%2C1&width=1920&height=1080&cutFrom=0&cutTo=0&splVersion=VOD&contentId=170889&contextId=35990&showAdvert=true&collocation=&autoplayPossible=true&embed=&isVideoTooShortForPreroll=false&isVideoTooLongForPostroll=true&videoCommentOpKey=&videoCommentId=&version=4.0.76&dotService=zpravy&gemiusPrismIdentifier=bVc1ZIb_Qax4W2v5xOPGpMeCP31kFfrTzj0SqPTLh_b.Z7&zoneIdPreroll=seznam.pack.videospot&skipOffsetPreroll=5&sectionPrefixPreroll=%2Fzpravy',
         'info_dict': {
@@ -146,8 +147,10 @@ class SeznamZpravyArticleIE(InfoExtractor):
 
         info = self._search_json_ld(webpage, article_id, default={})
 
-        title = info.get('title') or self._og_search_title(webpage, fatal=False)
-        description = info.get('description') or self._og_search_description(webpage)
+        title = info.get('title') or self._og_search_title(
+            webpage, fatal=False)
+        description = info.get(
+            'description') or self._og_search_description(webpage)
 
         return self.playlist_result([
             self.url_result(entry_url, ie=SeznamZpravyIE.ie_key())

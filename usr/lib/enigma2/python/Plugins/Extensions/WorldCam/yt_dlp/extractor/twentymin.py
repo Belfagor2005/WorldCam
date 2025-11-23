@@ -17,7 +17,8 @@ class TwentyMinutenIE(InfoExtractor):
                         )
                         (?P<id>\d+)
                     '''
-    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:(?:https?:)?//)?(?:www\.)?20min\.ch/videoplayer/videoplayer.html\?.*?\bvideoId@\d+.*?)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=(["\'])(?P<url>(?:(?:https?:)?//)?(?:www\.)?20min\.ch/videoplayer/videoplayer.html\?.*?\bvideoId@\d+.*?)\1']
     _TESTS = [{
         'url': 'http://www.20min.ch/videotv/?vid=469148&cid=2',
         'md5': 'e7264320db31eed8c38364150c12496e',

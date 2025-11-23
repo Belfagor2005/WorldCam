@@ -23,9 +23,16 @@ class LyndaBaseIE(InfoExtractor):
         for key in keys:
             error = json_string.get(key)
             if error:
-                raise ExtractorError(f'Unable to login: {error}', expected=True)
+                raise ExtractorError(
+                    f'Unable to login: {error}', expected=True)
 
-    def _perform_login_step(self, form_html, fallback_action_url, extra_form_data, note, referrer_url):
+    def _perform_login_step(
+            self,
+            form_html,
+            fallback_action_url,
+            extra_form_data,
+            note,
+            referrer_url):
         action_url = self._search_regex(
             r'<form[^>]+action=(["\'])(?P<url>.+?)\1', form_html,
             'post url', default=fallback_action_url, group='url')
@@ -135,7 +142,9 @@ class LyndaIE(LyndaBaseIE):
             query['courseId'] = course_id
 
             play = self._download_json(
-                f'https://www.lynda.com/ajax/course/{course_id}/{video_id}/play', video_id, 'Downloading play JSON')
+                f'https://www.lynda.com/ajax/course/{course_id}/{video_id}/play',
+                video_id,
+                'Downloading play JSON')
 
             if not play:
                 self._raise_unavailable(video_id)
@@ -171,7 +180,8 @@ class LyndaIE(LyndaBaseIE):
 
         if 'Status' in video:
             raise ExtractorError(
-                'lynda returned error: {}'.format(video['Message']), expected=True)
+                'lynda returned error: {}'.format(
+                    video['Message']), expected=True)
 
         if video.get('HasAccess') is False:
             self._raise_unavailable(video_id)
@@ -322,4 +332,8 @@ class LyndaCourseIE(LyndaBaseIE):
         course_title = course.get('Title')
         course_description = course.get('Description')
 
-        return self.playlist_result(entries, course_id, course_title, course_description)
+        return self.playlist_result(
+            entries,
+            course_id,
+            course_title,
+            course_description)

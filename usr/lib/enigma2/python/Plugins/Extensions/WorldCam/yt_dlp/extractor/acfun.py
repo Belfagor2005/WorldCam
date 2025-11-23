@@ -15,8 +15,10 @@ class AcFunVideoBaseIE(InfoExtractor):
         playjson = self._parse_json(video_info['ksPlayJson'], video_id)
 
         formats, subtitles = [], {}
-        for video in traverse_obj(playjson, ('adaptationSet', 0, 'representation')):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(video['url'], video_id, 'mp4', fatal=False)
+        for video in traverse_obj(
+                playjson, ('adaptationSet', 0, 'representation')):
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                video['url'], video_id, 'mp4', fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
             for f in fmts:
@@ -84,7 +86,11 @@ class AcFunVideoIE(AcFunVideoBaseIE):
         video_id = self._match_id(url)
 
         webpage = self._download_webpage(url, video_id)
-        json_all = self._search_json(r'window.videoInfo\s*=', webpage, 'videoInfo', video_id)
+        json_all = self._search_json(
+            r'window.videoInfo\s*=',
+            webpage,
+            'videoInfo',
+            video_id)
 
         title = json_all.get('title')
         video_list = json_all.get('videoList') or []
@@ -164,7 +170,8 @@ class AcFunBangumiIE(AcFunVideoBaseIE):
         video_id = f'{video_id}{format_field(ac_idx, None, "__%s")}'
 
         webpage = self._download_webpage(url, video_id)
-        json_bangumi_data = self._search_json(r'window.bangumiData\s*=', webpage, 'bangumiData', video_id)
+        json_bangumi_data = self._search_json(
+            r'window.bangumiData\s*=', webpage, 'bangumiData', video_id)
 
         if ac_idx:
             video_info = json_bangumi_data['hlVideoInfo']
@@ -176,13 +183,21 @@ class AcFunBangumiIE(AcFunVideoBaseIE):
         video_info = json_bangumi_data['currentVideoInfo']
 
         season_id = json_bangumi_data.get('bangumiId')
-        season_number = season_id and next((
-            idx for idx, v in enumerate(json_bangumi_data.get('relatedBangumis') or [], 1)
-            if v.get('id') == season_id), 1)
+        season_number = season_id and next(
+            (idx for idx,
+             v in enumerate(
+                 json_bangumi_data.get('relatedBangumis') or [],
+                 1) if v.get('id') == season_id),
+            1)
 
         json_bangumi_list = self._search_json(
-            r'window\.bangumiList\s*=', webpage, 'bangumiList', video_id, fatal=False)
-        video_internal_id = int_or_none(traverse_obj(json_bangumi_data, ('currentVideoInfo', 'id')))
+            r'window\.bangumiList\s*=',
+            webpage,
+            'bangumiList',
+            video_id,
+            fatal=False)
+        video_internal_id = int_or_none(traverse_obj(
+            json_bangumi_data, ('currentVideoInfo', 'id')))
         episode_number = video_internal_id and next((
             idx for idx, v in enumerate(json_bangumi_list.get('items') or [], 1)
             if v.get('videoId') == video_internal_id), None)

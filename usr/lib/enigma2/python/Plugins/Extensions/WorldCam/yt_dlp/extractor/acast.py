@@ -13,16 +13,23 @@ class ACastBaseIE(InfoExtractor):
         info = {
             'id': episode['id'],
             'display_id': episode.get('episodeUrl'),
-            'url': clean_podcast_url(episode['url']),
+            'url': clean_podcast_url(
+                episode['url']),
             'title': title,
-            'description': clean_html(episode.get('description') or episode.get('summary')),
+            'description': clean_html(
+                episode.get('description') or episode.get('summary')),
             'thumbnail': episode.get('image'),
-            'timestamp': parse_iso8601(episode.get('publishDate')),
-            'duration': int_or_none(episode.get('duration')),
-            'filesize': int_or_none(episode.get('contentLength')),
-            'season_number': int_or_none(episode.get('season')),
+            'timestamp': parse_iso8601(
+                episode.get('publishDate')),
+            'duration': int_or_none(
+                episode.get('duration')),
+            'filesize': int_or_none(
+                episode.get('contentLength')),
+            'season_number': int_or_none(
+                episode.get('season')),
             'episode': title,
-            'episode_number': int_or_none(episode.get('episode')),
+            'episode_number': int_or_none(
+                episode.get('episode')),
         }
         info.update(show_info)
         return info
@@ -35,7 +42,10 @@ class ACastBaseIE(InfoExtractor):
 
     def _call_api(self, path, video_id, query=None):
         return self._download_json(
-            'https://feeder.acast.com/api/v1/shows/' + path, video_id, query=query)
+            'https://feeder.acast.com/api/v1/shows/' +
+            path,
+            video_id,
+            query=query)
 
 
 class ACastIE(ACastBaseIE):
@@ -49,38 +59,36 @@ class ACastIE(ACastBaseIE):
                         (?P<channel>[^/?#]+)/(?:episodes/)?(?P<id>[^/#?"]+)
                     )'''
     _EMBED_REGEX = [rf'(?x)<iframe[^>]+\bsrc=[\'"](?P<url>{_VALID_URL})']
-    _TESTS = [{
-        'url': 'https://shows.acast.com/sparpodcast/episodes/2.raggarmordet-rosterurdetforflutna',
-        'info_dict': {
-            'id': '2a92b283-1a75-4ad8-8396-499c641de0d9',
-            'ext': 'mp3',
-            'title': '2. Raggarmordet - Röster ur det förflutna',
-            'description': 'md5:013959207e05011ad14a222cf22278cc',
-            'timestamp': 1477346700,
-            'upload_date': '20161024',
-            'duration': 2766,
-            'creators': ['Third Ear Studio'],
-            'series': 'Spår',
-            'episode': '2. Raggarmordet - Röster ur det förflutna',
-            'thumbnail': 'https://assets.pippa.io/shows/616ebe1886d7b1398620b943/616ebe33c7e6e70013cae7da.jpg',
-            'episode_number': 2,
-            'display_id': '2.raggarmordet-rosterurdetforflutna',
-            'season_number': 4,
-            'season': 'Season 4',
-        },
-    }, {
-        'url': 'http://embed.acast.com/adambuxton/ep.12-adam-joeschristmaspodcast2015',
-        'only_matching': True,
-    }, {
-        'url': 'https://play.acast.com/s/rattegangspodden/s04e09styckmordetihelenelund-del2-2',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.acast.com/sparpodcast/2.raggarmordet-rosterurdetforflutna',
-        'only_matching': True,
-    }, {
-        'url': 'https://play.acast.com/s/sparpodcast/2a92b283-1a75-4ad8-8396-499c641de0d9',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://shows.acast.com/sparpodcast/episodes/2.raggarmordet-rosterurdetforflutna',
+               'info_dict': {'id': '2a92b283-1a75-4ad8-8396-499c641de0d9',
+                             'ext': 'mp3',
+                             'title': '2. Raggarmordet - Röster ur det förflutna',
+                             'description': 'md5:013959207e05011ad14a222cf22278cc',
+                             'timestamp': 1477346700,
+                             'upload_date': '20161024',
+                             'duration': 2766,
+                             'creators': ['Third Ear Studio'],
+                             'series': 'Spår',
+                             'episode': '2. Raggarmordet - Röster ur det förflutna',
+                             'thumbnail': 'https://assets.pippa.io/shows/616ebe1886d7b1398620b943/616ebe33c7e6e70013cae7da.jpg',
+                             'episode_number': 2,
+                             'display_id': '2.raggarmordet-rosterurdetforflutna',
+                             'season_number': 4,
+                             'season': 'Season 4',
+                             },
+               },
+              {'url': 'http://embed.acast.com/adambuxton/ep.12-adam-joeschristmaspodcast2015',
+               'only_matching': True,
+               },
+              {'url': 'https://play.acast.com/s/rattegangspodden/s04e09styckmordetihelenelund-del2-2',
+               'only_matching': True,
+               },
+              {'url': 'https://www.acast.com/sparpodcast/2.raggarmordet-rosterurdetforflutna',
+               'only_matching': True,
+               },
+              {'url': 'https://play.acast.com/s/sparpodcast/2a92b283-1a75-4ad8-8396-499c641de0d9',
+               'only_matching': True,
+               }]
     _WEBPAGE_TESTS = [{
         'url': 'https://ausi.anu.edu.au/news/democracy-sausage-episode-can-labor-be-long-form-government',
         'info_dict': {
@@ -146,4 +154,7 @@ class ACastChannelIE(ACastBaseIE):
         for episode in (show.get('episodes') or []):
             entries.append(self._extract_episode(episode, show_info))
         return self.playlist_result(
-            entries, show.get('id'), show.get('title'), show.get('description'))
+            entries,
+            show.get('id'),
+            show.get('title'),
+            show.get('description'))

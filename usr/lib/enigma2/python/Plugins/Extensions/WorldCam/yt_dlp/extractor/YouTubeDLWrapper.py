@@ -93,12 +93,12 @@ class SkylineWebcamsIE(InfoExtractor):
             'http_headers': {
                 'Referer': url,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            }
-        }
+            }}
 
 
 class YouTubeDLWrapper(InfoExtractor):
     """Wrapper per youtube_dl con gestione migliorata degli errori"""
+
     def extract_info(self, url, download=True):
         try:
             # Per SkylineWebcams

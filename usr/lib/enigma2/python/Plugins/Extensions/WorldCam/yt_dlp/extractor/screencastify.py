@@ -42,7 +42,8 @@ class ScreencastifyIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         info = self._download_json(
-            f'https://umbrella.svc.screencastify.com/api/umbrellaService/watch/{video_id}', video_id)
+            f'https://umbrella.svc.screencastify.com/api/umbrellaService/watch/{video_id}',
+            video_id)
 
         query_string = traverse_obj(info, ('manifest', 'auth', 'query'))
         query = urllib.parse.parse_qs(query_string)
@@ -51,12 +52,21 @@ class ScreencastifyIE(InfoExtractor):
         if dash_manifest_url:
             formats.extend(
                 self._extract_mpd_formats(
-                    dash_manifest_url, video_id, mpd_id='dash', query=query, fatal=False))
+                    dash_manifest_url,
+                    video_id,
+                    mpd_id='dash',
+                    query=query,
+                    fatal=False))
         hls_manifest_url = traverse_obj(info, ('manifest', 'hlsUrl'))
         if hls_manifest_url:
             formats.extend(
                 self._extract_m3u8_formats(
-                    hls_manifest_url, video_id, ext='mp4', m3u8_id='hls', query=query, fatal=False))
+                    hls_manifest_url,
+                    video_id,
+                    ext='mp4',
+                    m3u8_id='hls',
+                    query=query,
+                    fatal=False))
         for f in formats:
             f['url'] = update_url_query(f['url'], query)
 

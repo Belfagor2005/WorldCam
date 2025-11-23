@@ -43,7 +43,9 @@ class FancodeVodIE(InfoExtractor):
     def _perform_login(self, username, password):
         # Access tokens are shortlived, so get them using the refresh token.
         if username != 'refresh':
-            self.report_warning(f'Login using username and password is not currently supported. {self._LOGIN_HINT}')
+            self.report_warning(
+                f'Login using username and password is not currently supported. {
+                    self._LOGIN_HINT}')
 
         self.report_login()
         data = '''{
@@ -54,21 +56,26 @@ class FancodeVodIE(InfoExtractor):
             "operationName":"RefreshToken"
         }''' % password  # noqa: UP031
 
-        token_json = self.download_gql('refresh token', data, 'Getting the Access token')
-        self._ACCESS_TOKEN = try_get(token_json, lambda x: x['data']['refreshToken']['accessToken'])
+        token_json = self.download_gql(
+            'refresh token', data, 'Getting the Access token')
+        self._ACCESS_TOKEN = try_get(
+            token_json, lambda x: x['data']['refreshToken']['accessToken'])
         if self._ACCESS_TOKEN is None:
             self.report_warning('Failed to get Access token')
         else:
-            self.headers.update({'Authorization': f'Bearer {self._ACCESS_TOKEN}'})
+            self.headers.update(
+                {'Authorization': f'Bearer {self._ACCESS_TOKEN}'})
 
     def _check_login_required(self, is_available, is_premium):
         msg = None
         if is_premium and self._ACCESS_TOKEN is None:
-            msg = f'This video is only available for registered users. {self._LOGIN_HINT}'
+            msg = f'This video is only available for registered users. {
+                self._LOGIN_HINT}'
         elif not is_available and self._ACCESS_TOKEN is not None:
             msg = 'This video isn\'t available to the current logged in account'
         if msg:
-            self.raise_login_required(msg, metadata_available=True, method=None)
+            self.raise_login_required(
+                msg, metadata_available=True, method=None)
 
     def download_gql(self, variable, data, note, fatal=False, headers=headers):
         return self._download_json(
@@ -93,10 +100,15 @@ class FancodeVodIE(InfoExtractor):
             "operationName":"Video"
         }''' % video_id  # noqa: UP031
 
-        metadata_json = self.download_gql(video_id, data, note='Downloading metadata')
+        metadata_json = self.download_gql(
+            video_id, data, note='Downloading metadata')
 
-        media = try_get(metadata_json, lambda x: x['data']['media'], dict) or {}
-        brightcove_video_id = try_get(media, lambda x: x['mediaSource']['brightcove'], str)
+        media = try_get(
+            metadata_json,
+            lambda x: x['data']['media'],
+            dict) or {}
+        brightcove_video_id = try_get(
+            media, lambda x: x['mediaSource']['brightcove'], str)
 
         if brightcove_video_id is None:
             raise ExtractorError('Unable to extract brightcove Video ID')
@@ -161,14 +173,26 @@ class FancodeLiveIE(FancodeVodIE):  # XXX: Do not subclass from concrete IE
         match_info = try_get(info_json, lambda x: x['data']['match'])
 
         if match_info.get('streamingStatus') != 'STARTED':
-            raise ExtractorError('The stream can\'t be accessed', expected=True)
-        self._check_login_required(match_info.get('isUserEntitled'), True)  # all live streams are premium only
+            raise ExtractorError(
+                'The stream can\'t be accessed',
+                expected=True)
+        self._check_login_required(
+            match_info.get('isUserEntitled'),
+            True)  # all live streams are premium only
 
         return {
             'id': video_id,
             'title': match_info.get('name'),
-            'formats': self._extract_akamai_formats(try_get(match_info, lambda x: x['videoStreamUrl']['url']), video_id),
-            'ext': mimetype2ext(try_get(match_info, lambda x: x['videoStreamUrl']['deliveryType'])),
+            'formats': self._extract_akamai_formats(
+                try_get(
+                    match_info,
+                    lambda x: x['videoStreamUrl']['url']),
+                video_id),
+            'ext': mimetype2ext(
+                try_get(
+                    match_info,
+                    lambda x: x['videoStreamUrl']['deliveryType'])),
             'is_live': True,
-            'release_timestamp': parse_iso8601(match_info.get('startTime')),
+            'release_timestamp': parse_iso8601(
+                match_info.get('startTime')),
         }
