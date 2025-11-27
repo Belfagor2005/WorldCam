@@ -1,5 +1,4 @@
 #!/bin/bash
-## setup command=wget -q --no-check-certificate https://raw.githubusercontent.com/Belfagor2005/WorldCam/main/installer.sh -O - | /bin/sh
 
 version='6.2'
 changelog='\nFix icon\nMinor fix'
@@ -9,23 +8,20 @@ FILEPATH=/tmp/WorldCam-main.tar.gz
 
 echo "Starting WorldCam installation..."
 
-# Determine plugin path based on architecture
 if [ ! -d /usr/lib64 ]; then
     PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/WorldCam
 else
     PLUGINPATH=/usr/lib64/enigma2/python/Plugins/Extensions/WorldCam
 fi
 
-# Cleanup function
 cleanup() {
-    echo "🧹 Cleaning up temporary files..."
+    echo "Cleaning up temporary files..."
     [ -d "$TMPPATH" ] && rm -rf "$TMPPATH"
     [ -f "$FILEPATH" ] && rm -f "$FILEPATH"
     [ -d "/tmp/WorldCam-main" ] && rm -rf "/tmp/WorldCam-main"
     [ -f "/tmp/worldcam.tar.gz" ] && rm -f "/tmp/worldcam.tar.gz"
 }
 
-# Detect OS type
 detect_os() {
     if [ -f /var/lib/dpkg/status ]; then
         OSTYPE="DreamOs"
@@ -37,117 +33,107 @@ detect_os() {
         OSTYPE="Unknown"
         STATUS=""
     fi
-    echo "🔍 Detected OS type: $OSTYPE"
+    echo "Detected OS type: $OSTYPE"
 }
 
 detect_os
 
-# Cleanup before starting
 cleanup
 mkdir -p "$TMPPATH"
 
-# Install wget if missing
 if ! command -v wget >/dev/null 2>&1; then
-    echo "📥 Installing wget..."
+    echo "Installing wget..."
     case "$OSTYPE" in
         "DreamOs")
-            apt-get update && apt-get install -y wget || { echo "❌ Failed to install wget"; exit 1; }
+            apt-get update && apt-get install -y wget || { echo "Failed to install wget"; exit 1; }
             ;;
         "OE")
-            opkg update && opkg install wget || { echo "❌ Failed to install wget"; exit 1; }
+            opkg update && opkg install wget || { echo "Failed to install wget"; exit 1; }
             ;;
         *)
-            echo "❌ Unsupported OS type. Cannot install wget."
+            echo "Unsupported OS type. Cannot install wget."
             exit 1
             ;;
     esac
 fi
 
-# Detect Python version
 if python --version 2>&1 | grep -q '^Python 3\.'; then
-    echo "🐍 Python3 image detected"
+    echo "Python3 image detected"
     PYTHON="PY3"
     Packagesix="python3-six"
     Packagerequests="python3-requests"
     PY="python3"
 else
-    echo "🐍 Python2 image detected"
+    echo "Python2 image detected"
     PYTHON="PY2"
     Packagerequests="python-requests"
     Packagesix="python-six"
     PY="python"
 fi
 
-# Install required packages
 install_pkg() {
     local pkg=$1
     if [ -z "$STATUS" ] || ! grep -qs "Package: $pkg" "$STATUS" 2>/dev/null; then
-        echo "📦 Installing $pkg..."
+        echo "Installing $pkg..."
         case "$OSTYPE" in
             "DreamOs")
-                apt-get update && apt-get install -y "$pkg" || { echo "⚠️ Could not install $pkg, continuing anyway..."; }
+                apt-get update && apt-get install -y "$pkg" || { echo "Could not install $pkg, continuing anyway..."; }
                 ;;
             "OE")
-                opkg update && opkg install "$pkg" || { echo "⚠️ Could not install $pkg, continuing anyway..."; }
+                opkg update && opkg install "$pkg" || { echo "Could not install $pkg, continuing anyway..."; }
                 ;;
             *)
-                echo "⚠️ Cannot install $pkg on unknown OS type, continuing..."
+                echo "Cannot install $pkg on unknown OS type, continuing..."
                 ;;
         esac
     else
-        echo "✅ $pkg already installed"
+        echo "$pkg already installed"
     fi
 }
 
-# Install Python dependencies
 if [ "$PYTHON" = "PY3" ]; then
     install_pkg "$Packagesix"
 fi
 install_pkg "$Packagerequests"
 
-# Install additional multimedia packages for OE systems
 if [ "$OSTYPE" = "OE" ]; then
-    echo "📥 Installing additional multimedia packages..."
+    echo "Installing additional multimedia packages..."
     for pkg in ffmpeg exteplayer3 gstplayer enigma2-plugin-systemplugins-serviceapp; do
         install_pkg "$pkg"
     done
 fi
 
-# Download and extract
-echo "⬇️ Downloading WorldCam..."
+echo "Downloading WorldCam..."
 wget --no-check-certificate 'https://github.com/Belfagor2005/WorldCam/archive/refs/heads/main.tar.gz' -O "$FILEPATH"
 if [ $? -ne 0 ]; then
-    echo "❌ Failed to download WorldCam package!"
+    echo "Failed to download WorldCam package!"
     cleanup
     exit 1
 fi
 
-echo "📦 Extracting package..."
+echo "Extracting package..."
 tar -xzf "$FILEPATH" -C "$TMPPATH"
 if [ $? -ne 0 ]; then
-    echo "❌ Failed to extract WorldCam package!"
+    echo "Failed to extract WorldCam package!"
     cleanup
     exit 1
 fi
 
-# Install plugin files
-echo "🔧 Installing plugin files..."
+echo "Installing plugin files..."
 mkdir -p "$PLUGINPATH"
 
-# Find the correct directory in the extracted structure
 if [ -d "$TMPPATH/WorldCam-main/usr/lib/enigma2/python/Plugins/Extensions/WorldCam" ]; then
     cp -r "$TMPPATH/WorldCam-main/usr/lib/enigma2/python/Plugins/Extensions/WorldCam"/* "$PLUGINPATH/" 2>/dev/null
-    echo "✅ Copied from standard plugin directory"
+    echo "Copied from standard plugin directory"
 elif [ -d "$TMPPATH/WorldCam-main/usr/lib64/enigma2/python/Plugins/Extensions/WorldCam" ]; then
     cp -r "$TMPPATH/WorldCam-main/usr/lib64/enigma2/python/Plugins/Extensions/WorldCam"/* "$PLUGINPATH/" 2>/dev/null
-    echo "✅ Copied from lib64 plugin directory"
+    echo "Copied from lib64 plugin directory"
 elif [ -d "$TMPPATH/WorldCam-main/usr" ]; then
-    # Copy entire usr tree
     cp -r "$TMPPATH/WorldCam-main/usr"/* /usr/ 2>/dev/null
-    echo "✅ Copied entire usr structure"
+    echo "Copied entire usr structure"
 else
-    echo "❌ Could not find plugin files in extracted archive"
-    echo "📋 Available directories in tmp:"
+    echo "Could not find plugin files in extracted archive"
+    echo "Available directories in tmp:"
     find "$TMPPATH" -type d | head -10
     cleanup
     exit 1
@@ -155,21 +141,19 @@ fi
 
 sync
 
-# Verify installation
-echo "🔍 Verifying installation..."
+echo "Verifying installation..."
 if [ -d "$PLUGINPATH" ] && [ -n "$(ls -A "$PLUGINPATH" 2>/dev/null)" ]; then
-    echo "✅ Plugin directory found and not empty: $PLUGINPATH"
-    echo "📁 Contents:"
+    echo "Plugin directory found and not empty: $PLUGINPATH"
+    echo "Contents:"
     ls -la "$PLUGINPATH/" | head -10
 else
-    echo "❌ Plugin installation failed or directory is empty!"
+    echo "Plugin installation failed or directory is empty!"
     cleanup
     exit 1
 fi
 
-# Install additional streaming dependencies for OE systems
 if [ "$OSTYPE" = "OE" ]; then
-    echo "📥 Installing streaming dependencies..."
+    echo "Installing streaming dependencies..."
     for pkg in \
         streamlink \
         enigma2-plugin-extensions-streamlinkwrapper \
@@ -186,21 +170,18 @@ if [ "$OSTYPE" = "OE" ]; then
     done
 fi
 
-# Create YouTube cookies file
-echo "🍪 Creating YouTube cookies file..."
+echo "Creating YouTube cookies file..."
 mkdir -p /etc/enigma2
 cat > /etc/enigma2/yt_cookies.txt << 'EOF'
 # Netscape HTTP Cookie File
 .youtube.com	TRUE	/	TRUE	2147483647	CONSENT	YES+cb.20210615-14-p0.it+FX+294
 .youtube.com	TRUE	/	TRUE	2147483647	PREF	f1=50000000
 EOF
-echo "✅ YouTube cookies file created"
+echo "YouTube cookies file created"
 
-# Cleanup
 cleanup
 sync
 
-# System info
 FILE="/etc/image-version"
 box_type=$(head -n 1 /etc/hostname 2>/dev/null || echo "Unknown")
 distro_value=$(grep '^distro=' "$FILE" 2>/dev/null | awk -F '=' '{print $2}')
@@ -224,10 +205,9 @@ IMAGE NAME: ${distro_value:-Unknown}
 IMAGE VERSION: ${distro_version:-Unknown}
 EOF
 
-echo "🔄 Restarting enigma2 in 5 seconds..."
+echo "Restarting enigma2 in 5 seconds..."
 sleep 5
 
-# Restart Enigma2
 if command -v systemctl >/dev/null 2>&1; then
     systemctl restart enigma2
 elif command -v init >/dev/null 2>&1; then
