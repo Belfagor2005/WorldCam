@@ -94,7 +94,7 @@ except NameError:
 
 
 # Global constants
-PLUGIN_VERSION = "6.2"
+PLUGIN_VERSION = "6.3"
 PLUGIN_PATH = dirname(__file__)
 DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
 BASE_URL = "https://www.skylinewebcams.com"
@@ -110,9 +110,7 @@ screen_width = getDesktop(0).size().width()
 
 # try export with#
 # DESCRIPTION Alghero - Mugoni Beach
-# SERVICE
-# 4097:0:1:46DE:221E:EC:0:0:0:0:streamlink%3a//https%3a//www.skylinewebcams.com/it/webcam/italia/sardegna/sassari/stintino.html:Sassari
-# - Stintino - La Pelosa
+# SERVICE 4097:0:1:46DE:221E:EC:0:0:0:0:streamlink%3a//https%3a//www.skylinewebcams.com/it/webcam/italia/sardegna/sassari/stintino.html:Sassari - Stintino - La Pelosa
 
 
 class WebcamList(MenuList):
@@ -172,13 +170,13 @@ def wcListEntry(name, idx, is_category=False, is_country=False, icon=None):
     # FIRST define row size based on screen resolution
     if screen_width == 2560:
         row_height = 100
-        text_pos, text_size = (110, 0), (1000, 90)
+        text_pos, text_size = (110, -12), (1000, 90)
     elif screen_width == 1920:
         row_height = 100
-        text_pos, text_size = (110, 0), (950, 90)
+        text_pos, text_size = (110, -12), (950, 90)
     else:
         row_height = 100
-        text_pos, text_size = (100, 0), (500, 50)
+        text_pos, text_size = (100, -6), (500, 50)
 
     # Determine appropriate icon
     if is_category:
@@ -214,9 +212,7 @@ def wcListEntry(name, idx, is_category=False, is_country=False, icon=None):
 
     else:
         country_code = get_country_code(name)
-        print(
-            "DEBUG: Country name = '%s', country_code = '%s'" %
-            (name, country_code))
+        print("DEBUG: Country name = '%s', country_code = '%s'" % (name, country_code))
 
         if "martinique" in lname:
             pngx = get_category_icon("mart.png")
@@ -267,110 +263,6 @@ def wcListEntry(name, idx, is_category=False, is_country=False, icon=None):
     return res
 
 
-# def wcListEntry(name, idx, is_category=False, is_country=False, icon=None):
-    # """
-    # Create a list entry with icon and text
-    # Returns: List of MultiContent components
-    # """
-    # res = [name]
-    # lname = name.lower()
-    # print("NAME Category:", lname)
-
-    # # PRIMA definisci le dimensioni della riga in base alla risoluzione
-    # if screen_width == 2560:
-    # row_height = 100
-    # text_pos, text_size = (110, 0), (1000, 90)
-    # elif screen_width == 1920:
-    # row_height = 100
-    # text_pos, text_size = (110, 0), (950, 90)
-    # else:
-    # row_height = 100
-    # text_pos, text_size = (100, 0), (500, 50)
-
-    # # Determine appropriate icon
-    # if is_category:
-    # if icon is not None:
-    # pngx = get_category_icon(icon)
-    # else:
-    # # Old logic (string matching) preserved for backward compatibility
-    # if "youtube" in lname:
-    # pngx = get_category_icon("youtube.png")
-    # elif "hasbahca" in lname:
-    # pngx = get_category_icon("hasbahca.png")
-    # elif "userlist" in lname:
-    # pngx = get_category_icon("user_lists.png")
-    # elif "americas" in lname:
-    # pngx = get_category_icon("americas.png")
-    # elif "europe" in lname:
-    # pngx = get_category_icon("europe.png")
-    # elif "africa" in lname:
-    # pngx = get_category_icon("africa.png")
-    # elif "favorite" in lname:
-    # pngx = get_category_icon("favorite.png")
-    # else:
-    # for k, v in CATEGORY_ICONS.items():
-    # if k.lower() in lname:
-    # pngx = get_category_icon(v)
-    # break
-    # else:
-    # pngx = DEFAULT_ICON
-
-    # icon_size = (60, 60)
-    # icon_pos = (10, (row_height - icon_size[1]) // 2)
-
-    # else:
-    # country_code = get_country_code(name)
-    # print("DEBUG: Country name = '%s', country_code = '%s'" % (name, country_code))
-
-    # if "martinique" in lname:
-    # pngx = get_category_icon("mart.png")
-    # icon_size = (60, 45)
-    # icon_pos = (10, (row_height - 45) // 2)
-    # elif "guadeloupe" in lname:
-    # pngx = get_category_icon("guad.png")
-    # icon_size = (60, 45)
-    # icon_pos = (10, (row_height - 45) // 2)
-    # elif "belize" in lname:
-    # pngx = get_category_icon("bel.png")
-    # icon_size = (60, 45)
-    # icon_pos = (10, (row_height - 45) // 2)
-    # elif "luxembourg" in lname:
-    # pngx = get_category_icon("lux.png")
-    # icon_size = (60, 45)
-    # icon_pos = (10, (row_height - 45) // 2)
-    # elif country_code:
-    # pngx = get_flag_path(country_code)
-    # # FORZA tutte le bandiere a 60x45
-    # icon_size = (60, 45)  # Tutte le bandiere 60x45
-    # # Centra verticalmente
-    # icon_pos = (10, (row_height - 45) // 2)
-    # else:
-    # pngx = DEFAULT_ICON
-    # icon_size = (80, 80)
-    # icon_pos = (10, (row_height - icon_size[1]) // 2)
-
-    # if not exists(pngx):
-    # print("Icon file %s not found for name %s" % (pngx, name))
-    # pngx = DEFAULT_ICON
-
-    # res.append(
-    # MultiContentEntryPixmapAlphaTest(
-    # pos=icon_pos, size=icon_size, png=loadPNG(pngx)
-    # )
-    # )
-    # res.append(
-    # MultiContentEntryText(
-    # pos=text_pos,
-    # size=text_size,
-    # font=0,
-    # text=name,
-    # color=0xA6D1FE,
-    # flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER,
-    # )
-    # )
-    # return res
-
-
 def showlist(data, list_widget, is_category=False, is_country=False):
     plist = []
     for idx, item in enumerate(data):
@@ -380,13 +272,7 @@ def showlist(data, list_widget, is_category=False, is_country=False):
         else:
             name = item
             icon = None
-        plist.append(
-            wcListEntry(
-                name,
-                idx,
-                is_category,
-                is_country,
-                icon=icon))
+        plist.append(wcListEntry(name, idx, is_category, is_country, icon=icon))
     try:
         list_widget.setList(plist)
     except Exception:
@@ -459,30 +345,12 @@ class WorldCamMainScreen(WebcamBaseScreen):
         self.new_version = ""
         self.new_changelog = ""
         self.categories = [
-            {"key": "user_lists",
-             "name": _("User Lists"),
-             "icon": "user_lists.png",
-             "screen": WorldCamLocalScreen},
-            {"key": "favorites",
-             "name": _("Favorites"),
-             "icon": "favorite.png",
-             "screen": WorldCamFavoritesScreen},
-            {"key": "continents",
-             "name": _("Continents"),
-             "icon": "americas.png",
-             "screen": WorldCamContinentScreen},
-            {"key": "countries",
-             "name": _("Countries"),
-             "icon": "europe.png",
-             "screen": WorldCamCountryScreen},
-            {"key": "categories",
-             "name": _("Categories"),
-             "icon": "categories.png",
-             "screen": WorldCamCategoryScreen},
-            {"key": "top_webcams",
-             "name": _("Top Webcams"),
-             "icon": "top_webcams.png",
-             "screen": WorldCamTopScreen},
+            {"key": "user_lists", "name": _("User Lists"), "icon": "user_lists.png", "screen": WorldCamLocalScreen},
+            {"key": "favorites", "name": _("Favorites"), "icon": "favorite.png", "screen": WorldCamFavoritesScreen},
+            {"key": "continents", "name": _("Continents"), "icon": "americas.png", "screen": WorldCamContinentScreen},
+            {"key": "countries", "name": _("Countries"), "icon": "europe.png", "screen": WorldCamCountryScreen},
+            {"key": "categories", "name": _("Categories"), "icon": "categories.png", "screen": WorldCamCategoryScreen},
+            {"key": "top_webcams", "name": _("Top Webcams"), "icon": "top_webcams.png", "screen": WorldCamTopScreen},
             # {"key": "webcam_pl", "name": _("Webcam.pl"), "icon": "webcampl.png", "screen": WorldCamPlScreen},  # New entry
         ]
 
@@ -544,14 +412,8 @@ class WorldCamMainScreen(WebcamBaseScreen):
                     f"Index: {index}, Category count: {len(self.categories)}")
         except Exception as e:
             import traceback
-            self.logger.error(
-                f"CRITICAL ERROR: {
-                    str(e)}\n{
-                    traceback.format_exc()}")
-            self.session.open(
-                MessageBox,
-                _("Technical error in Webcam.pl"),
-                MessageBox.TYPE_ERROR)
+            self.logger.error(f"CRITICAL ERROR: {str(e)}\n{traceback.format_exc()}")
+            self.session.open(MessageBox, _("Technical error in Webcam.pl"), MessageBox.TYPE_ERROR)
 
     def open_menu(self, result=None):
         self.logger.info("Opening menu")
@@ -563,8 +425,7 @@ class WorldCamMainScreen(WebcamBaseScreen):
                 (_("Settings"), self.open_settings),
                 (_("About"), self.open_about),
             ]
-            choices = [(label, index)
-                       for index, (label, _) in enumerate(self.menu_items)]
+            choices = [(label, index) for index, (label, _) in enumerate(self.menu_items)]
 
             self.current_menu = self.session.openWithCallback(
                 self.menu_callback,
@@ -637,35 +498,13 @@ class WorldCamMainScreen(WebcamBaseScreen):
 
     def get_english_name(self, code):
         english_names = {
-            "en": "English",
-            "it": "Italian",
-            "ar": "Arabic",
-            "bg": "Bulgarian",
-            "cs": "Czech",
-            "de": "German",
-            "el": "Greek",
-            "es": "Spanish",
-            "fa": "Persian",
-            "fr": "French",
-            "he": "Hebrew",
-            "hr": "Croatian",
-            "hu": "Hungarian",
-            "ja": "Japanese",
-            "ko": "Korean",
-            "mk": "Macedonian",
-            "nl": "Dutch",
-            "pl": "Polish",
-            "pt": "Portuguese",
-            "ro": "Romanian",
-            "ru": "Russian",
-            "sk": "Slovak",
-            "sl": "Slovenian",
-            "sq": "Albanian",
-            "sr": "Serbian",
-            "th": "Thai",
-            "tr": "Turkish",
-            "vi": "Vietnamese",
-            "zh": "Chinese"}
+            "en": "English", "it": "Italian", "ar": "Arabic", "bg": "Bulgarian", "cs": "Czech",
+            "de": "German", "el": "Greek", "es": "Spanish", "fa": "Persian", "fr": "French",
+            "he": "Hebrew", "hr": "Croatian", "hu": "Hungarian", "ja": "Japanese", "ko": "Korean",
+            "mk": "Macedonian", "nl": "Dutch", "pl": "Polish", "pt": "Portuguese", "ro": "Romanian",
+            "ru": "Russian", "sk": "Slovak", "sl": "Slovenian", "sq": "Albanian", "sr": "Serbian",
+            "th": "Thai", "tr": "Turkish", "vi": "Vietnamese", "zh": "Chinese"
+        }
         return english_names.get(code, code.upper())
 
     def show_message(self, message, type=MessageBox.TYPE_INFO, timeout=0):
@@ -1095,8 +934,7 @@ class WorldCamLocal(WebcamBaseScreen):
                 self.logger.warning("No webcams parsed from file")
                 self["title"].setText(_("No valid webcams in playlist"))
             else:
-                showlist([w["name"] for w in self.webcams],
-                         self["list"], is_category=True)
+                showlist([w["name"] for w in self.webcams], self["list"], is_category=True)
                 self["list"].setCurrentIndex(0)
 
         except Exception as e:
@@ -1153,8 +991,7 @@ class WorldCamContinentScreen(WebcamBaseScreen):
         """Load continents from scraper"""
         try:
             self.continents = self.scraper.get_continents()
-            continent_names = [continent["name"]
-                               for continent in self.continents]
+            continent_names = [continent["name"] for continent in self.continents]
             self.logger.info(f"Loaded {len(continent_names)} continents")
             if continent_names:
                 showlist(continent_names, self["list"], is_category=True)
@@ -1182,8 +1019,7 @@ class WorldCamContinentCountryScreen(WebcamBaseScreen):
         super().__init__(session, lang)
         disable_summary(self)
         self.logger.info(
-            f"Initializing WorldCamContinentCountryScreen for {
-                continent['name']}")
+            f"Initializing WorldCamContinentCountryScreen for {continent['name']}")
         self.continent = continent
         # self.scraper = SkylineScraper(lang if lang else "en")
         self["title"] = Label(continent["name"])
@@ -1208,9 +1044,7 @@ class WorldCamContinentCountryScreen(WebcamBaseScreen):
             self.countries = sorted(countries, key=lambda c: c["name"].lower())
             country_names = [country["name"] for country in self.countries]
             self.logger.info(
-                f"Loaded {
-                    len(country_names)} countries for {
-                    self.continent['name']}")
+                f"Loaded {len(country_names)} countries for {self.continent['name']}")
             if country_names:
                 showlist(country_names, self["list"], is_country=True)
                 self["list"].setCurrentIndex(0)
@@ -1536,7 +1370,7 @@ class WorldCamWebcamScreen(WebcamBaseScreen):
         menu_items = [
             (_("Add to favorites"), "add_fav") if not is_fav else (
                 _("Remove from favorites"), "remove_fav"),
-            (_("Play"), "play"),
+            (_("Play"),  "play"),
             (_("Export All to Bouquet"), "export_bouquet"),
         ]
 

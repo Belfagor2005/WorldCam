@@ -1,7 +1,7 @@
 #!/bin/bash
 
-version='6.2'
-changelog='\nFix icon\nMinor fix'
+version='6.3'
+changelog='Minor fix\nText icon alignment'
 
 TMPPATH=/tmp/WorldCam-install
 FILEPATH=/tmp/WorldCam-main.tar.gz
