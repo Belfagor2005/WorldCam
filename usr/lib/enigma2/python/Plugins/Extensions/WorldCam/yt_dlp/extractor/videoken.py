@@ -30,10 +30,8 @@ class VideoKenBaseIE(InfoExtractor):
 
     def _get_org_id_and_api_key(self, org, video_id):
         details = self._download_json(
-            f'https://analytics.videoken.com/api/videolake/{org}/details',
-            video_id,
-            note='Downloading organization ID and API key',
-            headers={
+            f'https://analytics.videoken.com/api/videolake/{org}/details', video_id,
+            note='Downloading organization ID and API key', headers={
                 'Accept': 'application/json',
             })
         return details['id'], details['apikey']
@@ -42,9 +40,7 @@ class VideoKenBaseIE(InfoExtractor):
         if not video_url and not video_id:
             return
         elif not video_url or 'embed/sign-in' in video_url:
-            video_url = f'https://slideslive.com/embed/{
-                remove_start(
-                    video_id, "slideslive-")}'
+            video_url = f'https://slideslive.com/embed/{remove_start(video_id, "slideslive-")}'
         if url_or_none(referer):
             return update_url_query(video_url, {
                 'embed_parent_url': referer,
@@ -62,23 +58,17 @@ class VideoKenBaseIE(InfoExtractor):
                 video_url = video_id
                 ie_key = 'Youtube'
             else:
-                video_url = traverse_obj(
-                    video,
-                    'embed_url',
-                    'embeddableurl',
-                    expected_type=url_or_none)
+                video_url = traverse_obj(video, 'embed_url', 'embeddableurl', expected_type=url_or_none)
                 if not video_url:
                     continue
                 elif urllib.parse.urlparse(video_url).hostname == 'slideslive.com':
                     ie_key = SlidesLiveIE
-                    video_url = self._create_slideslive_url(
-                        video_url, video_id, url)
+                    video_url = self._create_slideslive_url(video_url, video_id, url)
             yield self.url_result(video_url, ie_key, video_id)
 
 
 class VideoKenIE(VideoKenBaseIE):
-    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + \
-        r'(?:(?:topic|category)/[^/#?]+/)?video/(?P<id>[\w-]+)'
+    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + r'(?:(?:topic|category)/[^/#?]+/)?video/(?P<id>[\w-]+)'
     _TESTS = [{
         # neurips -> videoken -> slideslive
         'url': 'https://videos.neurips.cc/video/slideslive-38922815',
@@ -175,32 +165,23 @@ class VideoKenIE(VideoKenBaseIE):
 
     def _real_extract(self, url):
         hostname, video_id = self._match_valid_url(url).group('host', 'id')
-        org_id, _ = self._get_org_id_and_api_key(
-            self._ORGANIZATIONS[hostname], video_id)
+        org_id, _ = self._get_org_id_and_api_key(self._ORGANIZATIONS[hostname], video_id)
         details = self._download_json(
-            'https://analytics.videoken.com/api/videoinfo_private',
-            video_id,
-            query={
+            'https://analytics.videoken.com/api/videoinfo_private', video_id, query={
                 'videoid': video_id,
                 'org_id': org_id,
-            },
-            headers={
-                'Accept': 'application/json'},
-            note='Downloading VideoKen API JSON',
-            errnote='Failed to download VideoKen API JSON',
-            fatal=False)
+            }, headers={'Accept': 'application/json'}, note='Downloading VideoKen API JSON',
+            errnote='Failed to download VideoKen API JSON', fatal=False)
         if details:
             return next(self._extract_videos({'videos': [details]}, url))
         # fallback for API error 400 response
         elif video_id.startswith('slideslive-'):
             return self.url_result(
-                self._create_slideslive_url(
-                    None, video_id, url), SlidesLiveIE, video_id)
+                self._create_slideslive_url(None, video_id, url), SlidesLiveIE, video_id)
         elif re.match(r'^[\w-]{11}$', video_id):
             return self.url_result(video_id, 'Youtube', video_id)
         else:
-            raise ExtractorError(
-                'Unable to extract without VideoKen API response')
+            raise ExtractorError('Unable to extract without VideoKen API response')
 
 
 class VideoKenPlayerIE(VideoKenBaseIE):
@@ -225,17 +206,11 @@ class VideoKenPlayerIE(VideoKenBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         return self.url_result(
-            self._create_slideslive_url(
-                None,
-                video_id,
-                url),
-            SlidesLiveIE,
-            video_id)
+            self._create_slideslive_url(None, video_id, url), SlidesLiveIE, video_id)
 
 
 class VideoKenPlaylistIE(VideoKenBaseIE):
-    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + \
-        r'(?:category/\d+/)?playlist/(?P<id>\d+)'
+    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + r'(?:category/\d+/)?playlist/(?P<id>\d+)'
     _TESTS = [{
         'url': 'https://videos.icts.res.in/category/1822/playlist/381',
         'playlist_mincount': 117,
@@ -247,25 +222,15 @@ class VideoKenPlaylistIE(VideoKenBaseIE):
 
     def _real_extract(self, url):
         hostname, playlist_id = self._match_valid_url(url).group('host', 'id')
-        org_id, _ = self._get_org_id_and_api_key(
-            self._ORGANIZATIONS[hostname], playlist_id)
+        org_id, _ = self._get_org_id_and_api_key(self._ORGANIZATIONS[hostname], playlist_id)
         videos = self._download_json(
             f'https://analytics.videoken.com/api/{org_id}/playlistitems/{playlist_id}/',
-            playlist_id,
-            headers={
-                'Accept': 'application/json'},
-            note='Downloading API JSON')
-        return self.playlist_result(
-            self._extract_videos(
-                videos,
-                url),
-            playlist_id,
-            videos.get('title'))
+            playlist_id, headers={'Accept': 'application/json'}, note='Downloading API JSON')
+        return self.playlist_result(self._extract_videos(videos, url), playlist_id, videos.get('title'))
 
 
 class VideoKenCategoryIE(VideoKenBaseIE):
-    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + \
-        r'category/(?P<id>\d+)/?(?:$|[?#])'
+    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + r'category/(?P<id>\d+)/?(?:$|[?#])'
     _TESTS = [{
         'url': 'https://videos.icts.res.in/category/1822/',
         'playlist_mincount': 500,
@@ -291,17 +256,13 @@ class VideoKenCategoryIE(VideoKenBaseIE):
 
     def _get_category_page(self, category_id, org_id, page=1, note=None):
         return self._download_json(
-            f'https://analytics.videoken.com/api/videolake/{org_id}/category_videos',
-            category_id,
-            fatal=False,
-            note=note if note else f'Downloading category page {page}',
+            f'https://analytics.videoken.com/api/videolake/{org_id}/category_videos', category_id,
+            fatal=False, note=note if note else f'Downloading category page {page}',
             query={
                 'category_id': category_id,
                 'page_number': page,
                 'length': self._PAGE_SIZE,
-            },
-            headers={
-                'Accept': 'application/json'}) or {}
+            }, headers={'Accept': 'application/json'}) or {}
 
     def _entries(self, category_id, org_id, url, page):
         videos = self._get_category_page(category_id, org_id, page + 1)
@@ -309,21 +270,17 @@ class VideoKenCategoryIE(VideoKenBaseIE):
 
     def _real_extract(self, url):
         hostname, category_id = self._match_valid_url(url).group('host', 'id')
-        org_id, _ = self._get_org_id_and_api_key(
-            self._ORGANIZATIONS[hostname], category_id)
-        category_info = self._get_category_page(
-            category_id, org_id, note='Downloading category info')
+        org_id, _ = self._get_org_id_and_api_key(self._ORGANIZATIONS[hostname], category_id)
+        category_info = self._get_category_page(category_id, org_id, note='Downloading category info')
         category = category_info['category_name']
-        total_pages = math.ceil(
-            int(category_info['recordsTotal']) / self._PAGE_SIZE)
+        total_pages = math.ceil(int(category_info['recordsTotal']) / self._PAGE_SIZE)
         return self.playlist_result(InAdvancePagedList(
             functools.partial(self._entries, category_id, org_id, url),
             total_pages, self._PAGE_SIZE), category_id, category)
 
 
 class VideoKenTopicIE(VideoKenBaseIE):
-    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + \
-        r'topic/(?P<id>[^/#?]+)/?(?:$|[?#])'
+    _VALID_URL = VideoKenBaseIE._BASE_URL_RE + r'topic/(?P<id>[^/#?]+)/?(?:$|[?#])'
     _TESTS = [{
         'url': 'https://videos.neurips.cc/topic/machine%20learning/',
         'playlist_mincount': 500,
@@ -347,19 +304,9 @@ class VideoKenTopicIE(VideoKenBaseIE):
         },
     }]
 
-    def _get_topic_page(
-            self,
-            topic,
-            org_id,
-            search_id,
-            api_key,
-            page=1,
-            note=None):
+    def _get_topic_page(self, topic, org_id, search_id, api_key, page=1, note=None):
         return self._download_json(
-            'https://es.videoken.com/api/v1.0/get_results',
-            topic,
-            fatal=False,
-            query={
+            'https://es.videoken.com/api/v1.0/get_results', topic, fatal=False, query={
                 'orgid': org_id,
                 'size': self._PAGE_SIZE,
                 'query': topic,
@@ -370,41 +317,21 @@ class VideoKenTopicIE(VideoKenBaseIE):
                 'is_topic': 'true',
                 'category': '',
                 'searchid': search_id,
-            },
-            headers={
-                'Accept': 'application/json'},
+            }, headers={'Accept': 'application/json'},
             note=note if note else f'Downloading topic page {page}') or {}
 
     def _entries(self, topic, org_id, search_id, api_key, url, page):
-        videos = self._get_topic_page(
-            topic, org_id, search_id, api_key, page + 1)
+        videos = self._get_topic_page(topic, org_id, search_id, api_key, page + 1)
         yield from self._extract_videos(videos, url)
 
     def _real_extract(self, url):
         hostname, topic_id = self._match_valid_url(url).group('host', 'id')
         topic = urllib.parse.unquote(topic_id)
         topic_id = topic.replace(' ', '_')
-        org_id, api_key = self._get_org_id_and_api_key(
-            self._ORGANIZATIONS[hostname], topic)
-        search_id = base64.b64encode(
-            f':{topic}:{int(time.time())}:transient'.encode()).decode()
-        total_pages = int_or_none(
-            self._get_topic_page(
-                topic,
-                org_id,
-                search_id,
-                api_key,
-                note='Downloading topic info')['total_no_of_pages'])
-        return self.playlist_result(
-            InAdvancePagedList(
-                functools.partial(
-                    self._entries,
-                    topic,
-                    org_id,
-                    search_id,
-                    api_key,
-                    url),
-                total_pages,
-                self._PAGE_SIZE),
-            topic_id,
-            topic)
+        org_id, api_key = self._get_org_id_and_api_key(self._ORGANIZATIONS[hostname], topic)
+        search_id = base64.b64encode(f':{topic}:{int(time.time())}:transient'.encode()).decode()
+        total_pages = int_or_none(self._get_topic_page(
+            topic, org_id, search_id, api_key, note='Downloading topic info')['total_no_of_pages'])
+        return self.playlist_result(InAdvancePagedList(
+            functools.partial(self._entries, topic, org_id, search_id, api_key, url),
+            total_pages, self._PAGE_SIZE), topic_id, topic)

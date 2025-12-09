@@ -59,17 +59,12 @@ class ZingMp3BaseIE(InfoExtractor):
         api_slug = self._API_SLUGS[url_type]
         params.update({'ctime': '1'})
         sha256 = hashlib.sha256(
-            ''.join(
-                f'{k}={v}' for k,
-                v in sorted(
-                    params.items())).encode()).hexdigest()
+            ''.join(f'{k}={v}' for k, v in sorted(params.items())).encode()).hexdigest()
         data = {
             **params,
             'apiKey': 'X5BM3w8N7MKozC0B85o4KMlzLZKhV00y',
-            'sig': hmac.new(
-                b'acOrvUS15XRW2o9JksiK1KgQ6Vbds8ZW',
-                f'{api_slug}{sha256}'.encode(),
-                hashlib.sha512).hexdigest(),
+            'sig': hmac.new(b'acOrvUS15XRW2o9JksiK1KgQ6Vbds8ZW',
+                            f'{api_slug}{sha256}'.encode(), hashlib.sha512).hexdigest(),
         }
         return f'{self._DOMAIN}{api_slug}?{urllib.parse.urlencode(data)}'
 
@@ -81,16 +76,15 @@ class ZingMp3BaseIE(InfoExtractor):
 
     def _real_initialize(self):
         if not self._cookies_passed:
-            self._request_webpage(self._api_url(
-                'bai-hat', {'id': ''}), None, note='Updating cookies')
+            self._request_webpage(
+                self._api_url('bai-hat', {'id': ''}), None, note='Updating cookies')
 
     def _parse_items(self, items):
         for url in traverse_obj(items, (..., 'link')) or []:
             yield self.url_result(urljoin(self._DOMAIN, url))
 
     def _fetch_page(self, id_, url_type, page):
-        raise NotImplementedError(
-            'This method must be implemented by subclasses')
+        raise NotImplementedError('This method must be implemented by subclasses')
 
     def _paged_list(self, _id, url_type):
         count = 0
@@ -99,8 +93,7 @@ class ZingMp3BaseIE(InfoExtractor):
             entries = list(self._parse_items(data.get('items')))
             count += len(entries)
             yield from entries
-            if not data.get('hasMore') or try_call(
-                    lambda: count > data['total']):
+            if not data.get('hasMore') or try_call(lambda: count > data['total']):
                 break
 
 
@@ -108,67 +101,74 @@ class ZingMp3IE(ZingMp3BaseIE):
     _VALID_URL = ZingMp3BaseIE._VALID_URL_TMPL % 'bai-hat|video-clip|embed|eps'
     IE_NAME = 'zingmp3'
     IE_DESC = 'zingmp3.vn'
-    _TESTS = [{'url': 'https://mp3.zing.vn/bai-hat/Xa-Mai-Xa-Bao-Thy/ZWZB9WAB.html',
-               'md5': 'ead7ae13693b3205cbc89536a077daed',
-               'info_dict': {'id': 'ZWZB9WAB',
-                             'title': 'Xa Mãi Xa',
-                             'ext': 'mp3',
-                             'thumbnail': r're:^https?://.+\.jpg',
-                             'subtitles': {'origin': [{'ext': 'lrc',
-                                                       }],
-                                           },
-                             'duration': 255,
-                             'track': 'Xa Mãi Xa',
-                             'artist': 'Bảo Thy',
-                             'album': 'Special Album',
-                             'album_artist': 'Bảo Thy',
-                             },
-               },
-              {'url': 'https://zingmp3.vn/video-clip/Suong-Hoa-Dua-Loi-K-ICM-RYO/ZO8ZF7C7.html',
-               'md5': '92c6e7a019f06b4682a6c35ae5785fab',
-               'info_dict': {'id': 'ZO8ZF7C7',
-                             'title': 'Sương Hoa Đưa Lối',
-                             'ext': 'mp4',
-                             'thumbnail': r're:^https?://.+\.jpg',
-                             'duration': 207,
-                             'track': 'Sương Hoa Đưa Lối',
-                             'artist': 'K-ICM, RYO',
-                             'album': 'Sương Hoa Đưa Lối (Single)',
-                             'album_artist': 'K-ICM, RYO',
-                             },
-               },
-              {'url': 'https://zingmp3.vn/bai-hat/Nguoi-Yeu-Toi-Lanh-Lung-Sat-Da-Mr-Siro/ZZ6IW7OU.html',
-               'md5': '3e9f7a9bd0d965573dbff8d7c68b629d',
-               'info_dict': {'id': 'ZZ6IW7OU',
-                             'title': 'Người Yêu Tôi Lạnh Lùng Sắt Đá',
-                             'ext': 'mp3',
-                             'thumbnail': r're:^https?://.+\.jpg',
-                             'duration': 303,
-                             'track': 'Người Yêu Tôi Lạnh Lùng Sắt Đá',
-                             'artist': 'Mr. Siro',
-                             'album': 'Người Yêu Tôi Lạnh Lùng Sắt Đá (Single)',
-                             'album_artist': 'Mr. Siro',
-                             },
-               },
-              {'url': 'https://zingmp3.vn/eps/Cham-x-Ban-Noi-Goi-La-Nha/ZZD9ACWI.html',
-               'md5': 'd52f9f63e2631e004e4f15188eedcf80',
-               'info_dict': {'id': 'ZZD9ACWI',
-                             'title': 'Chạm x Bạn - Nơi Gọi Là Nhà',
-                             'ext': 'mp3',
-                             'duration': 3716,
-                             'thumbnail': r're:^https?://.+\.jpg',
-                             'track': 'Chạm x Bạn - Nơi Gọi Là Nhà',
-                             'artist': 'On Air',
-                             'album': 'Top Podcast',
-                             'album_artist': 'On Air',
-                             },
-               },
-              {'url': 'https://zingmp3.vn/embed/song/ZWZEI76B?start=false',
-               'only_matching': True,
-               },
-              {'url': 'https://zingmp3.vn/bai-hat/Xa-Mai-Xa-Bao-Thy/ZWZB9WAB.html',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://mp3.zing.vn/bai-hat/Xa-Mai-Xa-Bao-Thy/ZWZB9WAB.html',
+        'md5': 'ead7ae13693b3205cbc89536a077daed',
+        'info_dict': {
+            'id': 'ZWZB9WAB',
+            'title': 'Xa Mãi Xa',
+            'ext': 'mp3',
+            'thumbnail': r're:^https?://.+\.jpg',
+            'subtitles': {
+                'origin': [{
+                    'ext': 'lrc',
+                }],
+            },
+            'duration': 255,
+            'track': 'Xa Mãi Xa',
+            'artist': 'Bảo Thy',
+            'album': 'Special Album',
+            'album_artist': 'Bảo Thy',
+        },
+    }, {
+        'url': 'https://zingmp3.vn/video-clip/Suong-Hoa-Dua-Loi-K-ICM-RYO/ZO8ZF7C7.html',
+        'md5': '92c6e7a019f06b4682a6c35ae5785fab',
+        'info_dict': {
+            'id': 'ZO8ZF7C7',
+            'title': 'Sương Hoa Đưa Lối',
+            'ext': 'mp4',
+            'thumbnail': r're:^https?://.+\.jpg',
+            'duration': 207,
+            'track': 'Sương Hoa Đưa Lối',
+            'artist': 'K-ICM, RYO',
+            'album': 'Sương Hoa Đưa Lối (Single)',
+            'album_artist': 'K-ICM, RYO',
+        },
+    }, {
+        'url': 'https://zingmp3.vn/bai-hat/Nguoi-Yeu-Toi-Lanh-Lung-Sat-Da-Mr-Siro/ZZ6IW7OU.html',
+        'md5': '3e9f7a9bd0d965573dbff8d7c68b629d',
+        'info_dict': {
+            'id': 'ZZ6IW7OU',
+            'title': 'Người Yêu Tôi Lạnh Lùng Sắt Đá',
+            'ext': 'mp3',
+            'thumbnail': r're:^https?://.+\.jpg',
+            'duration': 303,
+            'track': 'Người Yêu Tôi Lạnh Lùng Sắt Đá',
+            'artist': 'Mr. Siro',
+            'album': 'Người Yêu Tôi Lạnh Lùng Sắt Đá (Single)',
+            'album_artist': 'Mr. Siro',
+        },
+    }, {
+        'url': 'https://zingmp3.vn/eps/Cham-x-Ban-Noi-Goi-La-Nha/ZZD9ACWI.html',
+        'md5': 'd52f9f63e2631e004e4f15188eedcf80',
+        'info_dict': {
+            'id': 'ZZD9ACWI',
+            'title': 'Chạm x Bạn - Nơi Gọi Là Nhà',
+            'ext': 'mp3',
+            'duration': 3716,
+            'thumbnail': r're:^https?://.+\.jpg',
+            'track': 'Chạm x Bạn - Nơi Gọi Là Nhà',
+            'artist': 'On Air',
+            'album': 'Top Podcast',
+            'album_artist': 'On Air',
+        },
+    }, {
+        'url': 'https://zingmp3.vn/embed/song/ZWZEI76B?start=false',
+        'only_matching': True,
+    }, {
+        'url': 'https://zingmp3.vn/bai-hat/Xa-Mai-Xa-Bao-Thy/ZWZB9WAB.html',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         song_id, url_type = self._match_valid_url(url).group('id', 'type')
@@ -203,13 +203,7 @@ class ZingMp3IE(ZingMp3BaseIE):
                 if not video_url:
                     continue
                 if k == 'hls':
-                    formats.extend(
-                        self._extract_m3u8_formats(
-                            video_url,
-                            item_id,
-                            'mp4',
-                            m3u8_id=k,
-                            fatal=False))
+                    formats.extend(self._extract_m3u8_formats(video_url, item_id, 'mp4', m3u8_id=k, fatal=False))
                     continue
                 formats.append({
                     'format_id': f'mp4-{res}',
@@ -218,16 +212,12 @@ class ZingMp3IE(ZingMp3BaseIE):
                 })
 
         if not formats:
-            if item.get(
-                    'msg') == 'Sorry, this content is not available in your country.':
-                self.raise_geo_restricted(
-                    countries=self._GEO_COUNTRIES,
-                    metadata_available=True)
+            if item.get('msg') == 'Sorry, this content is not available in your country.':
+                self.raise_geo_restricted(countries=self._GEO_COUNTRIES, metadata_available=True)
             else:
                 self.raise_no_formats('The song is only for VIP accounts.')
 
-        lyric = item.get('lyric') or self._call_api(
-            'lyric', {'id': item_id}, fatal=False).get('file')
+        lyric = item.get('lyric') or self._call_api('lyric', {'id': item_id}, fatal=False).get('file')
 
         return {
             'id': item_id,
@@ -273,11 +263,8 @@ class ZingMp3AlbumIE(ZingMp3BaseIE):
         song_id, url_type = self._match_valid_url(url).group('id', 'type')
         data = self._call_api(url_type, {'id': song_id})
         return self.playlist_result(
-            self._parse_items(
-                traverse_obj(
-                    data, ('song', 'items'))), traverse_obj(
-                data, 'id', 'encodeId'), traverse_obj(
-                    data, 'name', 'title'))
+            self._parse_items(traverse_obj(data, ('song', 'items'))),
+            traverse_obj(data, 'id', 'encodeId'), traverse_obj(data, 'name', 'title'))
 
 
 class ZingMp3ChartHomeIE(ZingMp3BaseIE):
@@ -354,8 +341,8 @@ class ZingMp3WeekChartIE(ZingMp3BaseIE):
     def _real_extract(self, url):
         song_id, url_type = self._match_valid_url(url).group('id', 'type')
         data = self._call_api(url_type, {'id': song_id})
-        return self.playlist_result(self._parse_items(
-            data['items']), song_id, f'zing-chart-{data.get("country", "")}')
+        return self.playlist_result(
+            self._parse_items(data['items']), song_id, f'zing-chart-{data.get("country", "")}')
 
 
 class ZingMp3ChartMusicVideoIE(ZingMp3BaseIE):
@@ -400,14 +387,8 @@ class ZingMp3ChartMusicVideoIE(ZingMp3BaseIE):
         })
 
     def _real_extract(self, url):
-        song_id, regions, url_type = self._match_valid_url(
-            url).group('id', 'regions', 'type')
-        return self.playlist_result(
-            self._paged_list(
-                song_id,
-                url_type),
-            song_id,
-            f'{url_type}_{regions}')
+        song_id, regions, url_type = self._match_valid_url(url).group('id', 'regions', 'type')
+        return self.playlist_result(self._paged_list(song_id, url_type), song_id, f'{url_type}_{regions}')
 
 
 class ZingMp3UserIE(ZingMp3BaseIE):
@@ -473,24 +454,13 @@ class ZingMp3UserIE(ZingMp3BaseIE):
         if not url_type:
             url_type = 'bai-hat'
 
-        user_info = self._call_api(
-            'info-artist',
-            {},
-            alias,
-            query={
-                'alias': alias})
+        user_info = self._call_api('info-artist', {}, alias, query={'alias': alias})
 
         # Handle for new-release
         if alias == 'new-release' and url_type in ('song', 'album'):
             _id = f'{alias}-{url_type}'
-            return self.playlist_result(
-                self._parse_items(
-                    self._call_api(
-                        'new-release',
-                        params={
-                            'type': url_type},
-                        display_id=_id)),
-                _id)
+            return self.playlist_result(self._parse_items(
+                self._call_api('new-release', params={'type': url_type}, display_id=_id)), _id)
         else:
             # Handle for user/artist
             if url_type in ('bai-hat', 'video'):
@@ -500,12 +470,7 @@ class ZingMp3UserIE(ZingMp3BaseIE):
                 entries = self._parse_items(traverse_obj(user_info, (
                     'sections', lambda _, v: v['sectionId'] == section_id, 'items', ...)))
             return self.playlist_result(
-                entries,
-                user_info['id'],
-                join_nonempty(
-                    user_info.get('name'),
-                    url_type,
-                    delim=' - '),
+                entries, user_info['id'], join_nonempty(user_info.get('name'), url_type, delim=' - '),
                 user_info.get('biography'))
 
 
@@ -536,10 +501,7 @@ class ZingMp3HubIE(ZingMp3BaseIE):
         entries = self._parse_items(traverse_obj(hub_detail, (
             'sections', lambda _, v: v['sectionId'] == 'hub', 'items', ...)))
         return self.playlist_result(
-            entries,
-            song_id,
-            hub_detail.get('title'),
-            hub_detail.get('description'))
+            entries, song_id, hub_detail.get('title'), hub_detail.get('description'))
 
 
 class ZingMp3LiveRadioIE(ZingMp3BaseIE):
@@ -578,33 +540,25 @@ class ZingMp3LiveRadioIE(ZingMp3BaseIE):
     }]
 
     def _real_extract(self, url):
-        url_type, live_radio_id = self._match_valid_url(
-            url).group('type', 'id')
+        url_type, live_radio_id = self._match_valid_url(url).group('type', 'id')
         info = self._call_api(url_type, {'id': live_radio_id})
         manifest_url = info.get('streaming')
         if not manifest_url:
             raise ExtractorError('This radio is offline.', expected=True)
-        fmts, subtitles = self._extract_m3u8_formats_and_subtitles(
-            manifest_url, live_radio_id, fatal=False)
-        return {'id': live_radio_id,
-                'is_live': True,
-                'formats': fmts,
-                'subtitles': subtitles,
-                **traverse_obj(info,
-                               {'title': 'title',
-                                'thumbnail': (('thumbnail',
-                                               'thumbnailM',
-                                               'thumbnailV',
-                                               'thumbnailH'),
-                                              {url_or_none}),
-                                'view_count': ('activeUsers',
-                                               {int_or_none}),
-                                'like_count': ('totalReaction',
-                                               {int_or_none}),
-                                'description': 'description',
-                                },
-                               get_all=False),
-                }
+        fmts, subtitles = self._extract_m3u8_formats_and_subtitles(manifest_url, live_radio_id, fatal=False)
+        return {
+            'id': live_radio_id,
+            'is_live': True,
+            'formats': fmts,
+            'subtitles': subtitles,
+            **traverse_obj(info, {
+                'title': 'title',
+                'thumbnail': (('thumbnail', 'thumbnailM', 'thumbnailV', 'thumbnailH'), {url_or_none}),
+                'view_count': ('activeUsers', {int_or_none}),
+                'like_count': ('totalReaction', {int_or_none}),
+                'description': 'description',
+            }, get_all=False),
+        }
 
 
 class ZingMp3PodcastEpisodeIE(ZingMp3BaseIE):
@@ -637,13 +591,9 @@ class ZingMp3PodcastEpisodeIE(ZingMp3BaseIE):
     def _real_extract(self, url):
         podcast_id, url_type = self._match_valid_url(url).group('id', 'type')
         podcast_info = self._call_api(url_type, {'id': podcast_id})
-        entries = self._paged_list(
-            podcast_id, 'pgr-list' if url_type == 'pgr' else 'cgr-list')
+        entries = self._paged_list(podcast_id, 'pgr-list' if url_type == 'pgr' else 'cgr-list')
         return self.playlist_result(
-            entries,
-            podcast_id,
-            podcast_info.get('title'),
-            podcast_info.get('description'))
+            entries, podcast_id, podcast_info.get('title'), podcast_info.get('description'))
 
 
 class ZingMp3PodcastIE(ZingMp3BaseIE):
@@ -674,7 +624,5 @@ class ZingMp3PodcastIE(ZingMp3BaseIE):
         params = {'id': url_type}
         if url_type == 'podcast-new':
             params['type'] = 'new'
-        items = self._call_api(
-            'cgrs' if url_type == 'cgr' else url_type,
-            params)['items']
+        items = self._call_api('cgrs' if url_type == 'cgr' else url_type, params)['items']
         return self.playlist_result(self._parse_items(items), url_type)

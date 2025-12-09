@@ -66,12 +66,7 @@ class PokerGoIE(PokerGoBaseIE):
             'width': image.get('width'),
             'height': image.get('height'),
         } for image in data_json.get('images') or [] if image.get('url')]
-        series_json = traverse_obj(
-            data_json,
-            ('show_tags',
-             lambda _,
-             v: v['video_id'] == video_id,
-                any)) or {}
+        series_json = traverse_obj(data_json, ('show_tags', lambda _, v: v['video_id'] == video_id, any)) or {}
 
         return {
             '_type': 'url_transparent',
@@ -100,12 +95,8 @@ class PokerGoCollectionIE(PokerGoBaseIE):
 
     def _entries(self, playlist_id):
         data_json = self._download_json(
-            f'https://api.pokergo.com/v2/properties/{
-                self._PROPERTY_ID}/collections/{playlist_id}?include=entities',
-            playlist_id,
-            headers={
-                'authorization': f'Bearer {
-                    self._AUTH_TOKEN}'})['data']
+            f'https://api.pokergo.com/v2/properties/{self._PROPERTY_ID}/collections/{playlist_id}?include=entities',
+            playlist_id, headers={'authorization': f'Bearer {self._AUTH_TOKEN}'})['data']
         for video in data_json.get('collection_video') or []:
             video_id = video.get('id')
             if video_id:
@@ -115,6 +106,4 @@ class PokerGoCollectionIE(PokerGoBaseIE):
 
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
-        return self.playlist_result(
-            self._entries(playlist_id),
-            playlist_id=playlist_id)
+        return self.playlist_result(self._entries(playlist_id), playlist_id=playlist_id)

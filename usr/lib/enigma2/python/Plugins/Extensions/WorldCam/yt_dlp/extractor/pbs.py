@@ -19,63 +19,37 @@ from ..utils import (
 
 class PBSIE(InfoExtractor):
     _STATIONS = (
-        (r'(?:video|www|player)\.pbs\.org',
-         'PBS: Public Broadcasting Service'),
-        # http://www.pbs.org/
-        (r'video\.aptv\.org',
-         'APT - Alabama Public Television (WBIQ)'),
-        # http://aptv.org/
-        (r'video\.gpb\.org',
-         'GPB/Georgia Public Broadcasting (WGTV)'),
-        # http://www.gpb.org/
-        (r'video\.mpbonline\.org',
-         'Mississippi Public Broadcasting (WMPN)'),
-        # http://www.mpbonline.org
-        (r'video\.wnpt\.org',
-         'Nashville Public Television (WNPT)'),
-        # http://www.wnpt.org
+        (r'(?:video|www|player)\.pbs\.org', 'PBS: Public Broadcasting Service'),  # http://www.pbs.org/
+        (r'video\.aptv\.org', 'APT - Alabama Public Television (WBIQ)'),  # http://aptv.org/
+        (r'video\.gpb\.org', 'GPB/Georgia Public Broadcasting (WGTV)'),  # http://www.gpb.org/
+        (r'video\.mpbonline\.org', 'Mississippi Public Broadcasting (WMPN)'),  # http://www.mpbonline.org
+        (r'video\.wnpt\.org', 'Nashville Public Television (WNPT)'),  # http://www.wnpt.org
         (r'video\.wfsu\.org', 'WFSU-TV (WFSU)'),  # http://wfsu.org/
         (r'video\.wsre\.org', 'WSRE (WSRE)'),  # http://www.wsre.org
         (r'video\.wtcitv\.org', 'WTCI (WTCI)'),  # http://www.wtcitv.org
         (r'video\.pba\.org', 'WPBA/Channel 30 (WPBA)'),  # http://pba.org/
-        (r'video\.alaskapublic\.org',
-         'Alaska Public Media (KAKM)'),
-        # http://alaskapublic.org/kakm
+        (r'video\.alaskapublic\.org', 'Alaska Public Media (KAKM)'),  # http://alaskapublic.org/kakm
         # (r'kuac\.org', 'KUAC (KUAC)'),  # http://kuac.org/kuac-tv/
         # (r'ktoo\.org', '360 North (KTOO)'),  # http://www.ktoo.org/
         # (r'azpm\.org', 'KUAT 6 (KUAT)'),  # http://www.azpm.org/
         (r'video\.azpbs\.org', 'Arizona PBS (KAET)'),  # http://www.azpbs.org
-        # http://www.newmexicopbs.org/
-        (r'portal\.knme\.org', 'KNME-TV/Channel 5 (KNME)'),
+        (r'portal\.knme\.org', 'KNME-TV/Channel 5 (KNME)'),  # http://www.newmexicopbs.org/
         (r'video\.vegaspbs\.org', 'Vegas PBS (KLVX)'),  # http://vegaspbs.org/
-        (r'watch\.aetn\.org',
-         'AETN/ARKANSAS ETV NETWORK (KETS)'),
-        # http://www.aetn.org/
+        (r'watch\.aetn\.org', 'AETN/ARKANSAS ETV NETWORK (KETS)'),  # http://www.aetn.org/
         (r'video\.ket\.org', 'KET (WKLE)'),  # http://www.ket.org/
         (r'video\.wkno\.org', 'WKNO/Channel 10 (WKNO)'),  # http://www.wkno.org/
-        (r'video\.lpb\.org',
-         'LPB/LOUISIANA PUBLIC BROADCASTING (WLPB)'),
-        # http://www.lpb.org/
+        (r'video\.lpb\.org', 'LPB/LOUISIANA PUBLIC BROADCASTING (WLPB)'),  # http://www.lpb.org/
         (r'videos\.oeta\.tv', 'OETA (KETA)'),  # http://www.oeta.tv
-        (r'video\.optv\.org',
-         'Ozarks Public Television (KOZK)'),
-        # http://www.optv.org/
-        (r'watch\.wsiu\.org',
-         'WSIU Public Broadcasting (WSIU)'),
-        # http://www.wsiu.org/
+        (r'video\.optv\.org', 'Ozarks Public Television (KOZK)'),  # http://www.optv.org/
+        (r'watch\.wsiu\.org', 'WSIU Public Broadcasting (WSIU)'),  # http://www.wsiu.org/
         (r'video\.keet\.org', 'KEET TV (KEET)'),  # http://www.keet.org
         (r'pbs\.kixe\.org', 'KIXE/Channel 9 (KIXE)'),  # http://kixe.org/
         (r'video\.kpbs\.org', 'KPBS San Diego (KPBS)'),  # http://www.kpbs.org/
         (r'video\.kqed\.org', 'KQED (KQED)'),  # http://www.kqed.org
         (r'vids\.kvie\.org', 'KVIE Public Television (KVIE)'),  # http://www.kvie.org
-        (r'(?:video\.|www\.)pbssocal\.org',
-         'PBS SoCal/KOCE (KOCE)'),
-        # http://www.pbssocal.org/
-        # http://www.valleypbs.org/
-        (r'video\.valleypbs\.org', 'ValleyPBS (KVPT)'),
-        (r'video\.cptv\.org',
-         'CONNECTICUT PUBLIC TELEVISION (WEDH)'),
-        # http://cptv.org
+        (r'(?:video\.|www\.)pbssocal\.org', 'PBS SoCal/KOCE (KOCE)'),  # http://www.pbssocal.org/
+        (r'video\.valleypbs\.org', 'ValleyPBS (KVPT)'),  # http://www.valleypbs.org/
+        (r'video\.cptv\.org', 'CONNECTICUT PUBLIC TELEVISION (WEDH)'),  # http://cptv.org
         (r'watch\.knpb\.org', 'KNPB Channel 5 (KNPB)'),  # http://www.knpb.org/
         (r'video\.soptv\.org', 'SOPTV (KSYS)'),  # http://www.soptv.org
         # (r'klcs\.org', 'KLCS/Channel 58 (KLCS)'),  # http://www.klcs.org
@@ -207,8 +181,7 @@ class PBSIE(InfoExtractor):
     )
 
     IE_NAME = 'pbs'
-    IE_DESC = 'Public Broadcasting Service (PBS) and member stations: {}'.format(
-        ', '.join(list(zip(*_STATIONS, strict=True))[1]))
+    IE_DESC = 'Public Broadcasting Service (PBS) and member stations: {}'.format(', '.join(list(zip(*_STATIONS, strict=True))[1]))
 
     _VALID_URL = r'''(?x)https?://
         (?:
@@ -260,17 +233,12 @@ class PBSIE(InfoExtractor):
                 'description': 'md5:5979a4d069b157f622d02bff62fbe654',
                 'duration': 5050,
                 'chapters': [
-                    {'start_time': 0.0, 'end_time': 1234.0,
-                        'title': 'After Saddam, Chaos'},
-                    {'start_time': 1233.0, 'end_time': 1719.0,
-                        'title': 'The Insurgency Takes Root'},
-                    {'start_time': 1718.0, 'end_time': 2461.0,
-                        'title': 'A Light Footprint'},
+                    {'start_time': 0.0, 'end_time': 1234.0, 'title': 'After Saddam, Chaos'},
+                    {'start_time': 1233.0, 'end_time': 1719.0, 'title': 'The Insurgency Takes Root'},
+                    {'start_time': 1718.0, 'end_time': 2461.0, 'title': 'A Light Footprint'},
                     {'start_time': 2460.0, 'end_time': 3589.0, 'title': 'The Surge '},
-                    {'start_time': 3588.0, 'end_time': 4355.0,
-                        'title': 'The Withdrawal '},
-                    {'start_time': 4354.0, 'end_time': 5051.0,
-                        'title': 'ISIS on the March '},
+                    {'start_time': 3588.0, 'end_time': 4355.0, 'title': 'The Withdrawal '},
+                    {'start_time': 4354.0, 'end_time': 5051.0, 'title': 'ISIS on the March '},
                 ],
                 'display_id': 'losing-iraq',
                 'thumbnail': 'https://image.pbs.org/video-assets/pbs/frontline/138098/images/mezzanine_401.jpg',
@@ -494,12 +462,9 @@ class PBSIE(InfoExtractor):
     }
 
     def _real_initialize(self):
-        cookie = (
-            self._download_json(
-                'http://localization.services.pbs.org/localize/auto/cookie/',
-                None,
-                headers=self.geo_verification_headers(),
-                fatal=False) or {}).get('cookie')
+        cookie = (self._download_json(
+            'http://localization.services.pbs.org/localize/auto/cookie/',
+            None, headers=self.geo_verification_headers(), fatal=False) or {}).get('cookie')
         if cookie:
             station = self._search_regex(r'#?s=\["([^"]+)"', cookie, 'station')
             if station:
@@ -533,41 +498,25 @@ class PBSIE(InfoExtractor):
                     return tabbed_videos, presumptive_id, upload_date, description
 
             MEDIA_ID_REGEXES = [
-                # frontline video embed
-                r"div\s*:\s*'videoembed'\s*,\s*mediaid\s*:\s*'(\d+)'",
-                r'class="coveplayerid">([^<]+)<',
-                # coveplayer
-                # coveplayer from
-                # http://www.pbs.org/wgbh/frontline/film/real-csi/
-                r'<section[^>]+data-coveid="(\d+)"',
-                # https://www.thirteen.org/programs/the-woodwrights-shop/who-wrote-the-book-of-sloyd-fggvvq/
-                r'\sclass="passportcoveplayer"[^>]*\sdata-media="(\d+)',
-                # jwplayer
-                r'<input type="hidden" id="pbs_video_id_[0-9]+" value="([0-9]+)"/>',
+                r"div\s*:\s*'videoembed'\s*,\s*mediaid\s*:\s*'(\d+)'",  # frontline video embed
+                r'class="coveplayerid">([^<]+)<',                       # coveplayer
+                r'<section[^>]+data-coveid="(\d+)"',                    # coveplayer from http://www.pbs.org/wgbh/frontline/film/real-csi/
+                r'\sclass="passportcoveplayer"[^>]*\sdata-media="(\d+)',  # https://www.thirteen.org/programs/the-woodwrights-shop/who-wrote-the-book-of-sloyd-fggvvq/
+                r'<input type="hidden" id="pbs_video_id_[0-9]+" value="([0-9]+)"/>',  # jwplayer
                 r"(?s)window\.PBS\.playerConfig\s*=\s*{.*?id\s*:\s*'([0-9]+)',",
-                # http://www.pbs.org/wgbh/roadshow/watch/episode/2105-indianapolis-hour-2/
-                r'<div[^>]+\bdata-cove-id=["\'](\d+)"',
-                # https://www.pbs.org/wgbh/masterpiece/episodes/victoria-s2-e1/
-                r'<iframe[^>]+\bsrc=["\'](?:https?:)?//video\.pbs\.org/widget/partnerplayer/(\d+)',
-                # last pattern to avoid false positives
-                r'\bhttps?://player\.pbs\.org/[\w-]+player/(\d+)',
+                r'<div[^>]+\bdata-cove-id=["\'](\d+)"',  # http://www.pbs.org/wgbh/roadshow/watch/episode/2105-indianapolis-hour-2/
+                r'<iframe[^>]+\bsrc=["\'](?:https?:)?//video\.pbs\.org/widget/partnerplayer/(\d+)',  # https://www.pbs.org/wgbh/masterpiece/episodes/victoria-s2-e1/
+                r'\bhttps?://player\.pbs\.org/[\w-]+player/(\d+)',      # last pattern to avoid false positives
             ]
 
             media_id = self._search_regex(
-                MEDIA_ID_REGEXES,
-                webpage,
-                'media ID',
-                fatal=False,
-                default=None)
+                MEDIA_ID_REGEXES, webpage, 'media ID', fatal=False, default=None)
             if media_id:
                 return media_id, presumptive_id, upload_date, description
 
             # Frontline video embedded via flp
             video_id = self._search_regex(
-                r'videoid\s*:\s*"([\d+a-z]{7,})"',
-                webpage,
-                'videoid',
-                default=None)
+                r'videoid\s*:\s*"([\d+a-z]{7,})"', webpage, 'videoid', default=None)
             if video_id:
                 # pkg_id calculation is reverse engineered from
                 # http://www.pbs.org/wgbh/pages/frontline/js/flp2012.js
@@ -577,8 +526,9 @@ class PBSIE(InfoExtractor):
                     prg_id = prg_id.split('q')[1]
                 prg_id = int(prg_id, 16)
                 getdir = self._download_json(
-                    'http://www.pbs.org/wgbh/pages/frontline/.json/getdir/getdir%d.json' %
-                    prg_id, presumptive_id, 'Downloading getdir JSON', transform_source=strip_jsonp)
+                    'http://www.pbs.org/wgbh/pages/frontline/.json/getdir/getdir%d.json' % prg_id,
+                    presumptive_id, 'Downloading getdir JSON',
+                    transform_source=strip_jsonp)
                 return getdir['mid'], presumptive_id, upload_date, description
 
             for iframe in re.findall(r'(?s)<iframe(.+?)></iframe>', webpage):
@@ -624,8 +574,7 @@ class PBSIE(InfoExtractor):
             video_id, transform_source=js_to_json, fatal=fatal)
 
     def _real_extract(self, url):
-        video_id, display_id, upload_date, description = self._extract_webpage(
-            url)
+        video_id, display_id, upload_date, description = self._extract_webpage(url)
 
         if isinstance(video_id, list):
             entries = [self.url_result(
@@ -638,9 +587,7 @@ class PBSIE(InfoExtractor):
         redirect_urls = set()
 
         def extract_redirect_urls(info):
-            for encoding_name in (
-                'recommended_encoding',
-                    'alternate_encoding'):
+            for encoding_name in ('recommended_encoding', 'alternate_encoding'):
                 redirect = info.get(encoding_name)
                 if not redirect:
                     continue
@@ -672,16 +619,13 @@ class PBSIE(InfoExtractor):
                 if not chapters:
                     raw_chapters = video_info.get('chapters') or []
                     if not raw_chapters:
-                        for chapter_data in re.findall(
-                                r'(?s)chapters\.push\(({.*?})\)', player):
-                            chapter = self._parse_json(
-                                chapter_data, video_id, js_to_json, fatal=False)
+                        for chapter_data in re.findall(r'(?s)chapters\.push\(({.*?})\)', player):
+                            chapter = self._parse_json(chapter_data, video_id, js_to_json, fatal=False)
                             if not chapter:
                                 continue
                             raw_chapters.append(chapter)
                     for chapter in raw_chapters:
-                        start_time = float_or_none(
-                            chapter.get('start_time'), 1000)
+                        start_time = float_or_none(chapter.get('start_time'), 1000)
                         duration = float_or_none(chapter.get('duration'), 1000)
                         if start_time is None or duration is None:
                             continue
@@ -727,28 +671,24 @@ class PBSIE(InfoExtractor):
                 if re.search(r'^https?://.*(?:\d+k|baseline)', format_url):
                     http_url = format_url
         self._remove_duplicate_formats(formats)
-        m3u8_formats = list(
-            filter(
-                lambda f: f.get('protocol') == 'm3u8' and f.get('vcodec') != 'none',
-                formats))
+        m3u8_formats = list(filter(
+            lambda f: f.get('protocol') == 'm3u8' and f.get('vcodec') != 'none',
+            formats))
         if http_url:
             for m3u8_format in m3u8_formats:
-                bitrate = self._search_regex(
-                    r'(\d+)k', m3u8_format['url'], 'bitrate', default=None)
+                bitrate = self._search_regex(r'(\d+)k', m3u8_format['url'], 'bitrate', default=None)
                 # Lower qualities (150k and 192k) are not available as HTTP formats (see [1]),
                 # we won't try extracting them.
                 # Since summer 2016 higher quality formats (4500k and 6500k) are also available
                 # albeit they are not documented in [2].
                 # 1. https://github.com/ytdl-org/youtube-dl/commit/cbc032c8b70a038a69259378c92b4ba97b42d491#commitcomment-17313656
-                # 2.
-                # https://projects.pbs.org/confluence/display/coveapi/COVE+Video+Specifications
+                # 2. https://projects.pbs.org/confluence/display/coveapi/COVE+Video+Specifications
                 if not bitrate or int(bitrate) < 400:
                     continue
                 f_url = re.sub(r'\d+k|baseline', bitrate + 'k', http_url)
                 # This may produce invalid links sometimes (e.g.
                 # http://www.pbs.org/wgbh/frontline/film/suicide-plan)
-                if not self._is_valid_url(
-                        f_url, display_id, f'http-{bitrate}k video'):
+                if not self._is_valid_url(f_url, display_id, f'http-{bitrate}k video'):
                     continue
                 f = m3u8_format.copy()
                 f.update({
@@ -758,8 +698,7 @@ class PBSIE(InfoExtractor):
                 })
                 formats.append(f)
         for f in formats:
-            if (f.get('format_note') or '').endswith(
-                    ' AD'):  # Audio description
+            if (f.get('format_note') or '').endswith(' AD'):  # Audio description
                 f['language_preference'] = -10
 
         rating_str = info.get('rating')
@@ -779,8 +718,7 @@ class PBSIE(InfoExtractor):
         # Try turning it to 'program - title' naming scheme if possible
         alt_title = info.get('program', {}).get('title')
         if alt_title:
-            info['title'] = alt_title + ' - ' + \
-                re.sub(r'^' + alt_title + r'[\s\-:]+', '', info['title'])
+            info['title'] = alt_title + ' - ' + re.sub(r'^' + alt_title + r'[\s\-:]+', '', info['title'])
 
         description = info.get('description') or info.get(
             'program', {}).get('description') or description
@@ -838,23 +776,21 @@ class PBSKidsIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        meta = self._search_json(
-            r'window\._PBS_KIDS_DEEPLINK\s*=',
-            webpage,
-            'video info',
-            video_id)
+        meta = self._search_json(r'window\._PBS_KIDS_DEEPLINK\s*=', webpage, 'video info', video_id)
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             traverse_obj(meta, ('video_obj', 'URI', {url_or_none})), video_id, ext='mp4')
 
         return {
-            'id': video_id, 'formats': formats, 'subtitles': subtitles, **traverse_obj(
-                meta, {
-                    'categories': (
-                        'video_obj', 'video_type', {str}, {
-                            lambda x: [x] if x else None}), 'channel': (
-                        'show_slug', {str}), 'description': (
-                            'video_obj', 'description', {str}), 'duration': (
-                                'video_obj', 'duration', {int_or_none}), 'series': (
-                                    'video_obj', 'program_title', {str}), 'title': (
-                                        'video_obj', 'title', {str}), 'upload_date': (
-                                            'video_obj', 'air_date', {unified_strdate}), }), }
+            'id': video_id,
+            'formats': formats,
+            'subtitles': subtitles,
+            **traverse_obj(meta, {
+                'categories': ('video_obj', 'video_type', {str}, {lambda x: [x] if x else None}),
+                'channel': ('show_slug', {str}),
+                'description': ('video_obj', 'description', {str}),
+                'duration': ('video_obj', 'duration', {int_or_none}),
+                'series': ('video_obj', 'program_title', {str}),
+                'title': ('video_obj', 'title', {str}),
+                'upload_date': ('video_obj', 'air_date', {unified_strdate}),
+            }),
+        }

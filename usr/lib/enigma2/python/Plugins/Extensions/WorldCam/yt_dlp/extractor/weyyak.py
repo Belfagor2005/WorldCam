@@ -54,18 +54,15 @@ class WeyyakIE(InfoExtractor):
     ]
 
     def _real_extract(self, url):
-        video_id, lang, type_ = self._match_valid_url(
-            url).group('id', 'lang', 'type')
+        video_id, lang, type_ = self._match_valid_url(url).group('id', 'lang', 'type')
 
         path = 'episode/' if type_ == 'episode' else 'contents/moviedetails?contentkey='
         data = self._download_json(
-            f'https://msapifo-prod-me.weyyak.z5.com/v1/{lang}/{path}{video_id}',
-            video_id)['data']
+            f'https://msapifo-prod-me.weyyak.z5.com/v1/{lang}/{path}{video_id}', video_id)['data']
         m3u8_url = self._download_json(
             f'https://api-weyyak.akamaized.net/get_info/{data["video_id"]}',
             video_id, 'Extracting video details')['url_video']
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            m3u8_url, video_id)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id)
 
         return {
             'id': video_id,

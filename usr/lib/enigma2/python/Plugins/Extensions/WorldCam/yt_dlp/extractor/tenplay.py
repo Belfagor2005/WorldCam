@@ -69,8 +69,7 @@ class TenPlayIE(InfoExtractor):
         },
         'params': {'skip_download': 'm3u8'},
     }, {
-        # Geo-restricted to Australia; upgrading the m3u8 quality fails and we
-        # need the fallback
+        # Geo-restricted to Australia; upgrading the m3u8 quality fails and we need the fallback
         'url': 'https://10.com.au/tiny-chef-show/episodes/season-1/episode-2/tpv240228pofvt',
         'info_dict': {
             'id': '9000000000084116',
@@ -148,19 +147,14 @@ class TenPlayIE(InfoExtractor):
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 400:
                 self._refresh_token = self._access_token = None
-                self.cache.store(
-                    self._NETRC_MACHINE, self._TOKEN_CACHE_KEY, [
-                        None, None])
-                self.report_warning(
-                    'Refresh token has been invalidated; retrying with credentials')
+                self.cache.store(self._NETRC_MACHINE, self._TOKEN_CACHE_KEY, [None, None])
+                self.report_warning('Refresh token has been invalidated; retrying with credentials')
                 self._perform_login(*self._get_login_info())
                 return
             raise
         self._access_token = refresh_data['accessToken']
         self._refresh_token = refresh_data['refreshToken']
-        self.cache.store(
-            self._NETRC_MACHINE, self._TOKEN_CACHE_KEY, [
-                self._refresh_token, self._access_token])
+        self.cache.store(self._NETRC_MACHINE, self._TOKEN_CACHE_KEY, [self._refresh_token, self._access_token])
 
     def _perform_login(self, username, password):
         if not self._refresh_token:
@@ -183,15 +177,12 @@ class TenPlayIE(InfoExtractor):
                 }).encode())
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 400:
-                raise ExtractorError(
-                    'Invalid username/password', expected=True)
+                raise ExtractorError('Invalid username/password', expected=True)
             raise
 
         self._refresh_token = auth_data['jwt']['refreshToken']
         self._access_token = auth_data['jwt']['accessToken']
-        self.cache.store(
-            self._NETRC_MACHINE, self._TOKEN_CACHE_KEY, [
-                self._refresh_token, self._access_token])
+        self.cache.store(self._NETRC_MACHINE, self._TOKEN_CACHE_KEY, [self._refresh_token, self._access_token])
 
     def _call_playback_api(self, content_id):
         if self._access_token and self._is_jwt_expired(self._access_token):
@@ -206,22 +197,19 @@ class TenPlayIE(InfoExtractor):
                         'Authorization': f'Bearer {self._access_token}' if self._access_token else None,
                     }))
             except ExtractorError as e:
-                if not is_retry and isinstance(
-                        e.cause, HTTPError) and e.cause.status == 403:
+                if not is_retry and isinstance(e.cause, HTTPError) and e.cause.status == 403:
                     if self._access_token:
                         self.to_screen('Access token has expired; refreshing')
                         self._refresh_access_token()
                         continue
                     elif not self._get_login_info()[0]:
-                        self.raise_login_required(
-                            'Login required to access this video', method='password')
+                        self.raise_login_required('Login required to access this video', method='password')
                 raise
 
     def _real_extract(self, url):
         content_id = self._match_id(url)
         try:
-            data = self._download_json(
-                f'https://10.com.au/api/v1/videos/{content_id}', content_id)
+            data = self._download_json(f'https://10.com.au/api/v1/videos/{content_id}', content_id)
         except ExtractorError as e:
             if (
                 isinstance(e.cause, HTTPError) and e.cause.status == 403
@@ -256,16 +244,9 @@ class TenPlayIE(InfoExtractor):
                 already_have_1080p = True
 
         # Attempt format upgrade
-        if not already_have_1080p and m3u8_doc and re.search(
-                self._SEGMENT_BITRATE_RE, m3u8_doc):
-            m3u8_doc = re.sub(
-                self._SEGMENT_BITRATE_RE,
-                r'-5000000-\1.ts',
-                m3u8_doc)
-            m3u8_doc = re.sub(
-                r'-(?:300|150|75|55)0000\.key"',
-                r'-5000000.key"',
-                m3u8_doc)
+        if not already_have_1080p and m3u8_doc and re.search(self._SEGMENT_BITRATE_RE, m3u8_doc):
+            m3u8_doc = re.sub(self._SEGMENT_BITRATE_RE, r'-5000000-\1.ts', m3u8_doc)
+            m3u8_doc = re.sub(r'-(?:300|150|75|55)0000\.key"', r'-5000000.key"', m3u8_doc)
             formats.append({
                 'format_id': 'upgrade-attempt-1080p',
                 'url': encode_data_uri(m3u8_doc.encode(), 'application/x-mpegurl'),
@@ -339,8 +320,7 @@ class TenPlaySeasonIE(InfoExtractor):
     def _real_extract(self, url):
         show, season = self._match_valid_url(url).group('show', 'season')
         season_info = self._download_json(
-            f'https://10.com.au/api/shows/{show}/episodes/{season}',
-            f'{show}/{season}')
+            f'https://10.com.au/api/shows/{show}/episodes/{season}', f'{show}/{season}')
 
         episodes_carousel = traverse_obj(season_info, (
             'content', 0, 'components', (
@@ -351,16 +331,6 @@ class TenPlaySeasonIE(InfoExtractor):
         playlist_id = episodes_carousel['tpId']
 
         return self.playlist_from_matches(
-            self._entries(
-                urljoin(
-                    url,
-                    episodes_carousel['loadMoreUrl']),
-                playlist_id),
-            playlist_id,
-            traverse_obj(
-                season_info,
-                ('content',
-                 0,
-                 'title',
-                 {str})),
+            self._entries(urljoin(url, episodes_carousel['loadMoreUrl']), playlist_id),
+            playlist_id, traverse_obj(season_info, ('content', 0, 'title', {str})),
             getter=urljoin(url))

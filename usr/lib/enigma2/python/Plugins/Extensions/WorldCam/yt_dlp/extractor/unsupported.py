@@ -277,8 +277,5 @@ class KnownPiracyIE(UnsupportedInfoExtractor):
 
     def _real_extract(self, url):
         raise ExtractorError(
-            f'This website is no longer supported since it has been determined to be primarily used for piracy.{LF}' f'{
-                self._downloader._format_err(
-                    "DO NOT",
-                    self._downloader.Styles.ERROR)} open issues for it',
-            expected=True)
+            f'This website is no longer supported since it has been determined to be primarily used for piracy.{LF}'
+            f'{self._downloader._format_err("DO NOT", self._downloader.Styles.ERROR)} open issues for it', expected=True)

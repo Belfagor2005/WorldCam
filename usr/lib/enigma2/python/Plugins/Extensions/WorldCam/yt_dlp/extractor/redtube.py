@@ -13,31 +13,32 @@ from ..utils import (
 
 class RedTubeIE(InfoExtractor):
     _VALID_URL = r'https?://(?:(?:\w+\.)?redtube\.com(?:\.br)?/|embed\.redtube\.com/\?.*?\bid=)(?P<id>[0-9]+)'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+?src=["\'](?P<url>(?:https?:)?//embed\.redtube\.com/\?.*?\bid=\d+)']
-    _TESTS = [{'url': 'https://www.redtube.com/38864951',
-               'md5': '4fba70cbca3aefd25767ab4b523c9878',
-               'info_dict': {'id': '38864951',
-                             'ext': 'mp4',
-                             'title': 'Public Sex on the Balcony in Freezing Paris! Amateur Couple LeoLulu',
-                             'description': 'Watch video Public Sex on the Balcony in Freezing Paris! Amateur Couple LeoLulu on Redtube, home of free Blowjob porn videos and Blonde sex movies online. Video length: (10:46) - Uploaded by leolulu - Verified User - Starring Pornstar: Leolulu',
-                             'upload_date': '20210111',
-                             'timestamp': 1610343109,
-                             'duration': 646,
-                             'view_count': int,
-                             'age_limit': 18,
-                             'thumbnail': r're:https://\wi-ph\.rdtcdn\.com/videos/.+/.+\.jpg',
-                             },
-               },
-              {'url': 'http://embed.redtube.com/?bgcolor=000000&id=1443286',
-               'only_matching': True,
-               },
-              {'url': 'http://it.redtube.com/66418',
-               'only_matching': True,
-               },
-              {'url': 'https://www.redtube.com.br/103224331',
-               'only_matching': True,
-               }]
+    _EMBED_REGEX = [r'<iframe[^>]+?src=["\'](?P<url>(?:https?:)?//embed\.redtube\.com/\?.*?\bid=\d+)']
+    _TESTS = [{
+        'url': 'https://www.redtube.com/38864951',
+        'md5': '4fba70cbca3aefd25767ab4b523c9878',
+        'info_dict': {
+            'id': '38864951',
+            'ext': 'mp4',
+            'title': 'Public Sex on the Balcony in Freezing Paris! Amateur Couple LeoLulu',
+            'description': 'Watch video Public Sex on the Balcony in Freezing Paris! Amateur Couple LeoLulu on Redtube, home of free Blowjob porn videos and Blonde sex movies online. Video length: (10:46) - Uploaded by leolulu - Verified User - Starring Pornstar: Leolulu',
+            'upload_date': '20210111',
+            'timestamp': 1610343109,
+            'duration': 646,
+            'view_count': int,
+            'age_limit': 18,
+            'thumbnail': r're:https://\wi-ph\.rdtcdn\.com/videos/.+/.+\.jpg',
+        },
+    }, {
+        'url': 'http://embed.redtube.com/?bgcolor=000000&id=1443286',
+        'only_matching': True,
+    }, {
+        'url': 'http://it.redtube.com/66418',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.redtube.com.br/103224331',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -45,13 +46,8 @@ class RedTubeIE(InfoExtractor):
             f'https://www.redtube.com/{video_id}', video_id)
 
         ERRORS = (
-            (('video-deleted-info',
-              '>This video has been removed'),
-             'has been removed'),
-            (('private_video_text',
-              '>This video is private',
-              '>Send a friend request to its owner to be able to view it'),
-             'is private'),
+            (('video-deleted-info', '>This video has been removed'), 'has been removed'),
+            (('private_video_text', '>This video is private', '>Send a friend request to its owner to be able to view it'), 'is private'),
         )
 
         for patterns, message in ERRORS:
@@ -87,16 +83,13 @@ class RedTubeIE(InfoExtractor):
                 'media definitions', default='{}'),
             video_id, fatal=False)
         for media in medias if isinstance(medias, list) else []:
-            format_url = urljoin(
-                'https://www.redtube.com',
-                media.get('videoUrl'))
+            format_url = urljoin('https://www.redtube.com', media.get('videoUrl'))
             if not format_url:
                 continue
             format_id = media.get('format')
             quality = media.get('quality')
             if format_id == 'hls' or (format_id == 'mp4' and not quality):
-                more_media = self._download_json(
-                    format_url, video_id, fatal=False)
+                more_media = self._download_json(format_url, video_id, fatal=False)
             else:
                 more_media = [media]
             for media in more_media if isinstance(more_media, list) else []:
@@ -105,14 +98,10 @@ class RedTubeIE(InfoExtractor):
                     continue
                 format_id = media.get('format')
                 if format_id == 'hls' or determine_ext(format_url) == 'm3u8':
-                    formats.extend(
-                        self._extract_m3u8_formats(
-                            format_url,
-                            video_id,
-                            'mp4',
-                            entry_protocol='m3u8_native',
-                            m3u8_id=format_id or 'hls',
-                            fatal=False))
+                    formats.extend(self._extract_m3u8_formats(
+                        format_url, video_id, 'mp4',
+                        entry_protocol='m3u8_native', m3u8_id=format_id or 'hls',
+                        fatal=False))
                     continue
                 format_id = media.get('quality')
                 formats.append({
@@ -130,15 +119,9 @@ class RedTubeIE(InfoExtractor):
         upload_date = unified_strdate(self._search_regex(
             r'<span[^>]+>(?:ADDED|Published on) ([^<]+)<',
             webpage, 'upload date', default=None))
-        duration = int_or_none(
-            self._og_search_property(
-                'video:duration',
-                webpage,
-                default=None) or self._search_regex(
-                r'videoDuration\s*:\s*(\d+)',
-                webpage,
-                'duration',
-                default=None))
+        duration = int_or_none(self._og_search_property(
+            'video:duration', webpage, default=None) or self._search_regex(
+                r'videoDuration\s*:\s*(\d+)', webpage, 'duration', default=None))
         view_count = str_to_int(self._search_regex(
             (r'<div[^>]*>Views</div>\s*<div[^>]*>\s*([\d,.]+)',
              r'<span[^>]*>VIEWS</span>\s*</td>\s*<td>\s*([\d,.]+)',

@@ -89,14 +89,10 @@ class SubstackIE(InfoExtractor):
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
-        if not re.search(
-            r'<script[^>]+src=["\']https://substackcdn.com/[^"\']+\.js',
-                webpage):
+        if not re.search(r'<script[^>]+src=["\']https://substackcdn.com/[^"\']+\.js', webpage):
             return
 
-        mobj = re.search(
-            r'{[^}]*\\?["\']subdomain\\?["\']\s*:\s*\\?["\'](?P<subdomain>[^\\"\']+)',
-            webpage)
+        mobj = re.search(r'{[^}]*\\?["\']subdomain\\?["\']\s*:\s*\\?["\'](?P<subdomain>[^\\"\']+)', webpage)
         if mobj:
             parsed = urllib.parse.urlparse(url)
             yield parsed._replace(netloc=f'{mobj.group("subdomain")}.substack.com').geturl()
@@ -105,12 +101,10 @@ class SubstackIE(InfoExtractor):
     def _extract_video_formats(self, video_id, url):
         formats, subtitles = [], {}
         for video_format in ('hls', 'mp4'):
-            video_url = urllib.parse.urljoin(
-                url, f'/api/v1/video/upload/{video_id}/src?type={video_format}')
+            video_url = urllib.parse.urljoin(url, f'/api/v1/video/upload/{video_id}/src?type={video_format}')
 
             if video_format == 'hls':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                    video_url, video_id, 'mp4', fatal=False)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(video_url, video_id, 'mp4', fatal=False)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
@@ -125,22 +119,14 @@ class SubstackIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
 
-        webpage_info = self._parse_json(
-            self._search_json(
-                r'window\._preloads\s*=\s*JSON\.parse\(',
-                webpage,
-                'json string',
-                display_id,
-                transform_source=js_to_json,
-                contains_pattern=r'"{(?s:.+)}"'),
-            display_id)
+        webpage_info = self._parse_json(self._search_json(
+            r'window\._preloads\s*=\s*JSON\.parse\(', webpage, 'json string',
+            display_id, transform_source=js_to_json, contains_pattern=r'"{(?s:.+)}"'), display_id)
 
         canonical_url = url
-        domain = traverse_obj(
-            webpage_info, ('domainInfo', 'customDomain', {str}))
+        domain = traverse_obj(webpage_info, ('domainInfo', 'customDomain', {str}))
         if domain:
-            canonical_url = urllib.parse.urlparse(
-                url)._replace(netloc=domain).geturl()
+            canonical_url = urllib.parse.urlparse(url)._replace(netloc=domain).geturl()
 
         post_type = webpage_info['post']['type']
         formats, subtitles = [], {}
@@ -155,8 +141,7 @@ class SubstackIE(InfoExtractor):
                     'Podcast URL is invalid').url)
             formats.append(fmt)
         elif post_type == 'video':
-            formats, subtitles = self._extract_video_formats(
-                webpage_info['post']['videoUpload']['id'], canonical_url)
+            formats, subtitles = self._extract_video_formats(webpage_info['post']['videoUpload']['id'], canonical_url)
         else:
             self.raise_no_formats(f'Page type "{post_type}" is not supported')
 

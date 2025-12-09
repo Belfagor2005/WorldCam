@@ -58,10 +58,8 @@ class ThisVidIE(InfoExtractor):
                 webpage, 'video_alt_url', default=None))
             if video_alt_url and video_alt_url != url:
                 webpage = self._download_webpage(
-                    video_alt_url,
-                    main_id,
-                    note='Redirecting embed to main page',
-                    fatal=False) or webpage
+                    video_alt_url, main_id,
+                    note='Redirecting embed to main page', fatal=False) or webpage
 
         video_holder = get_element_by_class('video-holder', webpage) or ''
         if '>This video is a private video' in video_holder:
@@ -70,9 +68,7 @@ class ThisVidIE(InfoExtractor):
 
         uploader = self._html_search_regex(
             r'''(?s)<span\b[^>]*>Added by:\s*</span><a\b[^>]+\bclass\s*=\s*["']author\b[^>]+\bhref\s*=\s*["']https://thisvid\.com/members/([0-9]+/.{3,}?)\s*</a>''',
-            webpage,
-            'uploader',
-            default='')
+            webpage, 'uploader', default='')
         uploader = re.split(r'''/["'][^>]*>\s*''', uploader)
         if len(uploader) == 2:
             # id must be non-empty, uploader could be ''
@@ -94,8 +90,7 @@ class ThisVidPlaylistBaseIE(InfoExtractor):
 
     @classmethod
     def _find_urls(cls, html):
-        for m in re.finditer(
-                rf'''<a\b[^>]+\bhref\s*=\s*["'](?P<url>{cls._PLAYLIST_URL_RE}\b)[^>]+>''', html):
+        for m in re.finditer(rf'''<a\b[^>]+\bhref\s*=\s*["'](?P<url>{cls._PLAYLIST_URL_RE}\b)[^>]+>''', html):
             yield m.group('url')
 
     def _generate_playlist_entries(self, url, playlist_id, html=None):
@@ -115,8 +110,7 @@ class ThisVidPlaylistBaseIE(InfoExtractor):
                     r'''<a\b[^>]+\bhref\s*=\s*("|')(?P<url>(?!#)(?:(?!\1).)+)''',
                     next_page, 'next page link', group='url', default=None))
 
-            # in case a member page should have pagination-next with empty
-            # link, not just `else:`
+            # in case a member page should have pagination-next with empty link, not just `else:`
             if next_page is None:
                 # playlist page
                 parsed_url = urllib.parse.urlparse(page_url)
@@ -139,14 +133,8 @@ class ThisVidPlaylistBaseIE(InfoExtractor):
 
         title = re.split(
             r'(?i)\s*\|\s*ThisVid\.com\s*$',
-            self._og_search_title(
-                webpage,
-                default=None) or self._html_search_regex(
-                r'(?s)<title\b[^>]*>(.+?)</title',
-                webpage,
-                'title',
-                fatal=False) or '',
-            maxsplit=1)[0] or None
+            self._og_search_title(webpage, default=None)
+            or self._html_search_regex(r'(?s)<title\b[^>]*>(.+?)</title', webpage, 'title', fatal=False) or '', maxsplit=1)[0] or None
 
         return self.playlist_from_matches(
             self._generate_playlist_entries(url, playlist_id, webpage),
@@ -217,8 +205,7 @@ class ThisVidPlaylistIE(ThisVidPlaylistBaseIE):
             yield urljoin(url, f'/videos/{video_id}/')
 
     def _real_extract(self, url):
-        playlist_id, video_id = self._match_valid_url(
-            url).group('id', 'video_id')
+        playlist_id, video_id = self._match_valid_url(url).group('id', 'video_id')
 
         if not self._yes_playlist(playlist_id, video_id):
             redirect_url = urljoin(url, f'/videos/{video_id}/')
@@ -232,8 +219,7 @@ class ThisVidPlaylistIE(ThisVidPlaylistBaseIE):
         if t_len > 5 and t_len % 2 != 0:
             t_len = t_len // 2
             if title[t_len] == '-':
-                first, second = map(
-                    str.strip, (title[:t_len], title[t_len + 1:]))
+                first, second = map(str.strip, (title[:t_len], title[t_len + 1:]))
                 if first and first == second:
                     result['title'] = first
 

@@ -20,10 +20,8 @@ class WhoWatchIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         self._download_webpage(url, video_id)
-        metadata = self._download_json(
-            f'https://api.whowatch.tv/lives/{video_id}', video_id)
-        live_data = self._download_json(
-            f'https://api.whowatch.tv/lives/{video_id}/play', video_id)
+        metadata = self._download_json(f'https://api.whowatch.tv/lives/{video_id}', video_id)
+        live_data = self._download_json(f'https://api.whowatch.tv/lives/{video_id}/play', video_id)
 
         title = try_call(
             lambda: live_data['share_info']['live_title'][1:-1],
@@ -32,9 +30,7 @@ class WhoWatchIE(InfoExtractor):
 
         hls_url = live_data.get('hls_url')
         if not hls_url:
-            raise ExtractorError(
-                live_data.get('error_message') or 'The user is offline.',
-                expected=True)
+            raise ExtractorError(live_data.get('error_message') or 'The user is offline.', expected=True)
 
         QUALITIES = qualities(['low', 'medium', 'high', 'veryhigh'])
         formats = []
@@ -64,44 +60,25 @@ class WhoWatchIE(InfoExtractor):
                     'acodec': 'aac',
                     'quality': quality,
                     'format_note': fmt.get('label'),
-                    # note: HLS and RTMP have same resolution for now, so it's
-                    # acceptable
+                    # note: HLS and RTMP have same resolution for now, so it's acceptable
                     'width': try_get(hls_fmts, lambda x: x[0]['width'], int),
                     'height': try_get(hls_fmts, lambda x: x[0]['height'], int),
                 })
 
-        # This contains the same formats as the above manifests and is used
-        # only as a fallback
+        # This contains the same formats as the above manifests and is used only as a fallback
         formats.extend(self._extract_m3u8_formats(
             hls_url, video_id, ext='mp4', m3u8_id='hls'))
         self._remove_duplicate_formats(formats)
 
-        uploader_url = try_get(
-            metadata, lambda x: x['live']['user']['user_path'], str)
+        uploader_url = try_get(metadata, lambda x: x['live']['user']['user_path'], str)
         if uploader_url:
             uploader_url = f'https://whowatch.tv/profile/{uploader_url}'
-        uploader_id = str(
-            try_get(
-                metadata,
-                lambda x: x['live']['user']['id'],
-                int))
+        uploader_id = str(try_get(metadata, lambda x: x['live']['user']['id'], int))
         uploader = try_get(metadata, lambda x: x['live']['user']['name'], str)
-        thumbnail = try_get(
-            metadata,
-            lambda x: x['live']['latest_thumbnail_url'],
-            str)
-        timestamp = int_or_none(
-            try_get(
-                metadata,
-                lambda x: x['live']['started_at'],
-                int),
-            scale=1000)
-        view_count = try_get(
-            metadata,
-            lambda x: x['live']['total_view_count'],
-            int)
-        comment_count = try_get(
-            metadata, lambda x: x['live']['comment_count'], int)
+        thumbnail = try_get(metadata, lambda x: x['live']['latest_thumbnail_url'], str)
+        timestamp = int_or_none(try_get(metadata, lambda x: x['live']['started_at'], int), scale=1000)
+        view_count = try_get(metadata, lambda x: x['live']['total_view_count'], int)
+        comment_count = try_get(metadata, lambda x: x['live']['comment_count'], int)
 
         return {
             'id': video_id,

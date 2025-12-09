@@ -15,8 +15,7 @@ class VoicyBaseIE(InfoExtractor):
     def _extract_from_playlist_data(self, value):
         voice_id = str(value.get('PlaylistId'))
         upload_date = unified_strdate(value.get('Published'), False)
-        items = [self._extract_single_article(
-            voice_data) for voice_data in value['VoiceData']]
+        items = [self._extract_single_article(voice_data) for voice_data in value['VoiceData']]
         return {
             '_type': 'multi_video',
             'entries': items,
@@ -54,11 +53,9 @@ class VoicyBaseIE(InfoExtractor):
     def _call_api(self, url, video_id, **kwargs):
         response = self._download_json(url, video_id, **kwargs)
         if response.get('Status') != 0:
-            message = traverse_obj(
-                response, ('Value', 'Error', 'Message'), expected_type=str)
+            message = traverse_obj(response, ('Value', 'Error', 'Message'), expected_type=str)
             if not message:
-                message = 'There was a error in the response: %d' % response.get(
-                    'Status')
+                message = 'There was a error in the response: %d' % response.get('Status')
             raise ExtractorError(message, expected=False)
         return response.get('Value')
 
@@ -86,9 +83,7 @@ class VoicyIE(VoicyBaseIE):
         channel_id = mobj.group('channel_id')
         url, article_list = unsmuggle_url(url)
         if not article_list:
-            article_list = self._call_api(
-                self.ARTICLE_LIST_API_URL %
-                (channel_id, voice_id), voice_id)
+            article_list = self._call_api(self.ARTICLE_LIST_API_URL % (channel_id, voice_id), voice_id)
         return self._extract_from_playlist_data(article_list)
 
 
@@ -115,43 +110,31 @@ class VoicyChannelIE(VoicyBaseIE):
     def _entries(self, channel_id):
         pager = ''
         for count in itertools.count(1):
-            article_list = self._call_api(
-                self.PROGRAM_LIST_API_URL %
-                (channel_id, pager), channel_id, note=f'Paging #{count}')
+            article_list = self._call_api(self.PROGRAM_LIST_API_URL % (channel_id, pager), channel_id, note=f'Paging #{count}')
             playlist_data = article_list.get('PlaylistData')
             if not playlist_data:
                 break
             yield from playlist_data
             last = playlist_data[-1]
-            pager = '&pid=%d&p_date=%s&play_count=%s' % (
-                last['PlaylistId'], last['Published'], last['PlayCount'])
+            pager = '&pid=%d&p_date=%s&play_count=%s' % (last['PlaylistId'], last['Published'], last['PlayCount'])
 
     def _real_extract(self, url):
         channel_id = self._match_id(url)
         articles = self._entries(channel_id)
 
         first_article = next(articles, None)
-        title = traverse_obj(
-            first_article, ('ChannelName', ), expected_type=str)
-        speaker_name = traverse_obj(
-            first_article, ('SpeakerName', ), expected_type=str)
+        title = traverse_obj(first_article, ('ChannelName', ), expected_type=str)
+        speaker_name = traverse_obj(first_article, ('SpeakerName', ), expected_type=str)
         if not title and speaker_name:
             title = f'Uploads from {speaker_name}'
         if not title:
             title = f'Uploads from channel ID {channel_id}'
 
-        articles = itertools.chain(
-            [first_article],
-            articles) if first_article else articles
+        articles = itertools.chain([first_article], articles) if first_article else articles
 
         playlist = (
-            self.url_result(
-                smuggle_url(
-                    'https://voicy.jp/channel/%s/%d' %
-                    (channel_id,
-                     value['PlaylistId']),
-                    value),
-                VoicyIE.ie_key()) for value in articles)
+            self.url_result(smuggle_url('https://voicy.jp/channel/%s/%d' % (channel_id, value['PlaylistId']), value), VoicyIE.ie_key())
+            for value in articles)
         return {
             '_type': 'playlist',
             'entries': playlist,

@@ -82,21 +82,12 @@ class RadioComercialIE(InfoExtractor):
         return {
             'id': video_id,
             'title': self._html_extract_title(webpage),
-            'description': self._og_search_description(
-                webpage,
-                default=None),
-            'release_date': unified_strdate(
-                get_element_by_class(
-                    'date',
-                    get_element_html_by_class(
-                        'descriptions',
-                        webpage) or '')),
+            'description': self._og_search_description(webpage, default=None),
+            'release_date': unified_strdate(get_element_by_class(
+                'date', get_element_html_by_class('descriptions', webpage) or '')),
             'thumbnail': self._og_search_thumbnail(webpage),
             'season_number': int_or_none(season),
-            'url': extract_attributes(
-                get_element_html_by_class(
-                    'audiofile',
-                    webpage) or '').get('href'),
+            'url': extract_attributes(get_element_html_by_class('audiofile', webpage) or '').get('href'),
         }
 
 
@@ -145,8 +136,7 @@ class RadioComercialPlaylistIE(InfoExtractor):
             episodes = get_elements_html_by_class('tm-ouvir-podcast', webpage)
             if not episodes:
                 break
-            for url_path in traverse_obj(
-                    episodes, (..., {extract_attributes}, 'href')):
+            for url_path in traverse_obj(episodes, (..., {extract_attributes}, 'href')):
                 episode_url = urljoin(url, url_path)
                 if RadioComercialIE.suitable(episode_url):
                     yield episode_url
@@ -157,16 +147,8 @@ class RadioComercialPlaylistIE(InfoExtractor):
         url = update_url(url, query=None, fragment=None)
         webpage = self._download_webpage(url, playlist_id)
 
-        name = try_call(
-            lambda: get_element_text_and_html_by_tag(
-                'h1', webpage)[0])
-        title = name if name == season else join_nonempty(
-            name, season, delim=' - Temporada ')
+        name = try_call(lambda: get_element_text_and_html_by_tag('h1', webpage)[0])
+        title = name if name == season else join_nonempty(name, season, delim=' - Temporada ')
 
         return self.playlist_from_matches(
-            self._entries(
-                url,
-                playlist_id),
-            playlist_id,
-            title,
-            ie=RadioComercialIE)
+            self._entries(url, playlist_id), playlist_id, title, ie=RadioComercialIE)

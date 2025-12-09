@@ -29,27 +29,19 @@ class ViouslyIE(InfoExtractor):
     }]
 
     def _extract_from_webpage(self, url, webpage):
-        viously_players = re.findall(
-            r'<div[^>]*class="(?:[^"]*\s)?v(?:iou)?sly-player(?:\s[^"]*)?"[^>]*>', webpage)
+        viously_players = re.findall(r'<div[^>]*class="(?:[^"]*\s)?v(?:iou)?sly-player(?:\s[^"]*)?"[^>]*>', webpage)
         if not viously_players:
             return
 
         def custom_decode(text):
             STANDARD_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
             CUSTOM_ALPHABET = 'VIOUSLYABCDEFGHJKMNPQRTWXZviouslyabcdefghjkmnpqrtwxz9876543210+/='
-            data = base64.b64decode(
-                text.translate(
-                    str.maketrans(
-                        CUSTOM_ALPHABET,
-                        STANDARD_ALPHABET)))
+            data = base64.b64decode(text.translate(str.maketrans(CUSTOM_ALPHABET, STANDARD_ALPHABET)))
             return data.decode('utf-8').strip('\x00')
 
-        for video_id in traverse_obj(
-                viously_players, (..., {extract_attributes}, 'id')):
+        for video_id in traverse_obj(viously_players, (..., {extract_attributes}, 'id')):
             formats = self._extract_m3u8_formats(
-                f'https://www.viously.com/video/hls/{video_id}/index.m3u8',
-                video_id,
-                fatal=False)
+                f'https://www.viously.com/video/hls/{video_id}/index.m3u8', video_id, fatal=False)
             if not formats:
                 continue
             data = self._download_json(

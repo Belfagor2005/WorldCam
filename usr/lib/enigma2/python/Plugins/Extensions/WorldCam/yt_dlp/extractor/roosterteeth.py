@@ -37,11 +37,9 @@ class RoosterTeethBaseIE(InfoExtractor):
         except ExtractorError as e:
             msg = 'Unable to login'
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
-                resp = self._parse_json(
-                    e.cause.response.read().decode(), None, fatal=False)
+                resp = self._parse_json(e.cause.response.read().decode(), None, fatal=False)
                 if resp:
-                    error = resp.get('extra_info') or resp.get(
-                        'error_description') or resp.get('error')
+                    error = resp.get('extra_info') or resp.get('error_description') or resp.get('error')
                     if error:
                         msg += ': ' + error
             self.report_warning(msg)
@@ -49,11 +47,12 @@ class RoosterTeethBaseIE(InfoExtractor):
     def _extract_video_info(self, data):
         thumbnails = []
         for image in traverse_obj(data, ('included', 'images')):
-            if image.get('type') not in (
-                    'episode_image', 'bonus_feature_image'):
+            if image.get('type') not in ('episode_image', 'bonus_feature_image'):
                 continue
-            thumbnails.extend([{'id': name, 'url': url, } for name, url in (
-                image.get('attributes') or {}).items() if url_or_none(url)])
+            thumbnails.extend([{
+                'id': name,
+                'url': url,
+            } for name, url in (image.get('attributes') or {}).items() if url_or_none(url)])
 
         attributes = data.get('attributes') or {}
         title = traverse_obj(attributes, 'title', 'display_title')
@@ -237,10 +236,7 @@ class RoosterTeethIE(RoosterTeethBaseIE):
 
     def _extract_brightcove_formats_and_subtitles(self, bc_id, url, m3u8_url):
         account_id = self._search_regex(
-            r'/accounts/(\d+)/videos/',
-            m3u8_url,
-            'account id',
-            default=self._BRIGHTCOVE_ACCOUNT_ID)
+            r'/accounts/(\d+)/videos/', m3u8_url, 'account id', default=self._BRIGHTCOVE_ACCOUNT_ID)
         info = self._downloader.get_info_extractor('BrightcoveNew').extract(smuggle_url(
             f'https://players.brightcove.net/{account_id}/default_default/index.html?videoId={bc_id}',
             {'referrer': url}))
@@ -252,37 +248,28 @@ class RoosterTeethIE(RoosterTeethBaseIE):
 
         try:
             video_data = self._download_json(
-                api_episode_url + '/videos',
-                display_id,
-                'Downloading video JSON metadata',
-                headers={
-                    'Client-Type': 'web'})['data'][0]  # web client-type yields ad-free streams
+                api_episode_url + '/videos', display_id, 'Downloading video JSON metadata',
+                headers={'Client-Type': 'web'})['data'][0]  # web client-type yields ad-free streams
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                if self._parse_json(
-                        e.cause.response.read().decode(),
-                        display_id).get('access') is False:
+                if self._parse_json(e.cause.response.read().decode(), display_id).get('access') is False:
                     self.raise_login_required(
                         f'{display_id} is only available for FIRST members')
             raise
 
-        # XXX: additional ad-free URL at video_data['links']['download'] but
-        # often gives 403 errors
+        # XXX: additional ad-free URL at video_data['links']['download'] but often gives 403 errors
         m3u8_url = video_data['attributes']['url']
-        is_brightcove = traverse_obj(
-            video_data, ('attributes', 'encoding_pipeline')) == 'brightcove'
+        is_brightcove = traverse_obj(video_data, ('attributes', 'encoding_pipeline')) == 'brightcove'
         bc_id = traverse_obj(video_data, ('attributes', 'uid', {str}))
 
         try:
             formats, subtitles = self._extract_m3u8_formats_and_subtitles(
                 m3u8_url, display_id, 'mp4', 'm3u8_native', m3u8_id='hls')
         except ExtractorError as e:
-            if is_brightcove and bc_id and isinstance(
-                    e.cause, HTTPError) and e.cause.status == 403:
+            if is_brightcove and bc_id and isinstance(e.cause, HTTPError) and e.cause.status == 403:
                 self.report_warning(
                     'Direct m3u8 URL returned HTTP Error 403; retrying with Brightcove extraction')
-                formats, subtitles = self._extract_brightcove_formats_and_subtitles(
-                    bc_id, url, m3u8_url)
+                formats, subtitles = self._extract_brightcove_formats_and_subtitles(bc_id, url, m3u8_url)
             else:
                 raise
 
@@ -334,16 +321,14 @@ class RoosterTeethSeriesIE(RoosterTeethBaseIE):
         display_id = join_nonempty(series_id, season_number)
 
         def yield_episodes(data):
-            for episode in traverse_obj(
-                    data, ('data', lambda _, v: v['canonical_links']['self'])):
+            for episode in traverse_obj(data, ('data', lambda _, v: v['canonical_links']['self'])):
                 yield self.url_result(
                     urljoin('https://www.roosterteeth.com', episode['canonical_links']['self']),
                     RoosterTeethIE, **self._extract_video_info(episode))
 
         series_data = self._download_json(
             f'{self._API_BASE_URL}/shows/{series_id}/seasons?order=asc&order_by', display_id)
-        for season_data in traverse_obj(
-                series_data, ('data', lambda _, v: v['links']['episodes'])):
+        for season_data in traverse_obj(series_data, ('data', lambda _, v: v['links']['episodes'])):
             idx = traverse_obj(season_data, ('attributes', 'number'))
             if season_number is not None and idx != season_number:
                 continue
@@ -358,11 +343,10 @@ class RoosterTeethSeriesIE(RoosterTeethBaseIE):
 
     def _real_extract(self, url):
         series_id = self._match_id(url)
-        season_number = traverse_obj(
-            parse_qs(url), ('season', 0), expected_type=int_or_none)
+        season_number = traverse_obj(parse_qs(url), ('season', 0), expected_type=int_or_none)
 
         entries = LazyList(self._entries(series_id, season_number))
         return self.playlist_result(
-            entries, join_nonempty(
-                series_id, season_number), join_nonempty(
-                entries[0].get('series'), season_number, delim=' - Season '))
+            entries,
+            join_nonempty(series_id, season_number),
+            join_nonempty(entries[0].get('series'), season_number, delim=' - Season '))

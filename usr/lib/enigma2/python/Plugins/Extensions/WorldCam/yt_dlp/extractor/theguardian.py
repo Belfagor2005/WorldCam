@@ -71,22 +71,13 @@ class TheGuardianPodcastIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
         return {
             'id': video_id,
-            'title': self._og_search_title(webpage) or get_element_by_class(
-                'content__headline',
-                webpage),
+            'title': self._og_search_title(webpage) or get_element_by_class('content__headline', webpage),
             'description': self._og_search_description(webpage),
-            'creator': self._html_search_meta(
-                'author',
-                webpage),
+            'creator': self._html_search_meta('author', webpage),
             'thumbnail': self._og_search_thumbnail(webpage),
-            'release_date': unified_strdate(
-                self._html_search_meta(
-                    'article:published_time',
-                    webpage)),
-            'url': extract_attributes(
-                get_element_html_by_class(
-                    'podcast__player',
-                    webpage) or '').get('data-source'),
+            'release_date': unified_strdate(self._html_search_meta('article:published_time', webpage)),
+            'url': extract_attributes(get_element_html_by_class(
+                'podcast__player', webpage) or '').get('data-source'),
         }
 
 
@@ -125,8 +116,7 @@ class TheGuardianPodcastPlaylistIE(InfoExtractor):
             if 'page' not in parse_qs(urlh.url):
                 break
 
-            episodes = get_elements_html_by_class(
-                'fc-item--type-media', webpage)
+            episodes = get_elements_html_by_class('fc-item--type-media', webpage)
             yield from traverse_obj(episodes, (..., {extract_attributes}, 'data-id'))
 
     def _real_extract(self, url):
@@ -134,21 +124,11 @@ class TheGuardianPodcastPlaylistIE(InfoExtractor):
 
         webpage = self._download_webpage(url, podcast_id)
 
-        title = clean_html(
-            get_element_by_class(
-                'index-page-header__title',
-                webpage) or get_element_by_class(
-                'flagship-audio__title',
-                webpage))
-        description = self._og_search_description(
-            webpage) or self._html_search_meta('description', webpage)
+        title = clean_html(get_element_by_class(
+            'index-page-header__title', webpage) or get_element_by_class('flagship-audio__title', webpage))
+        description = self._og_search_description(webpage) or self._html_search_meta(
+            'description', webpage)
 
         return self.playlist_from_matches(
-            self._entries(
-                url,
-                podcast_id),
-            podcast_id,
-            title,
-            description=description,
-            ie=TheGuardianPodcastIE,
-            getter=urljoin('https://www.theguardian.com'))
+            self._entries(url, podcast_id), podcast_id, title, description=description,
+            ie=TheGuardianPodcastIE, getter=urljoin('https://www.theguardian.com'))

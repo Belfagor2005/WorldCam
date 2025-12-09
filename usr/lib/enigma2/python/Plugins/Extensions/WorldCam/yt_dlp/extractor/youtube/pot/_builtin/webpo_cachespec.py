@@ -18,9 +18,7 @@ from yt_dlp.utils import traverse_obj
 class WebPoPCSP(PoTokenCacheSpecProvider, BuiltinIEContentProvider):
     PROVIDER_NAME = 'webpo'
 
-    def generate_cache_spec(
-            self,
-            request: PoTokenRequest) -> PoTokenCacheSpec | None:
+    def generate_cache_spec(self, request: PoTokenRequest) -> PoTokenCacheSpec | None:
         bind_to_visitor_id = self._configuration_arg(
             'bind_to_visitor_id', default=['true'])[0] == 'true'
 

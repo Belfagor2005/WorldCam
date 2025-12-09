@@ -25,8 +25,7 @@ class MoveFilesAfterDownloadPP(PostProcessor):
         if self._downloaded:
             info['__files_to_move'][info['filepath']] = finalpath
 
-        def make_newfilename(old): return os.path.join(
-            finaldir, os.path.basename(old))
+        make_newfilename = lambda old: os.path.join(finaldir, os.path.basename(old))
         for oldfile, newfile in info['__files_to_move'].items():
             if not newfile:
                 newfile = make_newfilename(oldfile)
@@ -45,8 +44,7 @@ class MoveFilesAfterDownloadPP(PostProcessor):
                     continue
             make_dir(newfile, PostProcessingError)
             self.to_screen(f'Moving file "{oldfile}" to "{newfile}"')
-            # os.rename cannot move between volumes
-            shutil.move(oldfile, newfile)
+            shutil.move(oldfile, newfile)  # os.rename cannot move between volumes
 
         info['filepath'] = finalpath
         return [], info

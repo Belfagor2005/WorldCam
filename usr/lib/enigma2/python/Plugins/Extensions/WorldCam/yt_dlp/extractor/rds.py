@@ -12,8 +12,7 @@ class RDSIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?rds\.ca/vid(?:[eé]|%C3%A9)os/(?:[^/]+/)*(?P<id>[^/]+)-\d+\.\d+'
 
     _TESTS = [{
-        # has two 9c9media ContentPackages, the web player selects the first
-        # ContentPackage
+        # has two 9c9media ContentPackages, the web player selects the first ContentPackage
         'url': 'https://www.rds.ca/videos/Hockey/NationalHockeyLeague/teams/9/forum-du-5-a-7-jesperi-kotkaniemi-de-retour-de-finlande-3.1377606',
         'info_dict': {
             'id': '2083309',
@@ -35,16 +34,10 @@ class RDSIE(InfoExtractor):
 
         webpage = self._download_webpage(url, display_id)
 
-        item = self._parse_json(
-            self._search_regex(
-                r'(?s)itemToPush\s*=\s*({.+?});',
-                webpage,
-                'item'),
-            display_id,
-            js_to_json)
+        item = self._parse_json(self._search_regex(r'(?s)itemToPush\s*=\s*({.+?});', webpage, 'item'), display_id, js_to_json)
         video_id = str(item['id'])
-        title = item.get('title') or self._og_search_title(
-            webpage) or self._html_search_meta('title', webpage, 'title', fatal=True)
+        title = item.get('title') or self._og_search_title(webpage) or self._html_search_meta(
+            'title', webpage, 'title', fatal=True)
         description = self._og_search_description(webpage) or self._html_search_meta(
             'description', webpage, 'description')
         thumbnail = item.get('urlImageBig') or self._og_search_thumbnail(webpage) or self._search_regex(

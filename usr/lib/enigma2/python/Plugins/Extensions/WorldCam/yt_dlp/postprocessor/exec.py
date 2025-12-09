@@ -14,8 +14,7 @@ class ExecPP(PostProcessor):
             return self._downloader.escape_outtmpl(tmpl) % tmpl_dict
 
         filepath = info.get('filepath', info.get('_filename'))
-        # If video, and no replacements are found, replace {} for backard
-        # compatibility
+        # If video, and no replacements are found, replace {} for backard compatibility
         if filepath:
             if '{}' not in cmd:
                 cmd += ' {}'
@@ -28,8 +27,7 @@ class ExecPP(PostProcessor):
             self.to_screen(f'Executing command: {cmd}')
             _, _, return_code = Popen.run(cmd, shell=True)
             if return_code != 0:
-                raise PostProcessingError(
-                    f'Command returned error code {return_code}')
+                raise PostProcessingError(f'Command returned error code {return_code}')
         return [], info
 
 
