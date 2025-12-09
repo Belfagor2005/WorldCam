@@ -84,30 +84,18 @@ class IcareusIE(InfoExtractor):
         base_url, temp_id = self._match_valid_url(url).groups()
         webpage = self._download_webpage(url, temp_id)
 
-        video_id = self._search_regex(
-            r"_icareus\['itemId'\]\s*=\s*'(\d+)'", webpage, 'video_id')
-        organization_id = self._search_regex(
-            r"_icareus\['organizationId'\]\s*=\s*'(\d+)'",
-            webpage,
-            'organization_id')
+        video_id = self._search_regex(r"_icareus\['itemId'\]\s*=\s*'(\d+)'", webpage, 'video_id')
+        organization_id = self._search_regex(r"_icareus\['organizationId'\]\s*=\s*'(\d+)'", webpage, 'organization_id')
 
         assets = self._download_json(
-            self._search_regex(
-                r'var\s+publishingServiceURL\s*=\s*"(http[^"]+)";',
-                webpage,
-                'api_base'),
-            video_id,
-            data=urlencode_postdata(
-                {
-                    'version': '03',
-                    'action': 'getAssetPlaybackUrls',
-                    'organizationId': organization_id,
-                    'assetId': video_id,
-                    'token': self._search_regex(
-                        r"_icareus\['token'\]\s*=\s*'([a-f0-9]+)'",
-                        webpage,
-                        'icareus_token'),
-                }))
+            self._search_regex(r'var\s+publishingServiceURL\s*=\s*"(http[^"]+)";', webpage, 'api_base'),
+            video_id, data=urlencode_postdata({
+                'version': '03',
+                'action': 'getAssetPlaybackUrls',
+                'organizationId': organization_id,
+                'assetId': video_id,
+                'token': self._search_regex(r"_icareus\['token'\]\s*=\s*'([a-f0-9]+)'", webpage, 'icareus_token'),
+            }))
 
         subtitles = {
             remove_end(sdesc.split(' ')[0], ':'): [{'url': url_or_none(surl)}]
@@ -143,17 +131,12 @@ class IcareusIE(InfoExtractor):
                     **parse_resolution(fmt),
                 })
 
-        info, token, live_title = self._search_json_ld(
-            webpage, video_id, default={}), None, None
+        info, token, live_title = self._search_json_ld(webpage, video_id, default={}), None, None
         if not info:
             token = self._search_regex(
-                r'data\s*:\s*{action:"getAsset".*?token:\'([a-f0-9]+)\'}',
-                webpage,
-                'token',
-                default=None)
+                r'data\s*:\s*{action:"getAsset".*?token:\'([a-f0-9]+)\'}', webpage, 'token', default=None)
             if not token:
-                live_title = get_element_by_class(
-                    'unpublished-info-item future-event-title', webpage)
+                live_title = get_element_by_class('unpublished-info-item future-event-title', webpage)
 
         if token:
             metadata = self._download_json(
@@ -177,20 +160,14 @@ class IcareusIE(InfoExtractor):
         elif live_title:  # Recorded livestream
             info = {
                 'title': live_title,
-                'description': get_element_by_class(
-                    'unpublished-info-item future-event-description',
-                    webpage),
-                'timestamp': int_or_none(
-                    self._search_regex(
-                        r'var startEvent\s*=\s*(\d+);',
-                        webpage,
-                        'uploadDate',
-                        fatal=False),
-                    scale=1000),
+                'description': get_element_by_class('unpublished-info-item future-event-description', webpage),
+                'timestamp': int_or_none(self._search_regex(
+                    r'var startEvent\s*=\s*(\d+);', webpage, 'uploadDate', fatal=False), scale=1000),
             }
 
-        thumbnails = info.get('thumbnails') or [{'url': url_or_none(
-            info.get('thumbnail') or assets.get('thumbnail')), }]
+        thumbnails = info.get('thumbnails') or [{
+            'url': url_or_none(info.get('thumbnail') or assets.get('thumbnail')),
+        }]
 
         return merge_dicts({
             'id': video_id,

@@ -49,17 +49,13 @@ class HRFernsehenIE(InfoExtractor):
                 'url': inner['url'],
             }
 
-            quality_information = re.search(
-                r'([0-9]{3,4})x([0-9]{3,4})-([0-9]{2})p-([0-9]{3,4})kbit', inner['url'])
+            quality_information = re.search(r'([0-9]{3,4})x([0-9]{3,4})-([0-9]{2})p-([0-9]{3,4})kbit',
+                                            inner['url'])
             if quality_information:
-                stream_format['width'] = int_or_none(
-                    quality_information.group(1))
-                stream_format['height'] = int_or_none(
-                    quality_information.group(2))
-                stream_format['fps'] = int_or_none(
-                    quality_information.group(3))
-                stream_format['tbr'] = int_or_none(
-                    quality_information.group(4))
+                stream_format['width'] = int_or_none(quality_information.group(1))
+                stream_format['height'] = int_or_none(quality_information.group(2))
+                stream_format['fps'] = int_or_none(quality_information.group(3))
+                stream_format['tbr'] = int_or_none(quality_information.group(4))
 
             stream_formats.append(stream_format)
         return stream_formats
@@ -73,48 +69,20 @@ class HRFernsehenIE(InfoExtractor):
         description = self._html_search_meta(
             ['description'], webpage)
 
-        loader_str = unescapeHTML(
-            self._search_regex(
-                r"data-(?:new-)?hr-mediaplayer-loader='([^']*)'",
-                webpage,
-                'ardloader'))
+        loader_str = unescapeHTML(self._search_regex(r"data-(?:new-)?hr-mediaplayer-loader='([^']*)'", webpage, 'ardloader'))
         loader_data = json.loads(loader_str)
 
-        subtitle = traverse_obj(
-            loader_data,
-            ('mediaCollection',
-             'subTitles',
-             0,
-             'sources',
-             0,
-             'url'))
+        subtitle = traverse_obj(loader_data, ('mediaCollection', 'subTitles', 0, 'sources', 0, 'url'))
 
         return {
             'id': video_id,
             'title': title,
             'description': description,
             'formats': self.extract_formats(loader_data),
-            'subtitles': {
-                'de': [
-                    {
-                        'url': subtitle}]},
-            'timestamp': unified_timestamp(
-                self._search_regex(
-                    r'<time\sdatetime="(\d{4}\W\d{1,2}\W\d{1,2})',
-                    webpage,
-                    'datetime',
-                    fatal=False)),
-            'duration': int_or_none(
-                traverse_obj(
-                    loader_data,
-                    ('playerConfig',
-                     'pluginData',
-                     'trackingAti@all',
-                     'richMedia',
-                     'duration'))),
-            'thumbnail': self._search_regex(
-                r'thumbnailUrl\W*([^"]+)',
-                webpage,
-                'thumbnail',
-                default=None),
+            'subtitles': {'de': [{'url': subtitle}]},
+            'timestamp': unified_timestamp(self._search_regex(
+                r'<time\sdatetime="(\d{4}\W\d{1,2}\W\d{1,2})', webpage, 'datetime', fatal=False)),
+            'duration': int_or_none(traverse_obj(
+                loader_data, ('playerConfig', 'pluginData', 'trackingAti@all', 'richMedia', 'duration'))),
+            'thumbnail': self._search_regex(r'thumbnailUrl\W*([^"]+)', webpage, 'thumbnail', default=None),
         }

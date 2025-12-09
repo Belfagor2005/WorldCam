@@ -43,10 +43,9 @@ class IltalehtiIE(InfoExtractor):
         info = self._search_json(
             r'<script>\s*window.App\s*=', webpage, 'json', article_id,
             transform_source=js_to_json)
-        props = traverse_obj(info, ('state', 'articles', ..., 'items', ((
-            'main_media', 'properties'), ('body', ..., 'properties'))))
-        video_ids = traverse_obj(
-            props, (lambda _, v: v['provider'] == 'jwplayer', 'id'))
+        props = traverse_obj(info, (
+            'state', 'articles', ..., 'items', (('main_media', 'properties'), ('body', ..., 'properties'))))
+        video_ids = traverse_obj(props, (lambda _, v: v['provider'] == 'jwplayer', 'id'))
         return self.playlist_from_matches(
             video_ids, article_id, ie='JWPlatform', getter=lambda video_id: f'jwplatform:{video_id}',
             title=traverse_obj(info, ('state', 'articles', ..., 'items', 'canonical_title'), get_all=False))

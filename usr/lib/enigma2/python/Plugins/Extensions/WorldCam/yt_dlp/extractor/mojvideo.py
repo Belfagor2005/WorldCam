@@ -31,24 +31,16 @@ class MojvideoIE(InfoExtractor):
 
         if '<error>true</error>' in playerapi:
             error_desc = self._html_search_regex(
-                r'<errordesc>([^<]*)</errordesc>',
-                playerapi,
-                'error description',
-                fatal=False)
-            raise ExtractorError(
-                f'{self.IE_NAME} said: {error_desc}', expected=True)
+                r'<errordesc>([^<]*)</errordesc>', playerapi, 'error description', fatal=False)
+            raise ExtractorError(f'{self.IE_NAME} said: {error_desc}', expected=True)
 
         title = self._html_extract_title(playerapi)
         video_url = self._html_search_regex(
             r'<file>([^<]+)</file>', playerapi, 'video URL')
         thumbnail = self._html_search_regex(
             r'<preview>([^<]+)</preview>', playerapi, 'thumbnail', fatal=False)
-        duration = parse_duration(
-            self._html_search_regex(
-                r'<duration>([^<]+)</duration>',
-                playerapi,
-                'duration',
-                fatal=False))
+        duration = parse_duration(self._html_search_regex(
+            r'<duration>([^<]+)</duration>', playerapi, 'duration', fatal=False))
 
         return {
             'id': video_id,

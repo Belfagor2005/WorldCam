@@ -25,36 +25,25 @@ class KankaNewsIE(InfoExtractor):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        video_id = self._search_regex(
-            r'omsid\s*=\s*"(\d+)"', webpage, 'video id')
+        video_id = self._search_regex(r'omsid\s*=\s*"(\d+)"', webpage, 'video id')
 
         params = {
-            'nonce': ''.join(
-                random.choices(
-                    string.ascii_lowercase +
-                    string.digits,
-                    k=8)),
+            'nonce': ''.join(random.choices(string.ascii_lowercase + string.digits, k=8)),
             'omsid': video_id,
             'platform': 'pc',
-            'timestamp': int(
-                time.time()),
+            'timestamp': int(time.time()),
             'version': '1.0',
         }
         params['sign'] = hashlib.md5((hashlib.md5((
             urllib.parse.urlencode(params) + '&28c8edde3d61a0411511d3b1866f0636'
         ).encode()).hexdigest()).encode()).hexdigest()
 
-        meta = self._download_json(
-            'https://api-app.kankanews.com/kankan/pc/getvideo',
-            video_id,
-            query=params)['result']['video']
+        meta = self._download_json('https://api-app.kankanews.com/kankan/pc/getvideo',
+                                   video_id, query=params)['result']['video']
 
         return {
             'id': video_id,
             'url': meta['videourl'],
-            'title': self._search_regex(
-                r'g\.title\s*=\s*"([^"]+)"',
-                webpage,
-                'title'),
+            'title': self._search_regex(r'g\.title\s*=\s*"([^"]+)"', webpage, 'title'),
             'thumbnail': meta.get('titlepic'),
         }

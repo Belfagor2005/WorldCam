@@ -35,8 +35,7 @@ class KalturaIE(InfoExtractor):
                 '''
     _SERVICE_URL = 'http://cdnapi.kaltura.com'
     _SERVICE_BASE = '/api_v3/service/multirequest'
-    # See
-    # https://github.com/kaltura/server/blob/master/plugins/content/caption/base/lib/model/enums/CaptionType.php
+    # See https://github.com/kaltura/server/blob/master/plugins/content/caption/base/lib/model/enums/CaptionType.php
     _CAPTION_TYPES = {
         1: 'srt',
         2: 'ttml',
@@ -227,8 +226,7 @@ class KalturaIE(InfoExtractor):
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
-        # Embed codes:
-        # https://knowledge.kaltura.com/embedding-kaltura-media-players-your-site
+        # Embed codes: https://knowledge.kaltura.com/embedding-kaltura-media-players-your-site
         finditer = (
             list(re.finditer(
                 r'''(?xs)
@@ -275,9 +273,7 @@ class KalturaIE(InfoExtractor):
                 rf'<script[^>]+src=(["\'])(?P<id>(?:https?:)?//(?:(?!\1).)+)/p/{escaped_pid}/sp/{escaped_pid}00/embedIframeJs',
                 webpage)
             if service_mobj:
-                embed_url = smuggle_url(
-                    embed_url, {
-                        'service_url': service_mobj.group('id')})
+                embed_url = smuggle_url(embed_url, {'service_url': service_mobj.group('id')})
             urls.append(embed_url)
         return urls
 
@@ -298,23 +294,16 @@ class KalturaIE(InfoExtractor):
                 continue
             if status.get('objectType') == 'KalturaAPIException':
                 raise ExtractorError(
-                    '{} said: {} ({})'.format(
-                        self.IE_NAME, status['message'], idx))
+                    '{} said: {} ({})'.format(self.IE_NAME, status['message'], idx))
 
         data[1] = traverse_obj(data, (1, 'objects', 0))
 
         return data
 
-    def _get_video_info(
-            self,
-            video_id,
-            partner_id,
-            service_url=None,
-            player_type='html5'):
+    def _get_video_info(self, video_id, partner_id, service_url=None, player_type='html5'):
         assert player_type in ('html5', 'kwidget')
         if player_type == 'kwidget':
-            return self._get_video_info_kwidget(
-                video_id, partner_id, service_url)
+            return self._get_video_info_kwidget(video_id, partner_id, service_url)
 
         return self._get_video_info_html5(video_id, partner_id, service_url)
 
@@ -360,10 +349,7 @@ class KalturaIE(InfoExtractor):
             },
         ]
         return self._kaltura_api_call(
-            video_id,
-            actions,
-            service_url,
-            note='Downloading video info JSON (Kaltura html5 player)')
+            video_id, actions, service_url, note='Downloading video info JSON (Kaltura html5 player)')
 
     def _get_video_info_kwidget(self, video_id, partner_id, service_url=None):
         actions = [
@@ -436,14 +422,12 @@ class KalturaIE(InfoExtractor):
         url, smuggled_data = unsmuggle_url(url, {})
 
         mobj = self._match_valid_url(url)
-        partner_id, entry_id, player_type = mobj.group(
-            'partner_id', 'id', 'player_type')
+        partner_id, entry_id, player_type = mobj.group('partner_id', 'id', 'player_type')
         ks, captions = None, None
         if not player_type:
             player_type = 'kwidget' if 'html5lib/v2' in url else 'html5'
         if partner_id and entry_id:
-            _, info, flavor_assets, captions = self._get_video_info(
-                entry_id, partner_id, smuggled_data.get('service_url'), player_type=player_type)
+            _, info, flavor_assets, captions = self._get_video_info(entry_id, partner_id, smuggled_data.get('service_url'), player_type=player_type)
         else:
             path, query = mobj.group('path', 'query')
             if not path and not query:
@@ -464,8 +448,7 @@ class KalturaIE(InfoExtractor):
                 raise ExtractorError('Invalid URL', expected=True)
             if 'entry_id' in params:
                 entry_id = params['entry_id'][0]
-                _, info, flavor_assets, captions = self._get_video_info(
-                    entry_id, partner_id, player_type=player_type)
+                _, info, flavor_assets, captions = self._get_video_info(entry_id, partner_id, player_type=player_type)
             elif 'uiconf_id' in params and 'flashvars[referenceId]' in params:
                 reference_id = params['flashvars[referenceId]'][0]
                 webpage = self._download_webpage(url, reference_id)
@@ -496,17 +479,9 @@ class KalturaIE(InfoExtractor):
                 raise ExtractorError('Invalid URL', expected=True)
             ks = params.get('flashvars[ks]', [None])[0]
 
-        return self._per_video_extract(
-            smuggled_data, entry_id, info, ks, flavor_assets, captions)
+        return self._per_video_extract(smuggled_data, entry_id, info, ks, flavor_assets, captions)
 
-    def _per_video_extract(
-            self,
-            smuggled_data,
-            entry_id,
-            info,
-            ks,
-            flavor_assets,
-            captions):
+    def _per_video_extract(self, smuggled_data, entry_id, info, ks, flavor_assets, captions):
         source_url = smuggled_data.get('source_url')
         if source_url:
             referrer = base64.b64encode(
@@ -537,8 +512,7 @@ class KalturaIE(InfoExtractor):
             if f.get('fileExt') == 'chun':
                 continue
             # DRM-protected video, cannot be decrypted
-            if not self.get_param('allow_unplayable_formats') and f.get(
-                    'fileExt') == 'wvm':
+            if not self.get_param('allow_unplayable_formats') and f.get('fileExt') == 'wvm':
                 continue
             if not f.get('fileExt'):
                 # QT indicates QuickTime; some videos have broken fileExt
@@ -549,8 +523,7 @@ class KalturaIE(InfoExtractor):
             video_url = sign_url(
                 '{}/flavorId/{}'.format(data_url, f['id']))
             format_id = '{fileExt}-{bitrate}'.format(**f)
-            # Source format may not be available (e.g.
-            # kaltura:513551:1_66x4rg7o)
+            # Source format may not be available (e.g. kaltura:513551:1_66x4rg7o)
             if f.get('isOriginal') is True and not self._is_valid_url(
                     video_url, entry_id, format_id):
                 continue

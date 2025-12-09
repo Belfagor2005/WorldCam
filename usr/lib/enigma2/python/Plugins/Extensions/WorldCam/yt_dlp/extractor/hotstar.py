@@ -57,8 +57,7 @@ class HotStarBaseIE(InfoExtractor):
         st = int_or_none(st) or int(time.time())
         exp = st + 6000
         auth = f'st={st}~exp={exp}~acl=/*'
-        auth += '~hmac=' + \
-            hmac.new(self._AKAMAI_ENCRYPTION_KEY, auth.encode(), hashlib.sha256).hexdigest()
+        auth += '~hmac=' + hmac.new(self._AKAMAI_ENCRYPTION_KEY, auth.encode(), hashlib.sha256).hexdigest()
         response = self._download_json(
             f'{self._API_URL_V2}/{path}', video_id, query=query,
             headers=filter_dict({
@@ -73,13 +72,7 @@ class HotStarBaseIE(InfoExtractor):
             raise ExtractorError('API call was unsuccessful')
         return response['success']
 
-    def _call_api_v2(
-            self,
-            path,
-            video_id,
-            content_type,
-            cookies=None,
-            st=None):
+    def _call_api_v2(self, path, video_id, content_type, cookies=None, st=None):
         return self._call_api_impl(f'{path}', video_id, query={
             'content_id': video_id,
             'filters': f'content_type={content_type}',
@@ -88,8 +81,7 @@ class HotStarBaseIE(InfoExtractor):
                 'container': ['fmp4', 'fmp4br', 'ts'],
                 'ads': ['non_ssai', 'ssai'],
                 'audio_channel': ['stereo', 'dolby51', 'atmos'],
-                # wv only so we can raise appropriate error
-                'encryption': ['plain', 'widevine'],
+                'encryption': ['plain', 'widevine'],  # wv only so we can raise appropriate error
                 'video_codec': ['h264', 'h265'],
                 'video_codec_non_secure': ['h264', 'h265', 'vp9'],
                 'ladder': ['phone', 'tv', 'full'],
@@ -124,20 +116,13 @@ class HotStarBaseIE(InfoExtractor):
 
     def _fetch_page(self, path, item_id, name, query, root, page):
         results = self._call_api_v1(
-            path,
-            item_id,
-            note=f'Downloading {name} page {
-                page +
-                1} JSON',
-            query={
+            path, item_id, note=f'Downloading {name} page {page + 1} JSON', query={
                 **query,
-                'tao': page *
-                self._PAGE_SIZE,
+                'tao': page * self._PAGE_SIZE,
                 'tas': self._PAGE_SIZE,
             })['body']['results']
 
-        for video in traverse_obj(
-                results, (('assets', None), 'items', lambda _, v: v['contentId'])):
+        for video in traverse_obj(results, (('assets', None), 'items', lambda _, v: v['contentId'])):
             yield self.url_result(
                 HotStarIE._video_url(video['contentId'], root=root), HotStarIE, **self._parse_metadata_v1(video))
 
@@ -297,13 +282,7 @@ class HotStarIE(HotStarBaseIE):
     }
 
     @classmethod
-    def _video_url(
-            cls,
-            video_id,
-            video_type=None,
-            *,
-            slug='ignore_me',
-            root=None):
+    def _video_url(cls, video_id, video_type=None, *, slug='ignore_me', root=None):
         assert None in (video_type, root)
         if not root:
             root = join_nonempty(cls._BASE_URL, video_type, delim='/')
@@ -328,31 +307,15 @@ class HotStarIE(HotStarBaseIE):
         geo_restricted = False
         formats, subs, has_drm = [], {}, False
         headers = {'Referer': f'{self._BASE_URL}/in'}
-        content_type = traverse_obj(
-            video_data, ('contentType', {str})) or self._CONTENT_TYPE[video_type]
+        content_type = traverse_obj(video_data, ('contentType', {str})) or self._CONTENT_TYPE[video_type]
 
         # See https://github.com/yt-dlp/yt-dlp/issues/396
         st = self._request_webpage(
             f'{self._BASE_URL}/in', video_id, 'Fetching server time').get_header('x-origin-date')
-        watch = self._call_api_v2(
-            'pages/watch',
-            video_id,
-            content_type,
-            cookies,
-            st)
-        player_config = traverse_obj(watch,
-                                     ('page',
-                                      'spaces',
-                                      'player',
-                                      'widget_wrappers',
-                                      lambda _,
-                                      v: v['template'] == 'PlayerWidget',
-                                         'widget',
-                                         'data',
-                                         'player_config',
-                                         {dict},
-                                         any,
-                                         {require('player config')}))
+        watch = self._call_api_v2('pages/watch', video_id, content_type, cookies, st)
+        player_config = traverse_obj(watch, (
+            'page', 'spaces', 'player', 'widget_wrappers', lambda _, v: v['template'] == 'PlayerWidget',
+            'widget', 'data', 'player_config', {dict}, any, {require('player config')}))
 
         for playback_set in traverse_obj(player_config, (
             ('media_asset', 'media_asset_v2'),
@@ -365,16 +328,12 @@ class HotStarIE(HotStarBaseIE):
                    for ignore in self._configuration_arg(key)):
                 continue
 
-            tag_dict = dict((*t.split(':', 1), None)
-                            [:2] for t in tags.split(';'))
+            tag_dict = dict((*t.split(':', 1), None)[:2] for t in tags.split(';'))
             if tag_dict.get('encryption') not in ('plain', None):
                 has_drm = True
                 continue
 
-            format_url = re.sub(
-                r'(?<=//staragvod)(\d)',
-                r'web\1',
-                playback_set['content_url'])
+            format_url = re.sub(r'(?<=//staragvod)(\d)', r'web\1', playback_set['content_url'])
             ext = determine_ext(format_url)
 
             current_formats, current_subs = [], {}
@@ -394,11 +353,7 @@ class HotStarIE(HotStarBaseIE):
                         'height': int_or_none(playback_set.get('height')),
                     }]
             except ExtractorError as e:
-                if isinstance(
-                        e.cause,
-                        HTTPError) and e.cause.status in (
-                        403,
-                        474):
+                if isinstance(e.cause, HTTPError) and e.cause.status in (403, 474):
                     geo_restricted = True
                 else:
                     self.write_debug(e)
@@ -419,8 +374,7 @@ class HotStarIE(HotStarBaseIE):
                         'Audio_Description' in f['format_id']
                         or 'Audio Description' in (f.get('format_note') or '')
                     ):
-                        f['source_preference'] = -99 + \
-                            (f.get('source_preference') or -1)
+                        f['source_preference'] = -99 + (f.get('source_preference') or -1)
                 f['format_note'] = join_nonempty(
                     tag_dict.get('ladder'),
                     tag_dict.get('audio_channel') if f.get('acodec') != 'none' else None,
@@ -432,14 +386,11 @@ class HotStarIE(HotStarBaseIE):
 
         if not formats:
             if geo_restricted:
-                self.raise_geo_restricted(
-                    countries=['IN'], metadata_available=True)
+                self.raise_geo_restricted(countries=['IN'], metadata_available=True)
             elif has_drm:
                 self.report_drm(video_id)
             elif not self._has_active_subscription(cookies, st):
-                self.raise_no_formats(
-                    'Your account does not have access to this content',
-                    expected=True)
+                self.raise_no_formats('Your account does not have access to this content', expected=True)
         self._remove_duplicate_formats(formats)
         for f in formats:
             f.setdefault('http_headers', {}).update(headers)
@@ -486,12 +437,7 @@ class HotStarPrefixIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id, video_type = self._match_valid_url(url).group('id', 'type')
-        return self.url_result(
-            HotStarIE._video_url(
-                video_id,
-                video_type),
-            HotStarIE,
-            video_id)
+        return self.url_result(HotStarIE._video_url(video_id, video_type), HotStarIE, video_id)
 
 
 class HotStarSeriesIE(HotStarBaseIE):
@@ -527,10 +473,7 @@ class HotStarSeriesIE(HotStarBaseIE):
     def _real_extract(self, url):
         url, series_id = self._match_valid_url(url).group('url', 'id')
         eid = self._call_api_v1(
-            'show/detail',
-            series_id,
-            query={
-                'contentId': series_id})['body']['results']['item']['id']
+            'show/detail', series_id, query={'contentId': series_id})['body']['results']['item']['id']
 
         entries = OnDemandPagedList(functools.partial(
             self._fetch_page, 'tray/g/1/items', series_id,

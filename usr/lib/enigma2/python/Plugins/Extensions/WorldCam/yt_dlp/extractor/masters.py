@@ -23,11 +23,9 @@ class MastersIE(InfoExtractor):
         content_resp = self._download_json(
             f'https://www.masters.com/relatedcontent/rest/v2/masters_v1/en/content/masters_v1_{video_id}_en',
             video_id)
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            traverse_obj(content_resp, ('media', 'm3u8')), video_id, 'mp4')
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(traverse_obj(content_resp, ('media', 'm3u8')), video_id, 'mp4')
 
-        thumbnails = [{'id': name, 'url': url} for name, url in traverse_obj(
-            content_resp, ('images', 0), default={}).items()]
+        thumbnails = [{'id': name, 'url': url} for name, url in traverse_obj(content_resp, ('images', 0), default={}).items()]
 
         return {
             'id': video_id,

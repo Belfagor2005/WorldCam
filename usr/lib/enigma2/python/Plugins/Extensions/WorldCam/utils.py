@@ -331,19 +331,20 @@ class FavoritesManager:
                     if "youtube.com" in fav["url"] or "youtu.be" in fav["url"]:
                         # YouTube streams require special handling
                         service_type = 5001  # HLS
-                        service_url = f"http://localhost:8000/proxy.m3u8?url={
-                            quote(
-                                fav['url'])}"
+                        service_url = "http://localhost:8000/proxy.m3u8?url={0}".format(
+                            quote(fav["url"])
+                        )
                     else:
                         service_type = 4097  # HTTP
-                        # service_url = fav["url"]
                         encoded_url = quote(fav["url"], safe="")
-                        service_url = f"streamlink%3a//{encoded_url}"
+                        service_url = "streamlink%3a//{0}".format(encoded_url)
 
                     # Create service line
-                    service_line = f"#SERVICE {service_type}:0:1:0:0:0:0:0:0:0:{service_url}\n"
+                    service_line = "#SERVICE {0}:0:1:0:0:0:0:0:0:0:{1}\n".format(
+                        service_type, service_url
+                    )
                     f.write(service_line)
-                    f.write(f"#DESCRIPTION {fav['name']}\n")
+                    f.write("#DESCRIPTION {0}\n".format(fav["name"]))
 
             # Add to bouquet list
             bouquets_path = join(bouquet_dir, "bouquets.tv")
@@ -927,17 +928,16 @@ class AspectManager:
                 "16:10": 2,
                 "auto": 3
             }
-
+            
             if aspect_ratio in aspect_map:
                 new_aspect = aspect_map[aspect_ratio]
-                print("[INFO] Setting aspect ratio to:",
-                      aspect_ratio, "(", new_aspect, ")")
+                print("[INFO] Setting aspect ratio to:", aspect_ratio, "(", new_aspect, ")")
                 AVSwitch().setAspectRatio(new_aspect)
                 return True
             else:
                 print("[ERROR] Unknown aspect ratio:", aspect_ratio)
                 return False
-
+                
         except Exception as e:
             print("[ERROR] Failed to set aspect ratio:", str(e))
             return False

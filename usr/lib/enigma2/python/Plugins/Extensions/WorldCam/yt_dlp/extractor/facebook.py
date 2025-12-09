@@ -59,8 +59,7 @@ class FacebookIE(InfoExtractor):
                 '''
     _EMBED_REGEX = [
         r'<iframe[^>]+?src=(["\'])(?P<url>https?://www\.facebook\.com/(?:video/embed|plugins/video\.php).+?)\1',
-        # Facebook API embed
-        # https://developers.facebook.com/docs/plugins/embedded-video-player
+        # Facebook API embed https://developers.facebook.com/docs/plugins/embedded-video-player
         r'''(?x)<div[^>]+
                 class=(?P<q1>[\'"])[^\'"]*\bfb-(?:video|post)\b[^\'"]*(?P=q1)[^>]+
                 data-href=(?P<q2>[\'"])(?P<url>(?:https?:)?//(?:www\.)?facebook.com/.+?)(?P=q2)''',
@@ -473,16 +472,13 @@ class FacebookIE(InfoExtractor):
     def _perform_login(self, username, password):
         login_page_req = Request(self._LOGIN_URL)
         self._set_cookie('facebook.com', 'locale', 'en_US')
-        login_page = self._download_webpage(
-            login_page_req,
-            None,
-            note='Downloading login page',
-            errnote='Unable to download login page')
+        login_page = self._download_webpage(login_page_req, None,
+                                            note='Downloading login page',
+                                            errnote='Unable to download login page')
         lsd = self._search_regex(
             r'<input type="hidden" name="lsd" value="([^"]*)"',
             login_page, 'lsd')
-        lgnrnd = self._search_regex(
-            r'name="lgnrnd" value="([^"]*?)"', login_page, 'lgnrnd')
+        lgnrnd = self._search_regex(r'name="lgnrnd" value="([^"]*?)"', login_page, 'lgnrnd')
 
         login_form = {
             'email': username,
@@ -498,31 +494,21 @@ class FacebookIE(InfoExtractor):
         request = Request(self._LOGIN_URL, urlencode_postdata(login_form))
         request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         try:
-            login_results = self._download_webpage(
-                request, None, note='Logging in', errnote='unable to fetch login page')
-            if re.search(
-                r'<form(.*)name="login"(.*)</form>',
-                    login_results) is not None:
+            login_results = self._download_webpage(request, None,
+                                                   note='Logging in', errnote='unable to fetch login page')
+            if re.search(r'<form(.*)name="login"(.*)</form>', login_results) is not None:
                 error = self._html_search_regex(
                     r'(?s)<div[^>]+class=(["\']).*?login_error_box.*?\1[^>]*><div[^>]*>.*?</div><div[^>]*>(?P<error>.+?)</div>',
                     login_results, 'login error', default=None, group='error')
                 if error:
-                    raise ExtractorError(
-                        f'Unable to login: {error}', expected=True)
-                self.report_warning(
-                    'unable to log in: bad username/password, or exceeded login rate limit (~3/min). Check credentials or wait.')
+                    raise ExtractorError(f'Unable to login: {error}', expected=True)
+                self.report_warning('unable to log in: bad username/password, or exceeded login rate limit (~3/min). Check credentials or wait.')
                 return
 
             fb_dtsg = self._search_regex(
-                r'name="fb_dtsg" value="(.+?)"',
-                login_results,
-                'fb_dtsg',
-                default=None)
+                r'name="fb_dtsg" value="(.+?)"', login_results, 'fb_dtsg', default=None)
             h = self._search_regex(
-                r'name="h"\s+(?:\w+="[^"]+"\s+)*?value="([^"]+)"',
-                login_results,
-                'h',
-                default=None)
+                r'name="h"\s+(?:\w+="[^"]+"\s+)*?value="([^"]+)"', login_results, 'h', default=None)
 
             if not fb_dtsg or not h:
                 return
@@ -532,51 +518,29 @@ class FacebookIE(InfoExtractor):
                 'h': h,
                 'name_action_selected': 'dont_save',
             }
-            check_req = Request(
-                self._CHECKPOINT_URL,
-                urlencode_postdata(check_form))
+            check_req = Request(self._CHECKPOINT_URL, urlencode_postdata(check_form))
             check_req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
             check_response = self._download_webpage(check_req, None,
                                                     note='Confirming login')
-            if re.search(
-                r'id="checkpointSubmitButton"',
-                    check_response) is not None:
-                self.report_warning(
-                    'Unable to confirm login, you have to login in your browser and authorize the login.')
+            if re.search(r'id="checkpointSubmitButton"', check_response) is not None:
+                self.report_warning('Unable to confirm login, you have to login in your browser and authorize the login.')
         except network_exceptions as err:
             self.report_warning(f'unable to log in: {err}')
             return
 
     def _extract_from_url(self, url, video_id):
         webpage = self._download_webpage(
-            url.replace(
-                '://m.facebook.com/',
-                '://www.facebook.com/'),
-            video_id)
+            url.replace('://m.facebook.com/', '://www.facebook.com/'), video_id)
 
         def extract_metadata(webpage):
-            post_data = [
-                self._parse_json(
-                    j,
-                    video_id,
-                    fatal=False) for j in re.findall(
-                    r'data-sjs>({.*?ScheduledServerJS.*?})</script>',
-                    webpage)]
-            post = traverse_obj(post_data, (..., 'require', ..., ..., ..., '__bbox',
-                                'require', ..., ..., ..., '__bbox', 'result', 'data'), expected_type=dict) or []
-            media = traverse_obj(
-                post, (..., 'attachments', ..., lambda k, v: (
-                    k == 'media' and str(
-                        v['id']) == video_id and v['__typename'] == 'Video')), expected_type=dict)
+            post_data = [self._parse_json(j, video_id, fatal=False) for j in re.findall(
+                r'data-sjs>({.*?ScheduledServerJS.*?})</script>', webpage)]
+            post = traverse_obj(post_data, (
+                ..., 'require', ..., ..., ..., '__bbox', 'require', ..., ..., ..., '__bbox', 'result', 'data'), expected_type=dict) or []
+            media = traverse_obj(post, (..., 'attachments', ..., lambda k, v: (
+                k == 'media' and str(v['id']) == video_id and v['__typename'] == 'Video')), expected_type=dict)
             title = get_first(media, ('title', 'text'))
-            description = get_first(
-                media,
-                ('creation_story',
-                 'comet_sections',
-                 'message',
-                 'story',
-                 'message',
-                 'text'))
+            description = get_first(media, ('creation_story', 'comet_sections', 'message', 'story', 'message', 'text'))
             page_title = title or self._html_search_regex((
                 r'<h2\s+[^>]*class="uiHeaderTitle"[^>]*>(?P<content>[^<]*)</h2>',
                 r'(?s)<span class="fbPhotosPhotoCaption".*?id="fbPhotoPageCaption"><span class="hasCaption">(?P<content>.*?)</span>',
@@ -586,23 +550,16 @@ class FacebookIE(InfoExtractor):
                 ['description', 'og:description', 'twitter:description'],
                 webpage, 'description', default=None)
             uploader_data = (
-                get_first(
-                    media, ('owner', {dict})) or get_first(
-                    post, ('video', 'creation_story', 'attachments', ..., 'media', lambda k, v: k == 'owner' and v['name'])) or get_first(
-                    post, (..., 'video', lambda k, v: k == 'owner' and v['name'])) or get_first(
-                    post, ('node', 'actors', ..., {dict})) or get_first(
-                        post, ('event', 'event_creator', {dict})) or get_first(
-                            post, ('video', 'creation_story', 'short_form_video_context', 'video_owner', {dict})) or {})
+                get_first(media, ('owner', {dict}))
+                or get_first(post, ('video', 'creation_story', 'attachments', ..., 'media', lambda k, v: k == 'owner' and v['name']))
+                or get_first(post, (..., 'video', lambda k, v: k == 'owner' and v['name']))
+                or get_first(post, ('node', 'actors', ..., {dict}))
+                or get_first(post, ('event', 'event_creator', {dict}))
+                or get_first(post, ('video', 'creation_story', 'short_form_video_context', 'video_owner', {dict})) or {})
             uploader = uploader_data.get('name') or (
-                clean_html(
-                    get_element_by_id(
-                        'fbPhotoPageAuthorName',
-                        webpage)) or self._search_regex(
-                    (r'ownerName\s*:\s*"([^"]+)"',
-                     *self._og_regexes('title')),
-                    webpage,
-                    'uploader',
-                    fatal=False))
+                clean_html(get_element_by_id('fbPhotoPageAuthorName', webpage))
+                or self._search_regex(
+                    (r'ownerName\s*:\s*"([^"]+)"', *self._og_regexes('title')), webpage, 'uploader', fatal=False))
             timestamp = int_or_none(self._search_regex(
                 r'<abbr[^>]+data-utime=["\'](\d+)', webpage,
                 'timestamp', default=None))
@@ -610,8 +567,7 @@ class FacebookIE(InfoExtractor):
                 ['og:image', 'twitter:image'], webpage, 'thumbnail', default=None)
             # some webpages contain unretrievable thumbnail urls
             # like https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=10155168902769113&get_thumbnail=1
-            # in
-            # https://www.facebook.com/yaroslav.korpan/videos/1417995061575415/
+            # in https://www.facebook.com/yaroslav.korpan/videos/1417995061575415/
             if thumbnail and not re.search(r'\.(?:jpg|png)', thumbnail):
                 thumbnail = None
             info_dict = {
@@ -633,14 +589,8 @@ class FacebookIE(InfoExtractor):
             }
 
             info_json_ld = self._search_json_ld(webpage, video_id, default={})
-            info_json_ld['title'] = (
-                re.sub(
-                    r'\s*\|\s*Facebook$',
-                    '',
-                    title or info_json_ld.get('title') or page_title or '') or (
-                    description or '').replace(
-                    '\n',
-                    ' ') or f'Facebook video #{video_id}')
+            info_json_ld['title'] = (re.sub(r'\s*\|\s*Facebook$', '', title or info_json_ld.get('title') or page_title or '')
+                                     or (description or '').replace('\n', ' ') or f'Facebook video #{video_id}')
             return merge_dicts(info_json_ld, info_dict)
 
         video_data = None
@@ -659,8 +609,7 @@ class FacebookIE(InfoExtractor):
             webpage, 'server js data', default='{}'), video_id, fatal=False)
 
         if server_js_data:
-            video_data = extract_video_data(
-                server_js_data.get('instances', []))
+            video_data = extract_video_data(server_js_data.get('instances', []))
 
         def extract_from_jsmods_instances(js_data):
             if js_data:
@@ -669,18 +618,11 @@ class FacebookIE(InfoExtractor):
 
         def extract_dash_manifest(vid_data, formats, mpd_url=None):
             dash_manifest = traverse_obj(
-                vid_data,
-                'dash_manifest',
-                'playlist',
-                'dash_manifest_xml_string',
-                'manifest_xml',
-                expected_type=str)
+                vid_data, 'dash_manifest', 'playlist', 'dash_manifest_xml_string', 'manifest_xml', expected_type=str)
             if dash_manifest:
-                formats.extend(
-                    self._parse_mpd_formats(
-                        compat_etree_fromstring(
-                            urllib.parse.unquote_plus(dash_manifest)), mpd_url=url_or_none(
-                            vid_data.get('dash_manifest_url')) or mpd_url))
+                formats.extend(self._parse_mpd_formats(
+                    compat_etree_fromstring(urllib.parse.unquote_plus(dash_manifest)),
+                    mpd_url=url_or_none(vid_data.get('dash_manifest_url')) or mpd_url))
 
         def process_formats(info):
             # Downloads with browser's User-Agent are rate limited. Working around
@@ -688,16 +630,12 @@ class FacebookIE(InfoExtractor):
             for f in info['formats']:
                 # Downloads with browser's User-Agent are rate limited. Working around
                 # with non-browser User-Agent.
-                f.setdefault('http_headers', {})[
-                    'User-Agent'] = 'facebookexternalhit/1.1'
-                # Formats larger than ~500MB will return error 403 unless chunk
-                # size is regulated
-                f.setdefault('downloader_options', {})[
-                    'http_chunk_size'] = 250 << 20
+                f.setdefault('http_headers', {})['User-Agent'] = 'facebookexternalhit/1.1'
+                # Formats larger than ~500MB will return error 403 unless chunk size is regulated
+                f.setdefault('downloader_options', {})['http_chunk_size'] = 250 << 20
 
         def yield_all_relay_data(_filter):
-            for relay_data in re.findall(
-                    rf'data-sjs>({{.*?{_filter}.*?}})</script>', webpage):
+            for relay_data in re.findall(rf'data-sjs>({{.*?{_filter}.*?}})</script>', webpage):
                 yield self._parse_json(relay_data, video_id, fatal=False) or {}
 
         def extract_relay_data(_filter):
@@ -706,9 +644,7 @@ class FacebookIE(InfoExtractor):
         def extract_relay_prefetched_data(_filter, target_keys=None):
             path = 'data'
             if target_keys is not None:
-                def path(
-                    k, v): return k == 'data' and any(
-                    target in v for target in variadic(target_keys))
+                path = lambda k, v: k == 'data' and any(target in v for target in variadic(target_keys))
             return traverse_obj(yield_all_relay_data(_filter), (
                 ..., 'require', (None, (..., ..., ..., '__bbox', 'require')),
                 lambda _, v: any(key.startswith('RelayPrefetchedStreamCache') for key in v),
@@ -716,10 +652,8 @@ class FacebookIE(InfoExtractor):
 
         if not video_data:
             server_js_data = self._parse_json(self._search_regex([
-                r'bigPipe\.onPageletArrive\(({.+?})\)\s*;\s*}\s*\)\s*,\s*["\']onPageletArrive\s+' +
-                self._SUPPORTED_PAGLETS_REGEX,
-                rf'bigPipe\.onPageletArrive\(({{.*?id\s*:\s*"{
-                    self._SUPPORTED_PAGLETS_REGEX}".*?}})\);',
+                r'bigPipe\.onPageletArrive\(({.+?})\)\s*;\s*}\s*\)\s*,\s*["\']onPageletArrive\s+' + self._SUPPORTED_PAGLETS_REGEX,
+                rf'bigPipe\.onPageletArrive\(({{.*?id\s*:\s*"{self._SUPPORTED_PAGLETS_REGEX}".*?}})\);',
             ], webpage, 'js data', default='{}'), video_id, js_to_json, False)
             video_data = extract_from_jsmods_instances(server_js_data)
 
@@ -736,16 +670,14 @@ class FacebookIE(InfoExtractor):
                         video, ('creation_story', 'short_form_video_context', 'playback_video', {dict}))
                     if reel_info:
                         video = video['creation_story']
-                        video['owner'] = traverse_obj(
-                            video, ('short_form_video_context', 'video_owner'))
+                        video['owner'] = traverse_obj(video, ('short_form_video_context', 'video_owner'))
                         video.update(reel_info)
 
                     formats = []
                     q = qualities(['sd', 'hd'])
 
                     # Legacy formats extraction
-                    fmt_data = traverse_obj(
-                        video, ('videoDeliveryLegacyFields', {dict})) or video
+                    fmt_data = traverse_obj(video, ('videoDeliveryLegacyFields', {dict})) or video
                     for key, format_id in (('playable_url', 'sd'), ('playable_url_quality_hd', 'hd'),
                                            ('playable_url_dash', ''), ('browser_native_hd_url', 'hd'),
                                            ('browser_native_sd_url', 'sd')):
@@ -753,65 +685,43 @@ class FacebookIE(InfoExtractor):
                         if not playable_url:
                             continue
                         if determine_ext(playable_url) == 'mpd':
-                            formats.extend(
-                                self._extract_mpd_formats(
-                                    playable_url, video_id, fatal=False))
+                            formats.extend(self._extract_mpd_formats(playable_url, video_id, fatal=False))
                         else:
                             formats.append({
                                 'format_id': format_id,
-                                # sd, hd formats w/o resolution info should be
-                                # deprioritized below DASH
+                                # sd, hd formats w/o resolution info should be deprioritized below DASH
                                 'quality': q(format_id) - 3,
                                 'url': playable_url,
                             })
                     extract_dash_manifest(fmt_data, formats)
 
                     # New videoDeliveryResponse formats extraction
-                    fmt_data = traverse_obj(
-                        video, ('videoDeliveryResponseFragment', 'videoDeliveryResponseResult'))
-                    mpd_urls = traverse_obj(
-                        fmt_data, ('dash_manifest_urls', ..., 'manifest_url', {url_or_none}))
-                    dash_manifests = traverse_obj(
-                        fmt_data, ('dash_manifests', lambda _, v: v['manifest_xml']))
+                    fmt_data = traverse_obj(video, ('videoDeliveryResponseFragment', 'videoDeliveryResponseResult'))
+                    mpd_urls = traverse_obj(fmt_data, ('dash_manifest_urls', ..., 'manifest_url', {url_or_none}))
+                    dash_manifests = traverse_obj(fmt_data, ('dash_manifests', lambda _, v: v['manifest_xml']))
                     for idx, dash_manifest in enumerate(dash_manifests):
-                        extract_dash_manifest(
-                            dash_manifest, formats, mpd_url=traverse_obj(
-                                mpd_urls, idx))
+                        extract_dash_manifest(dash_manifest, formats, mpd_url=traverse_obj(mpd_urls, idx))
                     if not dash_manifests:
-                        # Only extract from MPD URLs if the manifests are not
-                        # already provided
+                        # Only extract from MPD URLs if the manifests are not already provided
                         for mpd_url in mpd_urls:
-                            formats.extend(
-                                self._extract_mpd_formats(
-                                    mpd_url, video_id, fatal=False))
-                    for prog_fmt in traverse_obj(
-                            fmt_data, ('progressive_urls', lambda _, v: v['progressive_url'])):
-                        format_id = traverse_obj(
-                            prog_fmt, ('metadata', 'quality', {str.lower}))
+                            formats.extend(self._extract_mpd_formats(mpd_url, video_id, fatal=False))
+                    for prog_fmt in traverse_obj(fmt_data, ('progressive_urls', lambda _, v: v['progressive_url'])):
+                        format_id = traverse_obj(prog_fmt, ('metadata', 'quality', {str.lower}))
                         formats.append({
                             'format_id': format_id,
-                            # sd, hd formats w/o resolution info should be
-                            # deprioritized below DASH
+                            # sd, hd formats w/o resolution info should be deprioritized below DASH
                             'quality': q(format_id) - 3,
                             'url': prog_fmt['progressive_url'],
                         })
-                    for m3u8_url in traverse_obj(
-                            fmt_data, ('hls_playlist_urls', ..., 'hls_playlist_url', {url_or_none})):
-                        formats.extend(
-                            self._extract_m3u8_formats(
-                                m3u8_url,
-                                video_id,
-                                'mp4',
-                                fatal=False,
-                                m3u8_id='hls'))
+                    for m3u8_url in traverse_obj(fmt_data, ('hls_playlist_urls', ..., 'hls_playlist_url', {url_or_none})):
+                        formats.extend(self._extract_m3u8_formats(m3u8_url, video_id, 'mp4', fatal=False, m3u8_id='hls'))
 
                     if not formats:
                         # Do not append false positive entry w/o any formats
                         return
 
                     automatic_captions, subtitles = {}, {}
-                    is_broadcast = traverse_obj(
-                        video, ('is_video_broadcast', {bool}))
+                    is_broadcast = traverse_obj(video, ('is_video_broadcast', {bool}))
                     for caption in traverse_obj(video, (
                         'video_available_captions_locales',
                         {lambda x: sorted(x, key=lambda c: c['locale'])},
@@ -820,26 +730,17 @@ class FacebookIE(InfoExtractor):
                         lang = caption.get('localized_language') or 'und'
                         subs = {
                             'url': caption['captions_url'],
-                            'name': format_field(
-                                caption,
-                                'localized_country',
-                                f'{lang} (%s)',
-                                default=lang),
+                            'name': format_field(caption, 'localized_country', f'{lang} (%s)', default=lang),
                         }
-                        if caption.get(
-                                'localized_creation_method') or is_broadcast:
-                            automatic_captions.setdefault(
-                                caption['locale'], []).append(subs)
+                        if caption.get('localized_creation_method') or is_broadcast:
+                            automatic_captions.setdefault(caption['locale'], []).append(subs)
                         else:
-                            subtitles.setdefault(
-                                caption['locale'], []).append(subs)
-                    captions_url = traverse_obj(
-                        video, ('captions_url', {url_or_none}))
+                            subtitles.setdefault(caption['locale'], []).append(subs)
+                    captions_url = traverse_obj(video, ('captions_url', {url_or_none}))
                     if captions_url and not automatic_captions and not subtitles:
                         locale = self._html_search_meta(
                             ['og:locale', 'twitter:locale'], webpage, 'locale', default='en_US')
-                        (automatic_captions if is_broadcast else subtitles)[
-                            locale] = [{'url': captions_url}]
+                        (automatic_captions if is_broadcast else subtitles)[locale] = [{'url': captions_url}]
 
                     info = {
                         'id': v_id,
@@ -854,8 +755,7 @@ class FacebookIE(InfoExtractor):
                         'subtitles': subtitles,
                     }
                     process_formats(info)
-                    description = try_get(
-                        video, lambda x: x['savable_description']['text'])
+                    description = try_get(video, lambda x: x['savable_description']['text'])
                     title = video.get('name')
                     if title:
                         info.update({
@@ -872,22 +772,10 @@ class FacebookIE(InfoExtractor):
                         return parse_graphql_video(media)
 
                 nodes = variadic(traverse_obj(data, 'nodes', 'node') or [])
-                attachments = traverse_obj(
-                    nodes,
-                    (...,
-                     'comet_sections',
-                     'content',
-                     'story',
-                     (None,
-                      'attached_story'),
-                        'attachments',
-                        ...,
-                        ('styles',
-                         'style_type_renderer',
-                         ('throwbackStyles',
-                          'attachment_target_renderer')),
-                        'attachment',
-                        {dict}))
+                attachments = traverse_obj(nodes, (
+                    ..., 'comet_sections', 'content', 'story', (None, 'attached_story'), 'attachments',
+                    ..., ('styles', 'style_type_renderer', ('throwbackStyles', 'attachment_target_renderer')),
+                    'attachment', {dict}))
                 for attachment in attachments:
                     ns = traverse_obj(attachment, ('all_subattachments', 'nodes', ..., {dict}),
                                       ('target', 'attachments', ..., 'styles', 'attachment', {dict}))
@@ -895,20 +783,12 @@ class FacebookIE(InfoExtractor):
                         parse_attachment(n)
                     parse_attachment(attachment)
 
-                edges = try_get(
-                    data,
-                    lambda x: x['mediaset']['currMedia']['edges'],
-                    list) or []
+                edges = try_get(data, lambda x: x['mediaset']['currMedia']['edges'], list) or []
                 for edge in edges:
                     parse_attachment(edge, key='node')
 
-                video = traverse_obj(
-                    data,
-                    ('event',
-                     'cover_media_renderer',
-                     'cover_video'),
-                    'video',
-                    expected_type=dict) or {}
+                video = traverse_obj(data, (
+                    'event', 'cover_media_renderer', 'cover_video'), 'video', expected_type=dict) or {}
                 if video:
                     attachments = try_get(video, [
                         lambda x: x['story']['attachments'],
@@ -933,13 +813,11 @@ class FacebookIE(InfoExtractor):
                 return merge_dicts(webpage_info, video_info)
 
         if not video_data:
-            m_msg = re.search(
-                r'class="[^"]*uiInterstitialContent[^"]*"><div>(.*?)</div>',
-                webpage)
+            m_msg = re.search(r'class="[^"]*uiInterstitialContent[^"]*"><div>(.*?)</div>', webpage)
             if m_msg is not None:
                 raise ExtractorError(
-                    f'The video is not available, Facebook said: "{
-                        m_msg.group(1)}"', expected=True)
+                    f'The video is not available, Facebook said: "{m_msg.group(1)}"',
+                    expected=True)
             elif any(p in webpage for p in (
                     '>You must log in to continue',
                     'id="login_form"',
@@ -954,18 +832,13 @@ class FacebookIE(InfoExtractor):
                 }),
             }
 
-            prefetched_data = extract_relay_prefetched_data(
-                r'"login_data"\s*:\s*{')
+            prefetched_data = extract_relay_prefetched_data(r'"login_data"\s*:\s*{')
             if prefetched_data:
-                lsd = try_get(
-                    prefetched_data,
-                    lambda x: x['login_data']['lsd'],
-                    dict)
+                lsd = try_get(prefetched_data, lambda x: x['login_data']['lsd'], dict)
                 if lsd:
                     post_data[lsd['name']] = lsd['value']
 
-            relay_data = extract_relay_data(
-                r'\[\s*"RelayAPIConfigDefaults"\s*,')
+            relay_data = extract_relay_data(r'\[\s*"RelayAPIConfigDefaults"\s*,')
             for define in (relay_data.get('define') or []):
                 if define[0] == 'RelayAPIConfigDefaults':
                     self._api_config = define[2]
@@ -975,10 +848,7 @@ class FacebookIE(InfoExtractor):
                 data=urlencode_postdata(post_data))['data']['living_room']
 
             entries = []
-            for edge in (
-                try_get(
-                    living_room,
-                    lambda x: x['recap']['watched_content']['edges']) or []):
+            for edge in (try_get(living_room, lambda x: x['recap']['watched_content']['edges']) or []):
                 video = try_get(edge, lambda x: x['node']['video']) or {}
                 v_id = video.get('id')
                 if not v_id:
@@ -1044,8 +914,7 @@ class FacebookIE(InfoExtractor):
                     src = f[0].get(f'{quality}_{src_type}')
                     if src:
                         # sd, hd formats w/o resolution info should be deprioritized below DASH
-                        # TODO: investigate if progressive or src formats still
-                        # exist
+                        # TODO: investigate if progressive or src formats still exist
                         preference = -10 if format_id == 'progressive' else -3
                         if quality == 'hd':
                             preference += 1
@@ -1073,8 +942,7 @@ class FacebookIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        real_url = self._VIDEO_PAGE_TEMPLATE % video_id if url.startswith(
-            'facebook:') else url
+        real_url = self._VIDEO_PAGE_TEMPLATE % video_id if url.startswith('facebook:') else url
         return self._extract_from_url(real_url, video_id)
 
 
@@ -1146,9 +1014,7 @@ class FacebookRedirectURLIE(InfoExtractor):
     def _real_extract(self, url):
         redirect_url = url_or_none(parse_qs(url).get('u', [None])[-1])
         if not redirect_url:
-            raise ExtractorError(
-                'Invalid facebook redirect URL',
-                expected=True)
+            raise ExtractorError('Invalid facebook redirect URL', expected=True)
         return self.url_result(redirect_url)
 
 
@@ -1177,9 +1043,7 @@ class FacebookReelIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         return self.url_result(
-            f'https://m.facebook.com/watch/?v={video_id}&_rdr',
-            FacebookIE,
-            video_id)
+            f'https://m.facebook.com/watch/?v={video_id}&_rdr', FacebookIE, video_id)
 
 
 class FacebookAdsIE(InfoExtractor):
@@ -1248,10 +1112,9 @@ class FacebookAdsIE(InfoExtractor):
 
     def _extract_formats(self, video_dict):
         formats = []
-        for format_key, format_url in traverse_obj(
-            video_dict, ({
-                dict.items}, lambda _, v: v[0] in self._FORMATS_MAP and url_or_none(
-                v[1]), )):
+        for format_key, format_url in traverse_obj(video_dict, (
+            {dict.items}, lambda _, v: v[0] in self._FORMATS_MAP and url_or_none(v[1]),
+        )):
             formats.append({
                 'format_id': self._FORMATS_MAP[format_key][0],
                 'format_note': self._FORMATS_MAP[format_key][1],
@@ -1265,8 +1128,8 @@ class FacebookAdsIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        post_data = traverse_obj(re.findall(
-            r'data-sjs>({.*?ScheduledServerJS.*?})</script>', webpage), (..., {json.loads}))
+        post_data = traverse_obj(
+            re.findall(r'data-sjs>({.*?ScheduledServerJS.*?})</script>', webpage), (..., {json.loads}))
         data = get_first(post_data, (
             'require', ..., ..., ..., '__bbox', 'require', ..., ..., ...,
             'entryPointRoot', 'otherProps', 'deeplinkAdCard', 'snapshot', {dict}))
@@ -1275,47 +1138,35 @@ class FacebookAdsIE(InfoExtractor):
 
         title = data.get('title')
         if not title or title == '{{product.name}}':
-            title = join_nonempty(
-                'display_format',
-                'page_name',
-                delim=' by ',
-                from_dict=data)
+            title = join_nonempty('display_format', 'page_name', delim=' by ', from_dict=data)
         markup_id = traverse_obj(data, ('body', '__m', {str}))
         markup = traverse_obj(post_data, (
             ..., 'require', ..., ..., ..., '__bbox', 'markup', lambda _, v: v[0].startswith(markup_id),
             ..., '__html', {clean_html}, {lambda x: not x.startswith('{{product.') and x}, any))
 
-        info_dict = merge_dicts(
-            {
-                'title': title, 'description': markup or None, }, traverse_obj(
-                data, {
-                    'description': (
-                        'link_description', {
-                            lambda x: x if not x.startswith('{{product.') else None}), 'uploader': (
-                        'page_name', {str}), 'uploader_id': (
-                                'page_id', {str_or_none}), 'uploader_url': (
-                                    'page_profile_uri', {url_or_none}), 'timestamp': (
-                                        'creation_time', {int_or_none}), 'like_count': (
-                                            'page_like_count', {int_or_none}), }))
+        info_dict = merge_dicts({
+            'title': title,
+            'description': markup or None,
+        }, traverse_obj(data, {
+            'description': ('link_description', {lambda x: x if not x.startswith('{{product.') else None}),
+            'uploader': ('page_name', {str}),
+            'uploader_id': ('page_id', {str_or_none}),
+            'uploader_url': ('page_profile_uri', {url_or_none}),
+            'timestamp': ('creation_time', {int_or_none}),
+            'like_count': ('page_like_count', {int_or_none}),
+        }))
 
         entries = []
-        for idx, entry in enumerate(
-            traverse_obj(
-                data, (('videos', 'cards'), lambda _, v: any(
-                    url_or_none(
-                v.get(f)) for f in self._FORMATS_MAP))), 1, ):
-            entries.append(
-                {
-                    'id': f'{video_id}_{idx}',
-                    'title': entry.get('title') or title,
-                    'description': traverse_obj(
-                        entry,
-                        'body',
-                        'link_description') or info_dict.get('description'),
-                    'thumbnail': url_or_none(
-                        entry.get('video_preview_image_url')),
-                    'formats': self._extract_formats(entry),
-                })
+        for idx, entry in enumerate(traverse_obj(
+            data, (('videos', 'cards'), lambda _, v: any(url_or_none(v.get(f)) for f in self._FORMATS_MAP))), 1,
+        ):
+            entries.append({
+                'id': f'{video_id}_{idx}',
+                'title': entry.get('title') or title,
+                'description': traverse_obj(entry, 'body', 'link_description') or info_dict.get('description'),
+                'thumbnail': url_or_none(entry.get('video_preview_image_url')),
+                'formats': self._extract_formats(entry),
+            })
 
         if len(entries) == 1:
             info_dict.update(entries[0])

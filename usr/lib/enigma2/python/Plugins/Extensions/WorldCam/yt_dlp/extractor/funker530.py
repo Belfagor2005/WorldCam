@@ -74,13 +74,7 @@ class Funker530IE(InfoExtractor):
         return {
             **info,
             '_type': 'url_transparent',
-            'description': strip_or_none(
-                self._search_regex(
-                    r'(?s)(.+)About the Author',
-                    clean_html(
-                        get_element_by_class(
-                            'video-desc-paragraph',
-                            webpage)),
-                    'description',
-                    default=None)),
+            'description': strip_or_none(self._search_regex(
+                r'(?s)(.+)About the Author', clean_html(get_element_by_class('video-desc-paragraph', webpage)),
+                'description', default=None)),
         }

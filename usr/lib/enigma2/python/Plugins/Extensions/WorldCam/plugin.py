@@ -355,31 +355,48 @@ class WorldCamMainScreen(WebcamBaseScreen):
         self.new_version = ""
         self.new_changelog = ""
         self.categories = [
-            {"key": "user_lists",
-             "name": _("User Lists"),
-             "icon": "user_lists.png",
-             "screen": WorldCamLocalScreen},
-            {"key": "favorites",
-             "name": _("Favorites"),
-             "icon": "favorite.png",
-             "screen": WorldCamFavoritesScreen},
-            {"key": "continents",
-             "name": _("Continents"),
-             "icon": "americas.png",
-             "screen": WorldCamContinentScreen},
-            {"key": "countries",
-             "name": _("Countries"),
-             "icon": "europe.png",
-             "screen": WorldCamCountryScreen},
-            {"key": "categories",
-             "name": _("Categories"),
-             "icon": "categories.png",
-             "screen": WorldCamCategoryScreen},
-            {"key": "top_webcams",
-             "name": _("Top Webcams"),
-             "icon": "top_webcams.png",
-             "screen": WorldCamTopScreen},
-            # {"key": "webcam_pl", "name": _("Webcam.pl"), "icon": "webcampl.png", "screen": WorldCamPlScreen},  # New entry
+            {
+                "key": "user_lists",
+                "name": _("User Lists"),
+                "icon": "user_lists.png",
+                "screen": WorldCamLocalScreen,
+            },
+            {
+                "key": "favorites",
+                "name": _("Favorites"),
+                "icon": "favorite.png",
+                "screen": WorldCamFavoritesScreen,
+            },
+            {
+                "key": "continents",
+                "name": _("Continents"),
+                "icon": "americas.png",
+                "screen": WorldCamContinentScreen,
+            },
+            {
+                "key": "countries",
+                "name": _("Countries"),
+                "icon": "europe.png",
+                "screen": WorldCamCountryScreen,
+            },
+            {
+                "key": "categories",
+                "name": _("Categories"),
+                "icon": "categories.png",
+                "screen": WorldCamCategoryScreen,
+            },
+            {
+                "key": "top_webcams",
+                "name": _("Top Webcams"),
+                "icon": "top_webcams.png",
+                "screen": WorldCamTopScreen,
+            },
+            # {
+            #     "key": "webcam_pl",
+            #     "name": _("Webcam.pl"),
+            #     "icon": "webcampl.png",
+            #     "screen": WorldCamPlScreen,
+            # },  # New entry
         ]
 
         self["actions"] = HelpableActionMap(self, "WorldCamActions", {

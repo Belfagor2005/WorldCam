@@ -87,24 +87,19 @@ class AtresPlayerIE(InfoExtractor):
                 }))
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 400:
-                raise ExtractorError(
-                    'Invalid username and/or password', expected=True)
+                raise ExtractorError('Invalid username and/or password', expected=True)
             raise
 
     def _real_extract(self, url):
         display_id, video_id = self._match_valid_url(url).groups()
 
         metadata_url = self._download_json(
-            self._API_BASE + 'client/v1/url',
-            video_id,
-            'Downloading API endpoint data',
-            query={
-                'href': urllib.parse.urlparse(url).path})['href']
+            self._API_BASE + 'client/v1/url', video_id, 'Downloading API endpoint data',
+            query={'href': urllib.parse.urlparse(url).path})['href']
         metadata = self._download_json(metadata_url, video_id)
 
         try:
-            video_data = self._download_json(
-                metadata['urlVideo'], video_id, 'Downloading video data')
+            video_data = self._download_json(metadata['urlVideo'], video_id, 'Downloading video data')
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
                 error = self._parse_json(e.cause.response.read(), None)
@@ -115,18 +110,10 @@ class AtresPlayerIE(InfoExtractor):
 
         formats = []
         subtitles = {}
-        for source in traverse_obj(
-            video_data,
-            ('sources',
-             lambda _,
-             v: url_or_none(
-                 v['src']))):
+        for source in traverse_obj(video_data, ('sources', lambda _, v: url_or_none(v['src']))):
             src_url = source['src']
             src_type = source.get('type')
-            if src_type in (
-                'application/vnd.apple.mpegurl',
-                'application/hls+legacy',
-                    'application/hls+hevc'):
+            if src_type in ('application/vnd.apple.mpegurl', 'application/hls+legacy', 'application/hls+hevc'):
                 fmts, subs = self._extract_m3u8_formats_and_subtitles(
                     src_url, video_id, 'mp4', m3u8_id='hls', fatal=False)
             elif src_type in ('application/dash+xml', 'application/dash+hevc'):

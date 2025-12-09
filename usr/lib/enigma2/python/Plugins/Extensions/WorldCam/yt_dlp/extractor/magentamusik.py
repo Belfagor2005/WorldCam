@@ -26,11 +26,7 @@ class MagentaMusikIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
         player_config = self._search_json(
-            r'data-js-element="o-video-player__config">',
-            webpage,
-            'player config',
-            display_id,
-            fatal=False)
+            r'data-js-element="o-video-player__config">', webpage, 'player config', display_id, fatal=False)
         if not player_config:
             raise ExtractorError('No video found', expected=True)
 
@@ -45,8 +41,7 @@ class MagentaMusikIE(InfoExtractor):
             raise ExtractorError('Unable to extract video id')
 
         vod_data = self._download_json(
-            f'https://wcps.t-online.de/cvss/magentamusic/vodclient/v2/player/58935/{video_id}/Main%20Movie',
-            video_id)
+            f'https://wcps.t-online.de/cvss/magentamusic/vodclient/v2/player/58935/{video_id}/Main%20Movie', video_id)
         smil_url = traverse_obj(
             vod_data, ('content', 'feature', 'representations', ...,
                        'contentPackages', ..., 'media', 'href', {url_or_none}), get_all=False)

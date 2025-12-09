@@ -105,9 +105,7 @@ class KhanAcademyIE(KhanAcademyBaseIE):
 
 class KhanAcademyUnitIE(KhanAcademyBaseIE):
     IE_NAME = 'khanacademy:unit'
-    _VALID_URL = (
-        KhanAcademyBaseIE._VALID_URL_TEMPL %
-        ('1,2', '')) + '/?(?:[?#&]|$)'
+    _VALID_URL = (KhanAcademyBaseIE._VALID_URL_TEMPL % ('1,2', '')) + '/?(?:[?#&]|$)'
     _TESTS = [{
         'url': 'https://www.khanacademy.org/computing/computer-science/cryptography',
         'info_dict': {
@@ -132,12 +130,8 @@ class KhanAcademyUnitIE(KhanAcademyBaseIE):
 
     def _parse_component_props(self, component_props, display_id):
         course = component_props['course']
-        selected_unit = traverse_obj(
-            course,
-            ('unitChildren',
-             lambda _,
-             v: v['relativeUrl'] == f'/{display_id}',
-                any)) or course
+        selected_unit = traverse_obj(course, (
+            'unitChildren', lambda _, v: v['relativeUrl'] == f'/{display_id}', any)) or course
 
         def build_entry(entry):
             return self.url_result(urljoin(
@@ -149,13 +143,11 @@ class KhanAcademyUnitIE(KhanAcademyBaseIE):
             lambda _, v: v['contentKind'] == 'Video' and v['canonicalUrl'], {build_entry}))
 
         return self.playlist_result(
-            entries, display_id=display_id, **traverse_obj(
-                selected_unit, {
-                    'id': (
-                        'id', {str}), 'title': (
-                        'translatedTitle', {str}), 'description': (
-                        'translatedDescription', {str}), '_old_archive_ids': (
-                            'slug', {str}, {
-                                lambda x: [
-                                    make_archive_id(
-                                        self, x)] if x else None}), }))
+            entries,
+            display_id=display_id,
+            **traverse_obj(selected_unit, {
+                'id': ('id', {str}),
+                'title': ('translatedTitle', {str}),
+                'description': ('translatedDescription', {str}),
+                '_old_archive_ids': ('slug', {str}, {lambda x: [make_archive_id(self, x)] if x else None}),
+            }))

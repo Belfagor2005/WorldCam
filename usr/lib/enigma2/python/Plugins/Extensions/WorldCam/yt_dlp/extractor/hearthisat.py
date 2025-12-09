@@ -79,14 +79,11 @@ class HearThisAtIE(InfoExtractor):
     def _real_extract(self, url):
         m = self._match_valid_url(url)
         display_id = '{artist:s} - {title:s}'.format(**m.groupdict())
-        api_url = url.replace(
-            'www.', '').replace(
-            'hearthis.at', 'api-v2.hearthis.at')
+        api_url = url.replace('www.', '').replace('hearthis.at', 'api-v2.hearthis.at')
         data_json = self._download_json(api_url, display_id)
         track_id = data_json.get('id')
         artist_json = data_json.get('user')
-        title = '{} - {}'.format(artist_json.get('username'),
-                                 data_json.get('title'))
+        title = '{} - {}'.format(artist_json.get('username'), data_json.get('title'))
         genre = data_json.get('genre')
         description = data_json.get('description')
         thumbnail = data_json.get('artwork_url') or data_json.get('thumb')

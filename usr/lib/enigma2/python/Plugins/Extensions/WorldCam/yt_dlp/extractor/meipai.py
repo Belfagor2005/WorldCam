@@ -64,11 +64,8 @@ class MeipaiIE(InfoExtractor):
         if not formats:
             # regular uploaded video
             video_url = self._search_regex(
-                r'data-video=(["\'])(?P<url>(?:(?!\1).)+)\1',
-                webpage,
-                'video url',
-                group='url',
-                default=None)
+                r'data-video=(["\'])(?P<url>(?:(?!\1).)+)\1', webpage, 'video url',
+                group='url', default=None)
             if video_url:
                 formats.append({
                     'url': video_url,
