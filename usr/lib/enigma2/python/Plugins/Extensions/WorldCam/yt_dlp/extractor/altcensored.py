@@ -40,15 +40,23 @@ class AltCensoredIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        category = clean_html(self._html_search_regex(
-            r'<a href="/category/\d+">([^<]+)</a>', webpage, 'category', default=None))
+        category = clean_html(
+            self._html_search_regex(
+                r'<a href="/category/\d+">([^<]+)</a>',
+                webpage,
+                'category',
+                default=None))
 
         return {
             '_type': 'url_transparent',
             'url': f'https://archive.org/details/youtube-{video_id}',
             'ie_key': ArchiveOrgIE.ie_key(),
-            'view_count': str_to_int(self._html_search_regex(
-                r'YouTube Views:(?:\s|&nbsp;)*([\d,]+)', webpage, 'view count', default=None)),
+            'view_count': str_to_int(
+                self._html_search_regex(
+                    r'YouTube Views:(?:\s|&nbsp;)*([\d,]+)',
+                    webpage,
+                    'view count',
+                    default=None)),
             'categories': [category] if category else None,
         }
 
@@ -83,8 +91,12 @@ class AltCensoredChannelIE(InfoExtractor):
     def _real_extract(self, url):
         channel_id = self._match_id(url)
         webpage = self._download_webpage(
-            url, channel_id, 'Download channel webpage', 'Unable to get channel webpage')
-        title = self._html_search_meta('altcen_title', webpage, 'title', fatal=False)
+            url,
+            channel_id,
+            'Download channel webpage',
+            'Unable to get channel webpage')
+        title = self._html_search_meta(
+            'altcen_title', webpage, 'title', fatal=False)
         page_count = int_or_none(self._html_search_regex(
             r'<a[^>]+href="/channel/[\w-]+/page/(\d+)">(?:\1)</a>',
             webpage, 'page count', default='1'))
@@ -96,8 +108,12 @@ class AltCensoredChannelIE(InfoExtractor):
                 channel_id, note=f'Downloading page {page_num}')
 
             items = re.findall(r'<a[^>]+href="(/watch\?v=[^"]+)', webpage)
-            return [self.url_result(urljoin('https://www.altcensored.com', path), AltCensoredIE)
-                    for path in orderedSet(items)]
+            return [
+                self.url_result(
+                    urljoin(
+                        'https://www.altcensored.com',
+                        path),
+                    AltCensoredIE) for path in orderedSet(items)]
 
         return self.playlist_result(
             InAdvancePagedList(page_func, page_count, self._PAGE_SIZE),

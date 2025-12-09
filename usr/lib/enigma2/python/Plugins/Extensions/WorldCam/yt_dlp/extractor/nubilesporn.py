@@ -56,10 +56,14 @@ class NubilesPornIE(InfoExtractor):
     }]
 
     def _perform_login(self, username, password):
-        login_webpage = self._download_webpage('https://nubiles-porn.com/login', video_id=None)
+        login_webpage = self._download_webpage(
+            'https://nubiles-porn.com/login', video_id=None)
         inputs = self._hidden_inputs(login_webpage)
         inputs.update({'username': username, 'password': password})
-        self._request_webpage('https://nubiles-porn.com/authentication/login', None, data=urlencode_postdata(inputs))
+        self._request_webpage(
+            'https://nubiles-porn.com/authentication/login',
+            None,
+            data=urlencode_postdata(inputs))
 
     def _real_extract(self, url):
         url_match = self._match_valid_url(url)
@@ -67,7 +71,8 @@ class NubilesPornIE(InfoExtractor):
         page = self._download_webpage(url, video_id)
 
         media_entries = self._parse_html5_media_entries(
-            url, get_element_by_class('watch-page-video-wrapper', page), video_id)[0]
+            url, get_element_by_class(
+                'watch-page-video-wrapper', page), video_id)[0]
 
         channel_id, channel_name = self._search_regex(
             r'/video/website/(?P<id>\d+).+>(?P<name>\w+).com', get_element_html_by_class('site-link', page) or '',

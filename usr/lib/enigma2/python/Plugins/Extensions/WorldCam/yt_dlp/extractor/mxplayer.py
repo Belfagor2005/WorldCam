@@ -161,22 +161,42 @@ class MxplayerIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_type, display_id, video_id = self._match_valid_url(url).group('type', 'display_id', 'id')
+        video_type, display_id, video_id = self._match_valid_url(
+            url).group('type', 'display_id', 'id')
         if 'show' in video_type:
             video_type = 'episode'
 
         data_json = self._download_json(
-            f'https://api.mxplay.com/v1/web/detail/video?type={video_type}&id={video_id}', display_id)
+            f'https://api.mxplay.com/v1/web/detail/video?type={video_type}&id={video_id}',
+            display_id)
 
         formats, subtitles = [], {}
-        m3u8_url = urljoin('https://llvod.mxplay.com/', traverse_obj(
-            data_json, ('stream', (('thirdParty', 'hlsUrl'), ('hls', 'high'))), get_all=False))
+        m3u8_url = urljoin(
+            'https://llvod.mxplay.com/',
+            traverse_obj(
+                data_json,
+                ('stream',
+                 (('thirdParty',
+                   'hlsUrl'),
+                  ('hls',
+                   'high'))),
+                get_all=False))
         if m3u8_url:
-            formats, subtitles = self._extract_m3u8_formats_and_subtitles(m3u8_url, display_id, 'mp4', fatal=False)
-        mpd_url = urljoin('https://llvod.mxplay.com/', traverse_obj(
-            data_json, ('stream', (('thirdParty', 'dashUrl'), ('dash', 'high'))), get_all=False))
+            formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+                m3u8_url, display_id, 'mp4', fatal=False)
+        mpd_url = urljoin(
+            'https://llvod.mxplay.com/',
+            traverse_obj(
+                data_json,
+                ('stream',
+                 (('thirdParty',
+                   'dashUrl'),
+                  ('dash',
+                   'high'))),
+                get_all=False))
         if mpd_url:
-            fmts, subs = self._extract_mpd_formats_and_subtitles(mpd_url, display_id, fatal=False)
+            fmts, subs = self._extract_mpd_formats_and_subtitles(
+                mpd_url, display_id, fatal=False)
             formats.extend(fmts)
             self._merge_subtitles(subs, target=subtitles)
 

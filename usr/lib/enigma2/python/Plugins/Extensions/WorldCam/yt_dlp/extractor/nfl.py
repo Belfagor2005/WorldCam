@@ -88,8 +88,10 @@ class NFLBaseIE(InfoExtractor):
 
     def _get_account_info(self):
         cookies = self._get_cookies('https://auth-id.nfl.com/')
-        login_token = traverse_obj(cookies, (
-            (f'glt_{self._API_KEY}', lambda k, _: k.startswith('glt_')), {lambda x: x.value}), get_all=False)
+        login_token = traverse_obj(
+            cookies, ((f'glt_{
+                self._API_KEY}', lambda k, _: k.startswith('glt_')), {
+                lambda x: x.value}), get_all=False)
         if not login_token:
             self.raise_login_required()
         if 'ucid' not in cookies:
@@ -120,17 +122,28 @@ class NFLBaseIE(InfoExtractor):
         })
 
         if len(self._ACCOUNT_INFO) != 3:
-            raise ExtractorError('Failed to retrieve account info with provided cookies', expected=True)
+            raise ExtractorError(
+                'Failed to retrieve account info with provided cookies',
+                expected=True)
 
     def _get_auth_token(self):
         if self._TOKEN and self._TOKEN_EXPIRY > int(time.time() + 30):
             return
 
         token = self._download_json(
-            'https://api.nfl.com/identity/v3/token%s' % (
-                '/refresh' if self._ACCOUNT_INFO.get('refreshToken') else ''),
-            None, headers={'Content-Type': 'application/json'}, note='Downloading access token',
-            data=json.dumps({**self._CLIENT_DATA, **self._ACCOUNT_INFO}, separators=(',', ':')).encode())
+            'https://api.nfl.com/identity/v3/token%s' %
+            ('/refresh' if self._ACCOUNT_INFO.get('refreshToken') else ''),
+            None,
+            headers={
+                'Content-Type': 'application/json'},
+            note='Downloading access token',
+            data=json.dumps(
+                {
+                    **self._CLIENT_DATA,
+                    **self._ACCOUNT_INFO},
+                separators=(
+                    ',',
+                    ':')).encode())
 
         self._TOKEN = token['accessToken']
         self._TOKEN_EXPIRY = token['expiresIn']
@@ -139,11 +152,21 @@ class NFLBaseIE(InfoExtractor):
     def _extract_video(self, mcp_id, is_live=False):
         self._get_auth_token()
         data = self._download_json(
-            f'https://api.nfl.com/play/v1/asset/{mcp_id}', mcp_id, headers={
-                'Authorization': f'Bearer {self._TOKEN}',
+            f'https://api.nfl.com/play/v1/asset/{mcp_id}',
+            mcp_id,
+            headers={
+                'Authorization': f'Bearer {
+                    self._TOKEN}',
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            }, data=json.dumps({'init': True, 'live': is_live}, separators=(',', ':')).encode())
+            },
+            data=json.dumps(
+                {
+                    'init': True,
+                    'live': is_live},
+                separators=(
+                    ',',
+                    ':')).encode())
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             data['accessUrl'], mcp_id, 'mp4', m3u8_id='hls')
 
@@ -173,14 +196,19 @@ class NFLBaseIE(InfoExtractor):
         item_url = item['url']
         ext = determine_ext(item_url)
         if ext == 'm3u8':
-            info['formats'] = self._extract_m3u8_formats(item_url, info['id'], 'mp4')
+            info['formats'] = self._extract_m3u8_formats(
+                item_url, info['id'], 'mp4')
         else:
             info['url'] = item_url
             if item.get('audio') is True:
                 info['vcodec'] = 'none'
 
         thumbnails = None
-        if image_url := traverse_obj(item, 'imageSrc', 'posterImage', expected_type=url_or_none):
+        if image_url := traverse_obj(
+            item,
+            'imageSrc',
+            'posterImage',
+                expected_type=url_or_none):
             thumbnails = [{
                 'url': image_url,
                 'ext': determine_ext(image_url, 'jpg'),
@@ -199,35 +227,33 @@ class NFLBaseIE(InfoExtractor):
 
 class NFLIE(NFLBaseIE):
     IE_NAME = 'nfl.com'
-    _VALID_URL = NFLBaseIE._VALID_URL_BASE + r'(?:videos?|listen|audio)/(?P<id>[^/#?&]+)'
-    _TESTS = [{
-        'url': 'https://www.nfl.com/videos/baker-mayfield-s-game-changing-plays-from-3-td-game-week-14',
-        'info_dict': {
-            'id': '899441',
-            'ext': 'mp4',
-            'title': "Baker Mayfield's game-changing plays from 3-TD game Week 14",
-            'description': 'md5:85e05a3cc163f8c344340f220521136d',
-            'thumbnail': r're:https?://.+\.jpg',
-            'duration': 157,
-            '_old_archive_ids': ['anvato 899441'],
-        },
-    }, {
-        'url': 'https://www.chiefs.com/listen/patrick-mahomes-travis-kelce-react-to-win-over-dolphins-the-breakdown',
-        'md5': '92a517f05bd3eb50fe50244bc621aec8',
-        'info_dict': {
-            'id': '8b7c3625-a461-4751-8db4-85f536f2bbd0',
-            'ext': 'mp3',
-            'title': 'Patrick Mahomes, Travis Kelce React to Win Over Dolphins | The Breakdown',
-            'description': 'md5:12ada8ee70e6762658c30e223e095075',
-            'thumbnail': 'https://static.clubs.nfl.com/image/private/t_editorial_landscape_12_desktop/v1571153441/chiefs/rfljejccnyhhkpkfq855',
-        },
-    }, {
-        'url': 'https://www.buffalobills.com/video/buffalo-bills-military-recognition-week-14',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.raiders.com/audio/instant-reactions-raiders-week-14-loss-to-indianapolis-colts-espn-jason-fitz',
-        'only_matching': True,
-    }]
+    _VALID_URL = NFLBaseIE._VALID_URL_BASE + \
+        r'(?:videos?|listen|audio)/(?P<id>[^/#?&]+)'
+    _TESTS = [{'url': 'https://www.nfl.com/videos/baker-mayfield-s-game-changing-plays-from-3-td-game-week-14',
+               'info_dict': {'id': '899441',
+                             'ext': 'mp4',
+                             'title': "Baker Mayfield's game-changing plays from 3-TD game Week 14",
+                             'description': 'md5:85e05a3cc163f8c344340f220521136d',
+                             'thumbnail': r're:https?://.+\.jpg',
+                             'duration': 157,
+                             '_old_archive_ids': ['anvato 899441'],
+                             },
+               },
+              {'url': 'https://www.chiefs.com/listen/patrick-mahomes-travis-kelce-react-to-win-over-dolphins-the-breakdown',
+               'md5': '92a517f05bd3eb50fe50244bc621aec8',
+               'info_dict': {'id': '8b7c3625-a461-4751-8db4-85f536f2bbd0',
+                             'ext': 'mp3',
+                             'title': 'Patrick Mahomes, Travis Kelce React to Win Over Dolphins | The Breakdown',
+                             'description': 'md5:12ada8ee70e6762658c30e223e095075',
+                             'thumbnail': 'https://static.clubs.nfl.com/image/private/t_editorial_landscape_12_desktop/v1571153441/chiefs/rfljejccnyhhkpkfq855',
+                             },
+               },
+              {'url': 'https://www.buffalobills.com/video/buffalo-bills-military-recognition-week-14',
+               'only_matching': True,
+               },
+              {'url': 'https://www.raiders.com/audio/instant-reactions-raiders-week-14-loss-to-indianapolis-colts-espn-jason-fitz',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -333,27 +359,44 @@ class NFLPlusReplayIE(NFLBaseIE):
         requested_types = self._configuration_arg('type', ['all'])
         if 'all' in requested_types:
             requested_types = list(self._REPLAY_TYPES.keys())
-        requested_types = traverse_obj(self._REPLAY_TYPES, (None, requested_types))
+        requested_types = traverse_obj(
+            self._REPLAY_TYPES, (None, requested_types))
 
         if not video_id:
             self._get_auth_token()
             headers = {'Authorization': f'Bearer {self._TOKEN}'}
             game_id = self._download_json(
-                f'https://api.nfl.com/football/v2/games/externalId/slug/{slug}', slug,
-                'Downloading game ID', query={'withExternalIds': 'true'}, headers=headers)['id']
+                f'https://api.nfl.com/football/v2/games/externalId/slug/{slug}',
+                slug,
+                'Downloading game ID',
+                query={
+                    'withExternalIds': 'true'},
+                headers=headers)['id']
             replays = self._download_json(
-                'https://api.nfl.com/content/v1/videos/replays', slug, 'Downloading replays JSON',
-                query={'gameId': game_id}, headers=headers)
+                'https://api.nfl.com/content/v1/videos/replays',
+                slug,
+                'Downloading replays JSON',
+                query={
+                    'gameId': game_id},
+                headers=headers)
             if len(requested_types) == 1:
-                video_id = traverse_obj(replays, (
-                    'items', lambda _, v: v['subType'] == requested_types[0], 'mcpPlaybackId'), get_all=False)
+                video_id = traverse_obj(
+                    replays,
+                    ('items',
+                     lambda _,
+                     v: v['subType'] == requested_types[0],
+                        'mcpPlaybackId'),
+                    get_all=False)
 
         if video_id:
             return self._extract_video(video_id)
 
         def entries():
             for replay in traverse_obj(
-                replays, ('items', lambda _, v: v['mcpPlaybackId'] and v['subType'] in requested_types),
+                replays,
+                ('items',
+                 lambda _,
+                 v: v['mcpPlaybackId'] and v['subType'] in requested_types),
             ):
                 yield self._extract_video(replay['mcpPlaybackId'])
 
@@ -389,8 +432,11 @@ class NFLPlusEpisodeIE(NFLBaseIE):
         slug = self._match_id(url)
         self._get_auth_token()
         video_id = self._download_json(
-            f'https://api.nfl.com/content/v1/videos/episodes/{slug}', slug, headers={
-                'Authorization': f'Bearer {self._TOKEN}',
+            f'https://api.nfl.com/content/v1/videos/episodes/{slug}',
+            slug,
+            headers={
+                'Authorization': f'Bearer {
+                    self._TOKEN}',
             })['mcpPlaybackId']
 
         return self._extract_video(video_id)

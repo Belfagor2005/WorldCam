@@ -77,12 +77,14 @@ class KikaIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        doc = self._download_json(f'https://www.kika.de/_next-api/proxy/v1/videos/{video_id}', video_id)
+        doc = self._download_json(
+            f'https://www.kika.de/_next-api/proxy/v1/videos/{video_id}', video_id)
         video_assets = self._download_json(doc['assets']['url'], video_id)
 
         subtitles = {}
         # Subtitle API endpoints may be present in the JSON even if there are no subtitles.
-        # They then return HTTP 200 with invalid data. So we must check explicitly.
+        # They then return HTTP 200 with invalid data. So we must check
+        # explicitly.
         if doc.get('hasSubtitle'):
             if ttml_resource := url_or_none(video_assets.get('videoSubtitle')):
                 subtitles['de'] = [{
@@ -113,7 +115,12 @@ class KikaIE(InfoExtractor):
         }
 
     def _extract_formats(self, media_info, video_id):
-        for media in traverse_obj(media_info, ('assets', lambda _, v: url_or_none(v['url']))):
+        for media in traverse_obj(
+            media_info,
+            ('assets',
+             lambda _,
+             v: url_or_none(
+                 v['url']))):
             stream_url = media['url']
             ext = determine_ext(stream_url)
             if ext == 'm3u8':
@@ -126,7 +133,8 @@ class KikaIE(InfoExtractor):
                     **traverse_obj(media, {
                         'width': ('frameWidth', {int_or_none}),
                         'height': ('frameHeight', {int_or_none}),
-                        # NB: filesize is 0 if unknown, bitrate is -1 if unknown
+                        # NB: filesize is 0 if unknown, bitrate is -1 if
+                        # unknown
                         'filesize': ('fileSize', {int_or_none}, filter),
                         'abr': ('bitrateAudio', {int_or_none}, {lambda x: None if x == -1 else x}),
                         'vbr': ('bitrateVideo', {int_or_none}, {lambda x: None if x == -1 else x}),
@@ -149,8 +157,13 @@ class KikaPlaylistIE(InfoExtractor):
 
     def _entries(self, playlist_url, playlist_id):
         for page in itertools.count(1):
-            data = self._download_json(playlist_url, playlist_id, note=f'Downloading page {page}')
-            for item in traverse_obj(data, ('content', lambda _, v: url_or_none(v['api']['url']))):
+            data = self._download_json(
+                playlist_url,
+                playlist_id,
+                note=f'Downloading page {page}')
+            for item in traverse_obj(
+                data, ('content', lambda _, v: url_or_none(
+                    v['api']['url']))):
                 yield self.url_result(
                     item['api']['url'], ie=KikaIE,
                     **traverse_obj(item, {
@@ -170,5 +183,9 @@ class KikaPlaylistIE(InfoExtractor):
             f'https://www.kika.de/_next-api/proxy/v1/brands/{playlist_id}', playlist_id)
 
         return self.playlist_result(
-            self._entries(brand_data['videoSubchannel']['videosPageUrl'], playlist_id),
-            playlist_id, title=brand_data.get('title'), description=brand_data.get('description'))
+            self._entries(
+                brand_data['videoSubchannel']['videosPageUrl'],
+                playlist_id),
+            playlist_id,
+            title=brand_data.get('title'),
+            description=brand_data.get('description'))

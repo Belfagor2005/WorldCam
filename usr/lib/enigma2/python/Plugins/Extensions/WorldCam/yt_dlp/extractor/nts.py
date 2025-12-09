@@ -61,7 +61,11 @@ class NTSLiveIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        data = self._search_json(r'window\._REACT_STATE_\s*=', webpage, 'react state', video_id)
+        data = self._search_json(
+            r'window\._REACT_STATE_\s*=',
+            webpage,
+            'react state',
+            video_id)
 
         return {
             '_type': 'url_transparent',

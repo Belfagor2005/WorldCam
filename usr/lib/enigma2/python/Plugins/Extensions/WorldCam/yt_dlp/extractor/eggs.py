@@ -30,7 +30,8 @@ class EggsBaseIE(InfoExtractor):
         if yt_url := traverse_obj(data, ('youtubeUrl', {url_or_none})):
             return self.url_result(yt_url, ie=YoutubeIE)
 
-        artist_name = traverse_obj(data, ('artist', 'artistName', {str_or_none}))
+        artist_name = traverse_obj(
+            data, ('artist', 'artistName', {str_or_none}))
         music_id = traverse_obj(data, ('musicId', {str_or_none}))
         webpage_url = None
         if artist_name and music_id:
@@ -147,9 +148,11 @@ class EggsArtistIE(EggsBaseIE):
         artist_data = self._call_api(f'artists/{artist_id}', artist_id)
         song_data = self._call_api(f'artists/{artist_id}/musics', artist_id)
         return self.playlist_result(
-            traverse_obj(song_data, ('data', ..., {dict}, {self._extract_music_info})),
-            playlist_id=artist_id, **traverse_obj(artist_data, {
-                'title': ('displayName', {str}),
-                'description': ('profile', {str}),
-                'thumbnail': ('imageDataPath', {url_or_none}),
-            }))
+            traverse_obj(
+                song_data, ('data', ..., {dict}, {
+                    self._extract_music_info})), playlist_id=artist_id, **traverse_obj(
+                artist_data, {
+                    'title': (
+                        'displayName', {str}), 'description': (
+                            'profile', {str}), 'thumbnail': (
+                                'imageDataPath', {url_or_none}), }))

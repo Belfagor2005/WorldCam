@@ -36,10 +36,14 @@ class CiscoLiveBaseIE(InfoExtractor):
         event_name = rf_item.get('eventName')
         title = rf_item['title']
         description = clean_html(rf_item.get('abstract'))
-        presenter_name = try_get(rf_item, lambda x: x['participants'][0]['fullName'])
+        presenter_name = try_get(
+            rf_item, lambda x: x['participants'][0]['fullName'])
         bc_id = rf_item['videos'][0]['url']
         bc_url = self.BRIGHTCOVE_URL_TEMPLATE % bc_id
-        duration = float_or_none(try_get(rf_item, lambda x: x['times'][0]['length']))
+        duration = float_or_none(
+            try_get(
+                rf_item,
+                lambda x: x['times'][0]['length']))
         location = try_get(rf_item, lambda x: x['times'][0]['room'])
 
         if duration:
@@ -60,26 +64,24 @@ class CiscoLiveBaseIE(InfoExtractor):
 
 class CiscoLiveSessionIE(CiscoLiveBaseIE):
     _VALID_URL = r'https?://(?:www\.)?ciscolive(?:\.cisco)?\.com/[^#]*#/session/(?P<id>[^/?&]+)'
-    _TESTS = [{
-        'url': 'https://ciscolive.cisco.com/on-demand-library/?#/session/1423353499155001FoSs',
-        'md5': 'c98acf395ed9c9f766941c70f5352e22',
-        'info_dict': {
-            'id': '5803694304001',
-            'ext': 'mp4',
-            'title': '13 Smart Automations to Monitor Your Cisco IOS Network',
-            'description': 'md5:ec4a436019e09a918dec17714803f7cc',
-            'timestamp': 1530305395,
-            'upload_date': '20180629',
-            'uploader_id': '5647924234001',
-            'location': '16B Mezz.',
-        },
-    }, {
-        'url': 'https://www.ciscolive.com/global/on-demand-library.html?search.event=ciscoliveemea2019#/session/15361595531500013WOU',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.ciscolive.com/global/on-demand-library.html?#/session/1490051371645001kNaS',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://ciscolive.cisco.com/on-demand-library/?#/session/1423353499155001FoSs',
+               'md5': 'c98acf395ed9c9f766941c70f5352e22',
+               'info_dict': {'id': '5803694304001',
+                             'ext': 'mp4',
+                             'title': '13 Smart Automations to Monitor Your Cisco IOS Network',
+                             'description': 'md5:ec4a436019e09a918dec17714803f7cc',
+                             'timestamp': 1530305395,
+                             'upload_date': '20180629',
+                             'uploader_id': '5647924234001',
+                             'location': '16B Mezz.',
+                             },
+               },
+              {'url': 'https://www.ciscolive.com/global/on-demand-library.html?search.event=ciscoliveemea2019#/session/15361595531500013WOU',
+               'only_matching': True,
+               },
+              {'url': 'https://www.ciscolive.com/global/on-demand-library.html?#/session/1490051371645001kNaS',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         rf_id = self._match_id(url)
@@ -89,27 +91,29 @@ class CiscoLiveSessionIE(CiscoLiveBaseIE):
 
 class CiscoLiveSearchIE(CiscoLiveBaseIE):
     _VALID_URL = r'https?://(?:www\.)?ciscolive(?:\.cisco)?\.com/(?:global/)?on-demand-library(?:\.html|/)'
-    _TESTS = [{
-        'url': 'https://ciscolive.cisco.com/on-demand-library/?search.event=ciscoliveus2018&search.technicallevel=scpsSkillLevel_aintroductory&search.focus=scpsSessionFocus_designAndDeployment#/',
-        'info_dict': {
-            'title': 'Search query',
-        },
-        'playlist_count': 5,
-    }, {
-        'url': 'https://ciscolive.cisco.com/on-demand-library/?search.technology=scpsTechnology_applicationDevelopment&search.technology=scpsTechnology_ipv6&search.focus=scpsSessionFocus_troubleshootingTroubleshooting#/',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.ciscolive.com/global/on-demand-library.html?search.technicallevel=scpsSkillLevel_aintroductory&search.event=ciscoliveemea2019&search.technology=scpsTechnology_dataCenter&search.focus=scpsSessionFocus_bestPractices#/',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://ciscolive.cisco.com/on-demand-library/?search.event=ciscoliveus2018&search.technicallevel=scpsSkillLevel_aintroductory&search.focus=scpsSessionFocus_designAndDeployment#/',
+               'info_dict': {'title': 'Search query',
+                             },
+               'playlist_count': 5,
+               },
+              {'url': 'https://ciscolive.cisco.com/on-demand-library/?search.technology=scpsTechnology_applicationDevelopment&search.technology=scpsTechnology_ipv6&search.focus=scpsSessionFocus_troubleshootingTroubleshooting#/',
+               'only_matching': True,
+               },
+              {'url': 'https://www.ciscolive.com/global/on-demand-library.html?search.technicallevel=scpsSkillLevel_aintroductory&search.event=ciscoliveemea2019&search.technology=scpsTechnology_dataCenter&search.focus=scpsSessionFocus_bestPractices#/',
+               'only_matching': True,
+               }]
 
     @classmethod
     def suitable(cls, url):
-        return False if CiscoLiveSessionIE.suitable(url) else super().suitable(url)
+        return False if CiscoLiveSessionIE.suitable(
+            url) else super().suitable(url)
 
     @staticmethod
     def _check_bc_id_exists(rf_item):
-        return int_or_none(try_get(rf_item, lambda x: x['videos'][0]['url'])) is not None
+        return int_or_none(
+            try_get(
+                rf_item,
+                lambda x: x['videos'][0]['url'])) is not None
 
     def _entries(self, query, url):
         query['size'] = 50

@@ -65,8 +65,17 @@ class MuseScoreIE(InfoExtractor):
             'id': video_id,
             'formats': formats,
             'title': self._og_search_title(webpage),
-            'description': self._html_search_meta('description', webpage, 'description'),
+            'description': self._html_search_meta(
+                'description',
+                webpage,
+                'description'),
             'thumbnail': self._og_search_thumbnail(webpage),
-            'uploader': self._html_search_meta('musescore:author', webpage, 'uploader'),
-            'creator': self._html_search_meta('musescore:composer', webpage, 'composer'),
+            'uploader': self._html_search_meta(
+                'musescore:author',
+                webpage,
+                'uploader'),
+            'creator': self._html_search_meta(
+                'musescore:composer',
+                webpage,
+                'composer'),
         }

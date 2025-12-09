@@ -16,7 +16,13 @@ from ..utils.traversal import traverse_obj
 
 
 class MixcloudBaseIE(InfoExtractor):
-    def _call_api(self, object_type, object_fields, display_id, username, slug=None):
+    def _call_api(
+            self,
+            object_type,
+            object_fields,
+            display_id,
+            username,
+            slug=None):
         lookup_key = object_type + 'Lookup'
         return self._download_json(
             'https://app.mixcloud.com/graphql', display_id, query={
@@ -91,7 +97,8 @@ class MixcloudIE(MixcloudBaseIE):
 
     def _real_extract(self, url):
         username, slug = self._match_valid_url(url).groups()
-        username, slug = urllib.parse.unquote(username), urllib.parse.unquote(slug)
+        username, slug = urllib.parse.unquote(
+            username), urllib.parse.unquote(slug)
         track_id = f'{username}_{slug}'
 
         cloudcast = self._call_api('cloudcast', '''audioLength
@@ -146,9 +153,13 @@ class MixcloudIE(MixcloudBaseIE):
 
         reason = cloudcast.get('restrictedReason')
         if reason == 'tracklist':
-            raise ExtractorError('Track unavailable in your country due to licensing restrictions', expected=True)
+            raise ExtractorError(
+                'Track unavailable in your country due to licensing restrictions',
+                expected=True)
         elif reason == 'repeat_play':
-            raise ExtractorError('You have reached your play limit for this track', expected=True)
+            raise ExtractorError(
+                'You have reached your play limit for this track',
+                expected=True)
         elif reason:
             raise ExtractorError('Track is restricted', expected=True)
 
@@ -183,7 +194,8 @@ class MixcloudIE(MixcloudBaseIE):
             self.raise_login_required(metadata_available=True)
 
         comments = []
-        for node in traverse_obj(cloudcast, ('comments', 'edges', ..., 'node', {dict})):
+        for node in traverse_obj(
+                cloudcast, ('comments', 'edges', ..., 'node', {dict})):
             text = strip_or_none(node.get('comment'))
             if not text:
                 continue
@@ -265,7 +277,8 @@ class MixcloudPlaylistBaseIE(MixcloudBaseIE):
                 if not cloudcast_url:
                     continue
                 item_slug = try_get(cloudcast, lambda x: x['slug'], str)
-                owner_username = try_get(cloudcast, lambda x: x['owner']['username'], str)
+                owner_username = try_get(
+                    cloudcast, lambda x: x['owner']['username'], str)
                 video_id = f'{owner_username}_{item_slug}' if item_slug and owner_username else None
                 entries.append(self.url_result(
                     cloudcast_url, MixcloudIE.ie_key(), video_id))

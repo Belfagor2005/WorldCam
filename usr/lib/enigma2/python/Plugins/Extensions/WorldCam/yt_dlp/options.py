@@ -56,7 +56,8 @@ def parseOpts(overrideArguments=None, ignore_config_files='if_override'):  # noq
     def _load_from_config_dirs(config_dirs):
         for config_dir in config_dirs:
             head, tail = os.path.split(config_dir)
-            assert tail == PACKAGE_NAME or config_dir == os.path.join(compat_expanduser('~'), f'.{PACKAGE_NAME}')
+            assert tail == PACKAGE_NAME or config_dir == os.path.join(
+                compat_expanduser('~'), f'.{PACKAGE_NAME}')
 
             yield read_config(head, f'{PACKAGE_NAME}.conf')
             if tail.startswith('.'):  # ~/.PACKAGE_NAME
@@ -71,7 +72,9 @@ def parseOpts(overrideArguments=None, ignore_config_files='if_override'):  # noq
         elif func:
             assert path is None
             args, current_path = next(
-                filter(None, _load_from_config_dirs(func(PACKAGE_NAME))), (None, None))
+                filter(
+                    None, _load_from_config_dirs(
+                        func(PACKAGE_NAME))), (None, None))
         else:
             current_path = os.path.join(path, 'yt-dlp.conf')
             args = Config.read_file(current_path, default=None)
@@ -101,12 +104,15 @@ def parseOpts(overrideArguments=None, ignore_config_files='if_override'):  # noq
             # If ignoreconfig is found inside the system configuration file,
             # the user configuration is removed
             if root.parse_known_args()[0].ignoreconfig:
-                user_conf = next((i for i, conf in enumerate(root.configs) if conf.label == 'User'), None)
+                user_conf = next(
+                    (i for i, conf in enumerate(
+                        root.configs) if conf.label == 'User'), None)
                 if user_conf is not None:
                     root.configs.pop(user_conf)
 
         try:
-            root.configs[0].load_configs()  # Resolve any aliases using --config-location
+            # Resolve any aliases using --config-location
+            root.configs[0].load_configs()
         except ValueError as err:
             raise root.parser.error(err)
 
@@ -119,7 +125,8 @@ def parseOpts(overrideArguments=None, ignore_config_files='if_override'):  # noq
         opts.verbose = False
         raise
     finally:
-        verbose = opts.verbose and f'\n{root}'.replace('\n| ', '\n[debug] ')[1:]
+        verbose = opts.verbose and f'\n{root}'.replace(
+            '\n| ', '\n[debug] ')[1:]
         if verbose:
             write_string(f'{verbose}\n')
         if opts.print_help:
@@ -151,16 +158,45 @@ class _YoutubeDLHelpFormatter(optparse.IndentedHelpFormatter):
 
 
 _PRESET_ALIASES = {
-    'mp3': ['-f', 'ba[acodec^=mp3]/ba/b', '-x', '--audio-format', 'mp3'],
-    'aac': ['-f', 'ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b', '-x', '--audio-format', 'aac'],
-    'mp4': ['--merge-output-format', 'mp4', '--remux-video', 'mp4', '-S', 'vcodec:h264,lang,quality,res,fps,hdr:12,acodec:aac'],
-    'mkv': ['--merge-output-format', 'mkv', '--remux-video', 'mkv'],
-    'sleep': ['--sleep-subtitles', '5', '--sleep-requests', '0.75', '--sleep-interval', '10', '--max-sleep-interval', '20'],
+    'mp3': [
+        '-f',
+        'ba[acodec^=mp3]/ba/b',
+        '-x',
+        '--audio-format',
+        'mp3'],
+    'aac': [
+        '-f',
+        'ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b',
+        '-x',
+        '--audio-format',
+        'aac'],
+    'mp4': [
+        '--merge-output-format',
+        'mp4',
+        '--remux-video',
+        'mp4',
+        '-S',
+        'vcodec:h264,lang,quality,res,fps,hdr:12,acodec:aac'],
+    'mkv': [
+        '--merge-output-format',
+        'mkv',
+        '--remux-video',
+        'mkv'],
+    'sleep': [
+        '--sleep-subtitles',
+        '5',
+        '--sleep-requests',
+        '0.75',
+        '--sleep-interval',
+        '10',
+        '--max-sleep-interval',
+        '20'],
 }
 
 
 class _YoutubeDLOptionParser(optparse.OptionParser):
-    # optparse is deprecated since Python 3.2. So assume a stable interface even for private methods
+    # optparse is deprecated since Python 3.2. So assume a stable interface
+    # even for private methods
     ALIAS_DEST = '_triggered_aliases'
     ALIAS_TRIGGER_LIMIT = 100
 
@@ -245,30 +281,62 @@ class _YoutubeDLOptionParser(optparse.OptionParser):
 
 
 def create_parser():
-    def _list_from_options_callback(option, opt_str, value, parser, append=True, delim=',', process=str.strip):
+    def _list_from_options_callback(
+            option,
+            opt_str,
+            value,
+            parser,
+            append=True,
+            delim=',',
+            process=str.strip):
         # append can be True, False or -1 (prepend)
         current = list(getattr(parser.values, option.dest)) if append else []
-        value = list(filter(None, [process(value)] if delim is None else map(process, value.split(delim))))
+        value = list(
+            filter(
+                None, [
+                    process(value)] if delim is None else map(
+                    process, value.split(delim))))
         setattr(
             parser.values, option.dest,
             current + value if append is True else value + current)
 
     def _set_from_options_callback(
-            option, opt_str, value, parser, allowed_values, delim=',', aliases={},
+            option,
+            opt_str,
+            value,
+            parser,
+            allowed_values,
+            delim=',',
+            aliases={},
             process=lambda x: x.lower().strip()):
-        values = [process(value)] if delim is None else map(process, value.split(delim))
+        values = [process(value)] if delim is None else map(
+            process, value.split(delim))
         try:
-            requested = orderedSet_from_options(values, collections.ChainMap(aliases, {'all': allowed_values}),
-                                                start=getattr(parser.values, option.dest))
+            requested = orderedSet_from_options(
+                values, collections.ChainMap(
+                    aliases, {
+                        'all': allowed_values}), start=getattr(
+                    parser.values, option.dest))
         except ValueError as e:
-            raise optparse.OptionValueError(f'wrong {option.metavar} for {opt_str}: {e.args[0]}')
+            raise optparse.OptionValueError(
+                f'wrong {
+                    option.metavar} for {opt_str}: {
+                    e.args[0]}')
 
         setattr(parser.values, option.dest, set(requested))
 
     def _dict_from_options_callback(
-            option, opt_str, value, parser,
-            allowed_keys=r'[\w-]+', delimiter=':', default_key=None, process=None, multiple_keys=True,
-            process_key=str.lower, append=False):
+            option,
+            opt_str,
+            value,
+            parser,
+            allowed_keys=r'[\w-]+',
+            delimiter=':',
+            default_key=None,
+            process=None,
+            multiple_keys=True,
+            process_key=str.lower,
+            append=False):
 
         out_dict = dict(getattr(parser.values, option.dest))
         multiple_args = not isinstance(value, str)
@@ -285,12 +353,14 @@ def create_parser():
             keys, val = variadic(default_key), value
         else:
             raise optparse.OptionValueError(
-                f'wrong {opt_str} formatting; it should be {option.metavar}, not "{value}"')
+                f'wrong {opt_str} formatting; it should be {
+                    option.metavar}, not "{value}"')
         try:
             keys = map(process_key, keys) if process_key else keys
             val = process(val) if process else val
         except Exception as err:
-            raise optparse.OptionValueError(f'wrong {opt_str} formatting; {err}')
+            raise optparse.OptionValueError(
+                f'wrong {opt_str} formatting; {err}')
         for key in keys:
             out_dict[key] = [*out_dict.get(key, []), val] if append else val
         setattr(parser.values, option.dest, out_dict)
@@ -316,29 +386,42 @@ def create_parser():
     def _create_alias(option, opt_str, value, parser):
         aliases, opts = value
         try:
-            nargs = len({i if f == '' else f
-                         for i, (_, f, _, _) in enumerate(Formatter.parse(opts)) if f is not None})
+            nargs = len({i if f == '' else f for i, (_, f, _, _)
+                        in enumerate(Formatter.parse(opts)) if f is not None})
             opts.format(*map(str, range(nargs)))  # validate
         except Exception as err:
-            raise optparse.OptionValueError(f'wrong {opt_str} OPTIONS formatting; {err}')
+            raise optparse.OptionValueError(
+                f'wrong {opt_str} OPTIONS formatting; {err}')
         if alias_group not in parser.option_groups:
             parser.add_option_group(alias_group)
 
-        aliases = (x if x.startswith('-') else f'--{x}' for x in map(str.strip, aliases.split(',')))
+        aliases = (x if x.startswith('-')
+                   else f'--{x}' for x in map(str.strip, aliases.split(',')))
         try:
             args = [f'ARG{i}' for i in range(nargs)]
             alias_group.add_option(
-                *aliases, nargs=nargs, dest=parser.ALIAS_DEST, type='str' if nargs else None,
-                metavar=' '.join(args), help=opts.format(*args), action='callback',
-                callback=_alias_callback, callback_kwargs={'opts': opts, 'nargs': nargs})
+                *aliases,
+                nargs=nargs,
+                dest=parser.ALIAS_DEST,
+                type='str' if nargs else None,
+                metavar=' '.join(args),
+                help=opts.format(
+                    *args),
+                action='callback',
+                callback=_alias_callback,
+                callback_kwargs={
+                    'opts': opts,
+                    'nargs': nargs})
         except Exception as err:
-            raise optparse.OptionValueError(f'wrong {opt_str} formatting; {err}')
+            raise optparse.OptionValueError(
+                f'wrong {opt_str} formatting; {err}')
 
     def _alias_callback(option, opt_str, value, parser, opts, nargs):
         counter = getattr(parser.values, option.dest)
         counter[opt_str] += 1
         if counter[opt_str] > parser.ALIAS_TRIGGER_LIMIT:
-            raise optparse.OptionValueError(f'Alias {opt_str} exceeded invocation limit')
+            raise optparse.OptionValueError(
+                f'Alias {opt_str} exceeded invocation limit')
         if nargs == 1:
             value = [value]
         assert (nargs == 0 and value is None) or len(value) == nargs
@@ -378,12 +461,16 @@ def create_parser():
             f'CHANNEL and TAG default to "{CHANNEL.partition("@")[0]}" and "latest" respectively if omitted; '
             f'See "UPDATE" for details. Supported channels: {", ".join(UPDATE_SOURCES)}'))
     general.add_option(
-        '-i', '--ignore-errors',
-        action='store_true', dest='ignoreerrors',
+        '-i',
+        '--ignore-errors',
+        action='store_true',
+        dest='ignoreerrors',
         help='Ignore download and postprocessing errors. The download will be considered successful even if the postprocessing fails')
     general.add_option(
         '--no-abort-on-error',
-        action='store_const', dest='ignoreerrors', const='only_download',
+        action='store_const',
+        dest='ignoreerrors',
+        const='only_download',
         help='Continue with next video on download errors; e.g. to skip unavailable videos in a playlist (default)')
     general.add_option(
         '--abort-on-error', '--no-ignore-errors',
@@ -421,21 +508,27 @@ def create_parser():
             '"error" just throws an error. The default value "fixup_error" repairs broken URLs, '
             'but emits an error if this is not possible instead of searching'))
     general.add_option(
-        '--ignore-config', '--no-config',
-        action='store_true', dest='ignoreconfig',
+        '--ignore-config',
+        '--no-config',
+        action='store_true',
+        dest='ignoreconfig',
         help=(
             'Don\'t load any more configuration files except those given to --config-locations. '
             'For backward compatibility, if this option is found inside the system configuration file, the user configuration is not loaded. '
             '(Alias: --no-config)'))
     general.add_option(
         '--no-config-locations',
-        action='store_const', dest='config_locations', const=None,
+        action='store_const',
+        dest='config_locations',
+        const=None,
         help=(
             'Do not load any custom configuration files (default). When given inside a '
             'configuration file, ignore all previous --config-locations defined in the current file'))
     general.add_option(
         '--config-locations',
-        dest='config_locations', metavar='PATH', action='append',
+        dest='config_locations',
+        metavar='PATH',
+        action='append',
         help=(
             'Location of the main configuration file; either the path to the config or its containing directory '
             '("-" for stdin). Can be used multiple times and inside other configuration files'))
@@ -454,7 +547,9 @@ def create_parser():
             'Use "default" to search the default plugin directories (default)'))
     general.add_option(
         '--no-plugin-dirs',
-        dest='plugin_dirs', action='store_const', const=[],
+        dest='plugin_dirs',
+        action='store_const',
+        const=[],
         help='Clear plugin directories to search, including defaults and those provided by previous --plugin-dirs')
     general.add_option(
         '--js-runtimes',
@@ -475,7 +570,9 @@ def create_parser():
             '--no-js-runtimes needs to be passed before enabling other runtimes'))
     general.add_option(
         '--no-js-runtimes',
-        dest='js_runtimes', action='store_const', const=[],
+        dest='js_runtimes',
+        action='store_const',
+        const=[],
         help='Clear JavaScript runtimes to enable, including defaults and those provided by previous --js-runtimes')
     general.add_option(
         '--remote-components',
@@ -496,11 +593,16 @@ def create_parser():
             'By default, no remote components are allowed'))
     general.add_option(
         '--no-remote-components',
-        dest='remote_components', action='store_const', const=[],
+        dest='remote_components',
+        action='store_const',
+        const=[],
         help='Disallow fetching of all remote components, including any previously allowed by --remote-components or defaults.')
     general.add_option(
         '--flat-playlist',
-        action='store_const', dest='extract_flat', const='in_playlist', default=False,
+        action='store_const',
+        dest='extract_flat',
+        const='in_playlist',
+        default=False,
         help=(
             'Do not extract a playlist\'s URL result entries; '
             'some entry metadata may be missing and downloading may be bypassed'))
@@ -510,7 +612,8 @@ def create_parser():
         help='Fully extract the videos of a playlist (default)')
     general.add_option(
         '--live-from-start',
-        action='store_true', dest='live_from_start',
+        action='store_true',
+        dest='live_from_start',
         help='Download livestreams from the start. Currently experimental and only supported for YouTube and Twitch')
     general.add_option(
         '--no-live-from-start',
@@ -518,7 +621,9 @@ def create_parser():
         help='Download livestreams from the current time (default)')
     general.add_option(
         '--wait-for-video',
-        dest='wait_for_video', metavar='MIN[-MAX]', default=None,
+        dest='wait_for_video',
+        metavar='MIN[-MAX]',
+        default=None,
         help=(
             'Wait for scheduled streams to become available. '
             'Pass the minimum number of seconds (or range) to wait between retries'))
@@ -558,25 +663,76 @@ def create_parser():
             'Can be used multiple times'))
     general.add_option(
         '--compat-options',
-        metavar='OPTS', dest='compat_opts', default=set(), type='str',
-        action='callback', callback=_set_from_options_callback,
+        metavar='OPTS',
+        dest='compat_opts',
+        default=set(),
+        type='str',
+        action='callback',
+        callback=_set_from_options_callback,
         callback_kwargs={
             'allowed_values': {
-                'filename', 'filename-sanitization', 'format-sort', 'abort-on-error', 'format-spec', 'no-playlist-metafiles',
-                'multistreams', 'no-live-chat', 'playlist-index', 'list-formats', 'no-direct-merge', 'playlist-match-filter',
-                'no-attach-info-json', 'embed-thumbnail-atomicparsley', 'no-external-downloader-progress',
-                'embed-metadata', 'seperate-video-versions', 'no-clean-infojson', 'no-keep-subs', 'no-certifi',
-                'no-youtube-channel-redirect', 'no-youtube-unavailable-videos', 'no-youtube-prefer-utc-upload-date',
-                'prefer-legacy-http-handler', 'manifest-filesize-approx', 'allow-unsafe-ext', 'prefer-vp9-sort', 'mtime-by-default',
-            }, 'aliases': {
-                'youtube-dl': ['all', '-multistreams', '-playlist-match-filter', '-manifest-filesize-approx', '-allow-unsafe-ext', '-prefer-vp9-sort'],
-                'youtube-dlc': ['all', '-no-youtube-channel-redirect', '-no-live-chat', '-playlist-match-filter', '-manifest-filesize-approx', '-allow-unsafe-ext', '-prefer-vp9-sort'],
-                '2021': ['2022', 'no-certifi', 'filename-sanitization'],
-                '2022': ['2023', 'no-external-downloader-progress', 'playlist-match-filter', 'prefer-legacy-http-handler', 'manifest-filesize-approx'],
-                '2023': ['2024', 'prefer-vp9-sort'],
+                'filename',
+                'filename-sanitization',
+                'format-sort',
+                'abort-on-error',
+                'format-spec',
+                'no-playlist-metafiles',
+                'multistreams',
+                'no-live-chat',
+                'playlist-index',
+                'list-formats',
+                'no-direct-merge',
+                'playlist-match-filter',
+                'no-attach-info-json',
+                'embed-thumbnail-atomicparsley',
+                'no-external-downloader-progress',
+                'embed-metadata',
+                'seperate-video-versions',
+                'no-clean-infojson',
+                'no-keep-subs',
+                'no-certifi',
+                'no-youtube-channel-redirect',
+                'no-youtube-unavailable-videos',
+                'no-youtube-prefer-utc-upload-date',
+                'prefer-legacy-http-handler',
+                'manifest-filesize-approx',
+                'allow-unsafe-ext',
+                'prefer-vp9-sort',
+                'mtime-by-default',
+            },
+            'aliases': {
+                'youtube-dl': [
+                    'all',
+                    '-multistreams',
+                    '-playlist-match-filter',
+                    '-manifest-filesize-approx',
+                    '-allow-unsafe-ext',
+                    '-prefer-vp9-sort'],
+                'youtube-dlc': [
+                    'all',
+                    '-no-youtube-channel-redirect',
+                    '-no-live-chat',
+                    '-playlist-match-filter',
+                    '-manifest-filesize-approx',
+                    '-allow-unsafe-ext',
+                    '-prefer-vp9-sort'],
+                '2021': [
+                    '2022',
+                    'no-certifi',
+                    'filename-sanitization'],
+                '2022': [
+                    '2023',
+                    'no-external-downloader-progress',
+                    'playlist-match-filter',
+                    'prefer-legacy-http-handler',
+                    'manifest-filesize-approx'],
+                '2023': [
+                    '2024',
+                    'prefer-vp9-sort'],
                 '2024': ['mtime-by-default'],
             },
-        }, help=(
+        },
+        help=(
             'Options that can help keep compatibility with youtube-dl or youtube-dlc '
             'configurations by reverting some of the changes made in yt-dlp. '
             'See "Differences in default behavior" for details'))
@@ -604,8 +760,10 @@ def create_parser():
 
     network = optparse.OptionGroup(parser, 'Network Options')
     network.add_option(
-        '--proxy', dest='proxy',
-        default=None, metavar='URL',
+        '--proxy',
+        dest='proxy',
+        default=None,
+        metavar='URL',
         help=(
             'Use the specified HTTP/HTTPS/SOCKS proxy. To enable SOCKS proxy, specify a proper scheme, '
             'e.g. socks5://user:pass@127.0.0.1:1080/. Pass in an empty string (--proxy "") for direct connection'))
@@ -620,7 +778,9 @@ def create_parser():
     )
     network.add_option(
         '--impersonate',
-        metavar='CLIENT[:OS]', dest='impersonate', default=None,
+        metavar='CLIENT[:OS]',
+        dest='impersonate',
+        default=None,
         help=(
             'Client to impersonate for requests. E.g. chrome, chrome-110, chrome:windows-10. '
             'Pass --impersonate="" to impersonate any client. Note that forcing impersonation '
@@ -642,15 +802,19 @@ def create_parser():
         help='Make all connections via IPv6',
     )
     network.add_option(
-        '--enable-file-urls', action='store_true',
-        dest='enable_file_urls', default=False,
+        '--enable-file-urls',
+        action='store_true',
+        dest='enable_file_urls',
+        default=False,
         help='Enable file:// URLs. This is disabled by default for security reasons.',
     )
 
     geo = optparse.OptionGroup(parser, 'Geo-restriction')
     geo.add_option(
         '--geo-verification-proxy',
-        dest='geo_verification_proxy', default=None, metavar='URL',
+        dest='geo_verification_proxy',
+        default=None,
+        metavar='URL',
         help=(
             'Use this proxy to verify the IP address for some geo-restricted sites. '
             'The default proxy specified by --proxy (or none, if the option is not present) is used for the actual downloading'))
@@ -703,11 +867,15 @@ def create_parser():
         help=optparse.SUPPRESS_HELP)
     selection.add_option(
         '--min-filesize',
-        metavar='SIZE', dest='min_filesize', default=None,
+        metavar='SIZE',
+        dest='min_filesize',
+        default=None,
         help='Abort download if filesize is smaller than SIZE, e.g. 50k or 44.6M')
     selection.add_option(
         '--max-filesize',
-        metavar='SIZE', dest='max_filesize', default=None,
+        metavar='SIZE',
+        dest='max_filesize',
+        default=None,
         help='Abort download if filesize is larger than SIZE, e.g. 50k or 44.6M')
     selection.add_option(
         '--date',
@@ -757,7 +925,9 @@ def create_parser():
         help='Do not use any --match-filters (default)')
     selection.add_option(
         '--break-match-filters',
-        metavar='FILTER', dest='breaking_match_filter', action='append',
+        metavar='FILTER',
+        dest='breaking_match_filter',
+        action='append',
         help='Same as "--match-filters" but stops the download process when a video is rejected')
     selection.add_option(
         '--no-break-match-filters',
@@ -765,18 +935,22 @@ def create_parser():
         help='Do not use any --break-match-filters (default)')
     selection.add_option(
         '--no-playlist',
-        action='store_true', dest='noplaylist', default=False,
+        action='store_true',
+        dest='noplaylist',
+        default=False,
         help='Download only the video, if the URL refers to a video and a playlist')
     selection.add_option(
         '--yes-playlist',
-        action='store_false', dest='noplaylist',
+        action='store_false',
+        dest='noplaylist',
         help='Download the playlist, if the URL refers to a video and a playlist')
     selection.add_option(
         '--age-limit',
         metavar='YEARS', dest='age_limit', default=None, type=int,
         help='Download only videos suitable for the given age')
     selection.add_option(
-        '--download-archive', metavar='FILE',
+        '--download-archive',
+        metavar='FILE',
         dest='download_archive',
         help='Download only videos not listed in the archive file. Record the IDs of all downloaded videos in it')
     selection.add_option(
@@ -789,12 +963,15 @@ def create_parser():
         help='Abort after downloading NUMBER files')
     selection.add_option(
         '--break-on-existing',
-        action='store_true', dest='break_on_existing', default=False,
+        action='store_true',
+        dest='break_on_existing',
+        default=False,
         help='Stop the download process when encountering a file that is in the archive '
-             'supplied with the --download-archive option')
+        'supplied with the --download-archive option')
     selection.add_option(
         '--no-break-on-existing',
-        action='store_false', dest='break_on_existing',
+        action='store_false',
+        dest='break_on_existing',
         help='Do not stop the download process when encountering a file that is in the archive (default)')
     selection.add_option(
         '--break-on-reject',
@@ -802,11 +979,14 @@ def create_parser():
         help=optparse.SUPPRESS_HELP)
     selection.add_option(
         '--break-per-input',
-        action='store_true', dest='break_per_url', default=False,
+        action='store_true',
+        dest='break_per_url',
+        default=False,
         help='Alters --max-downloads, --break-on-existing, --break-match-filters, and autonumber to reset per input URL')
     selection.add_option(
         '--no-break-per-input',
-        action='store_false', dest='break_per_url',
+        action='store_false',
+        dest='break_per_url',
         help='--break-on-existing and similar options terminates the entire download queue')
     selection.add_option(
         '--skip-playlist-after-errors', metavar='N',
@@ -832,7 +1012,8 @@ def create_parser():
         help='Use .netrc authentication data')
     authentication.add_option(
         '--netrc-location',
-        dest='netrc_location', metavar='PATH',
+        dest='netrc_location',
+        metavar='PATH',
         help='Location of .netrc authentication data; either the path or its containing directory. Defaults to ~/.netrc')
     authentication.add_option(
         '--netrc-cmd',
@@ -844,7 +1025,8 @@ def create_parser():
         help='Video-specific password')
     authentication.add_option(
         '--ap-mso',
-        dest='ap_mso', metavar='MSO',
+        dest='ap_mso',
+        metavar='MSO',
         help='Adobe Pass multiple-system operator (TV provider) identifier, use --ap-list-mso for a list of available MSOs')
     authentication.add_option(
         '--ap-username',
@@ -852,7 +1034,8 @@ def create_parser():
         help='Multiple-system operator account login')
     authentication.add_option(
         '--ap-password',
-        dest='ap_password', metavar='PASSWORD',
+        dest='ap_password',
+        metavar='PASSWORD',
         help='Multiple-system operator account password. If this option is left out, yt-dlp will ask interactively')
     authentication.add_option(
         '--ap-list-mso',
@@ -868,9 +1051,10 @@ def create_parser():
         help='Path to private key file for client certificate')
     authentication.add_option(
         '--client-certificate-password',
-        dest='client_certificate_password', metavar='PASSWORD',
+        dest='client_certificate_password',
+        metavar='PASSWORD',
         help='Password for client certificate private key, if encrypted. '
-             'If not provided, and the key is encrypted, yt-dlp will ask interactively')
+        'If not provided, and the key is encrypted, yt-dlp will ask interactively')
 
     video_format = optparse.OptionGroup(parser, 'Video Format Options')
     video_format.add_option(
@@ -883,14 +1067,21 @@ def create_parser():
         callback=_list_from_options_callback, callback_kwargs={'append': -1},
         help='Sort the formats by the fields given, see "Sorting Formats" for more details')
     video_format.add_option(
-        '--format-sort-force', '--S-force',
-        action='store_true', dest='format_sort_force', metavar='FORMAT', default=False,
+        '--format-sort-force',
+        '--S-force',
+        action='store_true',
+        dest='format_sort_force',
+        metavar='FORMAT',
+        default=False,
         help=(
             'Force user specified sort order to have precedence over all fields, '
             'see "Sorting Formats" for more details (Alias: --S-force)'))
     video_format.add_option(
         '--no-format-sort-force',
-        action='store_false', dest='format_sort_force', metavar='FORMAT', default=False,
+        action='store_false',
+        dest='format_sort_force',
+        metavar='FORMAT',
+        default=False,
         help='Some fields have precedence over the user specified sort order (default)')
     video_format.add_option(
         '--video-multistreams',
@@ -898,7 +1089,8 @@ def create_parser():
         help='Allow multiple video streams to be merged into a single file')
     video_format.add_option(
         '--no-video-multistreams',
-        action='store_false', dest='allow_multiple_video_streams',
+        action='store_false',
+        dest='allow_multiple_video_streams',
         help='Only one video stream is downloaded for each output file (default)')
     video_format.add_option(
         '--audio-multistreams',
@@ -906,7 +1098,8 @@ def create_parser():
         help='Allow multiple audio streams to be merged into a single file')
     video_format.add_option(
         '--no-audio-multistreams',
-        action='store_false', dest='allow_multiple_audio_streams',
+        action='store_false',
+        dest='allow_multiple_audio_streams',
         help='Only one audio stream is downloaded for each output file (default)')
     video_format.add_option(
         '--all-formats',
@@ -914,7 +1107,9 @@ def create_parser():
         help=optparse.SUPPRESS_HELP)
     video_format.add_option(
         '--prefer-free-formats',
-        action='store_true', dest='prefer_free_formats', default=False,
+        action='store_true',
+        dest='prefer_free_formats',
+        default=False,
         help=(
             'Prefer video formats with free containers over non-free ones of the same quality. '
             'Use with "-S ext" to strictly prefer free containers irrespective of quality'))
@@ -924,7 +1119,10 @@ def create_parser():
         help="Don't give any special preference to free containers (default)")
     video_format.add_option(
         '--check-formats',
-        action='store_const', const='selected', dest='check_formats', default=None,
+        action='store_const',
+        const='selected',
+        dest='check_formats',
+        default=None,
         help='Make sure formats are selected only from those that are actually downloadable')
     video_format.add_option(
         '--check-all-formats',
@@ -972,12 +1170,18 @@ def create_parser():
         action='store_false', dest='writesubtitles',
         help='Do not write subtitle file (default)')
     subtitles.add_option(
-        '--write-auto-subs', '--write-automatic-subs',
-        action='store_true', dest='writeautomaticsub', default=False,
+        '--write-auto-subs',
+        '--write-automatic-subs',
+        action='store_true',
+        dest='writeautomaticsub',
+        default=False,
         help='Write automatically generated subtitle file (Alias: --write-automatic-subs)')
     subtitles.add_option(
-        '--no-write-auto-subs', '--no-write-automatic-subs',
-        action='store_false', dest='writeautomaticsub', default=False,
+        '--no-write-auto-subs',
+        '--no-write-automatic-subs',
+        action='store_false',
+        dest='writeautomaticsub',
+        default=False,
         help='Do not write auto-generated subtitles (default) (Alias: --no-write-automatic-subs)')
     subtitles.add_option(
         '--all-subs',
@@ -985,11 +1189,16 @@ def create_parser():
         help=optparse.SUPPRESS_HELP)
     subtitles.add_option(
         '--list-subs',
-        action='store_true', dest='listsubtitles', default=False,
+        action='store_true',
+        dest='listsubtitles',
+        default=False,
         help='List available subtitles of each video. Simulate unless --no-simulate is used')
     subtitles.add_option(
         '--sub-format',
-        action='store', dest='subtitlesformat', metavar='FORMAT', default='best',
+        action='store',
+        dest='subtitlesformat',
+        metavar='FORMAT',
+        default='best',
         help='Subtitle format; accepts formats preference separated by "/", e.g. "srt" or "ass/srt/best"')
     subtitles.add_option(
         '--sub-langs', '--srt-langs',
@@ -1003,8 +1212,12 @@ def create_parser():
 
     downloader = optparse.OptionGroup(parser, 'Download Options')
     downloader.add_option(
-        '-N', '--concurrent-fragments',
-        dest='concurrent_fragment_downloads', metavar='N', default=1, type=int,
+        '-N',
+        '--concurrent-fragments',
+        dest='concurrent_fragment_downloads',
+        metavar='N',
+        default=1,
+        type=int,
         help='Number of fragments of a dash/hlsnative video that should be downloaded concurrently (default is %default)')
     downloader.add_option(
         '-r', '--limit-rate', '--rate-limit',
@@ -1012,7 +1225,8 @@ def create_parser():
         help='Maximum download rate in bytes per second, e.g. 50K or 4.2M')
     downloader.add_option(
         '--throttled-rate',
-        dest='throttledratelimit', metavar='RATE',
+        dest='throttledratelimit',
+        metavar='RATE',
         help='Minimum download rate in bytes per second below which throttling is assumed and the video data is re-extracted, e.g. 100K')
     downloader.add_option(
         '-R', '--retries',
@@ -1020,11 +1234,15 @@ def create_parser():
         help='Number of retries (default is %default), or "infinite"')
     downloader.add_option(
         '--file-access-retries',
-        dest='file_access_retries', metavar='RETRIES', default=3,
+        dest='file_access_retries',
+        metavar='RETRIES',
+        default=3,
         help='Number of times to retry on file access error (default is %default), or "infinite"')
     downloader.add_option(
         '--fragment-retries',
-        dest='fragment_retries', metavar='RETRIES', default=10,
+        dest='fragment_retries',
+        metavar='RETRIES',
+        default=10,
         help='Number of retries for a fragment (default is %default), or "infinite" (DASH, hlsnative and ISM)')
     downloader.add_option(
         '--retry-sleep',
@@ -1040,12 +1258,17 @@ def create_parser():
             'This option can be used multiple times to set the sleep for the different retry types, '
             'e.g. --retry-sleep linear=1::2 --retry-sleep fragment:exp=1:20'))
     downloader.add_option(
-        '--skip-unavailable-fragments', '--no-abort-on-unavailable-fragments',
-        action='store_true', dest='skip_unavailable_fragments', default=True,
+        '--skip-unavailable-fragments',
+        '--no-abort-on-unavailable-fragments',
+        action='store_true',
+        dest='skip_unavailable_fragments',
+        default=True,
         help='Skip unavailable fragments for DASH, hlsnative and ISM downloads (default) (Alias: --no-abort-on-unavailable-fragments)')
     downloader.add_option(
-        '--abort-on-unavailable-fragments', '--no-skip-unavailable-fragments',
-        action='store_false', dest='skip_unavailable_fragments',
+        '--abort-on-unavailable-fragments',
+        '--no-skip-unavailable-fragments',
+        action='store_false',
+        dest='skip_unavailable_fragments',
         help='Abort download if a fragment is unavailable (Alias: --no-skip-unavailable-fragments)')
     downloader.add_option(
         '--keep-fragments',
@@ -1053,7 +1276,8 @@ def create_parser():
         help='Keep downloaded fragments on disk after downloading is finished')
     downloader.add_option(
         '--no-keep-fragments',
-        action='store_false', dest='keep_fragments',
+        action='store_false',
+        dest='keep_fragments',
         help='Delete downloaded fragments after downloading is finished (default)')
     downloader.add_option(
         '--buffer-size',
@@ -1061,7 +1285,8 @@ def create_parser():
         help='Size of download buffer, e.g. 1024 or 16K (default is %default)')
     downloader.add_option(
         '--resize-buffer',
-        action='store_false', dest='noresizebuffer',
+        action='store_false',
+        dest='noresizebuffer',
         help='The buffer size is automatically resized from an initial value of --buffer-size (default)')
     downloader.add_option(
         '--no-resize-buffer',
@@ -1069,7 +1294,9 @@ def create_parser():
         help='Do not automatically adjust the buffer size')
     downloader.add_option(
         '--http-chunk-size',
-        dest='http_chunk_size', metavar='SIZE', default=None,
+        dest='http_chunk_size',
+        metavar='SIZE',
+        default=None,
         help=(
             'Size of a chunk for chunk-based HTTP downloading, e.g. 10485760 or 10M (default is disabled). '
             'May be useful for bypassing bandwidth throttling imposed by a webserver (experimental)'))
@@ -1091,11 +1318,13 @@ def create_parser():
         help='Download playlist videos in random order')
     downloader.add_option(
         '--lazy-playlist',
-        action='store_true', dest='lazy_playlist',
+        action='store_true',
+        dest='lazy_playlist',
         help='Process entries in the playlist as they are received. This disables n_entries, --playlist-random and --playlist-reverse')
     downloader.add_option(
         '--no-lazy-playlist',
-        action='store_false', dest='lazy_playlist',
+        action='store_false',
+        dest='lazy_playlist',
         help='Process videos in the playlist only after the entire playlist is parsed (default)')
     downloader.add_option(
         '--hls-prefer-native',
@@ -1166,7 +1395,9 @@ def create_parser():
         help='Force the specified encoding (experimental)')
     workarounds.add_option(
         '--legacy-server-connect',
-        action='store_true', dest='legacy_server_connect', default=False,
+        action='store_true',
+        dest='legacy_server_connect',
+        default=False,
         help='Explicitly allow HTTPS connection to servers that do not support RFC 5746 secure renegotiation')
     workarounds.add_option(
         '--no-check-certificates',
@@ -1186,22 +1417,31 @@ def create_parser():
         help=optparse.SUPPRESS_HELP)
     workarounds.add_option(
         '--add-headers',
-        metavar='FIELD:VALUE', dest='headers', default={}, type='str',
-        action='callback', callback=_dict_from_options_callback,
-        callback_kwargs={'multiple_keys': False},
+        metavar='FIELD:VALUE',
+        dest='headers',
+        default={},
+        type='str',
+        action='callback',
+        callback=_dict_from_options_callback,
+        callback_kwargs={
+            'multiple_keys': False},
         help='Specify a custom HTTP header and its value, separated by a colon ":". You can use this option multiple times',
     )
     workarounds.add_option(
         '--bidi-workaround',
-        dest='bidi_workaround', action='store_true',
+        dest='bidi_workaround',
+        action='store_true',
         help='Work around terminals that lack bidirectional text support. Requires bidiv or fribidi executable in PATH')
     workarounds.add_option(
         '--sleep-requests', metavar='SECONDS',
         dest='sleep_interval_requests', type=float,
         help='Number of seconds to sleep between requests during data extraction')
     workarounds.add_option(
-        '--sleep-interval', '--min-sleep-interval', metavar='SECONDS',
-        dest='sleep_interval', type=float,
+        '--sleep-interval',
+        '--min-sleep-interval',
+        metavar='SECONDS',
+        dest='sleep_interval',
+        type=float,
         help=(
             'Number of seconds to sleep before each download. '
             'This is the minimum time to sleep when used along with --max-sleep-interval '
@@ -1215,10 +1455,14 @@ def create_parser():
         dest='sleep_interval_subtitles', default=0, type=int,
         help='Number of seconds to sleep before each subtitle download')
 
-    verbosity = optparse.OptionGroup(parser, 'Verbosity and Simulation Options')
+    verbosity = optparse.OptionGroup(
+        parser, 'Verbosity and Simulation Options')
     verbosity.add_option(
-        '-q', '--quiet',
-        action='store_true', dest='quiet', default=None,
+        '-q',
+        '--quiet',
+        action='store_true',
+        dest='quiet',
+        default=None,
         help='Activate quiet mode. If used with --verbose, print the log to stderr')
     verbosity.add_option(
         '--no-quiet',
@@ -1238,17 +1482,23 @@ def create_parser():
         help='Download the video even if printing/listing options are used')
     verbosity.add_option(
         '--ignore-no-formats-error',
-        action='store_true', dest='ignore_no_formats_error', default=False,
+        action='store_true',
+        dest='ignore_no_formats_error',
+        default=False,
         help=(
             'Ignore "No video formats" error. Useful for extracting metadata '
             'even if the videos are not actually available for download (experimental)'))
     verbosity.add_option(
         '--no-ignore-no-formats-error',
-        action='store_false', dest='ignore_no_formats_error',
+        action='store_false',
+        dest='ignore_no_formats_error',
         help='Throw error when no downloadable video formats are found (default)')
     verbosity.add_option(
-        '--skip-download', '--no-download',
-        action='store_true', dest='skip_download', default=False,
+        '--skip-download',
+        '--no-download',
+        action='store_true',
+        dest='skip_download',
+        default=False,
         help='Do not download the video but write all related files (Alias: --no-download)')
     verbosity.add_option(
         '-O', '--print',
@@ -1260,7 +1510,10 @@ def create_parser():
             'This option can be used multiple times'))
     verbosity.add_option(
         '--print-to-file',
-        metavar='[WHEN:]TEMPLATE FILE', dest='print_to_file', nargs=2, **when_prefix('video'),
+        metavar='[WHEN:]TEMPLATE FILE',
+        dest='print_to_file',
+        nargs=2,
+        **when_prefix('video'),
         help=(
             'Append given template to the file. The values of WHEN and TEMPLATE are the same as that of --print. '
             'FILE uses the same syntax as the output template. This option can be used multiple times'))
@@ -1297,14 +1550,20 @@ def create_parser():
         action='store_true', dest='getformat', default=False,
         help=optparse.SUPPRESS_HELP)
     verbosity.add_option(
-        '-j', '--dump-json',
-        action='store_true', dest='dumpjson', default=False,
+        '-j',
+        '--dump-json',
+        action='store_true',
+        dest='dumpjson',
+        default=False,
         help=(
             'Quiet, but print JSON information for each video. Simulate unless --no-simulate is used. '
             'See "OUTPUT TEMPLATE" for a description of available keys'))
     verbosity.add_option(
-        '-J', '--dump-single-json',
-        action='store_true', dest='dump_single_json', default=False,
+        '-J',
+        '--dump-single-json',
+        action='store_true',
+        dest='dump_single_json',
+        default=False,
         help=(
             'Quiet, but print JSON information for each URL or infojson passed. Simulate unless --no-simulate is used. '
             'If the URL refers to a playlist, the whole playlist information is dumped in a single line'))
@@ -1313,8 +1572,12 @@ def create_parser():
         action='store_true', dest='print_json', default=False,
         help=optparse.SUPPRESS_HELP)
     verbosity.add_option(
-        '--force-write-archive', '--force-write-download-archive', '--force-download-archive',
-        action='store_true', dest='force_write_download_archive', default=False,
+        '--force-write-archive',
+        '--force-write-download-archive',
+        '--force-download-archive',
+        action='store_true',
+        dest='force_write_download_archive',
+        default=False,
         help=(
             'Force download archive entries to be written as far as no errors occur, '
             'even if -s or another simulation option is used (Alias: --force-download-archive)'))
@@ -1350,7 +1613,11 @@ def create_parser():
             '--console-title --progress-template "download-title:%(info.id)s-%(progress.eta)s"'))
     verbosity.add_option(
         '--progress-delta',
-        metavar='SECONDS', action='store', dest='progress_delta', type=float, default=0,
+        metavar='SECONDS',
+        action='store',
+        dest='progress_delta',
+        type=float,
+        default=0,
         help='Time between progress output (default: 0)')
     verbosity.add_option(
         '-v', '--verbose',
@@ -1358,11 +1625,15 @@ def create_parser():
         help='Print various debugging information')
     verbosity.add_option(
         '--dump-pages',
-        action='store_true', dest='dump_intermediate_pages', default=False,
+        action='store_true',
+        dest='dump_intermediate_pages',
+        default=False,
         help='Print downloaded pages encoded using base64 to debug problems (very verbose)')
     verbosity.add_option(
         '--write-pages',
-        action='store_true', dest='write_pages', default=False,
+        action='store_true',
+        dest='write_pages',
+        default=False,
         help='Write downloaded intermediary pages to files in the current directory to debug problems')
     verbosity.add_option(
         '--load-pages',
@@ -1412,7 +1683,9 @@ def create_parser():
         }, help='Output filename template; see "OUTPUT TEMPLATE" for details')
     filesystem.add_option(
         '--output-na-placeholder',
-        dest='outtmpl_na_placeholder', metavar='TEXT', default='NA',
+        dest='outtmpl_na_placeholder',
+        metavar='TEXT',
+        default='NA',
         help=('Placeholder for unavailable fields in --output (default: "%default")'))
     filesystem.add_option(
         '--autonumber-size',
@@ -1424,7 +1697,9 @@ def create_parser():
         help=optparse.SUPPRESS_HELP)
     filesystem.add_option(
         '--restrict-filenames',
-        action='store_true', dest='restrictfilenames', default=False,
+        action='store_true',
+        dest='restrictfilenames',
+        default=False,
         help='Restrict filenames to only ASCII characters, and avoid "&" and spaces in filenames')
     filesystem.add_option(
         '--no-restrict-filenames',
@@ -1452,7 +1727,9 @@ def create_parser():
         help='Overwrite all video and metadata files. This option includes --no-continue')
     filesystem.add_option(
         '--no-force-overwrites',
-        action='store_const', dest='overwrites', const=None,
+        action='store_const',
+        dest='overwrites',
+        const=None,
         help='Do not overwrite the video, but overwrite related files (default)')
     filesystem.add_option(
         '-c', '--continue',
@@ -1460,13 +1737,16 @@ def create_parser():
         help='Resume partially downloaded files/fragments (default)')
     filesystem.add_option(
         '--no-continue',
-        action='store_false', dest='continue_dl',
+        action='store_false',
+        dest='continue_dl',
         help=(
             'Do not resume partially downloaded fragments. '
             'If the file is not fragmented, restart download of the entire file'))
     filesystem.add_option(
         '--part',
-        action='store_false', dest='nopart', default=False,
+        action='store_false',
+        dest='nopart',
+        default=False,
         help='Use .part files instead of writing directly into output file (default)')
     filesystem.add_option(
         '--no-part',
@@ -1478,7 +1758,8 @@ def create_parser():
         help='Use the Last-modified header to set the file modification time')
     filesystem.add_option(
         '--no-mtime',
-        action='store_false', dest='updatetime',
+        action='store_false',
+        dest='updatetime',
         help='Do not use the Last-modified header to set the file modification time (default)')
     filesystem.add_option(
         '--write-description',
@@ -1490,7 +1771,9 @@ def create_parser():
         help='Do not write video description (default)')
     filesystem.add_option(
         '--write-info-json',
-        action='store_true', dest='writeinfojson', default=None,
+        action='store_true',
+        dest='writeinfojson',
+        default=None,
         help='Write video metadata to a .info.json file (this may contain personal information)')
     filesystem.add_option(
         '--no-write-info-json',
@@ -1498,13 +1781,16 @@ def create_parser():
         help='Do not write video metadata (default)')
     filesystem.add_option(
         '--write-playlist-metafiles',
-        action='store_true', dest='allow_playlist_files', default=None,
+        action='store_true',
+        dest='allow_playlist_files',
+        default=None,
         help=(
             'Write playlist metadata in addition to the video metadata '
             'when using --write-info-json, --write-description etc. (default)'))
     filesystem.add_option(
         '--no-write-playlist-metafiles',
-        action='store_false', dest='allow_playlist_files',
+        action='store_false',
+        dest='allow_playlist_files',
         help='Do not write playlist metadata when using --write-info-json, --write-description etc.')
     filesystem.add_option(
         '--clean-info-json', '--clean-infojson',
@@ -1516,8 +1802,11 @@ def create_parser():
         action='store_false', dest='clean_infojson',
         help='Write all fields to the infojson')
     filesystem.add_option(
-        '--write-comments', '--get-comments',
-        action='store_true', dest='getcomments', default=False,
+        '--write-comments',
+        '--get-comments',
+        action='store_true',
+        dest='getcomments',
+        default=False,
         help=(
             'Retrieve video comments to be placed in the infojson. '
             'The comments are fetched even without this option if the extraction is known to be quick (Alias: --get-comments)'))
@@ -1527,11 +1816,13 @@ def create_parser():
         help='Do not retrieve video comments unless the extraction is known to be quick (Alias: --no-get-comments)')
     filesystem.add_option(
         '--load-info-json',
-        dest='load_info_filename', metavar='FILE',
+        dest='load_info_filename',
+        metavar='FILE',
         help='JSON file containing the video information (created with the "--write-info-json" option)')
     filesystem.add_option(
         '--cookies',
-        dest='cookiefile', metavar='FILE',
+        dest='cookiefile',
+        metavar='FILE',
         help='Netscape formatted file to read cookies from and dump cookie jar in')
     filesystem.add_option(
         '--no-cookies',
@@ -1554,7 +1845,10 @@ def create_parser():
         action='store_const', const=None, dest='cookiesfrombrowser',
         help='Do not load cookies from browser (default)')
     filesystem.add_option(
-        '--cache-dir', dest='cachedir', default=None, metavar='DIR',
+        '--cache-dir',
+        dest='cachedir',
+        default=None,
+        metavar='DIR',
         help=(
             'Location in the filesystem where yt-dlp can store some downloaded information '
             '(such as client ids and signatures) permanently. By default ${XDG_CACHE_HOME}/yt-dlp'))
@@ -1584,17 +1878,23 @@ def create_parser():
         help='Write all thumbnail image formats to disk')
     thumbnail.add_option(
         '--list-thumbnails',
-        action='store_true', dest='list_thumbnails', default=False,
+        action='store_true',
+        dest='list_thumbnails',
+        default=False,
         help='List available thumbnails of each video. Simulate unless --no-simulate is used')
 
     link = optparse.OptionGroup(parser, 'Internet Shortcut Options')
     link.add_option(
         '--write-link',
-        action='store_true', dest='writelink', default=False,
+        action='store_true',
+        dest='writelink',
+        default=False,
         help='Write an internet shortcut file, depending on the current platform (.url, .webloc or .desktop). The URL may be cached by the OS')
     link.add_option(
         '--write-url-link',
-        action='store_true', dest='writeurllink', default=False,
+        action='store_true',
+        dest='writeurllink',
+        default=False,
         help='Write a .url Windows internet shortcut. The OS caches the URL based on the file path')
     link.add_option(
         '--write-webloc-link',
@@ -1607,8 +1907,11 @@ def create_parser():
 
     postproc = optparse.OptionGroup(parser, 'Post-Processing Options')
     postproc.add_option(
-        '-x', '--extract-audio',
-        action='store_true', dest='extractaudio', default=False,
+        '-x',
+        '--extract-audio',
+        action='store_true',
+        dest='extractaudio',
+        default=False,
         help='Convert video files to audio-only files (requires ffmpeg and ffprobe)')
     postproc.add_option(
         '--audio-format', metavar='FORMAT', dest='audioformat', default='best',
@@ -1617,8 +1920,10 @@ def create_parser():
             f'(currently supported: best (default), {", ".join(sorted(FFmpegExtractAudioPP.SUPPORTED_EXTS))}). '
             'You can specify multiple rules using similar syntax as --remux-video'))
     postproc.add_option(
-        '--audio-quality', metavar='QUALITY',
-        dest='audioquality', default='5',
+        '--audio-quality',
+        metavar='QUALITY',
+        dest='audioquality',
+        default='5',
         help=(
             'Specify ffmpeg audio quality to use when converting the audio with -x. '
             'Insert a value between 0 (best) and 10 (worst) for VBR or a specific bitrate like 128K (default %default)'))
@@ -1632,7 +1937,9 @@ def create_parser():
             'e.g. "aac>m4a/mov>mp4/mkv" will remux aac to m4a, mov to mp4 and anything else to mkv'))
     postproc.add_option(
         '--recode-video',
-        metavar='FORMAT', dest='recodevideo', default=None,
+        metavar='FORMAT',
+        dest='recodevideo',
+        default=None,
         help='Re-encode the video into another format if necessary. The syntax and supported formats are the same as --remux-video')
     postproc.add_option(
         '--postprocessor-args', '--ppa',
@@ -1663,7 +1970,8 @@ def create_parser():
         help='Keep the intermediate video file on disk after post-processing')
     postproc.add_option(
         '--no-keep-video',
-        action='store_false', dest='keepvideo',
+        action='store_false',
+        dest='keepvideo',
         help='Delete the intermediate video file after post-processing (default)')
     postproc.add_option(
         '--post-overwrites',
@@ -1675,7 +1983,9 @@ def create_parser():
         help='Do not overwrite post-processed files')
     postproc.add_option(
         '--embed-subs',
-        action='store_true', dest='embedsubtitles', default=False,
+        action='store_true',
+        dest='embedsubtitles',
+        default=False,
         help='Embed subtitles in the video (only for mp4, webm and mkv videos)')
     postproc.add_option(
         '--no-embed-subs',
@@ -1690,8 +2000,11 @@ def create_parser():
         action='store_false', dest='embedthumbnail',
         help='Do not embed thumbnail (default)')
     postproc.add_option(
-        '--embed-metadata', '--add-metadata',
-        action='store_true', dest='addmetadata', default=False,
+        '--embed-metadata',
+        '--add-metadata',
+        action='store_true',
+        dest='addmetadata',
+        default=False,
         help=(
             'Embed metadata to the video file. Also embeds chapters/infojson if present '
             'unless --no-embed-chapters/--no-embed-info-json are used (Alias: --add-metadata)'))
@@ -1721,19 +2034,27 @@ def create_parser():
         help=optparse.SUPPRESS_HELP)
     postproc.add_option(
         '--parse-metadata',
-        metavar='[WHEN:]FROM:TO', dest='parse_metadata', **when_prefix('pre_process'),
+        metavar='[WHEN:]FROM:TO',
+        dest='parse_metadata',
+        **when_prefix('pre_process'),
         help=(
             'Parse additional metadata like title/artist from other fields; see "MODIFYING METADATA" for details. '
             'Supported values of "WHEN" are the same as that of --use-postprocessor (default: pre_process)'))
     postproc.add_option(
         '--replace-in-metadata',
-        dest='parse_metadata', metavar='[WHEN:]FIELDS REGEX REPLACE', nargs=3, **when_prefix('pre_process'),
+        dest='parse_metadata',
+        metavar='[WHEN:]FIELDS REGEX REPLACE',
+        nargs=3,
+        **when_prefix('pre_process'),
         help=(
             'Replace text in a metadata field using the given regex. This option can be used multiple times. '
             'Supported values of "WHEN" are the same as that of --use-postprocessor (default: pre_process)'))
     postproc.add_option(
-        '--xattrs', '--xattr',
-        action='store_true', dest='xattrs', default=False,
+        '--xattrs',
+        '--xattr',
+        action='store_true',
+        dest='xattrs',
+        default=False,
         help='Write metadata to the video file\'s xattrs (using Dublin Core and XDG standards)')
     postproc.add_option(
         '--concat-playlist',
@@ -1807,22 +2128,30 @@ def create_parser():
         help='Do not split video based on chapters (default)')
     postproc.add_option(
         '--remove-chapters',
-        metavar='REGEX', dest='remove_chapters', action='append',
+        metavar='REGEX',
+        dest='remove_chapters',
+        action='append',
         help=(
             'Remove chapters whose title matches the given regular expression. '
             'The syntax is the same as --download-sections. This option can be used multiple times'))
     postproc.add_option(
-        '--no-remove-chapters', dest='remove_chapters', action='store_const', const=None,
+        '--no-remove-chapters',
+        dest='remove_chapters',
+        action='store_const',
+        const=None,
         help='Do not remove any chapters from the file (default)')
     postproc.add_option(
         '--force-keyframes-at-cuts',
-        action='store_true', dest='force_keyframes_at_cuts', default=False,
+        action='store_true',
+        dest='force_keyframes_at_cuts',
+        default=False,
         help=(
             'Force keyframes at cuts when downloading/splitting/removing sections. '
             'This is slow due to needing a re-encode, but the resulting video may have fewer artifacts around the cuts'))
     postproc.add_option(
         '--no-force-keyframes-at-cuts',
-        action='store_false', dest='force_keyframes_at_cuts',
+        action='store_false',
+        dest='force_keyframes_at_cuts',
         help='Do not force keyframes around the chapters when cutting/splitting (default)')
     _postprocessor_opts_parser = lambda key, val='': (
         *(item.split('=', 1) for item in (val.split(';') if val else [])),
@@ -1868,7 +2197,8 @@ def create_parser():
             'allowed_values': set(SponsorBlockPP.CATEGORIES.keys()) - set(SponsorBlockPP.NON_SKIPPABLE_CATEGORIES.keys()),
             # Note: From https://wiki.sponsor.ajay.app/w/Types:
             # The filler category is very aggressive.
-            # It is strongly recommended to not use this in a client by default.
+            # It is strongly recommended to not use this in a client by
+            # default.
             'aliases': {'default': ['all', '-filler']},
         }, help=(
             'SponsorBlock categories to be removed from the video file, separated by commas. '
@@ -1877,8 +2207,10 @@ def create_parser():
             'except that "default" refers to "all,-filler" '
             f'and {", ".join(SponsorBlockPP.NON_SKIPPABLE_CATEGORIES.keys())} are not available'))
     sponsorblock.add_option(
-        '--sponsorblock-chapter-title', metavar='TEMPLATE',
-        default=DEFAULT_SPONSORBLOCK_CHAPTER_TITLE, dest='sponsorblock_chapter_title',
+        '--sponsorblock-chapter-title',
+        metavar='TEMPLATE',
+        default=DEFAULT_SPONSORBLOCK_CHAPTER_TITLE,
+        dest='sponsorblock_chapter_title',
         help=(
             'An output template for the title of the SponsorBlock chapters created by --sponsorblock-mark. '
             'The only available fields are start_time, end_time, category, categories, name, category_names. '
@@ -1895,7 +2227,9 @@ def create_parser():
     extractor = optparse.OptionGroup(parser, 'Extractor Options')
     extractor.add_option(
         '--extractor-retries',
-        dest='extractor_retries', metavar='RETRIES', default=3,
+        dest='extractor_retries',
+        metavar='RETRIES',
+        default=3,
         help='Number of retries for known extractor errors (default is %default), or "infinite"')
     extractor.add_option(
         '--allow-dynamic-mpd', '--no-ignore-dynamic-mpd',
@@ -1907,12 +2241,15 @@ def create_parser():
         help='Do not process dynamic DASH manifests (Alias: --no-allow-dynamic-mpd)')
     extractor.add_option(
         '--hls-split-discontinuity',
-        dest='hls_split_discontinuity', action='store_true', default=False,
+        dest='hls_split_discontinuity',
+        action='store_true',
+        default=False,
         help='Split HLS playlists to different formats at discontinuities such as ad breaks',
     )
     extractor.add_option(
         '--no-hls-split-discontinuity',
-        dest='hls_split_discontinuity', action='store_false',
+        dest='hls_split_discontinuity',
+        action='store_false',
         help='Do not split HLS playlists into different formats at discontinuities such as ad breaks (default)')
     _extractor_arg_parser = lambda key, vals='': (key.strip().lower().replace('-', '_'), [
         val.replace(r'\,', ',').strip() for val in re.split(r'(?<!\\),', vals)])

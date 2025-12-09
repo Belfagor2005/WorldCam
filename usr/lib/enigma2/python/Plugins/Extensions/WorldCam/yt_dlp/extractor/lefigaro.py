@@ -77,8 +77,11 @@ class LeFigaroVideoEmbedIE(InfoExtractor):
             webpage, display_id)['props']['pageProps']['initialProps']['pageData']['playerData']
 
         return self.url_result(
-            f'jwplatform:{player_data["videoId"]}', title=player_data.get('title'),
-            description=player_data.get('description'), thumbnail=player_data.get('poster'))
+            f'jwplatform:{
+                player_data["videoId"]}',
+            title=player_data.get('title'),
+            description=player_data.get('description'),
+            thumbnail=player_data.get('poster'))
 
 
 class LeFigaroVideoSectionIE(InfoExtractor):
@@ -118,10 +121,15 @@ class LeFigaroVideoSectionIE(InfoExtractor):
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
-        initial_response = self._get_api_response(display_id, page_num=1)['data']['playlist']
+        initial_response = self._get_api_response(
+            display_id, page_num=1)['data']['playlist']
 
         def page_func(page_num):
-            api_response = self._get_api_response(display_id, page_num + 1, note=f'Downloading page {page_num + 1}')
+            api_response = self._get_api_response(
+                display_id,
+                page_num + 1,
+                note=f'Downloading page {
+                    page_num + 1}')
 
             return [self.url_result(
                 video['embedUrl'], LeFigaroVideoEmbedIE, **traverse_obj(video, {
@@ -131,6 +139,13 @@ class LeFigaroVideoSectionIE(InfoExtractor):
                 })) for video in api_response['data']['playlist']['jsonLd'][0]['itemListElement']]
 
         entries = InAdvancePagedList(
-            page_func, math.ceil(initial_response['videoCount'] / self._PAGE_SIZE), self._PAGE_SIZE)
+            page_func,
+            math.ceil(
+                initial_response['videoCount'] /
+                self._PAGE_SIZE),
+            self._PAGE_SIZE)
 
-        return self.playlist_result(entries, playlist_id=display_id, playlist_title=initial_response.get('title'))
+        return self.playlist_result(
+            entries,
+            playlist_id=display_id,
+            playlist_title=initial_response.get('title'))

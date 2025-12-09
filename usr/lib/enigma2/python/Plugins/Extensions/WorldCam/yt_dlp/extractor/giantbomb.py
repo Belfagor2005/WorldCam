@@ -54,14 +54,20 @@ class GiantBombIE(InfoExtractor):
                 continue
             ext = determine_ext(video_url)
             if ext == 'f4m':
-                f4m_formats = self._extract_f4m_formats(video_url + '?hdcore=3.3.1', display_id)
+                f4m_formats = self._extract_f4m_formats(
+                    video_url + '?hdcore=3.3.1', display_id)
                 if f4m_formats:
                     f4m_formats[0]['quality'] = quality(format_id)
                     formats.extend(f4m_formats)
             elif ext == 'm3u8':
-                formats.extend(self._extract_m3u8_formats(
-                    video_url, display_id, ext='mp4', entry_protocol='m3u8_native',
-                    m3u8_id='hls', fatal=False))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        video_url,
+                        display_id,
+                        ext='mp4',
+                        entry_protocol='m3u8_native',
+                        m3u8_id='hls',
+                        fatal=False))
             else:
                 formats.append({
                     'url': video_url,

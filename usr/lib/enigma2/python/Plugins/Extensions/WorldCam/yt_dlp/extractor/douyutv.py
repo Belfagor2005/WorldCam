@@ -24,7 +24,8 @@ from ..utils import (
 class DouyuBaseIE(InfoExtractor):
     def _download_cryptojs_md5(self, video_id):
         for url in [
-            # XXX: Do NOT use cdn.bootcdn.net; ref: https://sansec.io/research/polyfill-supply-chain-attack
+            # XXX: Do NOT use cdn.bootcdn.net; ref:
+            # https://sansec.io/research/polyfill-supply-chain-attack
             'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js',
             'https://unpkg.com/cryptojslib@3.1.2/rollups/md5.js',
         ]:
@@ -33,16 +34,20 @@ class DouyuBaseIE(InfoExtractor):
             if js_code:
                 self.cache.store('douyu', 'crypto-js-md5', js_code)
                 return js_code
-        raise ExtractorError('Unable to download JS dependency (crypto-js/md5)')
+        raise ExtractorError(
+            'Unable to download JS dependency (crypto-js/md5)')
 
     def _get_cryptojs_md5(self, video_id):
         return self.cache.load(
-            'douyu', 'crypto-js-md5', min_ver='2024.07.04') or self._download_cryptojs_md5(video_id)
+            'douyu',
+            'crypto-js-md5',
+            min_ver='2024.07.04') or self._download_cryptojs_md5(video_id)
 
     def _calc_sign(self, sign_func, video_id, a):
         b = uuid.uuid4().hex
         c = round(time.time())
-        js_script = f'{self._get_cryptojs_md5(video_id)};{sign_func};console.log(ub98484234("{a}","{b}","{c}"))'
+        js_script = f'{
+            self._get_cryptojs_md5(video_id)};{sign_func};console.log(ub98484234("{a}","{b}","{c}"))'
         phantom = PhantomJSwrapper(self)
         result = phantom.execute(js_script, video_id,
                                  note='Executing JS signing script').strip()
@@ -51,7 +56,10 @@ class DouyuBaseIE(InfoExtractor):
     def _search_js_sign_func(self, webpage, fatal=True):
         # The greedy look-behind ensures last possible script tag is matched
         return self._search_regex(
-            r'(?:<script.*)?<script[^>]*>(.*?ub98484234.*?)</script>', webpage, 'JS sign func', fatal=fatal)
+            r'(?:<script.*)?<script[^>]*>(.*?ub98484234.*?)</script>',
+            webpage,
+            'JS sign func',
+            fatal=fatal)
 
 
 class DouyuTVIE(DouyuBaseIE):
@@ -137,10 +145,13 @@ class DouyuTVIE(DouyuBaseIE):
         formats = []
         for stream_info in traverse_obj(stream_formats, (..., 'data')):
             stream_url = urljoin(
-                traverse_obj(stream_info, 'rtmp_url'), traverse_obj(stream_info, 'rtmp_live'))
+                traverse_obj(
+                    stream_info, 'rtmp_url'), traverse_obj(
+                    stream_info, 'rtmp_live'))
             if stream_url:
                 rate_id = traverse_obj(stream_info, ('rate', {int_or_none}))
-                rate_info = traverse_obj(stream_info, ('multirates', lambda _, v: v['rate'] == rate_id), get_all=False)
+                rate_info = traverse_obj(
+                    stream_info, ('multirates', lambda _, v: v['rate'] == rate_id), get_all=False)
                 ext = determine_ext(stream_url)
                 formats.append({
                     'url': stream_url,
@@ -159,11 +170,22 @@ class DouyuTVIE(DouyuBaseIE):
         video_id = self._match_id(url)
 
         webpage = self._download_webpage(url, video_id)
-        room_id = self._search_regex(r'\$ROOM\.room_id\s*=\s*(\d+)', webpage, 'room id')
+        room_id = self._search_regex(
+            r'\$ROOM\.room_id\s*=\s*(\d+)', webpage, 'room id')
 
-        if self._search_regex(r'"videoLoop"\s*:\s*(\d+)', webpage, 'loop', default='') == '1':
-            raise UserNotLive('The channel is auto-playing VODs', video_id=video_id)
-        if self._search_regex(r'\$ROOM\.show_status\s*=\s*(\d+)', webpage, 'status', default='') == '2':
+        if self._search_regex(
+            r'"videoLoop"\s*:\s*(\d+)',
+            webpage,
+            'loop',
+                default='') == '1':
+            raise UserNotLive(
+                'The channel is auto-playing VODs',
+                video_id=video_id)
+        if self._search_regex(
+            r'\$ROOM\.show_status\s*=\s*(\d+)',
+            webpage,
+            'status',
+                default='') == '2':
             raise UserNotLive(video_id=video_id)
 
         # Grab metadata from API
@@ -182,7 +204,9 @@ class DouyuTVIE(DouyuBaseIE):
         if traverse_obj(room, 'show_status') == '2':
             raise UserNotLive(video_id=video_id)
 
-        js_sign_func = self._search_js_sign_func(webpage, fatal=False) or self._get_sign_func(room_id, video_id)
+        js_sign_func = self._search_js_sign_func(
+            webpage, fatal=False) or self._get_sign_func(
+            room_id, video_id)
         form_data = {
             'rate': 0,
             **self._calc_sign(js_sign_func, video_id, room_id),
@@ -192,7 +216,8 @@ class DouyuTVIE(DouyuBaseIE):
             video_id, note='Downloading livestream format',
             data=urlencode_postdata(form_data))]
 
-        for rate_id in traverse_obj(stream_formats[0], ('data', 'multirates', ..., 'rate')):
+        for rate_id in traverse_obj(
+                stream_formats[0], ('data', 'multirates', ..., 'rate')):
             if rate_id != traverse_obj(stream_formats[0], ('data', 'rate')):
                 form_data['rate'] = rate_id
                 stream_formats.append(self._download_json(
@@ -271,11 +296,14 @@ class DouyuShowIE(DouyuBaseIE):
             **self._calc_sign(js_sign_func, video_id, video_info['ROOM']['point_id']),
         }
         url_info = self._download_json(
-            'https://v.douyu.com/api/stream/getStreamUrl', video_id,
-            data=urlencode_postdata(form_data), note='Downloading video formats')
+            'https://v.douyu.com/api/stream/getStreamUrl',
+            video_id,
+            data=urlencode_postdata(form_data),
+            note='Downloading video formats')
 
         formats = []
-        for name, url in traverse_obj(url_info, ('data', 'thumb_video', {dict.items}, ...)):
+        for name, url in traverse_obj(
+                url_info, ('data', 'thumb_video', {dict.items}, ...)):
             video_url = traverse_obj(url, ('url', {url_or_none}))
             if video_url:
                 ext = determine_ext(video_url)
@@ -290,7 +318,11 @@ class DouyuShowIE(DouyuBaseIE):
                 })
             else:
                 self.to_screen(
-                    f'"{self._FORMATS.get(name, name)}" format may require logging in. {self._login_hint()}')
+                    f'"{
+                        self._FORMATS.get(
+                            name,
+                            name)}" format may require logging in. {
+                        self._login_hint()}')
 
         return {
             'id': video_id,

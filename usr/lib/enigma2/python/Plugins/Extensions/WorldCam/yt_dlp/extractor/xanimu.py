@@ -42,11 +42,24 @@ class XanimuIE(InfoExtractor):
         return {
             'id': video_id,
             'formats': formats,
-            'title': self._search_regex(r'[\'"]headline[\'"]:\s*[\'"]([^"]+)[\'"]', webpage,
-                                        'title', default=None) or self._html_extract_title(webpage),
-            'thumbnail': self._html_search_meta('thumbnailUrl', webpage, default=None),
-            'description': self._html_search_meta('description', webpage, default=None),
-            'duration': int_or_none(self._search_regex(r'duration:\s*[\'"]([^\'"]+?)[\'"]',
-                                    webpage, 'duration', fatal=False)),
+            'title': self._search_regex(
+                r'[\'"]headline[\'"]:\s*[\'"]([^"]+)[\'"]',
+                webpage,
+                'title',
+                default=None) or self._html_extract_title(webpage),
+            'thumbnail': self._html_search_meta(
+                'thumbnailUrl',
+                webpage,
+                default=None),
+            'description': self._html_search_meta(
+                'description',
+                webpage,
+                default=None),
+            'duration': int_or_none(
+                self._search_regex(
+                    r'duration:\s*[\'"]([^\'"]+?)[\'"]',
+                    webpage,
+                    'duration',
+                    fatal=False)),
             'age_limit': 18,
         }

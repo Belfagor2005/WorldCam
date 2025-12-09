@@ -106,6 +106,9 @@ class DWArticleIE(InfoExtractor):
         webpage = self._download_webpage(url, article_id)
         hidden_inputs = self._hidden_inputs(webpage)
         media_id = hidden_inputs['media_id']
-        media_path = self._search_regex(rf'href="([^"]+av-{media_id})"\s+class="overlayLink"', webpage, 'media url')
+        media_path = self._search_regex(
+            rf'href="([^"]+av-{media_id})"\s+class="overlayLink"',
+            webpage,
+            'media url')
         media_url = urllib.parse.urljoin(url, media_path)
         return self.url_result(media_url, 'DW', media_id)

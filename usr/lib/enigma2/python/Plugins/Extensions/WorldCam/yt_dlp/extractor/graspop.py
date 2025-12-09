@@ -23,7 +23,8 @@ class GraspopIE(InfoExtractor):
         return {
             'id': video_id,
             'formats': self._extract_m3u8_formats(
-                # Downgrade manifest request to avoid incomplete certificate chain error
+                # Downgrade manifest request to avoid incomplete certificate
+                # chain error
                 update_url(metadata['source']['assetUri'], scheme='http'), video_id, 'mp4'),
             **traverse_obj(metadata, {
                 'title': ('name', {str}),

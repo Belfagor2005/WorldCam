@@ -34,8 +34,15 @@ from ..utils.traversal import require, traverse_obj
 class VKBaseIE(InfoExtractor):
     _NETRC_MACHINE = 'vk'
 
-    def _download_webpage_handle(self, url_or_request, video_id, *args, fatal=True, **kwargs):
-        response = super()._download_webpage_handle(url_or_request, video_id, *args, fatal=fatal, **kwargs)
+    def _download_webpage_handle(
+            self,
+            url_or_request,
+            video_id,
+            *args,
+            fatal=True,
+            **kwargs):
+        response = super()._download_webpage_handle(
+            url_or_request, video_id, *args, fatal=fatal, **kwargs)
         challenge_url, cookie = response[1].url if response else '', None
         if challenge_url.startswith('https://vk.com/429.html?'):
             cookie = self._get_cookies(challenge_url).get('hash429')
@@ -46,7 +53,8 @@ class VKBaseIE(InfoExtractor):
         self._request_webpage(
             update_url_query(challenge_url, {'key': hash429}), video_id, fatal=fatal,
             note='Resolving WAF challenge', errnote='Failed to bypass WAF challenge')
-        return super()._download_webpage_handle(url_or_request, video_id, *args, fatal=True, **kwargs)
+        return super()._download_webpage_handle(
+            url_or_request, video_id, *args, fatal=True, **kwargs)
 
     def _perform_login(self, username, password):
         login_page, url_handle = self._download_webpage_handle(
@@ -70,7 +78,8 @@ class VKBaseIE(InfoExtractor):
 
         if re.search(r'onLoginFailed', login_page):
             raise ExtractorError(
-                'Unable to login, incorrect username and/or password', expected=True)
+                'Unable to login, incorrect username and/or password',
+                expected=True)
 
     def _download_payload(self, path, video_id, data, fatal=True):
         endpoint = f'https://vk.com/{path}.php'
@@ -91,7 +100,8 @@ class VKBaseIE(InfoExtractor):
 class VKIE(VKBaseIE):
     IE_NAME = 'vk'
     IE_DESC = 'VK'
-    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>https?://vk(?:(?:video)?\.ru|\.com)/video_ext\.php.+?)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+?src=(["\'])(?P<url>https?://vk(?:(?:video)?\.ru|\.com)/video_ext\.php.+?)\1']
     _VALID_URL = r'''(?x)
                     https?://
                         (?:
@@ -375,7 +385,8 @@ class VKIE(VKBaseIE):
                 'act': 'show',
                 'video': video_id,
             }
-            # Some videos (removed?) can only be downloaded with list id specified
+            # Some videos (removed?) can only be downloaded with list id
+            # specified
             list_id = mobj.group('list_id')
             if list_id:
                 data['list'] = list_id
@@ -389,7 +400,9 @@ class VKIE(VKBaseIE):
             video_id = '{}_{}'.format(mobj.group('oid'), mobj.group('id'))
 
             info_page = self._download_webpage(
-                'https://vk.com/video_ext.php?' + mobj.group('embed_query'), video_id)
+                'https://vk.com/video_ext.php?' +
+                mobj.group('embed_query'),
+                video_id)
 
             error_message = self._html_search_regex(
                 [r'(?s)<!><div[^>]+class="video_layer_message"[^>]*>(.+?)</div>',
@@ -455,13 +468,16 @@ class VKIE(VKBaseIE):
             return self.url_result(vimeo_url, VimeoIE.ie_key())
 
         m_rutube = re.search(
-            r'\ssrc="((?:https?:)?//rutube\.ru\\?/(?:video|play)\\?/embed(?:.*?))\\?"', info_page)
+            r'\ssrc="((?:https?:)?//rutube\.ru\\?/(?:video|play)\\?/embed(?:.*?))\\?"',
+            info_page)
         if m_rutube is not None:
             rutube_url = self._proto_relative_url(
                 m_rutube.group(1).replace('\\', ''))
             return self.url_result(rutube_url)
 
-        dailymotion_url = next(DailymotionIE._extract_embed_urls(url, info_page), None)
+        dailymotion_url = next(
+            DailymotionIE._extract_embed_urls(
+                url, info_page), None)
         if dailymotion_url:
             return self.url_result(dailymotion_url, DailymotionIE.ie_key())
 
@@ -469,13 +485,17 @@ class VKIE(VKBaseIE):
         if odnoklassniki_url:
             return self.url_result(odnoklassniki_url, OdnoklassnikiIE.ie_key())
 
-        sibnet_url = next(SibnetEmbedIE._extract_embed_urls(url, info_page), None)
+        sibnet_url = next(
+            SibnetEmbedIE._extract_embed_urls(
+                url, info_page), None)
         if sibnet_url:
             return self.url_result(sibnet_url)
 
         m_opts = re.search(r'(?s)var\s+opts\s*=\s*({.+?});', info_page)
         if m_opts:
-            m_opts_url = re.search(r"url\s*:\s*'((?!/\b)[^']+)", m_opts.group(1))
+            m_opts_url = re.search(
+                r"url\s*:\s*'((?!/\b)[^']+)",
+                m_opts.group(1))
             if m_opts_url:
                 opts_url = m_opts_url.group(1)
                 if opts_url.startswith('//'):
@@ -500,10 +520,11 @@ class VKIE(VKBaseIE):
         subtitles = {}
         for format_id, format_url in data.items():
             format_url = url_or_none(format_url)
-            if not format_url or not format_url.startswith(('http', '//', 'rtmp')):
+            if not format_url or not format_url.startswith(
+                    ('http', '//', 'rtmp')):
                 continue
-            if (format_id.startswith(('url', 'cache'))
-                    or format_id in ('extra_data', 'live_mp4', 'postlive_mp4')):
+            if (format_id.startswith(('url', 'cache')) or format_id in (
+                    'extra_data', 'live_mp4', 'postlive_mp4')):
                 height = int_or_none(self._search_regex(
                     r'^(?:url|cache)(\d+)', format_id, 'height', default=None))
                 formats.append({
@@ -635,7 +656,9 @@ class VKUserVideosIE(VKBaseIE):
             })[0][section]
             new_count = video_list_json['count']
             if not new_count:
-                self.to_screen(f'{page_id}: Skipping {total - count} unavailable videos')
+                self.to_screen(
+                    f'{page_id}: Skipping {
+                        total - count} unavailable videos')
                 break
             count += new_count
             video_list = video_list_json['list']
@@ -653,8 +676,15 @@ class VKUserVideosIE(VKBaseIE):
             page_id, _, section = u_id.partition('_')
             section = f'playlist_{section}'
 
-        playlist_title = clean_html(get_element_by_class('VideoInfoPanel__title', webpage))
-        return self.playlist_result(self._entries(page_id, section), f'{page_id}_{section}', playlist_title)
+        playlist_title = clean_html(
+            get_element_by_class(
+                'VideoInfoPanel__title', webpage))
+        return self.playlist_result(
+            self._entries(
+                page_id,
+                section),
+            f'{page_id}_{section}',
+            playlist_title)
 
 
 class VKWallPostIE(VKBaseIE):
@@ -713,7 +743,23 @@ class VKWallPostIE(VKBaseIE):
         'only_matching': True,
     }]
     _BASE64_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/='
-    _AUDIO = collections.namedtuple('Audio', ['id', 'owner_id', 'url', 'title', 'performer', 'duration', 'album_id', 'unk', 'author_link', 'lyrics', 'flags', 'context', 'extra', 'hashes', 'cover_url', 'ads'])
+    _AUDIO = collections.namedtuple('Audio',
+                                    ['id',
+                                     'owner_id',
+                                     'url',
+                                     'title',
+                                     'performer',
+                                     'duration',
+                                     'album_id',
+                                     'unk',
+                                     'author_link',
+                                     'lyrics',
+                                     'flags',
+                                     'context',
+                                     'extra',
+                                     'hashes',
+                                     'cover_url',
+                                     'ads'])
 
     def _decode(self, enc):
         dec = ''
@@ -754,7 +800,10 @@ class VKWallPostIE(VKBaseIE):
             'w': 'wall' + post_id,
         })[1]
 
-        uploader = clean_html(get_element_by_class('PostHeaderTitle__authorName', webpage))
+        uploader = clean_html(
+            get_element_by_class(
+                'PostHeaderTitle__authorName',
+                webpage))
 
         entries = []
 
@@ -781,13 +830,29 @@ class VKWallPostIE(VKBaseIE):
                 }],
             })
 
-        entries.extend(self.url_result(urljoin(url, entry), VKIE) for entry in set(re.findall(
-            r'<a[^>]+href=(?:["\'])(/video(?:-?[\d_]+)[^"\']*)',
-            get_element_html_by_id('wl_post_body', webpage))))
+        entries.extend(
+            self.url_result(
+                urljoin(
+                    url,
+                    entry),
+                VKIE) for entry in set(
+                re.findall(
+                    r'<a[^>]+href=(?:["\'])(/video(?:-?[\d_]+)[^"\']*)',
+                    get_element_html_by_id(
+                        'wl_post_body',
+                        webpage))))
 
         return self.playlist_result(
-            entries, post_id, join_nonempty(uploader, f'Wall post {post_id}', delim=' - '),
-            clean_html(get_element_by_class('wall_post_text', webpage)))
+            entries,
+            post_id,
+            join_nonempty(
+                uploader,
+                f'Wall post {post_id}',
+                delim=' - '),
+            clean_html(
+                get_element_by_class(
+                    'wall_post_text',
+                    webpage)))
 
 
 class VKPlayBaseIE(InfoExtractor):
@@ -804,25 +869,51 @@ class VKPlayBaseIE(InfoExtractor):
 
     def _extract_from_initial_state(self, url, video_id, path):
         webpage = self._download_webpage(url, video_id)
-        video_info = traverse_obj(self._search_json(
-            r'<script[^>]+\bid="initial-state"[^>]*>', webpage, 'initial state', video_id),
-            path, expected_type=dict)
+        video_info = traverse_obj(
+            self._search_json(
+                r'<script[^>]+\bid="initial-state"[^>]*>',
+                webpage,
+                'initial state',
+                video_id),
+            path,
+            expected_type=dict)
         if not video_info:
-            raise ExtractorError('Unable to extract video info from html inline initial state')
+            raise ExtractorError(
+                'Unable to extract video info from html inline initial state')
         return video_info
 
     def _extract_formats(self, stream_info, video_id):
         formats = []
-        for stream in traverse_obj(stream_info, (
-                'data', 0, 'playerUrls', lambda _, v: url_or_none(v['url']) and v['type'])):
+        for stream in traverse_obj(
+            stream_info,
+            ('data',
+             0,
+             'playerUrls',
+             lambda _,
+             v: url_or_none(
+                 v['url']) and v['type'])):
             url = stream['url']
             format_id = str_or_none(stream['type'])
-            if format_id in ('hls', 'live_hls', 'live_playback_hls') or '.m3u8' in url:
-                formats.extend(self._extract_m3u8_formats(url, video_id, m3u8_id=format_id, fatal=False))
+            if format_id in (
+                'hls',
+                'live_hls',
+                    'live_playback_hls') or '.m3u8' in url:
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        url,
+                        video_id,
+                        m3u8_id=format_id,
+                        fatal=False))
             elif format_id == 'dash':
-                formats.extend(self._extract_mpd_formats(url, video_id, mpd_id=format_id, fatal=False))
+                formats.extend(
+                    self._extract_mpd_formats(
+                        url,
+                        video_id,
+                        mpd_id=format_id,
+                        fatal=False))
             elif format_id in ('live_dash', 'live_playback_dash'):
-                self.write_debug(f'Not extracting unsupported format "{format_id}"')
+                self.write_debug(
+                    f'Not extracting unsupported format "{format_id}"')
             else:
                 formats.append({
                     'url': url,
@@ -850,40 +941,45 @@ class VKPlayBaseIE(InfoExtractor):
 
 
 class VKPlayIE(VKPlayBaseIE):
-    _VALID_URL = rf'{VKPlayBaseIE._BASE_URL_RE}(?P<username>[^/#?]+)/record/(?P<id>[\da-f-]+)'
-    _TESTS = [{
-        'url': 'https://vkplay.live/zitsmann/record/f5e6e3b5-dc52-4d14-965d-0680dd2882da',
-        'info_dict': {
-            'id': 'f5e6e3b5-dc52-4d14-965d-0680dd2882da',
-            'ext': 'mp4',
-            'title': 'Atomic Heart (пробуем!) спасибо подписчику EKZO!',
-            'uploader': 'ZitsmanN',
-            'uploader_id': '13159830',
-            'release_timestamp': 1683461378,
-            'release_date': '20230507',
-            'thumbnail': r're:https://[^/]+/public_video_stream/record/f5e6e3b5-dc52-4d14-965d-0680dd2882da/preview',
-            'duration': 10608,
-            'view_count': int,
-            'like_count': int,
-            'categories': ['Atomic Heart'],
-        },
-        'params': {'skip_download': 'm3u8'},
-    }, {
-        'url': 'https://live.vkplay.ru/lebwa/record/33a4e4ce-e3ef-49db-bb14-f006cc6fabc9/records',
-        'only_matching': True,
-    }, {
-        'url': 'https://live.vkvideo.ru/lebwa/record/33a4e4ce-e3ef-49db-bb14-f006cc6fabc9/records',
-        'only_matching': True,
-    }]
+    _VALID_URL = rf'{
+        VKPlayBaseIE._BASE_URL_RE}(?P<username>[^/#?]+)/record/(?P<id>[\da-f-]+)'
+    _TESTS = [{'url': 'https://vkplay.live/zitsmann/record/f5e6e3b5-dc52-4d14-965d-0680dd2882da',
+               'info_dict': {'id': 'f5e6e3b5-dc52-4d14-965d-0680dd2882da',
+                             'ext': 'mp4',
+                             'title': 'Atomic Heart (пробуем!) спасибо подписчику EKZO!',
+                             'uploader': 'ZitsmanN',
+                             'uploader_id': '13159830',
+                             'release_timestamp': 1683461378,
+                             'release_date': '20230507',
+                             'thumbnail': r're:https://[^/]+/public_video_stream/record/f5e6e3b5-dc52-4d14-965d-0680dd2882da/preview',
+                             'duration': 10608,
+                             'view_count': int,
+                             'like_count': int,
+                             'categories': ['Atomic Heart'],
+                             },
+               'params': {'skip_download': 'm3u8'},
+               },
+              {'url': 'https://live.vkplay.ru/lebwa/record/33a4e4ce-e3ef-49db-bb14-f006cc6fabc9/records',
+               'only_matching': True,
+               },
+              {'url': 'https://live.vkvideo.ru/lebwa/record/33a4e4ce-e3ef-49db-bb14-f006cc6fabc9/records',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         username, video_id = self._match_valid_url(url).groups()
 
-        record_info = traverse_obj(self._download_json(
-            f'https://api.vkplay.live/v1/blog/{username}/public_video_stream/record/{video_id}', video_id, fatal=False),
-            ('data', 'record', {dict}))
+        record_info = traverse_obj(
+            self._download_json(
+                f'https://api.vkplay.live/v1/blog/{username}/public_video_stream/record/{video_id}',
+                video_id,
+                fatal=False),
+            ('data',
+             'record',
+             {dict}))
         if not record_info:
-            record_info = self._extract_from_initial_state(url, video_id, ('record', 'currentRecord', 'data'))
+            record_info = self._extract_from_initial_state(
+                url, video_id, ('record', 'currentRecord', 'data'))
 
         return {
             **self._extract_common_meta(record_info),
@@ -894,40 +990,41 @@ class VKPlayIE(VKPlayBaseIE):
 
 class VKPlayLiveIE(VKPlayBaseIE):
     _VALID_URL = rf'{VKPlayBaseIE._BASE_URL_RE}(?P<id>[^/#?]+)/?(?:[#?]|$)'
-    _TESTS = [{
-        'url': 'https://vkplay.live/bayda',
-        'info_dict': {
-            'id': 'f02c321e-427b-408d-b12f-ae34e53e0ea2',
-            'ext': 'mp4',
-            'title': r're:эскапизм крута .*',
-            'uploader': 'Bayda',
-            'uploader_id': '12279401',
-            'release_timestamp': 1687209962,
-            'release_date': '20230619',
-            'thumbnail': r're:https://[^/]+/public_video_stream/12279401/preview',
-            'view_count': int,
-            'concurrent_view_count': int,
-            'like_count': int,
-            'categories': ['EVE Online'],
-            'live_status': 'is_live',
-        },
-        'skip': 'livestream',
-        'params': {'skip_download': True},
-    }, {
-        'url': 'https://live.vkplay.ru/lebwa',
-        'only_matching': True,
-    }, {
-        'url': 'https://live.vkvideo.ru/panterka',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://vkplay.live/bayda',
+               'info_dict': {'id': 'f02c321e-427b-408d-b12f-ae34e53e0ea2',
+                             'ext': 'mp4',
+                             'title': r're:эскапизм крута .*',
+                             'uploader': 'Bayda',
+                             'uploader_id': '12279401',
+                             'release_timestamp': 1687209962,
+                             'release_date': '20230619',
+                             'thumbnail': r're:https://[^/]+/public_video_stream/12279401/preview',
+                             'view_count': int,
+                             'concurrent_view_count': int,
+                             'like_count': int,
+                             'categories': ['EVE Online'],
+                             'live_status': 'is_live',
+                             },
+               'skip': 'livestream',
+               'params': {'skip_download': True},
+               },
+              {'url': 'https://live.vkplay.ru/lebwa',
+               'only_matching': True,
+               },
+              {'url': 'https://live.vkvideo.ru/panterka',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         username = self._match_id(url)
 
         stream_info = self._download_json(
-            f'https://api.vkplay.live/v1/blog/{username}/public_video_stream', username, fatal=False)
+            f'https://api.vkplay.live/v1/blog/{username}/public_video_stream',
+            username,
+            fatal=False)
         if not stream_info:
-            stream_info = self._extract_from_initial_state(url, username, ('stream', 'stream', 'data', 'stream'))
+            stream_info = self._extract_from_initial_state(
+                url, username, ('stream', 'stream', 'data', 'stream'))
 
         formats = self._extract_formats(stream_info, username)
         if not formats and not traverse_obj(stream_info, ('isOnline', {bool})):

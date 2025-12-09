@@ -71,7 +71,8 @@ class RedBullTVIE(InfoExtractor):
             if isinstance(e.cause, HTTPError) and e.cause.status == 404:
                 error_message = self._parse_json(
                     e.cause.response.read().decode(), video_id)['error']
-                raise ExtractorError(f'{self.IE_NAME} said: {error_message}', expected=True)
+                raise ExtractorError(
+                    f'{self.IE_NAME} said: {error_message}', expected=True)
             raise
 
         title = video['title'].strip()
@@ -141,16 +142,15 @@ class RedBullEmbedIE(RedBullTVIE):  # XXX: Do not subclass from concrete IE
 
 class RedBullTVRrnContentIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?redbull\.com/(?P<region>[a-z]{2,3})-(?P<lang>[a-z]{2})/tv/(?:video|live|film)/(?P<id>rrn:content:[^:]+:[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})'
-    _TESTS = [{
-        'url': 'https://www.redbull.com/int-en/tv/video/rrn:content:live-videos:e3e6feb4-e95f-50b7-962a-c70f8fd13c73/mens-dh-finals-fort-william',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.redbull.com/int-en/tv/video/rrn:content:videos:a36a0f36-ff1b-5db8-a69d-ee11a14bf48b/tn-ts-style?playlist=rrn:content:event-profiles:83f05926-5de8-5389-b5e4-9bb312d715e8:extras',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.redbull.com/int-en/tv/film/rrn:content:films:d1f4d00e-4c04-5d19-b510-a805ffa2ab83/follow-me',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://www.redbull.com/int-en/tv/video/rrn:content:live-videos:e3e6feb4-e95f-50b7-962a-c70f8fd13c73/mens-dh-finals-fort-william',
+               'only_matching': True,
+               },
+              {'url': 'https://www.redbull.com/int-en/tv/video/rrn:content:videos:a36a0f36-ff1b-5db8-a69d-ee11a14bf48b/tn-ts-style?playlist=rrn:content:event-profiles:83f05926-5de8-5389-b5e4-9bb312d715e8:extras',
+               'only_matching': True,
+               },
+              {'url': 'https://www.redbull.com/int-en/tv/film/rrn:content:films:d1f4d00e-4c04-5d19-b510-a805ffa2ab83/follow-me',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         region, lang, rrn_id = self._match_valid_url(url).groups()
@@ -196,7 +196,8 @@ class RedBullIE(InfoExtractor):
     _LAT_FALLBACK_MAP = ['ar', 'bo', 'car', 'cl', 'co', 'mx', 'pe']
 
     def _real_extract(self, url):
-        region, lang, filter_type, display_id = self._match_valid_url(url).groups()
+        region, lang, filter_type, display_id = self._match_valid_url(
+            url).groups()
         if filter_type == 'episodes':
             filter_type = 'episode-videos'
         elif filter_type == 'live':

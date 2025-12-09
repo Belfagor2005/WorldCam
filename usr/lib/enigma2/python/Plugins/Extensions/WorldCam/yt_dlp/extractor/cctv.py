@@ -164,7 +164,8 @@ class CCTVIE(InfoExtractor):
 
         video = data.get('video')
         if isinstance(video, dict):
-            for quality, chapters_key in enumerate(('lowChapters', 'chapters')):
+            for quality, chapters_key in enumerate(
+                    ('lowChapters', 'chapters')):
                 video_url = try_get(
                     video, lambda x: x[chapters_key][0]['url'], str)
                 if video_url:

@@ -58,9 +58,13 @@ class TeamTreeHouseIE(InfoExtractor):
             'user_session[email]': username,
             'user_session[password]': password,
         })
-        error_message = get_element_by_class('error-message', self._download_webpage(
-            'https://teamtreehouse.com/person_session',
-            None, 'Logging in', data=urlencode_postdata(data)))
+        error_message = get_element_by_class(
+            'error-message',
+            self._download_webpage(
+                'https://teamtreehouse.com/person_session',
+                None,
+                'Logging in',
+                data=urlencode_postdata(data)))
         if error_message:
             raise ExtractorError(clean_html(error_message), expected=True)
 
@@ -81,7 +85,8 @@ class TeamTreeHouseIE(InfoExtractor):
             is_preview = 'data-preview="true"' in webpage
             if is_preview:
                 self.report_warning(
-                    'This is just a preview. You need to be signed in with a Basic account to download the entire video.', display_id)
+                    'This is just a preview. You need to be signed in with a Basic account to download the entire video.',
+                    display_id)
                 duration = 30
             else:
                 duration = float_or_none(self._search_regex(
@@ -123,7 +128,8 @@ class TeamTreeHouseIE(InfoExtractor):
                 if stages_path:
                     stages_page = self._download_webpage(
                         urljoin(url, stages_path), display_id, 'Downloading stages page')
-                    for chapter_number, (chapter, steps_list) in enumerate(re.findall(r'(?s)<h2[^>]*>\s*(.+?)\s*</h2>.+?<ul[^>]*>(.+?)</ul>', stages_page), 1):
+                    for chapter_number, (chapter, steps_list) in enumerate(re.findall(
+                            r'(?s)<h2[^>]*>\s*(.+?)\s*</h2>.+?<ul[^>]*>(.+?)</ul>', stages_page), 1):
                         extract_urls(steps_list, {
                             'chapter': chapter,
                             'chapter_number': chapter_number,

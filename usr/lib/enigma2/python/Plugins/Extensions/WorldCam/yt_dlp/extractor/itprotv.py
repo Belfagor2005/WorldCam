@@ -22,7 +22,8 @@ class ITProTVBaseIE(InfoExtractor):
             headers={'Authorization': f'Bearer {self._fetch_jwt(webpage)}'})[ep]
 
     def _fetch_jwt(self, webpage):
-        return self._search_regex(r'{"passedToken":"([\w-]+\.[\w-]+\.[\w-]+)",', webpage, 'jwt')
+        return self._search_regex(
+            r'{"passedToken":"([\w-]+\.[\w-]+\.[\w-]+)",', webpage, 'jwt')
 
     def _check_if_logged_in(self, webpage):
         if re.match(r'{\s*member\s*:\s*null', webpage):
@@ -69,7 +70,8 @@ class ITProTVIE(ITProTVBaseIE):
     }]
 
     def _real_extract(self, url):
-        episode_id, course_name = self._match_valid_url(url).group('id', 'course')
+        episode_id, course_name = self._match_valid_url(
+            url).group('id', 'course')
         webpage = self._download_webpage(url, episode_id)
         self._check_if_logged_in(webpage)
         course = self._call_api('course', course_name, webpage)

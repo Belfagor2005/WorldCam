@@ -30,8 +30,13 @@ class LRTStreamIE(InfoExtractor):
         streams_data = self._download_json(get_stream_url, video_id)
 
         formats, subtitles = [], {}
-        for stream_url in traverse_obj(streams_data, (
-                'response', 'data', lambda k, _: k.startswith('content'), {url_or_none})):
+        for stream_url in traverse_obj(
+            streams_data,
+            ('response',
+             'data',
+             lambda k,
+             _: k.startswith('content'),
+             {url_or_none})):
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 stream_url, video_id, 'mp4', m3u8_id='hls', live=True)
             formats.extend(fmts)
@@ -105,8 +110,14 @@ class LRTVODIE(InfoExtractor):
 
         # TODO: Use _search_nextjs_v13_data once fixed
         canonical_url = (
-            self._search_regex(r'\\"(?:article|data)\\":{[^}]*\\"url\\":\\"(/[^"]+)\\"', webpage, 'content URL', fatal=False)
-            or self._search_regex(r'<link\s+rel="canonical"\s*href="(/[^"]+)"', webpage, 'canonical URL'))
+            self._search_regex(
+                r'\\"(?:article|data)\\":{[^}]*\\"url\\":\\"(/[^"]+)\\"',
+                webpage,
+                'content URL',
+                fatal=False) or self._search_regex(
+                r'<link\s+rel="canonical"\s*href="(/[^"]+)"',
+                webpage,
+                'canonical URL'))
 
         media = self._download_json(
             'https://www.lrt.lt/servisai/stream_url/vod/media_info/',
@@ -115,15 +126,16 @@ class LRTVODIE(InfoExtractor):
             media['playlist_item'], video_id, base_url=url)
 
         return {
-            **jw_data,
-            **traverse_obj(media, {
-                'id': ('id', {str}),
-                'title': ('title', {str}),
-                'description': ('content', {clean_html}),
-                'timestamp': ('date', {lambda x: x.replace('.', '/')}, {unified_timestamp}),
-                'tags': ('tags', ..., 'name', {str}),
-            }),
-        }
+            **jw_data, **traverse_obj(
+                media, {
+                    'id': (
+                        'id', {str}), 'title': (
+                        'title', {str}), 'description': (
+                        'content', {clean_html}), 'timestamp': (
+                            'date', {
+                                lambda x: x.replace(
+                                    '.', '/')}, {unified_timestamp}), 'tags': (
+                                        'tags', ..., 'name', {str}), }), }
 
 
 class LRTRadioIE(InfoExtractor):

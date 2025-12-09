@@ -290,7 +290,8 @@ class NitterIE(InfoExtractor):
     ]
 
     def _real_extract(self, url):
-        video_id, uploader_id = self._match_valid_url(url).group('id', 'uploader_id')
+        video_id, uploader_id = self._match_valid_url(
+            url).group('id', 'uploader_id')
         parsed_url = urllib.parse.urlparse(url)
         base_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
 
@@ -301,26 +302,38 @@ class NitterIE(InfoExtractor):
         if main_tweet_start > 0:
             webpage = full_webpage[main_tweet_start:]
 
-        video_url = '{}{}'.format(base_url, self._html_search_regex(
-            r'(?:<video[^>]+data-url|<source[^>]+src)="([^"]+)"', webpage, 'video url'))
+        video_url = '{}{}'.format(
+            base_url,
+            self._html_search_regex(
+                r'(?:<video[^>]+data-url|<source[^>]+src)="([^"]+)"',
+                webpage,
+                'video url'))
         ext = determine_ext(video_url)
 
         if ext == 'unknown_video':
-            formats = self._extract_m3u8_formats(video_url, video_id, ext='mp4')
+            formats = self._extract_m3u8_formats(
+                video_url, video_id, ext='mp4')
         else:
             formats = [{
                 'url': video_url,
                 'ext': ext,
             }]
 
-        title = description = self._og_search_description(full_webpage, default=None) or self._html_search_regex(
+        title = description = self._og_search_description(
+            full_webpage, default=None) or self._html_search_regex(
             r'<div class="tweet-content[^>]+>([^<]+)</div>', webpage, 'title', fatal=False)
 
         uploader_id = self._html_search_regex(
-            r'<a class="username"[^>]+title="@([^"]+)"', webpage, 'uploader id', fatal=False) or uploader_id
+            r'<a class="username"[^>]+title="@([^"]+)"',
+            webpage,
+            'uploader id',
+            fatal=False) or uploader_id
 
         uploader = self._html_search_regex(
-            r'<a class="fullname"[^>]+title="([^"]+)"', webpage, 'uploader name', fatal=False)
+            r'<a class="fullname"[^>]+title="([^"]+)"',
+            webpage,
+            'uploader name',
+            fatal=False)
         if uploader:
             title = f'{uploader} - {title}'
 
@@ -330,12 +343,22 @@ class NitterIE(InfoExtractor):
                 webpage, f'{x[0]} count', fatal=False)
             for x in (('view', 'play'), ('like', 'heart'), ('repost', 'retweet'), ('comment', 'comment'))
         }
-        counts = {field: 0 if count == '' else parse_count(count) for field, count in counts.items()}
+        counts = {field: 0 if count == '' else parse_count(
+            count) for field, count in counts.items()}
 
         thumbnail = (
-            self._html_search_meta('og:image', full_webpage, 'thumbnail url')
-            or remove_end('{}{}'.format(base_url, self._html_search_regex(
-                r'<video[^>]+poster="([^"]+)"', webpage, 'thumbnail url', fatal=False)), '%3Asmall'))
+            self._html_search_meta(
+                'og:image',
+                full_webpage,
+                'thumbnail url') or remove_end(
+                '{}{}'.format(
+                    base_url,
+                    self._html_search_regex(
+                        r'<video[^>]+poster="([^"]+)"',
+                        webpage,
+                        'thumbnail url',
+                        fatal=False)),
+                '%3Asmall'))
 
         thumbnails = [
             {'id': id_, 'url': f'{thumbnail}%3A{id_}'}

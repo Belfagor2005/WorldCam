@@ -56,7 +56,8 @@ class WebOfStoriesIE(InfoExtractor):
 
         webpage = self._download_webpage(url, video_id)
         # Sometimes og:title meta is malformed
-        title = self._og_search_title(webpage, default=None) or self._html_search_regex(
+        title = self._og_search_title(
+            webpage, default=None) or self._html_search_regex(
             r'(?s)<strong>Title:\s*</strong>(.+?)<', webpage, 'title')
         description = self._html_search_meta('description', webpage)
         thumbnail = self._og_search_thumbnail(webpage)
@@ -79,12 +80,14 @@ class WebOfStoriesIE(InfoExtractor):
             ms_prefix = 'mini_sites/'
 
         if is_great_life_series:
-            mp4_url = f'{self._VIDEO_DOMAIN}lives/{speaker_id}/{story_filename}.mp4'
+            mp4_url = f'{
+                self._VIDEO_DOMAIN}lives/{speaker_id}/{story_filename}.mp4'
             rtmp_ext = 'flv'
             streamer = self._GREAT_LIFE_STREAMER
             play_path = f'stories/{speaker_id}/{story_filename}'
         else:
-            mp4_url = f'{self._VIDEO_DOMAIN}{ms_prefix}{speaker_id}/{story_filename}.mp4'
+            mp4_url = f'{
+                self._VIDEO_DOMAIN}{ms_prefix}{speaker_id}/{story_filename}.mp4'
             rtmp_ext = 'mp4'
             streamer = self._USER_STREAMER
             play_path = f'mp4:{ms_prefix}{speaker_id}/{story_filename}.mp4'

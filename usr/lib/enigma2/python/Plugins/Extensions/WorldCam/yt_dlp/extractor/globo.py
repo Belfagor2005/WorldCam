@@ -140,16 +140,22 @@ class GloboIE(InfoExtractor):
 
         main_source = video['sources'][0]
 
-        # 4k streams are exclusively outputted in dash, so we need to filter these out
+        # 4k streams are exclusively outputted in dash, so we need to filter
+        # these out
         if determine_ext(main_source['url']) == 'mpd':
-            formats, subtitles = self._extract_mpd_formats_and_subtitles(main_source['url'], video_id, mpd_id='dash')
+            formats, subtitles = self._extract_mpd_formats_and_subtitles(
+                main_source['url'], video_id, mpd_id='dash')
         else:
             formats, subtitles = self._extract_m3u8_formats_and_subtitles(
                 main_source['url'], video_id, 'mp4', m3u8_id='hls')
 
-        self._merge_subtitles(traverse_obj(main_source, ('text', ..., ('caption', 'subtitle'), {
-            'url': ('srt', 'url', {url_or_none}),
-        }, all, {subs_list_to_dict(lang='pt-BR')})), target=subtitles)
+        self._merge_subtitles(
+            traverse_obj(
+                main_source, ('text', ..., ('caption', 'subtitle'), {
+                    'url': (
+                        'srt', 'url', {url_or_none}), }, all, {
+                    subs_list_to_dict(
+                        lang='pt-BR')})), target=subtitles)
 
         return {
             'id': video_id,
@@ -178,48 +184,43 @@ class GloboArticleIE(InfoExtractor):
         r'<bs-player[^>]+\bvideoid=["\'](\d{8,})["\']',
     ]
 
-    _TESTS = [{
-        'url': 'http://g1.globo.com/jornal-nacional/noticia/2014/09/novidade-na-fiscalizacao-de-bagagem-pela-receita-provoca-discussoes.html',
-        'info_dict': {
-            'id': 'novidade-na-fiscalizacao-de-bagagem-pela-receita-provoca-discussoes',
-            'title': 'Novidade na fiscalização de bagagem pela Receita provoca discussões',
-            'description': 'md5:c3c4b4d4c30c32fce460040b1ac46b12',
-        },
-        'playlist_count': 1,
-    }, {
-        'url': 'http://g1.globo.com/pr/parana/noticia/2016/09/mpf-denuncia-lula-marisa-e-mais-seis-na-operacao-lava-jato.html',
-        'info_dict': {
-            'id': 'mpf-denuncia-lula-marisa-e-mais-seis-na-operacao-lava-jato',
-            'title': "Lula era o 'comandante máximo' do esquema da Lava Jato, diz MPF",
-            'description': 'md5:8aa7cc8beda4dc71cc8553e00b77c54c',
-        },
-        'playlist_count': 6,
-    }, {
-        'url': 'http://gq.globo.com/Prazeres/Poder/noticia/2015/10/all-o-desafio-assista-ao-segundo-capitulo-da-serie.html',
-        'only_matching': True,
-    }, {
-        'url': 'http://gshow.globo.com/programas/tv-xuxa/O-Programa/noticia/2014/01/xuxa-e-junno-namoram-muuuito-em-luau-de-zeze-di-camargo-e-luciano.html',
-        'only_matching': True,
-    }, {
-        'url': 'http://oglobo.globo.com/rio/a-amizade-entre-um-entregador-de-farmacia-um-piano-19946271',
-        'only_matching': True,
-    }, {
-        'url': 'https://ge.globo.com/video/ta-na-area-como-foi-assistir-ao-jogo-do-palmeiras-que-a-globo-nao-passou-10287094.ghtml',
-        'info_dict': {
-            'id': 'ta-na-area-como-foi-assistir-ao-jogo-do-palmeiras-que-a-globo-nao-passou-10287094',
-            'title': 'Tá na Área: como foi assistir ao jogo do Palmeiras que a Globo não passou',
-            'description': 'md5:2d089d036c4c9675117d3a56f8c61739',
-        },
-        'playlist_count': 1,
-    }, {
-        'url': 'https://redeglobo.globo.com/rpc/meuparana/noticia/a-producao-de-chocolates-no-parana.ghtml',
-        'info_dict': {
-            'id': 'a-producao-de-chocolates-no-parana',
-            'title': 'A produção de chocolates no Paraná',
-            'description': 'md5:f2e3daf00ffd1dc0e9a8a6c7cfb0a89e',
-        },
-        'playlist_count': 2,
-    }]
+    _TESTS = [{'url': 'http://g1.globo.com/jornal-nacional/noticia/2014/09/novidade-na-fiscalizacao-de-bagagem-pela-receita-provoca-discussoes.html',
+               'info_dict': {'id': 'novidade-na-fiscalizacao-de-bagagem-pela-receita-provoca-discussoes',
+                             'title': 'Novidade na fiscalização de bagagem pela Receita provoca discussões',
+                             'description': 'md5:c3c4b4d4c30c32fce460040b1ac46b12',
+                             },
+               'playlist_count': 1,
+               },
+              {'url': 'http://g1.globo.com/pr/parana/noticia/2016/09/mpf-denuncia-lula-marisa-e-mais-seis-na-operacao-lava-jato.html',
+               'info_dict': {'id': 'mpf-denuncia-lula-marisa-e-mais-seis-na-operacao-lava-jato',
+                             'title': "Lula era o 'comandante máximo' do esquema da Lava Jato, diz MPF",
+                             'description': 'md5:8aa7cc8beda4dc71cc8553e00b77c54c',
+                             },
+               'playlist_count': 6,
+               },
+              {'url': 'http://gq.globo.com/Prazeres/Poder/noticia/2015/10/all-o-desafio-assista-ao-segundo-capitulo-da-serie.html',
+               'only_matching': True,
+               },
+              {'url': 'http://gshow.globo.com/programas/tv-xuxa/O-Programa/noticia/2014/01/xuxa-e-junno-namoram-muuuito-em-luau-de-zeze-di-camargo-e-luciano.html',
+               'only_matching': True,
+               },
+              {'url': 'http://oglobo.globo.com/rio/a-amizade-entre-um-entregador-de-farmacia-um-piano-19946271',
+               'only_matching': True,
+               },
+              {'url': 'https://ge.globo.com/video/ta-na-area-como-foi-assistir-ao-jogo-do-palmeiras-que-a-globo-nao-passou-10287094.ghtml',
+               'info_dict': {'id': 'ta-na-area-como-foi-assistir-ao-jogo-do-palmeiras-que-a-globo-nao-passou-10287094',
+                             'title': 'Tá na Área: como foi assistir ao jogo do Palmeiras que a Globo não passou',
+                             'description': 'md5:2d089d036c4c9675117d3a56f8c61739',
+                             },
+               'playlist_count': 1,
+               },
+              {'url': 'https://redeglobo.globo.com/rpc/meuparana/noticia/a-producao-de-chocolates-no-parana.ghtml',
+               'info_dict': {'id': 'a-producao-de-chocolates-no-parana',
+                             'title': 'A produção de chocolates no Paraná',
+                             'description': 'md5:f2e3daf00ffd1dc0e9a8a6c7cfb0a89e',
+                             },
+               'playlist_count': 2,
+               }]
 
     @classmethod
     def suitable(cls, url):

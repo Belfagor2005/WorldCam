@@ -332,8 +332,7 @@ class FavoritesManager:
                         # YouTube streams require special handling
                         service_type = 5001  # HLS
                         service_url = "http://localhost:8000/proxy.m3u8?url={0}".format(
-                            quote(fav["url"])
-                        )
+                            quote(fav["url"]))
                     else:
                         service_type = 4097  # HTTP
                         encoded_url = quote(fav["url"], safe="")
@@ -341,8 +340,7 @@ class FavoritesManager:
 
                     # Create service line
                     service_line = "#SERVICE {0}:0:1:0:0:0:0:0:0:0:{1}\n".format(
-                        service_type, service_url
-                    )
+                        service_type, service_url)
                     f.write(service_line)
                     f.write("#DESCRIPTION {0}\n".format(fav["name"]))
 
@@ -928,16 +926,17 @@ class AspectManager:
                 "16:10": 2,
                 "auto": 3
             }
-            
+
             if aspect_ratio in aspect_map:
                 new_aspect = aspect_map[aspect_ratio]
-                print("[INFO] Setting aspect ratio to:", aspect_ratio, "(", new_aspect, ")")
+                print("[INFO] Setting aspect ratio to:",
+                      aspect_ratio, "(", new_aspect, ")")
                 AVSwitch().setAspectRatio(new_aspect)
                 return True
             else:
                 print("[ERROR] Unknown aspect ratio:", aspect_ratio)
                 return False
-                
+
         except Exception as e:
             print("[ERROR] Failed to set aspect ratio:", str(e))
             return False

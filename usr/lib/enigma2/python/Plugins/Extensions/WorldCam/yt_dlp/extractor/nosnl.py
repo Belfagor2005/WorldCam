@@ -95,10 +95,12 @@ class NOSNLArticleIE(InfoExtractor):
                 }
 
     def _real_extract(self, url):
-        site_type, display_id = self._match_valid_url(url).group('type', 'display_id')
+        site_type, display_id = self._match_valid_url(
+            url).group('type', 'display_id')
         webpage = self._download_webpage(url, display_id)
 
-        nextjs_json = self._search_nextjs_data(webpage, display_id)['props']['pageProps']['data']
+        nextjs_json = self._search_nextjs_data(
+            webpage, display_id)['props']['pageProps']['data']
         return {
             '_type': 'playlist',
             'entries': self._entries(

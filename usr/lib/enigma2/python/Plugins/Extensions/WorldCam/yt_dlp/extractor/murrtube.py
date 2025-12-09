@@ -64,29 +64,53 @@ class MurrtubeIE(InfoExtractor):
         homepage = self._download_webpage(
             'https://murrtube.net', None, note='Getting session token')
         self._request_webpage(
-            'https://murrtube.net/accept_age_check', None, 'Setting age cookie',
-            data=urlencode_postdata(self._hidden_inputs(homepage)))
+            'https://murrtube.net/accept_age_check',
+            None,
+            'Setting age cookie',
+            data=urlencode_postdata(
+                self._hidden_inputs(homepage)))
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         if video_id.startswith('murrtube:'):
             raise ExtractorError('Support for murrtube: prefix URLs is broken')
         video_page = self._download_webpage(url, video_id)
-        video_attrs = extract_attributes(get_element_html_by_id('video', video_page))
+        video_attrs = extract_attributes(
+            get_element_html_by_id(
+                'video', video_page))
         playlist = update_url(video_attrs['data-url'], query=None)
-        video_id = self._search_regex(r'/([\da-f]+)/index.m3u8', playlist, 'video id')
+        video_id = self._search_regex(
+            r'/([\da-f]+)/index.m3u8', playlist, 'video id')
 
         return {
             'id': video_id,
-            'title': remove_end(self._og_search_title(video_page), ' - Murrtube'),
+            'title': remove_end(
+                self._og_search_title(video_page),
+                ' - Murrtube'),
             'age_limit': 18,
-            'formats': self._extract_m3u8_formats(playlist, video_id, 'mp4'),
+            'formats': self._extract_m3u8_formats(
+                playlist,
+                video_id,
+                'mp4'),
             'description': self._og_search_description(video_page),
-            'thumbnail': update_url(self._og_search_thumbnail(video_page, default=''), query=None) or None,
-            'uploader': clean_html(get_element_by_class('pl-1 is-size-6 has-text-lighter', video_page)),
-            'view_count': self._extract_count('Views', video_page),
-            'like_count': self._extract_count('Likes', video_page),
-            'comment_count': self._extract_count('Comments', video_page),
+            'thumbnail': update_url(
+                self._og_search_thumbnail(
+                    video_page,
+                    default=''),
+                query=None) or None,
+            'uploader': clean_html(
+                get_element_by_class(
+                    'pl-1 is-size-6 has-text-lighter',
+                    video_page)),
+            'view_count': self._extract_count(
+                'Views',
+                video_page),
+            'like_count': self._extract_count(
+                'Likes',
+                video_page),
+            'comment_count': self._extract_count(
+                'Comments',
+                video_page),
         }
 
 
@@ -128,7 +152,9 @@ query Media($q: String, $sort: String, $userId: ID, $offset: Int!, $limit: Int!)
 }'''},
             f'Downloading page {page + 1}')
         if data is None:
-            raise ExtractorError(f'Failed to retrieve video list for page {page + 1}')
+            raise ExtractorError(
+                f'Failed to retrieve video list for page {
+                    page + 1}')
 
         media = data['media']
 

@@ -118,7 +118,9 @@ class TVPlayIE(InfoExtractor):
         if geo_country:
             self._initialize_geo_bypass({'countries': [geo_country.upper()]})
         video = self._download_json(
-            f'http://playapi.mtgx.tv/v3/videos/{video_id}', video_id, 'Downloading video JSON')
+            f'http://playapi.mtgx.tv/v3/videos/{video_id}',
+            video_id,
+            'Downloading video JSON')
 
         title = video['title']
 
@@ -128,7 +130,8 @@ class TVPlayIE(InfoExtractor):
                 video_id, 'Downloading streams JSON')
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                msg = self._parse_json(e.cause.response.read().decode('utf-8'), video_id)
+                msg = self._parse_json(
+                    e.cause.response.read().decode('utf-8'), video_id)
                 raise ExtractorError(msg['msg'], expected=True)
             raise
 
@@ -157,7 +160,8 @@ class TVPlayIE(InfoExtractor):
                 }
                 if video_url.startswith('rtmp'):
                     m = re.search(
-                        r'^(?P<url>rtmp://[^/]+/(?P<app>[^/]+))/(?P<playpath>.+)$', video_url)
+                        r'^(?P<url>rtmp://[^/]+/(?P<app>[^/]+))/(?P<playpath>.+)$',
+                        video_url)
                     if not m:
                         continue
                     fmt.update({
@@ -190,9 +194,15 @@ class TVPlayIE(InfoExtractor):
             }]
 
         series = video.get('format_title')
-        episode_number = int_or_none(video.get('format_position', {}).get('episode'))
+        episode_number = int_or_none(
+            video.get(
+                'format_position',
+                {}).get('episode'))
         season = video.get('_embedded', {}).get('season', {}).get('title')
-        season_number = int_or_none(video.get('format_position', {}).get('season'))
+        season_number = int_or_none(
+            video.get(
+                'format_position',
+                {}).get('season'))
 
         return {
             'id': video_id,
@@ -219,51 +229,47 @@ class TVPlayHomeIE(InfoExtractor):
             (?P<live>lives/)?
             [^?#&]+(?:episode|programme|clip)-(?P<id>\d+)
     '''
-    _TESTS = [{
-        'url': 'https://play.tv3.lt/series/gauju-karai-karveliai,serial-2343791/serija-8,episode-2343828',
-        'info_dict': {
-            'id': '2343828',
-            'ext': 'mp4',
-            'title': 'Gaujų karai. Karveliai (2021) | S01E08: Serija 8',
-            'description': 'md5:f6fcfbb236429f05531131640dfa7c81',
-            'duration': 2710,
-            'season': 'Gaujų karai. Karveliai',
-            'season_number': 1,
-            'release_year': 2021,
-            'episode': 'Serija 8',
-            'episode_number': 8,
-        },
-        'params': {
-            'skip_download': 'm3u8',
-        },
-    }, {
-        'url': 'https://play.tv3.lt/series/moterys-meluoja-geriau-n-7,serial-2574652/serija-25,episode-3284937',
-        'info_dict': {
-            'id': '3284937',
-            'ext': 'mp4',
-            'season': 'Moterys meluoja geriau [N-7]',
-            'season_number': 14,
-            'release_year': 2021,
-            'episode': 'Serija 25',
-            'episode_number': 25,
-            'title': 'Moterys meluoja geriau [N-7] (2021) | S14|E25: Serija 25',
-            'description': 'md5:c6926e9710f1a126f028fbe121eddb79',
-            'duration': 2440,
-        },
-        'skip': '404',
-    }, {
-        'url': 'https://play.tv3.lt/lives/tv6-lt,live-2838694/optibet-a-lygos-rungtynes-marijampoles-suduva--vilniaus-riteriai,programme-3422014',
-        'only_matching': True,
-    }, {
-        'url': 'https://tv3play.skaties.lv/series/women-lie-better-lv,serial-1024464/women-lie-better-lv,episode-1038762',
-        'only_matching': True,
-    }, {
-        'url': 'https://play.tv3.ee/series/_,serial-2654462/_,episode-2654474',
-        'only_matching': True,
-    }, {
-        'url': 'https://tv3play.skaties.lv/clips/tv3-zinas-valsti-lidz-15novembrim-bus-majsede,clip-3464509',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://play.tv3.lt/series/gauju-karai-karveliai,serial-2343791/serija-8,episode-2343828',
+               'info_dict': {'id': '2343828',
+                             'ext': 'mp4',
+                             'title': 'Gaujų karai. Karveliai (2021) | S01E08: Serija 8',
+                             'description': 'md5:f6fcfbb236429f05531131640dfa7c81',
+                             'duration': 2710,
+                             'season': 'Gaujų karai. Karveliai',
+                             'season_number': 1,
+                             'release_year': 2021,
+                             'episode': 'Serija 8',
+                             'episode_number': 8,
+                             },
+               'params': {'skip_download': 'm3u8',
+                          },
+               },
+              {'url': 'https://play.tv3.lt/series/moterys-meluoja-geriau-n-7,serial-2574652/serija-25,episode-3284937',
+               'info_dict': {'id': '3284937',
+                             'ext': 'mp4',
+                             'season': 'Moterys meluoja geriau [N-7]',
+                             'season_number': 14,
+                             'release_year': 2021,
+                             'episode': 'Serija 25',
+                             'episode_number': 25,
+                             'title': 'Moterys meluoja geriau [N-7] (2021) | S14|E25: Serija 25',
+                             'description': 'md5:c6926e9710f1a126f028fbe121eddb79',
+                             'duration': 2440,
+                             },
+               'skip': '404',
+               },
+              {'url': 'https://play.tv3.lt/lives/tv6-lt,live-2838694/optibet-a-lygos-rungtynes-marijampoles-suduva--vilniaus-riteriai,programme-3422014',
+               'only_matching': True,
+               },
+              {'url': 'https://tv3play.skaties.lv/series/women-lie-better-lv,serial-1024464/women-lie-better-lv,episode-1038762',
+               'only_matching': True,
+               },
+              {'url': 'https://play.tv3.ee/series/_,serial-2654462/_,episode-2654474',
+               'only_matching': True,
+               },
+              {'url': 'https://tv3play.skaties.lv/clips/tv3-zinas-valsti-lidz-15novembrim-bus-majsede,clip-3464509',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         country, is_live, video_id = self._match_valid_url(url).groups()
@@ -276,12 +282,15 @@ class TVPlayHomeIE(InfoExtractor):
         video_type = 'CATCHUP' if is_live else 'MOVIE'
         stream_id = data['programRecordingId'] if is_live else video_id
         stream = self._download_json(
-            urljoin(url, f'/api/products/{stream_id}/videos/playlist?videoType={video_type}&platform=BROWSER'), video_id)
+            urljoin(
+                url,
+                f'/api/products/{stream_id}/videos/playlist?videoType={video_type}&platform=BROWSER'),
+            video_id)
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             stream['sources']['HLS'][0]['src'], video_id, 'mp4', 'm3u8_native', m3u8_id='hls')
 
-        thumbnails = set(traverse_obj(
-            data, (('galary', 'images', 'artworks'), ..., ..., ('miniUrl', 'mainUrl')), expected_type=url_or_none))
+        thumbnails = set(traverse_obj(data, (('galary', 'images', 'artworks'), ..., ...,
+                         ('miniUrl', 'mainUrl')), expected_type=url_or_none))
 
         return {
             'id': video_id,
