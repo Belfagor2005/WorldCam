@@ -440,14 +440,16 @@ class WorldCamMainScreen(WebcamBaseScreen):
                     f"Index: {index}, Category count: {len(self.categories)}")
         except Exception as e:
             import traceback
+
             self.logger.error(
-                f"CRITICAL ERROR: {
-                    str(e)}\n{
-                    traceback.format_exc()}")
+                "CRITICAL ERROR: %s\n%s" % (e, traceback.format_exc())
+            )
+
             self.session.open(
                 MessageBox,
                 _("Technical error in Webcam.pl"),
-                MessageBox.TYPE_ERROR)
+                MessageBox.TYPE_ERROR
+            )
 
     def open_menu(self, result=None):
         self.logger.info("Opening menu")
@@ -1078,8 +1080,8 @@ class WorldCamContinentCountryScreen(WebcamBaseScreen):
         super().__init__(session, lang)
         disable_summary(self)
         self.logger.info(
-            f"Initializing WorldCamContinentCountryScreen for {
-                continent['name']}")
+            "Initializing WorldCamContinentCountryScreen for {0}".format(continent["name"])
+        )
         self.continent = continent
         # self.scraper = SkylineScraper(lang if lang else "en")
         self["title"] = Label(continent["name"])
@@ -1104,9 +1106,11 @@ class WorldCamContinentCountryScreen(WebcamBaseScreen):
             self.countries = sorted(countries, key=lambda c: c["name"].lower())
             country_names = [country["name"] for country in self.countries]
             self.logger.info(
-                f"Loaded {
-                    len(country_names)} countries for {
-                    self.continent['name']}")
+                "Loaded {0} countries for {1}".format(
+                    len(country_names),
+                    self.continent["name"]
+                )
+            )
             if country_names:
                 showlist(country_names, self["list"], is_country=True)
                 self["list"].setCurrentIndex(0)
