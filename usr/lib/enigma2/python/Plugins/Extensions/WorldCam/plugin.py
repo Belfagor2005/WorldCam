@@ -1080,8 +1080,8 @@ class WorldCamContinentCountryScreen(WebcamBaseScreen):
         super().__init__(session, lang)
         disable_summary(self)
         self.logger.info(
-            "Initializing WorldCamContinentCountryScreen for {0}".format(continent["name"])
-        )
+            "Initializing WorldCamContinentCountryScreen for {0}".format(
+                continent["name"]))
         self.continent = continent
         # self.scraper = SkylineScraper(lang if lang else "en")
         self["title"] = Label(continent["name"])
