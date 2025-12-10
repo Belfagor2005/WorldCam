@@ -85,7 +85,8 @@ class PuhuTVIE(InfoExtractor):
             urls.append(media_url)
 
             playlist = video.get('is_playlist')
-            if (video.get('stream_type') == 'hls' and playlist is True) or 'playlist.m3u8' in media_url:
+            if (video.get('stream_type') ==
+                    'hls' and playlist is True) or 'playlist.m3u8' in media_url:
                 formats.extend(self._extract_m3u8_formats(
                     media_url, video_id, 'mp4', entry_protocol='m3u8_native',
                     m3u8_id='hls', fatal=False))
@@ -98,7 +99,8 @@ class PuhuTVIE(InfoExtractor):
                 'height': quality,
             }
             video_format = video.get('video_format')
-            is_hls = (video_format == 'hls' or '/hls/' in media_url or '/chunklist.m3u8' in media_url) and playlist is False
+            is_hls = (
+                video_format == 'hls' or '/hls/' in media_url or '/chunklist.m3u8' in media_url) and playlist is False
             if is_hls:
                 format_id = 'hls'
                 f['protocol'] = 'm3u8_native'
@@ -197,12 +199,15 @@ class PuhuTVSerieIE(InfoExtractor):
             while has_more is True:
                 season = self._download_json(
                     f'https://appservice.puhutv.com/api/seasons/{season_id}/episodes?v=2',
-                    season_id, f'Downloading page {page}', query={
+                    season_id,
+                    f'Downloading page {page}',
+                    query={
                         'page': page,
                         'per': 100,
                     })['data']
 
-                for episode in traverse_obj(season, ('episodes', lambda _, v: v.get('slug') or v['assets'][0]['slug'])):
+                for episode in traverse_obj(
+                        season, ('episodes', lambda _, v: v.get('slug') or v['assets'][0]['slug'])):
                     slug = episode.get('slug') or episode['assets'][0]['slug']
                     yield self.url_result(
                         f'https://puhutv.com/{slug}', PuhuTVIE, episode.get('id'), episode.get('name'))

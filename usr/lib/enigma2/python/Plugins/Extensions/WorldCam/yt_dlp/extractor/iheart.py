@@ -71,7 +71,10 @@ class IHeartRadioPodcastIE(IHeartRadioBaseIE):
         podcast_id = self._match_id(url)
         path = 'podcasts/' + podcast_id
         episodes = self._call_api(
-            path + '/episodes', podcast_id, query={'limit': 1000000000})['data']
+            path + '/episodes',
+            podcast_id,
+            query={
+                'limit': 1000000000})['data']
 
         entries = []
         for episode in episodes:
@@ -91,4 +94,7 @@ class IHeartRadioPodcastIE(IHeartRadioBaseIE):
         podcast = self._call_api(path, podcast_id, False) or {}
 
         return self.playlist_result(
-            entries, podcast_id, podcast.get('title'), podcast.get('description'))
+            entries,
+            podcast_id,
+            podcast.get('title'),
+            podcast.get('description'))

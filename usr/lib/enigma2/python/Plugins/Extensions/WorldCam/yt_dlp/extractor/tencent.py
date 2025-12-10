@@ -41,8 +41,19 @@ class TencentBaseIE(InfoExtractor):
             b'\x01PJ\xf3V\xe6\x19\xcf.B\xbb\xa6\x8c?p\xf9',
             padding_mode='whitespace').hex().upper()
 
-    def _get_video_api_response(self, video_url, video_id, series_id, subtitle_format, video_format, video_quality):
-        guid = ''.join(random.choices(string.digits + string.ascii_lowercase, k=16))
+    def _get_video_api_response(
+            self,
+            video_url,
+            video_id,
+            series_id,
+            subtitle_format,
+            video_format,
+            video_quality):
+        guid = ''.join(
+            random.choices(
+                string.digits +
+                string.ascii_lowercase,
+                k=16))
         ckey = self._get_ckey(video_id, video_url, guid)
         query = {
             'vid': video_id,
@@ -81,7 +92,8 @@ class TencentBaseIE(InfoExtractor):
 
         formats, subtitles = [], {}
         for video_format in video_response['ul']['ui']:
-            if video_format.get('hls') or determine_ext(video_format['url']) == 'm3u8':
+            if video_format.get('hls') or determine_ext(
+                    video_format['url']) == 'm3u8':
                 fmts, subs = self._extract_m3u8_formats_and_subtitles(
                     video_format['url'] + traverse_obj(video_format, ('hls', 'pt'), default=''),
                     video_id, 'mp4', fatal=False)
@@ -89,10 +101,14 @@ class TencentBaseIE(InfoExtractor):
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
-                formats.append({
-                    'url': f'{video_format["url"]}{video_response["fn"]}?vkey={video_response["fvkey"]}',
-                    'ext': 'mp4',
-                })
+                formats.append(
+                    {
+                        'url': f'{
+                            video_format["url"]}{
+                            video_response["fn"]}?vkey={
+                            video_response["fvkey"]}',
+                        'ext': 'mp4',
+                    })
 
         identifier = video_response.get('br')
         format_response = traverse_obj(
@@ -101,14 +117,23 @@ class TencentBaseIE(InfoExtractor):
         common_info = {
             'width': video_response.get('vw'),
             'height': video_response.get('vh'),
-            'abr': float_or_none(format_response.get('audiobandwidth'), scale=1000),
-            'vbr': float_or_none(format_response.get('bandwidth'), scale=1000),
+            'abr': float_or_none(
+                format_response.get('audiobandwidth'),
+                scale=1000),
+            'vbr': float_or_none(
+                format_response.get('bandwidth'),
+                scale=1000),
             'fps': format_response.get('vfps'),
             'format': format_response.get('sname'),
             'format_id': format_response.get('name'),
             'format_note': format_response.get('resolution'),
-            'dynamic_range': {'hdr10': 'hdr10'}.get(format_response.get('name'), 'sdr'),
-            'has_drm': format_response.get('drm', 0) != 0,
+            'dynamic_range': {
+                'hdr10': 'hdr10'}.get(
+                    format_response.get('name'),
+                    'sdr'),
+            'has_drm': format_response.get(
+                'drm',
+                0) != 0,
         }
         for f in formats:
             f.update(common_info)
@@ -126,10 +151,20 @@ class TencentBaseIE(InfoExtractor):
 
         return subtitles
 
-    def _extract_all_video_formats_and_subtitles(self, url, video_id, series_id):
-        api_responses = [self._get_video_api_response(url, video_id, series_id, 'srt', 'hls', 'hd')]
+    def _extract_all_video_formats_and_subtitles(
+            self, url, video_id, series_id):
+        api_responses = [
+            self._get_video_api_response(
+                url,
+                video_id,
+                series_id,
+                'srt',
+                'hls',
+                'hd')]
         self._check_api_response(api_responses[0])
-        qualities = traverse_obj(api_responses, (0, 'fl', 'fi', ..., 'name')) or ('shd', 'fhd')
+        qualities = traverse_obj(
+            api_responses, (0, 'fl', 'fi', ..., 'name')) or (
+            'shd', 'fhd')
         for q in qualities:
             if q not in ('ld', 'sd', 'hd'):
                 api_responses.append(self._get_video_api_response(
@@ -138,8 +173,10 @@ class TencentBaseIE(InfoExtractor):
 
         formats, subtitles = [], {}
         for api_response in api_responses:
-            fmts, subs = self._extract_video_formats_and_subtitles(api_response, video_id)
-            native_subtitles = self._extract_video_native_subtitles(api_response)
+            fmts, subs = self._extract_video_formats_and_subtitles(
+                api_response, video_id)
+            native_subtitles = self._extract_video_native_subtitles(
+                api_response)
 
             formats.extend(fmts)
             self._merge_subtitles(subs, native_subtitles, target=subtitles)
@@ -149,7 +186,8 @@ class TencentBaseIE(InfoExtractor):
     def _get_clean_title(self, title):
         return re.sub(
             r'\s*[_\-]\s*(?:Watch online|Watch HD Video Online|WeTV|腾讯视频|(?:高清)?1080P在线观看平台).*?$',
-            '', title or '').strip() or None
+            '',
+            title or '').strip() or None
 
 
 class VQQBaseIE(TencentBaseIE):
@@ -164,12 +202,17 @@ class VQQBaseIE(TencentBaseIE):
     def _get_webpage_metadata(self, webpage, video_id):
         return self._search_json(
             r'<script[^>]*>[^<]*window\.__(?:pinia|PINIA__)\s*=',
-            webpage, 'pinia data', video_id, transform_source=js_to_json, fatal=False)
+            webpage,
+            'pinia data',
+            video_id,
+            transform_source=js_to_json,
+            fatal=False)
 
 
 class VQQVideoIE(VQQBaseIE):
     IE_NAME = 'vqq:video'
-    _VALID_URL = VQQBaseIE._VALID_URL_BASE + r'/x/(?:page|cover/(?P<series_id>\w+))/(?P<id>\w+)'
+    _VALID_URL = VQQBaseIE._VALID_URL_BASE + \
+        r'/x/(?:page|cover/(?P<series_id>\w+))/(?P<id>\w+)'
 
     _TESTS = [{
         'url': 'https://v.qq.com/x/page/q326831cny0.html',
@@ -226,28 +269,47 @@ class VQQVideoIE(VQQBaseIE):
     }]
 
     def _real_extract(self, url):
-        video_id, series_id = self._match_valid_url(url).group('id', 'series_id')
+        video_id, series_id = self._match_valid_url(
+            url).group('id', 'series_id')
         webpage = self._download_webpage(url, video_id)
         webpage_metadata = self._get_webpage_metadata(webpage, video_id)
 
-        formats, subtitles = self._extract_all_video_formats_and_subtitles(url, video_id, series_id)
+        formats, subtitles = self._extract_all_video_formats_and_subtitles(
+            url, video_id, series_id)
         return {
             'id': video_id,
-            'title': self._get_clean_title(self._og_search_title(webpage)
-                                           or traverse_obj(webpage_metadata, ('global', 'videoInfo', 'title'))),
-            'description': (self._og_search_description(webpage)
-                            or traverse_obj(webpage_metadata, ('global', 'videoInfo', 'desc'))),
+            'title': self._get_clean_title(
+                self._og_search_title(webpage) or traverse_obj(
+                    webpage_metadata,
+                    ('global',
+                     'videoInfo',
+                     'title'))),
+            'description': (
+                self._og_search_description(webpage) or traverse_obj(
+                    webpage_metadata,
+                    ('global',
+                     'videoInfo',
+                     'desc'))),
             'formats': formats,
             'subtitles': subtitles,
-            'thumbnail': (self._og_search_thumbnail(webpage)
-                          or traverse_obj(webpage_metadata, ('global', 'videoInfo', 'pic160x90'))),
-            'series': traverse_obj(webpage_metadata, ('global', 'coverInfo', 'title')),
+            'thumbnail': (
+                self._og_search_thumbnail(webpage) or traverse_obj(
+                    webpage_metadata,
+                    ('global',
+                     'videoInfo',
+                     'pic160x90'))),
+            'series': traverse_obj(
+                webpage_metadata,
+                ('global',
+                 'coverInfo',
+                 'title')),
         }
 
 
 class VQQSeriesIE(VQQBaseIE):
     IE_NAME = 'vqq:series'
-    _VALID_URL = VQQBaseIE._VALID_URL_BASE + r'/x/cover/(?P<id>\w+)\.html/?(?:[?#]|$)'
+    _VALID_URL = VQQBaseIE._VALID_URL_BASE + \
+        r'/x/cover/(?P<id>\w+)\.html/?(?:[?#]|$)'
 
     _TESTS = [{
         'url': 'https://v.qq.com/x/cover/7ce5noezvafma27.html',
@@ -272,16 +334,26 @@ class VQQSeriesIE(VQQBaseIE):
         webpage = self._download_webpage(url, series_id)
         webpage_metadata = self._get_webpage_metadata(webpage, series_id)
 
-        episode_paths = [f'/x/cover/{series_id}/{video_id}.html' for video_id in re.findall(
-            r'<div[^>]+data-vid="(?P<video_id>[^"]+)"[^>]+class="[^"]+episode-item-rect--number',
-            webpage)]
+        episode_paths = [
+            f'/x/cover/{series_id}/{video_id}.html' for video_id in re.findall(
+                r'<div[^>]+data-vid="(?P<video_id>[^"]+)"[^>]+class="[^"]+episode-item-rect--number',
+                webpage)]
 
         return self.playlist_from_matches(
-            episode_paths, series_id, ie=VQQVideoIE, getter=urljoin(url),
-            title=self._get_clean_title(traverse_obj(webpage_metadata, ('coverInfo', 'title'))
-                                        or self._og_search_title(webpage)),
-            description=(traverse_obj(webpage_metadata, ('coverInfo', 'description'))
-                         or self._og_search_description(webpage)))
+            episode_paths,
+            series_id,
+            ie=VQQVideoIE,
+            getter=urljoin(url),
+            title=self._get_clean_title(
+                traverse_obj(
+                    webpage_metadata,
+                    ('coverInfo',
+                     'title')) or self._og_search_title(webpage)),
+            description=(
+                traverse_obj(
+                    webpage_metadata,
+                    ('coverInfo',
+                     'description')) or self._og_search_description(webpage)))
 
 
 class WeTvBaseIE(TencentBaseIE):
@@ -295,15 +367,24 @@ class WeTvBaseIE(TencentBaseIE):
 
     def _get_webpage_metadata(self, webpage, video_id):
         return self._parse_json(
-            traverse_obj(self._search_nextjs_data(webpage, video_id), ('props', 'pageProps', 'data')),
-            video_id, fatal=False)
+            traverse_obj(
+                self._search_nextjs_data(
+                    webpage,
+                    video_id),
+                ('props',
+                 'pageProps',
+                 'data')),
+            video_id,
+            fatal=False)
 
     def _extract_episode(self, url):
-        video_id, series_id = self._match_valid_url(url).group('id', 'series_id')
+        video_id, series_id = self._match_valid_url(
+            url).group('id', 'series_id')
         webpage = self._download_webpage(url, video_id)
         webpage_metadata = self._get_webpage_metadata(webpage, video_id)
 
-        formats, subtitles = self._extract_all_video_formats_and_subtitles(url, video_id, series_id)
+        formats, subtitles = self._extract_all_video_formats_and_subtitles(
+            url, video_id, series_id)
         return {
             'id': video_id,
             'title': self._get_clean_title(self._og_search_title(webpage)
@@ -323,20 +404,30 @@ class WeTvBaseIE(TencentBaseIE):
         webpage = self._download_webpage(url, series_id)
         webpage_metadata = self._get_webpage_metadata(webpage, series_id)
 
-        episode_paths = ([f'/play/{series_id}/{episode["vid"]}' for episode in webpage_metadata.get('videoList')]
-                         or re.findall(r'<a[^>]+class="play-video__link"[^>]+href="(?P<path>[^"]+)', webpage))
+        episode_paths = ([f'/play/{series_id}/{episode["vid"]}' for episode in webpage_metadata.get(
+            'videoList')] or re.findall(r'<a[^>]+class="play-video__link"[^>]+href="(?P<path>[^"]+)', webpage))
 
         return self.playlist_from_matches(
-            episode_paths, series_id, ie=ie, getter=urljoin(url),
-            title=self._get_clean_title(traverse_obj(webpage_metadata, ('coverInfo', 'title'))
-                                        or self._og_search_title(webpage)),
-            description=(traverse_obj(webpage_metadata, ('coverInfo', 'description'))
-                         or self._og_search_description(webpage)))
+            episode_paths,
+            series_id,
+            ie=ie,
+            getter=urljoin(url),
+            title=self._get_clean_title(
+                traverse_obj(
+                    webpage_metadata,
+                    ('coverInfo',
+                     'title')) or self._og_search_title(webpage)),
+            description=(
+                traverse_obj(
+                    webpage_metadata,
+                    ('coverInfo',
+                     'description')) or self._og_search_description(webpage)))
 
 
 class WeTvEpisodeIE(WeTvBaseIE):
     IE_NAME = 'wetv:episode'
-    _VALID_URL = WeTvBaseIE._VALID_URL_BASE + r'/(?P<series_id>\w+)(?:-[^?#]+)?/(?P<id>\w+)(?:-[^?#]+)?'
+    _VALID_URL = WeTvBaseIE._VALID_URL_BASE + \
+        r'/(?P<series_id>\w+)(?:-[^?#]+)?/(?P<id>\w+)(?:-[^?#]+)?'
 
     _TESTS = [{
         'url': 'https://wetv.vip/en/play/air11ooo2rdsdi3-Cute-Programmer/v0040pr89t9-EP1-Cute-Programmer',
@@ -390,7 +481,8 @@ class WeTvEpisodeIE(WeTvBaseIE):
 
 
 class WeTvSeriesIE(WeTvBaseIE):
-    _VALID_URL = WeTvBaseIE._VALID_URL_BASE + r'/(?P<id>\w+)(?:-[^/?#]+)?/?(?:[?#]|$)'
+    _VALID_URL = WeTvBaseIE._VALID_URL_BASE + \
+        r'/(?P<id>\w+)(?:-[^/?#]+)?/?(?:[?#]|$)'
 
     _TESTS = [{
         'url': 'https://wetv.vip/play/air11ooo2rdsdi3-Cute-Programmer',
@@ -426,7 +518,8 @@ class IflixBaseIE(WeTvBaseIE):
 
 class IflixEpisodeIE(IflixBaseIE):
     IE_NAME = 'iflix:episode'
-    _VALID_URL = IflixBaseIE._VALID_URL_BASE + r'/(?P<series_id>\w+)(?:-[^?#]+)?/(?P<id>\w+)(?:-[^?#]+)?'
+    _VALID_URL = IflixBaseIE._VALID_URL_BASE + \
+        r'/(?P<series_id>\w+)(?:-[^?#]+)?/(?P<id>\w+)(?:-[^?#]+)?'
 
     _TESTS = [{
         'url': 'https://www.iflix.com/en/play/daijrxu03yypu0s/a0040kvgaza',
@@ -465,7 +558,8 @@ class IflixEpisodeIE(IflixBaseIE):
 
 
 class IflixSeriesIE(IflixBaseIE):
-    _VALID_URL = IflixBaseIE._VALID_URL_BASE + r'/(?P<id>\w+)(?:-[^/?#]+)?/?(?:[?#]|$)'
+    _VALID_URL = IflixBaseIE._VALID_URL_BASE + \
+        r'/(?P<id>\w+)(?:-[^/?#]+)?/?(?:[?#]|$)'
 
     _TESTS = [{
         'url': 'https://www.iflix.com/en/play/g21a6qk4u1s9x22-You-Are-My-Hero',

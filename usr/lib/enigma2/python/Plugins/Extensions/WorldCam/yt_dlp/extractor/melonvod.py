@@ -52,7 +52,9 @@ class MelonVODIE(InfoExtractor):
                 [a['ARTISTNAMEWEBLIST']
                  for a in artist_list if a.get('ARTISTNAMEWEBLIST')])
 
-        thumbnail = urljoin(info.get('staticDomain'), stream_info.get('imgPath'))
+        thumbnail = urljoin(
+            info.get('staticDomain'),
+            stream_info.get('imgPath'))
 
         duration = int_or_none(stream_info.get('playTime'))
         upload_date = stream_info.get('mvSvcOpenDt', '')[:8] or None

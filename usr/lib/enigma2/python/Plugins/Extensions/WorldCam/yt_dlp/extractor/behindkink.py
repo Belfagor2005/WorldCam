@@ -28,7 +28,8 @@ class BehindKinkIE(InfoExtractor):
         video_url = self._search_regex(
             r'<source src="([^"]+)"', webpage, 'video URL')
         video_id = url_basename(video_url).split('_')[0]
-        upload_date = mobj.group('year') + mobj.group('month') + mobj.group('day')
+        upload_date = mobj.group(
+            'year') + mobj.group('month') + mobj.group('day')
 
         return {
             'id': video_id,

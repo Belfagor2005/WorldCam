@@ -35,15 +35,15 @@ class YouNowLiveIE(InfoExtractor):
 
     @classmethod
     def suitable(cls, url):
-        return (False
-                if YouNowChannelIE.suitable(url) or YouNowMomentIE.suitable(url)
-                else super().suitable(url))
+        return (False if YouNowChannelIE.suitable(url)
+                or YouNowMomentIE.suitable(url) else super().suitable(url))
 
     def _real_extract(self, url):
         username = self._match_id(url)
 
         data = self._download_json(
-            f'https://api.younow.com/php/api/broadcast/info/curId=0/user={username}', username)
+            f'https://api.younow.com/php/api/broadcast/info/curId=0/user={username}',
+            username)
 
         if data.get('errorCode') != 0:
             raise ExtractorError(data['errorMsg'], expected=True)
@@ -63,13 +63,19 @@ class YouNowLiveIE(InfoExtractor):
             'uploader_id': data.get('userId'),
             'uploader_url': f'https://www.younow.com/{username}',
             'creator': uploader,
-            'view_count': int_or_none(data.get('viewers')),
-            'like_count': int_or_none(data.get('likes')),
-            'formats': [{
-                'url': '{}/broadcast/videoPath/hls=1/broadcastId={}/channelId={}'.format(CDN_API_BASE, data['broadcastId'], data['userId']),
-                'ext': 'mp4',
-                'protocol': 'm3u8',
-            }],
+            'view_count': int_or_none(
+                data.get('viewers')),
+            'like_count': int_or_none(
+                data.get('likes')),
+            'formats': [
+                {
+                    'url': '{}/broadcast/videoPath/hls=1/broadcastId={}/channelId={}'.format(
+                        CDN_API_BASE,
+                        data['broadcastId'],
+                        data['userId']),
+                    'ext': 'mp4',
+                    'protocol': 'm3u8',
+                }],
         }
 
 
@@ -156,9 +162,11 @@ class YouNowChannelIE(InfoExtractor):
 
     def _real_extract(self, url):
         username = self._match_id(url)
-        channel_id = str(self._download_json(
-            f'https://api.younow.com/php/api/broadcast/info/curId=0/user={username}',
-            username, note='Downloading user information')['userId'])
+        channel_id = str(
+            self._download_json(
+                f'https://api.younow.com/php/api/broadcast/info/curId=0/user={username}',
+                username,
+                note='Downloading user information')['userId'])
         return self.playlist_result(
             self._entries(username, channel_id), channel_id,
             f'{username} moments')

@@ -59,10 +59,15 @@ class ZoomIE(InfoExtractor):
 
     def _get_page_data(self, webpage, video_id):
         return self._search_json(
-            r'window\.__data__\s*=', webpage, 'data', video_id, transform_source=js_to_json)
+            r'window\.__data__\s*=',
+            webpage,
+            'data',
+            video_id,
+            transform_source=js_to_json)
 
     def _get_real_webpage(self, url, base_url, video_id, url_type):
-        webpage = self._download_webpage(url, video_id, note=f'Downloading {url_type} webpage')
+        webpage = self._download_webpage(
+            url, video_id, note=f'Downloading {url_type} webpage')
         try:
             form = self._form_hidden_inputs('password_form', webpage)
         except ExtractorError:
@@ -71,7 +76,8 @@ class ZoomIE(InfoExtractor):
         password = self.get_param('videopassword')
         if not password:
             raise ExtractorError(
-                'This video is protected by a passcode, use the --video-password option', expected=True)
+                'This video is protected by a passcode, use the --video-password option',
+                expected=True)
         is_meeting = form.get('useWhichPasswd') == 'meeting'
         validation = self._download_json(
             base_url + 'rec/validate%s_passwd' % ('_meet' if is_meeting else ''),
@@ -82,10 +88,12 @@ class ZoomIE(InfoExtractor):
             }))
         if not validation.get('status'):
             raise ExtractorError(validation['errorMessage'], expected=True)
-        return self._download_webpage(url, video_id, note=f'Re-downloading {url_type} webpage')
+        return self._download_webpage(
+            url, video_id, note=f'Re-downloading {url_type} webpage')
 
     def _real_extract(self, url):
-        base_url, url_type, video_id = self._match_valid_url(url).group('base_url', 'type', 'id')
+        base_url, url_type, video_id = self._match_valid_url(
+            url).group('base_url', 'type', 'id')
         query = {}
 
         if url_type == 'share':
@@ -104,7 +112,9 @@ class ZoomIE(InfoExtractor):
             raise ExtractorError('Unable to extract file ID')
 
         data = self._download_json(
-            f'{base_url}nws/recording/1.0/play/info/{file_id}', video_id, query=query,
+            f'{base_url}nws/recording/1.0/play/info/{file_id}',
+            video_id,
+            query=query,
             note='Downloading play info JSON')['result']
 
         subtitles = {}

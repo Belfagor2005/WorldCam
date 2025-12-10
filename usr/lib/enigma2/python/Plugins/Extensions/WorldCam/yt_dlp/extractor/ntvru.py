@@ -126,7 +126,9 @@ class NTVRuIE(InfoExtractor):
         webpage = self._download_webpage(url, display_id)
 
         video_id = self._html_search_regex(
-            r'<meta property="ya:ovs:feed_url" content="https?://www\.ntv\.ru/(?:exp/)?video/(\d+)', webpage, 'video id')
+            r'<meta property="ya:ovs:feed_url" content="https?://www\.ntv\.ru/(?:exp/)?video/(\d+)',
+            webpage,
+            'video id')
 
         player = self._download_xml(
             f'http://www.ntv.ru/vi{video_id}/',
@@ -139,10 +141,8 @@ class NTVRuIE(InfoExtractor):
             video_url = url_or_none(xpath_text(video, f'./{format_id}file'))
             if not video_url:
                 continue
-            formats.append({
-                'url': video_url,
-                'filesize': int_or_none(xpath_text(video, f'./{format_id}size')),
-            })
+            formats.append({'url': video_url, 'filesize': int_or_none(
+                xpath_text(video, f'./{format_id}size')), })
         hls_manifest = xpath_text(video, './playback/hls')
         if hls_manifest:
             formats.extend(self._extract_m3u8_formats(
@@ -153,7 +153,10 @@ class NTVRuIE(InfoExtractor):
                 dash_manifest, video_id, mpd_id='dash', fatal=False))
 
         metadata = self._download_xml(
-            f'https://www.ntv.ru/exp/video/{video_id}', video_id, 'Downloading XML metadata', fatal=False)
+            f'https://www.ntv.ru/exp/video/{video_id}',
+            video_id,
+            'Downloading XML metadata',
+            fatal=False)
 
         return {
             'id': video_id,

@@ -20,7 +20,8 @@ def initialize_global_cache(max_size: int):
         _pot_memory_cache.value['max_size'] = max_size
 
     if _pot_memory_cache.value['max_size'] != max_size:
-        raise ValueError('Cannot change max_size of initialized global memory cache')
+        raise ValueError(
+            'Cannot change max_size of initialized global memory cache')
 
     return (
         _pot_memory_cache.value['cache'],
@@ -34,14 +35,19 @@ class MemoryLRUPCP(PoTokenCacheProvider, BuiltinIEContentProvider):
     PROVIDER_NAME = 'memory'
     DEFAULT_CACHE_SIZE = 25
 
-    def __init__(
-        self,
-        *args,
-        initialize_cache: typing.Callable[[int], tuple[dict[str, tuple[str, int]], Lock, int]] = initialize_global_cache,
-        **kwargs,
-    ):
+    def __init__(self,
+                 *args,
+                 initialize_cache: typing.Callable[[int],
+                                                   tuple[dict[str,
+                                                              tuple[str,
+                                                                    int]],
+                                                         Lock,
+                                                         int]] = initialize_global_cache,
+                 **kwargs,
+                 ):
         super().__init__(*args, **kwargs)
-        self.cache, self.lock, self.max_size = initialize_cache(self.DEFAULT_CACHE_SIZE)
+        self.cache, self.lock, self.max_size = initialize_cache(
+            self.DEFAULT_CACHE_SIZE)
 
     def is_available(self) -> bool:
         return True

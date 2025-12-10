@@ -153,7 +153,12 @@ class DRTVIE(InfoExtractor):
             }).encode())
 
         self._TOKEN = traverse_obj(
-            token_response, (lambda _, x: x['type'] == 'UserAccount', 'value', {str}), get_all=False)
+            token_response,
+            (lambda _,
+             x: x['type'] == 'UserAccount',
+                'value',
+                {str}),
+            get_all=False)
         if not self._TOKEN:
             raise ExtractorError('Unable to get anonymous token')
 
@@ -162,16 +167,22 @@ class DRTVIE(InfoExtractor):
         webpage = self._download_webpage(url, url_slug)
 
         json_data = self._search_json(
-            r'window\.__data\s*=', webpage, 'data', url_slug, fatal=False) or {}
-        item = traverse_obj(
-            json_data, ('cache', 'page', ..., (None, ('entries', 0)), 'item', {dict}), get_all=False)
+            r'window\.__data\s*=',
+            webpage,
+            'data',
+            url_slug,
+            fatal=False) or {}
+        item = traverse_obj(json_data, ('cache', 'page', ...,
+                                        (None, ('entries', 0)), 'item', {dict}), get_all=False)
         if item:
             item_id = item.get('id')
         else:
             item_id = url_slug.rsplit('_', 1)[-1]
             item = self._download_json(
-                f'https://production-cdn.dr-massive.com/api/items/{item_id}', item_id,
-                note='Attempting to download backup item data', query={
+                f'https://production-cdn.dr-massive.com/api/items/{item_id}',
+                item_id,
+                note='Attempting to download backup item data',
+                query={
                     'device': 'web_browser',
                     'expand': 'all',
                     'ff': 'idp,ldp,rpt',
@@ -182,17 +193,23 @@ class DRTVIE(InfoExtractor):
                     'sub': 'Anonymous',
                 })
 
-        video_id = try_call(lambda: item['customId'].rsplit(':', 1)[-1]) or item_id
+        video_id = try_call(
+            lambda: item['customId'].rsplit(':', 1)[-1]) or item_id
         stream_data = self._download_json(
-            f'https://production.dr-massive.com/api/account/items/{item_id}/videos', video_id,
-            note='Downloading stream data', query={
+            f'https://production.dr-massive.com/api/account/items/{item_id}/videos',
+            video_id,
+            note='Downloading stream data',
+            query={
                 'delivery': 'stream',
                 'device': 'web_browser',
                 'ff': 'idp,ldp,rpt',
                 'lang': 'da',
                 'resolution': 'HD-1080',
                 'sub': 'Anonymous',
-            }, headers={'authorization': f'Bearer {self._TOKEN}'})
+            },
+            headers={
+                'authorization': f'Bearer {
+                    self._TOKEN}'})
 
         formats = []
         subtitles = {}
@@ -201,28 +218,40 @@ class DRTVIE(InfoExtractor):
             access_service = stream.get('accessService')
             preference = None
             subtitle_suffix = ''
-            if access_service in ('SpokenSubtitles', 'SignLanguage', 'VisuallyInterpreted'):
+            if access_service in (
+                'SpokenSubtitles',
+                'SignLanguage',
+                    'VisuallyInterpreted'):
                 preference = -1
                 format_id += f'-{access_service}'
                 subtitle_suffix = f'-{access_service}'
             elif access_service == 'StandardVideo':
                 preference = 1
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                stream.get('url'), video_id, ext='mp4', preference=preference, m3u8_id=format_id, fatal=False)
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(stream.get(
+                'url'), video_id, ext='mp4', preference=preference, m3u8_id=format_id, fatal=False)
             formats.extend(fmts)
 
-            api_subtitles = traverse_obj(stream, ('subtitles', lambda _, v: url_or_none(v['link']), {dict}))
+            api_subtitles = traverse_obj(
+                stream, ('subtitles', lambda _, v: url_or_none(
+                    v['link']), {dict}))
             if not api_subtitles:
                 self._merge_subtitles(subs, target=subtitles)
 
             for sub_track in api_subtitles:
                 lang = sub_track.get('language') or 'da'
-                subtitles.setdefault(self.SUBTITLE_LANGS.get(lang, lang) + subtitle_suffix, []).append({
-                    'url': sub_track['link'],
-                    'ext': mimetype2ext(sub_track.get('format')) or 'vtt',
-                })
+                subtitles.setdefault(
+                    self.SUBTITLE_LANGS.get(
+                        lang,
+                        lang) + subtitle_suffix,
+                    []).append(
+                    {
+                        'url': sub_track['link'],
+                        'ext': mimetype2ext(
+                            sub_track.get('format')) or 'vtt',
+                    })
 
-        if not formats and traverse_obj(item, ('season', 'customFields', 'IsGeoRestricted')):
+        if not formats and traverse_obj(
+                item, ('season', 'customFields', 'IsGeoRestricted')):
             self.raise_geo_restricted(countries=self._GEO_COUNTRIES)
 
         return {
@@ -331,8 +360,12 @@ class DRTVSeasonIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        display_id, season_id = self._match_valid_url(url).group('display_id', 'id')
-        data = self._download_json(SERIES_API % f'/saeson/{display_id}_{season_id}', display_id)
+        display_id, season_id = self._match_valid_url(
+            url).group('display_id', 'id')
+        data = self._download_json(
+            SERIES_API %
+            f'/saeson/{display_id}_{season_id}',
+            display_id)
 
         entries = [{
             '_type': 'url',
@@ -376,8 +409,12 @@ class DRTVSeriesIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        display_id, series_id = self._match_valid_url(url).group('display_id', 'id')
-        data = self._download_json(SERIES_API % f'/serie/{display_id}_{series_id}', display_id)
+        display_id, series_id = self._match_valid_url(
+            url).group('display_id', 'id')
+        data = self._download_json(
+            SERIES_API %
+            f'/serie/{display_id}_{series_id}',
+            display_id)
 
         entries = [{
             '_type': 'url',

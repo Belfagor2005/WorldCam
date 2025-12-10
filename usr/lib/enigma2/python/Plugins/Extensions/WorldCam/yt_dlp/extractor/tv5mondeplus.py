@@ -90,8 +90,14 @@ class TV5MondePlusIE(InfoExtractor):
     @staticmethod
     def _extract_subtitles(data_captions):
         subtitles = {}
-        for f in traverse_obj(data_captions, ('files', lambda _, v: url_or_none(v['file']))):
-            subtitles.setdefault(f.get('label') or 'fra', []).append({'url': f['file']})
+        for f in traverse_obj(
+            data_captions,
+            ('files',
+             lambda _,
+             v: url_or_none(
+                 v['file']))):
+            subtitles.setdefault(f.get('label') or 'fra',
+                                 []).append({'url': f['file']})
         return subtitles
 
     def _real_extract(self, url):
@@ -125,10 +131,12 @@ class TV5MondePlusIE(InfoExtractor):
                         f'https://api.tv5monde.com/player/asset/{d_param}/resolve?condenseKS=true',
                         display_id, 'Downloading deferred info', fatal=False, impersonate=True,
                         headers={'Authorization': f'Bearer {token}'})
-                    v_url = traverse_obj(deferred_json, (0, 'url', {url_or_none}))
+                    v_url = traverse_obj(
+                        deferred_json, (0, 'url', {url_or_none}))
                     if not v_url:
                         continue
-                    # data-guid from the webpage isn't stable, use the material id from the json urls
+                    # data-guid from the webpage isn't stable, use the material
+                    # id from the json urls
                     video_id = self._search_regex(
                         r'materials/([\da-zA-Z]{10}_[\da-fA-F]{7})/', v_url, 'video id', default=None)
                     process_video_files(deferred_json)
@@ -159,20 +167,51 @@ class TV5MondePlusIE(InfoExtractor):
                 default=display_id)
 
         return {
-            **traverse_obj(metadata, ('content', {
-                'id': ('id', {str}),
-                'title': ('title', {str}),
-                'episode': ('title', {str}),
-                'series': ('series', {str}),
-                'timestamp': ('publishDate_ts', {int_or_none}),
-                'duration': ('duration', {int_or_none}),
-            })),
+            **traverse_obj(
+                metadata,
+                ('content',
+                 {
+                     'id': (
+                         'id',
+                         {str}),
+                     'title': (
+                         'title',
+                         {str}),
+                     'episode': (
+                         'title',
+                         {str}),
+                     'series': (
+                         'series',
+                         {str}),
+                     'timestamp': (
+                         'publishDate_ts',
+                         {int_or_none}),
+                     'duration': (
+                         'duration',
+                         {int_or_none}),
+                 })),
             'id': video_id,
             'display_id': display_id,
-            'title': clean_html(get_element_by_class('main-title', webpage)),
-            'description': clean_html(get_element_by_class('text', get_element_html_by_class('ep-summary', webpage) or '')),
-            'thumbnail': url_or_none(vpl_data.get('data-image')),
+            'title': clean_html(
+                get_element_by_class(
+                    'main-title',
+                    webpage)),
+            'description': clean_html(
+                get_element_by_class(
+                    'text',
+                    get_element_html_by_class(
+                        'ep-summary',
+                        webpage) or '')),
+            'thumbnail': url_or_none(
+                vpl_data.get('data-image')),
             'formats': formats,
-            'subtitles': self._extract_subtitles(self._parse_json(
-                traverse_obj(vpl_data, ('data-captions', {str}), default='{}'), display_id, fatal=False)),
+            'subtitles': self._extract_subtitles(
+                self._parse_json(
+                    traverse_obj(
+                        vpl_data,
+                        ('data-captions',
+                         {str}),
+                        default='{}'),
+                    display_id,
+                    fatal=False)),
         }

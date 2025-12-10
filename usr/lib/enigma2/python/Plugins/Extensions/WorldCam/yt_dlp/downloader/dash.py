@@ -21,20 +21,29 @@ class DashSegmentsFD(FragmentFD):
             if info_dict.get('is_live'):
                 self.report_error('Live DASH videos are not supported')
             real_downloader = get_suitable_downloader(
-                info_dict, self.params, None, protocol='dash_frag_urls', to_stdout=(filename == '-'))
+                info_dict,
+                self.params,
+                None,
+                protocol='dash_frag_urls',
+                to_stdout=(
+                    filename == '-'))
 
         real_start = time.time()
 
-        requested_formats = [{**info_dict, **fmt} for fmt in info_dict.get('requested_formats', [])]
+        requested_formats = [{**info_dict, **fmt}
+                             for fmt in info_dict.get('requested_formats', [])]
         args = []
         for fmt in requested_formats or [info_dict]:
             # Re-extract if --load-info-json is used and 'fragments' was originally a generator
             # See https://github.com/yt-dlp/yt-dlp/issues/13906
             if isinstance(fmt['fragments'], str):
-                raise ReExtractInfo('the stream needs to be re-extracted', expected=True)
+                raise ReExtractInfo(
+                    'the stream needs to be re-extracted',
+                    expected=True)
 
             try:
-                fragment_count = 1 if self.params.get('test') else len(fmt['fragments'])
+                fragment_count = 1 if self.params.get(
+                    'test') else len(fmt['fragments'])
             except TypeError:
                 fragment_count = None
             ctx = {
@@ -50,7 +59,8 @@ class DashSegmentsFD(FragmentFD):
             ctx['start'] = real_start
 
             extra_query = None
-            extra_param_to_segment_url = info_dict.get('extra_param_to_segment_url')
+            extra_param_to_segment_url = info_dict.get(
+                'extra_param_to_segment_url')
             if extra_param_to_segment_url:
                 extra_query = urllib.parse.parse_qs(extra_param_to_segment_url)
 
@@ -65,11 +75,13 @@ class DashSegmentsFD(FragmentFD):
 
             args.append([ctx, fragments_to_download, fmt])
 
-        return self.download_and_append_fragments_multiple(*args, is_fatal=lambda idx: idx == 0)
+        return self.download_and_append_fragments_multiple(
+            *args, is_fatal=lambda idx: idx == 0)
 
     def _resolve_fragments(self, fragments, ctx):
         fragments = fragments(ctx) if callable(fragments) else fragments
-        return [next(iter(fragments))] if self.params.get('test') else fragments
+        return [next(iter(fragments))] if self.params.get(
+            'test') else fragments
 
     def _get_fragments(self, fmt, ctx, extra_query):
         fragment_base_url = fmt.get('fragment_base_url')

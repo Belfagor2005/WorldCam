@@ -33,19 +33,26 @@ class LaXarxaMesIE(InfoExtractor):
             return
 
         login = self._download_json(
-            'https://api.laxarxames.cat/Authorization/SignIn', None, note='Logging in', headers={
+            'https://api.laxarxames.cat/Authorization/SignIn',
+            None,
+            note='Logging in',
+            headers={
                 'X-Tenantorigin': 'https://laxarxames.cat',
                 'Content-Type': 'application/json',
-            }, data=json.dumps({
-                'Username': username,
-                'Password': password,
-                'Device': {
-                    'PlatformCode': 'WEB',
-                    'Name': 'Mac OS ()',
-                },
-            }).encode(), expected_status=401)
+            },
+            data=json.dumps(
+                {
+                    'Username': username,
+                    'Password': password,
+                    'Device': {
+                        'PlatformCode': 'WEB',
+                        'Name': 'Mac OS ()',
+                    },
+                }).encode(),
+            expected_status=401)
 
-        self._TOKEN = traverse_obj(login, ('AuthorizationToken', 'Token', {str}))
+        self._TOKEN = traverse_obj(
+            login, ('AuthorizationToken', 'Token', {str}))
         if not self._TOKEN:
             raise ExtractorError('Login failed', expected=True)
 
@@ -69,5 +76,8 @@ class LaXarxaMesIE(InfoExtractor):
             self.raise_no_formats('No video found', expected=True)
 
         return self.url_result(
-            f'https://players.brightcove.net/5779379807001/default_default/index.html?videoId={media_play_info["ContentUrl"]}',
-            BrightcoveNewIE, video_id, media_play_info.get('Title'))
+            f'https://players.brightcove.net/5779379807001/default_default/index.html?videoId={
+                media_play_info["ContentUrl"]}',
+            BrightcoveNewIE,
+            video_id,
+            media_play_info.get('Title'))

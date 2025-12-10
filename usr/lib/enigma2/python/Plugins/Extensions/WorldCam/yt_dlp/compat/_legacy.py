@@ -74,7 +74,9 @@ compat_http_server = http.server
 compat_input = input
 compat_integer_types = (int, )
 compat_itertools_count = itertools.count
-compat_kwargs = lambda kwargs: kwargs
+def compat_kwargs(kwargs): return kwargs
+
+
 compat_map = map
 compat_numeric_types = (int, float, complex)
 compat_os_path_expanduser = compat_expanduser
@@ -85,7 +87,9 @@ compat_socket_create_connection = socket.create_connection
 compat_Struct = struct.Struct
 compat_struct_pack = struct.pack
 compat_struct_unpack = struct.unpack
-compat_subprocess_get_DEVNULL = lambda: subprocess.DEVNULL
+def compat_subprocess_get_DEVNULL(): return subprocess.DEVNULL
+
+
 compat_tokenize_tokenize = tokenize.tokenize
 compat_urllib_error = urllib.error
 compat_urllib_HTTPError = compat_HTTPError
@@ -101,9 +105,13 @@ compat_urllib_request_DataHandler = urllib.request.DataHandler
 compat_urllib_response = urllib.response
 compat_urlretrieve = compat_urllib_request_urlretrieve = urllib.request.urlretrieve
 compat_xml_parse_error = compat_xml_etree_ElementTree_ParseError = etree.ParseError
-compat_xpath = lambda xpath: xpath
+def compat_xpath(xpath): return xpath
+
+
 compat_zip = zip
-workaround_optparse_bug9161 = lambda: None
+def workaround_optparse_bug9161(): return None
+
+
 compat_str = str
 compat_b64decode = base64.b64decode
 compat_urlparse = urllib.parse

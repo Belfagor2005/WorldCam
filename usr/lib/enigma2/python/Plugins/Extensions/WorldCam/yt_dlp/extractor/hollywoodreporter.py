@@ -33,7 +33,10 @@ class HollywoodReporterIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
 
-        data = extract_attributes(get_element_html_by_class('vlanding-video-card__link', webpage) or '')
+        data = extract_attributes(
+            get_element_html_by_class(
+                'vlanding-video-card__link',
+                webpage) or '')
         video_id = data['data-video-showcase-trigger']
         showcase_type = data['data-video-showcase-type']
 
@@ -42,7 +45,8 @@ class HollywoodReporterIE(InfoExtractor):
         elif showcase_type == 'youtube':
             return self.url_result(video_id, 'Youtube')
         else:
-            raise ExtractorError(f'Unsupported showcase type "{showcase_type}"')
+            raise ExtractorError(
+                f'Unsupported showcase type "{showcase_type}"')
 
 
 class HollywoodReporterPlaylistIE(InfoExtractor):
@@ -63,10 +67,19 @@ class HollywoodReporterPlaylistIE(InfoExtractor):
             pl_id, note=f'Downloading playlist page {page}')
         section = get_element_by_class('video-playlist-river', webpage) or ''
 
-        for url in re.findall(r'<a[^>]+href="([^"]+)"[^>]+class="c-title__link', section):
+        for url in re.findall(
+            r'<a[^>]+href="([^"]+)"[^>]+class="c-title__link',
+                section):
             yield self.url_result(url, HollywoodReporterIE)
 
     def _real_extract(self, url):
         slug, pl_id = self._match_valid_url(url).group('slug', 'id')
         return self.playlist_result(
-            OnDemandPagedList(functools.partial(self._fetch_page, slug, pl_id), 15), pl_id, slug)
+            OnDemandPagedList(
+                functools.partial(
+                    self._fetch_page,
+                    slug,
+                    pl_id),
+                15),
+            pl_id,
+            slug)

@@ -32,16 +32,24 @@ class Lecture2GoIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        title = self._html_search_regex(r'<em[^>]+class="title">(.+)</em>', webpage, 'title')
+        title = self._html_search_regex(
+            r'<em[^>]+class="title">(.+)</em>', webpage, 'title')
 
         formats = []
-        for url in set(re.findall(r'var\s+playerUri\d+\s*=\s*"([^"]+)"', webpage)):
+        for url in set(
+            re.findall(
+                r'var\s+playerUri\d+\s*=\s*"([^"]+)"',
+                webpage)):
             ext = determine_ext(url)
             protocol = determine_protocol({'url': url})
             if ext == 'f4m':
-                formats.extend(self._extract_f4m_formats(url, video_id, f4m_id='hds'))
+                formats.extend(
+                    self._extract_f4m_formats(
+                        url, video_id, f4m_id='hds'))
             elif ext == 'm3u8':
-                formats.extend(self._extract_m3u8_formats(url, video_id, ext='mp4', m3u8_id='hls'))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        url, video_id, ext='mp4', m3u8_id='hls'))
             else:
                 if protocol == 'rtmp':
                     continue  # XXX: currently broken
@@ -51,11 +59,22 @@ class Lecture2GoIE(InfoExtractor):
                 })
 
         creator = self._html_search_regex(
-            r'<div[^>]+id="description">([^<]+)</div>', webpage, 'creator', fatal=False)
-        duration = parse_duration(self._html_search_regex(
-            r'Duration:\s*</em>\s*<em[^>]*>([^<]+)</em>', webpage, 'duration', fatal=False))
-        view_count = int_or_none(self._html_search_regex(
-            r'Views:\s*</em>\s*<em[^>]+>(\d+)</em>', webpage, 'view count', fatal=False))
+            r'<div[^>]+id="description">([^<]+)</div>',
+            webpage,
+            'creator',
+            fatal=False)
+        duration = parse_duration(
+            self._html_search_regex(
+                r'Duration:\s*</em>\s*<em[^>]*>([^<]+)</em>',
+                webpage,
+                'duration',
+                fatal=False))
+        view_count = int_or_none(
+            self._html_search_regex(
+                r'Views:\s*</em>\s*<em[^>]+>(\d+)</em>',
+                webpage,
+                'view count',
+                fatal=False))
 
         return {
             'id': video_id,

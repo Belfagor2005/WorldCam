@@ -91,6 +91,11 @@ class RideHomeIE(InfoExtractor):
         webpage = self._download_webpage(url, article_id)
 
         urls = traverse_obj(
-            get_elements_html_by_class('iframeContainer', webpage),
-            (..., {extract_attributes}, lambda k, v: k == 'data-src' and Art19IE.suitable(v)))
+            get_elements_html_by_class(
+                'iframeContainer',
+                webpage),
+            (...,
+             {extract_attributes},
+                lambda k,
+                v: k == 'data-src' and Art19IE.suitable(v)))
         return self.playlist_from_matches(urls, article_id, ie=Art19IE)

@@ -56,11 +56,27 @@ class GoToStageIE(InfoExtractor):
 
         return {
             'id': video_id,
-            'title': try_get(metadata, lambda x: x['title'], str),
-            'url': try_get(content_response, lambda x: x['cdnLocation'], str),
+            'title': try_get(
+                metadata,
+                lambda x: x['title'],
+                str),
+            'url': try_get(
+                content_response,
+                lambda x: x['cdnLocation'],
+                str),
             'ext': 'mp4',
-            'thumbnail': url_or_none(try_get(metadata, lambda x: x['thumbnail']['location'])),
-            'duration': try_get(metadata, lambda x: x['duration'], float),
-            'categories': [try_get(metadata, lambda x: x['category'], str)],
+            'thumbnail': url_or_none(
+                try_get(
+                    metadata,
+                    lambda x: x['thumbnail']['location'])),
+            'duration': try_get(
+                metadata,
+                lambda x: x['duration'],
+                float),
+            'categories': [
+                try_get(
+                    metadata,
+                    lambda x: x['category'],
+                    str)],
             'is_live': False,
         }

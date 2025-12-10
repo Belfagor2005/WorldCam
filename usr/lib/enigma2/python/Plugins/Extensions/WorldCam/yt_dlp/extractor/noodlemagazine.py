@@ -33,12 +33,32 @@ class NoodleMagazineIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
         title = self._og_search_title(webpage)
-        duration = parse_duration(self._html_search_meta('video:duration', webpage, 'duration', default=None))
-        description = self._og_search_property('description', webpage, default='').replace(' watch online hight quality video', '')
-        tags = self._html_search_meta('video:tag', webpage, default='').split(', ')
-        view_count = parse_count(self._html_search_meta('ya:ovs:views_total', webpage, default=None))
-        like_count = parse_count(self._html_search_meta('ya:ovs:likes', webpage, default=None))
-        upload_date = unified_strdate(self._html_search_meta('ya:ovs:upload_date', webpage, default=''))
+        duration = parse_duration(
+            self._html_search_meta(
+                'video:duration',
+                webpage,
+                'duration',
+                default=None))
+        description = self._og_search_property(
+            'description', webpage, default='').replace(
+            ' watch online hight quality video', '')
+        tags = self._html_search_meta(
+            'video:tag', webpage, default='').split(', ')
+        view_count = parse_count(
+            self._html_search_meta(
+                'ya:ovs:views_total',
+                webpage,
+                default=None))
+        like_count = parse_count(
+            self._html_search_meta(
+                'ya:ovs:likes',
+                webpage,
+                default=None))
+        upload_date = unified_strdate(
+            self._html_search_meta(
+                'ya:ovs:upload_date',
+                webpage,
+                default=''))
 
         def build_url(url_or_path):
             return urljoin('https://adult.noodlemagazine.com', url_or_path)
@@ -47,10 +67,17 @@ class NoodleMagazineIE(InfoExtractor):
             r'window\.playlist\s*=', webpage, video_id, 'playlist info')
 
         formats = []
-        for source in traverse_obj(playlist_info, ('sources', lambda _, v: v['file'])):
+        for source in traverse_obj(
+                playlist_info, ('sources', lambda _, v: v['file'])):
             if source.get('type') == 'hls':
-                formats.extend(self._extract_m3u8_formats(
-                    build_url(source['file']), video_id, 'mp4', fatal=False, m3u8_id='hls'))
+                formats.extend(
+                    self._extract_m3u8_formats(
+                        build_url(
+                            source['file']),
+                        video_id,
+                        'mp4',
+                        fatal=False,
+                        m3u8_id='hls'))
             else:
                 formats.append(traverse_obj(source, {
                     'url': ('file', {build_url}),
@@ -63,7 +90,10 @@ class NoodleMagazineIE(InfoExtractor):
             'id': video_id,
             'formats': formats,
             'title': title,
-            'thumbnail': self._og_search_property('image', webpage, default=None) or playlist_info.get('image'),
+            'thumbnail': self._og_search_property(
+                'image',
+                webpage,
+                default=None) or playlist_info.get('image'),
             'duration': duration,
             'description': description,
             'tags': tags,

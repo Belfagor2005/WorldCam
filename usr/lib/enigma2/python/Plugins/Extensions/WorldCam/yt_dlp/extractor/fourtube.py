@@ -61,20 +61,25 @@ class FourTubeBaseIE(InfoExtractor):
                 c.strip() for c in re.findall(
                     r'(?s)<li><a.*?>(.*?)</a>', categories_html)]
 
-        view_count = str_to_int(self._search_regex(
-            r'<meta[^>]+itemprop="interactionCount"[^>]+content="UserPlays:([0-9,]+)">',
-            webpage, 'view count', default=None))
-        like_count = str_to_int(self._search_regex(
-            r'<meta[^>]+itemprop="interactionCount"[^>]+content="UserLikes:([0-9,]+)">',
-            webpage, 'like count', default=None))
+        view_count = str_to_int(
+            self._search_regex(
+                r'<meta[^>]+itemprop="interactionCount"[^>]+content="UserPlays:([0-9,]+)">',
+                webpage,
+                'view count',
+                default=None))
+        like_count = str_to_int(
+            self._search_regex(
+                r'<meta[^>]+itemprop="interactionCount"[^>]+content="UserLikes:([0-9,]+)">',
+                webpage,
+                'like count',
+                default=None))
         duration = parse_duration(self._html_search_meta('duration', webpage))
 
         media_id = self._search_regex(
             r'<button[^>]+data-id=(["\'])(?P<id>\d+)\1[^>]+data-quality=', webpage,
             'media id', default=None, group='id')
-        sources = [
-            quality
-            for _, quality in re.findall(r'<button[^>]+data-quality=(["\'])(.+?)\1', webpage)]
+        sources = [quality for _, quality in re.findall(
+            r'<button[^>]+data-quality=(["\'])(.+?)\1', webpage)]
         if not (media_id and sources):
             player_js = self._download_webpage(
                 self._search_regex(

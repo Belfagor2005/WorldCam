@@ -41,7 +41,8 @@ class GoogleDriveIE(InfoExtractor):
             'thumbnail': r're:https://lh3\.googleusercontent\.com/drive-storage/',
         },
     }, {
-        # has itag 50 which is not in YoutubeIE._formats (royalty Free music from 1922)
+        # has itag 50 which is not in YoutubeIE._formats (royalty Free music
+        # from 1922)
         'url': 'https://drive.google.com/uc?id=1IP0o8dHcQrIHGgVyp0Ofvx2cGfLzyO1x',
         'md5': '322db8d63dd19788c04050a4bba67073',
         'info_dict': {
@@ -74,7 +75,8 @@ class GoogleDriveIE(InfoExtractor):
         },
     }, {
         # video can't be watched anonymously due to view count limit reached,
-        # but can be downloaded (see https://github.com/ytdl-org/youtube-dl/issues/14046)
+        # but can be downloaded (see
+        # https://github.com/ytdl-org/youtube-dl/issues/14046)
         'url': 'https://drive.google.com/file/d/0B-vUyvmDLdWDcEt4WjBqcmI2XzQ/view',
         'only_matching': True,
     }, {
@@ -114,19 +116,29 @@ class GoogleDriveIE(InfoExtractor):
 
     def _get_subtitles(self, video_id, video_info):
         subtitles = {}
-        timed_text_base_url = traverse_obj(video_info, ('timedTextDetails', 'timedTextBaseUrl', {url_or_none}))
+        timed_text_base_url = traverse_obj(
+            video_info, ('timedTextDetails', 'timedTextBaseUrl', {url_or_none}))
         if not timed_text_base_url:
             return subtitles
         subtitle_data = self._download_xml(
-            timed_text_base_url, video_id, 'Downloading subtitles XML', fatal=False, query={
+            timed_text_base_url,
+            video_id,
+            'Downloading subtitles XML',
+            fatal=False,
+            query={
                 'hl': 'en-US',
                 'type': 'list',
                 'tlangs': 1,
                 'v': video_id,
                 'vssids': 1,
             })
-        subtitle_formats = traverse_obj(subtitle_data, (lambda _, v: v.tag == 'format', {lambda x: x.get('fmt_code')}, {str}))
-        for track in traverse_obj(subtitle_data, (lambda _, v: v.tag == 'track' and v.get('lang_code'))):
+        subtitle_formats = traverse_obj(
+            subtitle_data, (lambda _, v: v.tag == 'format', {
+                lambda x: x.get('fmt_code')}, {str}))
+        for track in traverse_obj(
+            subtitle_data,
+            (lambda _,
+             v: v.tag == 'track' and v.get('lang_code'))):
             language = track.get('lang_code')
             subtitles.setdefault(language, []).extend([{
                 'url': self._construct_subtitle_url(
@@ -140,13 +152,23 @@ class GoogleDriveIE(InfoExtractor):
         video_id = self._match_id(url)
         video_info = self._download_json(
             f'https://content-workspacevideo-pa.googleapis.com/v1/drive/media/{video_id}/playback',
-            video_id, 'Downloading video webpage', query={'key': 'AIzaSyDVQw45DwoYh632gvsP5vPDqEKvb-Ywnb8'},
-            headers={'Referer': 'https://drive.google.com/'})
+            video_id,
+            'Downloading video webpage',
+            query={
+                'key': 'AIzaSyDVQw45DwoYh632gvsP5vPDqEKvb-Ywnb8'},
+            headers={
+                'Referer': 'https://drive.google.com/'})
 
         formats = []
-        for fmt in traverse_obj(video_info, (
-                'mediaStreamingData', 'formatStreamingData', ('adaptiveTranscodes', 'progressiveTranscodes'),
-                lambda _, v: url_or_none(v['url']))):
+        for fmt in traverse_obj(
+            video_info,
+            ('mediaStreamingData',
+             'formatStreamingData',
+             ('adaptiveTranscodes',
+              'progressiveTranscodes'),
+                lambda _,
+                v: url_or_none(
+                 v['url']))):
             formats.append({
                 **traverse_obj(fmt, {
                     'url': 'url',
@@ -177,16 +199,22 @@ class GoogleDriveIE(InfoExtractor):
 
         def request_source_file(source_url, kind, data=None):
             return self._request_webpage(
-                source_url, video_id, note=f'Requesting {kind} file',
-                errnote=f'Unable to request {kind} file', fatal=False, data=data)
+                source_url,
+                video_id,
+                note=f'Requesting {kind} file',
+                errnote=f'Unable to request {kind} file',
+                fatal=False,
+                data=data)
         urlh = request_source_file(source_url, 'source')
         if urlh:
             def add_source_format(urlh):
                 nonlocal title
                 if not title:
                     title = self._search_regex(
-                        r'\bfilename="([^"]+)"', urlh.headers.get('Content-Disposition'),
-                        'title', default=None)
+                        r'\bfilename="([^"]+)"',
+                        urlh.headers.get('Content-Disposition'),
+                        'title',
+                        default=None)
                 formats.append({
                     # Use redirect URLs as download URLs in order to calculate
                     # correct cookies in _calc_cookies.
@@ -205,17 +233,20 @@ class GoogleDriveIE(InfoExtractor):
                     urlh, url, video_id, note='Downloading confirmation page',
                     errnote='Unable to confirm download', fatal=False)
                 if confirmation_webpage:
-                    confirmed_source_url = extract_attributes(
-                        get_element_html_by_id('download-form', confirmation_webpage) or '').get('action')
+                    confirmed_source_url = extract_attributes(get_element_html_by_id(
+                        'download-form', confirmation_webpage) or '').get('action')
                     if confirmed_source_url:
-                        urlh = request_source_file(confirmed_source_url, 'confirmed source', data=b'')
+                        urlh = request_source_file(
+                            confirmed_source_url, 'confirmed source', data=b'')
                         if urlh and urlh.headers.get('Content-Disposition'):
                             add_source_format(urlh)
                     else:
                         self.report_warning(
-                            get_element_by_class('uc-error-subcaption', confirmation_webpage)
-                            or get_element_by_class('uc-error-caption', confirmation_webpage)
-                            or 'unable to extract confirmation code')
+                            get_element_by_class(
+                                'uc-error-subcaption',
+                                confirmation_webpage) or get_element_by_class(
+                                'uc-error-caption',
+                                confirmation_webpage) or 'unable to extract confirmation code')
 
         return {
             'id': video_id,
@@ -267,12 +298,18 @@ GET %s
                 '$ct': f'multipart/mixed; boundary="{self._BOUNDARY}"',
                 'key': key,
             }, **kwargs)
-        return self._search_json('', response, 'api response', folder_id, **kwargs) or {}
+        return self._search_json(
+            '',
+            response,
+            'api response',
+            folder_id,
+            **kwargs) or {}
 
     def _get_folder_items(self, folder_id, key):
         page_token = ''
         while page_token is not None:
-            request = self._REQUEST.format(folder_id=folder_id, page_token=page_token, key=key)
+            request = self._REQUEST.format(
+                folder_id=folder_id, page_token=page_token, key=key)
             page = self._call_api(folder_id, key, self._DATA % request)
             yield from page['items']
             page_token = page.get('nextPageToken')
@@ -283,7 +320,9 @@ GET %s
         webpage = self._download_webpage(url, folder_id)
         key = self._search_regex(r'"(\w{39})"', webpage, 'key')
 
-        folder_info = self._call_api(folder_id, key, self._DATA % f'/drive/v2beta/files/{folder_id} HTTP/1.1', fatal=False)
+        folder_info = self._call_api(
+            folder_id, key, self._DATA %
+            f'/drive/v2beta/files/{folder_id} HTTP/1.1', fatal=False)
 
         return self.playlist_from_matches(
             self._get_folder_items(folder_id, key), folder_id, folder_info.get('title'),

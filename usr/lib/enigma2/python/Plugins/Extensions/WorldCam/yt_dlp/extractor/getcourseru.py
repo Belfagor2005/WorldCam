@@ -59,7 +59,11 @@ class GetCourseRuIE(InfoExtractor):
         'marafon.mani-beauty.com',
         'on.psbook.ru',
     ]
-    _BASE_URL_RE = rf'https?://(?:(?!player02\.)[^.]+\.getcourse\.(?:ru|io)|{"|".join(map(re.escape, _DOMAINS))})'
+    _BASE_URL_RE = rf'https?://(?:(?!player02\.)[^.]+\.getcourse\.(?:ru|io)|{
+        "|".join(
+            map(
+                re.escape,
+                _DOMAINS))})'
     _VALID_URL = [
         rf'{_BASE_URL_RE}/(?!pl/|teach/)(?P<id>[^?#]+)',
         rf'{_BASE_URL_RE}/(?:pl/)?teach/control/lesson/view\?(?:[^#]+&)?id=(?P<id>\d+)',
@@ -173,16 +177,27 @@ class GetCourseRuIE(InfoExtractor):
         webpage, urlh = self._download_webpage_handle(url, display_id)
         if self._LOGIN_URL_PATH in urlh.url:
             raise ExtractorError(
-                f'This video is only available for registered users. {self._login_hint("any", netrc=hostname)}',
-                expected=True)
+                f'This video is only available for registered users. {
+                    self._login_hint(
+                        "any", netrc=hostname)}', expected=True)
 
         playlist_id = self._search_regex(
-            r'window\.(?:lessonId|gcsObjectId)\s*=\s*(\d+)', webpage, 'playlist id', default=display_id)
-        title = self._og_search_title(webpage, default=None) or self._html_extract_title(webpage)
+            r'window\.(?:lessonId|gcsObjectId)\s*=\s*(\d+)',
+            webpage,
+            'playlist id',
+            default=display_id)
+        title = self._og_search_title(
+            webpage, default=None) or self._html_extract_title(webpage)
 
         return self.playlist_from_matches(
-            re.findall(GetCourseRuPlayerIE._EMBED_REGEX[0], webpage),
-            playlist_id, title, display_id=display_id, ie=GetCourseRuPlayerIE, video_kwargs={
+            re.findall(
+                GetCourseRuPlayerIE._EMBED_REGEX[0],
+                webpage),
+            playlist_id,
+            title,
+            display_id=display_id,
+            ie=GetCourseRuPlayerIE,
+            video_kwargs={
                 'url_transparent': True,
                 'title': title,
             })

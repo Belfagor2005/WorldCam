@@ -85,12 +85,16 @@ class IEContentProvider(abc.ABC):
 
     @classproperty
     def BUG_REPORT_MESSAGE(cls):
-        return f'please report this issue to the provider developer at  {cls.BUG_REPORT_LOCATION}  .'
+        return f'please report this issue to the provider developer at  {
+            cls.BUG_REPORT_LOCATION}  .'
 
     @classproperty
     def PROVIDER_KEY(cls) -> str:
-        assert hasattr(cls, '_PROVIDER_KEY_SUFFIX'), 'Content Provider implementation must define a suffix for the provider key'
-        assert cls.__name__.endswith(cls._PROVIDER_KEY_SUFFIX), f'Class name must end with "{cls._PROVIDER_KEY_SUFFIX}"'
+        assert hasattr(
+            cls, '_PROVIDER_KEY_SUFFIX'), 'Content Provider implementation must define a suffix for the provider key'
+        assert cls.__name__.endswith(
+            cls._PROVIDER_KEY_SUFFIX), f'Class name must end with "{
+            cls._PROVIDER_KEY_SUFFIX}"'
         return cls.__name__[:-len(cls._PROVIDER_KEY_SUFFIX)]
 
     @abc.abstractmethod
@@ -114,7 +118,11 @@ class IEContentProvider(abc.ABC):
         @param default      The default value to return when the key is not present (default: [])
         @param casesense    When false, the values are converted to lower case
         """
-        return configuration_arg(self.settings, key, default=default, casesense=casesense)
+        return configuration_arg(
+            self.settings,
+            key,
+            default=default,
+            casesense=casesense)
 
 
 class BuiltinIEContentProvider(IEContentProvider, abc.ABC):
@@ -142,8 +150,12 @@ def register_provider_generic(
     registry,
 ):
     """Generic function to register a provider class"""
-    assert issubclass(provider, base_class), f'{provider} must be a subclass of {base_class.__name__}'
-    assert provider.PROVIDER_KEY not in registry, f'{base_class.__name__} {provider.PROVIDER_KEY} already registered'
+    assert issubclass(
+        provider, base_class), f'{provider} must be a subclass of {
+        base_class.__name__}'
+    assert provider.PROVIDER_KEY not in registry, f'{
+        base_class.__name__} {
+        provider.PROVIDER_KEY} already registered'
     registry[provider.PROVIDER_KEY] = provider
     return provider
 

@@ -72,17 +72,27 @@ class Kenh14VideoIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        attrs = extract_attributes(get_element_html_by_attribute('type', 'VideoStream', webpage) or '')
+        attrs = extract_attributes(
+            get_element_html_by_attribute(
+                'type', 'VideoStream', webpage) or '')
         direct_url = attrs['data-vid']
 
         metadata = self._download_json(
             'https://api.kinghub.vn/video/api/v1/detailVideoByGet?FileName={}'.format(
-                remove_start(direct_url, 'kenh14cdn.com/')), video_id, fatal=False)
+                remove_start(
+                    direct_url,
+                    'kenh14cdn.com/')),
+            video_id,
+            fatal=False)
 
-        formats = [{'url': f'https://{direct_url}', 'format_id': 'http', 'quality': 1}]
+        formats = [{'url': f'https://{direct_url}',
+                    'format_id': 'http', 'quality': 1}]
         subtitles = {}
         video_data = self._download_json(
-            f'https://{direct_url}.json', video_id, note='Downloading video data', fatal=False)
+            f'https://{direct_url}.json',
+            video_id,
+            note='Downloading video data',
+            fatal=False)
         if hls_url := traverse_obj(video_data, ('hls', {url_or_none})):
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 hls_url, video_id, m3u8_id='hls', fatal=False)
@@ -143,7 +153,8 @@ class Kenh14PlaylistIE(InfoExtractor):
         playlist_id = self._match_id(url)
         webpage = self._download_webpage(url, playlist_id)
 
-        category_detail = get_element_by_class('category-detail', webpage) or ''
+        category_detail = get_element_by_class(
+            'category-detail', webpage) or ''
         embed_info = traverse_obj(
             self._yield_json_ld(webpage, playlist_id),
             (lambda _, v: v['name'] and v['alternateName'], any)) or {}

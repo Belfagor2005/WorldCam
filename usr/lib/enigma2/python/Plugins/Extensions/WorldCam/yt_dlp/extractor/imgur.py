@@ -26,8 +26,8 @@ class ImgurBaseIE(InfoExtractor):
 
     def _call_api(self, endpoint, video_id, **kwargs):
         return self._download_json(
-            f'https://api.imgur.com/post/v1/{endpoint}/{video_id}?client_id={self._CLIENT_ID}&include=media,account',
-            video_id, **kwargs)
+            f'https://api.imgur.com/post/v1/{endpoint}/{video_id}?client_id={
+                self._CLIENT_ID}&include=media,account', video_id, **kwargs)
 
     @staticmethod
     def get_description(s):
@@ -93,7 +93,8 @@ class ImgurIE(ImgurBaseIE):
             'dislike_count': int,
         },
     }, {
-        # needs Accept header, ref: https://github.com/yt-dlp/yt-dlp/issues/9458
+        # needs Accept header, ref:
+        # https://github.com/yt-dlp/yt-dlp/issues/9458
         'url': 'https://imgur.com/zV03bd5',
         'md5': '59df97884e8ba76143ff6b640a0e2904',
         'info_dict': {
@@ -118,19 +119,25 @@ class ImgurIE(ImgurBaseIE):
         if not traverse_obj(data, ('media', 0, (
                 ('type', {lambda t: t == 'video' or None}),
                 ('metadata', 'is_animated'))), get_all=False):
-            raise ExtractorError(f'{video_id} is not a video or animated image', expected=True)
+            raise ExtractorError(
+                f'{video_id} is not a video or animated image',
+                expected=True)
         webpage = self._download_webpage(
-            f'https://i.imgur.com/{video_id}.gifv', video_id, fatal=False) or ''
+            f'https://i.imgur.com/{video_id}.gifv',
+            video_id,
+            fatal=False) or ''
         formats = []
 
-        media_fmt = traverse_obj(data, ('media', 0, {
-            'url': ('url', {url_or_none}),
-            'ext': ('ext', {str}),
-            'width': ('width', {int_or_none}),
-            'height': ('height', {int_or_none}),
-            'filesize': ('size', {int_or_none}),
-            'acodec': ('metadata', 'has_sound', {lambda b: None if b else 'none'}),
-        }))
+        media_fmt = traverse_obj(
+            data, ('media', 0, {
+                'url': (
+                    'url', {url_or_none}), 'ext': (
+                    'ext', {str}), 'width': (
+                    'width', {int_or_none}), 'height': (
+                        'height', {int_or_none}), 'filesize': (
+                            'size', {int_or_none}), 'acodec': (
+                                'metadata', 'has_sound', {
+                                    lambda b: None if b else 'none'}), }))
         media_url = media_fmt.get('url')
         if media_url:
             if not media_fmt.get('ext'):
@@ -148,9 +155,13 @@ class ImgurIE(ImgurBaseIE):
         if video_elements:
             def og_get_size(media_type):
                 return {
-                    p: int_or_none(self._og_search_property(f'{media_type}:{p}', webpage, default=None))
-                    for p in ('width', 'height')
-                }
+                    p: int_or_none(
+                        self._og_search_property(
+                            f'{media_type}:{p}',
+                            webpage,
+                            default=None)) for p in (
+                        'width',
+                        'height')}
 
             size = og_get_size('video')
             if not any(size.values()):
@@ -185,7 +196,10 @@ class ImgurIE(ImgurBaseIE):
                 })
                 formats.append(gif_json)
 
-        search = functools.partial(self._html_search_meta, html=webpage, default=None)
+        search = functools.partial(
+            self._html_search_meta,
+            html=webpage,
+            default=None)
 
         twitter_fmt = {
             'format_id': 'twitter',
@@ -199,7 +213,8 @@ class ImgurIE(ImgurBaseIE):
 
         if not formats:
             self.raise_no_formats(
-                f'No sources found for video {video_id}. Maybe a plain image?', expected=True)
+                f'No sources found for video {video_id}. Maybe a plain image?',
+                expected=True)
         self._remove_duplicate_formats(formats)
 
         return {
@@ -239,7 +254,11 @@ class ImgurGalleryBaseIE(ImgurBaseIE):
     def _real_extract(self, url):
         gallery_id = self._match_id(url)
 
-        data = self._call_api('albums', gallery_id, fatal=False, expected_status=404)
+        data = self._call_api(
+            'albums',
+            gallery_id,
+            fatal=False,
+            expected_status=404)
 
         info = traverse_obj(data, {
             'title': ('title', {lambda x: strip_or_none(x) or None}),
@@ -248,11 +267,15 @@ class ImgurGalleryBaseIE(ImgurBaseIE):
 
         if traverse_obj(data, 'is_album'):
 
-            items = traverse_obj(data, (
-                'media', lambda _, v: v.get('type') == 'video' or v['metadata']['is_animated'],
-                'id', {lambda x: str_or_none(x) or None}))
+            items = traverse_obj(data,
+                                 ('media',
+                                  lambda _,
+                                  v: v.get('type') == 'video' or v['metadata']['is_animated'],
+                                     'id',
+                                     {lambda x: str_or_none(x) or None}))
 
-            # if a gallery with exactly one video, apply album metadata to video
+            # if a gallery with exactly one video, apply album metadata to
+            # video
             media_id = None
             if self._GALLERY and len(items) == 1:
                 media_id = items[0]

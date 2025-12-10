@@ -45,10 +45,17 @@ class SnapchatSpotlightIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        page_props = self._search_nextjs_data(webpage, video_id)['props']['pageProps']
-        video_data = traverse_obj(page_props, (
-            'spotlightFeed', 'spotlightStories',
-            lambda _, v: v['story']['storyId']['value'] == video_id, 'metadata', any), None)
+        page_props = self._search_nextjs_data(
+            webpage, video_id)['props']['pageProps']
+        video_data = traverse_obj(
+            page_props,
+            ('spotlightFeed',
+             'spotlightStories',
+             lambda _,
+             v: v['story']['storyId']['value'] == video_id,
+                'metadata',
+                any),
+            None)
 
         return {
             'id': video_id,

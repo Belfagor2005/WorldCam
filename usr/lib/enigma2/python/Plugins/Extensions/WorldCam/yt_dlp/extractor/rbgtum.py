@@ -45,11 +45,15 @@ class RbgTumIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        m3u8 = self._html_search_regex(r'"(https://[^"]+\.m3u8[^"]*)', webpage, 'm3u8')
-        lecture_title = self._html_search_regex(r'<h1[^>]*>([^<]+)</h1>', webpage, 'title', fatal=False)
-        lecture_series_title = remove_start(self._html_extract_title(webpage), 'TUM-Live | ')
+        m3u8 = self._html_search_regex(
+            r'"(https://[^"]+\.m3u8[^"]*)', webpage, 'm3u8')
+        lecture_title = self._html_search_regex(
+            r'<h1[^>]*>([^<]+)</h1>', webpage, 'title', fatal=False)
+        lecture_series_title = remove_start(
+            self._html_extract_title(webpage), 'TUM-Live | ')
 
-        formats = self._extract_m3u8_formats(m3u8, video_id, 'mp4', entry_protocol='m3u8_native', m3u8_id='hls')
+        formats = self._extract_m3u8_formats(
+            m3u8, video_id, 'mp4', entry_protocol='m3u8_native', m3u8_id='hls')
 
         return {
             'id': video_id,
@@ -87,19 +91,31 @@ class RbgTumCourseIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        course_id, hostname, year, term, slug = self._match_valid_url(url).group('id', 'hostname', 'year', 'term', 'slug')
+        course_id, hostname, year, term, slug = self._match_valid_url(
+            url).group('id', 'hostname', 'year', 'term', 'slug')
         meta = self._download_json(
             f'https://{hostname}/api/courses/{slug}/', course_id, fatal=False,
             query={'year': year, 'term': term}) or {}
         lecture_series_title = meta.get('Name')
-        lectures = [self.url_result(f'https://{hostname}/w/{slug}/{stream_id}', RbgTumIE)
-                    for stream_id in traverse_obj(meta, ('Streams', ..., 'ID'))]
+        lectures = [
+            self.url_result(
+                f'https://{hostname}/w/{slug}/{stream_id}',
+                RbgTumIE) for stream_id in traverse_obj(
+                meta,
+                ('Streams',
+                 ...,
+                 'ID'))]
 
         if not lectures:
             webpage = self._download_webpage(url, course_id)
-            lecture_series_title = remove_start(self._html_extract_title(webpage), 'TUM-Live | ')
-            lectures = [self.url_result(f'https://{hostname}{lecture_path}', RbgTumIE)
-                        for lecture_path in re.findall(r'href="(/w/[^/"]+/[^/"]+)"', webpage)]
+            lecture_series_title = remove_start(
+                self._html_extract_title(webpage), 'TUM-Live | ')
+            lectures = [
+                self.url_result(
+                    f'https://{hostname}{lecture_path}',
+                    RbgTumIE) for lecture_path in re.findall(
+                    r'href="(/w/[^/"]+/[^/"]+)"',
+                    webpage)]
 
         return self.playlist_result(lectures, course_id, lecture_series_title)
 
@@ -133,10 +149,18 @@ class RbgTumNewCourseIE(InfoExtractor):
 
     def _real_extract(self, url):
         query = parse_qs(url)
-        errors = [key for key in ('year', 'term', 'slug') if not query.get(key)]
+        errors = [
+            key for key in (
+                'year',
+                'term',
+                'slug') if not query.get(key)]
         if errors:
-            raise ExtractorError(f'Input URL is missing query parameters: {", ".join(errors)}')
+            raise ExtractorError(
+                f'Input URL is missing query parameters: {
+                    ", ".join(errors)}')
         year, term, slug = query['year'][0], query['term'][0], query['slug'][0]
         hostname = self._match_valid_url(url).group('hostname')
 
-        return self.url_result(f'https://{hostname}/old/course/{year}/{term}/{slug}', RbgTumCourseIE)
+        return self.url_result(
+            f'https://{hostname}/old/course/{year}/{term}/{slug}',
+            RbgTumCourseIE)

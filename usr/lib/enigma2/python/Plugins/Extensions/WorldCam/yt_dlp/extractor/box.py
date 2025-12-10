@@ -53,16 +53,21 @@ class BoxIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        shared_name, file_id, service = self._match_valid_url(url).group('shared_name', 'id', 'service')
+        shared_name, file_id, service = self._match_valid_url(
+            url).group('shared_name', 'id', 'service')
         webpage = self._download_webpage(url, file_id or shared_name)
 
         if not file_id:
             post_stream_data = self._search_json(
-                r'Box\.postStreamData\s*=', webpage, 'Box post-stream data', shared_name)
+                r'Box\.postStreamData\s*=',
+                webpage,
+                'Box post-stream data',
+                shared_name)
             shared_item = traverse_obj(
                 post_stream_data, ('/app-api/enduserapp/shared-item', {dict})) or {}
             if shared_item.get('itemType') != 'file':
-                raise ExtractorError('The requested resource is not a file', expected=True)
+                raise ExtractorError(
+                    'The requested resource is not a file', expected=True)
 
             file_id = str(shared_item['itemID'])
 
@@ -95,14 +100,25 @@ class BoxIE(InfoExtractor):
 
         formats = []
 
-        for url_tmpl in traverse_obj(f, (
-            'representations', 'entries', lambda _, v: v['representation'] == 'dash',
-            'content', 'url_template', {url_or_none},
-        )):
-            manifest_url = update_url_query(url_tmpl.replace('{+asset_path}', 'manifest.mpd'), query)
+        for url_tmpl in traverse_obj(
+            f,
+            ('representations',
+             'entries',
+             lambda _,
+             v: v['representation'] == 'dash',
+                'content',
+                'url_template',
+                {url_or_none},
+             )):
+            manifest_url = update_url_query(
+                url_tmpl.replace(
+                    '{+asset_path}',
+                    'manifest.mpd'),
+                query)
             fmts = self._extract_mpd_formats(manifest_url, file_id)
             for fmt in fmts:
-                fmt['extra_param_to_segment_url'] = urllib.parse.urlparse(manifest_url).query
+                fmt['extra_param_to_segment_url'] = urllib.parse.urlparse(
+                    manifest_url).query
             formats.extend(fmts)
 
         creator = f.get('created_by') or {}

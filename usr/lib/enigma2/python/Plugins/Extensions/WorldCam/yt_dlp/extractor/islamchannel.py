@@ -31,35 +31,50 @@ class IslamChannelIE(InfoExtractor):
             'Uvid': video_id,
         }
         show_stream = self._download_json(
-            f'https://v2-streams-elb.simplestreamcdn.com/api/show/stream/{video_id}', video_id,
+            f'https://v2-streams-elb.simplestreamcdn.com/api/show/stream/{video_id}',
+            video_id,
             query={
-                'key': self._search_regex(r'data-key="([^"]+)"', webpage, 'data key'),
+                'key': self._search_regex(
+                    r'data-key="([^"]+)"',
+                    webpage,
+                    'data key'),
                 'platform': 'chrome',
-            }, headers=headers)
-        # TODO: show_stream['stream'] and show_stream['drm'] may contain something interesting
-        streams = self._download_json(
-            traverse_obj(show_stream, ('response', 'tokenization', 'url')), video_id,
+            },
             headers=headers)
-        formats, subs = self._extract_m3u8_formats_and_subtitles(traverse_obj(streams, ('Streams', 'Adaptive')), video_id, 'mp4')
+        # TODO: show_stream['stream'] and show_stream['drm'] may contain
+        # something interesting
+        streams = self._download_json(
+            traverse_obj(
+                show_stream,
+                ('response',
+                 'tokenization',
+                 'url')),
+            video_id,
+            headers=headers)
+        formats, subs = self._extract_m3u8_formats_and_subtitles(
+            traverse_obj(streams, ('Streams', 'Adaptive')), video_id, 'mp4')
 
-        return {
-            'id': video_id,
-            'title': self._html_search_meta(('og:title', 'twitter:title'), webpage),
-            'description': self._html_search_meta(('og:description', 'twitter:description', 'description'), webpage),
-            'formats': formats,
-            'subtitles': subs,
-            'thumbnails': [{
-                'id': 'unscaled',
-                'url': thumbnail.split('?')[0],
-                'ext': 'jpg',
-                'preference': 2,
-            }, {
-                'id': 'orig',
-                'url': thumbnail,
-                'ext': 'jpg',
-                'preference': 1,
-            }] if thumbnail else None,
-        }
+        return {'id': video_id,
+                'title': self._html_search_meta(('og:title',
+                                                 'twitter:title'),
+                                                webpage),
+                'description': self._html_search_meta(('og:description',
+                                                       'twitter:description',
+                                                       'description'),
+                                                      webpage),
+                'formats': formats,
+                'subtitles': subs,
+                'thumbnails': [{'id': 'unscaled',
+                                'url': thumbnail.split('?')[0],
+                                'ext': 'jpg',
+                                'preference': 2,
+                                },
+                               {'id': 'orig',
+                                'url': thumbnail,
+                                'ext': 'jpg',
+                                'preference': 1,
+                                }] if thumbnail else None,
+                }
 
 
 class IslamChannelSeriesIE(InfoExtractor):
@@ -77,5 +92,11 @@ class IslamChannelSeriesIE(InfoExtractor):
         webpage = self._download_webpage(url, pl_id)
 
         return self.playlist_from_matches(
-            re.finditer(r'<a\s+href="(/watch/\d+)"[^>]+?data-video-type="show">', webpage),
-            pl_id, getter=lambda x: urljoin(url, x.group(1)), ie=IslamChannelIE)
+            re.finditer(
+                r'<a\s+href="(/watch/\d+)"[^>]+?data-video-type="show">',
+                webpage),
+            pl_id,
+            getter=lambda x: urljoin(
+                url,
+                x.group(1)),
+            ie=IslamChannelIE)

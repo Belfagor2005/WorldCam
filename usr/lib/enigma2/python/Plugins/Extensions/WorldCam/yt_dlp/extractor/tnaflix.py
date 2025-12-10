@@ -59,8 +59,16 @@ class TNAFlixNetworkBaseIE(InfoExtractor):
         if first > last:
             return
 
-        width = int_or_none(xpath_text(timeline, './imageWidth', 'thumbnail width'))
-        height = int_or_none(xpath_text(timeline, './imageHeight', 'thumbnail height'))
+        width = int_or_none(
+            xpath_text(
+                timeline,
+                './imageWidth',
+                'thumbnail width'))
+        height = int_or_none(
+            xpath_text(
+                timeline,
+                './imageHeight',
+                'thumbnail height'))
 
         return [{
             'url': self._proto_relative_url(pattern_el.text.replace('#', str(i)), 'http:'),
@@ -107,8 +115,13 @@ class TNAFlixNetworkBaseIE(InfoExtractor):
         # TNAFlix and MovieFap extraction
         if cfg_url:
             cfg_xml = self._download_xml(
-                cfg_url, display_id, 'Downloading metadata',
-                transform_source=fix_xml_ampersands, headers={'Referer': url}, query=query)
+                cfg_url,
+                display_id,
+                'Downloading metadata',
+                transform_source=fix_xml_ampersands,
+                headers={
+                    'Referer': url},
+                query=query)
 
             def extract_video_url(vl):
                 # Any URL modification now results in HTTP Error 403: Forbidden
@@ -116,10 +129,8 @@ class TNAFlixNetworkBaseIE(InfoExtractor):
 
             video_link = cfg_xml.find('./videoLink')
             if video_link is not None:
-                formats.append({
-                    'url': extract_video_url(video_link),
-                    'ext': xpath_text(cfg_xml, './videoConfig/type', 'type', default='flv'),
-                })
+                formats.append({'url': extract_video_url(video_link), 'ext': xpath_text(
+                    cfg_xml, './videoConfig/type', 'type', default='flv'), })
 
             for item in cfg_xml.findall('./quality/item'):
                 video_link = item.find('./videoLink')
@@ -129,62 +140,95 @@ class TNAFlixNetworkBaseIE(InfoExtractor):
                 format_id = None if res is None else res.text
                 height = int_or_none(self._search_regex(
                     r'^(\d+)[pP]', format_id, 'height', default=None))
-                formats.append({
-                    'url': self._proto_relative_url(extract_video_url(video_link), 'http:'),
-                    'format_id': format_id,
-                    'height': height,
-                })
+                formats.append({'url': self._proto_relative_url(extract_video_url(
+                    video_link), 'http:'), 'format_id': format_id, 'height': height, })
 
             thumbnails = self._extract_thumbnails(cfg_xml) or []
-            thumbnails.append({
-                'url': self._proto_relative_url(xpath_text(cfg_xml, './startThumb', 'thumbnail'), 'http:'),
-            })
+            thumbnails.append({'url': self._proto_relative_url(
+                xpath_text(cfg_xml, './startThumb', 'thumbnail'), 'http:'), })
 
         # check for EMPFlix-style JSON and extract
         else:
             player = self._download_json(
-                f'http://www.{host}.com/ajax/video-player/{video_id}', video_id,
-                headers={'Referer': url}).get('html', '')
+                f'http://www.{host}.com/ajax/video-player/{video_id}',
+                video_id,
+                headers={
+                    'Referer': url}).get(
+                'html',
+                '')
             for mobj in re.finditer(r'<source src="(?P<src>[^"]+)"', player):
                 video_url = mobj.group('src')
-                height = self._search_regex(r'-(\d+)p\.', url_basename(video_url), 'height', default=None)
+                height = self._search_regex(
+                    r'-(\d+)p\.', url_basename(video_url), 'height', default=None)
                 formats.append({
                     'url': self._proto_relative_url(video_url, 'http:'),
                     'ext': url_basename(video_url).split('.')[-1],
                     'height': int_or_none(height),
                     'format_id': f'{height}p' if height else url_basename(video_url).split('.')[0],
                 })
-            thumbnail = self._proto_relative_url(self._search_regex(
-                r'data-poster="([^"]+)"', player, 'thumbnail', default=None), 'http:')
+            thumbnail = self._proto_relative_url(
+                self._search_regex(
+                    r'data-poster="([^"]+)"',
+                    player,
+                    'thumbnail',
+                    default=None),
+                'http:')
             thumbnails = [{'url': thumbnail}] if thumbnail else None
             json_ld = self._search_json_ld(webpage, display_id, default={})
 
         def extract_field(pattern, name):
-            return self._html_search_regex(pattern, webpage, name, default=None) if pattern else None
+            return self._html_search_regex(
+                pattern, webpage, name, default=None) if pattern else None
 
         return {
             'id': video_id,
             'display_id': display_id,
-            'title': (extract_field(self._TITLE_REGEX, 'title')
-                      or self._og_search_title(webpage, default=None)
-                      or json_ld.get('title')),
-            'description': extract_field(self._DESCRIPTION_REGEX, 'description') or json_ld.get('description'),
+            'title': (
+                extract_field(
+                    self._TITLE_REGEX,
+                    'title') or self._og_search_title(
+                    webpage,
+                    default=None) or json_ld.get('title')),
+            'description': extract_field(
+                self._DESCRIPTION_REGEX,
+                'description') or json_ld.get('description'),
             'thumbnails': thumbnails,
             'duration': parse_duration(
-                self._html_search_meta('duration', webpage, 'duration', default=None)) or json_ld.get('duration'),
+                self._html_search_meta(
+                    'duration',
+                    webpage,
+                    'duration',
+                    default=None)) or json_ld.get('duration'),
             'age_limit': self._rta_search(webpage) or 18,
-            'uploader': extract_field(self._UPLOADER_REGEX, 'uploader') or json_ld.get('uploader'),
-            'view_count': str_to_int(extract_field(self._VIEW_COUNT_REGEX, 'view count')),
-            'comment_count': str_to_int(extract_field(self._COMMENT_COUNT_REGEX, 'comment count')),
-            'average_rating': float_or_none(extract_field(self._AVERAGE_RATING_REGEX, 'average rating')),
-            'categories': list(map(str.strip, (extract_field(self._CATEGORIES_REGEX, 'categories') or '').split(','))),
+            'uploader': extract_field(
+                self._UPLOADER_REGEX,
+                'uploader') or json_ld.get('uploader'),
+            'view_count': str_to_int(
+                extract_field(
+                    self._VIEW_COUNT_REGEX,
+                    'view count')),
+            'comment_count': str_to_int(
+                extract_field(
+                    self._COMMENT_COUNT_REGEX,
+                    'comment count')),
+            'average_rating': float_or_none(
+                extract_field(
+                    self._AVERAGE_RATING_REGEX,
+                    'average rating')),
+            'categories': list(
+                map(
+                    str.strip,
+                    (extract_field(
+                        self._CATEGORIES_REGEX,
+                        'categories') or '').split(','))),
             'formats': formats,
         }
 
 
 class TNAFlixNetworkEmbedIE(TNAFlixNetworkBaseIE):
     _VALID_URL = r'https?://player\.(?P<host>tnaflix|empflix)\.com/video/(?P<id>\d+)'
-    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//player\.(?:tna|emp)flix\.com/video/\d+)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//player\.(?:tna|emp)flix\.com/video/\d+)\1']
 
     _TESTS = [{
         'url': 'https://player.tnaflix.com/video/6538',
@@ -211,7 +255,8 @@ class TNAFlixNetworkEmbedIE(TNAFlixNetworkBaseIE):
     def _real_extract(self, url):
         mobj = self._match_valid_url(url)
         video_id, host = mobj.group('id', 'host')
-        return self.url_result(f'http://www.{host}.com/category/{video_id}/video{video_id}')
+        return self.url_result(
+            f'http://www.{host}.com/category/{video_id}/video{video_id}')
 
 
 class TNAEMPFlixBaseIE(TNAFlixNetworkBaseIE):
@@ -264,27 +309,25 @@ class TNAFlixIE(TNAEMPFlixBaseIE):
 class EMPFlixIE(TNAEMPFlixBaseIE):
     _VALID_URL = r'https?://(?:www\.)?(?P<host>empflix)\.com/(?:videos/(?P<display_id>.+?)-|[^/]+/(?P<display_id_2>[^/]+)/video)(?P<id>[0-9]+)'
 
-    _TESTS = [{
-        'url': 'http://www.empflix.com/amateur-porn/Amateur-Finger-Fuck/video33051',
-        'md5': 'd761c7b26601bd14476cd9512f2654fc',
-        'info_dict': {
-            'id': '33051',
-            'display_id': 'Amateur-Finger-Fuck',
-            'ext': 'mp4',
-            'title': 'Amateur Finger Fuck',
-            'description': 'Amateur solo finger fucking.',
-            'thumbnail': r're:https?://.*\.jpg$',
-            'duration': 83,
-            'age_limit': 18,
-            'categories': list,
-        },
-    }, {
-        'url': 'http://www.empflix.com/videos/[AROMA][ARMD-718]-Aoi-Yoshino-Sawa-25826.html',
-        'only_matching': True,
-    }, {
-        'url': 'http://www.empflix.com/videos/Amateur-Finger-Fuck-33051.html',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://www.empflix.com/amateur-porn/Amateur-Finger-Fuck/video33051',
+               'md5': 'd761c7b26601bd14476cd9512f2654fc',
+               'info_dict': {'id': '33051',
+                             'display_id': 'Amateur-Finger-Fuck',
+                             'ext': 'mp4',
+                             'title': 'Amateur Finger Fuck',
+                             'description': 'Amateur solo finger fucking.',
+                             'thumbnail': r're:https?://.*\.jpg$',
+                             'duration': 83,
+                             'age_limit': 18,
+                             'categories': list,
+                             },
+               },
+              {'url': 'http://www.empflix.com/videos/[AROMA][ARMD-718]-Aoi-Yoshino-Sawa-25826.html',
+               'only_matching': True,
+               },
+              {'url': 'http://www.empflix.com/videos/Amateur-Finger-Fuck-33051.html',
+               'only_matching': True,
+               }]
 
 
 class MovieFapIE(TNAFlixNetworkBaseIE):
@@ -314,7 +357,8 @@ class MovieFapIE(TNAFlixNetworkBaseIE):
             'categories': ['Amateur', 'Masturbation', 'Mature', 'Flashing'],
         },
     }, {
-        # quirky single-format case where the extension is given as fid, but the video is really an flv
+        # quirky single-format case where the extension is given as fid, but
+        # the video is really an flv
         'url': 'http://www.moviefap.com/videos/e5da0d3edce5404418f5/jeune-couple-russe.html',
         'md5': 'fa56683e291fc80635907168a743c9ad',
         'info_dict': {

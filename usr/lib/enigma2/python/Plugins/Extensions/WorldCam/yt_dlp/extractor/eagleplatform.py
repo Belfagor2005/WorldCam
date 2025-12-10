@@ -20,11 +20,13 @@ class EaglePlatformIE(InfoExtractor):
                     )
                     (?P<id>\d+)
                 '''
-    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//.+?\.media\.eagleplatform\.com/index/player\?.+?)\1']
+    _EMBED_REGEX = [
+        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//.+?\.media\.eagleplatform\.com/index/player\?.+?)\1']
     _TESTS = [{
         # http://lenta.ru/news/2015/03/06/navalny/
         'url': 'http://lentaru.media.eagleplatform.com/index/player?player=new&record_id=227304&player_template_id=5201',
-        # Not checking MD5 as sometimes the direct HTTP link results in 404 and HLS is used
+        # Not checking MD5 as sometimes the direct HTTP link results in 404 and
+        # HLS is used
         'info_dict': {
             'id': '227304',
             'ext': 'mp4',
@@ -50,7 +52,8 @@ class EaglePlatformIE(InfoExtractor):
         },
         'skip': 'Georestricted',
     }, {
-        # referrer protected video (https://tvrain.ru/lite/teleshow/kak_vse_nachinalos/namin-418921/)
+        # referrer protected video
+        # (https://tvrain.ru/lite/teleshow/kak_vse_nachinalos/namin-418921/)
         'url': 'eagleplatform:tvrainru.media.eagleplatform.com:582306',
         'only_matching': True,
     }]
@@ -77,7 +80,10 @@ class EaglePlatformIE(InfoExtractor):
                         data-id=["\'](?P<id>\d+)
             ''', webpage)
         if mobj is not None:
-            return [add_referer('eagleplatform:{host}:{id}'.format(**mobj.groupdict()))]
+            return [
+                add_referer(
+                    'eagleplatform:{host}:{id}'.format(
+                        **mobj.groupdict()))]
         # Generalization of "Javascript code usage", "Combined usage" and
         # "Usage without attaching to DOM" embeddings (see
         # http://dultonmedia.github.io/eplayer/)
@@ -98,7 +104,10 @@ class EaglePlatformIE(InfoExtractor):
                     </script>
             ''' % PLAYER_JS_RE, webpage)  # noqa: UP031
         if mobj is not None:
-            return [add_referer('eagleplatform:{host}:{id}'.format(**mobj.groupdict()))]
+            return [
+                add_referer(
+                    'eagleplatform:{host}:{id}'.format(
+                        **mobj.groupdict()))]
 
     @staticmethod
     def _handle_error(response):
@@ -112,19 +121,22 @@ class EaglePlatformIE(InfoExtractor):
                 url_or_request, video_id, *args, **kwargs)
         except ExtractorError as ee:
             if isinstance(ee.cause, HTTPError):
-                response = self._parse_json(ee.cause.response.read().decode('utf-8'), video_id)
+                response = self._parse_json(
+                    ee.cause.response.read().decode('utf-8'), video_id)
                 self._handle_error(response)
             raise
         return response
 
-    def _get_video_url(self, url_or_request, video_id, note='Downloading JSON metadata'):
+    def _get_video_url(self, url_or_request, video_id,
+                       note='Downloading JSON metadata'):
         return self._download_json(url_or_request, video_id, note)['data'][0]
 
     def _real_extract(self, url):
         url, smuggled_data = unsmuggle_url(url, {})
 
         mobj = self._match_valid_url(url)
-        host, video_id = mobj.group('custom_host') or mobj.group('host'), mobj.group('id')
+        host, video_id = mobj.group('custom_host') or mobj.group(
+            'host'), mobj.group('id')
 
         headers = {}
         query = {
@@ -153,11 +165,13 @@ class EaglePlatformIE(InfoExtractor):
         if age_restriction:
             age_limit = 0 if age_restriction == 'allow_all' else 18
 
-        secure_m3u8 = self._proto_relative_url(media['sources']['secure_m3u8']['auto'], 'http:')
+        secure_m3u8 = self._proto_relative_url(
+            media['sources']['secure_m3u8']['auto'], 'http:')
 
         formats = []
 
-        m3u8_url = self._get_video_url(secure_m3u8, video_id, 'Downloading m3u8 JSON')
+        m3u8_url = self._get_video_url(
+            secure_m3u8, video_id, 'Downloading m3u8 JSON')
         m3u8_formats = self._extract_m3u8_formats(
             m3u8_url, video_id, 'mp4', entry_protocol='m3u8_native',
             m3u8_id='hls', fatal=False)
@@ -210,6 +224,7 @@ class ClipYouEmbedIE(InfoExtractor):
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
         mobj = re.search(
-            r'<iframe[^>]+src="https?://(?P<host>media\.clipyou\.ru)/index/player\?.*\brecord_id=(?P<id>\d+).*"', webpage)
+            r'<iframe[^>]+src="https?://(?P<host>media\.clipyou\.ru)/index/player\?.*\brecord_id=(?P<id>\d+).*"',
+            webpage)
         if mobj is not None:
             yield smuggle_url('eagleplatform:{host}:{id}'.format(**mobj.groupdict()), {'referrer': url})
