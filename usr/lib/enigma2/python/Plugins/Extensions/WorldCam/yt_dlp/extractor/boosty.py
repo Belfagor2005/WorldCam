@@ -141,44 +141,18 @@ class BoostyIE(InfoExtractor):
         },
     }]
 
-    _MP4_TYPES = (
-        'tiny',
-        'lowest',
-        'low',
-        'medium',
-        'high',
-        'full_hd',
-        'quad_hd',
-        'ultra_hd')
+    _MP4_TYPES = ('tiny', 'lowest', 'low', 'medium', 'high', 'full_hd', 'quad_hd', 'ultra_hd')
 
     def _extract_formats(self, player_urls, video_id):
         formats = []
         quality = qualities(self._MP4_TYPES)
-        for player_url in traverse_obj(
-            player_urls,
-            lambda _,
-            v: url_or_none(
-                v['url'])):
+        for player_url in traverse_obj(player_urls, lambda _, v: url_or_none(v['url'])):
             url = player_url['url']
             format_type = player_url.get('type')
-            if format_type in (
-                'hls',
-                'hls_live',
-                'live_ondemand_hls',
-                    'live_playback_hls'):
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        url,
-                        video_id,
-                        m3u8_id='hls',
-                        fatal=False))
+            if format_type in ('hls', 'hls_live', 'live_ondemand_hls', 'live_playback_hls'):
+                formats.extend(self._extract_m3u8_formats(url, video_id, m3u8_id='hls', fatal=False))
             elif format_type in ('dash', 'dash_live', 'live_playback_dash'):
-                formats.extend(
-                    self._extract_mpd_formats(
-                        url,
-                        video_id,
-                        mpd_id='dash',
-                        fatal=False))
+                formats.extend(self._extract_mpd_formats(url, video_id, mpd_id='dash', fatal=False))
             elif format_type in self._MP4_TYPES:
                 formats.append({
                     'url': url,
@@ -198,27 +172,19 @@ class BoostyIE(InfoExtractor):
         if auth_cookie is not None:
             try:
                 auth_data = json.loads(urllib.parse.unquote(auth_cookie.value))
-                auth_headers['Authorization'] = f'Bearer {
-                    auth_data["accessToken"]}'
+                auth_headers['Authorization'] = f'Bearer {auth_data["accessToken"]}'
             except (json.JSONDecodeError, KeyError):
-                self.report_warning(
-                    f'Failed to extract token from auth cookie{
-                        bug_reports_message()}')
+                self.report_warning(f'Failed to extract token from auth cookie{bug_reports_message()}')
 
         post = self._download_json(
-            f'https://api.boosty.to/v1/blog/{user}/post/{post_id}',
-            post_id,
-            note='Downloading post data',
-            errnote='Unable to download post data',
-            headers=auth_headers)
+            f'https://api.boosty.to/v1/blog/{user}/post/{post_id}', post_id,
+            note='Downloading post data', errnote='Unable to download post data', headers=auth_headers)
 
         post_title = post.get('title')
         if not post_title:
-            self.report_warning(
-                'Unable to extract post title. Falling back to parsing html page')
+            self.report_warning('Unable to extract post title. Falling back to parsing html page')
             webpage = self._download_webpage(url, video_id=post_id)
-            post_title = self._og_search_title(
-                webpage, default=None) or self._html_extract_title(webpage)
+            post_title = self._og_search_title(webpage, default=None) or self._html_extract_title(webpage)
 
         common_metadata = {
             'title': post_title,
@@ -251,12 +217,9 @@ class BoostyIE(InfoExtractor):
                     }, get_all=False)})
 
         if not entries and not post.get('hasAccess'):
-            self.raise_login_required(
-                'This post requires a subscription',
-                metadata_available=True)
+            self.raise_login_required('This post requires a subscription', metadata_available=True)
         elif not entries:
             raise ExtractorError('No videos found', expected=True)
         if len(entries) == 1:
             return entries[0]
-        return self.playlist_result(
-            entries, post_id, post_title, **common_metadata)
+        return self.playlist_result(entries, post_id, post_title, **common_metadata)

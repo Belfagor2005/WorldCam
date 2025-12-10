@@ -24,8 +24,7 @@ class BFIPlayerIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
         entries = []
-        for player_el in re.findall(
-                r'(?s)<[^>]+class="player"[^>]*>', webpage):
+        for player_el in re.findall(r'(?s)<[^>]+class="player"[^>]*>', webpage):
             player_attr = extract_attributes(player_el)
             ooyala_id = player_attr.get('data-video-id')
             if not ooyala_id:

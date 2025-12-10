@@ -30,10 +30,7 @@ class UnsupportedRequest(RequestError):
 class NoSupportingHandlers(RequestError):
     """raised when no handlers can support a request for various reasons"""
 
-    def __init__(
-            self,
-            unsupported_errors: list[UnsupportedRequest],
-            unexpected_errors: list[Exception]):
+    def __init__(self, unsupported_errors: list[UnsupportedRequest], unexpected_errors: list[Exception]):
         self.unsupported_errors = unsupported_errors or []
         self.unexpected_errors = unexpected_errors or []
 
@@ -42,12 +39,9 @@ class NoSupportingHandlers(RequestError):
         for err in unsupported_errors:
             err_handler_map.setdefault(err.msg, []).append(err.handler.RH_NAME)
 
-        reason_str = ', '.join(
-            [f'{msg} ({", ".join(handlers)})' for msg, handlers in err_handler_map.items()])
+        reason_str = ', '.join([f'{msg} ({", ".join(handlers)})' for msg, handlers in err_handler_map.items()])
         if unexpected_errors:
-            reason_str = ' + '.join(filter(None,
-                                           [reason_str,
-                                            f'{len(unexpected_errors)} unexpected error(s)']))
+            reason_str = ' + '.join(filter(None, [reason_str, f'{len(unexpected_errors)} unexpected error(s)']))
 
         err_str = 'Unable to handle request'
         if reason_str:

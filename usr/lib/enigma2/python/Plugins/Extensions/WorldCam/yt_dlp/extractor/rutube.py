@@ -47,23 +47,15 @@ class RutubeBaseIE(InfoExtractor):
             'description': description,
             'thumbnail': video.get('thumbnail_url'),
             'duration': duration,
-            'uploader': try_get(
-                video,
-                lambda x: x['author']['name']),
+            'uploader': try_get(video, lambda x: x['author']['name']),
             'uploader_id': str(uploader_id) if uploader_id else None,
-            'timestamp': unified_timestamp(
-                video.get('created_ts')),
+            'timestamp': unified_timestamp(video.get('created_ts')),
             'categories': [category] if category else None,
             'age_limit': age_limit,
-            'view_count': int_or_none(
-                video.get('hits')),
-            'comment_count': int_or_none(
-                video.get('comments_count')),
-            'is_live': bool_or_none(
-                video.get('is_livestream')),
-            'chapters': self._extract_chapters_from_description(
-                description,
-                duration),
+            'view_count': int_or_none(video.get('hits')),
+            'comment_count': int_or_none(video.get('comments_count')),
+            'is_live': bool_or_none(video.get('is_livestream')),
+            'chapters': self._extract_chapters_from_description(description, duration),
         }
 
     def _download_and_extract_info(self, video_id, query=None):
@@ -98,8 +90,7 @@ class RutubeBaseIE(InfoExtractor):
                     'url': format_url,
                     'format_id': format_id,
                 })
-        for hls_url in traverse_obj(
-                options, ('live_streams', 'hls', ..., 'url', {url_or_none})):
+        for hls_url in traverse_obj(options, ('live_streams', 'hls', ..., 'url', {url_or_none})):
             fmts, subs = self._extract_m3u8_formats_and_subtitles(
                 hls_url, video_id, 'mp4', fatal=False, m3u8_id='hls')
             formats.extend(fmts)
@@ -111,8 +102,7 @@ class RutubeBaseIE(InfoExtractor):
         }, all, {subs_list_to_dict(lang='ru')})), target=subtitles)
         return formats, subtitles
 
-    def _download_and_extract_formats_and_subtitles(
-            self, video_id, query=None):
+    def _download_and_extract_formats_and_subtitles(self, video_id, query=None):
         return self._extract_formats_and_subtitles(
             self._download_api_options(video_id, query=query), video_id)
 
@@ -121,116 +111,121 @@ class RutubeIE(RutubeBaseIE):
     IE_NAME = 'rutube'
     IE_DESC = 'Rutube videos'
     _VALID_URL = r'https?://rutube\.ru/(?:(?:live/)?video(?:/private)?|(?:play/)?embed)/(?P<id>[\da-z]{32})'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//rutube\.ru/(?:play/)?embed/[\da-z]{32}.*?)\1']
+    _EMBED_REGEX = [r'<iframe[^>]+?src=(["\'])(?P<url>(?:https?:)?//rutube\.ru/(?:play/)?embed/[\da-z]{32}.*?)\1']
 
-    _TESTS = [{'url': 'https://rutube.ru/video/3eac3b4561676c17df9132a9a1e62e3e/',
-               'info_dict': {'id': '3eac3b4561676c17df9132a9a1e62e3e',
-                             'ext': 'mp4',
-                             'title': 'Раненный кенгуру забежал в аптеку',
-                             'description': 'http://www.ntdtv.ru ',
-                             'duration': 81,
-                             'uploader': 'NTDRussian',
-                             'uploader_id': '29790',
-                             'timestamp': 1381943602,
-                             'upload_date': '20131016',
-                             'age_limit': 0,
-                             'view_count': int,
-                             'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
-                             'categories': ['Новости и СМИ'],
-                             'chapters': [],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'url': 'https://rutube.ru/play/embed/a10e53b86e8f349080f718582ce4c661',
-               'only_matching': True,
-               },
-              {'url': 'https://rutube.ru/embed/a10e53b86e8f349080f718582ce4c661',
-               'only_matching': True,
-               },
-              {'url': 'https://rutube.ru/video/3eac3b4561676c17df9132a9a1e62e3e/?pl_id=4252',
-               'only_matching': True,
-               },
-              {'url': 'https://rutube.ru/video/10b3a03fc01d5bbcc632a2f3514e8aab/?pl_type=source',
-               'only_matching': True,
-               },
-              {'url': 'https://rutube.ru/video/private/884fb55f07a97ab673c7d654553e0f48/?p=x2QojCumHTS3rsKHWXN8Lg',
-               'info_dict': {'id': '884fb55f07a97ab673c7d654553e0f48',
-                             'ext': 'mp4',
-                             'title': 'Яцуноками, Nioh2',
-                             'description': 'Nioh2: финал сражения с боссом Яцуноками',
-                             'duration': 15,
-                             'uploader': 'mexus',
-                             'uploader_id': '24222106',
-                             'timestamp': 1670646232,
-                             'upload_date': '20221210',
-                             'age_limit': 0,
-                             'view_count': int,
-                             'thumbnail': 'https://pic.rutubelist.ru/video/f2/d4/f2d42b54be0a6e69c1c22539e3152156.jpg',
-                             'categories': ['Видеоигры'],
-                             'chapters': [],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'url': 'https://rutube.ru/video/c65b465ad0c98c89f3b25cb03dcc87c6/',
-               'info_dict': {'id': 'c65b465ad0c98c89f3b25cb03dcc87c6',
-                             'ext': 'mp4',
-                             'chapters': 'count:4',
-                             'categories': ['Бизнес и предпринимательство'],
-                             'description': 'md5:252feac1305257d8c1bab215cedde75d',
-                             'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
-                             'duration': 782,
-                             'age_limit': 0,
-                             'uploader_id': '23491359',
-                             'timestamp': 1677153329,
-                             'view_count': int,
-                             'upload_date': '20230223',
-                             'title': 'Бизнес с нуля: найм сотрудников. Интервью с директором строительной компании #1',
-                             'uploader': 'Стас Быков',
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'url': 'https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/',
-               'info_dict': {'id': 'c58f502c7bb34a8fcdd976b221fca292',
-                             'ext': 'mp4',
-                             'categories': ['Телепередачи'],
-                             'description': '',
-                             'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
-                             'live_status': 'is_live',
-                             'age_limit': 0,
-                             'uploader_id': '23460655',
-                             'timestamp': 1652972968,
-                             'view_count': int,
-                             'upload_date': '20220519',
-                             'title': str,
-                             'uploader': 'Первый канал',
-                             },
-               'skip': 'Invalid URL',
-               },
-              {'url': 'https://rutube.ru/play/embed/03a9cb54bac3376af4c5cb0f18444e01/',
-               'info_dict': {'id': '03a9cb54bac3376af4c5cb0f18444e01',
-                             'ext': 'mp4',
-                             'age_limit': 0,
-                             'description': '',
-                             'title': 'Церемония начала торгов акциями ПАО «ЕвроТранс»',
-                             'chapters': [],
-                             'upload_date': '20240829',
-                             'duration': 293,
-                             'uploader': 'MOEX - Московская биржа',
-                             'timestamp': 1724946628,
-                             'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
-                             'view_count': int,
-                             'uploader_id': '38420507',
-                             'categories': ['Интервью'],
-                             },
-               'params': {'skip_download': 'm3u8'},
-               },
-              {'url': 'https://rutube.ru/video/5ab908fccfac5bb43ef2b1e4182256b0/',
-               'only_matching': True,
-               },
-              {'url': 'https://rutube.ru/live/video/private/c58f502c7bb34a8fcdd976b221fca292/',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://rutube.ru/video/3eac3b4561676c17df9132a9a1e62e3e/',
+        'info_dict': {
+            'id': '3eac3b4561676c17df9132a9a1e62e3e',
+            'ext': 'mp4',
+            'title': 'Раненный кенгуру забежал в аптеку',
+            'description': 'http://www.ntdtv.ru ',
+            'duration': 81,
+            'uploader': 'NTDRussian',
+            'uploader_id': '29790',
+            'timestamp': 1381943602,
+            'upload_date': '20131016',
+            'age_limit': 0,
+            'view_count': int,
+            'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
+            'categories': ['Новости и СМИ'],
+            'chapters': [],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://rutube.ru/play/embed/a10e53b86e8f349080f718582ce4c661',
+        'only_matching': True,
+    }, {
+        'url': 'https://rutube.ru/embed/a10e53b86e8f349080f718582ce4c661',
+        'only_matching': True,
+    }, {
+        'url': 'https://rutube.ru/video/3eac3b4561676c17df9132a9a1e62e3e/?pl_id=4252',
+        'only_matching': True,
+    }, {
+        'url': 'https://rutube.ru/video/10b3a03fc01d5bbcc632a2f3514e8aab/?pl_type=source',
+        'only_matching': True,
+    }, {
+        'url': 'https://rutube.ru/video/private/884fb55f07a97ab673c7d654553e0f48/?p=x2QojCumHTS3rsKHWXN8Lg',
+        'info_dict': {
+            'id': '884fb55f07a97ab673c7d654553e0f48',
+            'ext': 'mp4',
+            'title': 'Яцуноками, Nioh2',
+            'description': 'Nioh2: финал сражения с боссом Яцуноками',
+            'duration': 15,
+            'uploader': 'mexus',
+            'uploader_id': '24222106',
+            'timestamp': 1670646232,
+            'upload_date': '20221210',
+            'age_limit': 0,
+            'view_count': int,
+            'thumbnail': 'https://pic.rutubelist.ru/video/f2/d4/f2d42b54be0a6e69c1c22539e3152156.jpg',
+            'categories': ['Видеоигры'],
+            'chapters': [],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://rutube.ru/video/c65b465ad0c98c89f3b25cb03dcc87c6/',
+        'info_dict': {
+            'id': 'c65b465ad0c98c89f3b25cb03dcc87c6',
+            'ext': 'mp4',
+            'chapters': 'count:4',
+            'categories': ['Бизнес и предпринимательство'],
+            'description': 'md5:252feac1305257d8c1bab215cedde75d',
+            'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
+            'duration': 782,
+            'age_limit': 0,
+            'uploader_id': '23491359',
+            'timestamp': 1677153329,
+            'view_count': int,
+            'upload_date': '20230223',
+            'title': 'Бизнес с нуля: найм сотрудников. Интервью с директором строительной компании #1',
+            'uploader': 'Стас Быков',
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://rutube.ru/live/video/c58f502c7bb34a8fcdd976b221fca292/',
+        'info_dict': {
+            'id': 'c58f502c7bb34a8fcdd976b221fca292',
+            'ext': 'mp4',
+            'categories': ['Телепередачи'],
+            'description': '',
+            'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
+            'live_status': 'is_live',
+            'age_limit': 0,
+            'uploader_id': '23460655',
+            'timestamp': 1652972968,
+            'view_count': int,
+            'upload_date': '20220519',
+            'title': str,
+            'uploader': 'Первый канал',
+        },
+        'skip': 'Invalid URL',
+    }, {
+        'url': 'https://rutube.ru/play/embed/03a9cb54bac3376af4c5cb0f18444e01/',
+        'info_dict': {
+            'id': '03a9cb54bac3376af4c5cb0f18444e01',
+            'ext': 'mp4',
+            'age_limit': 0,
+            'description': '',
+            'title': 'Церемония начала торгов акциями ПАО «ЕвроТранс»',
+            'chapters': [],
+            'upload_date': '20240829',
+            'duration': 293,
+            'uploader': 'MOEX - Московская биржа',
+            'timestamp': 1724946628,
+            'thumbnail': r're:https?://pic\.rutubelist\.ru/video/.+\.(?:jpg|png)',
+            'view_count': int,
+            'uploader_id': '38420507',
+            'categories': ['Интервью'],
+        },
+        'params': {'skip_download': 'm3u8'},
+    }, {
+        'url': 'https://rutube.ru/video/5ab908fccfac5bb43ef2b1e4182256b0/',
+        'only_matching': True,
+    }, {
+        'url': 'https://rutube.ru/live/video/private/c58f502c7bb34a8fcdd976b221fca292/',
+        'only_matching': True,
+    }]
     _WEBPAGE_TESTS = [{
         'url': 'https://novate.ru/blogs/170625/73644/',
         'info_dict': {
@@ -256,8 +251,7 @@ class RutubeIE(RutubeBaseIE):
         video_id = self._match_id(url)
         query = parse_qs(url)
         info = self._download_and_extract_info(video_id, query)
-        formats, subtitles = self._download_and_extract_formats_and_subtitles(
-            video_id, query)
+        formats, subtitles = self._download_and_extract_formats_and_subtitles(video_id, query)
         return {
             **info,
             'formats': formats,
@@ -305,8 +299,7 @@ class RutubeEmbedIE(RutubeBaseIE):
         query = parse_qs(url)
         options = self._download_api_options(embed_id, query)
         video_id = options['effective_video']
-        formats, subtitles = self._extract_formats_and_subtitles(
-            options, video_id)
+        formats, subtitles = self._extract_formats_and_subtitles(options, video_id)
         info = self._download_and_extract_info(video_id, query)
         info.update({
             'extractor_key': 'Rutube',
@@ -459,18 +452,13 @@ class RutubeChannelIE(RutubePlaylistBaseIE):
         return self._PAGE_TEMPLATE % (playlist_id, page_num, origin_type)
 
     def _real_extract(self, url):
-        playlist_id, slug, section = self._match_valid_url(
-            url).group('id', 'slug', 'section')
+        playlist_id, slug, section = self._match_valid_url(url).group('id', 'slug', 'section')
         if section == 'playlists':
             raise UnsupportedError(url)
         if slug:
             webpage = self._download_webpage(url, slug)
             redux_state = self._search_json(
-                r'window\.reduxState\s*=',
-                webpage,
-                'redux state',
-                slug,
-                transform_source=js_to_json)
+                r'window\.reduxState\s*=', webpage, 'redux state', slug, transform_source=js_to_json)
             playlist_id = traverse_obj(redux_state, (
                 'api', 'queries', lambda k, _: k.startswith('channelIdBySlug'),
                 'data', 'channel_id', {int}, {str_or_none}, any))

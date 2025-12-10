@@ -55,38 +55,23 @@ class ShemarooMeIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url).replace('/', '_')
         webpage = self._download_webpage(url, video_id)
-        title = self._search_regex(
-            r'id=\"ma_title\" value=\"([^\"]+)', webpage, 'title')
+        title = self._search_regex(r'id=\"ma_title\" value=\"([^\"]+)', webpage, 'title')
         thumbnail = self._og_search_thumbnail(webpage)
-        content_def = self._search_regex(
-            r'id=\"content_definition\" value=\"([^\"]+)',
-            webpage,
-            'content_def')
-        catalog_id = self._search_regex(
-            r'id=\"catalog_id\" value=\"([^\"]+)', webpage, 'catalog_id')
-        item_category = self._search_regex(
-            r'id=\"item_category\" value=\"([^\"]+)', webpage, 'item_category')
-        content_id = self._search_regex(
-            r'id=\"content_id\" value=\"([^\"]+)', webpage, 'content_id')
+        content_def = self._search_regex(r'id=\"content_definition\" value=\"([^\"]+)', webpage, 'content_def')
+        catalog_id = self._search_regex(r'id=\"catalog_id\" value=\"([^\"]+)', webpage, 'catalog_id')
+        item_category = self._search_regex(r'id=\"item_category\" value=\"([^\"]+)', webpage, 'item_category')
+        content_id = self._search_regex(r'id=\"content_id\" value=\"([^\"]+)', webpage, 'content_id')
 
         data = f'catalog_id={catalog_id}&content_id={content_id}&category={item_category}&content_def={content_def}'
-        data_json = self._download_json(
-            'https://www.shemaroome.com/users/user_all_lists',
-            video_id,
-            data=data.encode())
+        data_json = self._download_json('https://www.shemaroome.com/users/user_all_lists', video_id, data=data.encode())
         if not data_json.get('status'):
-            raise ExtractorError(
-                'Premium videos cannot be downloaded yet.',
-                expected=True)
+            raise ExtractorError('Premium videos cannot be downloaded yet.', expected=True)
         url_data = base64.b64decode(data_json['new_play_url'])
         key = base64.b64decode(data_json['key'])
         iv = bytes(16)
-        m3u8_url = unpad_pkcs7(
-            aes_cbc_decrypt_bytes(
-                url_data, key, iv)).decode('ascii')
+        m3u8_url = unpad_pkcs7(aes_cbc_decrypt_bytes(url_data, key, iv)).decode('ascii')
         headers = {'stream_key': data_json['stream_key']}
-        formats, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
-            m3u8_url, video_id, fatal=False, headers=headers)
+        formats, m3u8_subs = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, fatal=False, headers=headers)
         for fmt in formats:
             fmt['http_headers'] = headers
 
@@ -101,8 +86,7 @@ class ShemarooMeIE(InfoExtractor):
                 'url': self._proto_relative_url(sub_url),
             })
         subtitles = self._merge_subtitles(subtitles, m3u8_subs)
-        description = self._html_search_regex(
-            r'(?s)>Synopsis(</.+?)</', webpage, 'description', fatal=False)
+        description = self._html_search_regex(r'(?s)>Synopsis(</.+?)</', webpage, 'description', fatal=False)
 
         return {
             'id': video_id,

@@ -92,12 +92,10 @@ class StreamCZIE(InfoExtractor):
         )['data']['episode']
 
         spl_url = data['spl'] + 'spl2,3'
-        metadata = self._download_json(
-            spl_url, video_id, 'Downloading playlist')
+        metadata = self._download_json(spl_url, video_id, 'Downloading playlist')
         if 'Location' in metadata and 'data' not in metadata:
             spl_url = metadata['Location']
-            metadata = self._download_json(
-                spl_url, video_id, 'Downloading redirected playlist')
+            metadata = self._download_json(spl_url, video_id, 'Downloading redirected playlist')
         video = metadata['data']
 
         subtitles = {}

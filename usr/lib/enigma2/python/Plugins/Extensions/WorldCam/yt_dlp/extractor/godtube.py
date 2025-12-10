@@ -40,9 +40,7 @@ class GodTubeIE(InfoExtractor):
         thumbnail = config.find('image').text
 
         media = self._download_xml(
-            f'http://www.godtube.com/media/xml/?v={video_id}',
-            video_id,
-            'Downloading media XML')
+            f'http://www.godtube.com/media/xml/?v={video_id}', video_id, 'Downloading media XML')
 
         title = media.find('title').text
 

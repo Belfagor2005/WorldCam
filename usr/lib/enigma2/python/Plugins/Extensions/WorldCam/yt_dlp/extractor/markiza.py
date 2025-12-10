@@ -11,37 +11,40 @@ from ..utils import (
 class MarkizaIE(InfoExtractor):
     _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?videoarchiv\.markiza\.sk/(?:video/(?:[^/]+/)*|embed/)(?P<id>\d+)(?:[_/]|$)'
-    _TESTS = [{'url': 'http://videoarchiv.markiza.sk/video/oteckovia/84723_oteckovia-109',
-               'md5': 'ada4e9fad038abeed971843aa028c7b0',
-               'info_dict': {'id': '139078',
-                             'ext': 'mp4',
-                             'title': 'Oteckovia 109',
-                             'description': 'md5:d41d8cd98f00b204e9800998ecf8427e',
-                             'thumbnail': r're:^https?://.*\.jpg$',
-                             'duration': 2760,
-                             },
-               },
-              {'url': 'http://videoarchiv.markiza.sk/video/televizne-noviny/televizne-noviny/85430_televizne-noviny',
-               'info_dict': {'id': '85430',
-                             'title': 'Televízne noviny',
-                             },
-               'playlist_count': 23,
-               },
-              {'url': 'http://videoarchiv.markiza.sk/video/oteckovia/84723',
-               'only_matching': True,
-               },
-              {'url': 'http://videoarchiv.markiza.sk/video/84723',
-               'only_matching': True,
-               },
-              {'url': 'http://videoarchiv.markiza.sk/video/filmy/85190_kamenak',
-               'only_matching': True,
-               },
-              {'url': 'http://videoarchiv.markiza.sk/video/reflex/zo-zakulisia/84651_pribeh-alzbetky',
-               'only_matching': True,
-               },
-              {'url': 'http://videoarchiv.markiza.sk/embed/85295',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://videoarchiv.markiza.sk/video/oteckovia/84723_oteckovia-109',
+        'md5': 'ada4e9fad038abeed971843aa028c7b0',
+        'info_dict': {
+            'id': '139078',
+            'ext': 'mp4',
+            'title': 'Oteckovia 109',
+            'description': 'md5:d41d8cd98f00b204e9800998ecf8427e',
+            'thumbnail': r're:^https?://.*\.jpg$',
+            'duration': 2760,
+        },
+    }, {
+        'url': 'http://videoarchiv.markiza.sk/video/televizne-noviny/televizne-noviny/85430_televizne-noviny',
+        'info_dict': {
+            'id': '85430',
+            'title': 'Televízne noviny',
+        },
+        'playlist_count': 23,
+    }, {
+        'url': 'http://videoarchiv.markiza.sk/video/oteckovia/84723',
+        'only_matching': True,
+    }, {
+        'url': 'http://videoarchiv.markiza.sk/video/84723',
+        'only_matching': True,
+    }, {
+        'url': 'http://videoarchiv.markiza.sk/video/filmy/85190_kamenak',
+        'only_matching': True,
+    }, {
+        'url': 'http://videoarchiv.markiza.sk/video/reflex/zo-zakulisia/84651_pribeh-alzbetky',
+        'only_matching': True,
+    }, {
+        'url': 'http://videoarchiv.markiza.sk/embed/85295',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -67,33 +70,36 @@ class MarkizaIE(InfoExtractor):
 class MarkizaPageIE(InfoExtractor):
     _WORKING = False
     _VALID_URL = r'https?://(?:www\.)?(?:(?:[^/]+\.)?markiza|tvnoviny)\.sk/(?:[^/]+/)*(?P<id>\d+)_'
-    _TESTS = [{'url': 'http://www.markiza.sk/soubiz/zahranicny/1923705_oteckovia-maju-svoj-den-ti-slavni-nie-su-o-nic-menej-rozkosni',
-               'md5': 'ada4e9fad038abeed971843aa028c7b0',
-               'info_dict': {'id': '139355',
-                             'ext': 'mp4',
-                             'title': 'Oteckovia 110',
-                             'description': 'md5:d41d8cd98f00b204e9800998ecf8427e',
-                             'thumbnail': r're:^https?://.*\.jpg$',
-                             'duration': 2604,
-                             },
-               'params': {'skip_download': True,
-                          },
-               },
-              {'url': 'http://dajto.markiza.sk/filmy-a-serialy/1774695_frajeri-vo-vegas',
-               'only_matching': True,
-               },
-              {'url': 'http://superstar.markiza.sk/aktualne/1923870_to-je-ale-telo-spevacka-ukazala-sexy-postavicku-v-bikinach',
-               'only_matching': True,
-               },
-              {'url': 'http://hybsa.markiza.sk/aktualne/1923790_uzasna-atmosfera-na-hybsa-v-poprade-superstaristi-si-prve-koncerty-pred-davom-ludi-poriadne-uzili',
-               'only_matching': True,
-               },
-              {'url': 'http://doma.markiza.sk/filmy/1885250_moja-vysnivana-svadba',
-               'only_matching': True,
-               },
-              {'url': 'http://www.tvnoviny.sk/domace/1923887_po-smrti-manzela-ju-cakalo-poriadne-prekvapenie',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://www.markiza.sk/soubiz/zahranicny/1923705_oteckovia-maju-svoj-den-ti-slavni-nie-su-o-nic-menej-rozkosni',
+        'md5': 'ada4e9fad038abeed971843aa028c7b0',
+        'info_dict': {
+            'id': '139355',
+            'ext': 'mp4',
+            'title': 'Oteckovia 110',
+            'description': 'md5:d41d8cd98f00b204e9800998ecf8427e',
+            'thumbnail': r're:^https?://.*\.jpg$',
+            'duration': 2604,
+        },
+        'params': {
+            'skip_download': True,
+        },
+    }, {
+        'url': 'http://dajto.markiza.sk/filmy-a-serialy/1774695_frajeri-vo-vegas',
+        'only_matching': True,
+    }, {
+        'url': 'http://superstar.markiza.sk/aktualne/1923870_to-je-ale-telo-spevacka-ukazala-sexy-postavicku-v-bikinach',
+        'only_matching': True,
+    }, {
+        'url': 'http://hybsa.markiza.sk/aktualne/1923790_uzasna-atmosfera-na-hybsa-v-poprade-superstaristi-si-prve-koncerty-pred-davom-ludi-poriadne-uzili',
+        'only_matching': True,
+    }, {
+        'url': 'http://doma.markiza.sk/filmy/1885250_moja-vysnivana-svadba',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.tvnoviny.sk/domace/1923887_po-smrti-manzela-ju-cakalo-poriadne-prekvapenie',
+        'only_matching': True,
+    }]
 
     @classmethod
     def suitable(cls, url):

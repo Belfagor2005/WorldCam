@@ -34,16 +34,12 @@ class KuwoBaseIE(InfoExtractor):
 
             song_url = self._download_webpage(
                 'http://antiserver.kuwo.cn/anti.s',
-                song_id,
-                note='Download {} url info'.format(
-                    file_format['format']),
-                query=query,
-                headers=self.geo_verification_headers(),
+                song_id, note='Download {} url info'.format(file_format['format']),
+                query=query, headers=self.geo_verification_headers(),
             )
 
             if song_url == 'IPDeny' and not tolerate_ip_deny:
-                raise ExtractorError(
-                    'This song is blocked in this region', expected=True)
+                raise ExtractorError('This song is blocked in this region', expected=True)
 
             if song_url.startswith(('http://', 'https://')):
                 formats.append({
@@ -97,9 +93,7 @@ class KuwoIE(KuwoBaseIE):
             url, song_id, note='Download song detail info',
             errnote='Unable to get song detail info')
         if song_id not in urlh.url or '对不起，该歌曲由于版权问题已被下线，将返回网站首页' in webpage:
-            raise ExtractorError(
-                'this song has been offline because of copyright issues',
-                expected=True)
+            raise ExtractorError('this song has been offline because of copyright issues', expected=True)
 
         song_name = self._html_search_regex(
             r'<p[^>]+id="lrcName">([^<]+)</p>', webpage, 'song name')
@@ -169,11 +163,10 @@ class KuwoAlbumIE(InfoExtractor):
             f'{album_name}简介：')
 
         entries = [
-            self.url_result(
-                song_url,
-                'Kuwo') for song_url in re.findall(
+            self.url_result(song_url, 'Kuwo') for song_url in re.findall(
                 r'<p[^>]+class="listen"><a[^>]+href="(http://www\.kuwo\.cn/yinyue/\d+/)"',
-                webpage)]
+                webpage)
+        ]
         return self.playlist_result(entries, album_id, album_name, album_intro)
 
 
@@ -222,8 +215,7 @@ class KuwoSingerIE(InfoExtractor):
             'title': 'Ali',
         },
         'playlist_mincount': 95,
-        # See https://travis-ci.org/ytdl-org/youtube-dl/jobs/78878540
-        'skip': 'Regularly stalls travis build',
+        'skip': 'Regularly stalls travis build',  # See https://travis-ci.org/ytdl-org/youtube-dl/jobs/78878540
     }]
 
     PAGE_SIZE = 15
@@ -292,19 +284,14 @@ class KuwoCategoryIE(InfoExtractor):
         if category_desc == '暂无':
             category_desc = None
 
-        jsonm = self._parse_json(
-            self._html_search_regex(
-                r'var\s+jsonm\s*=\s*([^;]+);',
-                webpage,
-                'category songs'),
-            category_id)
+        jsonm = self._parse_json(self._html_search_regex(
+            r'var\s+jsonm\s*=\s*([^;]+);', webpage, 'category songs'), category_id)
 
         entries = [
             self.url_result('http://www.kuwo.cn/yinyue/{}/'.format(song['musicrid']), 'Kuwo')
             for song in jsonm['musiclist']
         ]
-        return self.playlist_result(
-            entries, category_id, category_name, category_desc)
+        return self.playlist_result(entries, category_id, category_name, category_desc)
 
 
 class KuwoMvIE(KuwoBaseIE):

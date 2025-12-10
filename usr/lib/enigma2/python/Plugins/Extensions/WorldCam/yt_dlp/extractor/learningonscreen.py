@@ -29,42 +29,30 @@ class LearningOnScreenIE(InfoExtractor):
     }]
 
     def _real_initialize(self):
-        if not self._get_cookies(
-                'https://learningonscreen.ac.uk/').get('PHPSESSID-BOB-LIVE'):
+        if not self._get_cookies('https://learningonscreen.ac.uk/').get('PHPSESSID-BOB-LIVE'):
             self.raise_login_required(method='session_cookies')
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        details = traverse_obj(webpage,
-                               ({find_element(id='programme-details',
-                                              html=True)},
-                                {'title': ({find_element(tag='h2')},
-                                           {clean_html}),
-                                   'timestamp': ({find_element(cls='broadcast-date')},
-                                                 {functools.partial(re.match,
-                                                                    r'([^<]+)')},
-                                                 1,
-                                                 {unified_timestamp}),
-                                   'duration': ({find_element(cls='prog-running-time')},
-                                                {clean_html},
-                                                {parse_duration}),
-                                 }))
+        details = traverse_obj(webpage, (
+            {find_element(id='programme-details', html=True)}, {
+                'title': ({find_element(tag='h2')}, {clean_html}),
+                'timestamp': (
+                    {find_element(cls='broadcast-date')},
+                    {functools.partial(re.match, r'([^<]+)')}, 1, {unified_timestamp}),
+                'duration': (
+                    {find_element(cls='prog-running-time')}, {clean_html}, {parse_duration}),
+            }))
 
         title = details.pop('title', None) or traverse_obj(webpage, (
             {find_element(id='add-to-existing-playlist', html=True)},
             {extract_attributes}, 'data-record-title', {clean_html}))
 
         entries = self._parse_html5_media_entries(
-            'https://stream.learningonscreen.ac.uk',
-            webpage,
-            video_id,
-            m3u8_id='hls',
-            mpd_id='dash',
-            _headers={
-                'Origin': 'https://learningonscreen.ac.uk',
-                'Referer': 'https://learningonscreen.ac.uk/'})
+            'https://stream.learningonscreen.ac.uk', webpage, video_id, m3u8_id='hls', mpd_id='dash',
+            _headers={'Origin': 'https://learningonscreen.ac.uk', 'Referer': 'https://learningonscreen.ac.uk/'})
         if not entries:
             raise ExtractorError('No video found')
 
@@ -74,8 +62,7 @@ class LearningOnScreenIE(InfoExtractor):
                 entry.update(details)
                 entry['id'] = join_nonempty(video_id, idx)
                 entry['title'] = join_nonempty(title, idx)
-            return self.playlist_result(
-                entries, video_id, title, duration=duration)
+            return self.playlist_result(entries, video_id, title, duration=duration)
 
         return {
             **entries[0],

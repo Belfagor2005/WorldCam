@@ -42,8 +42,7 @@ class FreeTvMoviesIE(FreeTvBaseIE):
         })
 
         video_id, video_url = api_response['displayMeta']['contentID'], api_response['displayMeta']['streamURLVideo']
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            video_url, video_id, 'mp4')
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(video_url, video_id, 'mp4')
 
         return {
             'id': video_id,
@@ -105,8 +104,7 @@ class FreeTvIE(FreeTvBaseIE):
 
         for episode in episodes:
             video_id = str(episode['contentID'])
-            formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-                episode['streamURL'], video_id, 'mp4')
+            formats, subtitles = self._extract_m3u8_formats_and_subtitles(episode['streamURL'], video_id, 'mp4')
 
             yield {
                 'id': video_id,
@@ -129,11 +127,7 @@ class FreeTvIE(FreeTvBaseIE):
         webpage = self._download_webpage(url, display_id)
 
         title = self._html_search_regex(
-            r'<h1[^>]+class=["\']synopis[^>]>(?P<title>[^<]+)',
-            webpage,
-            'title',
-            group='title',
-            fatal=False)
+            r'<h1[^>]+class=["\']synopis[^>]>(?P<title>[^<]+)', webpage, 'title', group='title', fatal=False)
         description = self._html_search_regex(
             r'<div[^>]+class=["\']+synopis content[^>]><p>(?P<description>[^<]+)',
             webpage, 'description', group='description', fatal=False)

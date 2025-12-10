@@ -39,15 +39,16 @@ class FathomIE(InfoExtractor):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
-        props = traverse_obj(get_element_html_by_id('app', webpage), ({
-            extract_attributes}, 'data-page', {json.loads}, 'props'))
+        props = traverse_obj(
+            get_element_html_by_id('app', webpage), ({extract_attributes}, 'data-page', {json.loads}, 'props'))
         video_id = str(props['call']['id'])
 
         return {
-            'id': video_id, 'formats': self._extract_m3u8_formats(
-                props['call']['video_url'], video_id, 'mp4'), **traverse_obj(
-                props, {
-                    'title': (
-                        'head', 'title', {str}), 'duration': (
-                        'duration', {float_or_none}), 'timestamp': (
-                            'call', 'started_at', {parse_iso8601}), }), }
+            'id': video_id,
+            'formats': self._extract_m3u8_formats(props['call']['video_url'], video_id, 'mp4'),
+            **traverse_obj(props, {
+                'title': ('head', 'title', {str}),
+                'duration': ('duration', {float_or_none}),
+                'timestamp': ('call', 'started_at', {parse_iso8601}),
+            }),
+        }

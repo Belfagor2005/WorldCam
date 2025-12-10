@@ -23,22 +23,18 @@ class UplynkBaseIE(InfoExtractor):
         uplynk_content_url, smuggled_data = unsmuggle_url(url, {})
         mobj = re.match(self._UPLYNK_URL_RE, uplynk_content_url)
         if not mobj:
-            raise ExtractorError(
-                'Necessary parameters not found in Uplynk URL')
-        path, external_id, video_id, session_id = mobj.group(
-            'path', 'external_id', 'id', 'session_id')
+            raise ExtractorError('Necessary parameters not found in Uplynk URL')
+        path, external_id, video_id, session_id = mobj.group('path', 'external_id', 'id', 'session_id')
         display_id = video_id or external_id
         headers = traverse_obj(
-            smuggled_data, {
-                'Referer': 'Referer', 'Origin': 'Origin'}, casesense=False)
+            smuggled_data, {'Referer': 'Referer', 'Origin': 'Origin'}, casesense=False)
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             f'http://content.uplynk.com/{path}.m3u8', display_id, 'mp4', headers=headers)
         if session_id:
             for f in formats:
                 f['extra_param_to_segment_url'] = f'pbs={session_id}'
         asset = self._download_json(
-            f'http://content.uplynk.com/player/assetinfo/{path}.json',
-            display_id)
+            f'http://content.uplynk.com/player/assetinfo/{path}.json', display_id)
         if asset.get('error') == 1:
             msg = asset.get('msg') or 'unknown error'
             raise ExtractorError(f'{self.IE_NAME} said: {msg}', expected=True)
@@ -89,5 +85,4 @@ class UplynkPreplayIE(UplynkBaseIE):
         session_id = preplay.get('sid')
         if session_id:
             content_url = update_url_query(content_url, {'pbs': session_id})
-        return self._extract_uplynk_info(
-            smuggle_url(content_url, smuggled_data))
+        return self._extract_uplynk_info(smuggle_url(content_url, smuggled_data))

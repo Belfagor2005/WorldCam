@@ -20,10 +20,8 @@ class HTML5MediaEmbedIE(InfoExtractor):
     ]
 
     def _extract_from_webpage(self, url, webpage):
-        video_id, title = self._generic_id(
-            url), self._generic_title(url, webpage)
-        entries = self._parse_html5_media_entries(
-            url, webpage, video_id, m3u8_id='hls') or []
+        video_id, title = self._generic_id(url), self._generic_title(url, webpage)
+        entries = self._parse_html5_media_entries(url, webpage, video_id, m3u8_id='hls') or []
         for num, entry in enumerate(entries, start=1):
             entry.update({
                 'id': f'{video_id}-{num}',
@@ -64,8 +62,7 @@ class QuotedHTMLIE(InfoExtractor):
         },
         'params': {'skip_download': True},
     }, {
-        # YouTube embeds on Squarespace (data-html):
-        # https://github.com/ytdl-org/youtube-dl/issues/21294
+        # YouTube embeds on Squarespace (data-html): https://github.com/ytdl-org/youtube-dl/issues/21294
         'url': 'https://www.harvardballetcompany.org/past-productions',
         'info_dict': {
             'id': 'past-productions',
@@ -108,10 +105,8 @@ class QuotedHTMLIE(InfoExtractor):
 
     def _extract_from_webpage(self, url, webpage):
         combined = ''
-        for _, html in re.findall(
-                r'(?s)\bdata-html=(["\'])((?:(?!\1).)+)\1', webpage):
-            # unescapeHTML can handle &quot; etc., unquote can handle percent
-            # encoding
+        for _, html in re.findall(r'(?s)\bdata-html=(["\'])((?:(?!\1).)+)\1', webpage):
+            # unescapeHTML can handle &quot; etc., unquote can handle percent encoding
             unquoted_html = unescapeHTML(urllib.parse.unquote(html))
             if unquoted_html != html:
                 combined += unquoted_html

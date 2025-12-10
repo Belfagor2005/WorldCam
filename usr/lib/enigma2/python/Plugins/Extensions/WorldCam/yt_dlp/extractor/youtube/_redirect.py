@@ -8,8 +8,7 @@ from ...utils import ExtractorError, classproperty, parse_qs, update_url_query, 
 
 class YoutubeYtBeIE(YoutubeBaseInfoExtractor):
     IE_DESC = 'youtu.be'
-    _VALID_URL = rf'https?://youtu\.be/(?P<id>[0-9A-Za-z_-]{{11}})/*?.*?\blist=(?P<playlist_id>{
-        YoutubeBaseInfoExtractor._PLAYLIST_ID_RE})'
+    _VALID_URL = rf'https?://youtu\.be/(?P<id>[0-9A-Za-z_-]{{11}})/*?.*?\blist=(?P<playlist_id>{YoutubeBaseInfoExtractor._PLAYLIST_ID_RE})'
     _TESTS = [{
         'url': 'https://youtu.be/yeWKywCrFtk?list=PL2qgrgXsNUG5ig9cat4ohreBjYLAPC0J5',
         'info_dict': {
@@ -85,10 +84,7 @@ class YoutubeYtUserIE(YoutubeBaseInfoExtractor):
 
     def _real_extract(self, url):
         user_id = self._match_id(url)
-        return self.url_result(
-            f'https://www.youtube.com/user/{user_id}',
-            YoutubeTabIE,
-            user_id)
+        return self.url_result(f'https://www.youtube.com/user/{user_id}', YoutubeTabIE, user_id)
 
 
 class YoutubeFavouritesIE(YoutubeBaseInfoExtractor):
@@ -138,8 +134,7 @@ class YoutubeWatchLaterIE(YoutubeBaseInfoExtractor):
 
     def _real_extract(self, url):
         return self.url_result(
-            'https://www.youtube.com/playlist?list=WL',
-            ie=YoutubeTabIE.ie_key())
+            'https://www.youtube.com/playlist?list=WL', ie=YoutubeTabIE.ie_key())
 
 
 class YoutubeRecommendedIE(YoutubeFeedsInfoExtractor):
@@ -196,15 +191,13 @@ class YoutubeShortsAudioPivotIE(YoutubeBaseInfoExtractor):
         """
         Generates sfv_audio_pivot browse params for this video id
         """
-        pb_params = b'\xf2\x05+\n)\x12\'\n\x0b%b\x12\x0b%b\x1a\x0b%b' % (
-            (video_id.encode(),) * 3)
+        pb_params = b'\xf2\x05+\n)\x12\'\n\x0b%b\x12\x0b%b\x1a\x0b%b' % ((video_id.encode(),) * 3)
         return urllib.parse.quote(base64.b64encode(pb_params).decode())
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         return self.url_result(
-            f'https://www.youtube.com/feed/sfv_audio_pivot?bp={
-                self._generate_audio_pivot_params(video_id)}',
+            f'https://www.youtube.com/feed/sfv_audio_pivot?bp={self._generate_audio_pivot_params(video_id)}',
             ie=YoutubeTabIE)
 
 
@@ -251,7 +244,5 @@ class YoutubeConsentRedirectIE(YoutubeBaseInfoExtractor):
     def _real_extract(self, url):
         redirect_url = url_or_none(parse_qs(url).get('continue', [None])[-1])
         if not redirect_url:
-            raise ExtractorError(
-                'Invalid cookie consent redirect URL',
-                expected=True)
+            raise ExtractorError('Invalid cookie consent redirect URL', expected=True)
         return self.url_result(redirect_url)

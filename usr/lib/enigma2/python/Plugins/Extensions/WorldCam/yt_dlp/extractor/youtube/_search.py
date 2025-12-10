@@ -111,10 +111,7 @@ class YoutubeSearchURLIE(YoutubeTabBaseInfoExtractor):
     def _real_extract(self, url):
         qs = parse_qs(url)
         query = (qs.get('search_query') or qs.get('q'))[0]
-        return self.playlist_result(
-            self._search_results(
-                query, qs.get(
-                    'sp', (None,))[0]), query, query)
+        return self.playlist_result(self._search_results(query, qs.get('sp', (None,))[0]), query, query)
 
 
 class YoutubeMusicSearchURLIE(YoutubeTabBaseInfoExtractor):
@@ -160,19 +157,11 @@ class YoutubeMusicSearchURLIE(YoutubeTabBaseInfoExtractor):
         query = (qs.get('search_query') or qs.get('q'))[0]
         params = qs.get('sp', (None,))[0]
         if params:
-            section = next(
-                (k for k, v in self._SECTIONS.items() if v == params), params)
+            section = next((k for k, v in self._SECTIONS.items() if v == params), params)
         else:
-            section = urllib.parse.unquote_plus(
-                ([*url.split('#'), ''])[1]).lower()
+            section = urllib.parse.unquote_plus(([*url.split('#'), ''])[1]).lower()
             params = self._SECTIONS.get(section)
             if not params:
                 section = None
         title = join_nonempty(query, section, delim=' - ')
-        return self.playlist_result(
-            self._search_results(
-                query,
-                params,
-                default_client='web_music'),
-            title,
-            title)
+        return self.playlist_result(self._search_results(query, params, default_client='web_music'), title, title)

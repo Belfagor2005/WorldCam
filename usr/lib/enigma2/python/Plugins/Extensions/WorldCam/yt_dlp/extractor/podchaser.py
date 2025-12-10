@@ -83,8 +83,7 @@ class PodchaserIE(InfoExtractor):
         return info
 
     def _call_api(self, path, *args, **kwargs):
-        return self._download_json(
-            f'https://api.podchaser.com/{path}', *args, **kwargs)
+        return self._download_json(f'https://api.podchaser.com/{path}', *args, **kwargs)
 
     def _fetch_page(self, podcast_id, podcast, page):
         json_response = self._call_api(
@@ -104,25 +103,12 @@ class PodchaserIE(InfoExtractor):
             yield self._parse_episode(episode, podcast)
 
     def _real_extract(self, url):
-        podcast_id, episode_id = self._match_valid_url(
-            url).group('podcast_id', 'id')
-        podcast = self._call_api(
-            f'podcasts/{podcast_id}',
-            episode_id or podcast_id)
+        podcast_id, episode_id = self._match_valid_url(url).group('podcast_id', 'id')
+        podcast = self._call_api(f'podcasts/{podcast_id}', episode_id or podcast_id)
         if not episode_id:
             return self.playlist_result(
-                OnDemandPagedList(
-                    functools.partial(
-                        self._fetch_page,
-                        podcast_id,
-                        podcast),
-                    self._PAGE_SIZE),
-                str_or_none(
-                    podcast.get('id')),
-                podcast.get('title'),
-                podcast.get('description'))
+                OnDemandPagedList(functools.partial(self._fetch_page, podcast_id, podcast), self._PAGE_SIZE),
+                str_or_none(podcast.get('id')), podcast.get('title'), podcast.get('description'))
 
-        episode = self._call_api(
-            f'podcasts/{podcast_id}/episodes/{episode_id}/player_ids',
-            episode_id)
+        episode = self._call_api(f'podcasts/{podcast_id}/episodes/{episode_id}/player_ids', episode_id)
         return self._parse_episode(episode, podcast)

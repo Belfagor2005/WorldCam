@@ -23,22 +23,10 @@ class KickBaseIE(InfoExtractor):
             ('session_token', 'value', {urllib.parse.unquote}))
         return {'Authorization': f'Bearer {token}'} if token else {}
 
-    def _call_api(
-            self,
-            path,
-            display_id,
-            note='Downloading API JSON',
-            headers={},
-            **kwargs):
+    def _call_api(self, path, display_id, note='Downloading API JSON', headers={}, **kwargs):
         return self._download_json(
-            f'https://kick.com/api/{path}',
-            display_id,
-            note=note,
-            headers={
-                **self._api_headers,
-                **headers},
-            impersonate=True,
-            **kwargs)
+            f'https://kick.com/api/{path}', display_id, note=note,
+            headers={**self._api_headers, **headers}, impersonate=True, **kwargs)
 
 
 class KickIE(KickBaseIE):
@@ -74,8 +62,7 @@ class KickIE(KickBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if (KickVODIE.suitable(
-            url) or KickClipIE.suitable(url)) else super().suitable(url)
+        return False if (KickVODIE.suitable(url) or KickClipIE.suitable(url)) else super().suitable(url)
 
     def _real_extract(self, url):
         channel = self._match_id(url)
@@ -129,8 +116,7 @@ class KickVODIE(KickBaseIE):
         },
         'params': {'skip_download': 'm3u8'},
     }, {
-        # VOD of ongoing livestream (at the time of writing the test, ID
-        # rotates every two days)
+        # VOD of ongoing livestream (at the time of writing the test, ID rotates every two days)
         'url': 'https://kick.com/a-log-burner/videos/5230df84-ea38-46e1-be4f-f5949ae55641',
         'info_dict': {
             'id': '5230df84-ea38-46e1-be4f-f5949ae55641',

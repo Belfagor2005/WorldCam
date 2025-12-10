@@ -102,8 +102,7 @@ class KakaoIE(InfoExtractor):
                     note=f'Downloading video URL for profile {profile_name}')
             except ExtractorError as e:
                 if isinstance(e.cause, HTTPError) and e.cause.status == 403:
-                    resp = self._parse_json(
-                        e.cause.response.read().decode(), video_id)
+                    resp = self._parse_json(e.cause.response.read().decode(), video_id)
                     if resp.get('code') == 'GeoBlocked':
                         self.raise_geo_restricted()
                 raise

@@ -43,9 +43,7 @@ class EpochIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        youmaker_video_id = extract_attributes(
-            get_element_html_by_id(
-                'videobox', webpage))['data-id']
+        youmaker_video_id = extract_attributes(get_element_html_by_id('videobox', webpage))['data-id']
         formats, subtitles = self._extract_m3u8_formats_and_subtitles(
             f'http://vs1.youmaker.com/assets/{youmaker_video_id}/playlist.m3u8', video_id, 'mp4', m3u8_id='hls')
 

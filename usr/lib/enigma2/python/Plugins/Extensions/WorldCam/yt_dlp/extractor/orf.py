@@ -149,21 +149,13 @@ class ORFRadioIE(InfoExtractor):
             }
 
     def _real_extract(self, url):
-        station, station2, show_date, show_id = self._match_valid_url(
-            url).group('station', 'station2', 'date', 'show')
+        station, station2, show_date, show_id = self._match_valid_url(url).group('station', 'station2', 'date', 'show')
         api_station, _, _ = self.STATION_INFO[station or station2]
         data = self._download_json(
-            f'http://audioapi.orf.at/{api_station}/api/json/current/broadcast/{show_id}/{show_date}',
-            show_id)
+            f'http://audioapi.orf.at/{api_station}/api/json/current/broadcast/{show_id}/{show_date}', show_id)
 
         return self.playlist_result(
-            self._entries(
-                data,
-                station or station2),
-            show_id,
-            data.get('title'),
-            clean_html(
-                data.get('subtitle')))
+            self._entries(data, station or station2), show_id, data.get('title'), clean_html(data.get('subtitle')))
 
 
 class ORFPodcastIE(InfoExtractor):
@@ -186,11 +178,9 @@ class ORFPodcastIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        station, show, show_id = self._match_valid_url(
-            url).group('station', 'show', 'id')
+        station, show, show_id = self._match_valid_url(url).group('station', 'show', 'id')
         data = self._download_json(
-            f'https://audioapi.orf.at/radiothek/api/2.0/podcast/{station}/{show}/{show_id}',
-            show_id)
+            f'https://audioapi.orf.at/radiothek/api/2.0/podcast/{station}/{show}/{show_id}', show_id)
 
         return {
             'id': show_id,
@@ -515,10 +505,8 @@ class ORFONIE(InfoExtractor):
 
     def _extract_video_info(self, video_id, api_json):
         formats, subtitles = [], {}
-        for manifest_type in traverse_obj(
-                api_json, ('sources', {dict.keys}, ...)):
-            for manifest_url in traverse_obj(
-                    api_json, ('sources', manifest_type, ..., 'src', {url_or_none})):
+        for manifest_type in traverse_obj(api_json, ('sources', {dict.keys}, ...)):
+            for manifest_url in traverse_obj(api_json, ('sources', manifest_type, ..., 'src', {url_or_none})):
                 if manifest_type == 'hls':
                     fmts, subs = self._extract_m3u8_formats_and_subtitles(
                         manifest_url, video_id, fatal=False, m3u8_id='hls')
@@ -530,17 +518,9 @@ class ORFONIE(InfoExtractor):
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
 
-        for sub_url in traverse_obj(
-            api_json,
-            ('_embedded',
-             'subtitle',
-             ('xml_url',
-              'sami_url',
-              'stl_url',
-              'ttml_url',
-              'srt_url',
-              'vtt_url'),
-                {url_or_none})):
+        for sub_url in traverse_obj(api_json, (
+                '_embedded', 'subtitle',
+                ('xml_url', 'sami_url', 'stl_url', 'ttml_url', 'srt_url', 'vtt_url'), {url_or_none})):
             self._merge_subtitles({'de': [{'url': sub_url}]}, target=subtitles)
 
         return {
@@ -552,34 +532,25 @@ class ORFONIE(InfoExtractor):
         }
 
     def _real_extract(self, url):
-        video_id, segment_id = self._match_valid_url(
-            url).group('id', 'segment')
+        video_id, segment_id = self._match_valid_url(url).group('id', 'segment')
 
-        encrypted_id = base64.b64encode(
-            f'3dSlfek03nsLKdj4Jsd{video_id}'.encode()).decode()
+        encrypted_id = base64.b64encode(f'3dSlfek03nsLKdj4Jsd{video_id}'.encode()).decode()
         api_json = self._download_json(
-            f'https://api-tvthek.orf.at/api/v4.3/public/episode/encrypted/{encrypted_id}',
-            video_id)
+            f'https://api-tvthek.orf.at/api/v4.3/public/episode/encrypted/{encrypted_id}', video_id)
 
         if traverse_obj(api_json, 'is_drm_protected'):
             self.report_drm(video_id)
 
-        segments = traverse_obj(
-            api_json, ('_embedded', 'segments', lambda _, v: v['id']))
-        selected_segment = traverse_obj(
-            segments, (lambda _, v: str(
-                v['id']) == segment_id, any))
+        segments = traverse_obj(api_json, ('_embedded', 'segments', lambda _, v: v['id']))
+        selected_segment = traverse_obj(segments, (lambda _, v: str(v['id']) == segment_id, any))
 
-        # selected_segment will be falsy if input URL did not include a valid
-        # segment_id
-        if selected_segment and not self._yes_playlist(
-                video_id, segment_id, playlist_label='episode', video_label='segment'):
+        # selected_segment will be falsy if input URL did not include a valid segment_id
+        if selected_segment and not self._yes_playlist(video_id, segment_id, playlist_label='episode', video_label='segment'):
             return self._extract_video_info(segment_id, selected_segment)
 
-        # Even some segmented videos have an unsegmented version available in
-        # API response root
-        if (self._configuration_arg('prefer_segments_playlist') or not traverse_obj(
-                api_json, ('sources', ..., ..., 'src', {url_or_none}))):
+        # Even some segmented videos have an unsegmented version available in API response root
+        if (self._configuration_arg('prefer_segments_playlist')
+                or not traverse_obj(api_json, ('sources', ..., ..., 'src', {url_or_none}))):
             return self.playlist_result(
                 (self._extract_video_info(str(segment['id']), segment) for segment in segments),
                 video_id, **self._parse_metadata(api_json), multi_video=True)

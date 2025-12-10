@@ -35,8 +35,7 @@ class TrtCocukVideoIE(InfoExtractor):
             video_url = self._parse_json(nuxtjs_data['video'], display_id)
         except ExtractorError:
             video_url = nuxtjs_data['video']
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            video_url, display_id)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(video_url, display_id)
 
         return {
             'id': str(nuxtjs_data['id']),
@@ -45,6 +44,5 @@ class TrtCocukVideoIE(InfoExtractor):
             'season_number': int_or_none(nuxtjs_data.get('season')),
             'release_timestamp': parse_iso8601(nuxtjs_data.get('publishedDate')),
             'series': traverse_obj(nuxtjs_data, ('show', 0, 'title')),
-            # TODO: get better title
-            'title': self._html_extract_title(webpage),
+            'title': self._html_extract_title(webpage),  # TODO: get better title
         }

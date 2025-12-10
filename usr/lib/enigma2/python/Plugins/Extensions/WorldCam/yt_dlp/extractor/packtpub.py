@@ -20,22 +20,24 @@ class PacktPubBaseIE(InfoExtractor):
 class PacktPubIE(PacktPubBaseIE):
     _VALID_URL = r'https?://(?:(?:www\.)?packtpub\.com/mapt|subscription\.packtpub\.com)/video/[^/]+/(?P<course_id>\d+)/(?P<chapter_id>[^/]+)/(?P<id>[^/]+)(?:/(?P<display_id>[^/?&#]+))?'
 
-    _TESTS = [{'url': 'https://www.packtpub.com/mapt/video/web-development/9781787122215/20528/20530/Project+Intro',
-               'md5': '1e74bd6cfd45d7d07666f4684ef58f70',
-               'info_dict': {'id': '20530',
-                             'ext': 'mp4',
-                             'title': 'Project Intro',
-                             'thumbnail': r're:(?i)^https?://.*\.jpg',
-                             'timestamp': 1490918400,
-                             'upload_date': '20170331',
-                             },
-               },
-              {'url': 'https://subscription.packtpub.com/video/web_development/9781787122215/20528/20530/project-intro',
-               'only_matching': True,
-               },
-              {'url': 'https://subscription.packtpub.com/video/programming/9781838988906/p1/video1_1/business-card-project',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://www.packtpub.com/mapt/video/web-development/9781787122215/20528/20530/Project+Intro',
+        'md5': '1e74bd6cfd45d7d07666f4684ef58f70',
+        'info_dict': {
+            'id': '20530',
+            'ext': 'mp4',
+            'title': 'Project Intro',
+            'thumbnail': r're:(?i)^https?://.*\.jpg',
+            'timestamp': 1490918400,
+            'upload_date': '20170331',
+        },
+    }, {
+        'url': 'https://subscription.packtpub.com/video/web_development/9781787122215/20528/20530/project-intro',
+        'only_matching': True,
+    }, {
+        'url': 'https://subscription.packtpub.com/video/programming/9781838988906/p1/video1_1/business-card-project',
+        'only_matching': True,
+    }]
     _NETRC_MACHINE = 'packtpub'
     _TOKEN = None
 
@@ -48,30 +50,21 @@ class PacktPubIE(PacktPubBaseIE):
                     'password': password,
                 }).encode())['data']['access']
         except ExtractorError as e:
-            if isinstance(
-                    e.cause,
-                    HTTPError) and e.cause.status in (
-                    400,
-                    401,
-                    404):
-                message = self._parse_json(
-                    e.cause.response.read().decode(), None)['message']
+            if isinstance(e.cause, HTTPError) and e.cause.status in (400, 401, 404):
+                message = self._parse_json(e.cause.response.read().decode(), None)['message']
                 raise ExtractorError(message, expected=True)
             raise
 
     def _real_extract(self, url):
-        course_id, chapter_id, video_id, display_id = self._match_valid_url(
-            url).groups()
+        course_id, chapter_id, video_id, display_id = self._match_valid_url(url).groups()
 
         headers = {}
         if self._TOKEN:
             headers['Authorization'] = 'Bearer ' + self._TOKEN
         try:
             video_url = self._download_json(
-                f'https://services.packtpub.com/products-v1/products/{course_id}/{chapter_id}/{video_id}',
-                video_id,
-                'Downloading JSON video',
-                headers=headers)['data']
+                f'https://services.packtpub.com/products-v1/products/{course_id}/{chapter_id}/{video_id}', video_id,
+                'Downloading JSON video', headers=headers)['data']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 400:
                 self.raise_login_required('This video is locked')

@@ -55,19 +55,11 @@ class ZhihuIE(InfoExtractor):
             'formats': formats,
             'thumbnail': video.get('thumbnail') or zvideo.get('image_url'),
             'uploader': author.get('name'),
-            'timestamp': int_or_none(
-                zvideo.get('published_at')),
+            'timestamp': int_or_none(zvideo.get('published_at')),
             'uploader_id': author.get('id'),
-            'uploader_url': format_field(
-                url_token,
-                None,
-                'https://www.zhihu.com/people/%s'),
-            'duration': float_or_none(
-                video.get('duration')),
-            'view_count': int_or_none(
-                zvideo.get('play_count')),
-            'like_count': int_or_none(
-                zvideo.get('liked_count')),
-            'comment_count': int_or_none(
-                zvideo.get('comment_count')),
+            'uploader_url': format_field(url_token, None, 'https://www.zhihu.com/people/%s'),
+            'duration': float_or_none(video.get('duration')),
+            'view_count': int_or_none(zvideo.get('play_count')),
+            'like_count': int_or_none(zvideo.get('liked_count')),
+            'comment_count': int_or_none(zvideo.get('comment_count')),
         }

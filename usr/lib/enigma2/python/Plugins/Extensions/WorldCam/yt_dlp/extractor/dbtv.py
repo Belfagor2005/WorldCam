@@ -3,28 +3,29 @@ from .common import InfoExtractor
 
 class DBTVIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?dagbladet\.no/video/(?:(?:embed|(?P<display_id>[^/]+))/)?(?P<id>[0-9A-Za-z_-]{11}|[a-zA-Z0-9]{8})'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//(?:www\.)?dagbladet\.no/video/embed/(?:[0-9A-Za-z_-]{11}|[a-zA-Z0-9]{8}).*?)\1']
-    _TESTS = [{'url': 'https://www.dagbladet.no/video/PynxJnNWChE/',
-               'md5': 'b8f850ba1860adbda668d367f9b77699',
-               'info_dict': {'id': 'PynxJnNWChE',
-                             'ext': 'mp4',
-                             'title': 'Skulle teste ut fornøyelsespark, men kollegaen var bare opptatt av bikinikroppen',
-                             'description': 'md5:49cc8370e7d66e8a2ef15c3b4631fd3f',
-                             'thumbnail': r're:https?://.+\.jpg',
-                             'upload_date': '20160916',
-                             'duration': 69,
-                             'uploader_id': 'UCk5pvsyZJoYJBd7_oFPTlRQ',
-                             'uploader': 'Dagbladet',
-                             },
-               'skip': 'Invalid URL',
-               },
-              {'url': 'https://www.dagbladet.no/video/embed/xlGmyIeN9Jo/?autoplay=false',
-               'only_matching': True,
-               },
-              {'url': 'https://www.dagbladet.no/video/truer-iran-bor-passe-dere/PalfB2Cw',
-               'only_matching': True,
-               }]
+    _EMBED_REGEX = [r'<iframe[^>]+src=(["\'])(?P<url>(?:https?:)?//(?:www\.)?dagbladet\.no/video/embed/(?:[0-9A-Za-z_-]{11}|[a-zA-Z0-9]{8}).*?)\1']
+    _TESTS = [{
+        'url': 'https://www.dagbladet.no/video/PynxJnNWChE/',
+        'md5': 'b8f850ba1860adbda668d367f9b77699',
+        'info_dict': {
+            'id': 'PynxJnNWChE',
+            'ext': 'mp4',
+            'title': 'Skulle teste ut fornøyelsespark, men kollegaen var bare opptatt av bikinikroppen',
+            'description': 'md5:49cc8370e7d66e8a2ef15c3b4631fd3f',
+            'thumbnail': r're:https?://.+\.jpg',
+            'upload_date': '20160916',
+            'duration': 69,
+            'uploader_id': 'UCk5pvsyZJoYJBd7_oFPTlRQ',
+            'uploader': 'Dagbladet',
+        },
+        'skip': 'Invalid URL',
+    }, {
+        'url': 'https://www.dagbladet.no/video/embed/xlGmyIeN9Jo/?autoplay=false',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.dagbladet.no/video/truer-iran-bor-passe-dere/PalfB2Cw',
+        'only_matching': True,
+    }]
     _WEBPAGE_TESTS = [{
         # FIXME: Embed detection
         'url': 'https://www.dagbladet.no/nyheter/rekordstort-russisk-angrep/83325693',

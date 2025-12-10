@@ -22,8 +22,7 @@ _ID_RE = r'(?:[0-9a-f]{32,34}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0
 
 class MediasiteIE(InfoExtractor):
     _VALID_URL = rf'(?xi)https?://[^/]+/Mediasite/(?:Play|Showcase/[^/#?]+/Presentation)/(?P<id>{_ID_RE})(?P<query>\?[^#]+|)'
-    _EMBED_REGEX = [
-        rf'(?xi)<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:(?:https?:)?//[^/]+)?/Mediasite/Play/{_ID_RE}(?:\?.*?)?)\1']
+    _EMBED_REGEX = [rf'(?xi)<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:(?:https?:)?//[^/]+)?/Mediasite/Play/{_ID_RE}(?:\?.*?)?)\1']
     _TESTS = [
         {
             'url': 'https://hitsmediaweb.h-its.org/mediasite/Play/2db6c271681e4f199af3c60d1f82869b1d',
@@ -121,8 +120,7 @@ class MediasiteIE(InfoExtractor):
 
         fname_template = stream['SlideImageFileNameTemplate']
         if fname_template != 'slide_{0:D4}.jpg':
-            self.report_warning(
-                'Unusual slide file name template; report a bug if slide downloading fails')
+            self.report_warning('Unusual slide file name template; report a bug if slide downloading fails')
         fname_template = re.sub(r'\{0:D([0-9]+)\}', r'{0:0\1}', fname_template)
 
         fragments = []
@@ -169,12 +167,10 @@ class MediasiteIE(InfoExtractor):
         resource_id = mobj.group('id')
         query = mobj.group('query')
 
-        webpage, urlh = self._download_webpage_handle(
-            url, resource_id)  # XXX: add UrlReferrer?
+        webpage, urlh = self._download_webpage_handle(url, resource_id)  # XXX: add UrlReferrer?
         redirect_url = urlh.url
 
-        # XXX: might have also extracted UrlReferrer and QueryString from the
-        # html
+        # XXX: might have also extracted UrlReferrer and QueryString from the html
         service_path = urllib.parse.urljoin(redirect_url, self._html_search_regex(
             r'<div[^>]+\bid=["\']ServicePath[^>]+>(.+?)</div>', webpage, resource_id,
             default='/Mediasite/PlayerService/PlayerService.svc/json'))
@@ -199,8 +195,7 @@ class MediasiteIE(InfoExtractor):
 
         if presentation is None:
             raise ExtractorError(
-                'Mediasite says: {}'.format(
-                    player_options['PlayerPresentationStatusMessage']),
+                'Mediasite says: {}'.format(player_options['PlayerPresentationStatusMessage']),
                 expected=True)
 
         thumbnails = []
@@ -222,8 +217,7 @@ class MediasiteIE(InfoExtractor):
                 video_url = url_or_none(video.get('Location'))
                 if not video_url:
                     continue
-                # XXX: if Stream.get('CanChangeScheme', False), switch scheme
-                # to HTTP/HTTPS
+                # XXX: if Stream.get('CanChangeScheme', False), switch scheme to HTTP/HTTPS
 
                 media_type = video.get('MediaType')
                 ext = mimetype2ext(video.get('MimeType'))
@@ -249,8 +243,7 @@ class MediasiteIE(InfoExtractor):
                         'ext': ext,
                     })
 
-            images = traverse_obj(
-                player_options, ('PlayerLayoutOptions', 'Images', {dict}))
+            images = traverse_obj(player_options, ('PlayerLayoutOptions', 'Images', {dict}))
             if stream.get('HasSlideContent') and images:
                 stream_formats.append(self.__extract_slides(
                     stream_id=stream_id,
@@ -340,8 +333,7 @@ class MediasiteCatalogIE(InfoExtractor):
         webpage = self._download_webpage(url, catalog_id)
 
         # AntiForgeryToken is optional (e.g. [1])
-        # 1.
-        # https://live.libraries.psu.edu/Mediasite/Catalog/Full/8376d4b24dd1457ea3bfe4cf9163feda21
+        # 1. https://live.libraries.psu.edu/Mediasite/Catalog/Full/8376d4b24dd1457ea3bfe4cf9163feda21
         anti_forgery_token = self._search_regex(
             r'AntiForgeryToken\s*:\s*(["\'])(?P<value>(?:(?!\1).)+)\1',
             webpage, 'anti forgery token', default=None, group='value')

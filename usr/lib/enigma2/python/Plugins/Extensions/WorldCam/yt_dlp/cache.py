@@ -23,9 +23,7 @@ class Cache:
 
     def _get_cache_fn(self, section, key, dtype):
         assert re.match(r'^[\w.-]+$', section), f'invalid section {section!r}'
-        key = urllib.parse.quote(
-            key, safe='').replace(
-            '%', ',')  # encode non-ascii characters
+        key = urllib.parse.quote(key, safe='').replace('%', ',')  # encode non-ascii characters
         return os.path.join(self._get_root_dir(), section, f'{key}.{dtype}')
 
     @property
@@ -53,8 +51,7 @@ class Cache:
             data, version = {'data': data}, '2022.08.19'
         if not min_ver or version_tuple(version) >= version_tuple(min_ver):
             return data['data']
-        self._ydl.write_debug(
-            f'Discarding old cache from version {version} (needs {min_ver})')
+        self._ydl.write_debug(f'Discarding old cache from version {version} (needs {min_ver})')
 
     def load(self, section, key, dtype='json', default=None, *, min_ver=None):
         assert dtype in ('json',)
@@ -66,29 +63,25 @@ class Cache:
         with contextlib.suppress(OSError):
             try:
                 with open(cache_fn, encoding='utf-8') as cachef:
-                    self._ydl.write_debug(
-                        f'Loading {section}.{key} from cache')
+                    self._ydl.write_debug(f'Loading {section}.{key} from cache')
                     return self._validate(json.load(cachef), min_ver)
             except (ValueError, KeyError):
                 try:
                     file_size = os.path.getsize(cache_fn)
                 except OSError as oe:
                     file_size = str(oe)
-                self._ydl.report_warning(
-                    f'Cache retrieval from {cache_fn} failed ({file_size})')
+                self._ydl.report_warning(f'Cache retrieval from {cache_fn} failed ({file_size})')
 
         return default
 
     def remove(self):
         if not self.enabled:
-            self._ydl.to_screen(
-                'Cache is disabled (Did you combine --no-cache-dir and --rm-cache-dir?)')
+            self._ydl.to_screen('Cache is disabled (Did you combine --no-cache-dir and --rm-cache-dir?)')
             return
 
         cachedir = self._get_root_dir()
         if not any((term in cachedir) for term in ('cache', 'tmp')):
-            raise Exception(
-                f'Not removing directory {cachedir} - this does not look like a cache dir')
+            raise Exception(f'Not removing directory {cachedir} - this does not look like a cache dir')
 
         self._ydl.to_screen(
             f'Removing cache dir {cachedir} .', skip_eol=True)

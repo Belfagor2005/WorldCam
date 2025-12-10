@@ -53,8 +53,7 @@ class Tele5IE(DiscoveryPlusBaseIE):
     }]
 
     def _real_extract(self, url):
-        parent_slug, slug_a, slug_b = self._match_valid_url(
-            url).group('parent_slug', 'slug_a', 'slug_b')
+        parent_slug, slug_a, slug_b = self._match_valid_url(url).group('parent_slug', 'slug_a', 'slug_b')
         playlist_id = join_nonempty(parent_slug, slug_a, slug_b, delim='-')
 
         query = {'environment': 'tele5', 'v': '2'}
@@ -64,21 +63,13 @@ class Tele5IE(DiscoveryPlusBaseIE):
         else:
             endpoint = f'videos/{slug_b}'
             query['filter[show.slug]'] = slug_a
-        cms_data = self._download_json(
-            f'https://de-api.loma-cms.com/feloma/{endpoint}/',
-            playlist_id,
-            query=query)
+        cms_data = self._download_json(f'https://de-api.loma-cms.com/feloma/{endpoint}/', playlist_id, query=query)
 
         return self.playlist_result(map(
             functools.partial(self._get_disco_api_info, url, disco_host='eu1-prod.disco-api.com', realm='dmaxde', country='DE'),
             traverse_obj(cms_data, ('blocks', ..., 'videoId', {str}))), playlist_id)
 
-    def _update_disco_api_headers(
-            self,
-            headers,
-            disco_base,
-            display_id,
-            realm):
+    def _update_disco_api_headers(self, headers, disco_base, display_id, realm):
         headers.update({
             'x-disco-params': f'realm={realm}',
             'x-disco-client': 'Alps:HyogaPlayer:0.0.0',

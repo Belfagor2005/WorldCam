@@ -28,25 +28,14 @@ class GabTVIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url).split('-')[-1]
         webpage = self._download_webpage(url, video_id)
-        channel_id = self._search_regex(
-            r'data-channel-id=\"(?P<channel_id>[^\"]+)', webpage, 'channel_id')
-        channel_name = self._search_regex(
-            r'data-channel-name=\"(?P<channel_id>[^\"]+)',
-            webpage,
-            'channel_name')
-        title = self._search_regex(
-            r'data-episode-title=\"(?P<channel_id>[^\"]+)', webpage, 'title')
-        view_key = self._search_regex(
-            r'data-view-key=\"(?P<channel_id>[^\"]+)', webpage, 'view_key')
+        channel_id = self._search_regex(r'data-channel-id=\"(?P<channel_id>[^\"]+)', webpage, 'channel_id')
+        channel_name = self._search_regex(r'data-channel-name=\"(?P<channel_id>[^\"]+)', webpage, 'channel_name')
+        title = self._search_regex(r'data-episode-title=\"(?P<channel_id>[^\"]+)', webpage, 'title')
+        view_key = self._search_regex(r'data-view-key=\"(?P<channel_id>[^\"]+)', webpage, 'view_key')
         description = clean_html(
-            self._html_search_regex(
-                self._meta_regex('description'),
-                webpage,
-                'description',
-                group='content')) or None
+            self._html_search_regex(self._meta_regex('description'), webpage, 'description', group='content')) or None
         available_resolutions = re.findall(
-            rf'<a\ data-episode-id=\"{video_id}\"\ data-resolution=\"(?P<resolution>[^\"]+)',
-            webpage)
+            rf'<a\ data-episode-id=\"{video_id}\"\ data-resolution=\"(?P<resolution>[^\"]+)', webpage)
 
         formats = []
         for resolution in available_resolutions:
@@ -107,8 +96,7 @@ class GabIE(InfoExtractor):
 
     def _real_extract(self, url):
         post_id = self._match_id(url)
-        json_data = self._download_json(
-            f'https://gab.com/api/v1/statuses/{post_id}', post_id)
+        json_data = self._download_json(f'https://gab.com/api/v1/statuses/{post_id}', post_id)
 
         entries = []
         for idx, media in enumerate(json_data['media_attachments']):
@@ -116,10 +104,8 @@ class GabIE(InfoExtractor):
                 continue
             metadata = media['meta']
             format_metadata = {
-                'acodec': parse_codecs(
-                    metadata.get('audio_encode')).get('acodec'),
-                'asr': int_or_none(
-                    (metadata.get('audio_bitrate') or '').split(' ')[0]),
+                'acodec': parse_codecs(metadata.get('audio_encode')).get('acodec'),
+                'asr': int_or_none((metadata.get('audio_bitrate') or '').split(' ')[0]),
                 'fps': metadata.get('fps'),
             }
 

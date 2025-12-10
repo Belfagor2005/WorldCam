@@ -45,10 +45,7 @@ class TeleBruxellesIE(InfoExtractor):
         webpage = self._download_webpage(url, display_id)
 
         article_id = self._html_search_regex(
-            r'<article[^>]+\bid=["\']post-(\d+)',
-            webpage,
-            'article ID',
-            default=None)
+            r'<article[^>]+\bid=["\']post-(\d+)', webpage, 'article ID', default=None)
         title = self._html_search_regex(
             r'<h1[^>]*>(.+?)</h1>', webpage, 'title',
             default=None) or self._og_search_title(webpage)
@@ -61,8 +58,7 @@ class TeleBruxellesIE(InfoExtractor):
         # https://bx1.be/lives/direct-tv/)
         rtmp_url = re.sub(r'^rmtp', 'rtmp', rtmp_url)
         rtmp_url = re.sub(r'"\s*\+\s*"', '', rtmp_url)
-        formats = self._extract_wowza_formats(
-            rtmp_url, article_id or display_id)
+        formats = self._extract_wowza_formats(rtmp_url, article_id or display_id)
 
         is_live = 'stream/live' in rtmp_url
 

@@ -40,17 +40,13 @@ class Varzesh3IE(InfoExtractor):
         video_url = self._search_regex(
             r'<source[^>]+src="([^"]+)"', webpage, 'video url')
 
-        title = remove_start(
-            self._html_extract_title(webpage),
-            'ویدیو ورزش 3 | ')
+        title = remove_start(self._html_extract_title(webpage), 'ویدیو ورزش 3 | ')
 
         description = self._html_search_regex(
             r'(?s)<div class="matn">(.+?)</div>',
             webpage, 'description', default=None)
         if description is None:
-            description = clean_html(
-                self._html_search_meta(
-                    'description', webpage))
+            description = clean_html(self._html_search_meta('description', webpage))
 
         thumbnail = self._og_search_thumbnail(webpage, default=None)
         if thumbnail is None:

@@ -72,13 +72,11 @@ class DreiSatIE(ZDFBaseIE):
             'upload_date': '20250330',
         },
     }, {
-        # Same as
-        # https://www.zdf.de/filme/filme-sonstige/der-hauptmann-112.html
+        # Same as https://www.zdf.de/filme/filme-sonstige/der-hauptmann-112.html
         'url': 'https://www.3sat.de/film/spielfilm/der-hauptmann-100.html',
         'only_matching': True,
     }, {
-        # Same as https://www.zdf.de/wissen/nano/nano-21-mai-2019-102.html,
-        # equal media ids
+        # Same as https://www.zdf.de/wissen/nano/nano-21-mai-2019-102.html, equal media ids
         'url': 'https://www.3sat.de/wissen/nano/nano-21-mai-2019-102.html',
         'only_matching': True,
     }]
@@ -91,25 +89,15 @@ class DreiSatIE(ZDFBaseIE):
         player_url = player['content']
         api_token = f'Bearer {player["apiToken"]}'
 
-        content = self._call_api(
-            player_url,
-            video_id,
-            'video metadata',
-            api_token)
+        content = self._call_api(player_url, video_id, 'video metadata', api_token)
 
         video_target = content['mainVideoContent']['http://zdf.de/rels/target']
-        ptmd_path = traverse_obj(video_target,
-                                 ((('streams',
-                                    'default'),
-                                   None),
-                                  ('http://zdf.de/rels/streams/ptmd',
-                                   'http://zdf.de/rels/streams/ptmd-template'),
-                                     {str},
-                                     any,
-                                     {require('ptmd path')}))
+        ptmd_path = traverse_obj(video_target, (
+            (('streams', 'default'), None),
+            ('http://zdf.de/rels/streams/ptmd', 'http://zdf.de/rels/streams/ptmd-template'),
+            {str}, any, {require('ptmd path')}))
         ptmd_url = self._expand_ptmd_template(player_url, ptmd_path)
-        aspect_ratio = self._parse_aspect_ratio(
-            video_target.get('aspectRatio'))
+        aspect_ratio = self._parse_aspect_ratio(video_target.get('aspectRatio'))
         info = self._extract_ptmd(ptmd_url, video_id, api_token, aspect_ratio)
 
         return merge_dicts(info, {

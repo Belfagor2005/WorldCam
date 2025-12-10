@@ -77,14 +77,7 @@ class ITVIE(InfoExtractor):
             'hmac': hmac.upper(),
         }, self.geo_verification_headers())
 
-    def _call_api(
-            self,
-            video_id,
-            playlist_url,
-            headers,
-            platform_tag,
-            featureset,
-            fatal=True):
+    def _call_api(self, video_id, playlist_url, headers, platform_tag, featureset, fatal=True):
         return self._download_json(
             playlist_url, video_id, data=json.dumps({
                 'user': {
@@ -114,35 +107,20 @@ class ITVIE(InfoExtractor):
                 },
             }).encode(), headers=headers, fatal=fatal)
 
-    def _get_subtitles(
-            self,
-            video_id,
-            variants,
-            ios_playlist_url,
-            headers,
-            *args,
-            **kwargs):
+    def _get_subtitles(self, video_id, variants, ios_playlist_url, headers, *args, **kwargs):
         subtitles = {}
         # Prefer last matching featureset
         # See: https://github.com/yt-dlp/yt-dlp/issues/986
         platform_tag_subs, featureset_subs = next(
-            ((platform_tag, featureset) for platform_tag, featuresets in reversed(
-                list(
-                    variants.items())) for featureset in featuresets if try_get(
-                featureset, lambda x: x[2]) == 'outband-webvtt'), (None, None))
+            ((platform_tag, featureset)
+             for platform_tag, featuresets in reversed(list(variants.items())) for featureset in featuresets
+             if try_get(featureset, lambda x: x[2]) == 'outband-webvtt'),
+            (None, None))
 
         if platform_tag_subs and featureset_subs:
             subs_playlist = self._call_api(
-                video_id,
-                ios_playlist_url,
-                headers,
-                platform_tag_subs,
-                featureset_subs,
-                fatal=False)
-            subs = try_get(
-                subs_playlist,
-                lambda x: x['Playlist']['Video']['Subtitles'],
-                list) or []
+                video_id, ios_playlist_url, headers, platform_tag_subs, featureset_subs, fatal=False)
+            subs = try_get(subs_playlist, lambda x: x['Playlist']['Video']['Subtitles'], list) or []
             for sub in subs:
                 if not isinstance(sub, dict):
                     continue
@@ -168,25 +146,14 @@ class ITVIE(InfoExtractor):
              if set(try_get(featureset, lambda x: x[:2]) or []) == {'aes', 'hls'}),
             (None, None))
         if not platform_tag_video or not featureset_video:
-            raise ExtractorError(
-                'No downloads available',
-                expected=True,
-                video_id=video_id)
+            raise ExtractorError('No downloads available', expected=True, video_id=video_id)
 
-        ios_playlist_url = params.get(
-            'data-video-playlist') or params['data-video-id']
+        ios_playlist_url = params.get('data-video-playlist') or params['data-video-id']
         headers = self._generate_api_headers(params['data-video-hmac'])
         ios_playlist = self._call_api(
-            video_id,
-            ios_playlist_url,
-            headers,
-            platform_tag_video,
-            featureset_video)
+            video_id, ios_playlist_url, headers, platform_tag_video, featureset_video)
 
-        video_data = try_get(
-            ios_playlist,
-            lambda x: x['Playlist']['Video'],
-            dict) or {}
+        video_data = try_get(ios_playlist, lambda x: x['Playlist']['Video'], dict) or {}
         ios_base_url = video_data.get('Base')
         formats = []
         for media_file in (video_data.get('MediaFiles') or []):
@@ -218,8 +185,7 @@ class ITVIE(InfoExtractor):
                         break
 
         thumbnails = []
-        thumbnail_url = try_get(
-            params, lambda x: x['data-video-posterframe'], str)
+        thumbnail_url = try_get(params, lambda x: x['data-video-posterframe'], str)
         if thumbnail_url:
             thumbnails.extend([{
                 'url': thumbnail_url.format(width=1920, height=1080, quality=100, blur=0, bg='false'),
@@ -230,8 +196,7 @@ class ITVIE(InfoExtractor):
                 'preference': -2,
             }])
 
-        thumbnail_url = self._html_search_meta(
-            ['og:image', 'twitter:image'], webpage, default=None)
+        thumbnail_url = self._html_search_meta(['og:image', 'twitter:image'], webpage, default=None)
         if thumbnail_url:
             thumbnails.append({
                 'url': thumbnail_url,
@@ -280,13 +245,7 @@ class ITVBTCCIE(InfoExtractor):
 
         entries = []
         for video in json_map:
-            if not any(
-                traverse_obj(
-                    video,
-                    ('data',
-                     attr)) == 'Brightcove' for attr in (
-                    'name',
-                    'type')):
+            if not any(traverse_obj(video, ('data', attr)) == 'Brightcove' for attr in ('name', 'type')):
                 continue
             video_id = video['data']['id']
             account_id = video['data']['accountId']

@@ -38,8 +38,7 @@ class CONtvIE(InfoExtractor):
 
         if details.get('type') == 'episodic':
             seasons = self._download_json(
-                'http://metax.contv.live.junctiontv.net/metax/2.5/seriesfeed/json/' +
-                video_id,
+                'http://metax.contv.live.junctiontv.net/metax/2.5/seriesfeed/json/' + video_id,
                 video_id)
             entries = []
             for season in seasons:
@@ -50,8 +49,7 @@ class CONtvIE(InfoExtractor):
                     entries.append(self.url_result(
                         'https://www.contv.com/details-movie/' + episode_id,
                         CONtvIE.ie_key(), episode_id))
-            return self.playlist_result(
-                entries, video_id, details.get('title'))
+            return self.playlist_result(entries, video_id, details.get('title'))
 
         m_details = details['details']
         title = details['title']

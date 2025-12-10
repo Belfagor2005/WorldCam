@@ -6,19 +6,13 @@ from ..utils import clean_html, traverse_obj, unescapeHTML
 
 
 class RadioKapitalBaseIE(InfoExtractor):
-    def _call_api(
-            self,
-            resource,
-            video_id,
-            note='Downloading JSON metadata',
-            qs={}):
+    def _call_api(self, resource, video_id, note='Downloading JSON metadata', qs={}):
         return self._download_json(
             f'https://www.radiokapital.pl/wp-json/kapital/v1/{resource}?{urllib.parse.urlencode(qs)}',
             video_id, note=note)
 
     def _parse_episode(self, data):
-        release = '{}{}{}'.format(
-            data['published'][6:11], data['published'][3:6], data['published'][:3])
+        release = '{}{}{}'.format(data['published'][6:11], data['published'][3:6], data['published'][:3])
         return {
             '_type': 'url_transparent',
             'url': data['mixcloud_url'],
@@ -88,10 +82,7 @@ class RadioKapitalShowIE(RadioKapitalBaseIE):
     def _real_extract(self, url):
         series_id = self._match_id(url)
 
-        show = self._call_api(
-            f'shows/{series_id}',
-            series_id,
-            'Downloading show metadata')
+        show = self._call_api(f'shows/{series_id}', series_id, 'Downloading show metadata')
         entries = self._entries(series_id)
         return {
             '_type': 'playlist',

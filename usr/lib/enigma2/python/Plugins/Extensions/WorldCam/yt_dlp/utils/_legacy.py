@@ -40,12 +40,7 @@ def load_plugins(name, suffix, namespace):
 
 
 def traverse_dict(dictn, keys, casesense=True):
-    return traverse_obj(
-        dictn,
-        keys,
-        casesense=casesense,
-        is_user_input=True,
-        traverse_string=True)
+    return traverse_obj(dictn, keys, casesense=casesense, is_user_input=True, traverse_string=True)
 
 
 def decode_base(value, digits):
@@ -80,7 +75,7 @@ def decode_png(png_data):
         raise OSError('Not a valid PNG file.')
 
     int_map = {1: '>B', 2: '>H', 4: '>I'}
-    def unpack_integer(x): return struct.unpack(int_map[len(x)], x)[0]
+    unpack_integer = lambda x: struct.unpack(int_map[len(x)], x)[0]
 
     chunks = []
 
@@ -190,9 +185,7 @@ def handle_youtubedl_headers(headers):
     filtered_headers = headers
 
     if 'Youtubedl-no-compression' in filtered_headers:
-        filtered_headers = {
-            k: v for k,
-            v in filtered_headers.items() if k.lower() != 'accept-encoding'}
+        filtered_headers = {k: v for k, v in filtered_headers.items() if k.lower() != 'accept-encoding'}
         del filtered_headers['Youtubedl-no-compression']
 
     return filtered_headers
@@ -209,8 +202,7 @@ def sanitized_Request(url, *args, **kwargs):
     from ..utils import extract_basic_auth, sanitize_url
     url, auth_header = extract_basic_auth(escape_url(sanitize_url(url)))
     if auth_header is not None:
-        headers = args[1] if len(
-            args) >= 2 else kwargs.setdefault('headers', {})
+        headers = args[1] if len(args) >= 2 else kwargs.setdefault('headers', {})
         headers['Authorization'] = auth_header
     return urllib.request.Request(url, *args, **kwargs)
 
@@ -229,8 +221,7 @@ class YoutubeDLCookieProcessor(urllib.request.HTTPCookieProcessor):
         urllib.request.HTTPCookieProcessor.__init__(self, cookiejar)
 
     def http_response(self, request, response):
-        return urllib.request.HTTPCookieProcessor.http_response(
-            self, request, response)
+        return urllib.request.HTTPCookieProcessor.http_response(self, request, response)
 
     https_request = urllib.request.HTTPCookieProcessor.http_request
     https_response = http_response
