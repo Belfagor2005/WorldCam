@@ -293,10 +293,9 @@ class YouTubeExtractor:
                 return response.json()
             except Exception as e:
                 self.log(
-                    f"API request failed with client {
-                        client['context']['client']['clientName']}: {
-                        str(e)}", 'warning')
-
+                    "API request failed with client {}: {}".format(client['context']['client']['clientName'], str(e)),
+                    'warning'
+                )
         return None
 
     def _get_headers_str(self, video_id):
