@@ -33,18 +33,33 @@ class TelemundoIE(InfoExtractor):
             metadata,
             lambda x: x['props']['initialState']['video']['associatedPlaylists'][0]['videos'][0]['videoAssets'][0]['publicUrl'])
 
-        m3u8_url = self._request_webpage(HEADRequest(
-            redirect_url + '?format=redirect&manifest=m3u&format=redirect&Tracking=true&Embedded=true&formats=MPEG4'),
-            video_id, 'Processing m3u8').url
+        m3u8_url = self._request_webpage(
+            HEADRequest(
+                redirect_url +
+                '?format=redirect&manifest=m3u&format=redirect&Tracking=true&Embedded=true&formats=MPEG4'),
+            video_id,
+            'Processing m3u8').url
         formats = self._extract_m3u8_formats(m3u8_url, video_id, 'mp4')
-        date = unified_timestamp(try_get(
-            metadata, lambda x: x['props']['initialState']['video']['associatedPlaylists'][0]['videos'][0]['datePublished'].split(' ', 1)[1]))
+        date = unified_timestamp(
+            try_get(
+                metadata,
+                lambda x: x['props']['initialState']['video']['associatedPlaylists'][0]['videos'][0]['datePublished'].split(
+                    ' ',
+                    1)[1]))
         return {
             'url': url,
             'id': video_id,
-            'title': self._search_regex(r'<h1[^>]+>([^<]+)', webpage, 'title', fatal=False),
+            'title': self._search_regex(
+                r'<h1[^>]+>([^<]+)',
+                webpage,
+                'title',
+                fatal=False),
             'formats': formats,
             'timestamp': date,
             'uploader': 'Telemundo',
-            'uploader_id': self._search_regex(r'https?:\/\/(?:[^/]+\/){3}video\/(?P<id>[^\/]+)', m3u8_url, 'Akamai account', fatal=False),
+            'uploader_id': self._search_regex(
+                r'https?:\/\/(?:[^/]+\/){3}video\/(?P<id>[^\/]+)',
+                m3u8_url,
+                'Akamai account',
+                fatal=False),
         }

@@ -16,9 +16,21 @@ from ..utils import (
 class PRXBaseIE(InfoExtractor):
     PRX_BASE_URL_RE = r'https?://(?:(?:beta|listen)\.)?prx.org/%s'
 
-    def _call_api(self, item_id, path, query=None, fatal=True, note='Downloading CMS API JSON'):
+    def _call_api(
+            self,
+            item_id,
+            path,
+            query=None,
+            fatal=True,
+            note='Downloading CMS API JSON'):
         return self._download_json(
-            urljoin('https://cms.prx.org/api/v1/', path), item_id, query=query, fatal=fatal, note=note)
+            urljoin(
+                'https://cms.prx.org/api/v1/',
+                path),
+            item_id,
+            query=query,
+            fatal=fatal,
+            note=note)
 
     @staticmethod
     def _get_prx_embed_response(response, section):
@@ -48,7 +60,8 @@ class PRXBaseIE(InfoExtractor):
         item_id = str_or_none(response.get('id'))
         if not item_id:
             return
-        thumbnail_dict = cls._extract_image(cls._get_prx_embed_response(response, 'image'))
+        thumbnail_dict = cls._extract_image(
+            cls._get_prx_embed_response(response, 'image'))
         description = (
             clean_html(response.get('description'))
             or response.get('shortDescription'))
@@ -363,11 +376,12 @@ class PRXSeriesIE(PRXBaseIE):
 
     def _extract_series(self, series_response):
         info = self._extract_series_info(series_response)
-        return {
-            '_type': 'playlist',
-            'entries': self._entries(info['id'], 'series/{}/stories'.format(info['id']), self._story_playlist_entry),
-            **info,
-        }
+        return {'_type': 'playlist',
+                'entries': self._entries(info['id'],
+                                         'series/{}/stories'.format(info['id']),
+                                         self._story_playlist_entry),
+                **info,
+                }
 
     def _real_extract(self, url):
         series_id = self._match_id(url)
@@ -393,10 +407,12 @@ class PRXAccountIE(PRXBaseIE):
 
     def _extract_account(self, account_response):
         info = self._extract_account_info(account_response)
-        series = self._entries(
-            info['id'], f'accounts/{info["id"]}/series', self._series_playlist_entry)
-        stories = self._entries(
-            info['id'], f'accounts/{info["id"]}/stories', self._story_playlist_entry)
+        series = self._entries(info['id'],
+                               f'accounts/{info["id"]}/series',
+                               self._series_playlist_entry)
+        stories = self._entries(info['id'],
+                                f'accounts/{info["id"]}/stories',
+                                self._story_playlist_entry)
         return {
             '_type': 'playlist',
             'entries': itertools.chain(series, stories),

@@ -30,11 +30,17 @@ class VolejTVIE(InfoExtractor):
             r'<\s*!\[CDATA[^=]+=', webpage, 'CDATA', video_id)
         formats, subtitle = self._extract_m3u8_formats_and_subtitles(
             json_data['urls']['hls'], video_id)
-        return {
-            'id': video_id,
-            'title': self._html_search_meta(['og:title', 'twitter:title'], webpage),
-            'thumbnail': self._html_search_meta(['og:image', 'twitter:image'], webpage),
-            'description': self._html_search_meta(['description', 'og:description', 'twitter:description'], webpage),
-            'formats': formats,
-            'subtitles': subtitle,
-        }
+        return {'id': video_id,
+                'title': self._html_search_meta(['og:title',
+                                                 'twitter:title'],
+                                                webpage),
+                'thumbnail': self._html_search_meta(['og:image',
+                                                     'twitter:image'],
+                                                    webpage),
+                'description': self._html_search_meta(['description',
+                                                       'og:description',
+                                                       'twitter:description'],
+                                                      webpage),
+                'formats': formats,
+                'subtitles': subtitle,
+                }

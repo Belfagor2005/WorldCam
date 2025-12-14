@@ -106,7 +106,8 @@ class SpankBangIE(InfoExtractor):
         STREAM_URL_PREFIX = 'stream_url_'
 
         for mobj in re.finditer(
-                rf'{STREAM_URL_PREFIX}(?P<id>[^\s=]+)\s*=\s*(["\'])(?P<url>(?:(?!\2).)+)\2', webpage):
+                rf'{STREAM_URL_PREFIX}(?P<id>[^\s=]+)\s*=\s*(["\'])(?P<url>(?:(?!\2).)+)\2',
+                webpage):
             extract_format(mobj.group('id', 'url'))
 
         if not formats:
@@ -132,15 +133,24 @@ class SpankBangIE(InfoExtractor):
         info = self._search_json_ld(webpage, video_id, default={})
 
         title = self._html_search_regex(
-            r'(?s)<h1[^>]+\btitle=["\']([^"]+)["\']>', webpage, 'title', default=None)
+            r'(?s)<h1[^>]+\btitle=["\']([^"]+)["\']>',
+            webpage,
+            'title',
+            default=None)
         description = self._search_regex(
             r'<div[^>]+\bclass=["\']bottom[^>]+>\s*<p>[^<]*</p>\s*<p>([^<]+)',
             webpage, 'description', default=None)
         thumbnail = self._og_search_thumbnail(webpage, default=None)
         uploader = self._html_search_regex(
-            r'<svg[^>]+\bclass="(?:[^"]*?user[^"]*?)">.*?</svg>([^<]+)', webpage, 'uploader', default=None)
+            r'<svg[^>]+\bclass="(?:[^"]*?user[^"]*?)">.*?</svg>([^<]+)',
+            webpage,
+            'uploader',
+            default=None)
         uploader_id = self._html_search_regex(
-            r'<a[^>]+href="/profile/([^"]+)"', webpage, 'uploader_id', default=None)
+            r'<a[^>]+href="/profile/([^"]+)"',
+            webpage,
+            'uploader_id',
+            default=None)
         duration = parse_duration(self._search_regex(
             r'<div[^>]+\bclass=["\']right_side[^>]+>\s*<span>([^<]+)',
             webpage, 'duration', default=None))

@@ -32,7 +32,12 @@ def compat_datetime_from_timestamp(timestamp):
     # Calling dt.datetime.fromtimestamp with negative timestamps throws error in Windows
     # Ref: https://github.com/yt-dlp/yt-dlp/issues/5185, https://github.com/python/cpython/issues/81708,
     # https://github.com/yt-dlp/yt-dlp/issues/6706#issuecomment-1496842642
-    return (dt.datetime.fromtimestamp(0, dt.timezone.utc) + dt.timedelta(seconds=timestamp))
+    return (
+        dt.datetime.fromtimestamp(
+            0,
+            dt.timezone.utc) +
+        dt.timedelta(
+            seconds=timestamp))
 
 
 # Python 3.8+ does not honor %HOME% on windows, but this breaks compatibility with youtube-dl
@@ -48,7 +53,8 @@ if os.name in ('nt', 'ce'):
         i = path.replace('\\', '/', 1).find('/')  # ~user
         if i < 0:
             i = len(path)
-        userhome = os.path.join(os.path.dirname(HOME), path[1:i]) if i > 1 else HOME
+        userhome = os.path.join(os.path.dirname(
+            HOME), path[1:i]) if i > 1 else HOME
         return userhome + path[i:]
 else:
     compat_expanduser = os.path.expanduser
@@ -59,6 +65,13 @@ def urllib_req_to_req(urllib_request):
     from ..networking import Request
     from ..utils.networking import HTTPHeaderDict
     return Request(
-        urllib_request.get_full_url(), data=urllib_request.data, method=urllib_request.get_method(),
-        headers=HTTPHeaderDict(urllib_request.headers, urllib_request.unredirected_hdrs),
-        extensions={'timeout': urllib_request.timeout} if hasattr(urllib_request, 'timeout') else None)
+        urllib_request.get_full_url(),
+        data=urllib_request.data,
+        method=urllib_request.get_method(),
+        headers=HTTPHeaderDict(
+            urllib_request.headers,
+            urllib_request.unredirected_hdrs),
+        extensions={
+            'timeout': urllib_request.timeout} if hasattr(
+                urllib_request,
+            'timeout') else None)

@@ -435,16 +435,26 @@ fragment BannerFields on Banner {
     _TOKEN = None
 
     def _perform_login(self, username, password):
-        auth = self._download_json('https://audience.api.stageplus.io/oauth/token', None, headers={
-            'Content-Type': 'application/json',
-            'Origin': 'https://www.stage-plus.com',
-        }, data=json.dumps({
-            'grant_type': 'password',
-            'username': username,
-            'password': password,
-            'device_info': 'Chrome (Windows)',
-            'client_device_id': str(uuid.uuid4()),
-        }, separators=(',', ':')).encode(), note='Logging in')
+        auth = self._download_json(
+            'https://audience.api.stageplus.io/oauth/token',
+            None,
+            headers={
+                'Content-Type': 'application/json',
+                'Origin': 'https://www.stage-plus.com',
+            },
+            data=json.dumps(
+                {
+                    'grant_type': 'password',
+                    'username': username,
+                    'password': password,
+                    'device_info': 'Chrome (Windows)',
+                    'client_device_id': str(
+                        uuid.uuid4()),
+                },
+                separators=(
+                    ',',
+                    ':')).encode(),
+            note='Logging in')
 
         if auth.get('access_token'):
             self._TOKEN = auth['access_token']
@@ -453,23 +463,33 @@ fragment BannerFields on Banner {
         if self._TOKEN:
             return
 
-        self._TOKEN = try_call(
-            lambda: self._get_cookies('https://www.stage-plus.com/')['dgplus_access_token'].value)
+        self._TOKEN = try_call(lambda: self._get_cookies(
+            'https://www.stage-plus.com/')['dgplus_access_token'].value)
         if not self._TOKEN:
             self.raise_login_required()
 
     def _real_extract(self, url):
         concert_id = self._match_id(url)
 
-        data = self._download_json('https://audience.api.stageplus.io/graphql', concert_id, headers={
-            'authorization': f'Bearer {self._TOKEN}',
-            'content-type': 'application/json',
-            'Origin': 'https://www.stage-plus.com',
-        }, data=json.dumps({
-            'query': self._GRAPHQL_QUERY,
-            'variables': {'videoId': concert_id},
-            'operationName': 'videoDetailPage',
-        }, separators=(',', ':')).encode())['data']['node']
+        data = self._download_json(
+            'https://audience.api.stageplus.io/graphql',
+            concert_id,
+            headers={
+                'authorization': f'Bearer {
+                    self._TOKEN}',
+                'content-type': 'application/json',
+                'Origin': 'https://www.stage-plus.com',
+            },
+            data=json.dumps(
+                {
+                    'query': self._GRAPHQL_QUERY,
+                    'variables': {
+                        'videoId': concert_id},
+                    'operationName': 'videoDetailPage',
+                },
+                separators=(
+                    ',',
+                    ':')).encode())['data']['node']
 
         metadata = traverse_obj(data, {
             'title': 'title',
@@ -479,16 +499,19 @@ fragment BannerFields on Banner {
             'release_timestamp': ('productionDate', {unified_timestamp}),
         })
 
-        thumbnails = traverse_obj(data, ('pictures', lambda _, v: url_or_none(v['url']), {
-            'id': 'name',
-            'url': 'url',
-        })) or None
+        thumbnails = traverse_obj(
+            data, ('pictures', lambda _, v: url_or_none(
+                v['url']), {
+                'id': 'name', 'url': 'url', })) or None
 
         entries = []
-        for idx, video in enumerate(traverse_obj(data, (
-                'performanceWorks', lambda _, v: v['id'] and url_or_none(v['stream']['url']))), 1):
+        for idx, video in enumerate(
+            traverse_obj(
+                data, ('performanceWorks', lambda _, v: v['id'] and url_or_none(
+                v['stream']['url']))), 1):
             formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-                video['stream']['url'], video['id'], 'mp4', m3u8_id='hls', query={'token': self._TOKEN})
+                video['stream']['url'], video['id'], 'mp4', m3u8_id='hls', query={
+                    'token': self._TOKEN})
             entries.append({
                 'id': video['id'],
                 'formats': formats,
@@ -512,4 +535,8 @@ fragment BannerFields on Banner {
                 }),
             })
 
-        return self.playlist_result(entries, concert_id, thumbnails=thumbnails, **metadata)
+        return self.playlist_result(
+            entries,
+            concert_id,
+            thumbnails=thumbnails,
+            **metadata)

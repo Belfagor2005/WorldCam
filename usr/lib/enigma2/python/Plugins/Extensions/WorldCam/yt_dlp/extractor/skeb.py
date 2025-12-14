@@ -69,13 +69,16 @@ class SkebIE(InfoExtractor):
 
     def _call_api(self, uploader_id, work_id):
         return self._download_json(
-            f'https://skeb.jp/api/users/{uploader_id}/works/{work_id}', work_id, headers={
+            f'https://skeb.jp/api/users/{uploader_id}/works/{work_id}',
+            work_id,
+            headers={
                 'Accept': 'application/json',
                 'Authorization': 'Bearer null',
             })
 
     def _real_extract(self, url):
-        uploader_id, work_id = self._match_valid_url(url).group('uploader_id', 'id')
+        uploader_id, work_id = self._match_valid_url(
+            url).group('uploader_id', 'id')
         try:
             works = self._call_api(uploader_id, work_id)
         except ExtractorError as e:
@@ -83,7 +86,9 @@ class SkebIE(InfoExtractor):
                 raise
             webpage = e.cause.response.read().decode()
             value = self._search_regex(
-                r'document\.cookie\s*=\s*["\']request_key=([^;"\']+)', webpage, 'request key')
+                r'document\.cookie\s*=\s*["\']request_key=([^;"\']+)',
+                webpage,
+                'request key')
             self._set_cookie('skeb.jp', 'request_key', value)
             works = self._call_api(uploader_id, work_id)
 
@@ -99,7 +104,8 @@ class SkebIE(InfoExtractor):
         }
 
         entries = []
-        for idx, preview in enumerate(traverse_obj(works, ('previews', lambda _, v: url_or_none(v['url']))), 1):
+        for idx, preview in enumerate(traverse_obj(
+                works, ('previews', lambda _, v: url_or_none(v['url']))), 1):
             ext = traverse_obj(preview, ('information', 'extension', {str}))
             if ext not in ('mp3', 'mp4', 'wav'):
                 self.report_warning(f'Skipping unsupported extension "{ext}"')

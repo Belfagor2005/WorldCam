@@ -94,8 +94,7 @@ class NprIE(InfoExtractor):
                     elif format_id == 'smil':
                         smil_formats = self._extract_smil_formats(
                             format_url, media_id, transform_source=lambda s: s.replace(
-                                'rtmp://flash.npr.org/ondemand/', 'https://ondemand.npr.org/'),
-                            fatal=False)
+                                'rtmp://flash.npr.org/ondemand/', 'https://ondemand.npr.org/'), fatal=False)
                         self._check_formats(smil_formats, media_id)
                         formats.extend(smil_formats)
                     else:
@@ -117,9 +116,13 @@ class NprIE(InfoExtractor):
                     m3u8_id='hls', fatal=False))
 
             if not formats:
-                raw_json_ld = self._yield_json_ld(self._download_webpage(url, playlist_id), playlist_id, fatal=False)
-                m3u8_url = traverse_obj(list(raw_json_ld), (..., 'subjectOf', ..., 'embedUrl'), get_all=False)
-                formats = self._extract_m3u8_formats(m3u8_url, media_id, 'mp4', m3u8_id='hls', fatal=False)
+                raw_json_ld = self._yield_json_ld(
+                    self._download_webpage(
+                        url, playlist_id), playlist_id, fatal=False)
+                m3u8_url = traverse_obj(
+                    list(raw_json_ld), (..., 'subjectOf', ..., 'embedUrl'), get_all=False)
+                formats = self._extract_m3u8_formats(
+                    m3u8_url, media_id, 'mp4', m3u8_id='hls', fatal=False)
 
             entries.append({
                 'id': media_id,

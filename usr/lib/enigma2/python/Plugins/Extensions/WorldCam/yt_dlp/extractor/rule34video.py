@@ -72,7 +72,9 @@ class Rule34VideoIE(InfoExtractor):
 
         formats = []
 
-        for mobj in re.finditer(r'<a[^>]+href="(?P<video_url>[^"]+download=true[^"]+)".*>(?P<ext>[^\s]+) (?P<quality>[^<]+)p</a>', webpage):
+        for mobj in re.finditer(
+            r'<a[^>]+href="(?P<video_url>[^"]+download=true[^"]+)".*>(?P<ext>[^\s]+) (?P<quality>[^<]+)p</a>',
+                webpage):
             url, ext, quality = mobj.groups()
             formats.append({
                 'url': url,
@@ -84,12 +86,16 @@ class Rule34VideoIE(InfoExtractor):
         for col in get_elements_by_class('col', webpage):
             label = clean_html(get_element_by_class('label', col))
             if label == 'Categories:':
-                categories = list(map(clean_html, get_elements_by_class('item', col)))
+                categories = list(
+                    map(clean_html, get_elements_by_class('item', col)))
             elif label == 'Artist:':
-                creators = list(map(clean_html, get_elements_by_class('item', col)))
+                creators = list(
+                    map(clean_html, get_elements_by_class('item', col)))
             elif label == 'Uploaded By:':
                 uploader = clean_html(get_element_by_class('name', col))
-                uploader_url = extract_attributes(get_element_html_by_class('name', col) or '').get('href')
+                uploader_url = extract_attributes(
+                    get_element_html_by_class(
+                        'name', col) or '').get('href')
 
         return {
             **traverse_obj(self._search_json_ld(webpage, video_id, default={}), ({

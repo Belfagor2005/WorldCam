@@ -104,7 +104,9 @@ class EroProfileAlbumIE(InfoExtractor):
     def _entries(self, playlist_id, first_page):
         yield from self._extract_from_page(first_page)
 
-        page_urls = re.findall(rf'href=".*?(/m/videos/album/{playlist_id}\?pnum=(\d+))"', first_page)
+        page_urls = re.findall(
+            rf'href=".*?(/m/videos/album/{playlist_id}\?pnum=(\d+))"',
+            first_page)
         max_page = max(int(n) for _, n in page_urls)
 
         for n in range(2, max_page + 1):
@@ -115,8 +117,16 @@ class EroProfileAlbumIE(InfoExtractor):
 
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
-        first_page = self._download_webpage(url, playlist_id, note='Downloading playlist')
+        first_page = self._download_webpage(
+            url, playlist_id, note='Downloading playlist')
         playlist_title = self._search_regex(
-            r'<title>Album: (.*) - EroProfile</title>', first_page, 'playlist_title')
+            r'<title>Album: (.*) - EroProfile</title>',
+            first_page,
+            'playlist_title')
 
-        return self.playlist_result(self._entries(playlist_id, first_page), playlist_id, playlist_title)
+        return self.playlist_result(
+            self._entries(
+                playlist_id,
+                first_page),
+            playlist_id,
+            playlist_title)

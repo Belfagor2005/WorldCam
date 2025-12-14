@@ -141,13 +141,26 @@ class CNNIE(InfoExtractor):
         display_id = self._match_valid_url(url).group('display_id')
         webpage = self._download_webpage(url, display_id)
         app_id = traverse_obj(
-            self._search_json(r'window\.env\s*=', webpage, 'window env', display_id, default={}),
-            ('TOP_AUTH_SERVICE_APP_ID', {str}))
+            self._search_json(
+                r'window\.env\s*=',
+                webpage,
+                'window env',
+                display_id,
+                default={}),
+            ('TOP_AUTH_SERVICE_APP_ID',
+             {str}))
 
         entries = []
-        for player_data in traverse_obj(webpage, (
-                {find_elements(tag='div', attr='data-component-name', value='video-player', html=True)},
-                ..., {extract_attributes}, all, lambda _, v: v['data-media-id'])):
+        for player_data in traverse_obj(webpage,
+                                        ({find_elements(tag='div',
+                                                        attr='data-component-name',
+                                                        value='video-player',
+                                                        html=True)},
+                                         ...,
+                                         {extract_attributes},
+                                            all,
+                                            lambda _,
+                                            v: v['data-media-id'])):
             media_id = player_data['data-media-id']
             parent_uri = player_data.get('data-video-resource-parent-uri')
             formats, subtitles = [], {}
@@ -160,9 +173,12 @@ class CNNIE(InfoExtractor):
                         'id': media_id,
                         'stellarUri': parent_uri,
                     })
-                for direct_url in traverse_obj(video_data, ('files', ..., 'fileUri', {url_or_none})):
+                for direct_url in traverse_obj(
+                        video_data, ('files', ..., 'fileUri', {url_or_none})):
                     resolution, bitrate = None, None
-                    if mobj := re.search(r'-(?P<res>\d+x\d+)_(?P<tbr>\d+)k\.mp4', direct_url):
+                    if mobj := re.search(
+                        r'-(?P<res>\d+x\d+)_(?P<tbr>\d+)k\.mp4',
+                            direct_url):
                         resolution, bitrate = mobj.group('res', 'tbr')
                     formats.append({
                         'url': direct_url,
@@ -171,19 +187,32 @@ class CNNIE(InfoExtractor):
                         'tbr': int_or_none(bitrate),
                         **parse_resolution(resolution),
                     })
-                for sub_data in traverse_obj(video_data, (
-                        'closedCaptions', 'types', lambda _, v: url_or_none(v['track']['url']), 'track')):
-                    subtitles.setdefault(sub_data.get('lang') or 'en', []).append({
-                        'url': sub_data['url'],
-                        'name': sub_data.get('label'),
-                    })
+                for sub_data in traverse_obj(
+                    video_data,
+                    ('closedCaptions',
+                     'types',
+                     lambda _,
+                     v: url_or_none(
+                         v['track']['url']),
+                        'track')):
+                    subtitles.setdefault(sub_data.get('lang') or 'en', []).append(
+                        {'url': sub_data['url'], 'name': sub_data.get('label'), })
 
             if app_id:
                 media_data = self._download_json(
-                    f'https://medium.ngtv.io/v2/media/{media_id}/desktop', media_id, fatal=False,
-                    query={'appId': app_id})
-                m3u8_url = traverse_obj(media_data, (
-                    'media', 'desktop', 'unprotected', 'unencrypted', 'url', {url_or_none}))
+                    f'https://medium.ngtv.io/v2/media/{media_id}/desktop',
+                    media_id,
+                    fatal=False,
+                    query={
+                        'appId': app_id})
+                m3u8_url = traverse_obj(
+                    media_data,
+                    ('media',
+                     'desktop',
+                     'unprotected',
+                     'unencrypted',
+                     'url',
+                     {url_or_none}))
                 if m3u8_url:
                     fmts, subs = self._extract_m3u8_formats_and_subtitles(
                         m3u8_url, media_id, 'mp4', m3u8_id='hls', fatal=False)
@@ -261,13 +290,14 @@ class CNNIndonesiaIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        upload_date, video_id, display_id = self._match_valid_url(url).group('upload_date', 'id', 'display_id')
+        upload_date, video_id, display_id = self._match_valid_url(
+            url).group('upload_date', 'id', 'display_id')
         webpage = self._download_webpage(url, display_id)
 
         json_ld_list = list(self._yield_json_ld(webpage, display_id))
         json_ld_data = self._json_ld(json_ld_list, display_id)
-        embed_url = next(
-            json_ld.get('embedUrl') for json_ld in json_ld_list if json_ld.get('@type') == 'VideoObject')
+        embed_url = next(json_ld.get('embedUrl')
+                         for json_ld in json_ld_list if json_ld.get('@type') == 'VideoObject')
 
         return merge_dicts(json_ld_data, {
             '_type': 'url_transparent',

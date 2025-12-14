@@ -38,11 +38,16 @@ class IvooxIE(InfoExtractor):
         webpage = self._download_webpage(url, media_id, fatal=False)
 
         data = self._search_nuxt_data(
-            webpage, media_id, fatal=False, traverse=('data', 0, 'data', 'audio'))
+            webpage, media_id, fatal=False, traverse=(
+                'data', 0, 'data', 'audio'))
 
         direct_download = self._download_json(
-            f'https://vcore-web.ivoox.com/v1/public/audios/{media_id}/download-url', media_id, fatal=False,
-            note='Fetching direct download link', headers={'Referer': url})
+            f'https://vcore-web.ivoox.com/v1/public/audios/{media_id}/download-url',
+            media_id,
+            fatal=False,
+            note='Fetching direct download link',
+            headers={
+                'Referer': url})
 
         download_paths = {
             *traverse_obj(direct_download, ('data', 'downloadUrl', {str}, filter, all)),

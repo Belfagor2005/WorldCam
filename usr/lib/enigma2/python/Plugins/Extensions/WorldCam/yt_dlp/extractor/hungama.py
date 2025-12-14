@@ -31,42 +31,39 @@ class HungamaIE(HungamaBaseIE):
                         )
                         (?P<id>\d+)
                     '''
-    _TESTS = [{
-        'url': 'http://www.hungama.com/video/krishna-chants/39349649/',
-        'md5': '687c5f1e9f832f3b59f44ed0eb1f120a',
-        'info_dict': {
-            'id': '39349649',
-            'ext': 'mp4',
-            'title': 'Krishna Chants',
-            'description': ' ',
-            'upload_date': '20180829',
-            'duration': 264,
-            'timestamp': 1535500800,
-            'view_count': int,
-            'thumbnail': 'https://images1.hungama.com/tr:n-a_169_m/c/1/0dc/2ca/39349649/39349649_350x197.jpg?v=8',
-            'tags': 'count:6',
-        },
-    }, {
-        'url': 'https://un.hungama.com/short-film/adira/102524179/',
-        'md5': '2278463f5dc9db9054d0c02602d44666',
-        'info_dict': {
-            'id': '102524179',
-            'ext': 'mp4',
-            'title': 'Adira',
-            'description': 'md5:df20cd4d41eabb33634f06de1025a4b4',
-            'upload_date': '20230417',
-            'timestamp': 1681689600,
-            'view_count': int,
-            'thumbnail': 'https://images1.hungama.com/tr:n-a_23_m/c/1/197/ac9/102524179/102524179_350x525.jpg?v=1',
-            'tags': 'count:7',
-        },
-    }, {
-        'url': 'https://www.hungama.com/movie/kahaani-2/44129919/',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.hungama.com/tv-show/padded-ki-pushup/season-1/44139461/episode/ep-02-training-sasu-pathlaag-karing/44139503/',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'http://www.hungama.com/video/krishna-chants/39349649/',
+               'md5': '687c5f1e9f832f3b59f44ed0eb1f120a',
+               'info_dict': {'id': '39349649',
+                             'ext': 'mp4',
+                             'title': 'Krishna Chants',
+                             'description': ' ',
+                             'upload_date': '20180829',
+                             'duration': 264,
+                             'timestamp': 1535500800,
+                             'view_count': int,
+                             'thumbnail': 'https://images1.hungama.com/tr:n-a_169_m/c/1/0dc/2ca/39349649/39349649_350x197.jpg?v=8',
+                             'tags': 'count:6',
+                             },
+               },
+              {'url': 'https://un.hungama.com/short-film/adira/102524179/',
+               'md5': '2278463f5dc9db9054d0c02602d44666',
+               'info_dict': {'id': '102524179',
+                             'ext': 'mp4',
+                             'title': 'Adira',
+                             'description': 'md5:df20cd4d41eabb33634f06de1025a4b4',
+                             'upload_date': '20230417',
+                             'timestamp': 1681689600,
+                             'view_count': int,
+                             'thumbnail': 'https://images1.hungama.com/tr:n-a_23_m/c/1/197/ac9/102524179/102524179_350x525.jpg?v=1',
+                             'tags': 'count:7',
+                             },
+               },
+              {'url': 'https://www.hungama.com/movie/kahaani-2/44129919/',
+               'only_matching': True,
+               },
+              {'url': 'https://www.hungama.com/tv-show/padded-ki-pushup/season-1/44139461/episode/ep-02-training-sasu-pathlaag-karing/44139503/',
+               'only_matching': True,
+               }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -79,14 +76,16 @@ class HungamaIE(HungamaBaseIE):
                 'c': 'common',
                 'm': 'get_video_mdn_url',
             })
-        formats = self._extract_m3u8_formats(video_json['stream_url'], video_id, ext='mp4', m3u8_id='hls')
+        formats = self._extract_m3u8_formats(
+            video_json['stream_url'], video_id, ext='mp4', m3u8_id='hls')
         metadata = self._call_api('movie', video_id)
 
         return {
             **traverse_obj(metadata, ('head', 'data', {
                 'title': ('title', {str}),
                 'description': ('misc', 'description', {str}),
-                'duration': ('duration', {int}),  # duration in JSON is incorrect if string
+                # duration in JSON is incorrect if string
+                'duration': ('duration', {int}),
                 'timestamp': ('releasedate', {unified_timestamp}),
                 'view_count': ('misc', 'playcount', {int_or_none}),
                 'thumbnail': ('image', {url_or_none}),
@@ -141,8 +140,12 @@ class HungamaSongIE(InfoExtractor):
         track = data['song_name']
         artist = data.get('singer_name')
         formats = []
-        media_json = self._download_json(data.get('file') or data['preview_link'], audio_id)
-        media_url = try_get(media_json, lambda x: x['response']['media_url'], str)
+        media_json = self._download_json(
+            data.get('file') or data['preview_link'], audio_id)
+        media_url = try_get(
+            media_json,
+            lambda x: x['response']['media_url'],
+            str)
         media_type = try_get(media_json, lambda x: x['response']['type'], str)
 
         if media_url:
@@ -195,7 +198,8 @@ class HungamaAlbumPlaylistIE(HungamaBaseIE):
         data = self._call_api(remove_end(path, 's'), playlist_id, fatal=True)
 
         def entries():
-            for song_url in traverse_obj(data, ('body', 'rows', ..., 'data', 'misc', 'share', {url_or_none})):
+            for song_url in traverse_obj(
+                    data, ('body', 'rows', ..., 'data', 'misc', 'share', {url_or_none})):
                 yield self.url_result(song_url, HungamaSongIE)
 
         return self.playlist_result(entries(), playlist_id)

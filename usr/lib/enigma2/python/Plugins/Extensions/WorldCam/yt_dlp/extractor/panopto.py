@@ -48,10 +48,23 @@ class PanoptoBaseIE(InfoExtractor):
         21: 'it-IT',
     }
 
-    def _call_api(self, base_url, path, video_id, data=None, fatal=True, **kwargs):
+    def _call_api(
+            self,
+            base_url,
+            path,
+            video_id,
+            data=None,
+            fatal=True,
+            **kwargs):
         response = self._download_json(
-            base_url + path, video_id, data=json.dumps(data).encode('utf8') if data else None,
-            fatal=fatal, headers={'accept': 'application/json', 'content-type': 'application/json'}, **kwargs)
+            base_url + path,
+            video_id,
+            data=json.dumps(data).encode('utf8') if data else None,
+            fatal=fatal,
+            headers={
+                'accept': 'application/json',
+                'content-type': 'application/json'},
+            **kwargs)
         if not response:
             return
         error_code = traverse_obj(response, 'ErrorCode')
@@ -67,12 +80,18 @@ class PanoptoBaseIE(InfoExtractor):
 
     @staticmethod
     def _parse_fragment(url):
-        return {k: json.loads(v[0]) for k, v in urllib.parse.parse_qs(urllib.parse.urlparse(url).fragment).items()}
+        return {
+            k: json.loads(
+                v[0]) for k, v in urllib.parse.parse_qs(
+                urllib.parse.urlparse(url).fragment).items()}
 
 
 class PanoptoIE(PanoptoBaseIE):
-    _VALID_URL = PanoptoBaseIE.BASE_URL_RE + r'/Pages/(Viewer|Embed)\.aspx.*(?:\?|&)id=(?P<id>[a-f0-9-]+)'
-    _EMBED_REGEX = [rf'<iframe[^>]+src=["\'](?P<url>{PanoptoBaseIE.BASE_URL_RE}/Pages/(Viewer|Embed|Sessions/List)\.aspx[^"\']+)']
+    _VALID_URL = PanoptoBaseIE.BASE_URL_RE + \
+        r'/Pages/(Viewer|Embed)\.aspx.*(?:\?|&)id=(?P<id>[a-f0-9-]+)'
+    _EMBED_REGEX = [
+        rf'<iframe[^>]+src=["\'](?P<url>{
+            PanoptoBaseIE.BASE_URL_RE}/Pages/(Viewer|Embed|Sessions/List)\.aspx[^"\']+)']
     _TESTS = [{
         'url': 'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=26b3ae9e-4a48-4dcc-96ba-0befba08a0fb',
         'info_dict': {
@@ -134,7 +153,8 @@ class PanoptoIE(PanoptoBaseIE):
         },
         'skip': 'Invalid URL',
     }, {
-        # Does not allow normal Viewer.aspx. AUDIO livestream has no url, so should be skipped and only give one stream.
+        # Does not allow normal Viewer.aspx. AUDIO livestream has no url, so
+        # should be skipped and only give one stream.
         'url': 'https://unisa.au.panopto.com/Panopto/Pages/Embed.aspx?id=9d9a0fa3-e99a-4ebd-a281-aac2017f4da4',
         'info_dict': {
             'id': '9d9a0fa3-e99a-4ebd-a281-aac2017f4da4',
@@ -196,7 +216,8 @@ class PanoptoIE(PanoptoBaseIE):
         },
         'params': {'writesubtitles': True, 'skip_download': True},
     }, {
-        # On Panopto there are two subs: "Default" and en-US. en-US is blank and should be skipped.
+        # On Panopto there are two subs: "Default" and en-US. en-US is blank
+        # and should be skipped.
         'url': 'https://na-training-1.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=940cbd41-f616-4a45-b13e-aaf1000c915b',
         'info_dict': {
             'id': '940cbd41-f616-4a45-b13e-aaf1000c915b',
@@ -249,14 +270,20 @@ class PanoptoIE(PanoptoBaseIE):
 
     @classmethod
     def suitable(cls, url):
-        return False if PanoptoPlaylistIE.suitable(url) else super().suitable(url)
+        return False if PanoptoPlaylistIE.suitable(
+            url) else super().suitable(url)
 
     def _mark_watched(self, base_url, video_id, delivery_info):
-        duration = traverse_obj(delivery_info, ('Delivery', 'Duration'), expected_type=float)
+        duration = traverse_obj(
+            delivery_info, ('Delivery', 'Duration'), expected_type=float)
         invocation_id = delivery_info.get('InvocationId')
-        stream_id = traverse_obj(delivery_info, ('Delivery', 'Streams', ..., 'PublicID'), get_all=False, expected_type=str)
+        stream_id = traverse_obj(
+            delivery_info, ('Delivery', 'Streams', ..., 'PublicID'), get_all=False, expected_type=str)
         if invocation_id and stream_id and duration:
-            timestamp_str = f'/Date({calendar.timegm(dt.datetime.now(dt.timezone.utc).timetuple())}000)/'
+            timestamp_str = f'/Date({
+                calendar.timegm(
+                    dt.datetime.now(
+                        dt.timezone.utc).timetuple())}000)/'
             data = {
                 'streamRequests': [
                     {
@@ -276,16 +303,24 @@ class PanoptoIE(PanoptoBaseIE):
                 ]}
 
             self._download_webpage(
-                base_url + '/Services/Analytics.svc/AddStreamRequests', video_id,
-                fatal=False, data=json.dumps(data).encode('utf8'), headers={'content-type': 'application/json'},
-                note='Marking watched', errnote='Unable to mark watched')
+                base_url +
+                '/Services/Analytics.svc/AddStreamRequests',
+                video_id,
+                fatal=False,
+                data=json.dumps(data).encode('utf8'),
+                headers={
+                    'content-type': 'application/json'},
+                note='Marking watched',
+                errnote='Unable to mark watched')
 
     @staticmethod
     def _extract_chapters(timestamps):
         chapters = []
         for timestamp in timestamps or []:
             caption = timestamp.get('Caption')
-            start, duration = int_or_none(timestamp.get('Time')), int_or_none(timestamp.get('Duration'))
+            start, duration = int_or_none(
+                timestamp.get('Time')), int_or_none(
+                timestamp.get('Duration'))
             if not caption or start is None or duration is None:
                 continue
             chapters.append({
@@ -300,14 +335,17 @@ class PanoptoIE(PanoptoBaseIE):
         image_frags = {}
         for timestamp in timestamps or []:
             duration = timestamp.get('Duration')
-            obj_id, obj_sn = timestamp.get('ObjectIdentifier'), timestamp.get('ObjectSequenceNumber')
-            if timestamp.get('EventTargetType') == 'PowerPoint' and obj_id is not None and obj_sn is not None:
+            obj_id, obj_sn = timestamp.get(
+                'ObjectIdentifier'), timestamp.get('ObjectSequenceNumber')
+            if timestamp.get(
+                    'EventTargetType') == 'PowerPoint' and obj_id is not None and obj_sn is not None:
                 image_frags.setdefault('slides', []).append({
                     'url': base_url + f'/Pages/Viewer/Image.aspx?id={obj_id}&number={obj_sn}',
                     'duration': duration,
                 })
 
-            obj_pid, session_id, abs_time = timestamp.get('ObjectPublicIdentifier'), timestamp.get('SessionID'), timestamp.get('AbsoluteTime')
+            obj_pid, session_id, abs_time = timestamp.get(
+                'ObjectPublicIdentifier'), timestamp.get('SessionID'), timestamp.get('AbsoluteTime')
             if None not in (obj_pid, session_id, abs_time):
                 image_frags.setdefault('chapter', []).append({
                     'url': base_url + f'/Pages/Viewer/Thumb.aspx?eventTargetPID={obj_pid}&sessionPID={session_id}&number={obj_sn}&isPrimary=false&absoluteTime={abs_time}',
@@ -333,7 +371,8 @@ class PanoptoIE(PanoptoBaseIE):
                 if duration:
                     end_time = start_time + duration
                 else:
-                    end_time = traverse_obj(data, (i + 1, 'Time')) or delivery['Duration']
+                    end_time = traverse_obj(
+                        data, (i + 1, 'Time')) or delivery['Duration']
                 yield f'{i + 1}\n{srt_subtitles_timecode(start_time)} --> {srt_subtitles_timecode(end_time)}\n{line["Caption"]}'
         return '\n\n'.join(_gen_lines())
 
@@ -341,8 +380,12 @@ class PanoptoIE(PanoptoBaseIE):
         subtitles = {}
         for lang in delivery.get('AvailableLanguages') or []:
             response = self._call_api(
-                base_url, '/Pages/Viewer/DeliveryInfo.aspx', video_id, fatal=False,
-                note='Downloading captions JSON metadata', query={
+                base_url,
+                '/Pages/Viewer/DeliveryInfo.aspx',
+                video_id,
+                fatal=False,
+                note='Downloading captions JSON metadata',
+                query={
                     'deliveryId': video_id,
                     'getCaptions': True,
                     'language': str(lang),
@@ -351,21 +394,23 @@ class PanoptoIE(PanoptoBaseIE):
             )
             if not isinstance(response, list):
                 continue
-            subtitles.setdefault(self._SUB_LANG_MAPPING.get(lang) or 'default', []).append({
-                'ext': 'srt',
-                'data': self._json2srt(response, delivery),
-            })
+            subtitles.setdefault(self._SUB_LANG_MAPPING.get(lang) or 'default', []).append(
+                {'ext': 'srt', 'data': self._json2srt(response, delivery), })
         return subtitles
 
-    def _extract_streams_formats_and_subtitles(self, video_id, streams, **fmt_kwargs):
+    def _extract_streams_formats_and_subtitles(
+            self, video_id, streams, **fmt_kwargs):
         formats = []
         subtitles = {}
         for stream in streams or []:
             stream_formats = []
-            for stream_url in set(traverse_obj(stream, (('StreamHttpUrl', 'StreamUrl'), {url_or_none}))):
+            for stream_url in set(
+                traverse_obj(
+                    stream, (('StreamHttpUrl', 'StreamUrl'), {url_or_none}))):
                 media_type = stream.get('ViewerMediaFileTypeName')
                 if media_type in ('hls', ):
-                    fmts, subs = self._extract_m3u8_formats_and_subtitles(stream_url, video_id, m3u8_id='hls', fatal=False)
+                    fmts, subs = self._extract_m3u8_formats_and_subtitles(
+                        stream_url, video_id, m3u8_id='hls', fatal=False)
                     stream_formats.extend(fmts)
                     self._merge_subtitles(subs, target=subtitles)
                 else:
@@ -403,7 +448,8 @@ class PanoptoIE(PanoptoBaseIE):
         session_start_time = int_or_none(delivery.get('SessionStartTime'))
         timestamps = delivery.get('Timestamps')
 
-        # Podcast stream is usually the combined streams. We will prefer that by default.
+        # Podcast stream is usually the combined streams. We will prefer that
+        # by default.
         podcast_formats, podcast_subtitles = self._extract_streams_formats_and_subtitles(
             video_id, delivery.get('PodcastStreams'), format_note='PODCAST')
 
@@ -413,7 +459,12 @@ class PanoptoIE(PanoptoBaseIE):
         formats = podcast_formats + streams_formats
         formats.extend(self._extract_mhtml_formats(base_url, timestamps))
         subtitles = self._merge_subtitles(
-            podcast_subtitles, streams_subtitles, self.extract_subtitles(base_url, video_id, delivery))
+            podcast_subtitles,
+            streams_subtitles,
+            self.extract_subtitles(
+                base_url,
+                video_id,
+                delivery))
 
         self.mark_watched(base_url, video_id, delivery_info)
 
@@ -438,7 +489,8 @@ class PanoptoIE(PanoptoBaseIE):
 
 
 class PanoptoPlaylistIE(PanoptoBaseIE):
-    _VALID_URL = PanoptoBaseIE.BASE_URL_RE + r'/Pages/(Viewer|Embed)\.aspx.*(?:\?|&)pid=(?P<id>[a-f0-9-]+)'
+    _VALID_URL = PanoptoBaseIE.BASE_URL_RE + \
+        r'/Pages/(Viewer|Embed)\.aspx.*(?:\?|&)pid=(?P<id>[a-f0-9-]+)'
     _TESTS = [{
         'url': 'https://howtovideos.hosted.panopto.com/Panopto/Pages/Viewer.aspx?pid=f3b39fcf-882f-4849-93d6-a9f401236d36&id=5fa74e93-3d87-4694-b60e-aaa4012214ed&advance=true',
         'info_dict': {
@@ -459,12 +511,17 @@ class PanoptoPlaylistIE(PanoptoBaseIE):
 
     def _entries(self, base_url, playlist_id, session_list_id):
         session_list_info = self._call_api(
-            base_url, f'/Api/SessionLists/{session_list_id}?collections[0].maxCount=500&collections[0].name=items', playlist_id)
+            base_url,
+            f'/Api/SessionLists/{session_list_id}?collections[0].maxCount=500&collections[0].name=items',
+            playlist_id)
 
         items = session_list_info['Items']
         for item in items:
             if item.get('TypeName') != 'Session':
-                self.report_warning('Got an item in the playlist that is not a Session' + bug_reports_message(), only_once=True)
+                self.report_warning(
+                    'Got an item in the playlist that is not a Session' +
+                    bug_reports_message(),
+                    only_once=True)
                 continue
             yield {
                 '_type': 'url',
@@ -478,20 +535,32 @@ class PanoptoPlaylistIE(PanoptoBaseIE):
             }
 
     def _real_extract(self, url):
-        base_url, playlist_id = self._match_valid_url(url).group('base_url', 'id')
+        base_url, playlist_id = self._match_valid_url(
+            url).group('base_url', 'id')
 
         video_id = get_first(parse_qs(url), 'id')
         if video_id:
             if self.get_param('noplaylist'):
-                self.to_screen(f'Downloading just video {video_id} because of --no-playlist')
-                return self.url_result(base_url + f'/Pages/Viewer.aspx?id={video_id}', ie_key=PanoptoIE.ie_key(), video_id=video_id)
+                self.to_screen(
+                    f'Downloading just video {video_id} because of --no-playlist')
+                return self.url_result(
+                    base_url +
+                    f'/Pages/Viewer.aspx?id={video_id}',
+                    ie_key=PanoptoIE.ie_key(),
+                    video_id=video_id)
             else:
-                self.to_screen(f'Downloading playlist {playlist_id}; add --no-playlist to just download video {video_id}')
+                self.to_screen(
+                    f'Downloading playlist {playlist_id}; add --no-playlist to just download video {video_id}')
 
-        playlist_info = self._call_api(base_url, f'/Api/Playlists/{playlist_id}', playlist_id)
+        playlist_info = self._call_api(
+            base_url, f'/Api/Playlists/{playlist_id}', playlist_id)
         return self.playlist_result(
-            self._entries(base_url, playlist_id, playlist_info['SessionListId']),
-            playlist_id=playlist_id, playlist_title=playlist_info.get('Name'),
+            self._entries(
+                base_url,
+                playlist_id,
+                playlist_info['SessionListId']),
+            playlist_id=playlist_id,
+            playlist_title=playlist_info.get('Name'),
             playlist_description=playlist_info.get('Description'))
 
 
@@ -534,8 +603,13 @@ class PanoptoListIE(PanoptoBaseIE):
         }
 
         response = self._call_api(
-            base_url, '/Services/Data.svc/GetSessions', f'{display_id} page {page + 1}',
-            data={'queryParameters': params}, fatal=False)
+            base_url,
+            '/Services/Data.svc/GetSessions',
+            f'{display_id} page {
+                page + 1}',
+            data={
+                'queryParameters': params},
+            fatal=False)
 
         for result in get_first(response, 'Results', default=[]):
             # This could be a video, playlist (or maybe something else)
@@ -593,6 +667,11 @@ class PanoptoListIE(PanoptoBaseIE):
             info.update(self._extract_folder_metadata(base_url, folder_id))
 
         info['entries'] = OnDemandPagedList(
-            functools.partial(self._fetch_page, base_url, query_params, display_id), self._PAGE_SIZE)
+            functools.partial(
+                self._fetch_page,
+                base_url,
+                query_params,
+                display_id),
+            self._PAGE_SIZE)
 
         return info

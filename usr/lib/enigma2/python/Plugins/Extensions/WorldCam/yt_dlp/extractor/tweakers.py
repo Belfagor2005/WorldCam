@@ -39,7 +39,8 @@ class TweakersIE(InfoExtractor):
                 source_url = source.get('src')
                 if not source_url:
                     continue
-                ext = mimetype2ext(source.get('type')) or determine_ext(source_url)
+                ext = mimetype2ext(
+                    source.get('type')) or determine_ext(source_url)
                 formats.append({
                     'format_id': format_id,
                     'url': source_url,

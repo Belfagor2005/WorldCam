@@ -57,10 +57,12 @@ class CanalsurmasIE(InfoExtractor):
         video_info = self._call_api('content', video_id, fields=[
             'description', 'image', 'duration', 'created_at', 'tags',
         ])
-        stream_info = self._call_api('content_resources', video_id, 'media_url')
+        stream_info = self._call_api(
+            'content_resources', video_id, 'media_url')
 
         formats, subtitles = [], {}
-        for stream_url in traverse_obj(stream_info, ('results', ..., 'media_url', {url_or_none})):
+        for stream_url in traverse_obj(
+                stream_info, ('results', ..., 'media_url', {url_or_none})):
             if determine_ext(stream_url) == 'm3u8':
                 fmts, subs = self._extract_m3u8_formats_and_subtitles(
                     stream_url, video_id, m3u8_id='hls', fatal=False)

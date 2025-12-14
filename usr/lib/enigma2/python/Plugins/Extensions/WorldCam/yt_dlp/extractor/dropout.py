@@ -22,74 +22,70 @@ class DropoutIE(InfoExtractor):
     _NETRC_MACHINE = 'dropout'
 
     _VALID_URL = r'https?://(?:watch\.)?dropout\.tv/(?:[^/?#]+/)*videos/(?P<id>[^/?#]+)/?(?:[?#]|$)'
-    _TESTS = [
-        {
-            'url': 'https://watch.dropout.tv/game-changer/season:2/videos/yes-or-no',
-            'note': 'Episode in a series',
-            'md5': '4b76963f904f8bc4ba22dcf0e66ada06',
-            'info_dict': {
-                'id': '738153',
-                'display_id': 'yes-or-no',
-                'ext': 'mp4',
-                'title': 'Yes or No',
-                'description': 'Ally, Brennan, and Zac are asked a simple question, but is there a correct answer?',
-                'release_date': '20200508',
-                'thumbnail': 'https://vhx.imgix.net/chuncensoredstaging/assets/351e3f24-c4a3-459a-8b79-dc80f1e5b7fd.jpg',
-                'series': 'Game Changer',
-                'season_number': 2,
-                'season': 'Season 2',
-                'episode_number': 6,
-                'episode': 'Yes or No',
-                'duration': 1180,
-                'uploader_id': 'user80538407',
-                'uploader_url': 'https://vimeo.com/user80538407',
-                'uploader': 'OTT Videos',
-            },
-            'expected_warnings': ['Ignoring subtitle tracks found in the HLS manifest', 'Failed to parse XML: not well-formed'],
-        },
-        {
-            'url': 'https://watch.dropout.tv/tablepop-presents-megadungeon-live/season:1/videos/enter-through-the-gift-shop',
-            'note': 'Episode in a series (missing release_date)',
-            'md5': 'b08fb03050585ea25cd7ee092db9134c',
-            'info_dict': {
-                'id': '624270',
-                'display_id': 'enter-through-the-gift-shop',
-                'ext': 'mp4',
-                'title': 'Enter Through the Gift Shop',
-                'description': 'A new adventuring party explores a gift shop and runs into a friendly orc -- and some angry goblins.',
-                'thumbnail': 'https://vhx.imgix.net/chuncensoredstaging/assets/a1d876c3-3dee-4cd0-87c6-27a851b1d0ec.jpg',
-                'series': 'TablePop Presents: MEGADUNGEON LIVE!',
-                'season_number': 1,
-                'season': 'Season 1',
-                'episode_number': 1,
-                'episode': 'Enter Through the Gift Shop',
-                'duration': 7101,
-                'uploader_id': 'user80538407',
-                'uploader_url': 'https://vimeo.com/user80538407',
-                'uploader': 'OTT Videos',
-            },
-            'expected_warnings': ['Ignoring subtitle tracks found in the HLS manifest', 'Failed to parse XML: not well-formed'],
-        },
-        {
-            'url': 'https://watch.dropout.tv/videos/misfits-magic-holiday-special',
-            'note': 'Episode not in a series',
-            'md5': '1e6428f7756b02c93b573d39ddd789fe',
-            'info_dict': {
-                'id': '1915774',
-                'display_id': 'misfits-magic-holiday-special',
-                'ext': 'mp4',
-                'title': 'Misfits & Magic Holiday Special',
-                'description': 'The magical misfits spend Christmas break at Gowpenny, with an unwelcome visitor.',
-                'release_date': '20211215',
-                'thumbnail': 'https://vhx.imgix.net/chuncensoredstaging/assets/d91ea8a6-b250-42ed-907e-b30fb1c65176-8e24b8e5.jpg',
-                'duration': 11698,
-                'uploader_id': 'user80538407',
-                'uploader_url': 'https://vimeo.com/user80538407',
-                'uploader': 'OTT Videos',
-            },
-            'expected_warnings': ['Ignoring subtitle tracks found in the HLS manifest', 'Failed to parse XML: not well-formed'],
-        },
-    ]
+    _TESTS = [{'url': 'https://watch.dropout.tv/game-changer/season:2/videos/yes-or-no',
+               'note': 'Episode in a series',
+               'md5': '4b76963f904f8bc4ba22dcf0e66ada06',
+               'info_dict': {'id': '738153',
+                             'display_id': 'yes-or-no',
+                             'ext': 'mp4',
+                             'title': 'Yes or No',
+                             'description': 'Ally, Brennan, and Zac are asked a simple question, but is there a correct answer?',
+                             'release_date': '20200508',
+                             'thumbnail': 'https://vhx.imgix.net/chuncensoredstaging/assets/351e3f24-c4a3-459a-8b79-dc80f1e5b7fd.jpg',
+                             'series': 'Game Changer',
+                             'season_number': 2,
+                             'season': 'Season 2',
+                             'episode_number': 6,
+                             'episode': 'Yes or No',
+                             'duration': 1180,
+                             'uploader_id': 'user80538407',
+                             'uploader_url': 'https://vimeo.com/user80538407',
+                             'uploader': 'OTT Videos',
+                             },
+               'expected_warnings': ['Ignoring subtitle tracks found in the HLS manifest',
+                                     'Failed to parse XML: not well-formed'],
+               },
+              {'url': 'https://watch.dropout.tv/tablepop-presents-megadungeon-live/season:1/videos/enter-through-the-gift-shop',
+               'note': 'Episode in a series (missing release_date)',
+               'md5': 'b08fb03050585ea25cd7ee092db9134c',
+               'info_dict': {'id': '624270',
+                             'display_id': 'enter-through-the-gift-shop',
+                             'ext': 'mp4',
+                             'title': 'Enter Through the Gift Shop',
+                             'description': 'A new adventuring party explores a gift shop and runs into a friendly orc -- and some angry goblins.',
+                             'thumbnail': 'https://vhx.imgix.net/chuncensoredstaging/assets/a1d876c3-3dee-4cd0-87c6-27a851b1d0ec.jpg',
+                             'series': 'TablePop Presents: MEGADUNGEON LIVE!',
+                             'season_number': 1,
+                             'season': 'Season 1',
+                             'episode_number': 1,
+                             'episode': 'Enter Through the Gift Shop',
+                             'duration': 7101,
+                             'uploader_id': 'user80538407',
+                             'uploader_url': 'https://vimeo.com/user80538407',
+                             'uploader': 'OTT Videos',
+                             },
+               'expected_warnings': ['Ignoring subtitle tracks found in the HLS manifest',
+                                     'Failed to parse XML: not well-formed'],
+               },
+              {'url': 'https://watch.dropout.tv/videos/misfits-magic-holiday-special',
+               'note': 'Episode not in a series',
+               'md5': '1e6428f7756b02c93b573d39ddd789fe',
+               'info_dict': {'id': '1915774',
+                             'display_id': 'misfits-magic-holiday-special',
+                             'ext': 'mp4',
+                             'title': 'Misfits & Magic Holiday Special',
+                             'description': 'The magical misfits spend Christmas break at Gowpenny, with an unwelcome visitor.',
+                             'release_date': '20211215',
+                             'thumbnail': 'https://vhx.imgix.net/chuncensoredstaging/assets/d91ea8a6-b250-42ed-907e-b30fb1c65176-8e24b8e5.jpg',
+                             'duration': 11698,
+                             'uploader_id': 'user80538407',
+                             'uploader_url': 'https://vimeo.com/user80538407',
+                             'uploader': 'OTT Videos',
+                             },
+               'expected_warnings': ['Ignoring subtitle tracks found in the HLS manifest',
+                                     'Failed to parse XML: not well-formed'],
+               },
+              ]
 
     def _get_authenticity_token(self, display_id):
         signin_page = self._download_webpage(
@@ -113,7 +109,10 @@ class DropoutIE(InfoExtractor):
             }))
 
         user_has_subscription = self._search_regex(
-            r'user_has_subscription:\s*["\'](.+?)["\']', response, 'subscription status', default='none')
+            r'user_has_subscription:\s*["\'](.+?)["\']',
+            response,
+            'subscription status',
+            default='none')
         if user_has_subscription.lower() == 'true':
             return
         elif user_has_subscription.lower() == 'false':
@@ -135,13 +134,17 @@ class DropoutIE(InfoExtractor):
                     self.raise_login_required(method='any')
                 raise ExtractorError(login_err, expected=True)
 
-        embed_url = self._html_search_regex(r'embed_url:\s*["\'](.+?)["\']', webpage, 'embed url')
+        embed_url = self._html_search_regex(
+            r'embed_url:\s*["\'](.+?)["\']', webpage, 'embed url')
         thumbnail = self._og_search_thumbnail(webpage)
         watch_info = get_element_by_id('watch-info', webpage) or ''
 
         title = clean_html(get_element_by_class('video-title', watch_info))
         season_episode = get_element_by_class(
-            'site-font-secondary-color', get_element_by_class('text', watch_info))
+            'site-font-secondary-color',
+            get_element_by_class(
+                'text',
+                watch_info))
         episode_number = int_or_none(self._search_regex(
             r'Episode (\d+)', season_episode or '', 'episode', default=None))
 
@@ -153,7 +156,8 @@ class DropoutIE(InfoExtractor):
             'display_id': display_id,
             'title': title,
             'description': self._html_search_meta('description', webpage, fatal=False),
-            'thumbnail': thumbnail.split('?')[0] if thumbnail else None,  # Ignore crop/downscale
+            # Ignore crop/downscale
+            'thumbnail': thumbnail.split('?')[0] if thumbnail else None,
             'series': clean_html(get_element_by_class('series-title', watch_info)),
             'episode_number': episode_number,
             'episode': title if episode_number else None,
@@ -168,49 +172,43 @@ class DropoutIE(InfoExtractor):
 class DropoutSeasonIE(InfoExtractor):
     _PAGE_SIZE = 24
     _VALID_URL = r'https?://(?:watch\.)?dropout\.tv/(?P<id>[^\/$&?#]+)(?:/?$|/season:(?P<season>[0-9]+)/?$)'
-    _TESTS = [
-        {
-            'url': 'https://watch.dropout.tv/dimension-20-fantasy-high/season:1',
-            'note': 'Multi-season series with the season in the url',
-            'playlist_count': 24,
-            'info_dict': {
-                'id': 'dimension-20-fantasy-high-season-1',
-                'title': 'Dimension 20 Fantasy High - Season 1',
-            },
-        },
-        {
-            'url': 'https://watch.dropout.tv/dimension-20-fantasy-high',
-            'note': 'Multi-season series with the season not in the url',
-            'playlist_count': 24,
-            'info_dict': {
-                'id': 'dimension-20-fantasy-high-season-1',
-                'title': 'Dimension 20 Fantasy High - Season 1',
-            },
-        },
-        {
-            'url': 'https://watch.dropout.tv/dimension-20-shriek-week',
-            'note': 'Single-season series',
-            'playlist_count': 4,
-            'info_dict': {
-                'id': 'dimension-20-shriek-week-season-1',
-                'title': 'Dimension 20 Shriek Week - Season 1',
-            },
-        },
-        {
-            'url': 'https://watch.dropout.tv/breaking-news-no-laugh-newsroom/season:3',
-            'note': 'Multi-season series with season in the url that requires pagination',
-            'playlist_count': 25,
-            'info_dict': {
-                'id': 'breaking-news-no-laugh-newsroom-season-3',
-                'title': 'Breaking News No Laugh Newsroom - Season 3',
-            },
-        },
-    ]
+    _TESTS = [{'url': 'https://watch.dropout.tv/dimension-20-fantasy-high/season:1',
+               'note': 'Multi-season series with the season in the url',
+               'playlist_count': 24,
+               'info_dict': {'id': 'dimension-20-fantasy-high-season-1',
+                             'title': 'Dimension 20 Fantasy High - Season 1',
+                             },
+               },
+              {'url': 'https://watch.dropout.tv/dimension-20-fantasy-high',
+               'note': 'Multi-season series with the season not in the url',
+               'playlist_count': 24,
+               'info_dict': {'id': 'dimension-20-fantasy-high-season-1',
+                             'title': 'Dimension 20 Fantasy High - Season 1',
+                             },
+               },
+              {'url': 'https://watch.dropout.tv/dimension-20-shriek-week',
+               'note': 'Single-season series',
+               'playlist_count': 4,
+               'info_dict': {'id': 'dimension-20-shriek-week-season-1',
+                             'title': 'Dimension 20 Shriek Week - Season 1',
+                             },
+               },
+              {'url': 'https://watch.dropout.tv/breaking-news-no-laugh-newsroom/season:3',
+               'note': 'Multi-season series with season in the url that requires pagination',
+               'playlist_count': 25,
+               'info_dict': {'id': 'breaking-news-no-laugh-newsroom-season-3',
+                             'title': 'Breaking News No Laugh Newsroom - Season 3',
+                             },
+               },
+              ]
 
     def _fetch_page(self, url, season_id, page):
         page += 1
         webpage = self._download_webpage(
-            f'{url}?page={page}', season_id, note=f'Downloading page {page}', expected_status={400})
+            f'{url}?page={page}',
+            season_id,
+            note=f'Downloading page {page}',
+            expected_status={400})
         yield from [self.url_result(item_url, DropoutIE) for item_url in traverse_obj(
             get_elements_html_by_class('browse-item-link', webpage), (..., {extract_attributes}, 'href'))]
 
@@ -220,5 +218,11 @@ class DropoutSeasonIE(InfoExtractor):
         season_title = season_id.replace('-', ' ').title()
 
         return self.playlist_result(
-            OnDemandPagedList(functools.partial(self._fetch_page, url, season_id), self._PAGE_SIZE),
-            f'{season_id}-season-{season_num}', f'{season_title} - Season {season_num}')
+            OnDemandPagedList(
+                functools.partial(
+                    self._fetch_page,
+                    url,
+                    season_id),
+                self._PAGE_SIZE),
+            f'{season_id}-season-{season_num}',
+            f'{season_title} - Season {season_num}')

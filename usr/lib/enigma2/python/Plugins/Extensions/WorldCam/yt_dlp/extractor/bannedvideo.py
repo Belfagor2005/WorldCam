@@ -120,10 +120,17 @@ query GetCommentReplies($id: String!) {
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        video_json = self._call_api(video_id, video_id, 'GetVideoAndComments', 'Downloading video metadata')
+        video_json = self._call_api(
+            video_id,
+            video_id,
+            'GetVideoAndComments',
+            'Downloading video metadata')
         video_info = video_json['getVideo']
         is_live = video_info.get('live')
-        comments = [self._parse_comment(comment, 'root') for comment in video_json.get('getVideoComments')]
+        comments = [
+            self._parse_comment(
+                comment,
+                'root') for comment in video_json.get('getVideoComments')]
 
         formats = [{
             'format_id': 'direct',
@@ -138,18 +145,32 @@ query GetCommentReplies($id: String!) {
 
         return {
             'id': video_id,
-            'title': video_info.get('title')[:-1],
+            'title': video_info.get('title')[
+                :-1],
             'formats': formats,
             'is_live': is_live,
             'description': video_info.get('summary'),
-            'channel': try_get(video_info, lambda x: x['channel']['title']),
-            'channel_id': try_get(video_info, lambda x: x['channel']['_id']),
-            'view_count': int_or_none(video_info.get('playCount')),
-            'thumbnail': url_or_none(video_info.get('largeImage')),
-            'duration': float_or_none(video_info.get('videoDuration')),
-            'timestamp': unified_timestamp(video_info.get('createdAt')),
-            'tags': [tag.get('name') for tag in video_info.get('tags')],
-            'availability': self._availability(is_unlisted=video_info.get('unlisted')),
+            'channel': try_get(
+                video_info,
+                lambda x: x['channel']['title']),
+            'channel_id': try_get(
+                video_info,
+                lambda x: x['channel']['_id']),
+            'view_count': int_or_none(
+                video_info.get('playCount')),
+            'thumbnail': url_or_none(
+                video_info.get('largeImage')),
+            'duration': float_or_none(
+                video_info.get('videoDuration')),
+            'timestamp': unified_timestamp(
+                video_info.get('createdAt')),
+            'tags': [
+                tag.get('name') for tag in video_info.get('tags')],
+            'availability': self._availability(
+                is_unlisted=video_info.get('unlisted')),
             'comments': comments,
-            '__post_extractor': self.extract_comments(video_id, comments, video_json.get('getVideoComments')),
+            '__post_extractor': self.extract_comments(
+                video_id,
+                comments,
+                video_json.get('getVideoComments')),
         }

@@ -71,11 +71,21 @@ class IdolPlusIE(InfoExtractor):
             elif traverse_obj(player_data, ('dataList', ...)):
                 data_list += player_data['dataList']
 
-        formats = self._extract_m3u8_formats(traverse_obj(player_data, (
-            'vodPlayerList', 'vodProfile', 0, 'vodServer', 0, 'video_url', {url_or_none})), video_id)
+        formats = self._extract_m3u8_formats(
+            traverse_obj(
+                player_data,
+                ('vodPlayerList',
+                 'vodProfile',
+                 0,
+                 'vodServer',
+                 0,
+                 'video_url',
+                 {url_or_none})),
+            video_id)
 
         subtitles = {}
-        for caption in traverse_obj(player_data, ('vodPlayerList', 'caption')) or []:
+        for caption in traverse_obj(
+                player_data, ('vodPlayerList', 'caption')) or []:
             subtitles.setdefault(caption.get('lang') or 'und', []).append({
                 'url': caption.get('smi_url'),
                 'ext': 'vtt',
@@ -97,13 +107,20 @@ class IdolPlusIE(InfoExtractor):
 
             for member in traverse_obj(cuesheet, ('members', ...)):
                 index = try_call(lambda: int(member['omni_view_index']) - 1)
-                member_video_url = traverse_obj(cuesheet, ('omni_view', index, 'cdn_url', 0, 'url', {url_or_none}))
+                member_video_url = traverse_obj(
+                    cuesheet, ('omni_view', index, 'cdn_url', 0, 'url', {url_or_none}))
                 if not member_video_url:
                     continue
                 member_formats = self._extract_m3u8_formats(
-                    member_video_url, video_id, note=f'Downloading m3u8 for multicam {member["name"]}')
+                    member_video_url,
+                    video_id,
+                    note=f'Downloading m3u8 for multicam {
+                        member["name"]}')
                 for mf in member_formats:
-                    mf['format_id'] = f'{mf["format_id"]}-{member["name"].replace(" ", "_")}'
+                    mf['format_id'] = f'{
+                        mf["format_id"]}-{
+                        member["name"].replace(
+                            " ", "_")}'
                 formats.extend(member_formats)
 
         return {

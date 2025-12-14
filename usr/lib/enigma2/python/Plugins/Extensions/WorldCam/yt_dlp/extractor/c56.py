@@ -31,14 +31,19 @@ class C56IE(InfoExtractor):
 
         webpage = self._download_webpage(url, text_id)
         sohu_video_info_str = self._search_regex(
-            r'var\s+sohuVideoInfo\s*=\s*({[^}]+});', webpage, 'Sohu video info', default=None)
+            r'var\s+sohuVideoInfo\s*=\s*({[^}]+});',
+            webpage,
+            'Sohu video info',
+            default=None)
         if sohu_video_info_str:
             sohu_video_info = self._parse_json(
                 sohu_video_info_str, text_id, transform_source=js_to_json)
             return self.url_result(sohu_video_info['url'], 'Sohu')
 
         page = self._download_json(
-            f'http://vxml.56.com/json/{text_id}/', text_id, 'Downloading video info')
+            f'http://vxml.56.com/json/{text_id}/',
+            text_id,
+            'Downloading video info')
 
         info = page['info']
 

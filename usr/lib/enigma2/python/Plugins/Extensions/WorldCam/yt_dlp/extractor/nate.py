@@ -61,7 +61,8 @@ class NateIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        video_data = self._download_json(f'https://tv.nate.com/api/v1/clip/{video_id}', video_id)
+        video_data = self._download_json(
+            f'https://tv.nate.com/api/v1/clip/{video_id}', video_id)
         formats = [{
             'format_id': f_url[-2:],
             'url': f_url,
@@ -117,4 +118,6 @@ class NateProgramIE(InfoExtractor):
 
     def _real_extract(self, url):
         playlist_id = self._match_id(url)
-        return self.playlist_result(self._entries(playlist_id), playlist_id=playlist_id)
+        return self.playlist_result(
+            self._entries(playlist_id),
+            playlist_id=playlist_id)

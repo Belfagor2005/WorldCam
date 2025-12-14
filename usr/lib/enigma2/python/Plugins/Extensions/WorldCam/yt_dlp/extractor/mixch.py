@@ -36,7 +36,8 @@ class MixchIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        data = self._download_json(f'https://mixch.tv/api-web/users/{video_id}/live', video_id)
+        data = self._download_json(
+            f'https://mixch.tv/api-web/users/{video_id}/live', video_id)
         if not traverse_obj(data, ('liveInfo', {dict})):
             raise UserNotLive(video_id=video_id)
 
@@ -104,18 +105,18 @@ class MixchArchiveIE(InfoExtractor):
 
         try:
             info_json = self._download_json(
-                f'https://mixch.tv/api-web/archive/{video_id}', video_id)['archive']
+                f'https://mixch.tv/api-web/archive/{video_id}',
+                video_id)['archive']
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
                 self.raise_login_required()
             raise
 
         return {
-            'id': video_id,
-            'title': traverse_obj(info_json, ('title', {str})),
-            'formats': self._extract_m3u8_formats(info_json['archiveURL'], video_id),
-            'thumbnail': traverse_obj(info_json, ('thumbnailURL', {url_or_none})),
-        }
+            'id': video_id, 'title': traverse_obj(
+                info_json, ('title', {str})), 'formats': self._extract_m3u8_formats(
+                info_json['archiveURL'], video_id), 'thumbnail': traverse_obj(
+                info_json, ('thumbnailURL', {url_or_none})), }
 
 
 class MixchMovieIE(InfoExtractor):

@@ -28,12 +28,16 @@ class NhkBaseIE(InfoExtractor):
 
     def _call_api(self, m_id, lang, is_video, is_episode, is_clip):
         return self._download_json(
-            self._API_URL_TEMPLATE % (
-                'v' if is_video else 'r',
-                'clip' if is_clip else 'esd',
-                'episode' if is_episode else 'program',
-                m_id, lang, '/all' if is_video else ''),
-            m_id, query={'apikey': 'EJfK8jdS57GqlupFgAfAAwr573q01y6k'})['data']['episodes'] or []
+            self._API_URL_TEMPLATE %
+            ('v' if is_video else 'r',
+             'clip' if is_clip else 'esd',
+             'episode' if is_episode else 'program',
+             m_id,
+             lang,
+             '/all' if is_video else ''),
+            m_id,
+            query={
+                'apikey': 'EJfK8jdS57GqlupFgAfAAwr573q01y6k'})['data']['episodes'] or []
 
     def _get_api_info(self, refresh=True):
         if not refresh:
@@ -45,9 +49,15 @@ class NhkBaseIE(InfoExtractor):
             note='Downloading stream API information')
         api_info = {
             'url': self._search_regex(
-                r'prod:[^;]+\bapiUrl:\s*[\'"]([^\'"]+)[\'"]', movie_player_js, None, 'stream API url'),
+                r'prod:[^;]+\bapiUrl:\s*[\'"]([^\'"]+)[\'"]',
+                movie_player_js,
+                None,
+                'stream API url'),
             'token': self._search_regex(
-                r'prod:[^;]+\btoken:\s*[\'"]([^\'"]+)[\'"]', movie_player_js, None, 'stream API token'),
+                r'prod:[^;]+\btoken:\s*[\'"]([^\'"]+)[\'"]',
+                movie_player_js,
+                None,
+                'stream API token'),
         }
         self.cache.store('nhk', 'api_info', api_info)
         return api_info
@@ -68,10 +78,17 @@ class NhkBaseIE(InfoExtractor):
                         'active_flg': 1,
                     }), ('meta', 0))
             stream_url = traverse_obj(
-                meta, ('movie_url', ('mb_auto', 'auto_sp', 'auto_pc'), {url_or_none}), get_all=False)
+                meta,
+                ('movie_url',
+                 ('mb_auto',
+                  'auto_sp',
+                  'auto_pc'),
+                    {url_or_none}),
+                get_all=False)
 
             if stream_url:
-                formats, subtitles = self._extract_m3u8_formats_and_subtitles(stream_url, vod_id)
+                formats, subtitles = self._extract_m3u8_formats_and_subtitles(
+                    stream_url, vod_id)
                 return {
                     **traverse_obj(meta, {
                         'duration': ('duration', {int_or_none}),
@@ -86,7 +103,8 @@ class NhkBaseIE(InfoExtractor):
 
     def _extract_episode_info(self, url, episode=None):
         fetch_episode = episode is None
-        lang, m_type, episode_id = NhkVodIE._match_valid_url(url).group('lang', 'type', 'id')
+        lang, m_type, episode_id = NhkVodIE._match_valid_url(
+            url).group('lang', 'type', 'id')
         is_video = m_type != 'audio'
 
         if is_video:
@@ -142,7 +160,8 @@ class NhkBaseIE(InfoExtractor):
 
         else:
             if fetch_episode:
-                # From https://www3.nhk.or.jp/nhkworld/common/player/radio/inline/rod.html
+                # From
+                # https://www3.nhk.or.jp/nhkworld/common/player/radio/inline/rod.html
                 audio_path = remove_end(episode['audio']['audio'], '.m4a')
                 info['formats'] = self._extract_m3u8_formats(
                     f'{urljoin("https://vod-stream.nhk.jp", audio_path)}/index.m3u8',
@@ -161,9 +180,13 @@ class NhkBaseIE(InfoExtractor):
 
 class NhkVodIE(NhkBaseIE):
     _VALID_URL = [
-        rf'{NhkBaseIE._BASE_URL_REGEX}shows/(?:(?P<type>video)/)?(?P<id>\d{{4}}[\da-z]\d+)/?(?:$|[?#])',
-        rf'{NhkBaseIE._BASE_URL_REGEX}(?:ondemand|shows)/(?P<type>audio)/(?P<id>[^/?#]+?-\d{{8}}-[\da-z]+)',
-        rf'{NhkBaseIE._BASE_URL_REGEX}ondemand/(?P<type>video)/(?P<id>\d{{4}}[\da-z]\d+)',  # deprecated
+        rf'{
+            NhkBaseIE._BASE_URL_REGEX}shows/(?:(?P<type>video)/)?(?P<id>\d{{4}}[\da-z]\d+)/?(?:$|[?#])',
+        rf'{
+            NhkBaseIE._BASE_URL_REGEX}(?:ondemand|shows)/(?P<type>audio)/(?P<id>[^/?#]+?-\d{{8}}-[\da-z]+)',
+        # deprecated
+        rf'{
+            NhkBaseIE._BASE_URL_REGEX}ondemand/(?P<type>video)/(?P<id>\d{{4}}[\da-z]\d+)',
     ]
     # Content available only for a limited period of time. Visit
     # https://www3.nhk.or.jp/nhkworld/en/ondemand/ for working samples.
@@ -256,7 +279,8 @@ class NhkVodIE(NhkBaseIE):
         },
         'skip': 'expires 2023-10-15',
     }, {
-        # a one-off (single-episode series). title from the api is just '<p></p>'
+        # a one-off (single-episode series). title from the api is just
+        # '<p></p>'
         'url': 'https://www3.nhk.or.jp/nhkworld/en/ondemand/video/3004952/',
         'info_dict': {
             'id': 'nw_vod_v_en_3004_952_20230723091000_01_1690074552',
@@ -425,7 +449,8 @@ class NhkVodProgramIE(NhkBaseIE):
                 return value
 
     def _real_extract(self, url):
-        lang, m_type, program_id, episode_type = self._match_valid_url(url).group('lang', 'type', 'id', 'episode_type')
+        lang, m_type, program_id, episode_type = self._match_valid_url(
+            url).group('lang', 'type', 'id', 'episode_type')
         episodes = self._call_api(
             program_id, lang, m_type != 'audio', False, episode_type == 'clip')
 
@@ -446,7 +471,11 @@ class NhkVodProgramIE(NhkBaseIE):
             'tAudioProgramMain__info',  # /shows/audio/programs/
             'p-program-description'], html)  # /tv/
 
-        return self.playlist_result(entries(), program_id, program_title, program_description)
+        return self.playlist_result(
+            entries(),
+            program_id,
+            program_title,
+            program_description)
 
 
 class NhkForSchoolBangumiIE(InfoExtractor):
@@ -474,15 +503,29 @@ class NhkForSchoolBangumiIE(InfoExtractor):
         program_type, video_id = self._match_valid_url(url).groups()
 
         webpage = self._download_webpage(
-            f'https://www2.nhk.or.jp/school/movie/{program_type}.cgi?das_id={video_id}', video_id)
+            f'https://www2.nhk.or.jp/school/movie/{program_type}.cgi?das_id={video_id}',
+            video_id)
 
         # searches all variables
-        base_values = {g.group(1): g.group(2) for g in re.finditer(r'var\s+([a-zA-Z_]+)\s*=\s*"([^"]+?)";', webpage)}
+        base_values = {g.group(1): g.group(2) for g in re.finditer(
+            r'var\s+([a-zA-Z_]+)\s*=\s*"([^"]+?)";', webpage)}
         # and programObj values too
-        program_values = {g.group(1): g.group(3) for g in re.finditer(r'(?:program|clip)Obj\.([a-zA-Z_]+)\s*=\s*(["\'])([^"]+?)\2;', webpage)}
+        program_values = {g.group(1): g.group(3) for g in re.finditer(
+            r'(?:program|clip)Obj\.([a-zA-Z_]+)\s*=\s*(["\'])([^"]+?)\2;', webpage)}
         # extract all chapters
-        chapter_durations = [parse_duration(g.group(1)) for g in re.finditer(r'chapterTime\.push\(\'([0-9:]+?)\'\);', webpage)]
-        chapter_titles = [' '.join([g.group(1) or '', unescapeHTML(g.group(2))]).strip() for g in re.finditer(r'<div class="cpTitle"><span>(scene\s*\d+)?</span>([^<]+?)</div>', webpage)]
+        chapter_durations = [
+            parse_duration(
+                g.group(1)) for g in re.finditer(
+                r'chapterTime\.push\(\'([0-9:]+?)\'\);',
+                webpage)]
+        chapter_titles = [
+            ' '.join(
+                [
+                    g.group(1) or '',
+                    unescapeHTML(
+                        g.group(2))]).strip() for g in re.finditer(
+                r'<div class="cpTitle"><span>(scene\s*\d+)?</span>([^<]+?)</div>',
+                webpage)]
 
         # this is how player_core.js is actually doing (!)
         version = base_values.get('r_version') or program_values.get('version')
@@ -496,7 +539,8 @@ class NhkForSchoolBangumiIE(InfoExtractor):
         duration = parse_duration(base_values.get('r_duration'))
 
         chapters = None
-        if chapter_durations and chapter_titles and len(chapter_durations) == len(chapter_titles):
+        if chapter_durations and chapter_titles and len(
+                chapter_durations) == len(chapter_titles):
             start_time = chapter_durations
             end_time = [*chapter_durations[1:], duration]
             chapters = [{
@@ -549,10 +593,19 @@ class NhkForSchoolSubjectIE(InfoExtractor):
         webpage = self._download_webpage(url, subject_id)
 
         return self.playlist_from_matches(
-            re.finditer(rf'href="((?:https?://www\.nhk\.or\.jp)?/school/{re.escape(subject_id)}/[^/]+/)"', webpage),
+            re.finditer(
+                rf'href="((?:https?://www\.nhk\.or\.jp)?/school/{
+                    re.escape(subject_id)}/[^/]+/)"',
+                webpage),
             subject_id,
-            self._html_search_regex(r'(?s)<span\s+class="subjectName">\s*<img\s*[^<]+>\s*([^<]+?)</span>', webpage, 'title', fatal=False),
-            lambda g: urljoin(url, g.group(1)))
+            self._html_search_regex(
+                r'(?s)<span\s+class="subjectName">\s*<img\s*[^<]+>\s*([^<]+?)</span>',
+                webpage,
+                'title',
+                fatal=False),
+            lambda g: urljoin(
+                url,
+                g.group(1)))
 
 
 class NhkForSchoolProgramListIE(InfoExtractor):
@@ -570,11 +623,21 @@ class NhkForSchoolProgramListIE(InfoExtractor):
     def _real_extract(self, url):
         program_id = self._match_id(url)
 
-        webpage = self._download_webpage(f'https://www.nhk.or.jp/school/{program_id}/', program_id)
+        webpage = self._download_webpage(
+            f'https://www.nhk.or.jp/school/{program_id}/', program_id)
 
-        title = (self._generic_title('', webpage)
-                 or self._html_search_regex(r'<h3>([^<]+?)とは？\s*</h3>', webpage, 'title', fatal=False))
-        title = re.sub(r'\s*\|\s*NHK\s+for\s+School\s*$', '', title) if title else None
+        title = (
+            self._generic_title(
+                '',
+                webpage) or self._html_search_regex(
+                r'<h3>([^<]+?)とは？\s*</h3>',
+                webpage,
+                'title',
+                fatal=False))
+        title = re.sub(
+            r'\s*\|\s*NHK\s+for\s+School\s*$',
+            '',
+            title) if title else None
         description = self._html_search_regex(
             r'(?s)<div\s+class="programDetail\s*">\s*<p>[^<]+</p>',
             webpage, 'description', fatal=False, group=0)
@@ -672,7 +735,8 @@ class NhkRadiruIE(InfoExtractor):
 
     _API_URL_TMPL = None
 
-    # The `_format_*` and `_make_*` functions are ported from: https://www.nhk.or.jp/radio/assets/js/timetable_detail_new.js
+    # The `_format_*` and `_make_*` functions are ported from:
+    # https://www.nhk.or.jp/radio/assets/js/timetable_detail_new.js
 
     def _format_act_list(self, act_list):
         role_groups = {}
@@ -688,7 +752,8 @@ class NhkRadiruIE(InfoExtractor):
                 res = f'【{role}】' if i == 0 and role is not None else ''
                 if title := act.get('title'):
                     res += f'{title}…'
-                formatted_roles.append(join_nonempty(res, act.get('name'), delim=''))
+                formatted_roles.append(join_nonempty(
+                    res, act.get('name'), delim=''))
         return join_nonempty(*formatted_roles, delim='，')
 
     def _make_artists(self, track, key):
@@ -730,7 +795,8 @@ class NhkRadiruIE(InfoExtractor):
             track_details.append(self._make_artists(track, 'byArtist'))
             track_details.append(self._make_duration(track, 'duration'))
 
-            if label := join_nonempty('label', 'code', delim=' ', from_dict=track):
+            if label := join_nonempty(
+                    'label', 'code', delim=' ', from_dict=track):
                 track_details.append(f'＜{label}＞')
             if location := traverse_obj(track, ('location', {str})):
                 track_details.append(f'～{location}～')
@@ -738,12 +804,15 @@ class NhkRadiruIE(InfoExtractor):
         return '\n\n'.join(tracks)
 
     def _format_description(self, response):
-        detailed_description = traverse_obj(response, ('detailedDescription', {dict})) or {}
+        detailed_description = traverse_obj(
+            response, ('detailedDescription', {dict})) or {}
         return join_nonempty(
-            join_nonempty('epg80', 'epg200', delim='\n\n', from_dict=detailed_description),
-            traverse_obj(response, ('misc', 'actList', {self._format_act_list})),
-            traverse_obj(response, ('misc', 'musicList', {self._format_music_list})),
-            delim='\n\n')
+            join_nonempty(
+                'epg80', 'epg200', delim='\n\n', from_dict=detailed_description), traverse_obj(
+                response, ('misc', 'actList', {
+                    self._format_act_list})), traverse_obj(
+                    response, ('misc', 'musicList', {
+                        self._format_music_list})), delim='\n\n')
 
     def _get_thumbnails(self, data, keys, name=None, preference=-1):
         thumbnails = []
@@ -762,34 +831,53 @@ class NhkRadiruIE(InfoExtractor):
         return thumbnails
 
     def _extract_extended_metadata(self, episode_id, aa_vinfo):
-        service, _, area = traverse_obj(aa_vinfo, (2, {str}, {lambda x: (x or '').partition(',')}))
+        service, _, area = traverse_obj(
+            aa_vinfo, (2, {str}, {lambda x: (x or '').partition(',')}))
         date_id = aa_vinfo[3]
 
         detail_url = try_call(
-            lambda: self._API_URL_TMPL.format(broadcastEventId=join_nonempty(service, area, date_id)))
+            lambda: self._API_URL_TMPL.format(
+                broadcastEventId=join_nonempty(
+                    service, area, date_id)))
         if not detail_url:
             return {}
 
         response = self._download_json(
-            detail_url, episode_id, 'Downloading extended metadata',
-            'Failed to download extended metadata', fatal=False, expected_status=400)
+            detail_url,
+            episode_id,
+            'Downloading extended metadata',
+            'Failed to download extended metadata',
+            fatal=False,
+            expected_status=400)
         if not response:
             return {}
 
         if error := traverse_obj(response, ('error', {dict})):
             self.report_warning(
-                'Failed to get extended metadata. API returned '
-                f'Error {join_nonempty("statuscode", "message", from_dict=error, delim=": ")}')
+                'Failed to get extended metadata. API returned ' f'Error {
+                    join_nonempty(
+                        "statuscode",
+                        "message",
+                        from_dict=error,
+                        delim=": ")}')
             return {}
 
-        station = traverse_obj(response, ('publishedOn', 'broadcastDisplayName', {str}))
+        station = traverse_obj(
+            response, ('publishedOn', 'broadcastDisplayName', {str}))
 
         thumbnails = []
-        thumbnails.extend(self._get_thumbnails(response, ('about', 'eyecatch')))
-        for num, dct in enumerate(traverse_obj(response, ('about', 'eyecatchList', ...))):
-            thumbnails.extend(self._get_thumbnails(dct, None, join_nonempty('list', num), -2))
         thumbnails.extend(
-            self._get_thumbnails(response, ('about', 'partOfSeries', 'eyecatch'), 'series', -3))
+            self._get_thumbnails(
+                response, ('about', 'eyecatch')))
+        for num, dct in enumerate(traverse_obj(
+                response, ('about', 'eyecatchList', ...))):
+            thumbnails.extend(
+                self._get_thumbnails(
+                    dct, None, join_nonempty(
+                        'list', num), -2))
+        thumbnails.extend(
+            self._get_thumbnails(
+                response, ('about', 'partOfSeries', 'eyecatch'), 'series', -3))
 
         return filter_dict({
             'description': self._format_description(response),
@@ -814,8 +902,11 @@ class NhkRadiruIE(InfoExtractor):
 
     def _extract_episode_info(self, episode, programme_id, series_meta):
         episode_id = f'{programme_id}_{episode["id"]}'
-        aa_vinfo = traverse_obj(episode, ('aa_contents_id', {lambda x: x.split(';')}))
-        extended_metadata = self._extract_extended_metadata(episode_id, aa_vinfo)
+        aa_vinfo = traverse_obj(
+            episode, ('aa_contents_id', {
+                lambda x: x.split(';')}))
+        extended_metadata = self._extract_extended_metadata(
+            episode_id, aa_vinfo)
         fallback_start_time, _, fallback_end_time = traverse_obj(
             aa_vinfo, (4, {str}, {lambda x: (x or '').partition('_')}))
 
@@ -856,18 +947,26 @@ class NhkRadiruIE(InfoExtractor):
         if self._API_URL_TMPL:
             return
         api_config = self._download_xml(
-            'https://www.nhk.or.jp/radio/config/config_web.xml', None, 'Downloading API config', fatal=False)
-        NhkRadiruIE._API_URL_TMPL = try_call(lambda: f'https:{api_config.find(".//url_program_detail").text}')
+            'https://www.nhk.or.jp/radio/config/config_web.xml',
+            None,
+            'Downloading API config',
+            fatal=False)
+        NhkRadiruIE._API_URL_TMPL = try_call(
+            lambda: f'https:{
+                api_config.find(".//url_program_detail").text}')
 
     def _real_extract(self, url):
-        site_id, corner_id, headline_id = self._match_valid_url(url).group('site', 'corner', 'headline')
+        site_id, corner_id, headline_id = self._match_valid_url(
+            url).group('site', 'corner', 'headline')
         programme_id = f'{site_id}_{corner_id}'
 
         # XXX: News programmes use the old API
-        # Can't move this to NhkRadioNewsPageIE because news items still use the normal URL format
+        # Can't move this to NhkRadioNewsPageIE because news items still use
+        # the normal URL format
         if site_id == '18439M2W42':
             meta = self._download_json(
-                'https://www.nhk.or.jp/s-media/news/news-site/list/v1/all.json', programme_id)['main']
+                'https://www.nhk.or.jp/s-media/news/news-site/list/v1/all.json',
+                programme_id)['main']
             series_meta = traverse_obj(meta, {
                 'title': ('program_name', {str}),
                 'channel': ('media_name', {str}),
@@ -879,36 +978,56 @@ class NhkRadiruIE(InfoExtractor):
                 headline = traverse_obj(
                     meta, ('detail_list', lambda _, v: v['headline_id'] == headline_id, any))
                 if not headline:
-                    raise ExtractorError('Content not found; it has most likely expired', expected=True)
-                return self._extract_news_info(headline, programme_id, series_meta)
+                    raise ExtractorError(
+                        'Content not found; it has most likely expired', expected=True)
+                return self._extract_news_info(
+                    headline, programme_id, series_meta)
 
             def news_entries():
-                for headline in traverse_obj(meta, ('detail_list', ..., {dict})):
+                for headline in traverse_obj(
+                        meta, ('detail_list', ..., {dict})):
                     yield self._extract_news_info(headline, programme_id, series_meta)
 
             return self.playlist_result(
-                news_entries(), programme_id, description=meta.get('site_detail'), **series_meta)
+                news_entries(),
+                programme_id,
+                description=meta.get('site_detail'),
+                **series_meta)
 
         meta = self._download_json(
-            'https://www.nhk.or.jp/radio-api/app/v1/web/ondemand/series', programme_id, query={
+            'https://www.nhk.or.jp/radio-api/app/v1/web/ondemand/series',
+            programme_id,
+            query={
                 'site_id': site_id,
                 'corner_site_id': corner_id,
             })
 
-        fallback_station = join_nonempty('NHK', traverse_obj(meta, ('radio_broadcast', {str})), delim=' ')
+        fallback_station = join_nonempty('NHK', traverse_obj(
+            meta, ('radio_broadcast', {str})), delim=' ')
         series_meta = {
-            'series': join_nonempty('title', 'corner_name', delim=' ', from_dict=meta),
+            'series': join_nonempty(
+                'title',
+                'corner_name',
+                delim=' ',
+                from_dict=meta),
             'series_id': programme_id,
-            'thumbnail': traverse_obj(meta, ('thumbnail_url', {url_or_none})),
+            'thumbnail': traverse_obj(
+                meta,
+                ('thumbnail_url',
+                 {url_or_none})),
             'channel': fallback_station,
             'uploader': fallback_station,
         }
 
         if headline_id:
-            episode = traverse_obj(meta, ('episodes', lambda _, v: v['id'] == int(headline_id), any))
+            episode = traverse_obj(
+                meta, ('episodes', lambda _, v: v['id'] == int(headline_id), any))
             if not episode:
-                raise ExtractorError('Content not found; it has most likely expired', expected=True)
-            return self._extract_episode_info(episode, programme_id, series_meta)
+                raise ExtractorError(
+                    'Content not found; it has most likely expired',
+                    expected=True)
+            return self._extract_episode_info(
+                episode, programme_id, series_meta)
 
         def entries():
             for episode in traverse_obj(meta, ('episodes', ..., {dict})):
@@ -936,7 +1055,9 @@ class NhkRadioNewsPageIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        return self.url_result('https://www.nhk.or.jp/radio/ondemand/detail.html?p=18439M2W42_01', NhkRadiruIE)
+        return self.url_result(
+            'https://www.nhk.or.jp/radio/ondemand/detail.html?p=18439M2W42_01',
+            NhkRadiruIE)
 
 
 class NhkRadiruLiveIE(InfoExtractor):
@@ -987,7 +1108,9 @@ class NhkRadiruLiveIE(InfoExtractor):
         area = self._configuration_arg('area', ['tokyo'])[0]
 
         config = self._download_xml(
-            'https://www.nhk.or.jp/radio/config/config_web.xml', station, 'Downloading area information')
+            'https://www.nhk.or.jp/radio/config/config_web.xml',
+            station,
+            'Downloading area information')
         data = config.find(f'.//data//area[.="{area}"]/..')
 
         if not data:
@@ -997,7 +1120,8 @@ class NhkRadiruLiveIE(InfoExtractor):
         noa_info = self._download_json(
             f'https:{config.find(".//url_program_noa").text}'.format(area=data.find('areakey').text),
             station, note=f'Downloading {area} station metadata', fatal=False)
-        broadcast_service = traverse_obj(noa_info, (self._NOA_STATION_IDS.get(station), 'publishedOn'))
+        broadcast_service = traverse_obj(
+            noa_info, (self._NOA_STATION_IDS.get(station), 'publishedOn'))
 
         return {
             **traverse_obj(broadcast_service, {

@@ -108,9 +108,12 @@ class AbcNewsIE(InfoExtractor):
     def _real_extract(self, url):
         story_id = self._match_id(url)
         webpage = self._download_webpage(url, story_id)
-        story = self._parse_json(self._search_regex(
-            r"window\['__abcnews__'\]\s*=\s*({.+?});",
-            webpage, 'data'), story_id)['page']['content']['story']['everscroll'][0]
+        story = self._parse_json(
+            self._search_regex(
+                r"window\['__abcnews__'\]\s*=\s*({.+?});",
+                webpage,
+                'data'),
+            story_id)['page']['content']['story']['everscroll'][0]
         article_contents = story.get('articleContents') or {}
 
         def entries():

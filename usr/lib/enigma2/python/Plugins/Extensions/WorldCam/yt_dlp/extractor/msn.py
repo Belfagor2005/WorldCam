@@ -140,7 +140,8 @@ class MSNIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        locale, display_id, page_id = self._match_valid_url(url).group('locale', 'display_id', 'id')
+        locale, display_id, page_id = self._match_valid_url(
+            url).group('locale', 'display_id', 'id')
 
         json_data = self._download_json(
             f'https://assets.msn.com/content/view/v2/Detail/{locale}/{page_id}', page_id)
@@ -161,11 +162,20 @@ class MSNIE(InfoExtractor):
         page_type = json_data['type']
         source_url = traverse_obj(json_data, ('sourceHref', {url_or_none}))
         if page_type == 'video':
-            if traverse_obj(json_data, ('thirdPartyVideoPlayer', 'enabled')) and source_url:
+            if traverse_obj(
+                json_data,
+                ('thirdPartyVideoPlayer',
+                 'enabled')) and source_url:
                 return self.url_result(source_url)
             formats = []
             subtitles = {}
-            for file in traverse_obj(json_data, ('videoMetadata', 'externalVideoFiles', lambda _, v: url_or_none(v['url']))):
+            for file in traverse_obj(
+                json_data,
+                ('videoMetadata',
+                 'externalVideoFiles',
+                 lambda _,
+                 v: url_or_none(
+                     v['url']))):
                 file_url = file['url']
                 ext = determine_ext(file_url)
                 if ext == 'm3u8':
@@ -187,7 +197,13 @@ class MSNIE(InfoExtractor):
                             'height': ('height', {int_or_none}),
                             'width': ('width', {int_or_none}),
                         }))
-            for caption in traverse_obj(json_data, ('videoMetadata', 'closedCaptions', lambda _, v: url_or_none(v['href']))):
+            for caption in traverse_obj(
+                json_data,
+                ('videoMetadata',
+                 'closedCaptions',
+                 lambda _,
+                 v: url_or_none(
+                     v['href']))):
                 lang = caption.get('locale') or 'en-us'
                 subtitles.setdefault(lang, []).append({
                     'url': caption['href'],
@@ -207,7 +223,8 @@ class MSNIE(InfoExtractor):
             return self.url_result(source_url)
         elif page_type == 'article':
             entries = []
-            for embed_url in traverse_obj(json_data, ('socialEmbeds', ..., 'postUrl', {url_or_none})):
+            for embed_url in traverse_obj(
+                    json_data, ('socialEmbeds', ..., 'postUrl', {url_or_none})):
                 entries.append(self.url_result(embed_url))
 
             return self.playlist_result(entries, page_id, **common_metadata)

@@ -29,7 +29,9 @@ class TeachableBaseIE(InfoExtractor):
         'courses.workitdaily.com': 'workitdaily',
     }
 
-    _VALID_URL_SUB_TUPLE = (_URL_PREFIX, '|'.join(re.escape(site) for site in _SITES))
+    _VALID_URL_SUB_TUPLE = (
+        _URL_PREFIX, '|'.join(
+            re.escape(site) for site in _SITES))
 
     def _real_initialize(self):
         self._logged_in = False
@@ -38,7 +40,8 @@ class TeachableBaseIE(InfoExtractor):
         if self._logged_in:
             return
 
-        username, password = self._get_login_info(netrc_machine=self._SITES.get(site, site))
+        username, password = self._get_login_info(
+            netrc_machine=self._SITES.get(site, site))
         if username is None:
             return
 
@@ -108,32 +111,29 @@ class TeachableIE(TeachableBaseIE):
                     /courses/[^/]+/lectures/(?P<id>\d+)
                     '''.format(*TeachableBaseIE._VALID_URL_SUB_TUPLE)
 
-    _TESTS = [{
-        'url': 'https://gns3.teachable.com/courses/gns3-certified-associate/lectures/6842364',
-        'info_dict': {
-            'id': 'untlgzk1v7',
-            'ext': 'bin',
-            'title': 'Overview',
-            'description': 'md5:071463ff08b86c208811130ea1c2464c',
-            'duration': 736.4,
-            'timestamp': 1542315762,
-            'upload_date': '20181115',
-            'chapter': 'Welcome',
-            'chapter_number': 1,
-        },
-        'params': {
-            'skip_download': True,
-        },
-    }, {
-        'url': 'http://v1.upskillcourses.com/courses/119763/lectures/1747100',
-        'only_matching': True,
-    }, {
-        'url': 'https://gns3.teachable.com/courses/423415/lectures/6885939',
-        'only_matching': True,
-    }, {
-        'url': 'teachable:https://v1.upskillcourses.com/courses/essential-web-developer-course/lectures/1747100',
-        'only_matching': True,
-    }]
+    _TESTS = [{'url': 'https://gns3.teachable.com/courses/gns3-certified-associate/lectures/6842364',
+               'info_dict': {'id': 'untlgzk1v7',
+                             'ext': 'bin',
+                             'title': 'Overview',
+                             'description': 'md5:071463ff08b86c208811130ea1c2464c',
+                             'duration': 736.4,
+                             'timestamp': 1542315762,
+                             'upload_date': '20181115',
+                             'chapter': 'Welcome',
+                             'chapter_number': 1,
+                             },
+               'params': {'skip_download': True,
+                          },
+               },
+              {'url': 'http://v1.upskillcourses.com/courses/119763/lectures/1747100',
+               'only_matching': True,
+               },
+              {'url': 'https://gns3.teachable.com/courses/423415/lectures/6885939',
+               'only_matching': True,
+               },
+              {'url': 'teachable:https://v1.upskillcourses.com/courses/essential-web-developer-course/lectures/1747100',
+               'only_matching': True,
+               }]
 
     @staticmethod
     def _is_teachable(webpage):
@@ -187,7 +187,8 @@ class TeachableIE(TeachableBaseIE):
             if chapter_number is not None:
                 sections = []
                 for s in re.findall(
-                        r'(?s)<div[^>]+\bclass=["\']section-title[^>]+>(.+?)</div>', webpage):
+                    r'(?s)<div[^>]+\bclass=["\']section-title[^>]+>(.+?)</div>',
+                        webpage):
                     section = strip_or_none(clean_html(s))
                     if not section:
                         sections = []
@@ -266,7 +267,8 @@ class TeachableCourseIE(TeachableBaseIE):
                 r'(?s)(?P<li><li[^>]+class=(["\'])(?:(?!\2).)*?section-item[^>]+>.+?</li>)',
                 webpage):
             li = mobj.group('li')
-            if 'fa-youtube-play' not in li and not re.search(r'\d{1,2}:\d{2}', li):
+            if 'fa-youtube-play' not in li and not re.search(
+                    r'\d{1,2}:\d{2}', li):
                 continue
             lecture_url = self._search_regex(
                 r'<a[^>]+href=(["\'])(?P<url>(?:(?!\1).)+)\1', li,

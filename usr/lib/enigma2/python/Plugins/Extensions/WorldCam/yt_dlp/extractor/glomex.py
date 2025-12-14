@@ -53,13 +53,15 @@ class GlomexBaseIE(InfoExtractor):
             f'Unable to download {video_id_type} JSON',
             query=query)
 
-    def _download_and_extract_api_data(self, video_id, integration, current_url):
+    def _download_and_extract_api_data(
+            self, video_id, integration, current_url):
         api_data = self._download_api_data(video_id, integration, current_url)
         videos = api_data['videos']
         if not videos:
             raise ExtractorError(f'no videos found for {video_id}')
         videos = [self._extract_api_data(video, video_id) for video in videos]
-        return videos[0] if len(videos) == 1 else self.playlist_result(videos, video_id)
+        return videos[0] if len(
+            videos) == 1 else self.playlist_result(videos, video_id)
 
     def _extract_api_data(self, video, video_id):
         if video.get('error_code') == 'contentGeoblocked':
@@ -128,8 +130,12 @@ class GlomexIE(GlomexBaseIE):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         return self.url_result(
-            GlomexEmbedIE.build_player_url(video_id, self._INTEGRATION_ID, url),
-            GlomexEmbedIE.ie_key(), video_id)
+            GlomexEmbedIE.build_player_url(
+                video_id,
+                self._INTEGRATION_ID,
+                url),
+            GlomexEmbedIE.ie_key(),
+            video_id)
 
 
 class GlomexEmbedIE(GlomexBaseIE):
@@ -187,7 +193,10 @@ class GlomexEmbedIE(GlomexBaseIE):
             'playlistId': video_id,
             'integrationId': integration,
         })
-        return cls._smuggle_origin_url(f'https:{cls._BASE_PLAYER_URL}?{query_string}', origin_url)
+        return cls._smuggle_origin_url(
+            f'https:{
+                cls._BASE_PLAYER_URL}?{query_string}',
+            origin_url)
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
@@ -208,7 +217,8 @@ class GlomexEmbedIE(GlomexBaseIE):
             <div[^>]* data-glomex-player=(?P<q>{quot_re})true(?P=q)[^>]*>'''
         for mobj in re.finditer(regex, webpage):
             attrs = extract_attributes(mobj.group(0))
-            if attrs.get('data-integration-id') and attrs.get('data-playlist-id'):
+            if attrs.get(
+                    'data-integration-id') and attrs.get('data-playlist-id'):
                 yield cls.build_player_url(attrs['data-playlist-id'], attrs['data-integration-id'], url)
 
         # naive parsing of inline scripts for hard-coded integration parameters
@@ -230,4 +240,5 @@ class GlomexEmbedIE(GlomexBaseIE):
         integration = parse_qs(url).get('integrationId', [None])[0]
         if not integration:
             raise ExtractorError('No integrationId in URL', expected=True)
-        return self._download_and_extract_api_data(playlist_id, integration, origin_url)
+        return self._download_and_extract_api_data(
+            playlist_id, integration, origin_url)

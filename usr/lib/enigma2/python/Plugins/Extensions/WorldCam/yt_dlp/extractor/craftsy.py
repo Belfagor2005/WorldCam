@@ -43,16 +43,21 @@ class CraftsyIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
 
         video_player = get_element_html_by_class('class-video-player', webpage)
-        video_data = traverse_obj(video_player, (
-            {extract_attributes}, 'wire:snapshot', {json.loads}, 'data', {dict})) or {}
-        video_js = traverse_obj(video_player, (
-            {lambda x: get_element_text_and_html_by_tag('video-js', x)}, 1, {extract_attributes})) or {}
+        video_data = traverse_obj(
+            video_player, ({extract_attributes}, 'wire:snapshot', {
+                json.loads}, 'data', {dict})) or {}
+        video_js = traverse_obj(
+            video_player, ({
+                lambda x: get_element_text_and_html_by_tag(
+                    'video-js', x)}, 1, {extract_attributes})) or {}
 
         has_access = video_data.get('userHasAccess')
-        lessons = traverse_obj(video_data, ('lessons', ..., ..., lambda _, v: v['video_id']))
+        lessons = traverse_obj(
+            video_data, ('lessons', ..., ..., lambda _, v: v['video_id']))
 
         preview_id = video_js.get('data-video-id')
-        if preview_id and preview_id not in traverse_obj(lessons, (..., 'video_id')):
+        if preview_id and preview_id not in traverse_obj(
+                lessons, (..., 'video_id')):
             if not lessons and not has_access:
                 self.report_warning(
                     'Only extracting preview. For the full class, pass cookies '
@@ -71,5 +76,6 @@ class CraftsyIE(InfoExtractor):
                     BrightcoveNewIE, lesson['video_id'], lesson.get('title'))
 
         return self.playlist_result(
-            entries(lessons), video_id, self._html_search_meta(('og:title', 'twitter:title'), webpage),
-            self._html_search_meta(('og:description', 'description'), webpage, default=None))
+            entries(lessons), video_id, self._html_search_meta(
+                ('og:title', 'twitter:title'), webpage), self._html_search_meta(
+                ('og:description', 'description'), webpage, default=None))
