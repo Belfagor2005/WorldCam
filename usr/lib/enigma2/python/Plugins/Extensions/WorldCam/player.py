@@ -205,7 +205,15 @@ class TvInfoBarShowHide():
         print(text + " %s\n" % obj)
 
 
-class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarNotifications, TvInfoBarShowHide, Screen):
+class WorldCamPlayer(
+        InfoBarBase,
+        InfoBarMenu,
+        InfoBarSeek,
+        InfoBarAudioSelection,
+        InfoBarSubtitleSupport,
+        InfoBarNotifications,
+        TvInfoBarShowHide,
+        Screen):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -388,21 +396,26 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
         service.setName(title)
 
         try:
-            self.logger.info("[YouTube Playback] Attempting playback via YT-DLP system wrapper...")
+            self.logger.info(
+                "[YouTube Playback] Attempting playback via YT-DLP system wrapper...")
             play_result = self.session.nav.playService(service)
             if play_result:
-                self.logger.info("[YouTube Playback] Successfully started via YT-DLP wrapper.")
+                self.logger.info(
+                    "[YouTube Playback] Successfully started via YT-DLP wrapper.")
                 return True
             else:
                 # If playService returns False (but doesn't raise an exception)
-                self.logger.warning("[YouTube Playback] YT-DLP wrapper returned False, initiating fallback.")
+                self.logger.warning(
+                    "[YouTube Playback] YT-DLP wrapper returned False, initiating fallback.")
                 raise Exception("Service playback returned False")
 
         except Exception as e:
-            self.logger.error("[YouTube Playback] YT-DLP wrapper failed: " + str(e))
+            self.logger.error(
+                "[YouTube Playback] YT-DLP wrapper failed: " + str(e))
 
             # === PHASE 2: Fallback to internal yt-dlp executable ===
-            self.logger.info("[Fallback] Switching to internal yt-dlp executable.")
+            self.logger.info(
+                "[Fallback] Switching to internal yt-dlp executable.")
             try:
                 # 1. Extract video ID (reusing your existing method)
                 video_id = self.extract_video_id(url)
@@ -413,37 +426,57 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
                 # 2. Construct path to the internal yt-dlp binary
                 ytdlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp/yt-dlp"
 
-                # 3. Build command: '-g' gets the stream URL, '-f b' selects the best format.
-                command = [ytdlp_path, "-g", "-f", "b", "https://www.youtube.com/watch?v=" + video_id]
-                self.logger.info("[Fallback] Executing command: " + " ".join(command))
+                # 3. Build command: '-g' gets the stream URL, '-f b' selects
+                # the best format.
+                command = [
+                    ytdlp_path,
+                    "-g",
+                    "-f",
+                    "b",
+                    "https://www.youtube.com/watch?v=" +
+                    video_id]
+                self.logger.info(
+                    "[Fallback] Executing command: " +
+                    " ".join(command))
 
                 # 4. Execute yt-dlp with a timeout
-                result = subprocess.run(command, capture_output=True, text=True, timeout=30)
+                result = subprocess.run(
+                    command, capture_output=True, text=True, timeout=30)
 
                 if result.returncode != 0:
-                    self.logger.error("[Fallback] yt-dlp execution failed. STDERR: " + result.stderr)
+                    self.logger.error(
+                        "[Fallback] yt-dlp execution failed. STDERR: " +
+                        result.stderr)
                     return False
 
                 stream_url = result.stdout.strip()
                 if not stream_url:
-                    self.logger.error("[Fallback] yt-dlp did not return a stream URL.")
+                    self.logger.error(
+                        "[Fallback] yt-dlp did not return a stream URL.")
                     return False
 
-                self.logger.info("[Fallback] Stream URL obtained (first 200 chars): " + stream_url[:200] + "...")
+                self.logger.info(
+                    "[Fallback] Stream URL obtained (first 200 chars): " + stream_url[:200] + "...")
 
-                # 5. Play the extracted stream URL using the existing 'play_stream' method
+                # 5. Play the extracted stream URL using the existing
+                # 'play_stream' method
                 self.play_stream(stream_url, title)
-                self.logger.info("[Fallback] Playback started successfully via internal yt-dlp.")
+                self.logger.info(
+                    "[Fallback] Playback started successfully via internal yt-dlp.")
                 return True
 
             except subprocess.TimeoutExpired:
-                self.logger.error("[Fallback] Timeout while waiting for yt-dlp.")
+                self.logger.error(
+                    "[Fallback] Timeout while waiting for yt-dlp.")
                 return False
             except FileNotFoundError:
-                self.logger.error("[Fallback] Internal yt-dlp executable not found at specified path.")
+                self.logger.error(
+                    "[Fallback] Internal yt-dlp executable not found at specified path.")
                 return False
             except Exception as fallback_e:
-                self.logger.error("[Fallback] Unexpected error during fallback: " + str(fallback_e))
+                self.logger.error(
+                    "[Fallback] Unexpected error during fallback: " +
+                    str(fallback_e))
                 return False
 
     def play_youtubeOld(self, url, title):
@@ -452,7 +485,8 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
         Replicates the original plugin logic before the wrapper was introduced.
         """
         try:
-            self.logger.info("[Fallback] Attempting internal yt-dlp for: " + url)
+            self.logger.info(
+                "[Fallback] Attempting internal yt-dlp for: " + url)
 
             # 1. Extract the video ID (like the old method)
             video_id = self.extract_video_id(url)
@@ -462,17 +496,25 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
 
             self.logger.info("[Fallback] Video ID: " + video_id)
 
-            # 2. Build the absolute path to the yt-dlp executable in the plugin folder
+            # 2. Build the absolute path to the yt-dlp executable in the plugin
+            # folder
             ytdlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp/yt-dlp"
 
             # 3. Prepare the command to extract the stream URL.
-            #    Use '-g' to get only the URL, and '-f best' for the best format.
-            command = [ytdlp_path, "-g", "-f", "best", "https://www.youtube.com/watch?v=" + video_id]
+            # Use '-g' to get only the URL, and '-f best' for the best format.
+            command = [
+                ytdlp_path,
+                "-g",
+                "-f",
+                "best",
+                "https://www.youtube.com/watch?v=" +
+                video_id]
 
             self.logger.info("[Fallback] Running: " + " ".join(command))
 
             # 4. Run yt-dlp and capture the output (the stream URL)
-            result = subprocess.run(command, capture_output=True, text=True, timeout=30)
+            result = subprocess.run(
+                command, capture_output=True, text=True, timeout=30)
 
             if result.returncode != 0:
                 self.logger.error("[Fallback] yt-dlp error: " + result.stderr)
@@ -483,7 +525,8 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
                 self.logger.error("[Fallback] yt-dlp did not return a URL.")
                 return False
 
-            self.logger.info("[Fallback] Stream URL obtained: " + stream_url[:200] + "...")
+            self.logger.info(
+                "[Fallback] Stream URL obtained: " + stream_url[:200] + "...")
 
             # 5. Play the obtained URL using the existing play_stream method
             self.play_stream(stream_url, title)
@@ -494,7 +537,8 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
             self.logger.error("[Fallback] Timeout while running yt-dlp.")
             return False
         except FileNotFoundError:
-            self.logger.error("[Fallback] yt-dlp executable not found at expected path.")
+            self.logger.error(
+                "[Fallback] yt-dlp executable not found at expected path.")
             return False
         except Exception as e:
             self.logger.error("[Fallback] Unexpected error: " + str(e))
@@ -590,10 +634,13 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
                     best_format = compatible_formats[0]
                     stream_url = best_format['url']
 
-                    self.logger.info(
-                        "Selected format: " + best_format['format_id'] + " (" +
-                        str(best_format.get('width', 0)) + "x" + str(best_format.get('height', 0)) + ")"
-                    )
+                    self.logger.info("Selected format: " +
+                                     best_format['format_id'] +
+                                     " (" +
+                                     str(best_format.get('width', 0)) +
+                                     "x" +
+                                     str(best_format.get('height', 0)) +
+                                     ")")
                 else:
                     self.logger.error("No playable formats found")
                     return False
@@ -630,8 +677,7 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
             headers = (
                 "User-Agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36&"
                 "Referer=https://www.youtube.com/embed/" + video_id + "&"
-                "Origin=https://www.youtube.com"
-            )
+                "Origin=https://www.youtube.com")
 
             service = eServiceReference(4097, 0, url + "|" + headers)
             service.setName(title)
