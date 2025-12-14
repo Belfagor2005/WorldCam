@@ -19,11 +19,12 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import absolute_import
+from re import findall, finditer, compile, sub, DOTALL, match as re_match, S, I, M
 from collections import namedtuple
-import re
-import sys
-is_py2 = sys.version_info[0] == 2
-is_py3 = sys.version_info[0] == 3
+from sys import version_info
+
+is_py2 = version_info[0] == 2
+is_py3 = version_info[0] == 3
 
 
 try:
@@ -56,7 +57,7 @@ elif is_py3:
 
 
 DomMatch = namedtuple('DOMMatch', ['attrs', 'content'])
-re_type = type(re.compile(''))
+re_type = type(compile(''))
 
 
 def __get_dom_content(html, name, match):
@@ -64,7 +65,7 @@ def __get_dom_content(html, name, match):
         return ''
 
     # override tag name with tag from match if possible
-    tag = re.match(r'<([^\s/>]+)', match)
+    tag = re_match(r'<([^\s/>]+)', match)
     if tag:
         name = tag.group(1)
 
@@ -99,7 +100,7 @@ def __get_dom_content(html, name, match):
 def __get_dom_elements(item, name, attrs):
     if not attrs:
         pattern = r'(<%s(?:\s[^>]*>|/?>))' % name
-        this_list = re.findall(pattern, item, re.M | re.S | re.I)
+        this_list = findall(pattern, item, M | S | I)
     else:
         last_list = None
         for key, value in attrs.iteritems():
@@ -107,9 +108,9 @@ def __get_dom_elements(item, name, attrs):
             value_is_str = isinstance(value, basestring)
             pattern = r'''(<{tag}[^>]*\s{key}=(?P<delim>['"])(.*?)(?P=delim)[^>]*>)'''.format(
                 tag=name, key=key)
-            re_list = re.findall(pattern, item, re.M | re.S | re.I)
+            re_list = findall(pattern, item, M | S | I)
             if value_is_regex:
-                this_list = [r[0] for r in re_list if re.match(value, r[2])]
+                this_list = [r[0] for r in re_list if re_match(value, r[2])]
             else:
                 temp_value = [value] if value_is_str else value
                 this_list = [r[0] for r in re_list if set(
@@ -122,10 +123,10 @@ def __get_dom_elements(item, name, attrs):
                 if not has_space:
                     pattern = r'''(<{tag}[^>]*\s{key}=((?:[^\s>]|/>)*)[^>]*>)'''.format(
                         tag=name, key=key)
-                    re_list = re.findall(pattern, item, re.M | re.S | re.I)
+                    re_list = findall(pattern, item, M | S | I)
                     if value_is_regex:
                         this_list = [r[0]
-                                     for r in re_list if re.match(value, r[1])]
+                                     for r in re_list if re_match(value, r[1])]
                     else:
                         this_list = [r[0] for r in re_list if value == r[1]]
 
@@ -140,7 +141,7 @@ def __get_dom_elements(item, name, attrs):
 
 def __get_attribs(element):
     attribs = {}
-    for match in re.finditer(
+    for match in finditer(
         r'''\s+(?P<key>[^=]+)=\s*(?:(?P<delim>["'])(?P<value1>.*?)(?P=delim)|(?P<value2>[^"'][^>\s]*))''',
             element):
         match = match.groupdict()
@@ -188,7 +189,7 @@ def parse_dom(html, name='', attrs=None, req=False, exclude_comments=False):
             item = item.content
 
         if exclude_comments:
-            item = re.sub(re.compile('<!--.*?-->', re.DOTALL), '', item)
+            item = sub(compile('<!--.*?-->', DOTALL), '', item)
 
         results = []
         for element in __get_dom_elements(item, name, attrs):

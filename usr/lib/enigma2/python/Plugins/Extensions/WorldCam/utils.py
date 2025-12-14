@@ -38,7 +38,7 @@ from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
 import logging
 from logging.handlers import RotatingFileHandler
 
-from . import _
+from . import _, BASE_URL
 from . import checkdependencies
 
 
@@ -851,7 +851,6 @@ def get_country_code(country_name):
 
 
 class VideoURLHelper:
-    MAIN_URL = "https://www.skylinewebcams.com"
 
     def __init__(self):
         self.logger = Logger()
@@ -861,7 +860,7 @@ class VideoURLHelper:
         Extracts the video URL from a webcam page, safely handling errors.
         """
         self.logger.info("Fetching video URL for: " + url)
-        headers = {"User-Agent": "Mozilla/5.0", "Referer": self.MAIN_URL}
+        headers = {"User-Agent": "Mozilla/5.0", "Referer": BASE_URL}
 
         try:
             from . import client

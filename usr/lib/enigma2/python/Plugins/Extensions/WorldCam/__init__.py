@@ -5,13 +5,19 @@ __author__ = "Lululla"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "GPL-v2"
-__version__ = "1.0.0"
+__version__ = "6.4"
 
 import gettext
 from os import environ
-# from os.path import exists
+from os.path import join, dirname
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
+
+
+PLUGIN_VERSION = "6.4"
+PLUGIN_PATH = dirname(__file__)
+DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
+BASE_URL = "https://www.skylinewebcams.com"
 
 PluginLanguageDomain = 'WorldCam'
 PluginLanguagePath = 'Extensions/WorldCam/locale'

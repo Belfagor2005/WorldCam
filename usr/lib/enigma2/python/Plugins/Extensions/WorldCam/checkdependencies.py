@@ -1,6 +1,7 @@
 import subprocess
+from sys import path
 from shutil import which
-import sys
+
 
 REQUIRED_PACKAGES = {
     "ffmpeg": "ffmpeg",
@@ -49,8 +50,8 @@ def check_requirements(logger=None):
     # Check yt_dlp (plugin path only, non di sistema)
     try:
         plugin_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp"
-        if plugin_path not in sys.path:
-            sys.path.append(plugin_path)
+        if plugin_path not in path:
+            path.append(plugin_path)
         from yt_dlp import YoutubeDL  # noqa: F401
     except ImportError:
         missing.append("yt-dlp")

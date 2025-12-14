@@ -29,10 +29,6 @@ import zipfile
 from os import makedirs
 from os.path import abspath, dirname, exists, join, splitext, getsize
 from shutil import copyfile, copyfileobj, rmtree
-# from logging.handlers import RotatingFileHandler
-# from twisted.internet.threads import deferToThread
-
-# Third-party libraries
 import requests
 
 # Enigma2 core
@@ -66,6 +62,9 @@ from . import (
     AgentRequest,
     installer_url,
     paypal,
+    PLUGIN_VERSION,
+    PLUGIN_PATH,
+    DEFAULT_ICON
 )
 from .player import WorldCamPlayer
 from .scraper import SkylineScraper
@@ -92,12 +91,6 @@ try:
 except NameError:
     unicode = str
 
-
-# Global constants
-PLUGIN_VERSION = "6.3"
-PLUGIN_PATH = dirname(__file__)
-DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
-BASE_URL = "https://www.skylinewebcams.com"
 
 # Initialize logger
 logger = Logger()

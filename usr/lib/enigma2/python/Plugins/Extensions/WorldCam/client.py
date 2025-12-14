@@ -19,22 +19,19 @@
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import random
-import re
-import sys
+from random import randrange, choice
+from re import sub, compile, findall, S, M
+from sys import version_info
 import time
-
 import six
 from six.moves import urllib_request, urllib_error
 from six.moves import xrange
 from six.moves.html_parser import HTMLParser
 from six.moves.urllib.parse import urlparse, quote_plus
 
-# from . import cache
 
 try:
     import requests
-
     requester = requests.get
 except ImportError:
     requester = None
@@ -80,7 +77,7 @@ def request(
 
     try:
 
-        if sys.version_info < (2, 7, 9):
+        if version_info < (2, 7, 9):
             raise Exception()
 
         import ssl
@@ -239,7 +236,7 @@ def parseDOM(html, name=u"", attrs=None, ret=False):
 
     ret_lst = []
     for item in html:
-        temp_item = re.compile('(<[^>]*?\n[^>]*?>)').findall(item)
+        temp_item = compile('(<[^>]*?\n[^>]*?>)').findall(item)
         for match in temp_item:
             item = item.replace(match, match.replace("\n", " "))
 
@@ -294,17 +291,17 @@ def _getDOMContent(html, name, match, ret):  # Cleanup
 
 def _getDOMAttributes(match, name, ret):
 
-    lst = re.compile(
+    lst = compile(
         '<' +
         name +
         '.*?' +
         ret +
         '=([\'"].[^>]*?[\'"])>',
-        re.M | re.S).findall(match)
+        M | S).findall(match)
     if len(lst) == 0:
-        lst = re.compile(
+        lst = compile(
             '<' + name + '.*?' + ret + '=(.[^>]*?)>',
-            re.M | re.S).findall(match)
+            M | S).findall(match)
     ret = []
     for tmp in lst:
         cont_char = tmp[0]
@@ -335,14 +332,14 @@ def _getDOMElements(item, name, attrs):
 
     lst = []
     for key in attrs:
-        lst2 = re.compile(
+        lst2 = compile(
             '(<' + name + '[^>]*?(?:' + key + '=[\'"]' + attrs[key] + '[\'"].*?>))',
-            re.M | re.S).findall(item)
+            M | S).findall(item)
         if len(lst2) == 0 and attrs[key].find(
                 " ") == -1:  # Try matching without quotation marks
-            lst2 = re.compile(
+            lst2 = compile(
                 '(<' + name + '[^>]*?(?:' + key + '=' + attrs[key] + '.*?>))',
-                re.M | re.S).findall(item)
+                M | S).findall(item)
 
         if len(lst) == 0:
             lst = lst2
@@ -356,16 +353,16 @@ def _getDOMElements(item, name, attrs):
                     del (lst[i])
 
     if len(lst) == 0 and attrs == {}:
-        lst = re.compile('(<' + name + '>)', re.M | re.S).findall(item)
+        lst = compile('(<' + name + '>)', M | S).findall(item)
         if len(lst) == 0:
-            lst = re.compile('(<' + name + ' .*?>)', re.M | re.S).findall(item)
+            lst = compile('(<' + name + ' .*?>)', M | S).findall(item)
 
     return lst
 
 
 def replaceHTMLCodes(txt):
 
-    txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
+    txt = sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
     txt = HTMLParser().unescape(txt)
     txt = txt.replace("&quot;", "\"")
     txt = txt.replace("&amp;", "&")
@@ -423,12 +420,12 @@ def randomagent():
         'Mozilla/5.0 ({win_ver}{feature}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{br_ver} Safari/537.36',
         'Mozilla/5.0 ({win_ver}{feature}; Trident/7.0; rv:{br_ver}) like Gecko']
 
-    index = random.randrange(len(RAND_UAS))
+    index = randrange(len(RAND_UAS))
 
     return RAND_UAS[index].format(
-        win_ver=random.choice(WIN_VERS),
-        feature=random.choice(FEATURES),
-        br_ver=random.choice(
+        win_ver=choice(WIN_VERS),
+        feature=choice(FEATURES),
+        br_ver=choice(
             BR_VERS[index]))
 
 
@@ -466,12 +463,12 @@ def cfcookie(netloc, ua, timeout):
         except urllib_request.HTTPError as response:
             result = response.read(5242880)
 
-        jschl = re.findall('name="jschl_vc" value="(.+?)"/>', result)[0]
+        jschl = findall('name="jschl_vc" value="(.+?)"/>', result)[0]
 
-        init = re.findall(
+        init = findall(
             r'setTimeout\(function\(\){\s*.*?.*:(.*?)};', result)[-1]
 
-        builder = re.findall(r"challenge-form\'\);\s*(.*)a.v", result)[0]
+        builder = findall(r"challenge-form\'\);\s*(.*)a.v", result)[0]
 
         decryptVal = parseJSString(init)
 
@@ -492,7 +489,7 @@ def cfcookie(netloc, ua, timeout):
             netloc, jschl, answer)
 
         if 'type="hidden" name="pass"' in result:
-            passval = re.findall('name="pass" value="(.*?)"', result)[0]
+            passval = findall('name="pass" value="(.*?)"', result)[0]
             query = '%s/cdn-cgi/l/chk_jschl?pass=%s&jschl_vc=%s&jschl_answer=%s' % (
                 netloc, quote_plus(passval), jschl, answer)
             time.sleep(5)

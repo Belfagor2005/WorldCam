@@ -1,7 +1,7 @@
 #!/bin/bash
 
-version='6.3'
-changelog='Minor fix\nText icon alignment'
+version='6.4'
+changelog='Fix Youtube Wrapper'
 
 TMPPATH=/tmp/WorldCam-install
 FILEPATH=/tmp/WorldCam-main.tar.gz
