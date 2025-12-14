@@ -80,11 +80,7 @@ class OneNewsNZIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
 
-        fusion_metadata = self._search_json(
-            r'Fusion\.globalContent\s*=',
-            webpage,
-            'fusion metadata',
-            display_id)
+        fusion_metadata = self._search_json(r'Fusion\.globalContent\s*=', webpage, 'fusion metadata', display_id)
 
         entries = []
         for item in traverse_obj(fusion_metadata, 'content_elements') or []:
@@ -95,23 +91,14 @@ class OneNewsNZIE(InfoExtractor):
                     traverse_obj(brightcove_config, 'brightcoveAccount') or '963482464001',
                     traverse_obj(brightcove_config, 'brightcoveVideoId'),
                 )
-                entries.append(
-                    self.url_result(
-                        brightcove_url,
-                        BrightcoveNewIE))
+                entries.append(self.url_result(brightcove_url, BrightcoveNewIE))
             elif item_type == 'youtube':
-                video_id_or_url = traverse_obj(
-                    item, ('referent', 'id'), ('raw_oembed', '_id'))
+                video_id_or_url = traverse_obj(item, ('referent', 'id'), ('raw_oembed', '_id'))
                 if video_id_or_url:
-                    entries.append(
-                        self.url_result(
-                            video_id_or_url,
-                            ie='Youtube'))
+                    entries.append(self.url_result(video_id_or_url, ie='Youtube'))
 
         if not entries:
-            raise ExtractorError(
-                'This article does not have a video.',
-                expected=True)
+            raise ExtractorError('This article does not have a video.', expected=True)
 
         playlist_title = (
             traverse_obj(fusion_metadata, ('headlines', 'basic'))

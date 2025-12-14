@@ -80,43 +80,27 @@ class MediaKlikkIE(InfoExtractor):
         player_data = self._search_json(
             r'loadPlayer\((?:\s*["\'][^"\']+["\']\s*,)?', webpage, 'player data', mobj)
         video_id = str(player_data['contentId'])
-        title = player_data.get('title') or self._og_search_title(
-            webpage, fatal=False) or self._html_search_regex(
-            r'<h\d+\b[^>]+\bclass="article_title">([^<]+)<', webpage, 'title')
+        title = player_data.get('title') or self._og_search_title(webpage, fatal=False) or \
+            self._html_search_regex(r'<h\d+\b[^>]+\bclass="article_title">([^<]+)<', webpage, 'title')
 
         upload_date = unified_strdate(
             '{}-{}-{}'.format(mobj.group('year'), mobj.group('month'), mobj.group('day')))
         if not upload_date:
-            upload_date = unified_strdate(
-                self._html_search_regex(
-                    r'<p+\b[^>]+\bclass="article_date">([^<]+)<',
-                    webpage,
-                    'upload date',
-                    default=None))
+            upload_date = unified_strdate(self._html_search_regex(
+                r'<p+\b[^>]+\bclass="article_date">([^<]+)<', webpage, 'upload date', default=None))
 
         player_data['video'] = urllib.parse.unquote(player_data.pop('token'))
         player_page = self._download_webpage(
             'https://player.mediaklikk.hu/playernew/player.php', video_id,
             query=player_data, headers={'Referer': url})
         player_json = self._search_json(
-            r'\bpl\.setup\s*\(',
-            player_page,
-            'player json',
-            video_id,
-            end_pattern=r'\);')
+            r'\bpl\.setup\s*\(', player_page, 'player json', video_id, end_pattern=r'\);')
         playlist_url = traverse_obj(
-            player_json,
-            ('playlist',
-             lambda _,
-             v: v['type'] == 'hls',
-                'file',
-                {url_or_none}),
-            get_all=False)
+            player_json, ('playlist', lambda _, v: v['type'] == 'hls', 'file', {url_or_none}), get_all=False)
         if not playlist_url:
             raise ExtractorError('Unable to extract playlist url')
 
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            playlist_url, video_id)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(playlist_url, video_id)
 
         return {
             'id': video_id,

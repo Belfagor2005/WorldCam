@@ -53,8 +53,7 @@ class IzleseneIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
-        webpage = self._download_webpage(
-            f'http://www.izlesene.com/video/{video_id}', video_id)
+        webpage = self._download_webpage(f'http://www.izlesene.com/video/{video_id}', video_id)
 
         video = self._parse_json(
             self._search_regex(

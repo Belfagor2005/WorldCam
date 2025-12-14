@@ -64,32 +64,20 @@ class GMANetworkVideoIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        content_id, display_id = self._match_valid_url(
-            url).group('id', 'display_id')
+        content_id, display_id = self._match_valid_url(url).group('id', 'display_id')
         webpage = self._download_webpage(url, display_id)
         # webpage route
         youtube_id = self._search_regex(
-            r'var\s*YOUTUBE_VIDEO\s*=\s*[\'"]+(?P<yt_id>[\w-]+)',
-            webpage,
-            'youtube_id',
-            fatal=False)
+            r'var\s*YOUTUBE_VIDEO\s*=\s*[\'"]+(?P<yt_id>[\w-]+)', webpage, 'youtube_id', fatal=False)
         if youtube_id:
             return self.url_result(youtube_id, YoutubeIE, youtube_id)
 
         # api call route
-        # more info at
-        # https://aphrodite.gmanetwork.com/fullepisodes/assets/fullepisodes/js/dist/fullepisodes_video.js?v=1.1.11
+        # more info at https://aphrodite.gmanetwork.com/fullepisodes/assets/fullepisodes/js/dist/fullepisodes_video.js?v=1.1.11
         network_url = self._search_regex(
             r'NETWORK_URL\s*=\s*[\'"](?P<url>[^\'"]+)', webpage, 'network_url')
-        json_data = self._download_json(
-            f'{network_url}api/data/content/video/{content_id}', display_id)
+        json_data = self._download_json(f'{network_url}api/data/content/video/{content_id}', display_id)
         if json_data.get('video_file'):
-            return self.url_result(
-                json_data['video_file'],
-                YoutubeIE,
-                json_data['video_file'])
+            return self.url_result(json_data['video_file'], YoutubeIE, json_data['video_file'])
         else:
-            return self.url_result(
-                json_data['dailymotion_file'],
-                DailymotionIE,
-                json_data['dailymotion_file'])
+            return self.url_result(json_data['dailymotion_file'], DailymotionIE, json_data['dailymotion_file'])

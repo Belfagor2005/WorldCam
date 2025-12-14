@@ -35,8 +35,7 @@ class AudioBoomIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage = self._download_webpage(
-            f'https://audioboom.com/posts/{video_id}', video_id)
+        webpage = self._download_webpage(f'https://audioboom.com/posts/{video_id}', video_id)
 
         clip_store = self._search_json(
             r'data-react-class="V5DetailPagePlayer"\s*data-react-props=["\']',

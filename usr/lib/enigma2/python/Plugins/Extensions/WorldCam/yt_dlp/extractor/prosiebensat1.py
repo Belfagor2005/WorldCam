@@ -31,8 +31,7 @@ class ProSiebenSat1BaseIE(InfoExtractor):
                 'ids': clip_id,
             })[0]
 
-        if not self.get_param('allow_unplayable_formats') and video.get(
-                'is_protected') is True:
+        if not self.get_param('allow_unplayable_formats') and video.get('is_protected') is True:
             self.report_drm(clip_id)
 
         formats = []
@@ -51,20 +50,14 @@ class ProSiebenSat1BaseIE(InfoExtractor):
                 self.raise_geo_restricted(countries=['AT', 'CH', 'DE'])
             server_token = protocols.get('server_token')
             if server_token:
-                urls = (
-                    self._download_json(
-                        self._V4_BASE_URL + 'urls',
-                        clip_id,
-                        'Downloading urls JSON',
-                        query={
-                            'access_id': self._ACCESS_ID,
-                            'client_token': hashlib.sha1(
-                                (raw_ct + server_token + self._SUPPORTED_PROTOCOLS).encode()).hexdigest(),
-                            'protocols': self._SUPPORTED_PROTOCOLS,
-                            'server_token': server_token,
-                            'video_id': clip_id,
-                        },
-                        fatal=False) or {}).get('urls') or {}
+                urls = (self._download_json(
+                    self._V4_BASE_URL + 'urls', clip_id, 'Downloading urls JSON', query={
+                        'access_id': self._ACCESS_ID,
+                        'client_token': hashlib.sha1((raw_ct + server_token + self._SUPPORTED_PROTOCOLS).encode()).hexdigest(),
+                        'protocols': self._SUPPORTED_PROTOCOLS,
+                        'server_token': server_token,
+                        'video_id': clip_id,
+                    }, fatal=False) or {}).get('urls') or {}
                 for protocol, variant in urls.items():
                     source_url = variant.get('clear', {}).get('url')
                     if not source_url:
@@ -84,12 +77,7 @@ class ProSiebenSat1BaseIE(InfoExtractor):
         if not formats:
             source_ids = [str(source['id']) for source in video['sources']]
 
-            client_id = self._SALT[:2] + hashlib.sha1(''.join([clip_id,
-                                                               self._SALT,
-                                                               self._TOKEN,
-                                                               client_location,
-                                                               self._SALT,
-                                                               self._CLIENT_NAME]).encode()).hexdigest()
+            client_id = self._SALT[:2] + hashlib.sha1(''.join([clip_id, self._SALT, self._TOKEN, client_location, self._SALT, self._CLIENT_NAME]).encode()).hexdigest()
 
             sources = self._download_json(
                 f'http://vas.sim-technik.de/vas/live/v2/videos/{clip_id}/sources',
@@ -108,14 +96,7 @@ class ProSiebenSat1BaseIE(InfoExtractor):
                 return (bitrate // 1000) if bitrate % 1000 == 0 else bitrate
 
             for source_id in source_ids:
-                client_id = self._SALT[:2] + hashlib.sha1(''.join([self._SALT,
-                                                                   clip_id,
-                                                                   self._TOKEN,
-                                                                   server_id,
-                                                                   client_location,
-                                                                   source_id,
-                                                                   self._SALT,
-                                                                   self._CLIENT_NAME]).encode()).hexdigest()
+                client_id = self._SALT[:2] + hashlib.sha1(''.join([self._SALT, clip_id, self._TOKEN, server_id, client_location, source_id, self._SALT, self._CLIENT_NAME]).encode()).hexdigest()
                 urls = self._download_json(
                     f'http://vas.sim-technik.de/vas/live/v2/videos/{clip_id}/sources/url',
                     clip_id, 'Downloading urls JSON', fatal=False, query={
@@ -129,8 +110,7 @@ class ProSiebenSat1BaseIE(InfoExtractor):
                 if not urls:
                     continue
                 if urls.get('status_code') != 0:
-                    raise ExtractorError(
-                        'This video is unavailable', expected=True)
+                    raise ExtractorError('This video is unavailable', expected=True)
                 urls_sources = urls['sources']
                 if isinstance(urls_sources, dict):
                     urls_sources = urls_sources.values()
@@ -140,8 +120,7 @@ class ProSiebenSat1BaseIE(InfoExtractor):
                         continue
                     protocol = source.get('protocol')
                     mimetype = source.get('mimetype')
-                    if mimetype == 'application/f4m+xml' or 'f4mgenerator' in source_url or determine_ext(
-                            source_url) == 'f4m':
+                    if mimetype == 'application/f4m+xml' or 'f4mgenerator' in source_url or determine_ext(source_url) == 'f4m':
                         formats.extend(self._extract_f4m_formats(
                             source_url, clip_id, f4m_id='hds', fatal=False))
                     elif mimetype == 'application/x-mpegURL':
@@ -154,8 +133,7 @@ class ProSiebenSat1BaseIE(InfoExtractor):
                     else:
                         tbr = fix_bitrate(source['bitrate'])
                         if protocol in ('rtmp', 'rtmpe'):
-                            mobj = re.search(
-                                r'^(?P<url>rtmpe?://[^/]+)/(?P<path>.+)$', source_url)
+                            mobj = re.search(r'^(?P<url>rtmpe?://[^/]+)/(?P<path>.+)$', source_url)
                             if not mobj:
                                 continue
                             path = mobj.group('path')

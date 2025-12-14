@@ -11,8 +11,7 @@ class YapFilesIE(InfoExtractor):
     _WORKING = False
     _YAPFILES_URL = r'//(?:(?:www|api)\.)?yapfiles\.ru/get_player/*\?.*?\bv=(?P<id>\w+)'
     _VALID_URL = rf'https?:{_YAPFILES_URL}'
-    _EMBED_REGEX = [
-        rf'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?{_YAPFILES_URL}.*?)\1']
+    _EMBED_REGEX = [rf'<iframe\b[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?{_YAPFILES_URL}.*?)\1']
     _TESTS = [{
         # with hd
         'url': 'http://www.yapfiles.ru/get_player/?v=vMDE1NjcyNDUt0413',

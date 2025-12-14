@@ -119,8 +119,7 @@ class MailRuIE(InfoExtractor):
                 r'(?s)"video":\s*({.+?}),'],
                 webpage, 'page config', default='{}'), video_id, fatal=False)
             if page_config:
-                meta_url = page_config.get('metaUrl') or page_config.get(
-                    'video', {}).get('metaUrl') or page_config.get('metadataUrl')
+                meta_url = page_config.get('metaUrl') or page_config.get('video', {}).get('metaUrl') or page_config.get('metadataUrl')
             else:
                 meta_url = None
 
@@ -149,17 +148,10 @@ class MailRuIE(InfoExtractor):
             if not video_url:
                 continue
             if video_key:
-                self._set_cookie(
-                    urllib.parse.urlparse(video_url).hostname,
-                    'video_key',
-                    video_key.value)
+                self._set_cookie(urllib.parse.urlparse(video_url).hostname, 'video_key', video_key.value)
             format_id = f.get('key')
-            height = int_or_none(
-                self._search_regex(
-                    r'^(\d+)[pP]$',
-                    format_id,
-                    'height',
-                    default=None)) if format_id else None
+            height = int_or_none(self._search_regex(
+                r'^(\d+)[pP]$', format_id, 'height', default=None)) if format_id else None
             formats.append({
                 'url': video_url,
                 'format_id': format_id,
@@ -172,8 +164,7 @@ class MailRuIE(InfoExtractor):
         author = video_data.get('author')
         uploader = author.get('name')
         uploader_id = author.get('id') or author.get('email')
-        view_count = int_or_none(video_data.get(
-            'viewsCount') or video_data.get('views_count'))
+        view_count = int_or_none(video_data.get('viewsCount') or video_data.get('views_count'))
 
         acc_id = meta_data.get('accId')
         item_id = meta_data.get('itemId')

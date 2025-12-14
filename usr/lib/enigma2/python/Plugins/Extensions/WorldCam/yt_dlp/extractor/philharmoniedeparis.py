@@ -14,39 +14,40 @@ class PhilharmonieDeParisIE(InfoExtractor):
                         )
                         (?P<id>\d+)
                     '''
-    _TESTS = [{'url': 'https://philharmoniedeparis.fr/fr/live/concert/1129666-danses-symphoniques',
-               'md5': '24bdb7e86c200c107680e1f7770330ae',
-               'info_dict': {'id': '1129666',
-                             'ext': 'mp4',
-                             'title': 'Danses symphoniques. Orchestre symphonique Divertimento - Zahia Ziouani. Bizet, de Falla, Stravinski, Moussorgski, Saint-Saëns',
-                             },
-               },
-              {'url': 'https://philharmoniedeparis.fr/fr/live/concert/1032066-akademie-fur-alte-musik-berlin-rias-kammerchor-rene-jacobs-passion-selon-saint-jean-de-johann',
-               'info_dict': {'id': '1032066',
-                             'title': 'Akademie für alte Musik Berlin, Rias Kammerchor, René Jacobs : Passion selon saint Jean de Johann Sebastian Bach',
-                             },
-               'playlist_mincount': 2,
-               },
-              {'url': 'https://philharmoniedeparis.fr/fr/live/concert/1030324-orchestre-philharmonique-de-radio-france-myung-whun-chung-renaud-capucon-pascal-dusapin-johannes',
-               'only_matching': True,
-               },
-              {'url': 'http://live.philharmoniedeparis.fr/misc/Playlist.ashx?id=1030324&track=&lang=fr',
-               'only_matching': True,
-               },
-              {'url': 'https://live.philharmoniedeparis.fr/embedapp/1098406/berlioz-fantastique-lelio-les-siecles-national-youth-choir-of.html?lang=fr-FR',
-               'only_matching': True,
-               },
-              {'url': 'https://otoplayer.philharmoniedeparis.fr/fr/embed/1098406?lang=fr-FR',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://philharmoniedeparis.fr/fr/live/concert/1129666-danses-symphoniques',
+        'md5': '24bdb7e86c200c107680e1f7770330ae',
+        'info_dict': {
+            'id': '1129666',
+            'ext': 'mp4',
+            'title': 'Danses symphoniques. Orchestre symphonique Divertimento - Zahia Ziouani. Bizet, de Falla, Stravinski, Moussorgski, Saint-Saëns',
+        },
+    }, {
+        'url': 'https://philharmoniedeparis.fr/fr/live/concert/1032066-akademie-fur-alte-musik-berlin-rias-kammerchor-rene-jacobs-passion-selon-saint-jean-de-johann',
+        'info_dict': {
+            'id': '1032066',
+            'title': 'Akademie für alte Musik Berlin, Rias Kammerchor, René Jacobs : Passion selon saint Jean de Johann Sebastian Bach',
+        },
+        'playlist_mincount': 2,
+    }, {
+        'url': 'https://philharmoniedeparis.fr/fr/live/concert/1030324-orchestre-philharmonique-de-radio-france-myung-whun-chung-renaud-capucon-pascal-dusapin-johannes',
+        'only_matching': True,
+    }, {
+        'url': 'http://live.philharmoniedeparis.fr/misc/Playlist.ashx?id=1030324&track=&lang=fr',
+        'only_matching': True,
+    }, {
+        'url': 'https://live.philharmoniedeparis.fr/embedapp/1098406/berlioz-fantastique-lelio-les-siecles-national-youth-choir-of.html?lang=fr-FR',
+        'only_matching': True,
+    }, {
+        'url': 'https://otoplayer.philharmoniedeparis.fr/fr/embed/1098406?lang=fr-FR',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
         config = self._download_json(
-            f'https://otoplayer.philharmoniedeparis.fr/fr/config/{video_id}.json',
-            video_id,
-            query={
+            f'https://otoplayer.philharmoniedeparis.fr/fr/config/{video_id}.json', video_id, query={
                 'id': video_id,
                 'lang': 'fr-FR',
             })

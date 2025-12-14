@@ -80,8 +80,7 @@ class DisneyIE(InfoExtractor):
             grill = re.sub(r'"\s*\+\s*"', '', self._search_regex(
                 r'Grill\.burger\s*=\s*({.+})\s*:',
                 webpage, 'grill data'))
-            page_data = next(s for s in self._parse_json(grill, display_id)[
-                             'stack'] if s.get('type') == 'video')
+            page_data = next(s for s in self._parse_json(grill, display_id)['stack'] if s.get('type') == 'video')
             video_data = page_data['data'][0]
         else:
             webpage = self._download_webpage(
@@ -102,8 +101,7 @@ class DisneyIE(InfoExtractor):
         for flavor in video_data.get('flavors', []):
             flavor_format = flavor.get('format')
             flavor_url = flavor.get('url')
-            if not flavor_url or not re.match(
-                    r'https?://', flavor_url) or flavor_format == 'mp4_access':
+            if not flavor_url or not re.match(r'https?://', flavor_url) or flavor_format == 'mp4_access':
                 continue
             tbr = int_or_none(flavor.get('bitrate'))
             if tbr == 99999:
@@ -134,9 +132,7 @@ class DisneyIE(InfoExtractor):
             })
         if not formats and video_data.get('expired'):
             self.raise_no_formats(
-                '{} said: {}'.format(
-                    self.IE_NAME,
-                    page_data['translations']['video_expired']),
+                '{} said: {}'.format(self.IE_NAME, page_data['translations']['video_expired']),
                 expected=True)
 
         subtitles = {}
@@ -157,10 +153,8 @@ class DisneyIE(InfoExtractor):
             'title': title,
             'description': video_data.get('description') or video_data.get('short_desc'),
             'thumbnail': video_data.get('thumb') or video_data.get('thumb_secure'),
-            'duration': int_or_none(
-                video_data.get('duration_sec')),
-            'upload_date': unified_strdate(
-                video_data.get('publish_date')),
+            'duration': int_or_none(video_data.get('duration_sec')),
+            'upload_date': unified_strdate(video_data.get('publish_date')),
             'formats': formats,
             'subtitles': subtitles,
         }

@@ -93,10 +93,7 @@ def get_urls(urls, batchfile, verbose):
                 read_stdin(None if verbose == -1 else 'URLs') if batchfile == '-'
                 else open(expand_path(batchfile), encoding='utf-8', errors='ignore'))
             if verbose == 1:
-                write_string(
-                    '[debug] Batch file urls: ' +
-                    repr(batch_urls) +
-                    '\n')
+                write_string('[debug] Batch file urls: ' + repr(batch_urls) + '\n')
         except OSError:
             _exit('ERROR: batch file {} could not be read'.format(batchfile))
     _enc = preferredencoding()
@@ -113,30 +110,18 @@ def print_extractor_information(opts, urls):
 
         urls = dict.fromkeys(urls, False)
         for ie in list_extractor_classes(opts.age_limit):
-            out += ie.IE_NAME + \
-                (' (CURRENTLY BROKEN)' if not ie.working() else '') + '\n'
+            out += ie.IE_NAME + (' (CURRENTLY BROKEN)' if not ie.working() else '') + '\n'
             if ie == GenericIE:
-                matched_urls = [url for url,
-                                matched in urls.items() if not matched]
+                matched_urls = [url for url, matched in urls.items() if not matched]
             else:
                 matched_urls = tuple(filter(ie.suitable, urls.keys()))
                 urls.update(dict.fromkeys(matched_urls, True))
             out += ''.join('  {}\n'.format(url) for url in matched_urls)
     elif opts.list_extractor_descriptions:
-        _SEARCHES = (
-            'cute kittens',
-            'slithering pythons',
-            'falling cat',
-            'angry poodle',
-            'purple fish',
-            'running tortoise',
-            'sleeping bunny',
-            'burping cow')
+        _SEARCHES = ('cute kittens', 'slithering pythons', 'falling cat', 'angry poodle', 'purple fish', 'running tortoise', 'sleeping bunny', 'burping cow')
         out = '\n'.join(
-            ie.description(
-                markdown=False,
-                search_examples=_SEARCHES) for ie in list_extractor_classes(
-                opts.age_limit) if ie.working() and ie.IE_DESC is not False)
+            ie.description(markdown=False, search_examples=_SEARCHES)
+            for ie in list_extractor_classes(opts.age_limit) if ie.working() and ie.IE_DESC is not False)
     elif opts.ap_list_mso:
         out = 'Supported TV Providers:\n{}\n'.format(render_table(
             ['mso', 'mso name'],
@@ -155,11 +140,7 @@ def set_compat_opts(opts):
         opts.compat_opts.update(['*{}'.format(name)])
         return True
 
-    def set_default_compat(
-            compat_name,
-            opt_name,
-            default=True,
-            remove_compat=True):
+    def set_default_compat(compat_name, opt_name, default=True, remove_compat=True):
         attr = getattr(opts, opt_name)
         if compat_name in opts.compat_opts:
             if attr is None:
@@ -192,16 +173,8 @@ def set_compat_opts(opts):
         else:
             _unused_compat_opt('mtime-by-default')
 
-    _video_multistreams_set = set_default_compat(
-        'multistreams',
-        'allow_multiple_video_streams',
-        False,
-        remove_compat=False)
-    _audio_multistreams_set = set_default_compat(
-        'multistreams',
-        'allow_multiple_audio_streams',
-        False,
-        remove_compat=False)
+    _video_multistreams_set = set_default_compat('multistreams', 'allow_multiple_video_streams', False, remove_compat=False)
+    _audio_multistreams_set = set_default_compat('multistreams', 'allow_multiple_audio_streams', False, remove_compat=False)
     if _video_multistreams_set is False and _audio_multistreams_set is False:
         _unused_compat_opt('multistreams')
     if 'filename' in opts.compat_opts:
@@ -215,9 +188,7 @@ def validate_options(opts):
     def validate(cndn, name, value=None, msg=None):
         if cndn:
             return True
-        raise ValueError(
-            (msg or 'invalid {name} "{value}" given').format(
-                name=name, value=value))
+        raise ValueError((msg or 'invalid {name} "{value}" given').format(name=name, value=value))
 
     def validate_in(name, value, items, msg=None):
         return validate(value is None or value in items, name, value, msg)
@@ -226,20 +197,14 @@ def validate_options(opts):
         return validate(value is None or re.match(regex, value), name, value)
 
     def validate_positive(name, value, strict=False):
-        return validate(
-            value is None or value > 0 or (
-                not strict and value == 0),
-            name,
-            value,
-            '{name} "{value}" must be positive' + (
-                '' if strict else ' or 0'))
+        return validate(value is None or value > 0 or (not strict and value == 0),
+                        name, value, '{name} "{value}" must be positive' + ('' if strict else ' or 0'))
 
     def validate_minmax(min_val, max_val, min_name, max_name=None):
         if max_val is None or min_val is None or max_val >= min_val:
             return
         if not max_name:
-            min_name, max_name = 'min {}'.format(
-                min_name), 'max {}'.format(min_name)
+            min_name, max_name = 'min {}'.format(min_name), 'max {}'.format(min_name)
 
         raise ValueError(
             '{} "{}" must be must be greater than or equal to {} "{}"'.format(
@@ -249,35 +214,22 @@ def validate_options(opts):
     # Usernames and passwords
     validate(sum(map(bool, (opts.usenetrc, opts.netrc_cmd, opts.username))) <= 1, '.netrc',
              msg='{name}, netrc command and username/password are mutually exclusive options')
-    validate(opts.password is None or opts.username is not None,
-             'account username', msg='{name} missing')
+    validate(opts.password is None or opts.username is not None, 'account username', msg='{name} missing')
     validate(opts.ap_password is None or opts.ap_username is not None,
              'TV Provider account username', msg='{name} missing')
-    validate_in(
-        'TV Provider',
-        opts.ap_mso,
-        MSO_INFO,
-        'Unsupported {name} "{value}", use --ap-list-mso to get a list of supported TV Providers')
+    validate_in('TV Provider', opts.ap_mso, MSO_INFO,
+                'Unsupported {name} "{value}", use --ap-list-mso to get a list of supported TV Providers')
 
     # Numbers
     validate_positive('autonumber start', opts.autonumber_start)
     validate_positive('autonumber size', opts.autonumber_size, True)
-    validate_positive(
-        'concurrent fragments',
-        opts.concurrent_fragment_downloads,
-        True)
+    validate_positive('concurrent fragments', opts.concurrent_fragment_downloads, True)
     validate_positive('playlist start', opts.playliststart, True)
     if opts.playlistend != -1:
-        validate_minmax(
-            opts.playliststart,
-            opts.playlistend,
-            'playlist start',
-            'playlist end')
+        validate_minmax(opts.playliststart, opts.playlistend, 'playlist start', 'playlist end')
 
     # Time ranges
-    validate_positive(
-        'subtitles sleep interval',
-        opts.sleep_interval_subtitles)
+    validate_positive('subtitles sleep interval', opts.sleep_interval_subtitles)
     validate_positive('requests sleep interval', opts.sleep_interval_requests)
     validate_positive('sleep interval', opts.sleep_interval)
     validate_positive('max sleep interval', opts.max_sleep_interval)
@@ -288,19 +240,12 @@ def validate_options(opts):
     elif opts.max_sleep_interval is None:
         opts.max_sleep_interval = opts.sleep_interval
     else:
-        validate_minmax(
-            opts.sleep_interval,
-            opts.max_sleep_interval,
-            'sleep interval')
+        validate_minmax(opts.sleep_interval, opts.max_sleep_interval, 'sleep interval')
 
     if opts.wait_for_video is not None:
-        min_wait, max_wait, * \
-            _ = map(parse_duration, [*opts.wait_for_video.split('-', 1), None])
-        validate(
-            min_wait is not None and not (
-                max_wait is None and '-' in opts.wait_for_video),
-            'time range to wait for video',
-            opts.wait_for_video)
+        min_wait, max_wait, *_ = map(parse_duration, [*opts.wait_for_video.split('-', 1), None])
+        validate(min_wait is not None and not (max_wait is None and '-' in opts.wait_for_video),
+                 'time range to wait for video', opts.wait_for_video)
         validate_minmax(min_wait, max_wait, 'time range to wait for video')
         opts.wait_for_video = (min_wait, max_wait)
 
@@ -314,37 +259,17 @@ def validate_options(opts):
     if opts.convertthumbnails == 'none':
         opts.convertthumbnails = None
 
-    validate_regex('merge output format',
-                   opts.merge_output_format,
-                   r'({0})(/({0}))*'.format('|'.join(map(re.escape,
-                                                         FFmpegMergerPP.SUPPORTED_EXTS))))
-    validate_regex(
-        'audio format',
-        opts.audioformat,
-        FFmpegExtractAudioPP.FORMAT_RE)
-    validate_in('subtitle format', opts.convertsubtitles,
-                FFmpegSubtitlesConvertorPP.SUPPORTED_EXTS)
-    validate_regex(
-        'thumbnail format',
-        opts.convertthumbnails,
-        FFmpegThumbnailsConvertorPP.FORMAT_RE)
-    validate_regex(
-        'recode video format',
-        opts.recodevideo,
-        FFmpegVideoConvertorPP.FORMAT_RE)
-    validate_regex(
-        'remux video format',
-        opts.remuxvideo,
-        FFmpegVideoRemuxerPP.FORMAT_RE)
+    validate_regex('merge output format', opts.merge_output_format,
+                   r'({0})(/({0}))*'.format('|'.join(map(re.escape, FFmpegMergerPP.SUPPORTED_EXTS))))
+    validate_regex('audio format', opts.audioformat, FFmpegExtractAudioPP.FORMAT_RE)
+    validate_in('subtitle format', opts.convertsubtitles, FFmpegSubtitlesConvertorPP.SUPPORTED_EXTS)
+    validate_regex('thumbnail format', opts.convertthumbnails, FFmpegThumbnailsConvertorPP.FORMAT_RE)
+    validate_regex('recode video format', opts.recodevideo, FFmpegVideoConvertorPP.FORMAT_RE)
+    validate_regex('remux video format', opts.remuxvideo, FFmpegVideoRemuxerPP.FORMAT_RE)
     if opts.audioquality:
         opts.audioquality = opts.audioquality.strip('k').strip('K')
         # int_or_none prevents inf, nan
-        validate_positive(
-            'audio quality',
-            int_or_none(
-                float_or_none(
-                    opts.audioquality),
-                default=0))
+        validate_positive('audio quality', int_or_none(float_or_none(opts.audioquality), default=0))
 
     # Retries
     def parse_retries(name, value):
@@ -362,8 +287,7 @@ def validate_options(opts):
     opts.retries = parse_retries('download', opts.retries)
     opts.fragment_retries = parse_retries('fragment', opts.fragment_retries)
     opts.extractor_retries = parse_retries('extractor', opts.extractor_retries)
-    opts.file_access_retries = parse_retries(
-        'file access', opts.file_access_retries)
+    opts.file_access_retries = parse_retries('file access', opts.file_access_retries)
 
     # Retry sleep function
     def parse_sleep_func(expr):
@@ -373,17 +297,10 @@ def validate_options(opts):
             expr.strip()).groups()), None, None)
 
         if op == 'exp':
-            return lambda n: min(float(start) *
-                                 (float(step or 2) ** n), float(limit or 'inf'))
+            return lambda n: min(float(start) * (float(step or 2) ** n), float(limit or 'inf'))
         else:
             default_step = start if op or limit else 0
-            return lambda n: min(
-                float(start) +
-                float(
-                    step or default_step) *
-                n,
-                float(
-                    limit or 'inf'))
+            return lambda n: min(float(start) + float(step or default_step) * n, float(limit or 'inf'))
 
     for key, expr in opts.retry_sleep.items():
         if not expr:
@@ -392,9 +309,7 @@ def validate_options(opts):
         try:
             opts.retry_sleep[key] = parse_sleep_func(expr)
         except AttributeError:
-            raise ValueError(
-                'invalid {} retry sleep expression {!r}'.format(
-                    key, expr))
+            raise ValueError('invalid {} retry sleep expression {!r}'.format(key, expr))
 
     # Bytes
     def validate_bytes(name, value, strict_positive=False):
@@ -407,13 +322,11 @@ def validate_options(opts):
         return numeric_limit
 
     opts.ratelimit = validate_bytes('rate limit', opts.ratelimit, True)
-    opts.throttledratelimit = validate_bytes(
-        'throttled rate limit', opts.throttledratelimit)
+    opts.throttledratelimit = validate_bytes('throttled rate limit', opts.throttledratelimit)
     opts.min_filesize = validate_bytes('min filesize', opts.min_filesize)
     opts.max_filesize = validate_bytes('max filesize', opts.max_filesize)
     opts.buffersize = validate_bytes('buffer size', opts.buffersize, True)
-    opts.http_chunk_size = validate_bytes(
-        'http chunk size', opts.http_chunk_size)
+    opts.http_chunk_size = validate_bytes('http chunk size', opts.http_chunk_size)
 
     # Output templates
     def validate_outtmpl(tmpl, msg):
@@ -433,12 +346,9 @@ def validate_options(opts):
             validate_outtmpl(tmpl, '{} print to file template'.format(type_))
             validate_outtmpl(file, '{} print to file filename'.format(type_))
 
-    validate_outtmpl(
-        opts.sponsorblock_chapter_title,
-        'SponsorBlock chapter title')
+    validate_outtmpl(opts.sponsorblock_chapter_title, 'SponsorBlock chapter title')
     for k, tmpl in opts.progress_template.items():
-        k = '{} console title'.format(
-            k[:-6]) if '-title' in k else '{} progress'.format(k)
+        k = '{} console title'.format(k[:-6]) if '-title' in k else '{} progress'.format(k)
         validate_outtmpl(tmpl, '{} template'.format(k))
 
     outtmpl_default = opts.outtmpl.get('default')
@@ -447,8 +357,7 @@ def validate_options(opts):
         del opts.outtmpl['default']
 
     def parse_chapters(name, value, advanced=False):
-        def parse_timestamp(x): return float('inf') if x in (
-            'inf', 'infinite') else parse_duration(x)
+        parse_timestamp = lambda x: float('inf') if x in ('inf', 'infinite') else parse_duration(x)
         TIMESTAMP_RE = r'''(?x)(?:
             (?P<start_sign>-?)(?P<start>[^-]+)
         )?\s*-\s*(?:
@@ -464,19 +373,13 @@ def validate_options(opts):
                 try:
                     chapters.append(re.compile(regex))
                 except re.error as err:
-                    raise ValueError(
-                        'invalid {} regex "{}" - {}'.format(name, regex, err))
+                    raise ValueError('invalid {} regex "{}" - {}'.format(name, regex, err))
                 continue
 
             for range_ in map(str.strip, regex[1:].split(',')):
                 mobj = range_ != '-' and re.fullmatch(TIMESTAMP_RE, range_)
-                dur = mobj and [
-                    parse_timestamp(
-                        mobj.group('start') or '0'), parse_timestamp(
-                        mobj.group('end') or 'inf')]
-                signs = mobj and (
-                    mobj.group('start_sign'),
-                    mobj.group('end_sign'))
+                dur = mobj and [parse_timestamp(mobj.group('start') or '0'), parse_timestamp(mobj.group('end') or 'inf')]
+                signs = mobj and (mobj.group('start_sign'), mobj.group('end_sign'))
 
                 err = None
                 if None in (dur or [None]):
@@ -490,16 +393,14 @@ def validate_options(opts):
                         err = '"-inf" is not a valid end'
                 if err:
                     raise ValueError(
-                        'invalid {} time range "{}". {}'.format(
-                            name, regex, err))
+                        'invalid {} time range "{}". {}'.format(name, regex, err)
+                    )
                 ranges.append(dur)
 
         return chapters, ranges, from_url
 
-    opts.remove_chapters, opts.remove_ranges, _ = parse_chapters(
-        '--remove-chapters', opts.remove_chapters)
-    opts.download_ranges = download_range_func(
-        *parse_chapters('--download-sections', opts.download_ranges, True))
+    opts.remove_chapters, opts.remove_ranges, _ = parse_chapters('--remove-chapters', opts.remove_chapters)
+    opts.download_ranges = download_range_func(*parse_chapters('--download-sections', opts.download_ranges, True))
 
     # Cookies from browser
     if opts.cookiesfrombrowser:
@@ -512,10 +413,9 @@ def validate_options(opts):
         ''', opts.cookiesfrombrowser)
         if mobj is None:
             raise ValueError(
-                'invalid cookies from browser arguments: {0}'.format(
-                    opts.cookiesfrombrowser))
-        browser_name, keyring, profile, container = mobj.group(
-            'name', 'keyring', 'profile', 'container')
+                'invalid cookies from browser arguments: {0}'.format(opts.cookiesfrombrowser)
+            )
+        browser_name, keyring, profile, container = mobj.group('name', 'keyring', 'profile', 'container')
         browser_name = browser_name.lower()
         if browser_name not in SUPPORTED_BROWSERS:
             raise ValueError(
@@ -550,8 +450,7 @@ def validate_options(opts):
                 raise ValueError('{} is invalid; {}'.format(cmd, err))
         else:
             cmd = '--replace-in-metadata {}'.format(shell_quote(f))
-            actions = ((MetadataParserPP.Actions.REPLACE,
-                       x, *f[1:]) for x in f[0].split(','))
+            actions = ((MetadataParserPP.Actions.REPLACE, x, *f[1:]) for x in f[0].split(','))
 
         for action in actions:
             try:
@@ -561,10 +460,7 @@ def validate_options(opts):
             yield action
 
     if opts.metafromtitle is not None:
-        opts.parse_metadata.setdefault(
-            'pre_process', []).append(
-            'title:{}'.format(
-                opts.metafromtitle))
+        opts.parse_metadata.setdefault('pre_process', []).append('title:{}'.format(opts.metafromtitle))
     opts.parse_metadata = {
         k: list(itertools.chain(*map(metadataparser_actions, v)))
         for k, v in opts.parse_metadata.items()
@@ -595,8 +491,7 @@ def validate_options(opts):
             opts.geo_bypass_ip_block = opts.geo_bypass
     opts.geo_bypass = opts.geo_bypass.lower() != 'never'
 
-    opts.match_filter = match_filter_func(
-        opts.match_filter, opts.breaking_match_filter)
+    opts.match_filter = match_filter_func(opts.match_filter, opts.breaking_match_filter)
 
     if opts.download_archive is not None:
         opts.download_archive = expand_path(opts.download_archive)
@@ -627,13 +522,7 @@ def validate_options(opts):
         elif ed and proto == 'default':
             default_downloader = ed.get_basename()
     for policy in opts.color.values():
-        if policy not in (
-            'always',
-            'auto',
-            'auto-tty',
-            'no_color',
-            'no_color-tty',
-                'never'):
+        if policy not in ('always', 'auto', 'auto-tty', 'no_color', 'no_color-tty', 'never'):
             raise ValueError('"{}" is not a valid color policy'.format(policy))
 
     warnings, deprecation_warnings = [], []
@@ -658,36 +547,23 @@ def validate_options(opts):
         if key1 in value and key2 not in value:
             warnings.append(
                 '{} arguments given without specifying name. The arguments will be given to {}'.format(
-                    name.title(), where or 'all {}s'.format(name)))
+                    name.title(),
+                    where or 'all {}s'.format(name)
+                )
+            )
             return True
         return False
 
-    if report_args_compat(
-        'external downloader',
-        opts.external_downloader_args,
-        'default',
-            where=default_downloader) and default_downloader:
-        # Compat with youtube-dl's behavior. See
-        # https://github.com/ytdl-org/youtube-dl/commit/49c5293014bc11ec8c009856cd63cffa6296c1e1
-        opts.external_downloader_args.setdefault(
-            default_downloader, opts.external_downloader_args.pop('default'))
+    if report_args_compat('external downloader', opts.external_downloader_args,
+                          'default', where=default_downloader) and default_downloader:
+        # Compat with youtube-dl's behavior. See https://github.com/ytdl-org/youtube-dl/commit/49c5293014bc11ec8c009856cd63cffa6296c1e1
+        opts.external_downloader_args.setdefault(default_downloader, opts.external_downloader_args.pop('default'))
 
-    if report_args_compat(
-        'post-processor',
-        opts.postprocessor_args,
-        'default-compat',
-            'default'):
-        opts.postprocessor_args['default'] = opts.postprocessor_args.pop(
-            'default-compat')
+    if report_args_compat('post-processor', opts.postprocessor_args, 'default-compat', 'default'):
+        opts.postprocessor_args['default'] = opts.postprocessor_args.pop('default-compat')
 
-    def report_conflict(
-            arg1,
-            opt1,
-            arg2='--allow-unplayable-formats',
-            opt2='allow_unplayable_formats',
-            val1=NO_DEFAULT,
-            val2=NO_DEFAULT,
-            default=False):
+    def report_conflict(arg1, opt1, arg2='--allow-unplayable-formats', opt2='allow_unplayable_formats',
+                        val1=NO_DEFAULT, val2=NO_DEFAULT, default=False):
         if val2 is NO_DEFAULT:
             val2 = getattr(opts, opt2)
         if not val2:
@@ -696,51 +572,19 @@ def validate_options(opts):
         if val1 is NO_DEFAULT:
             val1 = getattr(opts, opt1)
         if val1:
-            warnings.append(
-                '{} is ignored since {} was given'.format(
-                    arg1, arg2))
+            warnings.append('{} is ignored since {} was given'.format(arg1, arg2))
         setattr(opts, opt1, default)
 
     # Conflicting options
-    report_conflict(
-        '--playlist-reverse',
-        'playlist_reverse',
-        '--playlist-random',
-        'playlist_random')
-    report_conflict(
-        '--playlist-reverse',
-        'playlist_reverse',
-        '--lazy-playlist',
-        'lazy_playlist')
-    report_conflict(
-        '--playlist-random',
-        'playlist_random',
-        '--lazy-playlist',
-        'lazy_playlist')
+    report_conflict('--playlist-reverse', 'playlist_reverse', '--playlist-random', 'playlist_random')
+    report_conflict('--playlist-reverse', 'playlist_reverse', '--lazy-playlist', 'lazy_playlist')
+    report_conflict('--playlist-random', 'playlist_random', '--lazy-playlist', 'lazy_playlist')
     report_conflict('--dateafter', 'dateafter', '--date', 'date', default=None)
-    report_conflict(
-        '--datebefore',
-        'datebefore',
-        '--date',
-        'date',
-        default=None)
-    report_conflict(
-        '--exec-before-download',
-        'exec_before_dl_cmd',
-        '"--exec before_dl:"',
-        'exec_cmd',
-        val2=opts.exec_cmd.get('before_dl'))
-    report_conflict(
-        '--id',
-        'useid',
-        '--output',
-        'outtmpl',
-        val2=opts.outtmpl.get('default'))
-    report_conflict(
-        '--remux-video',
-        'remuxvideo',
-        '--recode-video',
-        'recodevideo')
+    report_conflict('--datebefore', 'datebefore', '--date', 'date', default=None)
+    report_conflict('--exec-before-download', 'exec_before_dl_cmd',
+                    '"--exec before_dl:"', 'exec_cmd', val2=opts.exec_cmd.get('before_dl'))
+    report_conflict('--id', 'useid', '--output', 'outtmpl', val2=opts.outtmpl.get('default'))
+    report_conflict('--remux-video', 'remuxvideo', '--recode-video', 'recodevideo')
 
     # Conflicts with --allow-unplayable-formats
     report_conflict('--embed-metadata', 'addmetadata')
@@ -749,21 +593,11 @@ def validate_options(opts):
     report_conflict('--embed-subs', 'embedsubtitles')
     report_conflict('--embed-thumbnail', 'embedthumbnail')
     report_conflict('--extract-audio', 'extractaudio')
-    report_conflict(
-        '--fixup',
-        'fixup',
-        val1=opts.fixup not in (
-            None,
-            'never',
-            'ignore'),
-        default='never')
+    report_conflict('--fixup', 'fixup', val1=opts.fixup not in (None, 'never', 'ignore'), default='never')
     report_conflict('--recode-video', 'recodevideo')
     report_conflict('--remove-chapters', 'remove_chapters', default=[])
     report_conflict('--remux-video', 'remuxvideo')
-    report_conflict(
-        '--sponsorblock-remove',
-        'sponsorblock_remove',
-        default=set())
+    report_conflict('--sponsorblock-remove', 'sponsorblock_remove', default=set())
     report_conflict('--xattrs', 'xattrs')
 
     if hasattr(opts, '_deprecated_options'):
@@ -771,15 +605,13 @@ def validate_options(opts):
             'The following options have been deprecated: {}\n'
             'Please remove them from your command/configuration to avoid future errors.\n'
             'See https://github.com/yt-dlp/yt-dlp/issues/14198 for more details'.format(
-                ', '.join(
-                    opts._deprecated_options)))
+                ', '.join(opts._deprecated_options)
+            )
+        )
         del opts._deprecated_options
 
     # Dependent options
-    opts.date = DateRange.day(
-        opts.date) if opts.date else DateRange(
-        opts.dateafter,
-        opts.datebefore)
+    opts.date = DateRange.day(opts.date) if opts.date else DateRange(opts.dateafter, opts.datebefore)
 
     if opts.exec_before_dl_cmd:
         opts.exec_cmd['before_dl'] = opts.exec_before_dl_cmd
@@ -799,13 +631,11 @@ def validate_options(opts):
         opts.format = 'bestaudio/best'
 
     if opts.getcomments and opts.writeinfojson is None and not opts.embed_infojson:
-        # If JSON is not printed anywhere, but comments are requested, save it
-        # to file
+        # If JSON is not printed anywhere, but comments are requested, save it to file
         if not opts.dumpjson or opts.print_json or opts.dump_single_json:
             opts.writeinfojson = True
 
-    if opts.allsubtitles and not (
-            opts.embedsubtitles or opts.writeautomaticsub):
+    if opts.allsubtitles and not (opts.embedsubtitles or opts.writeautomaticsub):
         # --all-sub automatically sets --write-sub if --write-auto-sub is not given
         opts.writesubtitles = True
 
@@ -815,11 +645,9 @@ def validate_options(opts):
 
     # Ask for passwords
     if opts.username is not None and opts.password is None:
-        opts.password = getpass.getpass(
-            'Type account password and press [Return]: ')
+        opts.password = getpass.getpass('Type account password and press [Return]: ')
     if opts.ap_username is not None and opts.ap_password is None:
-        opts.ap_password = getpass.getpass(
-            'Type TV provider account password and press [Return]: ')
+        opts.ap_password = getpass.getpass('Type TV provider account password and press [Return]: ')
 
     # compat option changes global state destructively; only allow from cli
     if 'allow-unsafe-ext' in opts.compat_opts:
@@ -877,14 +705,12 @@ def get_postprocessors(opts):
             'key': 'FFmpegVideoConvertor',
             'preferedformat': opts.recodevideo,
         }
-    # If ModifyChapters is going to remove chapters, subtitles must already be
-    # in the container.
+    # If ModifyChapters is going to remove chapters, subtitles must already be in the container.
     if opts.embedsubtitles:
         keep_subs = 'no-keep-subs' not in opts.compat_opts
         yield {
             'key': 'FFmpegEmbedSubtitle',
-            # already_have_subtitle = True prevents the file from being deleted
-            # after embedding
+            # already_have_subtitle = True prevents the file from being deleted after embedding
             'already_have_subtitle': opts.writesubtitles and keep_subs,
         }
         if not opts.writeautomaticsub and keep_subs:
@@ -916,8 +742,7 @@ def get_postprocessors(opts):
     if opts.embedthumbnail:
         yield {
             'key': 'EmbedThumbnail',
-            # already_have_thumbnail = True prevents the file from being
-            # deleted after embedding
+            # already_have_thumbnail = True prevents the file from being deleted after embedding
             'already_have_thumbnail': opts.writethumbnail,
         }
         if not opts.writethumbnail:
@@ -928,8 +753,7 @@ def get_postprocessors(opts):
             'key': 'FFmpegSplitChapters',
             'force_keyframes': opts.force_keyframes_at_cuts,
         }
-    # XAttrMetadataPP should be run after post-processors that may change file
-    # contents
+    # XAttrMetadataPP should be run after post-processors that may change file contents
     if opts.xattrs:
         yield {'key': 'XAttrMetadata'}
     if opts.concat_playlist != 'never':
@@ -947,15 +771,13 @@ def get_postprocessors(opts):
         }
 
 
-ParsedOptions = collections.namedtuple(
-    'ParsedOptions', ('parser', 'options', 'urls', 'ydl_opts'))
+ParsedOptions = collections.namedtuple('ParsedOptions', ('parser', 'options', 'urls', 'ydl_opts'))
 
 
 def parse_options(argv=None):
     """@returns ParsedOptions(parser, opts, urls, ydl_opts)"""
     parser, opts, urls = parseOpts(argv)
-    urls = get_urls(urls, opts.batchfile, -
-                    1 if opts.quiet and not opts.verbose else opts.verbose)
+    urls = get_urls(urls, opts.batchfile, -1 if opts.quiet and not opts.verbose else opts.verbose)
 
     set_compat_opts(opts)
     try:
@@ -965,28 +787,15 @@ def parse_options(argv=None):
 
     postprocessors = list(get_postprocessors(opts))
 
-    print_only = bool(opts.forceprint) and all(
-        k not in opts.forceprint for k in POSTPROCESS_WHEN[3:])
-    any_getting = any(
-        getattr(
-            opts,
-            k) for k in (
-            'dumpjson',
-            'dump_single_json',
-            'getdescription',
-            'getduration',
-            'getfilename',
-            'getformat',
-            'getid',
-            'getthumbnail',
-            'gettitle',
-            'geturl',
-        ))
+    print_only = bool(opts.forceprint) and all(k not in opts.forceprint for k in POSTPROCESS_WHEN[3:])
+    any_getting = any(getattr(opts, k) for k in (
+        'dumpjson', 'dump_single_json', 'getdescription', 'getduration', 'getfilename',
+        'getformat', 'getid', 'getthumbnail', 'gettitle', 'geturl',
+    ))
     if opts.quiet is None:
         opts.quiet = any_getting or opts.print_json or bool(opts.forceprint)
 
-    playlist_pps = [
-        pp for pp in postprocessors if pp.get('when') == 'playlist']
+    playlist_pps = [pp for pp in postprocessors if pp.get('when') == 'playlist']
     write_playlist_infojson = (opts.writeinfojson and not opts.clean_infojson
                                and opts.allow_playlist_files and opts.outtmpl.get('pl_infojson') != '')
     if not any((
@@ -1236,19 +1045,12 @@ def _real_main(argv=None):
 
             def make_row(target, handler):
                 return [
-                    join_nonempty(
-                        target.client.title(),
-                        target.version,
-                        delim='-') or '-',
-                    join_nonempty(
-                        (target.os or '').title(),
-                        target.os_version,
-                        delim='-') or '-',
+                    join_nonempty(target.client.title(), target.version, delim='-') or '-',
+                    join_nonempty((target.os or '').title(), target.os_version, delim='-') or '-',
                     handler,
                 ]
 
-            rows = [make_row(target, handler)
-                    for target, handler in available_targets]
+            rows = [make_row(target, handler) for target, handler in available_targets]
 
             for known_target, known_handler in known_targets:
                 if not any(
@@ -1261,8 +1063,7 @@ def _real_main(argv=None):
                     ])
 
             ydl.to_screen('[info] Available impersonate targets')
-            ydl.to_stdout(render_table(
-                ['Client', 'OS', 'Source'], rows, extra_gap=2, delim='-'))
+            ydl.to_stdout(render_table(['Client', 'OS', 'Source'], rows, extra_gap=2, delim='-'))
             return
 
         if not actual_use:
@@ -1272,8 +1073,7 @@ def _real_main(argv=None):
             args = sys.argv[1:] if argv is None else argv
             ydl.warn_if_short_id(args)
 
-            # Show a useful error message and wait for keypress if not launched
-            # from shell on Windows
+            # Show a useful error message and wait for keypress if not launched from shell on Windows
             if not args and os.name == 'nt' and getattr(sys, 'frozen', False):
                 import ctypes.wintypes
                 import msvcrt
@@ -1283,18 +1083,13 @@ def _real_main(argv=None):
                 buffer = (1 * ctypes.wintypes.DWORD)()
                 attached_processes = kernel32.GetConsoleProcessList(buffer, 1)
                 # If we only have a single process attached, then the executable was double clicked
-                # When using `pyinstaller` with `--onefile`, two processes get
-                # attached
-                is_onefile = hasattr(
-                    sys, '_MEIPASS') and os.path.basename(
-                    sys._MEIPASS).startswith('_MEI')
-                if attached_processes == 1 or (
-                        is_onefile and attached_processes == 2):
-                    print(
-                        parser._generate_error_message(
-                            'Do not double-click the executable, instead call it from a command line.\n'
-                            'Please read the README for further information on how to use yt-dlp: '
-                            'https://github.com/yt-dlp/yt-dlp#readme'))
+                # When using `pyinstaller` with `--onefile`, two processes get attached
+                is_onefile = hasattr(sys, '_MEIPASS') and os.path.basename(sys._MEIPASS).startswith('_MEI')
+                if attached_processes == 1 or (is_onefile and attached_processes == 2):
+                    print(parser._generate_error_message(
+                        'Do not double-click the executable, instead call it from a command line.\n'
+                        'Please read the README for further information on how to use yt-dlp: '
+                        'https://github.com/yt-dlp/yt-dlp#readme'))
                     msvcrt.getch()
                     _exit(2)
             parser.error(
@@ -1305,10 +1100,8 @@ def _real_main(argv=None):
         try:
             if opts.load_info_filename is not None:
                 if all_urls:
-                    ydl.report_warning(
-                        'URLs are ignored due to --load-info-json')
-                return ydl.download_with_info_file(
-                    expand_path(opts.load_info_filename))
+                    ydl.report_warning('URLs are ignored due to --load-info-json')
+                return ydl.download_with_info_file(expand_path(opts.load_info_filename))
             else:
                 return ydl.download(all_urls)
         except DownloadCancelled:

@@ -48,9 +48,8 @@ class NTVCoJpCUIE(StreaksBaseIE):
         info = self._search_json(
             r'window\.app\s*=', webpage, 'video info',
             display_id)['falcorCache']['catalog']['episode'][display_id]['value']
-        media_id = traverse_obj(
-            info, ('streaks_data', 'mediaid', {str_or_none}, {
-                require('Streaks media ID')}))
+        media_id = traverse_obj(info, (
+            'streaks_data', 'mediaid', {str_or_none}, {require('Streaks media ID')}))
         non_phonetic = (lambda _, v: v['is_phonetic'] is False, 'value', {str})
 
         return {

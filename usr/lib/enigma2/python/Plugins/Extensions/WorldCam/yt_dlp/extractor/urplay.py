@@ -77,24 +77,19 @@ class URPlayIE(InfoExtractor):
         video_id = self._match_id(url)
         url = url.replace('skola.se/Produkter', 'play.se/program')
         webpage = self._download_webpage(url, video_id)
-        urplayer_data = self._search_nextjs_data(
-            webpage, video_id, fatal=False) or {}
+        urplayer_data = self._search_nextjs_data(webpage, video_id, fatal=False) or {}
         if urplayer_data:
-            urplayer_data = traverse_obj(
-                urplayer_data, ('props', 'pageProps', 'productData', {dict}))
+            urplayer_data = traverse_obj(urplayer_data, ('props', 'pageProps', 'productData', {dict}))
             if not urplayer_data:
                 raise ExtractorError('Unable to parse __NEXT_DATA__')
         else:
             accessible_episodes = self._parse_json(self._html_search_regex(
                 r'data-react-class="routes/Product/components/ProgramContainer/ProgramContainer"[^>]+data-react-props="({.+?})"',
                 webpage, 'urplayer data'), video_id)['accessibleEpisodes']
-            urplayer_data = next(
-                e for e in accessible_episodes if e.get('id') == int_or_none(video_id))
+            urplayer_data = next(e for e in accessible_episodes if e.get('id') == int_or_none(video_id))
         episode = urplayer_data['title']
 
-        host = self._download_json(
-            'http://streaming-loadbalancer.ur.se/loadbalancer.json',
-            video_id)['redirect']
+        host = self._download_json('http://streaming-loadbalancer.ur.se/loadbalancer.json', video_id)['redirect']
         formats = []
         urplayer_streams = urplayer_data.get('streamingInfo', {})
 
@@ -148,9 +143,7 @@ class URPlayIE(InfoExtractor):
             thumbnails.append(t)
 
         series = urplayer_data.get('series') or {}
-        series_title = dict_get(
-            series, ('seriesTitle', 'title')) or dict_get(
-            urplayer_data, ('seriesTitle', 'mainTitle'))
+        series_title = dict_get(series, ('seriesTitle', 'title')) or dict_get(urplayer_data, ('seriesTitle', 'mainTitle'))
 
         return {
             'id': video_id,

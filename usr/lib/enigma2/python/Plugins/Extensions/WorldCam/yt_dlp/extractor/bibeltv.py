@@ -32,8 +32,7 @@ class BibelTVBaseIE(InfoExtractor):
                 formats.extend(m3u8_formats)
                 subtitles.update(m3u8_subs)
             elif media_ext == 'mpd':
-                mpd_formats, mpd_subs = self._extract_mpd_formats_and_subtitles(
-                    media_url, crn_id)
+                mpd_formats, mpd_subs = self._extract_mpd_formats_and_subtitles(media_url, crn_id)
                 formats.extend(mpd_formats)
                 subtitles.update(mpd_subs)
             elif media_ext == 'mp4':
@@ -65,10 +64,7 @@ class BibelTVBaseIE(InfoExtractor):
     def _extract_url_info(self, data):
         return {
             '_type': 'url',
-            'url': format_field(
-                data,
-                'slug',
-                'https://www.bibeltv.de/mediathek/videos/%s'),
+            'url': format_field(data, 'slug', 'https://www.bibeltv.de/mediathek/videos/%s'),
             **self._extract_base_info(data),
         }
 
@@ -124,17 +120,8 @@ class BibelTVVideoIE(BibelTVBaseIE):
     def _real_extract(self, url):
         crn_id = self._match_id(url)
         video_data = traverse_obj(
-            self._search_nextjs_data(
-                self._download_webpage(
-                    url,
-                    crn_id),
-                crn_id),
-            ('props',
-             'pageProps',
-             'videoPageData',
-             'videos',
-             0,
-             {dict}))
+            self._search_nextjs_data(self._download_webpage(url, crn_id), crn_id),
+            ('props', 'pageProps', 'videoPageData', 'videos', 0, {dict}))
         if not video_data:
             raise ExtractorError('Missing video data.')
 
@@ -160,16 +147,13 @@ class BibelTVSeriesIE(BibelTVBaseIE):
         crn_id = self._match_id(url)
         webpage = self._download_webpage(url, crn_id)
         nextjs_data = self._search_nextjs_data(webpage, crn_id)
-        series_data = traverse_obj(
-            nextjs_data, ('props', 'pageProps', 'seriePageData', {dict}))
+        series_data = traverse_obj(nextjs_data, ('props', 'pageProps', 'seriePageData', {dict}))
         if not series_data:
             raise ExtractorError('Missing series data.')
 
         return self.playlist_result(
-            traverse_obj(
-                series_data, ('videos', ..., {dict}, {
-                    self._extract_url_info})), crn_id, series_data.get('title'), clean_html(
-                series_data.get('description')))
+            traverse_obj(series_data, ('videos', ..., {dict}, {self._extract_url_info})),
+            crn_id, series_data.get('title'), clean_html(series_data.get('description')))
 
 
 class BibelTVLiveIE(BibelTVBaseIE):
@@ -196,14 +180,8 @@ class BibelTVLiveIE(BibelTVBaseIE):
         stream_id = self._match_id(url)
         webpage = self._download_webpage(url, stream_id)
         stream_data = self._search_json(
-            r'\\"video\\":',
-            webpage,
-            'bibeltvData',
-            stream_id,
-            transform_source=lambda jstring: js_to_json(
-                jstring.replace(
-                    '\\"',
-                    '"')))
+            r'\\"video\\":', webpage, 'bibeltvData', stream_id,
+            transform_source=lambda jstring: js_to_json(jstring.replace('\\"', '"')))
 
         formats, subtitles = self._extract_formats_and_subtitles(
             traverse_obj(stream_data, ('src', ...)), stream_id, is_live=True)

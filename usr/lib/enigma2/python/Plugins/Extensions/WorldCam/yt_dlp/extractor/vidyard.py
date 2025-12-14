@@ -29,25 +29,14 @@ class VidyardBaseIE(InfoExtractor):
 
         hls_list = isinstance(sources, dict) and sources.pop('hls', None)
         if master_m3u8_url := traverse_obj(
-            hls_list,
-            (lambda _,
-             v: v['profile'] == 'auto',
-                'url',
-                {url_or_none},
-                any)):
+                hls_list, (lambda _, v: v['profile'] == 'auto', 'url', {url_or_none}, any)):
             add_hls_fmts_and_subs(master_m3u8_url)
         if not formats:  # These are duplicate and unnecesary requests if we got 'auto' hls fmts
-            for variant_m3u8_url in traverse_obj(
-                    hls_list, (..., 'url', {url_or_none})):
+            for variant_m3u8_url in traverse_obj(hls_list, (..., 'url', {url_or_none})):
                 add_hls_fmts_and_subs(variant_m3u8_url)
 
-        for source_type, source_list in traverse_obj(
-                sources, ({dict.items}, ...)):
-            for source in traverse_obj(
-                source_list,
-                lambda _,
-                v: url_or_none(
-                    v['url'])):
+        for source_type, source_list in traverse_obj(sources, ({dict.items}, ...)):
+            for source in traverse_obj(source_list, lambda _, v: url_or_none(v['url'])):
                 profile = source.get('profile')
                 formats.append({
                     'url': source['url'],
@@ -61,9 +50,7 @@ class VidyardBaseIE(InfoExtractor):
 
     def _get_direct_subtitles(self, caption_json):
         subs = {}
-        for caption in traverse_obj(
-            caption_json, lambda _, v: url_or_none(
-                v['vttUrl'])):
+        for caption in traverse_obj(caption_json, lambda _, v: url_or_none(v['vttUrl'])):
             subs.setdefault(caption.get('language') or 'und', []).append({
                 'url': caption['vttUrl'],
                 'name': caption.get('name'),
@@ -75,33 +62,23 @@ class VidyardBaseIE(InfoExtractor):
         additional_metadata = self._download_json(
             f'https://play.vidyard.com/video/{video_id}', video_id,
             note='Downloading additional metadata', fatal=False)
-        return traverse_obj(
-            additional_metadata, {
-                'title': (
-                    'name', {str}), 'duration': (
-                    'seconds', {int_or_none}), 'thumbnails': (
-                    'thumbnailUrl', {
-                        'url': {url_or_none}}, all), 'chapters': (
-                            'videoSections', lambda _, v: float_or_none(
-                                v['milliseconds']) is not None, {
-                                    'title': (
-                                        'title', {str}), 'start_time': (
-                                            'milliseconds', {
-                                                float_or_none(
-                                                    scale=1000)}), }), })
+        return traverse_obj(additional_metadata, {
+            'title': ('name', {str}),
+            'duration': ('seconds', {int_or_none}),
+            'thumbnails': ('thumbnailUrl', {'url': {url_or_none}}, all),
+            'chapters': ('videoSections', lambda _, v: float_or_none(v['milliseconds']) is not None, {
+                'title': ('title', {str}),
+                'start_time': ('milliseconds', {float_or_none(scale=1000)}),
+            }),
+        })
 
     def _fetch_video_json(self, video_id):
         return self._download_json(
-            f'https://play.vidyard.com/player/{video_id}.json',
-            video_id)['payload']
+            f'https://play.vidyard.com/player/{video_id}.json', video_id)['payload']
 
     def _process_video_json(self, json_data, video_id):
-        formats, subtitles = self._get_formats_and_subtitles(
-            json_data['sources'], video_id)
-        self._merge_subtitles(
-            self._get_direct_subtitles(
-                json_data.get('captions')),
-            target=subtitles)
+        formats, subtitles = self._get_formats_and_subtitles(json_data['sources'], video_id)
+        self._merge_subtitles(self._get_direct_subtitles(json_data.get('captions')), target=subtitles)
 
         return {
             **self._get_additional_metadata(json_data['facadeUuid']),
@@ -128,8 +105,7 @@ class VidyardIE(VidyardBaseIE):
         r'https?://(?:embed|share)\.vidyard\.com/share/(?P<id>[\w-]+)',
         r'https?://play\.vidyard\.com/(?:player/)?(?P<id>[\w-]+)',
     ]
-    _EMBED_REGEX = [
-        r'<iframe[^>]* src=["\'](?P<url>(?:https?:)?//play\.vidyard\.com/[\w-]+)']
+    _EMBED_REGEX = [r'<iframe[^>]* src=["\'](?P<url>(?:https?:)?//play\.vidyard\.com/[\w-]+)']
     _TESTS = [{
         'url': 'https://vyexample03.hubs.vidyard.com/watch/oTDMPlUv--51Th455G5u7Q',
         'info_dict': {
@@ -443,15 +419,11 @@ class VidyardIE(VidyardBaseIE):
 
         # Extract inline/lightbox embeds
         for embed_element in re.findall(
-            r'(<(?:img|div)[^>]* class=(["\'])(?:[^>"\']* )?vidyard-player-embed(?: [^>"\']*)?\2[^>]+>)',
-                webpage):
-            if video_id := extract_attributes(
-                    embed_element[0]).get('data-uuid'):
+                r'(<(?:img|div)[^>]* class=(["\'])(?:[^>"\']* )?vidyard-player-embed(?: [^>"\']*)?\2[^>]+>)', webpage):
+            if video_id := extract_attributes(embed_element[0]).get('data-uuid'):
                 yield f'https://play.vidyard.com/{video_id}'
 
-        for embed_id in re.findall(
-            r'<script[^>]* id=["\']vidyard_embed_code_([\w-]+)["\']',
-                webpage):
+        for embed_id in re.findall(r'<script[^>]* id=["\']vidyard_embed_code_([\w-]+)["\']', webpage):
             yield f'https://play.vidyard.com/{embed_id}'
 
     def _real_extract(self, url):
@@ -459,10 +431,8 @@ class VidyardIE(VidyardBaseIE):
         video_json = self._fetch_video_json(video_id)
 
         if len(video_json['chapters']) == 1:
-            return self._process_video_json(
-                video_json['chapters'][0], video_id)
+            return self._process_video_json(video_json['chapters'][0], video_id)
 
         return self.playlist_result(
-            (self._process_video_json(
-                chapter, video_id) for chapter in video_json['chapters']), str(
-                video_json['playerUuid']), video_json.get('name'))
+            (self._process_video_json(chapter, video_id) for chapter in video_json['chapters']),
+            str(video_json['playerUuid']), video_json.get('name'))

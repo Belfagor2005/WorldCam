@@ -63,8 +63,7 @@ class WebcasterIE(InfoExtractor):
 
 class WebcasterFeedIE(InfoExtractor):
     _VALID_URL = r'https?://bl\.webcaster\.pro/feed/start/free_(?P<id>[^/]+)'
-    _EMBED_REGEX = [
-        r'<(?:object|a[^>]+class=["\']webcaster-player["\'])[^>]+data(?:-config)?=(["\']).*?config=(?P<url>https?://bl\.webcaster\.pro/feed/start/free_.*?)(?:[?&]|\1)']
+    _EMBED_REGEX = [r'<(?:object|a[^>]+class=["\']webcaster-player["\'])[^>]+data(?:-config)?=(["\']).*?config=(?P<url>https?://bl\.webcaster\.pro/feed/start/free_.*?)(?:[?&]|\1)']
     _TEST = {
         'url': 'http://bl.webcaster.pro/feed/start/free_c8cefd240aa593681c8d068cff59f407_hd/q393859/eb173f99dd5f558674dae55f4ba6806d/1480289104',
         'only_matching': True,
@@ -74,8 +73,7 @@ class WebcasterFeedIE(InfoExtractor):
         yield from super()._extract_from_webpage(url, webpage)
 
         for secure in (True, False):
-            video_url = self._og_search_video_url(
-                webpage, secure=secure, default=None)
+            video_url = self._og_search_video_url(webpage, secure=secure, default=None)
             if video_url:
                 mobj = re.search(
                     r'config=(?P<url>https?://bl\.webcaster\.pro/feed/start/free_[^?&=]+)',

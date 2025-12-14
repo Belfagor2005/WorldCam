@@ -278,8 +278,7 @@ class BandlabIE(BandlabBaseIE):
     }]
 
     def _real_extract(self, url):
-        display_id, url_type = self._match_valid_url(
-            url).group('id', 'url_type')
+        display_id, url_type = self._match_valid_url(url).group('id', 'url_type')
 
         qs = parse_qs(url)
         revision_id = traverse_obj(qs, (('revId', 'id'), 0, any))
@@ -292,8 +291,7 @@ class BandlabIE(BandlabBaseIE):
                 'posts', display_id, note='Downloading post data',
                 query=traverse_obj(qs, {'sharedKey': ('sharedKey', 0)}))
 
-            revision_id = traverse_obj(
-                post_data, (('revisionId', ('revision', 'id')), {str}, any))
+            revision_id = traverse_obj(post_data, (('revisionId', ('revision', 'id')), {str}, any))
             revision_data = traverse_obj(post_data, ('revision', {dict}))
 
             if not revision_data and not revision_id:
@@ -302,17 +300,11 @@ class BandlabIE(BandlabBaseIE):
                     return self._parse_video(post_data, url=url)
                 if post_type == 'Track':
                     return self._parse_track(post_data, url=url)
-                raise ExtractorError(
-                    f'Could not extract data for post type {
-                        post_type!r}')
+                raise ExtractorError(f'Could not extract data for post type {post_type!r}')
 
         if not revision_data:
             revision_data = self._call_api(
-                'revisions',
-                revision_id,
-                note='Downloading revision data',
-                query={
-                    'edit': 'false'})
+                'revisions', revision_id, note='Downloading revision data', query={'edit': 'false'})
 
         return self._parse_revision(revision_data, url=url)
 
@@ -355,8 +347,7 @@ class BandlabPlaylistIE(BandlabBaseIE):
         },
         'playlist_count': 15,
     }, {
-        # Embeds can contain both albums and collections with the same URL
-        # pattern. This is an album
+        # Embeds can contain both albums and collections with the same URL pattern. This is an album
         'url': 'https://www.bandlab.com/embed/collection/?id=12cc6f7f-951b-ee11-907c-00224844f303',
         'info_dict': {
             'id': '12cc6f7f-951b-ee11-907c-00224844f303',
@@ -397,8 +388,7 @@ class BandlabPlaylistIE(BandlabBaseIE):
     }]
 
     def _entries(self, album_data):
-        for post in traverse_obj(
-                album_data, ('posts', lambda _, v: v['type'])):
+        for post in traverse_obj(album_data, ('posts', lambda _, v: v['type'])):
             post_type = post['type']
             if post_type == 'Revision':
                 yield self._parse_revision(post.get('revision'))
@@ -407,12 +397,10 @@ class BandlabPlaylistIE(BandlabBaseIE):
             elif post_type == 'Video':
                 yield self._parse_video(post)
             else:
-                self.report_warning(
-                    f'Skipping unknown post type: "{post_type}"')
+                self.report_warning(f'Skipping unknown post type: "{post_type}"')
 
     def _real_extract(self, url):
-        playlist_id, playlist_type = self._match_valid_url(
-            url).group('id', 'type')
+        playlist_id, playlist_type = self._match_valid_url(url).group('id', 'type')
 
         endpoints = {
             'albums': ['albums'],
@@ -427,8 +415,7 @@ class BandlabPlaylistIE(BandlabBaseIE):
                 playlist_type = endpoint
                 break
         if error_code := playlist_data.get('errorCode'):
-            raise ExtractorError(
-                f'Could not find playlist data. Error code: "{error_code}"')
+            raise ExtractorError(f'Could not find playlist data. Error code: "{error_code}"')
 
         return self.playlist_result(
             self._entries(playlist_data), playlist_id,

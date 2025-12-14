@@ -64,14 +64,10 @@ class NiconicoLiveFD(FileDownloader):
                         return True
                     elif data.get('type') == 'error':
                         self.write_debug(data)
-                        message = traverse_obj(
-                            data, ('body', 'code', {str_or_none}), default=recv)
+                        message = traverse_obj(data, ('body', 'code', {str_or_none}), default=recv)
                         return DownloadError(message)
                     elif self.ydl.params.get('verbose', False):
-                        self.write_debug(
-                            f'Server response: {
-                                truncate_string(
-                                    recv, 100)}')
+                        self.write_debug(f'Server response: {truncate_string(recv, 100)}')
 
         def ws_main():
             reconnect = False

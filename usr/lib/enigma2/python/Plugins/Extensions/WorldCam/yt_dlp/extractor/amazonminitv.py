@@ -9,8 +9,7 @@ class AmazonMiniTVBaseIE(InfoExtractor):
         self._download_webpage(
             'https://www.amazon.in/minitv', None,
             note='Fetching guest session cookies')
-        AmazonMiniTVBaseIE.session_id = self._get_cookies(
-            'https://www.amazon.in')['session-id'].value
+        AmazonMiniTVBaseIE.session_id = self._get_cookies('https://www.amazon.in')['session-id'].value
 
     def _call_api(self, asin, data=None, note=None):
         device = {'clientId': 'ATVIN', 'deviceLocale': 'en_GB'}
@@ -35,9 +34,7 @@ class AmazonMiniTVBaseIE(InfoExtractor):
             })
 
         if resp.get('errors'):
-            raise ExtractorError(
-                f'MiniTV said: {
-                    resp["errors"][0]["message"]}')
+            raise ExtractorError(f'MiniTV said: {resp["errors"][0]["message"]}')
         elif not data:
             return resp
         return resp['data'][data['operationName']]
@@ -164,10 +161,7 @@ query content($sessionIdToken: String!, $deviceLocale: String, $contentId: ID!, 
                 'variables': {'contentId': asin},
                 'query': self._GRAPHQL_QUERY_CONTENT,
             })
-        credits_time = try_get(
-            title_info,
-            lambda x: x['timecode']['endCreditsTime'] /
-            1000)
+        credits_time = try_get(title_info, lambda x: x['timecode']['endCreditsTime'] / 1000)
         is_episode = title_info.get('vodType') == 'EPISODE'
 
         return {

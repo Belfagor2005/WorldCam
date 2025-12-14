@@ -108,8 +108,7 @@ class CorusIE(ThePlatformFeedIE):  # XXX: Do not subclass from concrete IE
             if not smil_url:
                 continue
             source_type = source.get('type')
-            note = 'Downloading{} smil file'.format(
-                ' ' + source_type if source_type else '')
+            note = 'Downloading{} smil file'.format(' ' + source_type if source_type else '')
             resp = self._download_webpage(
                 smil_url, video_id, note, fatal=False,
                 headers=self.geo_verification_headers())
@@ -138,13 +137,7 @@ class CorusIE(ThePlatformFeedIE):  # XXX: Do not subclass from concrete IE
             subtitles.setdefault(lang, []).append({'url': track_url})
 
         metadata = video.get('metadata') or {}
-
-        def get_number(x): return int_or_none(
-            video.get(
-                'pl1$' +
-                x) or metadata.get(
-                x +
-                'Number'))
+        get_number = lambda x: int_or_none(video.get('pl1$' + x) or metadata.get(x + 'Number'))
 
         return {
             'id': video_id,

@@ -40,30 +40,20 @@ class USATodayIE(InfoExtractor):
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
-        webpage = self._download_webpage(
-            update_url_query(url, {'ajax': 'true'}), display_id)
-        ui_video_data = get_element_by_attribute(
-            'class', 'ui-video-data', webpage)
+        webpage = self._download_webpage(update_url_query(url, {'ajax': 'true'}), display_id)
+        ui_video_data = get_element_by_attribute('class', 'ui-video-data', webpage)
         if not ui_video_data:
             raise ExtractorError('no video on the webpage', expected=True)
         video_data = self._parse_json(ui_video_data, display_id)
-        item = try_get(
-            video_data,
-            lambda x: x['asset_metadata']['items'],
-            dict) or {}
+        item = try_get(video_data, lambda x: x['asset_metadata']['items'], dict) or {}
 
         return {
             '_type': 'url_transparent',
-            'url': self.BRIGHTCOVE_URL_TEMPLATE % (item.get(
-                'brightcoveaccount',
-                '29906170001'),
-                item.get('brightcoveid') or video_data['brightcove_id']),
-            'id': str(
-                video_data['id']),
+            'url': self.BRIGHTCOVE_URL_TEMPLATE % (item.get('brightcoveaccount', '29906170001'), item.get('brightcoveid') or video_data['brightcove_id']),
+            'id': str(video_data['id']),
             'title': video_data['title'],
             'thumbnail': video_data.get('thumbnail'),
             'description': video_data.get('description'),
-            'duration': parse_duration(
-                video_data.get('length')),
+            'duration': parse_duration(video_data.get('length')),
             'ie_key': 'BrightcoveNew',
         }

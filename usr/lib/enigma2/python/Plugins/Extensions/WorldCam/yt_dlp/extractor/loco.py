@@ -94,8 +94,7 @@ class LocoIE(InfoExtractor):
         return jwt_decode_hs256(token)['exp'] - time.time() < 300
 
     def _get_access_token(self, video_id):
-        access_token = try_call(lambda: self._get_cookies(
-            'https://loco.com')['access_token'].value)
+        access_token = try_call(lambda: self._get_cookies('https://loco.com')['access_token'].value)
         if access_token and not self._is_jwt_expired(access_token):
             return access_token
         access_token = traverse_obj(self._download_json(
@@ -124,10 +123,8 @@ class LocoIE(InfoExtractor):
     def _real_extract(self, url):
         video_type, video_id = self._match_valid_url(url).group('type', 'id')
         webpage = self._download_webpage(url, video_id)
-        stream = traverse_obj(
-            self._search_nextjs_v13_data(
-                webpage, video_id), (..., (None, 'ssrData'), ('liveStreamData', 'stream', 'liveStream'), {dict}, any, {
-                    require('stream info')}))
+        stream = traverse_obj(self._search_nextjs_v13_data(webpage, video_id), (
+            ..., (None, 'ssrData'), ('liveStreamData', 'stream', 'liveStream'), {dict}, any, {require('stream info')}))
 
         if access_token := self._get_access_token(video_id):
             self._request_webpage(

@@ -70,28 +70,21 @@ class MegaTVComIE(MegaTVComBaseIE):
         description = get_element_by_class(
             'article-wrapper' if _is_article else 'story_content',
             webpage)
-        description = clean_html(
-            re.sub(
-                r'<script[^>]*>[^<]+</script>',
-                '',
-                description))
+        description = clean_html(re.sub(r'<script[^>]*>[^<]+</script>', '', description))
         if not description:
             description = self._og_search_description(webpage)
-        thumbnail = player_attrs.get(
-            'image') or self._og_search_thumbnail(webpage)
+        thumbnail = player_attrs.get('image') or self._og_search_thumbnail(webpage)
         timestamp = unified_timestamp(self._html_search_meta(
             'article:published_time', webpage))
         source = player_attrs.get('source')
         if not source:
             raise ExtractorError('No source found', video_id=video_id)
         if determine_ext(source) == 'm3u8':
-            formats, subs = self._extract_m3u8_formats_and_subtitles(
-                source, video_id, 'mp4')
+            formats, subs = self._extract_m3u8_formats_and_subtitles(source, video_id, 'mp4')
         else:
             formats, subs = [{'url': source}], {}
         if player_attrs.get('subs'):
-            self._merge_subtitles(
-                {'und': [{'url': player_attrs['subs']}]}, target=subs)
+            self._merge_subtitles({'und': [{'url': player_attrs['subs']}]}, target=subs)
         return {
             'id': video_id,
             'display_id': display_id,
@@ -108,8 +101,7 @@ class MegaTVComEmbedIE(MegaTVComBaseIE):
     IE_NAME = 'megatvcom:embed'
     IE_DESC = 'megatv.com embedded videos'
     _VALID_URL = r'(?:https?:)?//(?:www\.)?megatv\.com/embed/?\?p=(?P<id>\d+)'
-    _EMBED_REGEX = [
-        rf'''<iframe[^>]+?src=(?P<_q1>["'])(?P<url>{_VALID_URL})(?P=_q1)''']
+    _EMBED_REGEX = [rf'''<iframe[^>]+?src=(?P<_q1>["'])(?P<url>{_VALID_URL})(?P=_q1)''']
     _TESTS = [{
         # FIXME: Unable to extract article id
         'url': 'https://www.megatv.com/embed/?p=2020520979',
@@ -166,8 +158,7 @@ class MegaTVComEmbedIE(MegaTVComBaseIE):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
         player_attrs = self._extract_player_attrs(webpage)
-        canonical_url = player_attrs.get(
-            'share_url') or self._match_canonical_url(webpage)
+        canonical_url = player_attrs.get('share_url') or self._match_canonical_url(webpage)
         if not canonical_url:
             raise ExtractorError('canonical URL not found')
         video_id = parse_qs(canonical_url)['p'][0]

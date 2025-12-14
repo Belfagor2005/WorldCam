@@ -24,17 +24,13 @@ from ..utils import (
 )
 
 default_ns = 'http://www.w3.org/2005/SMIL21/Language'
-def _x(p): return xpath_with_ns(p, {'smil': default_ns})
+_x = lambda p: xpath_with_ns(p, {'smil': default_ns})
 
 
 class ThePlatformBaseIE(AdobePassIE):
     _TP_TLD = 'com'
 
-    def _extract_theplatform_smil(
-            self,
-            smil_url,
-            video_id,
-            note='Downloading SMIL data'):
+    def _extract_theplatform_smil(self, smil_url, video_id, note='Downloading SMIL data'):
         meta = self._download_xml(
             smil_url, video_id, note=note, query={'format': 'SMIL'},
             headers=self.geo_verification_headers())
@@ -63,8 +59,7 @@ class ThePlatformBaseIE(AdobePassIE):
             if determine_ext(media_url) == 'm3u8':
                 hdnea2 = self._get_cookies(media_url).get('hdnea2')
                 if hdnea2:
-                    _format['url'] = update_url_query(
-                        media_url, {'hdnea3': hdnea2.value})
+                    _format['url'] = update_url_query(media_url, {'hdnea3': hdnea2.value})
 
             formats.append(_format)
 
@@ -78,8 +73,7 @@ class ThePlatformBaseIE(AdobePassIE):
     @staticmethod
     def _parse_theplatform_metadata(tp_metadata):
         def site_specific_filter(*fields):
-            return lambda k, v: v and k.endswith(
-                tuple(f'${f}' for f in fields))
+            return lambda k, v: v and k.endswith(tuple(f'${f}' for f in fields))
 
         info = traverse_obj(tp_metadata, {
             'title': ('title', {str}),
@@ -106,18 +100,12 @@ class ThePlatformBaseIE(AdobePassIE):
             'start_time': ('startTime', {float_or_none(scale=1000)}),
             'end_time': ('endTime', {float_or_none(scale=1000)}),
         }))
-        # Ignore pointless single chapters from short videos that span the
-        # entire video's duration
+        # Ignore pointless single chapters from short videos that span the entire video's duration
         if len(chapters) > 1 or traverse_obj(chapters, (0, 'end_time')):
             info['chapters'] = chapters
 
         info['subtitles'] = {}
-        for caption in traverse_obj(
-            tp_metadata,
-            ('captions',
-             lambda _,
-             v: url_or_none(
-                 v['src']))):
+        for caption in traverse_obj(tp_metadata, ('captions', lambda _, v: url_or_none(v['src']))):
             info['subtitles'].setdefault(caption.get('lang') or 'en', []).append({
                 'url': caption['src'],
                 'ext': mimetype2ext(caption.get('type')),
@@ -144,8 +132,7 @@ class ThePlatformIE(ThePlatformBaseIE):
     ]
 
     _TESTS = [{
-        # from
-        # http://www.metacafe.com/watch/cb-e9I_cZgTgIPd/blackberrys_big_bold_z30/
+        # from http://www.metacafe.com/watch/cb-e9I_cZgTgIPd/blackberrys_big_bold_z30/
         'url': 'http://link.theplatform.com/s/dJ5BDC/e9I_cZgTgIPd/meta.smil?format=smil&Tracking=true&mbr=true',
         'info_dict': {
             'id': 'e9I_cZgTgIPd',
@@ -163,8 +150,7 @@ class ThePlatformIE(ThePlatformBaseIE):
         },
         'skip': '404 Not Found',
     }, {
-        # from
-        # http://www.cnet.com/videos/tesla-model-s-a-second-step-towards-a-cleaner-motoring-future/
+        # from http://www.cnet.com/videos/tesla-model-s-a-second-step-towards-a-cleaner-motoring-future/
         'url': 'http://link.theplatform.com/s/kYEXFC/22d_qsQ6MIRT',
         'info_dict': {
             'id': '22d_qsQ6MIRT',
@@ -230,17 +216,9 @@ class ThePlatformIE(ThePlatformBaseIE):
         def str_to_hex(str_data):
             return str_data.encode('ascii').hex()
 
-        relative_path = re.match(
-            r'https?://link\.theplatform\.com/s/([^?]+)',
-            url).group(1)
-        clear_text = bytes.fromhex(
-            flags +
-            expiration_date +
-            str_to_hex(relative_path))
-        checksum = hmac.new(
-            sig_key.encode('ascii'),
-            clear_text,
-            hashlib.sha1).hexdigest()
+        relative_path = re.match(r'https?://link\.theplatform\.com/s/([^?]+)', url).group(1)
+        clear_text = bytes.fromhex(flags + expiration_date + str_to_hex(relative_path))
+        checksum = hmac.new(sig_key.encode('ascii'), clear_text, hashlib.sha1).hexdigest()
         sig = flags + expiration_date + checksum + str_to_hex(sig_secret)
         return f'{url}&sig={sig}'
 
@@ -281,14 +259,12 @@ class ThePlatformIE(ThePlatformBaseIE):
                     break
             if feed_id is None:
                 raise ExtractorError('Unable to find feed id')
-            return self.url_result(
-                'http://feed.theplatform.com/f/{}/{}?byGuid={}'.format(
-                    provider_id, feed_id, qs_dict['guid'][0]))
+            return self.url_result('http://feed.theplatform.com/f/{}/{}?byGuid={}'.format(
+                provider_id, feed_id, qs_dict['guid'][0]))
 
         if smuggled_data.get('force_smil_url', False):
             smil_url = url
-        # Explicitly specified SMIL (see
-        # https://github.com/ytdl-org/youtube-dl/issues/7385)
+        # Explicitly specified SMIL (see https://github.com/ytdl-org/youtube-dl/issues/7385)
         elif '/guid/' in url:
             headers = {}
             source_url = smuggled_data.get('source_url')
@@ -306,10 +282,8 @@ class ThePlatformIE(ThePlatformBaseIE):
             config_url = url + '&form=json'
             config_url = config_url.replace('swf/', 'config/')
             config_url = config_url.replace('onsite/', 'onsite/config/')
-            config = self._download_json(
-                config_url, video_id, 'Downloading config')
-            release_url = config.get(
-                'releaseUrl') or f'http://link.theplatform.com/s/{path}?mbr=true'
+            config = self._download_json(config_url, video_id, 'Downloading config')
+            release_url = config.get('releaseUrl') or f'http://link.theplatform.com/s/{path}?mbr=true'
             smil_url = release_url + '&formats=MPEG4&manifest=f4m'
         else:
             smil_url = f'http://link.theplatform.com/s/{path}?mbr=true'
@@ -321,18 +295,10 @@ class ThePlatformIE(ThePlatformBaseIE):
         formats, subtitles = self._extract_theplatform_smil(smil_url, video_id)
 
         # With some sites, manifest URL must be forced to extract HLS formats
-        if not traverse_obj(
-                formats,
-                lambda _,
-                v: v['format_id'].startswith('hls')):
-            m3u8_url = update_url(
-                url, query='mbr=true&manifest=m3u', fragment=None)
+        if not traverse_obj(formats, lambda _, v: v['format_id'].startswith('hls')):
+            m3u8_url = update_url(url, query='mbr=true&manifest=m3u', fragment=None)
             urlh = self._request_webpage(
-                HEADRequest(m3u8_url),
-                video_id,
-                'Checking for HLS formats',
-                'No HLS formats found',
-                fatal=False)
+                HEADRequest(m3u8_url), video_id, 'Checking for HLS formats', 'No HLS formats found', fatal=False)
             if urlh and urlhandle_detect_ext(urlh) == 'm3u8':
                 m3u8_fmts, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
                     m3u8_url, video_id, m3u8_id='hls', fatal=False)
@@ -340,8 +306,7 @@ class ThePlatformIE(ThePlatformBaseIE):
                 self._merge_subtitles(m3u8_subs, target=subtitles)
 
         ret = self._extract_theplatform_metadata(path, video_id)
-        combined_subtitles = self._merge_subtitles(
-            ret.get('subtitles', {}), subtitles)
+        combined_subtitles = self._merge_subtitles(ret.get('subtitles', {}), subtitles)
         ret.update({
             'id': video_id,
             'formats': formats,
@@ -355,8 +320,7 @@ class ThePlatformFeedIE(ThePlatformBaseIE):
     _URL_TEMPLATE = '%s//feed.theplatform.com/f/%s/%s?form=json&%s'
     _VALID_URL = r'https?://feed\.theplatform\.com/f/(?P<provider_id>[^/]+)/(?P<feed_id>[^?/]+)\?(?:[^&]+&)*(?P<filter>by(?:Gui|I)d=(?P<id>[^&]+))'
     _TESTS = [{
-        # From
-        # http://player.theplatform.com/p/7wvmTC/MSNBCEmbeddedOffSite?guid=n_hardball_5biden_140207
+        # From http://player.theplatform.com/p/7wvmTC/MSNBCEmbeddedOffSite?guid=n_hardball_5biden_140207
         'url': 'http://feed.theplatform.com/f/7wvmTC/msnbc_video-p-test?form=json&pretty=true&range=-40&byGuid=n_hardball_5biden_140207',
         'md5': '6e32495b5073ab414471b615c5ded394',
         'info_dict': {
@@ -376,20 +340,10 @@ class ThePlatformFeedIE(ThePlatformBaseIE):
         'only_matching': True,
     }]
 
-    def _extract_feed_info(
-            self,
-            provider_id,
-            feed_id,
-            filter_query,
-            video_id,
-            custom_fields=None,
-            asset_types_query={},
-            account_id=None):
-        real_url = self._URL_TEMPLATE % (
-            self.http_scheme(), provider_id, feed_id, filter_query)
+    def _extract_feed_info(self, provider_id, feed_id, filter_query, video_id, custom_fields=None, asset_types_query={}, account_id=None):
+        real_url = self._URL_TEMPLATE % (self.http_scheme(), provider_id, feed_id, filter_query)
         entry = self._download_json(real_url, video_id)['entries'][0]
-        main_smil_url = 'http://link.theplatform.com/s/%s/media/guid/%d/%s' % (
-            provider_id, account_id, entry['guid']) if account_id else entry.get('plmedia$publicUrl')
+        main_smil_url = 'http://link.theplatform.com/s/%s/media/guid/%d/%s' % (provider_id, account_id, entry['guid']) if account_id else entry.get('plmedia$publicUrl')
 
         formats = []
         subtitles = {}
@@ -402,8 +356,7 @@ class ThePlatformFeedIE(ThePlatformBaseIE):
             if first_video_id is None:
                 first_video_id = cur_video_id
                 duration = float_or_none(item.get('plfile$duration'))
-            file_asset_types = item.get('plfile$assetTypes') or parse_qs(smil_url)[
-                'assetTypes']
+            file_asset_types = item.get('plfile$assetTypes') or parse_qs(smil_url)['assetTypes']
             for asset_type in file_asset_types:
                 if asset_type in asset_types:
                     continue
@@ -427,11 +380,9 @@ class ThePlatformFeedIE(ThePlatformBaseIE):
         } for thumbnail in entry.get('media$thumbnails', [])]
 
         timestamp = int_or_none(entry.get('media$availableDate'), scale=1000)
-        categories = [item['media$name']
-                      for item in entry.get('media$categories', [])]
+        categories = [item['media$name'] for item in entry.get('media$categories', [])]
 
-        ret = self._extract_theplatform_metadata(
-            f'{provider_id}/{first_video_id}', video_id)
+        ret = self._extract_theplatform_metadata(f'{provider_id}/{first_video_id}', video_id)
         subtitles = self._merge_subtitles(subtitles, ret['subtitles'])
         ret.update({
             'id': video_id,
@@ -455,5 +406,4 @@ class ThePlatformFeedIE(ThePlatformBaseIE):
         feed_id = mobj.group('feed_id')
         filter_query = mobj.group('filter')
 
-        return self._extract_feed_info(
-            provider_id, feed_id, filter_query, video_id)
+        return self._extract_feed_info(provider_id, feed_id, filter_query, video_id)

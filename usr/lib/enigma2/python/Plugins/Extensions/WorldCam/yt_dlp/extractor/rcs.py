@@ -83,22 +83,16 @@ class RCSBaseIE(InfoExtractor):
             type_ = mimetype2ext(source['mimeType'])
             if type_ == 'm3u8' and '-vh.akamaihd' in url:
                 # still needed for some old content: see _TESTS #3
-                matches = re.search(
-                    r'(?:https?:)?//(?P<host>[\w\.\-]+)\.net/i(?P<path>.+)$', url)
+                matches = re.search(r'(?:https?:)?//(?P<host>[\w\.\-]+)\.net/i(?P<path>.+)$', url)
                 if matches:
-                    url = f'https://vod.rcsobjects.it/hls/{
-                        self._MIGRATION_MAP[
-                            matches.group("host")]}{
-                        matches.group("path")}'
+                    url = f'https://vod.rcsobjects.it/hls/{self._MIGRATION_MAP[matches.group("host")]}{matches.group("path")}'
             if traverse_obj(video, ('mediaProfile', 'geoblocking')) or (
                     type_ == 'm3u8' and 'fcs.quotidiani_!' in url):
                 url = url.replace('vod.rcsobjects', 'vod-it.rcsobjects')
             if type_ == 'm3u8' and 'vod' in url:
                 url = url.replace('.csmil', '.urlset')
             if type_ == 'mp3':
-                url = url.replace(
-                    'media2vam-corriere-it.akamaized.net',
-                    'vod.rcsobjects.it/corriere')
+                url = url.replace('media2vam-corriere-it.akamaized.net', 'vod.rcsobjects.it/corriere')
 
             yield {
                 'type': type_,
@@ -110,23 +104,15 @@ class RCSBaseIE(InfoExtractor):
         for f in m3u8_formats:
             if f['vcodec'] == 'none':
                 continue
-            http_url = re.sub(
-                r'(https?://[^/]+)/hls/([^?#]+?\.mp4).+',
-                r'\g<1>/\g<2>',
-                f['url'])
+            http_url = re.sub(r'(https?://[^/]+)/hls/([^?#]+?\.mp4).+', r'\g<1>/\g<2>', f['url'])
             if http_url == f['url']:
                 continue
 
             http_f = f.copy()
             del http_f['manifest_url']
-            format_id = try_call(
-                lambda: http_f['format_id'].replace(
-                    'hls-', 'https-'))
-            urlh = self._request_webpage(
-                HEADRequest(http_url),
-                video_id,
-                fatal=False,
-                note=f'Check filesize for {format_id}')
+            format_id = try_call(lambda: http_f['format_id'].replace('hls-', 'https-'))
+            urlh = self._request_webpage(HEADRequest(http_url), video_id, fatal=False,
+                                         note=f'Check filesize for {format_id}')
             if not urlh:
                 continue
 
@@ -159,17 +145,11 @@ class RCSBaseIE(InfoExtractor):
         cdn, video_id = self._match_valid_url(url).group('cdn', 'id')
         display_id, video_data = None, None
 
-        if re.match(
-                self._UUID_RE,
-                video_id) or re.match(
-                self._RCS_ID_RE,
-                video_id):
+        if re.match(self._UUID_RE, video_id) or re.match(self._RCS_ID_RE, video_id):
             url = f'https://video.{cdn}/video-json/{video_id}'
         else:
             webpage = self._download_webpage(url, video_id)
-            data_config = get_element_html_by_id(
-                'divVideoPlayer', webpage) or get_element_html_by_class(
-                'divVideoPlayer', webpage)
+            data_config = get_element_html_by_id('divVideoPlayer', webpage) or get_element_html_by_class('divVideoPlayer', webpage)
 
             if data_config:
                 data_config = self._parse_json(
@@ -177,8 +157,7 @@ class RCSBaseIE(InfoExtractor):
                     video_id, fatal=False) or {}
                 if data_config.get('newspaper'):
                     cdn = f'{data_config["newspaper"]}.it'
-                display_id, video_id = video_id, data_config.get(
-                    'uuid') or video_id
+                display_id, video_id = video_id, data_config.get('uuid') or video_id
                 url = f'https://video.{cdn}/video-json/{video_id}'
             else:
                 json_url = self._search_regex(
@@ -189,22 +168,15 @@ class RCSBaseIE(InfoExtractor):
                     )\1;''',
                     webpage, video_id, group='url', default=None)
                 if json_url:
-                    video_data = self._download_json(
-                        sanitize_url(json_url, scheme='https'), video_id)
-                    display_id, video_id = video_id, video_data.get(
-                        'id') or video_id
+                    video_data = self._download_json(sanitize_url(json_url, scheme='https'), video_id)
+                    display_id, video_id = video_id, video_data.get('id') or video_id
 
         if not video_data:
             webpage = self._download_webpage(url, video_id)
 
             video_data = self._search_json(
-                '##start-video##',
-                webpage,
-                'video data',
-                video_id,
-                default=None,
-                end_pattern='##end-video##',
-                transform_source=js_to_json)
+                '##start-video##', webpage, 'video data', video_id, default=None,
+                end_pattern='##end-video##', transform_source=js_to_json)
 
             if not video_data:
                 # try search for iframes
@@ -223,17 +195,11 @@ class RCSBaseIE(InfoExtractor):
             'id': video_id,
             'display_id': display_id,
             'title': video_data.get('title'),
-            'description': (
-                clean_html(
-                    video_data.get('description')) or clean_html(
-                    video_data.get('htmlDescription')) or self._html_search_meta(
-                    'description',
-                    webpage)),
+            'description': (clean_html(video_data.get('description'))
+                            or clean_html(video_data.get('htmlDescription'))
+                            or self._html_search_meta('description', webpage)),
             'uploader': video_data.get('provider') or cdn,
-            'formats': list(
-                self._create_formats(
-                    self._get_video_src(video_data),
-                    video_id)),
+            'formats': list(self._create_formats(self._get_video_src(video_data), video_id)),
         }
 
 
@@ -261,21 +227,23 @@ class RCSEmbedsIE(RCSBaseIE):
                     )
                 \.it/video-embed/.+?)
             \1''']
-    _TESTS = [{'url': 'https://video.rcs.it/video-embed/iodonna-0001585037',
-               'md5': '0faca97df525032bb9847f690bc3720c',
-               'info_dict': {'id': 'iodonna-0001585037',
-                             'ext': 'mp4',
-                             'title': 'Sky Arte racconta Madonna nella serie "Artist to icon"',
-                             'description': 'md5:65b09633df9ffee57f48b39e34c9e067',
-                             'uploader': 'rcs.it',
-                             },
-               },
-              {'url': 'https://video.gazzanet.gazzetta.it/video-embed/gazzanet-mo05-0000260789',
-               'only_matching': True,
-               },
-              {'url': 'https://video.gazzetta.it/video-embed/49612410-00ca-11eb-bcd8-30d4253e0140',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://video.rcs.it/video-embed/iodonna-0001585037',
+        'md5': '0faca97df525032bb9847f690bc3720c',
+        'info_dict': {
+            'id': 'iodonna-0001585037',
+            'ext': 'mp4',
+            'title': 'Sky Arte racconta Madonna nella serie "Artist to icon"',
+            'description': 'md5:65b09633df9ffee57f48b39e34c9e067',
+            'uploader': 'rcs.it',
+        },
+    }, {
+        'url': 'https://video.gazzanet.gazzetta.it/video-embed/gazzanet-mo05-0000260789',
+        'only_matching': True,
+    }, {
+        'url': 'https://video.gazzetta.it/video-embed/49612410-00ca-11eb-bcd8-30d4253e0140',
+        'only_matching': True,
+    }]
     _WEBPAGE_TESTS = [{
         'url': 'https://www.iodonna.it/video-iodonna/personaggi-video/monica-bellucci-piu-del-lavoro-oggi-per-me-sono-importanti-lamicizia-e-la-famiglia/',
         'info_dict': {
@@ -294,11 +262,7 @@ class RCSEmbedsIE(RCSBaseIE):
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
-        return map(
-            cls._sanitize_url,
-            super()._extract_embed_urls(
-                url,
-                webpage))
+        return map(cls._sanitize_url, super()._extract_embed_urls(url, webpage))
 
 
 class RCSIE(RCSBaseIE):

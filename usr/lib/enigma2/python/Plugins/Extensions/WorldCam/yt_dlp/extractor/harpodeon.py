@@ -51,8 +51,7 @@ class HarpodeonIE(InfoExtractor):
             webpage, 'title', group=('title', 'creator', 'release_year'),
             fatal=False) or (None, None, None)
 
-        hp_base = self._html_search_regex(
-            r'hpBase\(\s*["\']([^"\']+)', webpage, 'hp_base')
+        hp_base = self._html_search_regex(r'hpBase\(\s*["\']([^"\']+)', webpage, 'hp_base')
 
         hp_inject_video, hp_resolution = self._search_regex(
             r'''(?x)
@@ -64,12 +63,8 @@ class HarpodeonIE(InfoExtractor):
             'id': video_id,
             'title': title,
             'url': f'{hp_base}{hp_inject_video}_{hp_resolution}.mp4',
-            'http_headers': {
-                'Referer': url},
-            'description': self._html_search_meta(
-                'description',
-                webpage,
-                fatal=False),
+            'http_headers': {'Referer': url},
+            'description': self._html_search_meta('description', webpage, fatal=False),
             'creator': creator,
             'release_year': int_or_none(release_year),
         }

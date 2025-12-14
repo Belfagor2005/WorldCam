@@ -160,8 +160,7 @@ class YoukuIE(InfoExtractor):
             error_note = error.get('note')
             if error_note is not None and '因版权原因无法观看此视频' in error_note:
                 raise ExtractorError(
-                    'Youku said: Sorry, this video is available in China only',
-                    expected=True)
+                    'Youku said: Sorry, this video is available in China only', expected=True)
             elif error_note and '该视频被设为私密' in error_note:
                 raise ExtractorError(
                     'Youku said: Sorry, this video is private', expected=True)
@@ -240,12 +239,8 @@ class YoukuShowIE(InfoExtractor):
             transform_source=lambda s: js_to_json(strip_jsonp(s))).get('html')
         if playlist_data is None:
             return [None, None]
-        drama_list = (
-            get_element_by_class(
-                'p-drama-grid',
-                playlist_data) or get_element_by_class(
-                'p-drama-half-row',
-                playlist_data))
+        drama_list = (get_element_by_class('p-drama-grid', playlist_data)
+                      or get_element_by_class('p-drama-half-row', playlist_data))
         if drama_list is None:
             raise ExtractorError('No episodes found')
         video_urls = re.findall(r'<a[^>]+href="([^"]+)"', drama_list)

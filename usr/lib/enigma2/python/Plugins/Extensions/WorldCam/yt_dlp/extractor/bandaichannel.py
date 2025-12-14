@@ -28,9 +28,6 @@ class BandaiChannelIE(BrightcoveNewBaseIE):
         attrs = extract_attributes(self._search_regex(
             r'(<video-js[^>]+\bid="bcplayer"[^>]*>)', webpage, 'player'))
         bc = self._download_json(
-            'https://pbifcd.b-ch.com/v1/playbackinfo/ST/70/' +
-            attrs['data-info'],
-            video_id,
-            headers={
-                'X-API-KEY': attrs['data-auth'].strip()})['bc']
+            'https://pbifcd.b-ch.com/v1/playbackinfo/ST/70/' + attrs['data-info'],
+            video_id, headers={'X-API-KEY': attrs['data-auth'].strip()})['bc']
         return self._parse_brightcove_metadata(bc, bc['id'])

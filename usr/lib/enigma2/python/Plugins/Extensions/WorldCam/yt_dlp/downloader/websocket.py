@@ -33,22 +33,14 @@ class FFmpegSinkFD(FileDownloader):
                 return FFmpegFD.get_basename()
 
             def on_process_started(self, proc, stdin):
-                thread = threading.Thread(
-                    target=asyncio.run, daemon=True, args=(
-                        call_conn(
-                            proc, stdin), ))
+                thread = threading.Thread(target=asyncio.run, daemon=True, args=(call_conn(proc, stdin), ))
                 thread.start()
 
-        return FFmpegStdinFD(
-            self.ydl,
-            self.params or {}).download(
-            filename,
-            info_copy)
+        return FFmpegStdinFD(self.ydl, self.params or {}).download(filename, info_copy)
 
     async def real_connection(self, sink, info_dict):
         """ Override this in subclasses """
-        raise NotImplementedError(
-            'This method must be implemented by subclasses')
+        raise NotImplementedError('This method must be implemented by subclasses')
 
 
 class WebSocketFragmentFD(FFmpegSinkFD):

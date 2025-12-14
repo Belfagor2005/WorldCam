@@ -35,8 +35,7 @@ class PhoenixIE(ZDFBaseIE):
         'url': 'https://www.phoenix.de/sendungen/dokumentationen/mit-dem-jumbo-durch-die-nacht-a-89625.html',
         'only_matching': True,
     }, {
-        # Same as
-        # https://www.zdf.de/politik/phoenix-sendungen/die-gesten-der-maechtigen-100.html
+        # Same as https://www.zdf.de/politik/phoenix-sendungen/die-gesten-der-maechtigen-100.html
         'url': 'https://www.phoenix.de/sendungen/dokumentationen/gesten-der-maechtigen-i-a-89468.html?ref=suche',
         'only_matching': True,
     }]
@@ -83,10 +82,7 @@ class PhoenixIE(ZDFBaseIE):
             str)
         episode = title if details.get('contentType') == 'episode' else None
 
-        teaser_images = try_get(
-            details,
-            lambda x: x['teaserImageRef']['layouts'],
-            dict) or {}
+        teaser_images = try_get(details, lambda x: x['teaserImageRef']['layouts'], dict) or {}
         thumbnails = self._extract_thumbnails(teaser_images)
 
         return merge_dicts(info, {

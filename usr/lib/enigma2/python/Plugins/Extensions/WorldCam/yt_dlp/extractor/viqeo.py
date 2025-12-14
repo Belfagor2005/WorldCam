@@ -16,23 +16,24 @@ class ViqeoIE(InfoExtractor):
                         )
                         (?P<id>[\da-f]+)
                     '''
-    _EMBED_REGEX = [
-        r'<iframe[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//cdn\.viqeo\.tv/embed/*\?.*?\bvid=[\da-f]+.*?)\1']
-    _TESTS = [{'url': 'https://cdn.viqeo.tv/embed/?vid=cde96f09d25f39bee837',
-               'md5': 'a169dd1a6426b350dca4296226f21e76',
-               'info_dict': {'id': 'cde96f09d25f39bee837',
-                             'ext': 'mp4',
-                             'title': 'cde96f09d25f39bee837',
-                             'thumbnail': r're:https?://.+\.jpg',
-                             'duration': 76,
-                             },
-               },
-              {'url': 'viqeo:cde96f09d25f39bee837',
-               'only_matching': True,
-               },
-              {'url': 'https://api.viqeo.tv/v1/data/startup?video%5B%5D=71bbec412ade45c3216c&profile=112',
-               'only_matching': True,
-               }]
+    _EMBED_REGEX = [r'<iframe[^>]+\bsrc=(["\'])(?P<url>(?:https?:)?//cdn\.viqeo\.tv/embed/*\?.*?\bvid=[\da-f]+.*?)\1']
+    _TESTS = [{
+        'url': 'https://cdn.viqeo.tv/embed/?vid=cde96f09d25f39bee837',
+        'md5': 'a169dd1a6426b350dca4296226f21e76',
+        'info_dict': {
+            'id': 'cde96f09d25f39bee837',
+            'ext': 'mp4',
+            'title': 'cde96f09d25f39bee837',
+            'thumbnail': r're:https?://.+\.jpg',
+            'duration': 76,
+        },
+    }, {
+        'url': 'viqeo:cde96f09d25f39bee837',
+        'only_matching': True,
+    }, {
+        'url': 'https://api.viqeo.tv/v1/data/startup?video%5B%5D=71bbec412ade45c3216c&profile=112',
+        'only_matching': True,
+    }]
     _WEBPAGE_TESTS = [{
         'url': 'https://viqeo.tv/',
         'info_dict': {

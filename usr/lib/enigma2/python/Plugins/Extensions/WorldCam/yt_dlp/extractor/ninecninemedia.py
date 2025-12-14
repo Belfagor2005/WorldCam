@@ -17,12 +17,9 @@ class NineCNineMediaIE(InfoExtractor):
     def _real_extract(self, url):
         destination_code, content_id = self._match_valid_url(url).groups()
         api_base_url = self._API_BASE_TEMPLATE % (destination_code, content_id)
-        content = self._download_json(
-            api_base_url,
-            content_id,
-            query={
-                '$include': '[Media.Name,Season,ContentPackages.Duration,ContentPackages.Id]',
-            })
+        content = self._download_json(api_base_url, content_id, query={
+            '$include': '[Media.Name,Season,ContentPackages.Duration,ContentPackages.Id]',
+        })
         title = content['Name']
         content_package = content['ContentPackages'][0]
         package_id = content_package['Id']
@@ -32,8 +29,8 @@ class NineCNineMediaIE(InfoExtractor):
                 '$include': '[HasClosedCaptions]',
             })
 
-        if (not self.get_param('allow_unplayable_formats') and try_get(
-                content_package, lambda x: x['Constraints']['Security']['Type'])):
+        if (not self.get_param('allow_unplayable_formats')
+                and try_get(content_package, lambda x: x['Constraints']['Security']['Type'])):
             self.report_drm(content_id)
 
         manifest_base_url = content_package_url + 'manifest.'
@@ -130,7 +127,4 @@ class CPTwentyFourIE(InfoExtractor):
         video_id, destination = self._search_regex(
             r'getAuthStates\("(?P<id>[^"]+)",\s?"(?P<destination>[^"]+)"\);',
             webpage, 'video id and destination', group=('id', 'destination'))
-        return self.url_result(
-            f'9c9media:{destination}:{video_id}',
-            NineCNineMediaIE,
-            video_id)
+        return self.url_result(f'9c9media:{destination}:{video_id}', NineCNineMediaIE, video_id)

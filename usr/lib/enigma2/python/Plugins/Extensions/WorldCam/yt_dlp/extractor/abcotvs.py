@@ -59,18 +59,15 @@ class ABCOTVSIE(InfoExtractor):
                 'key': f'otv.web.{station}.story',
                 'station': station,
             })['data']
-        video = try_get(
-            data,
-            lambda x: x['featuredMedia']['video'],
-            dict) or data
+        video = try_get(data, lambda x: x['featuredMedia']['video'], dict) or data
         video_id = str(dict_get(video, ('id', 'publishedKey'), video_id))
         title = video.get('title') or video['linkText']
 
         formats = []
         m3u8_url = video.get('m3u8')
         if m3u8_url:
-            formats = self._extract_m3u8_formats(video['m3u8'].split(
-                '?')[0], display_id, 'mp4', m3u8_id='hls', fatal=False)
+            formats = self._extract_m3u8_formats(
+                video['m3u8'].split('?')[0], display_id, 'mp4', m3u8_id='hls', fatal=False)
         mp4_url = video.get('mp4')
         if mp4_url:
             formats.append({
@@ -84,12 +81,15 @@ class ABCOTVSIE(InfoExtractor):
         image = video.get('image') or {}
 
         return {
-            'id': video_id, 'display_id': display_id, 'title': title, 'description': dict_get(
-                video, ('description', 'caption'), try_get(
-                    video, lambda x: x['meta']['description'])), 'thumbnail': dict_get(
-                image, ('source', 'dynamicSource')), 'timestamp': int_or_none(
-                    video.get('date')), 'duration': int_or_none(
-                        video.get('length')), 'formats': formats, }
+            'id': video_id,
+            'display_id': display_id,
+            'title': title,
+            'description': dict_get(video, ('description', 'caption'), try_get(video, lambda x: x['meta']['description'])),
+            'thumbnail': dict_get(image, ('source', 'dynamicSource')),
+            'timestamp': int_or_none(video.get('date')),
+            'duration': int_or_none(video.get('length')),
+            'formats': formats,
+        }
 
 
 class ABCOTVSClipsIE(InfoExtractor):
@@ -113,9 +113,7 @@ class ABCOTVSClipsIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        video_data = self._download_json(
-            'https://clips.abcotvs.com/vogo/video/getByIds?ids=' + video_id,
-            video_id)['results'][0]
+        video_data = self._download_json('https://clips.abcotvs.com/vogo/video/getByIds?ids=' + video_id, video_id)['results'][0]
         title = video_data['title']
         formats = self._extract_m3u8_formats(
             video_data['videoURL'].split('?')[0], video_id, 'mp4')

@@ -47,10 +47,7 @@ body > figure > img {
 }
 '''
     _STYLESHEET = re.sub(r'\s+', ' ', _STYLESHEET)
-    _STYLESHEET = re.sub(
-        r'\B \B|(?<=[\w\-]) (?=[^\w\-])|(?<=[^\w\-]) (?=[\w\-])',
-        '',
-        _STYLESHEET)
+    _STYLESHEET = re.sub(r'\B \B|(?<=[\w\-]) (?=[^\w\-])|(?<=[^\w\-]) (?=[\w\-])', '', _STYLESHEET)
 
     @staticmethod
     def _escape_mime(s):
@@ -90,12 +87,7 @@ body > figure > img {
             except (KeyError, ValueError, TypeError):
                 t1 = None
                 output.write(f'<figcaption>Slide #{i + 1}</figcaption>')
-            output.write(
-                f'<img src="cid:{
-                    self._gen_cid(
-                        i,
-                        frag,
-                        frag_boundary)}">')
+            output.write(f'<img src="cid:{self._gen_cid(i, frag, frag_boundary)}">')
             output.write('</figure>')
             t0 = t1
 
@@ -164,13 +156,9 @@ body > figure > img {
             frag_header.write(
                 b'--%b\r\n' % frag_boundary.encode('us-ascii'))
             frag_header.write(
-                b'Content-ID: <%b>\r\n' %
-                self._gen_cid(
-                    i,
-                    fragment,
-                    frag_boundary).encode('us-ascii'))
-            frag_header.write(b'Content-type: %b\r\n' %
-                              f'image/{imghdr.what(h=frag_content) or "jpeg"}'.encode())
+                b'Content-ID: <%b>\r\n' % self._gen_cid(i, fragment, frag_boundary).encode('us-ascii'))
+            frag_header.write(
+                b'Content-type: %b\r\n' % f'image/{imghdr.what(h=frag_content) or "jpeg"}'.encode())
             frag_header.write(
                 b'Content-length: %u\r\n' % len(frag_content))
             frag_header.write(

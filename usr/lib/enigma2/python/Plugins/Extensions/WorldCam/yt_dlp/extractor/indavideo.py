@@ -15,8 +15,7 @@ class IndavideoEmbedIE(InfoExtractor):
     #   https://auto.indavideo.hu/video/Sajat_utanfutoban_a_kis_tacsko
     #   https://film.indavideo.hu/video/f_farkaslesen
     #   https://palyazat.indavideo.hu/video/Embertelen_dal_Dodgem_egyuttes
-    _EMBED_REGEX = [
-        r'<iframe[^>]+\bsrc=["\'](?P<url>(?:https?:)//embed\.indavideo\.hu/player/video/[\da-f]+)']
+    _EMBED_REGEX = [r'<iframe[^>]+\bsrc=["\'](?P<url>(?:https?:)//embed\.indavideo\.hu/player/video/[\da-f]+)']
     _TESTS = [{
         'url': 'https://indavideo.hu/player/video/1bdc3c6d80/',
         'md5': 'c8a507a1c7410685f83a06eaeeaafeab',
@@ -93,12 +92,8 @@ class IndavideoEmbedIE(InfoExtractor):
 
         formats = []
         for video_url in video_urls:
-            height = int_or_none(
-                self._search_regex(
-                    r'\.(\d{3,4})\.mp4(?:\?|$)',
-                    video_url,
-                    'height',
-                    default=None))
+            height = int_or_none(self._search_regex(
+                r'\.(\d{3,4})\.mp4(?:\?|$)', video_url, 'height', default=None))
             if not height and len(filesh) == 1:
                 height = int_or_none(next(iter(filesh.keys())))
             token = filesh.get(str(height))

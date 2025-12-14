@@ -122,23 +122,15 @@ class LSMLREmbedIE(InfoExtractor):
             webpage, 'player json', group=('player', 'media'))
 
         player_json = self._parse_json(
-            player_data,
-            video_id,
-            transform_source=js_to_json,
-            fatal=False) or {}
-        media_json = self._parse_json(
-            media_data, video_id, transform_source=js_to_json)
+            player_data, video_id, transform_source=js_to_json, fatal=False) or {}
+        media_json = self._parse_json(media_data, video_id, transform_source=js_to_json)
 
         entries = []
-        for item in traverse_obj(
-                media_json, (('audio', 'video'), lambda _, v: v['id'])):
+        for item in traverse_obj(media_json, (('audio', 'video'), lambda _, v: v['id'])):
             formats = []
-            for source_url in traverse_obj(
-                    item, ('sources', ..., 'file', {url_or_none})):
+            for source_url in traverse_obj(item, ('sources', ..., 'file', {url_or_none})):
                 if determine_ext(source_url) == 'm3u8':
-                    formats.extend(
-                        self._extract_m3u8_formats(
-                            source_url, video_id, fatal=False))
+                    formats.extend(self._extract_m3u8_formats(source_url, video_id, fatal=False))
                 else:
                     formats.append({'url': source_url})
 
@@ -218,12 +210,9 @@ class LSMLTVEmbedIE(InfoExtractor):
             r'window\.ltvEmbedPayload\s*=', webpage, 'embed json', video_id)
         embed_type = traverse_obj(data, ('source', 'name', {str}))
 
-        if embed_type in (
-            'backscreen',
-                'telia'):  # 'telia' only for backwards compat
+        if embed_type in ('backscreen', 'telia'):  # 'telia' only for backwards compat
             ie_key = 'CloudyCDN'
-            embed_url = traverse_obj(
-                data, ('source', 'embed_url', {url_or_none}))
+            embed_url = traverse_obj(data, ('source', 'embed_url', {url_or_none}))
         elif embed_type == 'youtube':
             ie_key = 'Youtube'
             embed_url = traverse_obj(data, ('source', 'id', {str}))
@@ -240,42 +229,42 @@ class LSMLTVEmbedIE(InfoExtractor):
 
 class LSMReplayIE(InfoExtractor):
     _VALID_URL = r'https?://replay\.lsm\.lv/[^/?#]+/(?:skaties/|klausies/)?(?:ieraksts|statja)/[^/?#]+/(?P<id>\d+)'
-    _TESTS = [{'url': 'https://replay.lsm.lv/lv/skaties/ieraksts/ltv/311130/4-studija-zolitudes-tragedija-un-incupes-stacija',
-               'md5': '64f72a360ca530d5ed89c77646c9eee5',
-               'info_dict': {'id': '46k_d23-6000-105',
-                             'ext': 'mp4',
-                             'timestamp': 1700586300,
-                             'description': 'md5:0f1b14798cc39e1ae578bd0eb268f759',
-                             'duration': 1442,
-                             'upload_date': '20231121',
-                             'title': '4. studija. Zolitūdes traģēdija un Inčupes stacija',
-                             'thumbnail': 'https://ltv.lsm.lv/storage/media/8/7/large/5/1f9604e1.jpg',
-                             },
-               },
-              {'url': 'https://replay.lsm.lv/lv/klausies/ieraksts/lr/183522/138-nepilniga-kompensejamo-zalu-sistema-pat-menesiem-dzena-pacientus-pa-aptiekam',
-               'md5': '84feb80fd7e6ec07744726a9f01cda4d',
-               'info_dict': {'id': '183522',
-                             'ext': 'm4a',
-                             'duration': 1823,
-                             'title': '#138 Nepilnīgā kompensējamo zāļu sistēma pat mēnešiem dzenā pacientus pa aptiekām',
-                             'thumbnail': 'https://pic.latvijasradio.lv/public/assets/media/9/d/large_fd4675ac.jpg',
-                             'upload_date': '20231102',
-                             'timestamp': 1698913860,
-                             'description': 'md5:7bac3b2dd41e44325032943251c357b1',
-                             },
-               },
-              {'url': 'https://replay.lsm.lv/ru/skaties/statja/ltv/355067/v-kengaragse-nacalas-ukladka-relsov',
-               'only_matching': True,
-               },
-              {'url': 'https://replay.lsm.lv/lv/ieraksts/ltv/311130/4-studija-zolitudes-tragedija-un-incupes-stacija',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://replay.lsm.lv/lv/skaties/ieraksts/ltv/311130/4-studija-zolitudes-tragedija-un-incupes-stacija',
+        'md5': '64f72a360ca530d5ed89c77646c9eee5',
+        'info_dict': {
+            'id': '46k_d23-6000-105',
+            'ext': 'mp4',
+            'timestamp': 1700586300,
+            'description': 'md5:0f1b14798cc39e1ae578bd0eb268f759',
+            'duration': 1442,
+            'upload_date': '20231121',
+            'title': '4. studija. Zolitūdes traģēdija un Inčupes stacija',
+            'thumbnail': 'https://ltv.lsm.lv/storage/media/8/7/large/5/1f9604e1.jpg',
+        },
+    }, {
+        'url': 'https://replay.lsm.lv/lv/klausies/ieraksts/lr/183522/138-nepilniga-kompensejamo-zalu-sistema-pat-menesiem-dzena-pacientus-pa-aptiekam',
+        'md5': '84feb80fd7e6ec07744726a9f01cda4d',
+        'info_dict': {
+            'id': '183522',
+            'ext': 'm4a',
+            'duration': 1823,
+            'title': '#138 Nepilnīgā kompensējamo zāļu sistēma pat mēnešiem dzenā pacientus pa aptiekām',
+            'thumbnail': 'https://pic.latvijasradio.lv/public/assets/media/9/d/large_fd4675ac.jpg',
+            'upload_date': '20231102',
+            'timestamp': 1698913860,
+            'description': 'md5:7bac3b2dd41e44325032943251c357b1',
+        },
+    }, {
+        'url': 'https://replay.lsm.lv/ru/skaties/statja/ltv/355067/v-kengaragse-nacalas-ukladka-relsov',
+        'only_matching': True,
+    }, {
+        'url': 'https://replay.lsm.lv/lv/ieraksts/ltv/311130/4-studija-zolitudes-tragedija-un-incupes-stacija',
+        'only_matching': True,
+    }]
 
     def _fix_nuxt_data(self, webpage):
-        return re.sub(
-            r'Object\.create\(null(?:,(\{.+\}))?\)',
-            lambda m: m.group(1) or 'null',
-            webpage)
+        return re.sub(r'Object\.create\(null(?:,(\{.+\}))?\)', lambda m: m.group(1) or 'null', webpage)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -286,16 +275,16 @@ class LSMReplayIE(InfoExtractor):
         playback_type = data['playback']['type']
 
         if playback_type == 'playable_audio_lr':
-            playback_data = {'formats': self._extract_m3u8_formats(
-                data['playback']['service']['hls_url'], video_id), }
+            playback_data = {
+                'formats': self._extract_m3u8_formats(data['playback']['service']['hls_url'], video_id),
+            }
         elif playback_type == 'embed':
             playback_data = {
                 '_type': 'url_transparent',
                 'url': data['playback']['service']['url'],
             }
         else:
-            raise ExtractorError(
-                f'Unsupported playback type "{playback_type}"')
+            raise ExtractorError(f'Unsupported playback type "{playback_type}"')
 
         return {
             'id': video_id,

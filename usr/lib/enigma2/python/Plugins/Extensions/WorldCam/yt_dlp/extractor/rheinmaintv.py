@@ -72,10 +72,11 @@ class RheinMainTVIE(InfoExtractor):
         json_ld = self._json_ld(raw_json_ld, video_id)
         json_ld.pop('url', None)
 
-        ism_manifest_url = (source.get('src') or next(json_ld.get(
-            'embedUrl') for json_ld in raw_json_ld if json_ld.get('@type') == 'VideoObject'))
-        formats, subtitles = self._extract_ism_formats_and_subtitles(
-            ism_manifest_url, video_id)
+        ism_manifest_url = (
+            source.get('src')
+            or next(json_ld.get('embedUrl') for json_ld in raw_json_ld if json_ld.get('@type') == 'VideoObject')
+        )
+        formats, subtitles = self._extract_ism_formats_and_subtitles(ism_manifest_url, video_id)
 
         return merge_dicts({
             'id': video_id,

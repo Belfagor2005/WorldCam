@@ -59,41 +59,25 @@ class GeniusIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        display_id, is_article = self._match_valid_url(
-            url).group('id', 'article')
+        display_id, is_article = self._match_valid_url(url).group('id', 'article')
         webpage = self._download_webpage(url, display_id)
 
         metadata = self._search_json(
-            r'<meta content="',
-            webpage,
-            'metadata',
-            display_id,
-            end_pattern=r'"\s+itemprop="page_data"',
-            transform_source=unescapeHTML)
+            r'<meta content="', webpage, 'metadata', display_id,
+            end_pattern=r'"\s+itemprop="page_data"', transform_source=unescapeHTML)
         video_id = traverse_obj(metadata, (
             (('article', 'media', ...), ('video', None)),
             ('provider_id', ('dfp_kv', lambda _, v: v['name'] == 'brightcove_video_id', 'values', ...))),
             get_all=False)
         if not video_id:
             # Not all article pages have videos, expect the error
-            raise ExtractorError(
-                'Brightcove video ID not found in webpage',
-                expected=bool(is_article))
+            raise ExtractorError('Brightcove video ID not found in webpage', expected=bool(is_article))
 
-        config = self._search_json(
-            r'var\s*APP_CONFIG\s*=',
-            webpage,
-            'config',
-            video_id,
-            default={})
+        config = self._search_json(r'var\s*APP_CONFIG\s*=', webpage, 'config', video_id, default={})
         account_id = config.get('brightcove_account_id', '4863540648001')
         player_id = traverse_obj(
-            config,
-            'brightcove_standard_web_player_id',
-            'brightcove_standard_no_autoplay_web_player_id',
-            'brightcove_modal_web_player_id',
-            'brightcove_song_story_web_player_id',
-            default='S1ZcmcOC1x')
+            config, 'brightcove_standard_web_player_id', 'brightcove_standard_no_autoplay_web_player_id',
+            'brightcove_modal_web_player_id', 'brightcove_song_story_web_player_id', default='S1ZcmcOC1x')
 
         return self.url_result(
             smuggle_url(
@@ -134,43 +118,21 @@ class GeniusLyricsIE(InfoExtractor):
         webpage = self._download_webpage(url, display_id)
 
         json_string = self._search_json(
-            r'window\.__PRELOADED_STATE__\s*=\s*JSON\.parse\(',
-            webpage,
-            'json string',
-            display_id,
-            transform_source=js_to_json,
-            contains_pattern=r'\'{(?s:.+)}\'')
+            r'window\.__PRELOADED_STATE__\s*=\s*JSON\.parse\(', webpage, 'json string',
+            display_id, transform_source=js_to_json, contains_pattern=r'\'{(?s:.+)}\'')
         song_info = self._parse_json(json_string, display_id)
         song_id = str_or_none(traverse_obj(song_info, ('songPage', 'song')))
         if not song_id:
             raise ExtractorError('Song id not found in webpage')
 
         title = traverse_obj(
-            song_info,
-            ('songPage',
-             'trackingData',
-             lambda _,
-             x: x['key'] == 'Title',
-                'value'),
-            get_all=False,
-            default='untitled')
+            song_info, ('songPage', 'trackingData', lambda _, x: x['key'] == 'Title', 'value'),
+            get_all=False, default='untitled')
         artist = traverse_obj(
-            song_info,
-            ('songPage',
-             'trackingData',
-             lambda _,
-             x: x['key'] == 'Primary Artist',
-                'value'),
-            get_all=False,
-            default='unknown artist')
+            song_info, ('songPage', 'trackingData', lambda _, x: x['key'] == 'Primary Artist', 'value'),
+            get_all=False, default='unknown artist')
         media = traverse_obj(
-            song_info,
-            ('entities',
-             'songs',
-             song_id,
-             'media'),
-            expected_type=list,
-            default=[])
+            song_info, ('entities', 'songs', song_id, 'media'), expected_type=list, default=[])
 
         entries = []
         for m in media:
@@ -180,5 +142,4 @@ class GeniusLyricsIE(InfoExtractor):
                 else:
                     entries.append(self.url_result(m['url']))
 
-        return self.playlist_result(
-            entries, song_id, title, f'{title} by {artist}')
+        return self.playlist_result(entries, song_id, title, f'{title} by {artist}')

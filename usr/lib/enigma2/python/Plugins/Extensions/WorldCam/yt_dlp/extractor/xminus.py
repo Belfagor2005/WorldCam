@@ -36,9 +36,7 @@ class XMinusIE(InfoExtractor):
         artist = self._html_search_regex(
             r'<a[^>]+href="/artist/\d+">([^<]+)</a>', webpage, 'artist')
         title = artist + '-' + self._html_search_regex(
-            r'<span[^>]+class="minustrack-full-title(?:\s+[^"]+)?"[^>]*>([^<]+)',
-            webpage,
-            'title')
+            r'<span[^>]+class="minustrack-full-title(?:\s+[^"]+)?"[^>]*>([^<]+)', webpage, 'title')
         duration = parse_duration(self._html_search_regex(
             r'<span[^>]+class="player-duration(?:\s+[^"]+)?"[^>]*>([^<]+)',
             webpage, 'duration', fatal=False))
@@ -63,8 +61,7 @@ class XMinusIE(InfoExtractor):
             'encoded data')
         h = time.time() / 3600
         a = sum(map(int, [compat_ord(c) for c in k])) + int(video_id) + h
-        video_url = 'http://x-minus.me/dl/minus?id=%s&tkn2=%df%d' % (
-            video_id, a, h)
+        video_url = 'http://x-minus.me/dl/minus?id=%s&tkn2=%df%d' % (video_id, a, h)
 
         return {
             'id': video_id,

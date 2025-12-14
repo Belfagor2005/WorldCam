@@ -23,21 +23,16 @@ class WPPilotBaseIE(InfoExtractor):
             cache_res = self.cache.load('wppilot', 'channel-list')
             if cache_res:
                 return cache_res, True
-        webpage = self._download_webpage(
-            'https://pilot.wp.pl/tv/', None, 'Downloading webpage')
+        webpage = self._download_webpage('https://pilot.wp.pl/tv/', None, 'Downloading webpage')
         page_data_base_url = self._search_regex(
             r'<script src="(https://wp-pilot-gatsby\.wpcdn\.pl/v[\d.-]+/desktop)',
             webpage, 'gatsby build version') + '/page-data'
-        page_data = self._download_json(
-            f'{page_data_base_url}/tv/page-data.json',
-            None,
-            'Downloading page data')
+        page_data = self._download_json(f'{page_data_base_url}/tv/page-data.json', None, 'Downloading page data')
         for qhash in page_data['staticQueryHashes']:
             qhash_content = self._download_json(
                 f'{page_data_base_url}/sq/d/{qhash}.json', None,
                 'Searching for channel list')
-            channel_list = try_get(qhash_content,
-                                   lambda x: x['data']['allChannels']['nodes'])
+            channel_list = try_get(qhash_content, lambda x: x['data']['allChannels']['nodes'])
             if channel_list is None:
                 continue
             self.cache.store('wppilot', 'channel-list', channel_list)
@@ -106,26 +101,18 @@ class WPPilotIE(WPPilotBaseIE):
         channel = self._get_channel(video_id)
         video_id = str(channel['id'])
 
-        is_authorized = next(
-            (c for c in self.cookiejar if c.name == 'netviapisessid'), None)
+        is_authorized = next((c for c in self.cookiejar if c.name == 'netviapisessid'), None)
         # cookies starting with "g:" are assigned to guests
-        is_authorized = is_authorized is not None and not is_authorized.value.startswith(
-            'g:')
+        is_authorized = is_authorized is not None and not is_authorized.value.startswith('g:')
 
         video = self._download_json(
-            (self._VIDEO_URL if is_authorized else self._VIDEO_GUEST_URL) %
-            video_id,
-            video_id,
-            query={
+            (self._VIDEO_URL if is_authorized else self._VIDEO_GUEST_URL) % video_id,
+            video_id, query={
                 'device_type': 'web',
-            },
-            headers=self._HEADERS_WEB,
-            expected_status=(
-                200,
-                422))
+            }, headers=self._HEADERS_WEB,
+            expected_status=(200, 422))
 
-        stream_token = try_get(
-            video, lambda x: x['_meta']['error']['info']['stream_token'])
+        stream_token = try_get(video, lambda x: x['_meta']['error']['info']['stream_token'])
         if stream_token:
             close = self._download_json(
                 'https://pilot.wp.pl/api/v1/channels/close', video_id,
