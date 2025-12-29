@@ -50,9 +50,7 @@ class TVNoeIE(InfoExtractor):
             video_id, transform_source=js_to_json)
 
         formats = []
-        for source in traverse_obj(
-            player, ('tracks', ..., lambda _, v: url_or_none(
-                v['src']))):
+        for source in traverse_obj(player, ('tracks', ..., lambda _, v: url_or_none(v['src']))):
             src_url = source['src']
             ext = mimetype2ext(source.get('type'))
             if ext == 'm3u8':

@@ -14,8 +14,7 @@ class ThreeQSDNIE(InfoExtractor):
     IE_NAME = '3qsdn'
     IE_DESC = '3Q SDN'
     _VALID_URL = r'https?://playout\.3qsdn\.com/(?P<id>[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})'
-    _EMBED_REGEX = [
-        rf'<iframe[^>]+\b(?:data-)?src=(["\'])(?P<url>{_VALID_URL}.*?)\1']
+    _EMBED_REGEX = [rf'<iframe[^>]+\b(?:data-)?src=(["\'])(?P<url>{_VALID_URL}.*?)\1']
     _TESTS = [{
         # https://player.3qsdn.com/demo.html
         'url': 'https://playout.3qsdn.com/7201c779-6b3c-11e7-a40e-002590c750be',
@@ -89,10 +88,7 @@ class ThreeQSDNIE(InfoExtractor):
 
         try:
             config = self._download_json(
-                url.replace(
-                    '://playout.3qsdn.com/',
-                    '://playout.3qsdn.com/config/'),
-                video_id)
+                url.replace('://playout.3qsdn.com/', '://playout.3qsdn.com/config/'), video_id)
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
                 self.raise_geo_restricted()

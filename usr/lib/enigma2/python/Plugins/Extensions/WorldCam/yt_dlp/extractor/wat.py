@@ -59,8 +59,7 @@ class WatIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        video_id = video_id if video_id.isdigit() and len(
-            video_id) > 6 else str(int(video_id, 36))
+        video_id = video_id if video_id.isdigit() and len(video_id) > 6 else str(int(video_id, 36))
 
         # 'contentv4' is used in the website, but it also returns the related
         # videos, we don't need them
@@ -75,13 +74,12 @@ class WatIE(InfoExtractor):
         if error_desc:
             error_code = video_info.get('error_code')
             if error_code == 'GEOBLOCKED':
-                self.raise_geo_restricted(
-                    error_desc, video_info.get('geoList'))
+                self.raise_geo_restricted(error_desc, video_info.get('geoList'))
             elif error_code == 'DELIVERY_ERROR':
                 if traverse_obj(video_data, ('delivery', 'code')) == 500:
                     self.report_drm(video_id)
-                error_desc = join_nonempty(error_desc, traverse_obj(
-                    video_data, ('delivery', 'error', {str})), delim=': ')
+                error_desc = join_nonempty(
+                    error_desc, traverse_obj(video_data, ('delivery', 'error', {str})), delim=': ')
             raise ExtractorError(error_desc, expected=True)
 
         title = video_info['title']
@@ -120,12 +118,9 @@ class WatIE(InfoExtractor):
             'id': video_id,
             'title': title,
             'thumbnail': video_info.get('preview'),
-            'upload_date': unified_strdate(
-                try_get(
-                    video_data,
-                    lambda x: x['mediametrie']['chapters'][0]['estatS4'])),
-            'duration': int_or_none(
-                video_info.get('duration')),
+            'upload_date': unified_strdate(try_get(
+                video_data, lambda x: x['mediametrie']['chapters'][0]['estatS4'])),
+            'duration': int_or_none(video_info.get('duration')),
             'formats': formats,
             'subtitles': subtitles,
         }

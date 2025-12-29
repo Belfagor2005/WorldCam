@@ -24,8 +24,7 @@ class SpotifyBaseIE(InfoExtractor):
         'ShowEpisodes': 'e0e5ce27bd7748d2c59b4d44ba245a8992a05be75d6fabc3b20753fc8857444d',
     }
     _VALID_URL_TEMPL = r'https?://open\.spotify\.com/(?:embed-podcast/|embed/|)%s/(?P<id>[^/?&#]+)'
-    _EMBED_REGEX = [
-        r'<iframe[^>]+src="(?P<url>https?://open\.spotify.com/embed/[^"]+)"']
+    _EMBED_REGEX = [r'<iframe[^>]+src="(?P<url>https?://open\.spotify.com/embed/[^"]+)"']
 
     def _real_initialize(self):
         self._ACCESS_TOKEN = self._download_json(
@@ -33,20 +32,15 @@ class SpotifyBaseIE(InfoExtractor):
 
     def _call_api(self, operation, video_id, variables, **kwargs):
         return self._download_json(
-            'https://api-partner.spotify.com/pathfinder/v1/query',
-            video_id,
-            query={
+            'https://api-partner.spotify.com/pathfinder/v1/query', video_id, query={
                 'operationName': 'query' + operation,
                 'variables': json.dumps(variables),
-                'extensions': json.dumps(
-                    {
-                        'persistedQuery': {
-                            'sha256Hash': self._OPERATION_HASHES[operation],
-                        },
-                    }),
-            },
-            headers={
-                'authorization': 'Bearer ' + self._ACCESS_TOKEN},
+                'extensions': json.dumps({
+                    'persistedQuery': {
+                        'sha256Hash': self._OPERATION_HASHES[operation],
+                    },
+                }),
+            }, headers={'authorization': 'Bearer ' + self._ACCESS_TOKEN},
             **kwargs)['data']
 
     def _extract_episode(self, episode, series):
@@ -58,17 +52,13 @@ class SpotifyBaseIE(InfoExtractor):
         audio_preview_url = audio_preview.get('url')
         if audio_preview_url:
             f = {
-                'url': audio_preview_url.replace(
-                    '://p.scdn.co/mp3-preview/',
-                    '://anon-podcast.scdn.co/'),
+                'url': audio_preview_url.replace('://p.scdn.co/mp3-preview/', '://anon-podcast.scdn.co/'),
                 'vcodec': 'none',
             }
             audio_preview_format = audio_preview.get('format')
             if audio_preview_format:
                 f['format_id'] = audio_preview_format
-                mobj = re.match(
-                    r'([0-9A-Z]{3})_(?:[A-Z]+_)?(\d+)',
-                    audio_preview_format)
+                mobj = re.match(r'([0-9A-Z]{3})_(?:[A-Z]+_)?(\d+)', audio_preview_format)
                 if mobj:
                     f.update({
                         'abr': int(mobj.group(2)),
@@ -86,10 +76,7 @@ class SpotifyBaseIE(InfoExtractor):
             })
 
         thumbnails = []
-        for source in (
-            try_get(
-                episode,
-                lambda x: x['coverArt']['sources']) or []):
+        for source in (try_get(episode, lambda x: x['coverArt']['sources']) or []):
             source_url = source.get('url')
             if not source_url:
                 continue

@@ -23,22 +23,17 @@ class TapTapBaseIE(InfoExtractor):
 
     def _get_api(self, url, video_id, query, **kwargs):
         query = {**query, 'X-UA': self._X_UA.format(uuid=uuid.uuid4())}
-        return self._download_json(
-            url, video_id, query=query, **kwargs)['data']
+        return self._download_json(url, video_id, query=query, **kwargs)['data']
 
     def _extract_video(self, video_id):
-        video_data = self._get_api(
-            self._VIDEO_API, video_id, query={
-                'video_ids': video_id})['list'][0]
+        video_data = self._get_api(self._VIDEO_API, video_id, query={'video_ids': video_id})['list'][0]
 
         # h265 playlist contains both h265 and h264 formats
-        video_url = traverse_obj(
-            video_data, ('play_url', ('url_h265', 'url'), {url_or_none}, any))
+        video_url = traverse_obj(video_data, ('play_url', ('url_h265', 'url'), {url_or_none}, any))
         formats = self._extract_m3u8_formats(video_url, video_id, fatal=False)
         for fmt in formats:
             if re.search(r'^(hev|hvc|hvt)\d', fmt.get('vcodec', '')):
-                fmt['format_id'] = join_nonempty(
-                    fmt.get('format_id'), 'h265', delim='_')
+                fmt['format_id'] = join_nonempty(fmt.get('format_id'), 'h265', delim='_')
 
         return {
             'id': str(video_id),
@@ -54,11 +49,7 @@ class TapTapBaseIE(InfoExtractor):
         query = {self._INFO_QUERY_KEY: video_id}
 
         data = traverse_obj(
-            self._get_api(
-                self._INFO_API,
-                video_id,
-                query=query),
-            self._DATA_PATH)
+            self._get_api(self._INFO_API, video_id, query=query), self._DATA_PATH)
 
         metainfo = traverse_obj(data, self._META_PATH)
         entries = [{

@@ -36,9 +36,7 @@ class VTMIE(MedialaanBaseIE):
         webpage = self._download_webpage(url, video_id)
         apollo_state = self._search_json(
             r'window\.__APOLLO_STATE__\s*=', webpage, 'apollo state', video_id)
-        mychannels_id = traverse_obj(
-            apollo_state, (f'Video:{
-                "uuid":"{video_id}"} ', 'myChannelsVideo', {str_or_none}, {
-                require('mychannels ID')}))
+        mychannels_id = traverse_obj(apollo_state, (
+            f'Video:{{"uuid":"{video_id}"}}', 'myChannelsVideo', {str_or_none}, {require('mychannels ID')}))
 
         return self._extract_from_mychannels_api(mychannels_id)

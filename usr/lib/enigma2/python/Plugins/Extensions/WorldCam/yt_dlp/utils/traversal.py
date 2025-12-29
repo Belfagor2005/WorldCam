@@ -103,17 +103,14 @@ def traverse_obj(
                             is always returned. If a path ends on a `dict` that result will always be a `dict`.
     """
     if is_user_input is not NO_DEFAULT:
-        deprecation_warning(
-            'The is_user_input parameter is deprecated and no longer works')
+        deprecation_warning('The is_user_input parameter is deprecated and no longer works')
 
-    def casefold(k): return k.casefold() if isinstance(k, str) else k
+    casefold = lambda k: k.casefold() if isinstance(k, str) else k
 
     if isinstance(expected_type, type):
-        def type_test(val): return val if isinstance(
-            val, expected_type) else None
+        type_test = lambda val: val if isinstance(val, expected_type) else None
     else:
-        def type_test(val): return try_call(
-            expected_type or IDENTITY, args=(val,))
+        type_test = lambda val: try_call(expected_type or IDENTITY, args=(val,))
 
     def apply_key(key, obj, is_last):
         branching = False
@@ -180,8 +177,7 @@ def traverse_obj(
                 result = ''.join(result)
 
         elif isinstance(key, dict):
-            iter_obj = ((k, _traverse_obj(obj, v, False, is_last))
-                        for k, v in key.items())
+            iter_obj = ((k, _traverse_obj(obj, v, False, is_last)) for k, v in key.items())
             result = {
                 k: v if v is not None else default for k, v in iter_obj
                 if v is not None or default is not NO_DEFAULT
@@ -190,13 +186,8 @@ def traverse_obj(
         elif isinstance(obj, collections.abc.Mapping):
             if isinstance(obj, http.cookies.Morsel):
                 obj = dict(obj, key=obj.key, value=obj.value)
-            result = (
-                try_call(
-                    obj.get, args=(
-                        key,)) if casesense or try_call(
-                    obj.__contains__, args=(
-                        key,)) else next(
-                    (v for k, v in obj.items() if casefold(k) == key), None))
+            result = (try_call(obj.get, args=(key,)) if casesense or try_call(obj.__contains__, args=(key,)) else
+                      next((v for k, v in obj.items() if casefold(k) == key), None))
 
         elif isinstance(obj, re.Match):
             if isinstance(key, int) or casesense:
@@ -204,14 +195,10 @@ def traverse_obj(
                     result = obj.group(key)
 
             elif isinstance(key, str):
-                result = next(
-                    (v for k, v in obj.groupdict().items() if casefold(k) == key), None)
+                result = next((v for k, v in obj.groupdict().items() if casefold(k) == key), None)
 
         elif isinstance(key, (int, slice)):
-            if is_iterable_like(
-                obj,
-                (collections.abc.Sequence,
-                 xml.etree.ElementTree.Element)):
+            if is_iterable_like(obj, (collections.abc.Sequence, xml.etree.ElementTree.Element)):
                 branching = isinstance(key, slice)
                 with contextlib.suppress(IndexError):
                     result = obj[key]
@@ -240,9 +227,7 @@ def traverse_obj(
                     return try_call(element.attrib.get, args=(special[1:],))
                 if special == 'text()':
                     return element.text
-                raise SyntaxError(
-                    f'apply_specials is missing case for {
-                        special!r}')
+                raise SyntaxError(f'apply_specials is missing case for {special!r}')
 
             if xpath:
                 result = list(map(apply_specials, obj.iterfind(xpath)))
@@ -312,8 +297,7 @@ def traverse_obj(
                 return [] if default is NO_DEFAULT else default
             return None
 
-        return results[0] if results else {
-        } if allow_empty and is_dict else None
+        return results[0] if results else {} if allow_empty and is_dict else None
 
     for index, path in enumerate(paths, 1):
         is_last = index == len(paths)
@@ -336,9 +320,7 @@ def value(value, /):
 def require(name, /, *, expected=False):
     def func(value):
         if value is None:
-            raise _RequiredError(
-                f'Unable to extract {name}',
-                expected=expected)
+            raise _RequiredError(f'Unable to extract {name}', expected=expected)
 
         return value
 
@@ -350,24 +332,14 @@ class _RequiredError(ExtractorError):
 
 
 @typing.overload
-def subs_list_to_dict(*,
-                      lang: str | None = 'und',
-                      ext: str | None = None) -> collections.abc.Callable[[list[dict]],
-                                                                          dict[str,
-                                                                               list[dict]]]: ...
+def subs_list_to_dict(*, lang: str | None = 'und', ext: str | None = None) -> collections.abc.Callable[[list[dict]], dict[str, list[dict]]]: ...
 
 
 @typing.overload
-def subs_list_to_dict(subs: list[dict] | None,
-                      /,
-                      *,
-                      lang: str | None = 'und',
-                      ext: str | None = None) -> dict[str,
-                                                      list[dict]]: ...
+def subs_list_to_dict(subs: list[dict] | None, /, *, lang: str | None = 'und', ext: str | None = None) -> dict[str, list[dict]]: ...
 
 
-def subs_list_to_dict(
-        subs: list[dict] | None = None, /, *, lang='und', ext=None):
+def subs_list_to_dict(subs: list[dict] | None = None, /, *, lang='und', ext=None):
     """
     Convert subtitles from a traversal into a subtitle dict.
     The path should have an `all` immediately before this function.
@@ -408,13 +380,7 @@ def subs_list_to_dict(
 
 
 @typing.overload
-def find_element(
-    *,
-    attr: str,
-    value: str,
-    tag: str | None = None,
-    html=False,
-    regex=False): ...
+def find_element(*, attr: str, value: str, tag: str | None = None, html=False, regex=False): ...
 
 
 @typing.overload
@@ -422,42 +388,23 @@ def find_element(*, cls: str, html=False): ...
 
 
 @typing.overload
-def find_element(
-    *,
-    id: str,
-    tag: str | None = None,
-    html=False,
-    regex=False): ...
+def find_element(*, id: str, tag: str | None = None, html=False, regex=False): ...
 
 
 @typing.overload
 def find_element(*, tag: str, html=False, regex=False): ...
 
 
-def find_element(
-    *,
-    tag=None,
-    id=None,
-    cls=None,
-    attr=None,
-    value=None,
-    html=False,
-        regex=False):
+def find_element(*, tag=None, id=None, cls=None, attr=None, value=None, html=False, regex=False):
     # deliberately using `id=` and `cls=` for ease of readability
-    assert tag or id or cls or (
-        attr and value), 'One of tag, id, cls or (attr AND value) is required'
+    assert tag or id or cls or (attr and value), 'One of tag, id, cls or (attr AND value) is required'
     ANY_TAG = r'[\w:.-]+'
 
     if attr and value:
         assert not cls, 'Cannot match both attr and cls'
         assert not id, 'Cannot match both attr and id'
         func = get_element_html_by_attribute if html else get_element_by_attribute
-        return functools.partial(
-            func,
-            attr,
-            value,
-            tag=tag or ANY_TAG,
-            escape_value=not regex)
+        return functools.partial(func, attr, value, tag=tag or ANY_TAG, escape_value=not regex)
 
     elif cls:
         assert not id, 'Cannot match both cls and id'
@@ -468,11 +415,7 @@ def find_element(
 
     elif id:
         func = get_element_html_by_id if html else get_element_by_id
-        return functools.partial(
-            func,
-            id,
-            tag=tag or ANY_TAG,
-            escape_value=not regex)
+        return functools.partial(func, id, tag=tag or ANY_TAG, escape_value=not regex)
 
     index = int(bool(html))
     return lambda html: get_element_text_and_html_by_tag(tag, html)[index]
@@ -483,36 +426,17 @@ def find_elements(*, cls: str, html=False): ...
 
 
 @typing.overload
-def find_elements(
-    *,
-    attr: str,
-    value: str,
-    tag: str | None = None,
-    html=False,
-    regex=False): ...
+def find_elements(*, attr: str, value: str, tag: str | None = None, html=False, regex=False): ...
 
 
-def find_elements(
-    *,
-    tag=None,
-    cls=None,
-    attr=None,
-    value=None,
-    html=False,
-        regex=False):
+def find_elements(*, tag=None, cls=None, attr=None, value=None, html=False, regex=False):
     # deliberately using `cls=` for ease of readability
-    assert cls or (
-        attr and value), 'One of cls or (attr AND value) is required'
+    assert cls or (attr and value), 'One of cls or (attr AND value) is required'
 
     if attr and value:
         assert not cls, 'Cannot match both attr and cls'
         func = get_elements_html_by_attribute if html else get_elements_by_attribute
-        return functools.partial(
-            func,
-            attr,
-            value,
-            tag=tag or r'[\w:.-]+',
-            escape_value=not regex)
+        return functools.partial(func, attr, value, tag=tag or r'[\w:.-]+', escape_value=not regex)
 
     assert not tag, 'Cannot match both cls and tag'
     assert not regex, 'Cannot use regex with cls'
@@ -543,8 +467,7 @@ def unpack(func, **kwargs):
 
 
 def get_first(obj, *paths, **kwargs):
-    return traverse_obj(obj, *((..., *variadic(keys))
-                        for keys in paths), **kwargs, get_all=False)
+    return traverse_obj(obj, *((..., *variadic(keys)) for keys in paths), **kwargs, get_all=False)
 
 
 def dict_get(d, key_or_keys, default=None, skip_false_values=True):

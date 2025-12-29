@@ -20,8 +20,7 @@ from ..utils.traversal import traverse_obj
 class SproutVideoIE(InfoExtractor):
     _NO_SCHEME_RE = r'//videos\.sproutvideo\.com/embed/(?P<id>[\da-f]+)/[\da-f]+'
     _VALID_URL = rf'https?:{_NO_SCHEME_RE}'
-    _EMBED_REGEX = [
-        rf'<iframe [^>]*\bsrc=["\'](?P<url>(?:https?:)?{_NO_SCHEME_RE}[^"\']*)["\']']
+    _EMBED_REGEX = [rf'<iframe [^>]*\bsrc=["\'](?P<url>(?:https?:)?{_NO_SCHEME_RE}[^"\']*)["\']']
     _TESTS = [{
         'url': 'https://videos.sproutvideo.com/embed/4c9dddb01910e3c9c4/0fc24387c4f24ee3',
         'md5': '1343ce1a6cb39d67889bfa07c7b02b0e',
@@ -79,8 +78,7 @@ class SproutVideoIE(InfoExtractor):
         },
     }]
     _M3U8_URL_TMPL = 'https://{base}.videos.sproutvideo.com/{s3_user_hash}/{s3_video_hash}/video/index.m3u8'
-    # Exclude 'sd' to prioritize hls formats above it
-    _QUALITIES = ('hd', 'uhd', 'source')
+    _QUALITIES = ('hd', 'uhd', 'source')  # Exclude 'sd' to prioritize hls formats above it
 
     @staticmethod
     def _policy_to_qs(policy, signature_key, as_string=False):
@@ -88,8 +86,7 @@ class SproutVideoIE(InfoExtractor):
         for key, value in policy['signatures'][signature_key].items():
             query[remove_start(key, 'CloudFront-')] = value
         query['sessionID'] = policy['sessionID']
-        return urllib.parse.urlencode(
-            query, doseq=True) if as_string else query
+        return urllib.parse.urlencode(query, doseq=True) if as_string else query
 
     @classmethod
     def _extract_embed_urls(cls, url, webpage):
@@ -102,24 +99,17 @@ class SproutVideoIE(InfoExtractor):
         url, smuggled_data = unsmuggle_url(url, {})
         video_id = self._match_id(url)
         webpage = self._download_webpage(
-            url, video_id, headers=traverse_obj(
-                smuggled_data, {
-                    'Referer': 'referer'}))
+            url, video_id, headers=traverse_obj(smuggled_data, {'Referer': 'referer'}))
         data = self._search_json(
-            r'(?:var|const|let)\s+(?:dat|(?:player|video)Info|)\s*=\s*["\']',
-            webpage,
-            'player info',
-            video_id,
-            contains_pattern=r'[A-Za-z0-9+/=]+',
-            end_pattern=r'["\'];',
+            r'(?:var|const|let)\s+(?:dat|(?:player|video)Info|)\s*=\s*["\']', webpage, 'player info',
+            video_id, contains_pattern=r'[A-Za-z0-9+/=]+', end_pattern=r'["\'];',
             transform_source=lambda x: base64.b64decode(x).decode())
 
         # SproutVideo may send player info for 'SMPTE Color Monitor Test' [a791d7b71b12ecc52e]
         # e.g. if the user-agent we used with the webpage request is too old
         video_uid = data['videoUid']
         if video_id != video_uid:
-            raise ExtractorError(
-                f'{self.IE_NAME} sent the wrong video data ({video_uid})')
+            raise ExtractorError(f'{self.IE_NAME} sent the wrong video data ({video_uid})')
 
         formats, subtitles = [], {}
         headers = {
@@ -128,8 +118,7 @@ class SproutVideoIE(InfoExtractor):
             'Referer': url,
         }
 
-        # HLS extraction is fatal; only attempt it if the JSON data says it's
-        # available
+        # HLS extraction is fatal; only attempt it if the JSON data says it's available
         if traverse_obj(data, 'hls'):
             manifest_query = self._policy_to_qs(data, 'm')
             fragment_query = self._policy_to_qs(data, 't', as_string=True)
@@ -145,10 +134,7 @@ class SproutVideoIE(InfoExtractor):
                     'extra_param_to_key_url': key_query,
                 })
 
-        if downloads := traverse_obj(
-            data, ('downloads', {
-                dict.items}, lambda _, v: url_or_none(
-                v[1]))):
+        if downloads := traverse_obj(data, ('downloads', {dict.items}, lambda _, v: url_or_none(v[1]))):
             quality = qualities(self._QUALITIES)
             acodec = 'none' if data.get('has_audio') is False else None
             formats.extend([{
@@ -159,12 +145,7 @@ class SproutVideoIE(InfoExtractor):
                 'acodec': acodec,
             } for format_id, format_url in downloads])
 
-        for sub_data in traverse_obj(
-            data,
-            ('subtitleData',
-             lambda _,
-             v: url_or_none(
-                 v['src']))):
+        for sub_data in traverse_obj(data, ('subtitleData', lambda _, v: url_or_none(v['src']))):
             subtitles.setdefault(sub_data.get('srclang', 'en'), []).append({
                 'url': sub_data['src'],
             })
@@ -198,17 +179,14 @@ class VidsIoIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_id, display_id = self._match_valid_url(
-            url).group('id', 'display_id')
-        webpage, urlh = self._download_webpage_handle(
-            url, display_id, expected_status=403)
+        video_id, display_id = self._match_valid_url(url).group('id', 'display_id')
+        webpage, urlh = self._download_webpage_handle(url, display_id, expected_status=403)
 
         if urlh.status == 403:
             password = self.get_param('videopassword')
             if not password:
                 raise ExtractorError(
-                    'This video is password-protected; use the --video-password option',
-                    expected=True)
+                    'This video is password-protected; use the --video-password option', expected=True)
             try:
                 webpage = self._download_webpage(
                     url, display_id, 'Submitting video password',
@@ -216,16 +194,13 @@ class VidsIoIE(InfoExtractor):
                         'password': password,
                         **self._hidden_inputs(webpage),
                     }))
-                # Requests with user's session cookie `_sproutvideo_session`
-                # are now authorized
+                # Requests with user's session cookie `_sproutvideo_session` are now authorized
             except ExtractorError as e:
                 if isinstance(e.cause, HTTPError) and e.cause.status == 403:
                     raise ExtractorError('Incorrect password', expected=True)
                 raise
 
-        if embed_url := next(
-            SproutVideoIE._extract_embed_urls(
-                url, webpage), None):
+        if embed_url := next(SproutVideoIE._extract_embed_urls(url, webpage), None):
             return self.url_result(embed_url, SproutVideoIE, video_id)
 
         raise ExtractorError('Unable to extract any SproutVideo embed url')

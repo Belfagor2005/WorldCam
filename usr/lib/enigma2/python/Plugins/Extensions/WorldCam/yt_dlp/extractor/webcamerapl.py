@@ -27,26 +27,17 @@ class WebcameraplIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        rot13_m3u8_url = self._search_regex(
-            r'data-src\s*=\s*"(uggc[^"]+\.z3h8)"',
-            webpage,
-            'm3u8 url',
-            default=None)
+        rot13_m3u8_url = self._search_regex(r'data-src\s*=\s*"(uggc[^"]+\.z3h8)"',
+                                            webpage, 'm3u8 url', default=None)
         if not rot13_m3u8_url:
-            self.raise_no_formats(
-                'No video/audio found at the provided url',
-                expected=True)
+            self.raise_no_formats('No video/audio found at the provided url', expected=True)
 
         m3u8_url = codecs.decode(rot13_m3u8_url, 'rot-13')
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            m3u8_url, video_id, live=True)
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, live=True)
 
         return {
             'id': video_id,
-            'title': self._html_search_regex(
-                r'<h1\b[^>]*>([^>]+)</h1>',
-                webpage,
-                'title'),
+            'title': self._html_search_regex(r'<h1\b[^>]*>([^>]+)</h1>', webpage, 'title'),
             'formats': formats,
             'subtitles': subtitles,
             'is_live': True,

@@ -8,8 +8,7 @@ from ..utils import (
 )
 
 
-class TheWeatherChannelIE(
-        ThePlatformIE):  # XXX: Do not subclass from concrete IE
+class TheWeatherChannelIE(ThePlatformIE):  # XXX: Do not subclass from concrete IE
     _VALID_URL = r'https?://(?:www\.)?weather\.com(?P<asset_name>(?:/(?P<locale>[a-z]{2}-[A-Z]{2}))?/(?:[^/]+/)*video/(?P<id>[^/?#]+))'
     _TESTS = [{
         'url': 'https://weather.com/storms/hurricane/video/invest-95l-in-atlantic-has-a-medium-chance-of-development',
@@ -68,8 +67,7 @@ class TheWeatherChannelIE(
                     'id': variant_id,
                 })
             elif ThePlatformIE.suitable(variant_url):
-                tp_formats, _ = self._extract_theplatform_smil(
-                    variant_url, video_id)
+                tp_formats, _ = self._extract_theplatform_smil(variant_url, video_id)
                 formats.extend(tp_formats)
             elif ext == 'm3u8':
                 formats.extend(self._extract_m3u8_formats(
