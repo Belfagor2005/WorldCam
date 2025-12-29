@@ -1,13 +1,13 @@
 name: PEP8 Aggressive Check and Fix
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:  # Solo esecuzione manuale
+  # push:             # Commentato - non si attiva su push
+  #   branches:
+  #     - main
+  # pull_request:     # Commentato - non si attiva su PR
+  #   branches:
+  #     - main
 
 jobs:
   pep8-check:
