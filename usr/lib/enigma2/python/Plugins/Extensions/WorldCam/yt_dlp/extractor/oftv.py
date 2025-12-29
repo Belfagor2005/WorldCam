@@ -27,14 +27,9 @@ class OfTVIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        info = next(
-            ZypeIE.extract_from_webpage(
-                self._downloader,
-                url,
-                webpage))
+        info = next(ZypeIE.extract_from_webpage(self._downloader, url, webpage))
         info['_type'] = 'url_transparent'
-        info['creator'] = self._search_regex(
-            r'<a[^>]+class=\"creator-name\"[^>]+>([^<]+)', webpage, 'creator')
+        info['creator'] = self._search_regex(r'<a[^>]+class=\"creator-name\"[^>]+>([^<]+)', webpage, 'creator')
         return info
 
 
@@ -53,11 +48,7 @@ class OfTVPlaylistIE(InfoExtractor):
         webpage = self._download_webpage(url, playlist_id)
 
         json_match = self._search_json(
-            r'var\s*remaining_videos\s*=',
-            webpage,
-            'oftv playlists',
-            playlist_id,
-            contains_pattern=r'\[.+\]')
+            r'var\s*remaining_videos\s*=', webpage, 'oftv playlists', playlist_id, contains_pattern=r'\[.+\]')
 
         return self.playlist_from_matches(
             traverse_obj(json_match, (..., 'discovery_url')), playlist_id)

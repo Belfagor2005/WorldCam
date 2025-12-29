@@ -30,12 +30,10 @@ class ReutersIE(InfoExtractor):
             webpage, 'video data'))
 
         def get_json_value(key, fatal=False):
-            return self._search_regex(
-                rf'"{key}"\s*:\s*"([^"]+)"', video_data, key, fatal=fatal)
+            return self._search_regex(rf'"{key}"\s*:\s*"([^"]+)"', video_data, key, fatal=fatal)
 
         title = unescapeHTML(get_json_value('title', fatal=True))
-        mmid, fid = re.search(r',/(\d+)\?f=(\d+)',
-                              get_json_value('flv', fatal=True)).groups()
+        mmid, fid = re.search(r',/(\d+)\?f=(\d+)', get_json_value('flv', fatal=True)).groups()
 
         mas_data = self._download_json(
             f'http://mas-e.cds1.yospace.com/mas/{mmid}/{fid}?trans=json',
@@ -47,14 +45,8 @@ class ReutersIE(InfoExtractor):
                 continue
             method = f.get('method')
             if method == 'hls':
-                formats.extend(
-                    self._extract_m3u8_formats(
-                        f_url,
-                        video_id,
-                        'mp4',
-                        'm3u8_native',
-                        m3u8_id='hls',
-                        fatal=False))
+                formats.extend(self._extract_m3u8_formats(
+                    f_url, video_id, 'mp4', 'm3u8_native', m3u8_id='hls', fatal=False))
             else:
                 container = f.get('container')
                 ext = '3gp' if method == 'mobile' else container

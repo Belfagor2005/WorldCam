@@ -29,9 +29,7 @@ class HistoricFilmsIE(InfoExtractor):
         title = self._og_search_title(webpage)
         description = self._og_search_description(webpage)
         thumbnail = self._html_search_meta(
-            'thumbnailUrl',
-            webpage,
-            'thumbnails') or self._og_search_thumbnail(webpage)
+            'thumbnailUrl', webpage, 'thumbnails') or self._og_search_thumbnail(webpage)
         duration = parse_duration(self._html_search_meta(
             'duration', webpage, 'duration'))
 

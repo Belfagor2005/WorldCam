@@ -102,10 +102,7 @@ class CSpanIE(InfoExtractor):
                     bc_attr.get('data-noprebcplayerid', 'SyGGpuJy3g'),
                     bc_attr.get('data-newbcplayerid', 'default'),
                     bc_attr['data-bcid'])
-                return self.url_result(
-                    smuggle_url(
-                        bc_url, {
-                            'source_url': url}))
+                return self.url_result(smuggle_url(bc_url, {'source_url': url}))
 
         def add_referer(formats):
             for f in formats:
@@ -136,14 +133,8 @@ class CSpanIE(InfoExtractor):
                 title = None
             if title is None:
                 title = self._og_search_title(webpage)
-            description = get_element_by_attribute(
-                'itemprop',
-                'description',
-                webpage) or self._html_search_meta(
-                [
-                    'og:description',
-                    'description'],
-                webpage)
+            description = get_element_by_attribute('itemprop', 'description', webpage) or \
+                self._html_search_meta(['og:description', 'description'], webpage)
             return merge_dicts(info, ld_info, {
                 'title': title,
                 'thumbnail': get_element_by_attribute('itemprop', 'thumbnailUrl', webpage),
@@ -160,17 +151,14 @@ class CSpanIE(InfoExtractor):
 
         # Obsolete
         # We first look for clipid, because clipprog always appears before
-        patterns = [
-            rf'id=\'clip({t})\'\s*value=\'([0-9]+)\'' for t in ('id', 'prog')]
+        patterns = [rf'id=\'clip({t})\'\s*value=\'([0-9]+)\'' for t in ('id', 'prog')]
         results = list(filter(None, (re.search(p, webpage) for p in patterns)))
         if results:
             matches = results[0]
             video_type, video_id = matches.groups()
             video_type = 'clip' if video_type == 'id' else 'program'
         else:
-            m = re.search(
-                r'data-(?P<type>clip|prog)id=["\'](?P<id>\d+)',
-                webpage)
+            m = re.search(r'data-(?P<type>clip|prog)id=["\'](?P<id>\d+)', webpage)
             if m:
                 video_id = m.group('id')
                 video_type = 'program' if m.group('type') == 'prog' else 'clip'
@@ -186,8 +174,7 @@ class CSpanIE(InfoExtractor):
                 if video_id:
                     video_type = 'program'
         if video_type is None or video_id is None:
-            error_message = get_element_by_class(
-                'VLplayer-error-message', webpage)
+            error_message = get_element_by_class('VLplayer-error-message', webpage)
             if error_message:
                 raise ExtractorError(error_message)
             raise ExtractorError('unable to find video id and type')
@@ -199,13 +186,7 @@ class CSpanIE(InfoExtractor):
             f'http://www.c-span.org/assets/player/ajax-player.php?os=android&html5={video_type}&id={video_id}',
             video_id)['video']
         if data['@status'] != 'Success':
-            raise ExtractorError(
-                '{} said: {}'.format(
-                    self.IE_NAME,
-                    get_text_attr(
-                        data,
-                        'error')),
-                expected=True)
+            raise ExtractorError('{} said: {}'.format(self.IE_NAME, get_text_attr(data, 'error')), expected=True)
 
         doc = self._download_xml(
             f'http://www.c-span.org/common/services/flashXml.php?{video_type}id={video_id}',
@@ -283,35 +264,19 @@ class CSpanCongressIE(InfoExtractor):
     def _real_extract(self, url):
         query = parse_qs(url)
         video_date = query.get('date', [None])[0]
-        video_id = join_nonempty(
-            query.get(
-                'chamber',
-                ['senate'])[0],
-            video_date,
-            delim='_')
+        video_id = join_nonempty(query.get('chamber', ['senate'])[0], video_date, delim='_')
         webpage = self._download_webpage(url, video_id)
         if not video_date:
-            jwp_date = re.search(
-                r'jwsetup.clipprogdate = \'(?P<date>\d{4}-\d{2}-\d{2})\';', webpage)
+            jwp_date = re.search(r'jwsetup.clipprogdate = \'(?P<date>\d{4}-\d{2}-\d{2})\';', webpage)
             if jwp_date:
                 video_id = f'{video_id}_{jwp_date.group("date")}'
         jwplayer_data = self._parse_json(
-            self._search_regex(
-                r'jwsetup\s*=\s*({(?:.|\n)[^;]+});',
-                webpage,
-                'player config'),
-            video_id,
-            transform_source=js_to_json)
+            self._search_regex(r'jwsetup\s*=\s*({(?:.|\n)[^;]+});', webpage, 'player config'),
+            video_id, transform_source=js_to_json)
 
         title = self._generic_title('', webpage)
-        description = (
-            self._og_search_description(
-                webpage,
-                default=None) or self._html_search_meta(
-                'description',
-                webpage,
-                'description',
-                default=None))
+        description = (self._og_search_description(webpage, default=None)
+                       or self._html_search_meta('description', webpage, 'description', default=None))
 
         return {
             **self._parse_jwplayer_data(jwplayer_data, video_id, False),

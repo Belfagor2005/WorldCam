@@ -161,8 +161,7 @@ class PlaytvakIE(InfoExtractor):
 
         title = item['title']
         is_live = item['type'] == 'stream'
-        description = self._og_search_description(
-            webpage, default=None) or self._html_search_meta(
+        description = self._og_search_description(webpage, default=None) or self._html_search_meta(
             'description', webpage, 'description', default=None)
         timestamp = None
         duration = None

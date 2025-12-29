@@ -49,8 +49,7 @@ class LoomIE(InfoExtractor):
             'duration': 20,
         },
     }, {
-        # m3u8 raw-url, mp4 transcoded-url, cdn url == raw-url, vtt sub and
-        # json subs
+        # m3u8 raw-url, mp4 transcoded-url, cdn url == raw-url, vtt sub and json subs
         'url': 'https://www.loom.com/share/9458bcbf79784162aa62ffb8dd66201b',
         'md5': '51737ec002969dd28344db4d60b9cbbb',
         'info_dict': {
@@ -93,8 +92,7 @@ class LoomIE(InfoExtractor):
         },
         'params': {'videopassword': 'seniorinfants2'},
     }, {
-        # embed, transcoded-url endpoint sends empty JSON response, split video
-        # and audio HLS formats
+        # embed, transcoded-url endpoint sends empty JSON response, split video and audio HLS formats
         'url': 'https://www.loom.com/embed/ddcf1c1ad21f451ea7468b1e33917e4e',
         'md5': 'b321d261656848c184a94e3b93eae28d',
         'info_dict': {
@@ -268,9 +266,7 @@ class LoomIE(InfoExtractor):
         response = self._download_json(
             f'https://www.loom.com/api/campaigns/sessions/{video_id}/{endpoint}', video_id,
             f'Downloading {endpoint} JSON', f'Failed to download {endpoint} JSON', fatal=False,
-            headers={
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'},
+            headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
             data=json.dumps({
                 'anonID': str(uuid.uuid4()),
                 'deviceID': None,
@@ -281,13 +277,11 @@ class LoomIE(InfoExtractor):
 
     def _extract_formats(self, video_id, metadata, gql_data):
         formats = []
-        video_properties = traverse_obj(
-            metadata, ('video_properties', {
-                'width': (
-                    'width', {int_or_none}), 'height': (
-                    'height', {int_or_none}), 'acodec': (
-                    'microphone_enabled', {
-                        lambda x: 'none' if x is False else None}), }))
+        video_properties = traverse_obj(metadata, ('video_properties', {
+            'width': ('width', {int_or_none}),
+            'height': ('height', {int_or_none}),
+            'acodec': ('microphone_enabled', {lambda x: 'none' if x is False else None}),
+        }))
 
         def get_formats(format_url, format_id, quality):
             if not format_url:
@@ -296,20 +290,12 @@ class LoomIE(InfoExtractor):
             query = urllib.parse.urlparse(format_url).query
 
             if ext == 'm3u8':
-                # Extract pre-merged HLS formats to avoid buggy parsing of
-                # metadata in split playlists
+                # Extract pre-merged HLS formats to avoid buggy parsing of metadata in split playlists
                 format_url = format_url.replace('-split.m3u8', '.m3u8')
                 m3u8_formats = self._extract_m3u8_formats(
-                    format_url,
-                    video_id,
-                    'mp4',
-                    m3u8_id=f'hls-{format_id}',
-                    fatal=False,
-                    quality=quality)
-                # Sometimes only split video/audio formats are available, need
-                # to fixup video-only formats
-                is_not_premerged = 'none' in traverse_obj(
-                    m3u8_formats, (..., 'vcodec'))
+                    format_url, video_id, 'mp4', m3u8_id=f'hls-{format_id}', fatal=False, quality=quality)
+                # Sometimes only split video/audio formats are available, need to fixup video-only formats
+                is_not_premerged = 'none' in traverse_obj(m3u8_formats, (..., 'vcodec'))
                 for fmt in m3u8_formats:
                     if is_not_premerged and fmt.get('vcodec') != 'none':
                         fmt['acodec'] = 'none'
@@ -339,59 +325,33 @@ class LoomIE(InfoExtractor):
                 }
 
         raw_url = self._call_url_api('raw-url', video_id)
-        formats.extend(
-            get_formats(
-                raw_url,
-                'raw',
-                quality=1))  # original quality
+        formats.extend(get_formats(raw_url, 'raw', quality=1))  # original quality
 
         transcoded_url = self._call_url_api('transcoded-url', video_id)
-        formats.extend(
-            get_formats(
-                transcoded_url,
-                'transcoded',
-                quality=-
-                1))  # transcoded quality
+        formats.extend(get_formats(transcoded_url, 'transcoded', quality=-1))  # transcoded quality
 
-        cdn_url = get_first(
-            gql_data,
-            ('data',
-             'getVideo',
-             'nullableRawCdnUrl',
-             'url',
-             {url_or_none}))
-        # cdn_url is usually a dupe, but the raw-url/transcoded-url endpoints
-        # could return errors
-        valid_urls = [update_url(url, query=None)
-                      for url in (raw_url, transcoded_url) if url]
+        cdn_url = get_first(gql_data, ('data', 'getVideo', 'nullableRawCdnUrl', 'url', {url_or_none}))
+        # cdn_url is usually a dupe, but the raw-url/transcoded-url endpoints could return errors
+        valid_urls = [update_url(url, query=None) for url in (raw_url, transcoded_url) if url]
         if cdn_url and update_url(cdn_url, query=None) not in valid_urls:
-            # could be original or transcoded
-            formats.extend(get_formats(cdn_url, 'cdn', quality=0))
+            formats.extend(get_formats(cdn_url, 'cdn', quality=0))  # could be original or transcoded
 
         return formats
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
         metadata = get_first(
-            self._call_graphql_api(
-                'GetVideoSSR',
-                video_id,
-                'Downloading GraphQL metadata JSON'),
-            ('data',
-             'getVideo',
-             {dict})) or {}
+            self._call_graphql_api('GetVideoSSR', video_id, 'Downloading GraphQL metadata JSON'),
+            ('data', 'getVideo', {dict})) or {}
 
         if metadata.get('__typename') == 'VideoPasswordMissingOrIncorrect':
             if not self.get_param('videopassword'):
                 raise ExtractorError(
-                    'This video is password-protected, use the --video-password option',
-                    expected=True)
+                    'This video is password-protected, use the --video-password option', expected=True)
             raise ExtractorError('Invalid video password', expected=True)
 
-        gql_data = self._call_graphql_api(
-            ['FetchChapters', 'FetchVideoTranscript', 'GetVideoSource'], video_id)
-        duration = traverse_obj(
-            metadata, ('video_properties', 'duration', {int_or_none}))
+        gql_data = self._call_graphql_api(['FetchChapters', 'FetchVideoTranscript', 'GetVideoSource'], video_id)
+        duration = traverse_obj(metadata, ('video_properties', 'duration', {int_or_none}))
 
         return {
             'id': video_id,
@@ -485,11 +445,9 @@ class LoomFolderIE(InfoExtractor):
             'Downloading folder info JSON', query={'limit': '10000'})
 
     def _extract_folder_entries(self, folder_id, initial_folder_data=None):
-        folder_data = initial_folder_data or self._extract_folder_data(
-            folder_id)
+        folder_data = initial_folder_data or self._extract_folder_data(folder_id)
 
-        for video in traverse_obj(
-                folder_data, ('videos', lambda _, v: v['id'])):
+        for video in traverse_obj(folder_data, ('videos', lambda _, v: v['id'])):
             video_id = video['id']
             yield self.url_result(
                 f'https://www.loom.com/share/{video_id}', LoomIE, video_id, video.get('name'))
@@ -504,7 +462,5 @@ class LoomFolderIE(InfoExtractor):
         playlist_data = self._extract_folder_data(playlist_id)
 
         return self.playlist_result(
-            self._extract_folder_entries(
-                playlist_id, playlist_data), playlist_id, traverse_obj(
-                playlist_data, ('folder', 'name', {
-                    str.strip})))
+            self._extract_folder_entries(playlist_id, playlist_data), playlist_id,
+            traverse_obj(playlist_data, ('folder', 'name', {str.strip})))

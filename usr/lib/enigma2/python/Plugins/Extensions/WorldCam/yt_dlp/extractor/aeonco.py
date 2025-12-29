@@ -65,18 +65,10 @@ class AeonCoIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        embed_url = traverse_obj(
-            self._yield_json_ld(
-                webpage,
-                video_id),
-            (lambda _,
-                v: v['@type'] == 'VideoObject',
-                'embedUrl',
-                {url_or_none}),
-            get_all=False)
+        embed_url = traverse_obj(self._yield_json_ld(webpage, video_id), (
+            lambda _, v: v['@type'] == 'VideoObject', 'embedUrl', {url_or_none}), get_all=False)
         if not embed_url:
             raise ExtractorError('No embed URL found in webpage')
         if 'player.vimeo.com' in embed_url:
-            embed_url = VimeoIE._smuggle_referrer(
-                embed_url, 'https://aeon.co/')
+            embed_url = VimeoIE._smuggle_referrer(embed_url, 'https://aeon.co/')
         return self.url_result(embed_url)

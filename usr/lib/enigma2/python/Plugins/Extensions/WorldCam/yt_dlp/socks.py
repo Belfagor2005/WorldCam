@@ -60,10 +60,8 @@ class ProxyError(OSError):
 
 class InvalidVersionError(ProxyError):
     def __init__(self, expected_version, got_version):
-        msg = (
-            f'Invalid response version from server. Expected {
-                expected_version:02x} got ' f'{
-                got_version:02x}')
+        msg = (f'Invalid response version from server. Expected {expected_version:02x} got '
+               f'{got_version:02x}')
         super().__init__(0, msg)
 
 
@@ -109,18 +107,8 @@ class sockssocket(socket.socket):
         self._proxy = None
         super().__init__(*args, **kwargs)
 
-    def setproxy(
-            self,
-            proxytype,
-            addr,
-            port,
-            rdns=True,
-            username=None,
-            password=None):
-        assert proxytype in (
-            ProxyType.SOCKS4,
-            ProxyType.SOCKS4A,
-            ProxyType.SOCKS5)
+    def setproxy(self, proxytype, addr, port, rdns=True, username=None, password=None):
+        assert proxytype in (ProxyType.SOCKS4, ProxyType.SOCKS4A, ProxyType.SOCKS5)
 
         self._proxy = Proxy(proxytype, addr, port, username, password, rdns)
 
@@ -163,14 +151,9 @@ class sockssocket(socket.socket):
     def _setup_socks4(self, address, is_4a=False):
         destaddr, port = address
 
-        _, ipaddr = self._resolve_address(
-            destaddr, SOCKS4_DEFAULT_DSTIP, use_remote_dns=is_4a, family=socket.AF_INET)
+        _, ipaddr = self._resolve_address(destaddr, SOCKS4_DEFAULT_DSTIP, use_remote_dns=is_4a, family=socket.AF_INET)
 
-        packet = struct.pack(
-            '!BBH',
-            SOCKS4_VERSION,
-            Socks4Command.CMD_CONNECT,
-            port) + ipaddr
+        packet = struct.pack('!BBH', SOCKS4_VERSION, Socks4Command.CMD_CONNECT, port) + ipaddr
 
         username = (self._proxy.username or '').encode()
         packet += username + b'\x00'
@@ -180,8 +163,7 @@ class sockssocket(socket.socket):
 
         self.sendall(packet)
 
-        version, resp_code, dstport, dsthost = struct.unpack(
-            '!BBHI', self.recvall(8))
+        version, resp_code, dstport, dsthost = struct.unpack('!BBHI', self.recvall(8))
 
         self._check_response_version(SOCKS4_REPLY_VERSION, version)
 
@@ -211,8 +193,7 @@ class sockssocket(socket.socket):
         self._check_response_version(SOCKS5_VERSION, version)
 
         if method == Socks5Auth.AUTH_NO_ACCEPTABLE or (
-            method == Socks5Auth.AUTH_USER_PASS and (
-                not self._proxy.username or not self._proxy.password)):
+                method == Socks5Auth.AUTH_USER_PASS and (not self._proxy.username or not self._proxy.password)):
             self.close()
             raise Socks5Error(Socks5Auth.AUTH_NO_ACCEPTABLE)
 
@@ -220,8 +201,7 @@ class sockssocket(socket.socket):
             username = self._proxy.username.encode()
             password = self._proxy.password.encode()
             packet = struct.pack('!B', SOCKS5_USER_AUTH_VERSION)
-            packet += self._len_and_data(username) + \
-                self._len_and_data(password)
+            packet += self._len_and_data(username) + self._len_and_data(password)
             self.sendall(packet)
 
             version, status = self._recv_bytes(2)
@@ -235,17 +215,12 @@ class sockssocket(socket.socket):
     def _setup_socks5(self, address):
         destaddr, port = address
 
-        family, ipaddr = self._resolve_address(
-            destaddr, None, use_remote_dns=True)
+        family, ipaddr = self._resolve_address(destaddr, None, use_remote_dns=True)
 
         self._socks5_auth()
 
         reserved = 0
-        packet = struct.pack(
-            '!BBB',
-            SOCKS5_VERSION,
-            Socks5Command.CMD_CONNECT,
-            reserved)
+        packet = struct.pack('!BBB', SOCKS5_VERSION, Socks5Command.CMD_CONNECT, reserved)
         if ipaddr is None:
             destaddr = destaddr.encode()
             packet += struct.pack('!B', Socks5AddressType.ATYP_DOMAINNAME)

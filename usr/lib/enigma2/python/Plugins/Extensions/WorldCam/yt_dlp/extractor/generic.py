@@ -569,8 +569,7 @@ class GenericIE(InfoExtractor):
 
     def report_following_redirect(self, new_url):
         """Report information extraction."""
-        self._downloader.to_screen(
-            f'[redirect] Following redirect to {new_url}')
+        self._downloader.to_screen(f'[redirect] Following redirect to {new_url}')
 
     def report_detected(self, name, num=1, note=None):
         if num > 1:
@@ -580,40 +579,29 @@ class GenericIE(InfoExtractor):
         else:
             num = 'a'
 
-        self._downloader.write_debug(
-            f'Identified {num} {name}{
-                format_field(
-                    note, None, "; %s")}')
+        self._downloader.write_debug(f'Identified {num} {name}{format_field(note, None, "; %s")}')
 
     def _extra_manifest_info(self, info, manifest_url):
-        fragment_query = self._configuration_arg(
-            'fragment_query', [None], casesense=True)[0]
+        fragment_query = self._configuration_arg('fragment_query', [None], casesense=True)[0]
         if fragment_query is not None:
             info['extra_param_to_segment_url'] = (
                 urllib.parse.urlparse(fragment_query).query or fragment_query
                 or urllib.parse.urlparse(manifest_url).query or None)
 
-        key_query = self._configuration_arg(
-            'key_query', [None], casesense=True)[0]
+        key_query = self._configuration_arg('key_query', [None], casesense=True)[0]
         if key_query is not None:
             info['extra_param_to_key_url'] = (
                 urllib.parse.urlparse(key_query).query or key_query
                 or urllib.parse.urlparse(manifest_url).query or None)
 
         def hex_or_none(value):
-            return value if re.fullmatch(
-                r'(0x)?[\da-f]+', value, re.IGNORECASE) else None
+            return value if re.fullmatch(r'(0x)?[\da-f]+', value, re.IGNORECASE) else None
 
-        info['hls_aes'] = traverse_obj(
-            self._configuration_arg(
-                'hls_key', casesense=True), {
-                'uri': (
-                    0, {url_or_none}), 'key': (
-                    0, {hex_or_none}), 'iv': (
-                        1, {hex_or_none}), }) or None
+        info['hls_aes'] = traverse_obj(self._configuration_arg('hls_key', casesense=True), {
+            'uri': (0, {url_or_none}), 'key': (0, {hex_or_none}), 'iv': (1, {hex_or_none}),
+        }) or None
 
-        variant_query = self._configuration_arg(
-            'variant_query', [None], casesense=True)[0]
+        variant_query = self._configuration_arg('variant_query', [None], casesense=True)[0]
         if variant_query is not None:
             query = urllib.parse.parse_qs(
                 urllib.parse.urlparse(variant_query).query or variant_query
@@ -629,18 +617,11 @@ class GenericIE(InfoExtractor):
             if is_live is not None:
                 info['live_status'] = 'not_live' if is_live == 'false' else 'is_live'
                 return
-            headers = m3u8_format.get(
-                'http_headers') or info.get('http_headers') or {}
+            headers = m3u8_format.get('http_headers') or info.get('http_headers') or {}
             display_id = info.get('id')
             urlh = self._request_webpage(
-                m3u8_format['url'],
-                display_id,
-                'Checking m3u8 live status',
-                errnote=False,
-                headers={
-                    **headers,
-                    'Accept-Encoding': 'identity'},
-                fatal=False)
+                m3u8_format['url'], display_id, 'Checking m3u8 live status', errnote=False,
+                headers={**headers, 'Accept-Encoding': 'identity'}, fatal=False)
             if urlh is False:
                 return
             first_bytes = urlh.read(512)
@@ -673,12 +654,7 @@ class GenericIE(InfoExtractor):
                 next_url = smuggle_url(next_url, {'force_videoid': guid})
 
             def itunes(key):
-                return xpath_text(
-                    it,
-                    xpath_with_ns(
-                        f'./itunes:{key}',
-                        NS_MAP),
-                    default=None)
+                return xpath_text(it, xpath_with_ns(f'./itunes:{key}', NS_MAP), default=None)
 
             entries.append({
                 '_type': 'url_transparent',
@@ -697,10 +673,8 @@ class GenericIE(InfoExtractor):
         return {
             '_type': 'playlist',
             'id': url,
-            'title': try_call(
-                lambda: doc.find('./channel/title').text),
-            'description': try_call(
-                lambda: doc.find('./channel/description').text),
+            'title': try_call(lambda: doc.find('./channel/title').text),
+            'description': try_call(lambda: doc.find('./channel/description').text),
             'entries': entries,
         }
 
@@ -717,18 +691,15 @@ class GenericIE(InfoExtractor):
         hash_ = urlparts[3][:HASH_LENGTH]
         indices = list(range(HASH_LENGTH))
 
-        # Swap indices of hash according to the destination calculated from the
-        # license token
+        # Swap indices of hash according to the destination calculated from the license token
         accum = 0
         for src in reversed(range(HASH_LENGTH)):
             accum += license_token[src]
             dest = (src + accum) % HASH_LENGTH
             indices[src], indices[dest] = indices[dest], indices[src]
 
-        urlparts[3] = ''.join(hash_[index]
-                              for index in indices) + urlparts[3][HASH_LENGTH:]
-        return urllib.parse.urlunparse(
-            parsed._replace(path='/'.join(urlparts)))
+        urlparts[3] = ''.join(hash_[index] for index in indices) + urlparts[3][HASH_LENGTH:]
+        return urllib.parse.urlunparse(parsed._replace(path='/'.join(urlparts)))
 
     @staticmethod
     def _kvs_get_license_token(license_code):
@@ -758,18 +729,14 @@ class GenericIE(InfoExtractor):
             r'(?:<link href="https?://[^"]+/(.+?)/?" rel="canonical"\s*/?>'
             r'|<link rel="canonical" href="https?://[^"]+/(.+?)/?"\s*/?>)',
             webpage, 'display_id', fatal=False)
-        title = self._html_search_regex(
-            r'<(?:h1|title)>(?:Video: )?(.+?)</(?:h1|title)>', webpage, 'title')
+        title = self._html_search_regex(r'<(?:h1|title)>(?:Video: )?(.+?)</(?:h1|title)>', webpage, 'title')
 
         thumbnail = flashvars['preview_url']
         if thumbnail.startswith('//'):
             protocol, _, _ = url.partition('/')
             thumbnail = protocol + thumbnail
 
-        url_keys = list(
-            filter(
-                re.compile(r'^video_(?:url|alt_url\d*)$').match,
-                flashvars.keys()))
+        url_keys = list(filter(re.compile(r'^video_(?:url|alt_url\d*)$').match, flashvars.keys()))
         formats = []
         for key in url_keys:
             if '/get_file/' not in flashvars[key]:
@@ -805,15 +772,13 @@ class GenericIE(InfoExtractor):
 
             if default_search in ('auto', 'auto_warning', 'fixup_error'):
                 if re.match(r'[^\s/]+\.[^\s/]+/', url):
-                    self.report_warning(
-                        'The url doesn\'t specify the protocol, trying with https')
+                    self.report_warning('The url doesn\'t specify the protocol, trying with https')
                     return self.url_result('https://' + url)
                 elif default_search != 'fixup_error':
                     if default_search == 'auto_warning':
                         if re.match(r'^(?:url|URL)$', url):
                             raise ExtractorError(
-                                f'Invalid URL:  {
-                                    url!r} . Call yt-dlp like this:  yt-dlp -v "https://www.youtube.com/watch?v=BaW_jenozKc"  ',
+                                f'Invalid URL:  {url!r} . Call yt-dlp like this:  yt-dlp -v "https://www.youtube.com/watch?v=BaW_jenozKc"  ',
                                 expected=True)
                         else:
                             self.report_warning(
@@ -821,8 +786,7 @@ class GenericIE(InfoExtractor):
                     return self.url_result('ytsearch:' + url)
 
             if default_search in ('error', 'fixup_error'):
-                raise ExtractorError(
-                    f'{url!r} is not a valid URL', expected=True)
+                raise ExtractorError(f'{url!r} is not a valid URL', expected=True)
             else:
                 if ':' not in default_search:
                     default_search += ':'
@@ -838,8 +802,7 @@ class GenericIE(InfoExtractor):
         else:
             video_id = self._generic_id(url)
 
-        # Do not impersonate by default; see
-        # https://github.com/yt-dlp/yt-dlp/issues/11335
+        # Do not impersonate by default; see https://github.com/yt-dlp/yt-dlp/issues/11335
         impersonate = self._configuration_arg('impersonate', ['false'])
         if 'false' in impersonate:
             impersonate = None
@@ -866,54 +829,42 @@ class GenericIE(InfoExtractor):
                 LenientSimpleCookie(e.cause.response.get_header('set-cookie')),
                 ('__cf_bm', 'domain'))
             if cf_cookie_domain:
-                self.write_debug(
-                    f'Clearing __cf_bm cookie for {cf_cookie_domain}')
-                self.cookiejar.clear(
-                    domain=cf_cookie_domain, path='/', name='__cf_bm')
+                self.write_debug(f'Clearing __cf_bm cookie for {cf_cookie_domain}')
+                self.cookiejar.clear(domain=cf_cookie_domain, path='/', name='__cf_bm')
             msg = 'Got HTTP Error 403 caused by Cloudflare anti-bot challenge; '
-            if not self._downloader._impersonate_target_available(
-                    ImpersonateTarget()):
+            if not self._downloader._impersonate_target_available(ImpersonateTarget()):
                 msg += ('see  https://github.com/yt-dlp/yt-dlp#impersonation  for '
                         'how to install the required impersonation dependency, and ')
             raise ExtractorError(
-                f'{msg}try again with  --extractor-args "generic:impersonate"',
-                expected=True)
+                f'{msg}try again with  --extractor-args "generic:impersonate"', expected=True)
 
         new_url = full_response.url
         if new_url != extract_basic_auth(url)[0]:
             self.report_following_redirect(new_url)
             if force_videoid:
-                new_url = smuggle_url(
-                    new_url, {'force_videoid': force_videoid})
+                new_url = smuggle_url(new_url, {'force_videoid': force_videoid})
             return self.url_result(new_url)
 
         info_dict = {
             'id': video_id,
             'title': self._generic_title(url),
-            'timestamp': unified_timestamp(
-                full_response.headers.get('Last-Modified')),
+            'timestamp': unified_timestamp(full_response.headers.get('Last-Modified')),
         }
 
         # Check for direct link to a video
         content_type = full_response.headers.get('Content-Type', '').lower()
-        m = re.match(
-            r'(?P<type>audio|video|application(?=/(?:ogg$|(?:vnd\.apple\.|x-)?mpegurl)))/(?P<format_id>[^;\s]+)',
-            content_type)
+        m = re.match(r'(?P<type>audio|video|application(?=/(?:ogg$|(?:vnd\.apple\.|x-)?mpegurl)))/(?P<format_id>[^;\s]+)', content_type)
         if m:
             self.report_detected('direct video link')
             headers = filter_dict({'Referer': smuggled_data.get('referer')})
             format_id = str(m.group('format_id'))
-            ext = determine_ext(
-                url, default_ext=None) or urlhandle_detect_ext(full_response)
+            ext = determine_ext(url, default_ext=None) or urlhandle_detect_ext(full_response)
             subtitles = {}
             if format_id.endswith('mpegurl') or ext == 'm3u8':
-                formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-                    url, video_id, 'mp4', headers=headers)
+                formats, subtitles = self._extract_m3u8_formats_and_subtitles(url, video_id, 'mp4', headers=headers)
             elif format_id == 'f4m' or ext == 'f4m':
-                formats = self._extract_f4m_formats(
-                    url, video_id, headers=headers)
-            # Don't check for DASH/mpd here, do it later w/ first_bytes. Same
-            # number of requests either way
+                formats = self._extract_f4m_formats(url, video_id, headers=headers)
+            # Don't check for DASH/mpd here, do it later w/ first_bytes. Same number of requests either way
             else:
                 formats = [{
                     'format_id': format_id,
@@ -932,17 +883,14 @@ class GenericIE(InfoExtractor):
 
         if not self.get_param('test', False) and not is_intentional:
             force = self.get_param('force_generic_extractor', False)
-            self.report_warning(
-                '%s generic information extractor' %
-                ('Forcing' if force else 'Falling back on'))
+            self.report_warning('%s generic information extractor' % ('Forcing' if force else 'Falling back on'))
 
         first_bytes = full_response.read(512)
 
         # Is it an M3U playlist?
         if first_bytes.startswith(b'#EXTM3U'):
             self.report_detected('M3U playlist')
-            info_dict['formats'], info_dict['subtitles'] = self._extract_m3u8_formats_and_subtitles(
-                url, video_id, 'mp4')
+            info_dict['formats'], info_dict['subtitles'] = self._extract_m3u8_formats_and_subtitles(url, video_id, 'mp4')
             self._extra_manifest_info(info_dict, url)
             return info_dict
 
@@ -979,8 +927,7 @@ class GenericIE(InfoExtractor):
                 self.report_detected('RSS feed')
                 return self._extract_rss(url, video_id, doc)
             elif doc.tag == 'SmoothStreamingMedia':
-                info_dict['formats'], info_dict['subtitles'] = self._parse_ism_formats_and_subtitles(
-                    doc, url)
+                info_dict['formats'], info_dict['subtitles'] = self._parse_ism_formats_and_subtitles(doc, url)
                 self.report_detected('ISM manifest')
                 return info_dict
             elif re.match(r'^(?:{[^}]+})?smil$', doc.tag):
@@ -997,19 +944,15 @@ class GenericIE(InfoExtractor):
             elif re.match(r'(?i)^(?:{[^}]+})?MPD$', doc.tag):
                 info_dict['formats'], info_dict['subtitles'] = self._parse_mpd_formats_and_subtitles(
                     doc,
-                    # Do not use yt_dlp.utils.base_url here since it will raise
-                    # on file:// URLs
-                    mpd_base_url=update_url(
-                        new_url, query=None, fragment=None).rpartition('/')[0],
+                    # Do not use yt_dlp.utils.base_url here since it will raise on file:// URLs
+                    mpd_base_url=update_url(new_url, query=None, fragment=None).rpartition('/')[0],
                     mpd_url=url)
-                info_dict['live_status'] = 'is_live' if doc.get(
-                    'type') == 'dynamic' else None
+                info_dict['live_status'] = 'is_live' if doc.get('type') == 'dynamic' else None
                 self._extra_manifest_info(info_dict, url)
                 self.report_detected('DASH manifest')
                 return info_dict
             elif re.match(r'^{http://ns\.adobe\.com/f4m/[12]\.0}manifest$', doc.tag):
-                info_dict['formats'] = self._parse_f4m_formats(
-                    doc, url, video_id)
+                info_dict['formats'] = self._parse_f4m_formats(doc, url, video_id)
                 self.report_detected('F4M manifest')
                 return info_dict
         except xml.etree.ElementTree.ParseError:
@@ -1029,12 +972,7 @@ class GenericIE(InfoExtractor):
         })
 
         self._downloader.write_debug('Looking for embeds')
-        embeds = list(
-            self._extract_embeds(
-                original_url,
-                webpage,
-                urlh=full_response,
-                info_dict=info_dict))
+        embeds = list(self._extract_embeds(original_url, webpage, urlh=full_response, info_dict=info_dict))
         if len(embeds) == 1:
             return merge_dicts(embeds[0], info_dict)
         elif embeds:
@@ -1043,12 +981,8 @@ class GenericIE(InfoExtractor):
 
     def _extract_embeds(self, url, webpage, *, urlh=None, info_dict={}):
         """Returns an iterator of video entries"""
-        info_dict = types.MappingProxyType(
-            info_dict)  # Prevents accidental mutation
-        video_id = traverse_obj(
-            info_dict,
-            'display_id',
-            'id') or self._generic_id(url)
+        info_dict = types.MappingProxyType(info_dict)  # Prevents accidental mutation
+        video_id = traverse_obj(info_dict, 'display_id', 'id') or self._generic_id(url)
         url, smuggled_data = unsmuggle_url(url, {})
         actual_url = urlh.url if urlh else url
 
@@ -1069,12 +1003,11 @@ class GenericIE(InfoExtractor):
                 while True:
                     current_embeds.append(next(gen))
             except self.StopExtraction:
-                self.report_detected(f'{ie.IE_NAME} exclusive embed', len(
-                    current_embeds), embeds and 'discarding other embeds')
+                self.report_detected(f'{ie.IE_NAME} exclusive embed', len(current_embeds),
+                                     embeds and 'discarding other embeds')
                 return current_embeds
             except StopIteration:
-                self.report_detected(
-                    f'{ie.IE_NAME} embed', len(current_embeds))
+                self.report_detected(f'{ie.IE_NAME} embed', len(current_embeds))
                 embeds.extend(current_embeds)
 
         if embeds:
@@ -1085,10 +1018,7 @@ class GenericIE(InfoExtractor):
         if jwplayer_data:
             if isinstance(jwplayer_data.get('playlist'), str):
                 self.report_detected('JW Player playlist')
-                return [
-                    self.url_result(
-                        jwplayer_data['playlist'],
-                        'JWPlatform')]
+                return [self.url_result(jwplayer_data['playlist'], 'JWPlatform')]
             try:
                 info = self._parse_jwplayer_data(
                     jwplayer_data, video_id, require_title=False, base_url=url)
@@ -1105,12 +1035,8 @@ class GenericIE(InfoExtractor):
             webpage)
         if mobj is not None:
             varname = mobj.group(1)
-            sources = variadic(
-                self._parse_json(
-                    mobj.group(2),
-                    video_id,
-                    transform_source=js_to_json,
-                    fatal=False) or [])
+            sources = variadic(self._parse_json(
+                mobj.group(2), video_id, transform_source=js_to_json, fatal=False) or [])
             formats, subtitles, src = [], {}, None
             for source in sources:
                 src = source.get('src')
@@ -1146,16 +1072,9 @@ class GenericIE(InfoExtractor):
                     })
             # https://docs.videojs.com/player#addRemoteTextTrack
             # https://html.spec.whatwg.org/multipage/media.html#htmltrackelement
-            for sub_match in re.finditer(
-                rf'(?s){
-                    re.escape(varname)}' +
-                r'\.addRemoteTextTrack\(({.+?})\s*,\s*(?:true|false)\)',
-                    webpage):
+            for sub_match in re.finditer(rf'(?s){re.escape(varname)}' + r'\.addRemoteTextTrack\(({.+?})\s*,\s*(?:true|false)\)', webpage):
                 sub = self._parse_json(
-                    sub_match.group(1),
-                    video_id,
-                    transform_source=js_to_json,
-                    fatal=False) or {}
+                    sub_match.group(1), video_id, transform_source=js_to_json, fatal=False) or {}
                 sub_src = str_or_none(sub.get('src'))
                 if not sub_src:
                     continue
@@ -1173,8 +1092,7 @@ class GenericIE(InfoExtractor):
                     self._extra_manifest_info(info_dict, src)
                 return [info_dict]
 
-        # Look for generic KVS player (before json-ld bc of some urls that
-        # break otherwise)
+        # Look for generic KVS player (before json-ld bc of some urls that break otherwise)
         found = self._search_regex((
             r'<script\b[^>]+?\bsrc\s*=\s*(["\'])https?://(?:(?!\1)[^?#])+/kt_player\.js\?v=(?P<ver>\d+(?:\.\d+)+)\1[^>]*>',
             r'kt_player\s*\(\s*(["\'])(?:(?!\1)[\w\W])+\1\s*,\s*(["\'])https?://(?:(?!\2)[^?#])+/kt_player\.swf\?v=(?P<ver>\d+(?:\.\d+)+)\2\s*,',
@@ -1182,16 +1100,14 @@ class GenericIE(InfoExtractor):
         if found:
             self.report_detected('KVS Player')
             if found.split('.')[0] not in ('4', '5', '6'):
-                self.report_warning(
-                    f'Untested major version ({found}) in player engine - download may fail.')
+                self.report_warning(f'Untested major version ({found}) in player engine - download may fail.')
             return [self._extract_kvs(url, webpage, video_id)]
 
         # Looking for http://schema.org/VideoObject
         json_ld = self._search_json_ld(webpage, video_id, default={})
         if json_ld.get('url') not in (url, None):
             self.report_detected('JSON LD')
-            is_direct = json_ld.get('ext') not in (
-                None, *MEDIA_EXTENSIONS.manifests)
+            is_direct = json_ld.get('ext') not in (None, *MEDIA_EXTENSIONS.manifests)
             return [merge_dicts({
                 '_type': 'video' if is_direct else 'url_transparent',
                 'url': smuggle_url(json_ld['url'], {
@@ -1208,27 +1124,13 @@ class GenericIE(InfoExtractor):
                 return True
             vpath = urllib.parse.urlparse(vurl).path
             vext = determine_ext(vpath, None)
-            return vext not in (
-                None,
-                'swf',
-                'png',
-                'jpg',
-                'srt',
-                'sbv',
-                'sub',
-                'vtt',
-                'ttml',
-                'js',
-                'xml')
+            return vext not in (None, 'swf', 'png', 'jpg', 'srt', 'sbv', 'sub', 'vtt', 'ttml', 'js', 'xml')
 
         def filter_video(urls):
             return list(filter(check_video, urls))
 
         # Start with something easy: JW Player in SWFObject
-        found = filter_video(
-            re.findall(
-                r'flashvars: [\'"](?:.*&)?file=(http[^\'"&]*)',
-                webpage))
+        found = filter_video(re.findall(r'flashvars: [\'"](?:.*&)?file=(http[^\'"&]*)', webpage))
         if found:
             self.report_detected('JW Player in SFWObject')
         else:
@@ -1245,18 +1147,13 @@ class GenericIE(InfoExtractor):
                 self.report_detected('JW Player embed')
         if not found:
             # Broaden the search a little bit
-            found = filter_video(
-                re.findall(
-                    r'[^A-Za-z0-9]?(?:file|source)=(http[^\'"&]*)',
-                    webpage))
+            found = filter_video(re.findall(r'[^A-Za-z0-9]?(?:file|source)=(http[^\'"&]*)', webpage))
             if found:
                 self.report_detected('video file')
         if not found:
             # Broaden the findall a little bit: JWPlayer JS loader
-            found = filter_video(
-                re.findall(
-                    r'[^A-Za-z0-9]?(?:file|video_url)["\']?:\s*["\'](http(?![^\'"]+\.[0-9]+[\'"])[^\'"]+)["\']',
-                    webpage))
+            found = filter_video(re.findall(
+                r'[^A-Za-z0-9]?(?:file|video_url)["\']?:\s*["\'](http(?![^\'"]+\.[0-9]+[\'"])[^\'"]+)["\']', webpage))
             if found:
                 self.report_detected('JW Player JS loader')
         if not found:
@@ -1280,25 +1177,17 @@ class GenericIE(InfoExtractor):
             # twitter:player:stream should be checked before twitter:player since
             # it is expected to contain a raw stream (see
             # https://dev.twitter.com/cards/types/player#On_twitter.com_via_desktop_browser)
-            found = filter_video(
-                re.findall(
-                    r'<meta (?:property|name)="twitter:player:stream" (?:content|value)="(.+?)"',
-                    webpage))
+            found = filter_video(re.findall(
+                r'<meta (?:property|name)="twitter:player:stream" (?:content|value)="(.+?)"', webpage))
             if found:
                 self.report_detected('Twitter card')
         if not found:
             # We look for Open Graph info:
-            # We have to match any number spaces between elements, some sites
-            # try to align them, e.g.: statigr.am
-            m_video_type = re.findall(
-                r'<meta.*?property="og:video:type".*?content="video/(.*?)"', webpage)
-            # We only look in og:video if the MIME type is a video, don't try
-            # if it's a Flash player:
+            # We have to match any number spaces between elements, some sites try to align them, e.g.: statigr.am
+            m_video_type = re.findall(r'<meta.*?property="og:video:type".*?content="video/(.*?)"', webpage)
+            # We only look in og:video if the MIME type is a video, don't try if it's a Flash player:
             if m_video_type is not None:
-                found = filter_video(
-                    re.findall(
-                        r'<meta.*?property="og:(?:video|audio)".*?content="(.*?)"',
-                        webpage))
+                found = filter_video(re.findall(r'<meta.*?property="og:(?:video|audio)".*?content="(.*?)"', webpage))
                 if found:
                     self.report_detected('Open Graph video info')
         if not found:
@@ -1313,8 +1202,7 @@ class GenericIE(InfoExtractor):
                 if refresh_header:
                     found = re.search(REDIRECT_REGEX, refresh_header)
             if found:
-                new_url = urllib.parse.urljoin(
-                    url, unescapeHTML(found.group(1)))
+                new_url = urllib.parse.urljoin(url, unescapeHTML(found.group(1)))
                 if new_url != url:
                     self.report_following_redirect(new_url)
                     return [self.url_result(new_url)]
@@ -1325,8 +1213,7 @@ class GenericIE(InfoExtractor):
             # twitter:player is a https URL to iframe player that may or may not
             # be supported by yt-dlp thus this is checked the very last (see
             # https://dev.twitter.com/cards/types/player#On_twitter.com_via_desktop_browser)
-            embed_url = self._html_search_meta(
-                'twitter:player', webpage, default=None)
+            embed_url = self._html_search_meta('twitter:player', webpage, default=None)
             if embed_url and embed_url != url:
                 self.report_detected('twitter:player iframe')
                 return [self.url_result(embed_url)]
@@ -1334,11 +1221,7 @@ class GenericIE(InfoExtractor):
         if not found:
             return []
 
-        domain_name = self._search_regex(
-            r'^(?:https?://)?([^/]*)/.*',
-            url,
-            'video uploader',
-            default=None)
+        domain_name = self._search_regex(r'^(?:https?://)?([^/]*)/.*', url, 'video uploader', default=None)
 
         entries = []
         for video_url in orderedSet(found):
@@ -1377,21 +1260,17 @@ class GenericIE(InfoExtractor):
 
             ext = determine_ext(video_url)
             if ext == 'smil':
-                entry_info_dict = {
-                    **self._extract_smil_info(video_url, video_id), **entry_info_dict}
+                entry_info_dict = {**self._extract_smil_info(video_url, video_id), **entry_info_dict}
             elif ext == 'xspf':
                 return [self._extract_xspf_playlist(video_url, video_id)]
             elif ext == 'm3u8':
-                entry_info_dict['formats'], entry_info_dict['subtitles'] = self._extract_m3u8_formats_and_subtitles(
-                    video_url, video_id, ext='mp4', headers=headers)
+                entry_info_dict['formats'], entry_info_dict['subtitles'] = self._extract_m3u8_formats_and_subtitles(video_url, video_id, ext='mp4', headers=headers)
                 self._extra_manifest_info(entry_info_dict, video_url)
             elif ext == 'mpd':
-                entry_info_dict['formats'], entry_info_dict['subtitles'] = self._extract_mpd_formats_and_subtitles(
-                    video_url, video_id, headers=headers)
+                entry_info_dict['formats'], entry_info_dict['subtitles'] = self._extract_mpd_formats_and_subtitles(video_url, video_id, headers=headers)
                 self._extra_manifest_info(entry_info_dict, video_url)
             elif ext == 'f4m':
-                entry_info_dict['formats'] = self._extract_f4m_formats(
-                    video_url, video_id, headers=headers)
+                entry_info_dict['formats'] = self._extract_f4m_formats(video_url, video_id, headers=headers)
             elif re.search(r'(?i)\.(?:ism|smil)/manifest', video_url) and video_url != url:
                 # Just matching .ism/manifest is not enough to be reliably sure
                 # whether it's actually an ISM manifest or some other streaming
@@ -1403,8 +1282,7 @@ class GenericIE(InfoExtractor):
                 # to generic extractor in order to look into the contents of
                 # the manifest itself.
                 # 1. https://azure.microsoft.com/en-us/documentation/articles/media-services-deliver-content-overview/#streaming-url-formats
-                # 2.
-                # https://svs.itworkscdn.net/lbcivod/smil:itwfcdn/lbci/170976.smil/Manifest
+                # 2. https://svs.itworkscdn.net/lbcivod/smil:itwfcdn/lbci/170976.smil/Manifest
                 entry_info_dict = self.url_result(
                     smuggle_url(video_url, {'to_generic': True}),
                     GenericIE.ie_key())

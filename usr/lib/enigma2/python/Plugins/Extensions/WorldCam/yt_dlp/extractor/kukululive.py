@@ -88,30 +88,18 @@ class KukuluLiveIE(InfoExtractor):
             raise ExtractorError('This stream has expired', expected=True)
 
         title = clean_html(
-            get_element_by_id(
-                'livetitle',
-                html.replace(
-                    '<SPAN',
-                    '<span').replace(
-                    'SPAN>',
-                    'span>')))
+            get_element_by_id('livetitle', html.replace('<SPAN', '<span').replace('SPAN>', 'span>')))
         description = self._html_search_meta('Description', html)
         thumbnail = self._html_search_meta(['og:image', 'twitter:image'], html)
 
-        if self._search_regex(
-            r'(var\s+timeshift\s*=\s*false)',
-            html,
-            'is livestream',
-                default=False):
+        if self._search_regex(r'(var\s+timeshift\s*=\s*false)', html, 'is livestream', default=False):
             formats = []
             for (desc, code) in [('high', 'Z'), ('low', 'ForceLow')]:
                 quality_meta = self._get_quality_meta(video_id, desc, code)
                 self._add_quality_formats(formats, quality_meta)
-                if desc == 'high' and traverse_obj(
-                        quality_meta, ('vcodec', 0)) == 'HEVC':
+                if desc == 'high' and traverse_obj(quality_meta, ('vcodec', 0)) == 'HEVC':
                     self._add_quality_formats(
-                        formats, self._get_quality_meta(
-                            video_id, desc, code, force_h264='1'))
+                        formats, self._get_quality_meta(video_id, desc, code, force_h264='1'))
 
             return {
                 'id': video_id,
@@ -124,23 +112,12 @@ class KukuluLiveIE(InfoExtractor):
 
         # VOD extraction
         player_html = self._download_webpage(
-            'https://live.erinn.biz/live.timeshift.fplayer.php',
-            video_id,
-            'Downloading player html',
-            'Unable to download player html',
-            query={
-                'hash': video_id})
+            'https://live.erinn.biz/live.timeshift.fplayer.php', video_id,
+            'Downloading player html', 'Unable to download player html', query={'hash': video_id})
 
-        sources = traverse_obj(
-            self._search_json(
-                r'var\s+fplayer_source\s*=',
-                player_html,
-                'stream data',
-                video_id,
-                contains_pattern=r'\[(?s:.+)\]',
-                transform_source=js_to_json),
-            lambda _,
-            v: v['file'])
+        sources = traverse_obj(self._search_json(
+            r'var\s+fplayer_source\s*=', player_html, 'stream data', video_id,
+            contains_pattern=r'\[(?s:.+)\]', transform_source=js_to_json), lambda _, v: v['file'])
 
         def entries(segments, playlist=True):
             for i, segment in enumerate(segments, 1):
@@ -160,9 +137,4 @@ class KukuluLiveIE(InfoExtractor):
         if len(sources) == 1:
             return next(entries(sources, playlist=False))
 
-        return self.playlist_result(
-            entries(sources),
-            video_id,
-            title,
-            description,
-            multi_video=True)
+        return self.playlist_result(entries(sources), video_id, title, description, multi_video=True)

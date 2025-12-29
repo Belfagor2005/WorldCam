@@ -44,16 +44,8 @@ class OneFootballIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
         data_json = self._search_json_ld(webpage, video_id, fatal=False)
         data_json.pop('url', None)
-        m3u8_url = self._html_search_regex(
-            r'(https://cdn\.jwplayer\.com/manifests/\w+\.m3u8)', webpage, 'm3u8_url')
+        m3u8_url = self._html_search_regex(r'(https://cdn\.jwplayer\.com/manifests/\w+\.m3u8)', webpage, 'm3u8_url')
 
         return self.url_result(
-            m3u8_url,
-            JWPlatformIE,
-            video_id,
-            _old_archive_ids=[
-                make_archive_id(
-                    self,
-                    video_id)],
-            **data_json,
-            url_transparent=True)
+            m3u8_url, JWPlatformIE, video_id, _old_archive_ids=[make_archive_id(self, video_id)],
+            **data_json, url_transparent=True)

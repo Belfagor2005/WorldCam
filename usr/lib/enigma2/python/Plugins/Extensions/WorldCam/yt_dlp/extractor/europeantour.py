@@ -27,8 +27,7 @@ class EuropeanTourIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
-        vid, aid = re.search(
-            r'(?s)brightcove-player\s?video-id="([^"]+)".*"ACCOUNT_ID":"([^"]+)"', webpage).groups()
+        vid, aid = re.search(r'(?s)brightcove-player\s?video-id="([^"]+)".*"ACCOUNT_ID":"([^"]+)"', webpage).groups()
         if not aid:
             aid = '5136026580001'
         return self.url_result(

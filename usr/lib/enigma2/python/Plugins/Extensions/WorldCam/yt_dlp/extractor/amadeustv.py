@@ -31,8 +31,7 @@ class AmadeusTVIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
 
-        nuxt_data = self._search_nuxt_data(
-            webpage, display_id, traverse=('fetch', '0'))
+        nuxt_data = self._search_nuxt_data(webpage, display_id, traverse=('fetch', '0'))
         video_id = traverse_obj(nuxt_data, ('item', 'video', {str}))
 
         if not video_id:
@@ -43,8 +42,7 @@ class AmadeusTVIE(InfoExtractor):
             video_id, headers={'Referer': 'http://www.amadeus.tv/'})
 
         formats = []
-        for video in traverse_obj(
-                video_data, ('videoInfo', ('sourceVideo', ('transcodeList', ...)), {dict})):
+        for video in traverse_obj(video_data, ('videoInfo', ('sourceVideo', ('transcodeList', ...)), {dict})):
             if not url_or_none(video.get('url')):
                 continue
             formats.append({

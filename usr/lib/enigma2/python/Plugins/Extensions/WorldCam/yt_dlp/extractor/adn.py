@@ -95,15 +95,8 @@ class ADNIE(ADNBaseIE):
             return None
 
         enc_subtitles = self._download_webpage(
-            sub_url,
-            video_id,
-            'Downloading subtitles location',
-            fatal=False) or '{}'
-        subtitle_location = (
-            self._parse_json(
-                enc_subtitles,
-                video_id,
-                fatal=False) or {}).get('location')
+            sub_url, video_id, 'Downloading subtitles location', fatal=False) or '{}'
+        subtitle_location = (self._parse_json(enc_subtitles, video_id, fatal=False) or {}).get('location')
         if subtitle_location:
             enc_subtitles = self._download_webpage(
                 subtitle_location, video_id, 'Downloading subtitles data',
@@ -116,8 +109,7 @@ class ADNIE(ADNBaseIE):
             base64.b64decode(enc_subtitles[24:]),
             binascii.unhexlify(self._K + '7fac1178830cfe0c'),
             base64.b64decode(enc_subtitles[:24])))
-        subtitles_json = self._parse_json(
-            dec_subtitles.decode(), None, fatal=False)
+        subtitles_json = self._parse_json(dec_subtitles.decode(), None, fatal=False)
         if not subtitles_json:
             return None
 
@@ -138,14 +130,12 @@ Format: Marked,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text'''
                     current.get('positionAlign'))
                 if start is None or end is None or text is None:
                     continue
-                alignment = self._POS_ALIGN_MAP.get(
-                    position_align, 2) + self._LINE_ALIGN_MAP.get(line_align, 0)
+                alignment = self._POS_ALIGN_MAP.get(position_align, 2) + self._LINE_ALIGN_MAP.get(line_align, 0)
                 ssa += os.linesep + 'Dialogue: Marked=0,{},{},Default,,0,0,0,,{}{}'.format(
-                    ass_subtitles_timecode(start), ass_subtitles_timecode(end), '{\\a%d}' %
-                    alignment if alignment != 2 else '', text.replace(
-                        '\n', '\\N').replace(
-                        '<i>', '{\\i1}').replace(
-                        '</i>', '{\\i0}'))
+                    ass_subtitles_timecode(start),
+                    ass_subtitles_timecode(end),
+                    '{\\a%d}' % alignment if alignment != 2 else '',
+                    text.replace('\n', '\\N').replace('<i>', '{\\i1}').replace('</i>', '{\\i0}'))
 
             if sub_lang == 'vostf':
                 sub_lang = 'fr'
@@ -195,27 +185,16 @@ Format: Marked,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text'''
         if not user.get('hasAccess'):
             start_date = traverse_obj(options, ('video', 'startDate', {str}))
             if (parse_iso8601(start_date) or 0) > time.time():
-                raise ExtractorError(
-                    f'This video is not available yet. Release date: {start_date}',
-                    expected=True)
-            self.raise_login_required(
-                'This video requires a subscription',
-                method='password')
+                raise ExtractorError(f'This video is not available yet. Release date: {start_date}', expected=True)
+            self.raise_login_required('This video requires a subscription', method='password')
 
         token = self._download_json(
-            user.get('refreshTokenUrl') or (
-                self._PLAYER_BASE_URL +
-                'refresh/token'),
-            video_id,
-            'Downloading access token',
-            headers={
+            user.get('refreshTokenUrl') or (self._PLAYER_BASE_URL + 'refresh/token'),
+            video_id, 'Downloading access token', headers={
                 'X-Player-Refresh-Token': user['refreshToken'],
-            },
-            data=b'')['token']
+            }, data=b'')['token']
 
-        links_url = try_get(
-            options, lambda x: x['video']['url']) or (
-            video_base_url + 'link')
+        links_url = try_get(options, lambda x: x['video']['url']) or (video_base_url + 'link')
         self._K = ''.join(random.choices('0123456789abcdef', k=16))
         message = list(json.dumps({
             'k': self._K,
@@ -228,8 +207,7 @@ Format: Marked,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text'''
         for _ in range(3):
             padded_message = bytes(pkcs1pad(message, 128))
             n, e = self._RSA_KEY
-            encrypted_message = long_to_bytes(
-                pow(bytes_to_long(padded_message), e, n))
+            encrypted_message = long_to_bytes(pow(bytes_to_long(padded_message), e, n))
             authorization = base64.b64encode(encrypted_message).decode()
 
             try:
@@ -249,14 +227,12 @@ Format: Marked,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text'''
                     raise e
 
                 if e.cause.status == 401:
-                    # This usually goes away with a different random pkcs1pad,
-                    # so retry
+                    # This usually goes away with a different random pkcs1pad, so retry
                     continue
 
                 error = self._parse_json(e.cause.response.read(), video_id)
                 message = error.get('message')
-                if e.cause.status == 403 and error.get(
-                        'code') == 'player-bad-geolocation-country':
+                if e.cause.status == 403 and error.get('code') == 'player-bad-geolocation-country':
                     self.raise_geo_restricted(msg=message)
                 raise ExtractorError(message)
         else:
@@ -293,44 +269,28 @@ Format: Marked,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text'''
                 formats.extend(m3u8_formats)
 
         if not formats:
-            self.raise_login_required(
-                'This video requires a subscription',
-                method='password')
+            self.raise_login_required('This video requires a subscription', method='password')
 
-        video = (
-            self._download_json(
-                self._API_BASE_URL +
-                f'video/{video_id}',
-                video_id,
-                'Downloading additional video metadata',
-                fatal=False,
-                headers=self._HEADERS) or {}).get('video') or {}
+        video = (self._download_json(
+            self._API_BASE_URL + f'video/{video_id}', video_id,
+            'Downloading additional video metadata', fatal=False, headers=self._HEADERS) or {}).get('video') or {}
         show = video.get('show') or {}
 
         return {
             'id': video_id,
             'title': title,
-            'description': strip_or_none(
-                metas.get('summary') or video.get('summary')),
+            'description': strip_or_none(metas.get('summary') or video.get('summary')),
             'thumbnail': video_info.get('image') or player.get('image'),
             'formats': formats,
-            'subtitles': self.extract_subtitles(
-                sub_url,
-                video_id),
+            'subtitles': self.extract_subtitles(sub_url, video_id),
             'episode': metas.get('subtitle') or video.get('name'),
-            'episode_number': int_or_none(
-                video.get('shortNumber')),
+            'episode_number': int_or_none(video.get('shortNumber')),
             'series': show.get('title'),
-            'season_number': int_or_none(
-                video.get('season')),
-            'duration': int_or_none(
-                video_info.get('duration') or video.get('duration')),
-            'release_date': unified_strdate(
-                video.get('releaseDate')),
-            'average_rating': float_or_none(
-                video.get('rating') or metas.get('rating')),
-            'comment_count': int_or_none(
-                video.get('commentsCount')),
+            'season_number': int_or_none(video.get('season')),
+            'duration': int_or_none(video_info.get('duration') or video.get('duration')),
+            'release_date': unified_strdate(video.get('releaseDate')),
+            'average_rating': float_or_none(video.get('rating') or metas.get('rating')),
+            'comment_count': int_or_none(video.get('commentsCount')),
         }
 
 
@@ -361,8 +321,7 @@ class ADNSeasonIE(ADNBaseIE):
             })
 
         def entries():
-            for episode_id in traverse_obj(
-                    episodes, ('videos', ..., 'id', {str_or_none})):
+            for episode_id in traverse_obj(episodes, ('videos', ..., 'id', {str_or_none})):
                 yield self.url_result(join_nonempty(
                     'https://animationdigitalnetwork.com', lang, 'video',
                     video_show_slug, episode_id, delim='/'), ADNIE, episode_id)

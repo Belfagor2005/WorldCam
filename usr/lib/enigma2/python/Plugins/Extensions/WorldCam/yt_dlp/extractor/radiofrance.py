@@ -130,48 +130,27 @@ class FranceCultureIE(RadioFranceBaseIE):
     ]
 
     def _real_extract(self, url):
-        video_id, display_id = self._match_valid_url(
-            url).group('id', 'display_id')
+        video_id, display_id = self._match_valid_url(url).group('id', 'display_id')
         webpage = self._download_webpage(url, display_id)
 
-        # _search_json_ld doesn't correctly handle this. See
-        # https://github.com/yt-dlp/yt-dlp/pull/3874#discussion_r891903846
-        video_data = self._search_json(
-            '',
-            webpage,
-            'audio data',
-            display_id,
-            contains_pattern=r'{\s*"@type"\s*:\s*"AudioObject".+}')
+        # _search_json_ld doesn't correctly handle this. See https://github.com/yt-dlp/yt-dlp/pull/3874#discussion_r891903846
+        video_data = self._search_json('', webpage, 'audio data', display_id, contains_pattern=r'{\s*"@type"\s*:\s*"AudioObject".+}')
 
         return {
             'id': video_id,
             'display_id': display_id,
             'url': video_data['contentUrl'],
             'vcodec': 'none' if video_data.get('encodingFormat') == 'mp3' else None,
-            'duration': parse_duration(
-                video_data.get('duration')),
-            'title': self._html_search_regex(
-                r'(?s)<h1[^>]*itemprop="[^"]*name[^"]*"[^>]*>(.+?)</h1>',
-                webpage,
-                'title',
-                default=self._og_search_title(webpage)),
+            'duration': parse_duration(video_data.get('duration')),
+            'title': self._html_search_regex(r'(?s)<h1[^>]*itemprop="[^"]*name[^"]*"[^>]*>(.+?)</h1>',
+                                             webpage, 'title', default=self._og_search_title(webpage)),
             'description': self._html_search_regex(
-                r'(?s)<meta name="description"\s*content="([^"]+)',
-                webpage,
-                'description',
-                default=None),
+                r'(?s)<meta name="description"\s*content="([^"]+)', webpage, 'description', default=None),
             'thumbnail': self._og_search_thumbnail(webpage),
             'uploader': self._html_search_regex(
-                r'(?s)<span class="author">(.*?)</span>',
-                webpage,
-                'uploader',
-                default=None),
-            'upload_date': unified_strdate(
-                self._search_regex(
-                    r'"datePublished"\s*:\s*"([^"]+)',
-                    webpage,
-                    'timestamp',
-                    fatal=False)),
+                r'(?s)<span class="author">(.*?)</span>', webpage, 'uploader', default=None),
+            'upload_date': unified_strdate(self._search_regex(
+                r'"datePublished"\s*:\s*"([^"]+)', webpage, 'timestamp', fatal=False)),
         }
 
 
@@ -254,23 +233,19 @@ class RadioFranceLiveIE(RadioFranceBaseIE):
     }]
 
     def _real_extract(self, url):
-        station_id, substation_id = self._match_valid_url(
-            url).group('id', 'substation_id')
+        station_id, substation_id = self._match_valid_url(url).group('id', 'substation_id')
 
         if substation_id:
             webpage = self._download_webpage(url, station_id)
-            api_response = self._extract_data_from_webpage(
-                webpage, station_id, 'webRadioData')
+            api_response = self._extract_data_from_webpage(webpage, station_id, 'webRadioData')
         else:
             api_response = self._download_json(
                 f'https://www.radiofrance.fr/{station_id}/api/live', station_id)
 
         formats, subtitles = [], {}
-        for media_source in traverse_obj(
-                api_response, (('now', None), 'media', 'sources', lambda _, v: v['url'])):
+        for media_source in traverse_obj(api_response, (('now', None), 'media', 'sources', lambda _, v: v['url'])):
             if media_source.get('format') == 'hls':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                    media_source['url'], station_id, fatal=False)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(media_source['url'], station_id, fatal=False)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
@@ -280,21 +255,9 @@ class RadioFranceLiveIE(RadioFranceBaseIE):
                 })
 
         return {
-            'id': join_nonempty(
-                station_id,
-                substation_id),
-            'title': traverse_obj(
-                api_response,
-                ('visual',
-                 'legend')) or join_nonempty(
-                ('now',
-                 'firstLine',
-                 'title'),
-                ('now',
-                 'secondLine',
-                 'title'),
-                from_dict=api_response,
-                delim=' - '),
+            'id': join_nonempty(station_id, substation_id),
+            'title': traverse_obj(api_response, ('visual', 'legend')) or join_nonempty(
+                ('now', 'firstLine', 'title'), ('now', 'secondLine', 'title'), from_dict=api_response, delim=' - '),
             'formats': formats,
             'subtitles': subtitles,
             'is_live': True,
@@ -305,8 +268,7 @@ class RadioFrancePlaylistBaseIE(RadioFranceBaseIE):
     """Subclasses must set _METADATA_KEY"""
 
     def _call_api(self, content_id, cursor, page_num):
-        raise NotImplementedError(
-            'This method must be implemented by subclasses')
+        raise NotImplementedError('This method must be implemented by subclasses')
 
     def _generate_playlist_entries(self, content_id, content_response):
         for page_num in itertools.count(2):
@@ -319,13 +281,11 @@ class RadioFrancePlaylistBaseIE(RadioFranceBaseIE):
                         'thumbnail': ('visual', 'src'),
                     }))
 
-            next_cursor = traverse_obj(
-                content_response, (('pagination', None), 'next'), get_all=False)
+            next_cursor = traverse_obj(content_response, (('pagination', None), 'next'), get_all=False)
             if not next_cursor:
                 break
 
-            content_response = self._call_api(
-                content_id, next_cursor, page_num)
+            content_response = self._call_api(content_id, next_cursor, page_num)
 
     def _real_extract(self, url):
         display_id = self._match_id(url)
@@ -355,61 +315,62 @@ class RadioFrancePodcastIE(RadioFrancePlaylistBaseIE):
         /podcasts/(?P<id>[\w-]+)/?(?:[?#]|$)
     '''
 
-    _TESTS = [{'url': 'https://www.radiofrance.fr/franceinfo/podcasts/le-billet-vert',
-               'info_dict': {'id': 'eaf6ef81-a980-4f1c-a7d1-8a75ecd54b17',
-                             'display_id': 'le-billet-vert',
-                             'title': 'Le billet sciences',
-                             'description': 'md5:eb1007b34b0c0a680daaa71525bbd4c1',
-                             'thumbnail': r're:^https?://.*\.(?:jpg|png)',
-                             },
-               'playlist_mincount': 11,
-               },
-              {'url': 'https://www.radiofrance.fr/franceinter/podcasts/jean-marie-le-pen-l-obsession-nationale',
-               'info_dict': {'id': '566fd524-3074-4fbc-ac69-8696f2152a54',
-                             'display_id': 'jean-marie-le-pen-l-obsession-nationale',
-                             'title': 'Jean-Marie Le Pen, l\'obsession nationale',
-                             'description': 'md5:a07c0cfb894f6d07a62d0ad12c4b7d73',
-                             'thumbnail': r're:^https?://.*\.(?:jpg|png)',
-                             },
-               'playlist_count': 7,
-               },
-              {'url': 'https://www.radiofrance.fr/franceculture/podcasts/serie-thomas-grjebine',
-               'info_dict': {'id': '63c1ddc9-9f15-457a-98b2-411bac63f48d',
-                             'display_id': 'serie-thomas-grjebine',
-                             'title': 'Thomas Grjebine',
-                             },
-               'playlist_count': 1,
-               },
-              {'url': 'https://www.radiofrance.fr/fip/podcasts/certains-l-aiment-fip',
-               'info_dict': {'id': '143dff38-e956-4a5d-8576-1c0b7242b99e',
-                             'display_id': 'certains-l-aiment-fip',
-                             'title': 'Certains l’aiment Fip',
-                             'description': 'md5:ff974672ba00d4fd5be80fb001c5b27e',
-                             'thumbnail': r're:^https?://.*\.(?:jpg|png)',
-                             },
-               'playlist_mincount': 321,
-               },
-              {'url': 'https://www.radiofrance.fr/franceinter/podcasts/le-7-9',
-               'only_matching': True,
-               },
-              {'url': 'https://www.radiofrance.fr/mouv/podcasts/dirty-mix',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'https://www.radiofrance.fr/franceinfo/podcasts/le-billet-vert',
+        'info_dict': {
+            'id': 'eaf6ef81-a980-4f1c-a7d1-8a75ecd54b17',
+            'display_id': 'le-billet-vert',
+            'title': 'Le billet sciences',
+            'description': 'md5:eb1007b34b0c0a680daaa71525bbd4c1',
+            'thumbnail': r're:^https?://.*\.(?:jpg|png)',
+        },
+        'playlist_mincount': 11,
+    }, {
+        'url': 'https://www.radiofrance.fr/franceinter/podcasts/jean-marie-le-pen-l-obsession-nationale',
+        'info_dict': {
+            'id': '566fd524-3074-4fbc-ac69-8696f2152a54',
+            'display_id': 'jean-marie-le-pen-l-obsession-nationale',
+            'title': 'Jean-Marie Le Pen, l\'obsession nationale',
+            'description': 'md5:a07c0cfb894f6d07a62d0ad12c4b7d73',
+            'thumbnail': r're:^https?://.*\.(?:jpg|png)',
+        },
+        'playlist_count': 7,
+    }, {
+        'url': 'https://www.radiofrance.fr/franceculture/podcasts/serie-thomas-grjebine',
+        'info_dict': {
+            'id': '63c1ddc9-9f15-457a-98b2-411bac63f48d',
+            'display_id': 'serie-thomas-grjebine',
+            'title': 'Thomas Grjebine',
+        },
+        'playlist_count': 1,
+    }, {
+        'url': 'https://www.radiofrance.fr/fip/podcasts/certains-l-aiment-fip',
+        'info_dict': {
+            'id': '143dff38-e956-4a5d-8576-1c0b7242b99e',
+            'display_id': 'certains-l-aiment-fip',
+            'title': 'Certains l’aiment Fip',
+            'description': 'md5:ff974672ba00d4fd5be80fb001c5b27e',
+            'thumbnail': r're:^https?://.*\.(?:jpg|png)',
+        },
+        'playlist_mincount': 321,
+    }, {
+        'url': 'https://www.radiofrance.fr/franceinter/podcasts/le-7-9',
+        'only_matching': True,
+    }, {
+        'url': 'https://www.radiofrance.fr/mouv/podcasts/dirty-mix',
+        'only_matching': True,
+    }]
 
     _METADATA_KEY = 'expressions'
 
     def _call_api(self, podcast_id, cursor, page_num):
         return self._download_json(
-            f'https://www.radiofrance.fr/api/v2.1/concepts/{podcast_id}/expressions',
-            podcast_id,
-            note=f'Downloading page {page_num}',
-            query={
-                'pageCursor': cursor})
+            f'https://www.radiofrance.fr/api/v2.1/concepts/{podcast_id}/expressions', podcast_id,
+            note=f'Downloading page {page_num}', query={'pageCursor': cursor})
 
 
 class RadioFranceProfileIE(RadioFrancePlaylistBaseIE):
-    _VALID_URL = rf'{
-        RadioFranceBaseIE._VALID_URL_BASE}/personnes/(?P<id>[\w-]+)'
+    _VALID_URL = rf'{RadioFranceBaseIE._VALID_URL_BASE}/personnes/(?P<id>[\w-]+)'
 
     _TESTS = [{
         'url': 'https://www.radiofrance.fr/personnes/thomas-pesquet?p=3',
@@ -439,10 +400,8 @@ class RadioFranceProfileIE(RadioFrancePlaylistBaseIE):
 
     def _call_api(self, profile_id, cursor, page_num):
         resp = self._download_json(
-            f'https://www.radiofrance.fr/api/v2.1/taxonomy/{profile_id}/documents',
-            profile_id,
-            note=f'Downloading page {page_num}',
-            query={
+            f'https://www.radiofrance.fr/api/v2.1/taxonomy/{profile_id}/documents', profile_id,
+            note=f'Downloading page {page_num}', query={
                 'relation': 'personality',
                 'cursor': cursor,
             })
@@ -492,11 +451,7 @@ class RadioFranceProgramScheduleIE(RadioFranceBaseIE):
     }]
 
     def _generate_playlist_entries(self, webpage_url, api_response):
-        for entry in traverse_obj(
-            api_response,
-            ('steps',
-             lambda _,
-             v: v['expression']['path'])):
+        for entry in traverse_obj(api_response, ('steps', lambda _, v: v['expression']['path'])):
             yield self.url_result(
                 urljoin(webpage_url, f'/{entry["expression"]["path"]}'), ie=FranceCultureIE,
                 url_transparent=True, **traverse_obj(entry, {
@@ -514,6 +469,5 @@ class RadioFranceProgramScheduleIE(RadioFranceBaseIE):
         upload_date = strftime_or_none(grid_data.get('date'), '%Y%m%d')
 
         return self.playlist_result(
-            self._generate_playlist_entries(
-                url, grid_data), join_nonempty(
-                station, 'program', upload_date), upload_date=upload_date)
+            self._generate_playlist_entries(url, grid_data),
+            join_nonempty(station, 'program', upload_date), upload_date=upload_date)

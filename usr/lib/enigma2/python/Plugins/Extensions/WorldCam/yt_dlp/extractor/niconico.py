@@ -50,8 +50,7 @@ class NiconicoBaseIE(InfoExtractor):
 
     @property
     def is_logged_in(self):
-        return bool(self._get_cookies(
-            'https://www.nicovideo.jp').get('user_session'))
+        return bool(self._get_cookies('https://www.nicovideo.jp').get('user_session'))
 
     def _raise_login_error(self, message, expected=True):
         raise ExtractorError(f'Unable to login: {message}', expected=expected)
@@ -80,10 +79,7 @@ class NiconicoBaseIE(InfoExtractor):
             self._raise_login_error(err_msg or 'Invalid username or password')
         elif 'oneTimePw' in webpage:
             post_url = self._search_regex(
-                r'<form[^>]+action=(["\'])(?P<url>.+?)\1',
-                webpage,
-                'post url',
-                group='url')
+                r'<form[^>]+action=(["\'])(?P<url>.+?)\1', webpage, 'post url', group='url')
             mfa, urlh = self._download_webpage_handle(
                 urljoin(self._LOGIN_BASE, post_url), None,
                 'Performing MFA', 'Unable to complete MFA', headers={
@@ -94,16 +90,11 @@ class NiconicoBaseIE(InfoExtractor):
             if self.is_logged_in:
                 return
             elif 'error-code' in parse_qs(urlh.url):
-                err_msg = traverse_obj(
-                    mfa, ({find_element(cls='pageMainMsg')}, {clean_html}))
+                err_msg = traverse_obj(mfa, ({find_element(cls='pageMainMsg')}, {clean_html}))
                 self._raise_login_error(err_msg or 'MFA session expired')
             elif 'formError' in mfa:
-                err_msg = traverse_obj(
-                    mfa, ({
-                        find_element(
-                            cls='formError')}, {
-                        find_element(
-                            tag='div')}, {clean_html}))
+                err_msg = traverse_obj(mfa, (
+                    {find_element(cls='formError')}, {find_element(tag='div')}, {clean_html}))
                 self._raise_login_error(err_msg or 'MFA challenge failed')
 
         self._raise_login_error('Unexpected login error', expected=False)
@@ -373,13 +364,10 @@ class NiconicoIE(NiconicoBaseIE):
     }]
 
     def _extract_formats(self, api_data, video_id):
-        def fmt_filter(_, v): return v['isAvailable'] and v['id']
-        videos = traverse_obj(
-            api_data, ('media', 'domand', 'videos', fmt_filter))
-        audios = traverse_obj(
-            api_data, ('media', 'domand', 'audios', fmt_filter))
-        access_key = traverse_obj(
-            api_data, ('media', 'domand', 'accessRightKey', {str}))
+        fmt_filter = lambda _, v: v['isAvailable'] and v['id']
+        videos = traverse_obj(api_data, ('media', 'domand', 'videos', fmt_filter))
+        audios = traverse_obj(api_data, ('media', 'domand', 'audios', fmt_filter))
+        access_key = traverse_obj(api_data, ('media', 'domand', 'accessRightKey', {str}))
         track_id = traverse_obj(api_data, ('client', 'watchTrackId', {str}))
         if not all((videos, audios, access_key, track_id)):
             return
@@ -401,46 +389,27 @@ class NiconicoIE(NiconicoBaseIE):
         raw_fmts = self._extract_m3u8_formats(m3u8_url, video_id, 'mp4')
 
         formats = []
-        for a_fmt in traverse_obj(
-                raw_fmts,
-                lambda _,
-                v: v['vcodec'] == 'none'):
-            formats.append({**a_fmt,
-                            **traverse_obj(audios,
-                                           (lambda _,
-                                            v: a_fmt['format_id'].startswith(v['id']),
-                                            {'abr': ('bitRate',
-                                                     {float_or_none(scale=1000)}),
-                                             'asr': ('samplingRate',
-                                                     {int_or_none}),
-                                                'format_id': ('id',
-                                                              {str}),
-                                                'quality': ('qualityLevel',
-                                                            {int_or_none}),
-                                             },
-                                               any)),
-                            'acodec': 'aac',
-                            })
+        for a_fmt in traverse_obj(raw_fmts, lambda _, v: v['vcodec'] == 'none'):
+            formats.append({
+                **a_fmt,
+                **traverse_obj(audios, (lambda _, v: a_fmt['format_id'].startswith(v['id']), {
+                    'abr': ('bitRate', {float_or_none(scale=1000)}),
+                    'asr': ('samplingRate', {int_or_none}),
+                    'format_id': ('id', {str}),
+                    'quality': ('qualityLevel', {int_or_none}),
+                }, any)),
+                'acodec': 'aac',
+            })
 
         # Sort first, keeping the lowest-tbr formats
-        v_fmts = sorted(
-            (fmt for fmt in raw_fmts if fmt['vcodec'] != 'none'),
-            key=lambda f: f['tbr'])
+        v_fmts = sorted((fmt for fmt in raw_fmts if fmt['vcodec'] != 'none'), key=lambda f: f['tbr'])
         self._remove_duplicate_formats(v_fmts)
         # Calculate the true vbr/tbr by subtracting the lowest abr
-        min_abr = traverse_obj(
-            audios, (..., 'bitRate', {
-                float_or_none(
-                    scale=1000)}, all, {min})) or 0
+        min_abr = traverse_obj(audios, (..., 'bitRate', {float_or_none(scale=1000)}, all, {min})) or 0
         for v_fmt in v_fmts:
             v_fmt['format_id'] = url_basename(v_fmt['url']).rpartition('.')[0]
-            v_fmt['quality'] = traverse_obj(
-                videos,
-                (lambda _,
-                 v: v['id'] == v_fmt['format_id'],
-                    'qualityLevel',
-                    {int_or_none},
-                    any)) or -1
+            v_fmt['quality'] = traverse_obj(videos, (
+                lambda _, v: v['id'] == v_fmt['format_id'], 'qualityLevel', {int_or_none}, any)) or -1
             v_fmt['tbr'] -= min_abr
         formats.extend(v_fmts)
 
@@ -464,11 +433,9 @@ class NiconicoIE(NiconicoBaseIE):
         status = traverse_obj(api_resp, ('meta', 'status', {int}))
 
         if status != 200:
-            err_code = traverse_obj(
-                api_resp, ('meta', 'errorCode', {str.upper}))
+            err_code = traverse_obj(api_resp, ('meta', 'errorCode', {str.upper}))
             reason_code = traverse_obj(api_data, ('reasonCode', {str_or_none}))
-            err_msg = traverse_obj(
-                self._ERROR_MAP, (err_code, (reason_code, 'DEFAULT'), {str}, any))
+            err_msg = traverse_obj(self._ERROR_MAP, (err_code, (reason_code, 'DEFAULT'), {str}, any))
 
             if reason_code in ('DOMESTIC_VIDEO', 'HIGH_RISK_COUNTRY_VIDEO'):
                 self.raise_geo_restricted(countries=self._GEO_COUNTRIES)
@@ -484,25 +451,21 @@ class NiconicoIE(NiconicoBaseIE):
             if err_msg:
                 raise ExtractorError(err_msg, expected=True)
             if status and status >= 500:
-                raise ExtractorError(
-                    'Service temporarily unavailable', expected=True)
+                raise ExtractorError('Service temporarily unavailable', expected=True)
             raise ExtractorError(f'API returned error status {status}')
 
-        availability = self._availability(
-            **traverse_obj(
-                api_data, ('payment', 'video', {
-                    'needs_auth': (
-                        ('isContinuationBenefit', 'isPpv'), {bool}, any), 'needs_subscription': (
-                        'isAdmission', {bool}), 'needs_premium': (
-                        'isPremium', {bool}), }))) or 'public'
+        availability = self._availability(**traverse_obj(api_data, ('payment', 'video', {
+            'needs_auth': (('isContinuationBenefit', 'isPpv'), {bool}, any),
+            'needs_subscription': ('isAdmission', {bool}),
+            'needs_premium': ('isPremium', {bool}),
+        }))) or 'public'
 
         formats = self._extract_formats(api_data, video_id)
         err_msg = self._STATUS_MAP.get(availability)
         if not formats and err_msg:
             self.raise_login_required(err_msg, metadata_available=True)
 
-        thumb_prefs = qualities(
-            ['url', 'middleUrl', 'largeUrl', 'player', 'ogp'])
+        thumb_prefs = qualities(['url', 'middleUrl', 'largeUrl', 'player', 'ogp'])
 
         return {
             'availability': availability,
@@ -541,8 +504,7 @@ class NiconicoIE(NiconicoBaseIE):
         }
 
     def _get_subtitles(self, video_id, api_data):
-        comments_info = traverse_obj(
-            api_data, ('comment', 'nvComment', {dict})) or {}
+        comments_info = traverse_obj(api_data, ('comment', 'nvComment', {dict})) or {}
         if not comments_info.get('server'):
             return
 
@@ -584,9 +546,9 @@ class NiconicoPlaylistBaseIE(InfoExtractor):
     @staticmethod
     def _parse_owner(item):
         return {
-            'uploader': traverse_obj(
-                item, ('owner', ('name', ('user', 'nickname')), {str}, any)), 'uploader_id': traverse_obj(
-                item, ('owner', 'id', {str})), }
+            'uploader': traverse_obj(item, ('owner', ('name', ('user', 'nickname')), {str}, any)),
+            'uploader_id': traverse_obj(item, ('owner', 'id', {str})),
+        }
 
     def _fetch_page(self, list_id, page):
         page += 1
@@ -601,7 +563,7 @@ class NiconicoPlaylistBaseIE(InfoExtractor):
                 # skip {"video": {"id": "blablabla", ...}}
                 continue
             count = video.get('count') or {}
-            def get_count(x): return int_or_none(count.get(x))
+            get_count = lambda x: int_or_none(count.get(x))
             yield {
                 '_type': 'url',
                 'id': video_id,
@@ -617,11 +579,7 @@ class NiconicoPlaylistBaseIE(InfoExtractor):
             }
 
     def _entries(self, list_id):
-        return OnDemandPagedList(
-            functools.partial(
-                self._fetch_page,
-                list_id),
-            self._PAGE_SIZE)
+        return OnDemandPagedList(functools.partial(self._fetch_page, list_id), self._PAGE_SIZE)
 
 
 class NiconicoPlaylistIE(NiconicoPlaylistBaseIE):
@@ -658,11 +616,8 @@ class NiconicoPlaylistIE(NiconicoPlaylistBaseIE):
             'pageSize': 1,
         })
         return self.playlist_result(
-            self._entries(list_id),
-            list_id,
-            mylist.get('name'),
-            mylist.get('description'),
-            **self._parse_owner(mylist))
+            self._entries(list_id), list_id,
+            mylist.get('name'), mylist.get('description'), **self._parse_owner(mylist))
 
 
 class NiconicoSeriesIE(NiconicoPlaylistBaseIE):
@@ -707,11 +662,8 @@ class NiconicoSeriesIE(NiconicoPlaylistBaseIE):
         })['detail']
 
         return self.playlist_result(
-            self._entries(list_id),
-            list_id,
-            series.get('title'),
-            series.get('description'),
-            **self._parse_owner(series))
+            self._entries(list_id), list_id,
+            series.get('title'), series.get('description'), **self._parse_owner(series))
 
 
 class NiconicoHistoryIE(NiconicoPlaylistBaseIE):
@@ -748,11 +700,8 @@ class NiconicoHistoryIE(NiconicoPlaylistBaseIE):
     def _call_api(self, list_id, resource, query):
         path = 'likes' if list_id == 'history/like' else 'watch/history'
         return self._download_json(
-            f'https://nvapi.nicovideo.jp/v1/users/me/{path}',
-            list_id,
-            f'Downloading {resource}',
-            query=query,
-            headers=self._API_HEADERS)['data']
+            f'https://nvapi.nicovideo.jp/v1/users/me/{path}', list_id,
+            f'Downloading {resource}', query=query, headers=self._API_HEADERS)['data']
 
     def _real_extract(self, url):
         list_id = self._match_id(url)
@@ -760,40 +709,29 @@ class NiconicoHistoryIE(NiconicoPlaylistBaseIE):
             mylist = self._call_api(list_id, 'list', {'pageSize': 1})
         except ExtractorError as e:
             if isinstance(e.cause, HTTPError) and e.cause.status == 401:
-                self.raise_login_required(
-                    'You have to be logged in to get your history')
+                self.raise_login_required('You have to be logged in to get your history')
             raise
-        return self.playlist_result(
-            self._entries(list_id),
-            list_id,
-            **self._parse_owner(mylist))
+        return self.playlist_result(self._entries(list_id), list_id, **self._parse_owner(mylist))
 
 
 class NicovideoSearchBaseIE(InfoExtractor):
     _SEARCH_TYPE = 'search'
 
-    def _entries(self, url, item_id, query=None,
-                 note='Downloading page %(page)s'):
+    def _entries(self, url, item_id, query=None, note='Downloading page %(page)s'):
         query = query or {}
         pages = [query['page']] if 'page' in query else itertools.count(1)
         for page_num in pages:
             query['page'] = str(page_num)
-            webpage = self._download_webpage(
-                url,
-                item_id,
-                query=query,
-                note=note % {
-                    'page': page_num})
-            results = re.findall(
-                r'(?<=data-video-id=)["\']?(?P<videoid>.*?)(?=["\'])', webpage)
+            webpage = self._download_webpage(url, item_id, query=query, note=note % {'page': page_num})
+            results = re.findall(r'(?<=data-video-id=)["\']?(?P<videoid>.*?)(?=["\'])', webpage)
             for item in results:
                 yield self.url_result(f'https://www.nicovideo.jp/watch/{item}', 'Niconico', item)
             if not results:
                 break
 
     def _search_results(self, query):
-        return self._entries(self._proto_relative_url(
-            f'//www.nicovideo.jp/{self._SEARCH_TYPE}/{query}'), query)
+        return self._entries(
+            self._proto_relative_url(f'//www.nicovideo.jp/{self._SEARCH_TYPE}/{query}'), query)
 
 
 class NicovideoSearchIE(NicovideoSearchBaseIE, SearchInfoExtractor):
@@ -847,8 +785,7 @@ class NicovideoSearchDateIE(NicovideoSearchBaseIE, SearchInfoExtractor):
     def _entries(self, url, item_id, start_date=None, end_date=None):
         start_date, end_date = start_date or self._START_DATE, end_date or dt.datetime.now().date()
 
-        # If the last page has a full page of videos, we need to break down the
-        # query interval further
+        # If the last page has a full page of videos, we need to break down the query interval further
         last_page_len = len(list(self._get_entries_for_date(
             url, item_id, start_date, end_date, self._MAX_PAGES,
             note=f'Checking number of videos from {start_date} to {end_date}')))
@@ -857,19 +794,11 @@ class NicovideoSearchDateIE(NicovideoSearchBaseIE, SearchInfoExtractor):
             yield from self._entries(url, item_id, midpoint, end_date)
             yield from self._entries(url, item_id, start_date, midpoint)
         else:
-            self.to_screen(
-                f'{item_id}: Downloading results from {start_date} to {end_date}')
+            self.to_screen(f'{item_id}: Downloading results from {start_date} to {end_date}')
             yield from self._get_entries_for_date(
                 url, item_id, start_date, end_date, note='    Downloading page %(page)s')
 
-    def _get_entries_for_date(
-            self,
-            url,
-            item_id,
-            start_date,
-            end_date=None,
-            page_num=None,
-            note=None):
+    def _get_entries_for_date(self, url, item_id, start_date, end_date=None, page_num=None, note=None):
         query = {
             'start': str(start_date),
             'end': str(end_date or start_date),
@@ -923,18 +852,11 @@ class NiconicoUserIE(InfoExtractor):
         count = page_num = 0
         while count < total_count:
             json_parsed = self._download_json(
-                self._API_URL %
-                (list_id,
-                 self._PAGE_SIZE,
-                 page_num +
-                 1),
-                list_id,
+                self._API_URL % (list_id, self._PAGE_SIZE, page_num + 1), list_id,
                 headers=self._API_HEADERS,
-                note='Downloading JSON metadata%s' %
-                (f' page {page_num}' if page_num else ''))
+                note='Downloading JSON metadata%s' % (f' page {page_num}' if page_num else ''))
             if not page_num:
-                total_count = int_or_none(
-                    json_parsed['data'].get('totalCount'))
+                total_count = int_or_none(json_parsed['data'].get('totalCount'))
             for entry in json_parsed['data']['items']:
                 count += 1
                 yield self.url_result(
@@ -993,46 +915,32 @@ class NiconicoLiveIE(NiconicoBaseIE):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
-        webpage, urlh = self._download_webpage_handle(
-            url, video_id, expected_status=404)
-        if err_msg := traverse_obj(
-                webpage, ({find_element(cls='message')}, {clean_html})):
+        webpage, urlh = self._download_webpage_handle(url, video_id, expected_status=404)
+        if err_msg := traverse_obj(webpage, ({find_element(cls='message')}, {clean_html})):
             raise ExtractorError(err_msg, expected=True)
 
         age_limit = 18 if 'age_auth' in urlh.url else None
         if age_limit:
             if not self.is_logged_in:
-                self.raise_login_required(
-                    'Login is required to access age-restricted content')
+                self.raise_login_required('Login is required to access age-restricted content')
 
-            my = self._download_webpage(
-                'https://www.nicovideo.jp/my',
-                None,
-                'Checking age verification')
-            if traverse_obj(my,
-                            ({find_element(id='js-initial-userpage-data',
-                                           html=True)},
-                             {extract_attributes},
-                                'data-environment',
-                                {json.loads},
-                                'allowSensitiveContents',
-                                {bool},
-                             )):
+            my = self._download_webpage('https://www.nicovideo.jp/my', None, 'Checking age verification')
+            if traverse_obj(my, (
+                {find_element(id='js-initial-userpage-data', html=True)}, {extract_attributes},
+                'data-environment', {json.loads}, 'allowSensitiveContents', {bool},
+            )):
                 self._set_cookie('.nicovideo.jp', 'age_auth', '1')
                 webpage = self._download_webpage(url, video_id)
             else:
-                raise ExtractorError(
-                    'Sensitive content setting must be enabled',
-                    expected=True)
+                raise ExtractorError('Sensitive content setting must be enabled', expected=True)
 
         embedded_data = traverse_obj(webpage, (
             {find_element(tag='script', id='embedded-data', html=True)},
             {extract_attributes}, 'data-props', {json.loads}))
-        frontend_id = traverse_obj(
-            embedded_data, ('site', 'frontendId', {str_or_none}), default='9')
+        frontend_id = traverse_obj(embedded_data, ('site', 'frontendId', {str_or_none}), default='9')
 
-        ws_url = traverse_obj(embedded_data, ('site', 'relive', 'webSocketUrl', {
-                              url_or_none}, {require('websocket URL')}))
+        ws_url = traverse_obj(embedded_data, (
+            'site', 'relive', 'webSocketUrl', {url_or_none}, {require('websocket URL')}))
         ws_url = update_url_query(ws_url, {'frontend_id': frontend_id})
         ws = self._request_webpage(
             ws_url, video_id, 'Connecting to WebSocket server',
@@ -1074,21 +982,15 @@ class NiconicoLiveIE(NiconicoBaseIE):
                 raise ExtractorError('Disconnected at middle of extraction')
             elif data.get('type') == 'error':
                 self.write_debug(recv)
-                message = traverse_obj(
-                    data, ('body', 'code', {str_or_none}), default=recv)
+                message = traverse_obj(data, ('body', 'code', {str_or_none}), default=recv)
                 raise ExtractorError(message)
             elif self.get_param('verbose', False):
-                self.write_debug(
-                    f'Server response: {
-                        truncate_string(
-                            recv, 100)}')
+                self.write_debug(f'Server response: {truncate_string(recv, 100)}')
 
-        title = traverse_obj(
-            embedded_data, ('program', 'title')) or self._html_search_meta(
+        title = traverse_obj(embedded_data, ('program', 'title')) or self._html_search_meta(
             ('og:title', 'twitter:title'), webpage, 'live title', fatal=False)
 
-        raw_thumbs = traverse_obj(
-            embedded_data, ('program', 'thumbnail', {dict})) or {}
+        raw_thumbs = traverse_obj(embedded_data, ('program', 'thumbnail', {dict})) or {}
         thumbnails = []
         for name, value in raw_thumbs.items():
             if not isinstance(value, dict):
@@ -1100,30 +1002,25 @@ class NiconicoLiveIE(NiconicoBaseIE):
                 continue
 
             for k, img_url in value.items():
-                res = parse_resolution(
-                    k, lenient=True) or parse_resolution(
-                    img_url, lenient=True)
+                res = parse_resolution(k, lenient=True) or parse_resolution(img_url, lenient=True)
                 width, height = res.get('width'), res.get('height')
 
-                thumbnails.append({'id': f'{name}_{width}x{height}', 'url': img_url, 'ext': traverse_obj(
-                    parse_qs(img_url), ('image', 0, {determine_ext(default_ext='jpg')})), **res, })
+                thumbnails.append({
+                    'id': f'{name}_{width}x{height}',
+                    'url': img_url,
+                    'ext': traverse_obj(parse_qs(img_url), ('image', 0, {determine_ext(default_ext='jpg')})),
+                    **res,
+                })
 
         for cookie in cookies:
             self._set_cookie(
-                cookie['domain'],
-                cookie['name'],
-                cookie['value'],
-                expire_time=unified_timestamp(
-                    cookie.get('expires')),
-                path=cookie['path'],
-                secure=cookie['secure'])
+                cookie['domain'], cookie['name'], cookie['value'],
+                expire_time=unified_timestamp(cookie.get('expires')), path=cookie['path'], secure=cookie['secure'])
 
-        q_iter = (q for q in qualities[1:] if not q.startswith(
-            'audio_'))  # ignore initial 'abr'
+        q_iter = (q for q in qualities[1:] if not q.startswith('audio_'))  # ignore initial 'abr'
         a_map = {96: 'audio_low', 192: 'audio_high'}
 
-        formats = self._extract_m3u8_formats(
-            m3u8_url, video_id, ext='mp4', live=True)
+        formats = self._extract_m3u8_formats(m3u8_url, video_id, ext='mp4', live=True)
         for fmt in formats:
             fmt['protocol'] = 'niconico_live'
             if fmt.get('acodec') == 'none':

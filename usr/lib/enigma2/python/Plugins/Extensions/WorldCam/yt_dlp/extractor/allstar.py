@@ -79,8 +79,7 @@ class AllstarBaseIE(InfoExtractor):
 
         if info.get('id') and info.get('url'):
             basename = 'clip' if '/clips/' in info['url'] else 'montage'
-            info['webpage_url'] = f'https://allstar.gg/{basename}?{basename}={
-                info["id"]}'
+            info['webpage_url'] = f'https://allstar.gg/{basename}?{basename}={info["id"]}'
 
         info.update({
             'extractor_key': AllstarIE.ie_key(),
@@ -180,8 +179,7 @@ class AllstarIE(AllstarBaseIE):
 
         return self._parse_video_data(
             self._call_api(
-                _QUERIES.get(query_id), {
-                    'id': video_id}, ('data', 'video'), video_id))
+                _QUERIES.get(query_id), {'id': video_id}, ('data', 'video'), video_id))
 
 
 class AllstarProfileIE(AllstarBaseIE):
@@ -233,16 +231,12 @@ class AllstarProfileIE(AllstarBaseIE):
     def _real_extract(self, url):
         display_id = self._match_id(url)
         profile_data = self._download_json(
-            urljoin(
-                'https://api.allstar.gg/v1/users/profile/',
-                display_id),
-            display_id)
+            urljoin('https://api.allstar.gg/v1/users/profile/', display_id), display_id)
         user_id = traverse_obj(profile_data, ('data', ('_id'), {str}))
         if not user_id:
             raise ExtractorError('Unable to extract the user id')
 
-        username = traverse_obj(
-            profile_data, ('data', 'profile', ('username'), {str}))
+        username = traverse_obj(profile_data, ('data', 'profile', ('username'), {str}))
         url_query = parse_qs(url)
         game = traverse_obj(url_query, ('game', 0, {int_or_none}))
         query_id = traverse_obj(url_query, ('view', 0), default='Clips')
@@ -253,18 +247,6 @@ class AllstarProfileIE(AllstarBaseIE):
         return self.playlist_result(
             OnDemandPagedList(
                 functools.partial(
-                    self._get_page,
-                    user_id,
-                    display_id,
-                    game,
-                    _QUERIES.get(query_id)),
-                self._PAGE_SIZE),
-            playlist_id=join_nonempty(
-                user_id,
-                query_id.lower().split()[0],
-                game),
-            playlist_title=join_nonempty(
-                (username or display_id),
-                query_id,
-                game,
-                delim=' - '))
+                    self._get_page, user_id, display_id, game, _QUERIES.get(query_id)), self._PAGE_SIZE),
+            playlist_id=join_nonempty(user_id, query_id.lower().split()[0], game),
+            playlist_title=join_nonempty((username or display_id), query_id, game, delim=' - '))

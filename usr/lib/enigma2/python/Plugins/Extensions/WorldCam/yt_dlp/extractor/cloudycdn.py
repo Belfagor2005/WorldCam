@@ -79,8 +79,7 @@ class CloudyCDNIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        domain, site_id, video_id = self._match_valid_url(
-            url).group('domain', 'site_id', 'id')
+        domain, site_id, video_id = self._match_valid_url(url).group('domain', 'site_id', 'id')
 
         data = self._download_json(
             f'https://player.{domain}/player/{site_id}/media/{video_id}/',
@@ -90,10 +89,8 @@ class CloudyCDNIE(InfoExtractor):
             }))
 
         formats, subtitles = [], {}
-        for m3u8_url in traverse_obj(
-                data, ('source', 'sources', ..., 'src', {url_or_none})):
-            fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                m3u8_url, video_id, fatal=False)
+        for m3u8_url in traverse_obj(data, ('source', 'sources', ..., 'src', {url_or_none})):
+            fmts, subs = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, fatal=False)
             for fmt in fmts:
                 if re.search(r'chunklist_b\d+_vo_', fmt['url']):
                     fmt['acodec'] = 'none'

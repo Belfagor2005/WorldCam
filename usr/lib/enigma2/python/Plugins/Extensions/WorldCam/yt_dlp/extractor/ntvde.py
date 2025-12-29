@@ -48,22 +48,12 @@ class NTVDeIE(InfoExtractor):
         webpage = self._download_webpage(url, video_id)
 
         info = self._search_json(
-            r'article:',
-            webpage,
-            'info',
-            video_id,
-            transform_source=js_to_json)
+            r'article:', webpage, 'info', video_id, transform_source=js_to_json)
 
         vdata = self._search_json(
             r'\$\(\s*"#playerwrapper"\s*\)\s*\.data\(\s*"player",',
-            webpage,
-            'player data',
-            video_id,
-            transform_source=lambda s: js_to_json(
-                re.sub(
-                    r'ivw:[^},]+',
-                    '',
-                    s)))['setup']['source']
+            webpage, 'player data', video_id,
+            transform_source=lambda s: js_to_json(re.sub(r'ivw:[^},]+', '', s)))['setup']['source']
 
         formats = []
         if vdata.get('progressive'):
@@ -75,12 +65,7 @@ class NTVDeIE(InfoExtractor):
             formats.extend(self._extract_m3u8_formats(
                 vdata['hls'], video_id, 'mp4', m3u8_id='hls', fatal=False))
         if vdata.get('dash'):
-            formats.extend(
-                self._extract_mpd_formats(
-                    vdata['dash'],
-                    video_id,
-                    fatal=False,
-                    mpd_id='dash'))
+            formats.extend(self._extract_mpd_formats(vdata['dash'], video_id, fatal=False, mpd_id='dash'))
 
         return {
             'id': video_id,

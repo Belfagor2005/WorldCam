@@ -10,8 +10,7 @@ class IviIE(InfoExtractor):
     IE_DESC = 'ivi.ru'
     IE_NAME = 'ivi'
     _VALID_URL = r'https?://(?:www\.)?ivi\.(?:ru|tv)/(?:watch/(?:[^/]+/)?|video/player\?.*?videoId=)(?P<id>\d+)'
-    _EMBED_REGEX = [
-        r'<embed[^>]+?src=(["\'])(?P<url>https?://(?:www\.)?ivi\.ru/video/player.+?)\1']
+    _EMBED_REGEX = [r'<embed[^>]+?src=(["\'])(?P<url>https?://(?:www\.)?ivi\.ru/video/player.+?)\1']
     _GEO_BYPASS = False
     _GEO_COUNTRIES = ['RU']
     _LIGHT_KEY = b'\xf1\x02\x32\xb7\xbc\x5c\x7a\xe8\xf7\x96\xc1\x33\x2b\x27\xa1\x8c'
@@ -106,11 +105,8 @@ class IviIE(InfoExtractor):
 
                 query = {
                     'ts': timestamp,
-                    'sign': Cryptodome.CMAC.new(
-                        self._LIGHT_KEY,
-                        timestamp.encode() +
-                        content_data,
-                        Cryptodome.Blowfish).hexdigest(),
+                    'sign': Cryptodome.CMAC.new(self._LIGHT_KEY, timestamp.encode() + content_data,
+                                                Cryptodome.Blowfish).hexdigest(),
                 }
             else:
                 query = {}
@@ -131,8 +127,7 @@ class IviIE(InfoExtractor):
                 elif site == 353:
                     continue
                 elif not Cryptodome.CMAC:
-                    raise ExtractorError(
-                        'pycryptodomex not found. Please install', expected=True)
+                    raise ExtractorError('pycryptodomex not found. Please install', expected=True)
                 elif message:
                     extractor_msg += ': ' + message
                 raise ExtractorError(extractor_msg % video_id, expected=True)
@@ -150,8 +145,8 @@ class IviIE(InfoExtractor):
             content_format = f.get('content_format')
             if not f_url:
                 continue
-            if (not self.get_param('allow_unplayable_formats') and (
-                    '-MDRM-' in content_format or '-FPS-' in content_format)):
+            if (not self.get_param('allow_unplayable_formats')
+                    and ('-MDRM-' in content_format or '-FPS-' in content_format)):
                 continue
             formats.append({
                 'url': f_url,
@@ -175,22 +170,15 @@ class IviIE(InfoExtractor):
         season = self._search_regex(
             r'<li[^>]+class="season active"[^>]*><a[^>]+>([^<]+)',
             webpage, 'season', default=None)
-        season_number = int_or_none(
-            self._search_regex(
-                r'<li[^>]+class="season active"[^>]*><a[^>]+data-season(?:-index)?="(\d+)"',
-                webpage,
-                'season number',
-                default=None))
+        season_number = int_or_none(self._search_regex(
+            r'<li[^>]+class="season active"[^>]*><a[^>]+data-season(?:-index)?="(\d+)"',
+            webpage, 'season number', default=None))
 
-        episode_number = int_or_none(
-            self._search_regex(
-                r'[^>]+itemprop="episode"[^>]*>\s*<meta[^>]+itemprop="episodeNumber"[^>]+content="(\d+)',
-                webpage,
-                'episode number',
-                default=None))
+        episode_number = int_or_none(self._search_regex(
+            r'[^>]+itemprop="episode"[^>]*>\s*<meta[^>]+itemprop="episodeNumber"[^>]+content="(\d+)',
+            webpage, 'episode number', default=None))
 
-        description = self._og_search_description(
-            webpage, default=None) or self._html_search_meta(
+        description = self._og_search_description(webpage, default=None) or self._html_search_meta(
             'description', webpage, 'description', default=None)
 
         return {
@@ -244,29 +232,22 @@ class IviCompilationIE(InfoExtractor):
             season_page = self._download_webpage(
                 url, compilation_id, f'Downloading season {season_id} web page')
             playlist_id = f'{compilation_id}/season{season_id}'
-            playlist_title = self._html_search_meta(
-                'title', season_page, 'title')
+            playlist_title = self._html_search_meta('title', season_page, 'title')
             entries = self._extract_entries(season_page, compilation_id)
         else:  # Compilation link
-            compilation_page = self._download_webpage(
-                url, compilation_id, 'Downloading compilation web page')
+            compilation_page = self._download_webpage(url, compilation_id, 'Downloading compilation web page')
             playlist_id = compilation_id
-            playlist_title = self._html_search_meta(
-                'title', compilation_page, 'title')
+            playlist_title = self._html_search_meta('title', compilation_page, 'title')
             seasons = re.findall(
-                rf'<a href="/watch/{compilation_id}/season(\d+)',
-                compilation_page)
+                rf'<a href="/watch/{compilation_id}/season(\d+)', compilation_page)
             if not seasons:  # No seasons in this compilation
-                entries = self._extract_entries(
-                    compilation_page, compilation_id)
+                entries = self._extract_entries(compilation_page, compilation_id)
             else:
                 entries = []
                 for season_id in seasons:
                     season_page = self._download_webpage(
                         f'http://www.ivi.ru/watch/{compilation_id}/season{season_id}',
                         compilation_id, f'Downloading season {season_id} web page')
-                    entries.extend(
-                        self._extract_entries(
-                            season_page, compilation_id))
+                    entries.extend(self._extract_entries(season_page, compilation_id))
 
         return self.playlist_result(entries, playlist_id, playlist_title)

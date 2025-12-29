@@ -40,61 +40,66 @@ class ESPNIE(InfoExtractor):
                         (?P<id>\d+)
                     '''
 
-    _TESTS = [{'url': 'http://espn.go.com/video/clip?id=10365079',
-               'info_dict': {'id': '10365079',
-                             'ext': 'mp4',
-                             'title': '30 for 30 Shorts: Judging Jewell',
-                             'description': 'md5:39370c2e016cb4ecf498ffe75bef7f0f',
-                             'timestamp': 1390936111,
-                             'upload_date': '20140128',
-                             'duration': 1302,
-                             'thumbnail': r're:https://.+\.jpg',
-                             },
-               'params': {'skip_download': True,
-                          },
-               },
-              {'url': 'https://broadband.espn.go.com/video/clip?id=18910086',
-               'info_dict': {'id': '18910086',
-                             'ext': 'mp4',
-                             'title': 'Kyrie spins around defender for two',
-                             'description': 'md5:2b0f5bae9616d26fba8808350f0d2b9b',
-                             'timestamp': 1489539155,
-                             'upload_date': '20170315',
-                             },
-               'params': {'skip_download': True,
-                          },
-               'expected_warnings': ['Unable to download f4m manifest'],
-               },
-              {'url': 'http://nonredline.sports.espn.go.com/video/clip?id=19744672',
-               'only_matching': True,
-               },
-              {'url': 'https://cdn.espn.go.com/video/clip/_/id/19771774',
-               'only_matching': True,
-               },
-              {'url': 'http://www.espn.com/video/clip?id=10365079',
-               'only_matching': True,
-               },
-              {'url': 'http://www.espn.com/video/clip/_/id/17989860',
-               'only_matching': True,
-               },
-              {'url': 'https://espn.go.com/video/iframe/twitter/?cms=espn&id=10365079',
-               'only_matching': True,
-               },
-              {'url': 'http://www.espnfc.us/video/espn-fc-tv/86/video/3319154/nashville-unveiled-as-the-newest-club-in-mls',
-               'only_matching': True,
-               },
-              {'url': 'http://www.espnfc.com/english-premier-league/23/video/3324163/premier-league-in-90-seconds-golden-tweets',
-               'only_matching': True,
-               },
-              {'url': 'http://www.espn.com/espnw/video/26066627/arkansas-gibson-completes-hr-cycle-four-innings',
-               'only_matching': True,
-               },
-              {'url': 'http://www.espn.com/watch/player?id=19141491',
-               'only_matching': True,
-               },
-              {'url': 'http://www.espn.com/watch/player?bucketId=257&id=19505875',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://espn.go.com/video/clip?id=10365079',
+        'info_dict': {
+            'id': '10365079',
+            'ext': 'mp4',
+            'title': '30 for 30 Shorts: Judging Jewell',
+            'description': 'md5:39370c2e016cb4ecf498ffe75bef7f0f',
+            'timestamp': 1390936111,
+            'upload_date': '20140128',
+            'duration': 1302,
+            'thumbnail': r're:https://.+\.jpg',
+        },
+        'params': {
+            'skip_download': True,
+        },
+    }, {
+        'url': 'https://broadband.espn.go.com/video/clip?id=18910086',
+        'info_dict': {
+            'id': '18910086',
+            'ext': 'mp4',
+            'title': 'Kyrie spins around defender for two',
+            'description': 'md5:2b0f5bae9616d26fba8808350f0d2b9b',
+            'timestamp': 1489539155,
+            'upload_date': '20170315',
+        },
+        'params': {
+            'skip_download': True,
+        },
+        'expected_warnings': ['Unable to download f4m manifest'],
+    }, {
+        'url': 'http://nonredline.sports.espn.go.com/video/clip?id=19744672',
+        'only_matching': True,
+    }, {
+        'url': 'https://cdn.espn.go.com/video/clip/_/id/19771774',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.espn.com/video/clip?id=10365079',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.espn.com/video/clip/_/id/17989860',
+        'only_matching': True,
+    }, {
+        'url': 'https://espn.go.com/video/iframe/twitter/?cms=espn&id=10365079',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.espnfc.us/video/espn-fc-tv/86/video/3319154/nashville-unveiled-as-the-newest-club-in-mls',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.espnfc.com/english-premier-league/23/video/3324163/premier-league-in-90-seconds-golden-tweets',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.espn.com/espnw/video/26066627/arkansas-gibson-completes-hr-cycle-four-innings',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.espn.com/watch/player?id=19141491',
+        'only_matching': True,
+    }, {
+        'url': 'http://www.espn.com/watch/player?bucketId=257&id=19505875',
+        'only_matching': True,
+    }]
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -173,23 +178,23 @@ class ESPNIE(InfoExtractor):
 
 class ESPNArticleIE(InfoExtractor):
     _VALID_URL = r'https?://(?:espn\.go|(?:www\.)?espn)\.com/(?:[^/]+/)*(?P<id>[^/]+)'
-    _TESTS = [{'url': 'http://espn.go.com/nba/recap?gameId=400793786',
-               'only_matching': True,
-               },
-              {'url': 'http://espn.go.com/blog/golden-state-warriors/post/_/id/593/how-warriors-rapidly-regained-a-winning-edge',
-               'only_matching': True,
-               },
-              {'url': 'http://espn.go.com/sports/endurance/story/_/id/12893522/dzhokhar-tsarnaev-sentenced-role-boston-marathon-bombings',
-               'only_matching': True,
-               },
-              {'url': 'http://espn.go.com/nba/playoffs/2015/story/_/id/12887571/john-wall-washington-wizards-no-swelling-left-hand-wrist-game-5-return',
-               'only_matching': True,
-               }]
+    _TESTS = [{
+        'url': 'http://espn.go.com/nba/recap?gameId=400793786',
+        'only_matching': True,
+    }, {
+        'url': 'http://espn.go.com/blog/golden-state-warriors/post/_/id/593/how-warriors-rapidly-regained-a-winning-edge',
+        'only_matching': True,
+    }, {
+        'url': 'http://espn.go.com/sports/endurance/story/_/id/12893522/dzhokhar-tsarnaev-sentenced-role-boston-marathon-bombings',
+        'only_matching': True,
+    }, {
+        'url': 'http://espn.go.com/nba/playoffs/2015/story/_/id/12887571/john-wall-washington-wizards-no-swelling-left-hand-wrist-game-5-return',
+        'only_matching': True,
+    }]
 
     @classmethod
     def suitable(cls, url):
-        return False if (ESPNIE.suitable(url) or WatchESPNIE.suitable(
-            url)) else super().suitable(url)
+        return False if (ESPNIE.suitable(url) or WatchESPNIE.suitable(url)) else super().suitable(url)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -260,13 +265,11 @@ class ESPNCricInfoIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
         data_json = self._download_json(
-            f'https://hs-consumer-api.espncricinfo.com/v1/pages/video/video-details?videoId={video_id}',
-            video_id)['video']
+            f'https://hs-consumer-api.espncricinfo.com/v1/pages/video/video-details?videoId={video_id}', video_id)['video']
         formats, subtitles = [], {}
         for item in data_json.get('playbacks') or []:
             if item.get('type') == 'HLS' and item.get('url'):
-                m3u8_frmts, m3u8_subs = self._extract_m3u8_formats_and_subtitles(
-                    item['url'], video_id)
+                m3u8_frmts, m3u8_subs = self._extract_m3u8_formats_and_subtitles(item['url'], video_id)
                 formats.extend(m3u8_frmts)
                 subtitles = self._merge_subtitles(subtitles, m3u8_subs)
             elif item.get('type') == 'AUDIO' and item.get('url'):
@@ -278,11 +281,7 @@ class ESPNCricInfoIE(InfoExtractor):
             'id': video_id,
             'title': data_json.get('title'),
             'description': data_json.get('summary'),
-            'upload_date': unified_strdate(
-                dict_get(
-                    data_json,
-                    ('publishedAt',
-                     'recordedAt'))),
+            'upload_date': unified_strdate(dict_get(data_json, ('publishedAt', 'recordedAt'))),
             'duration': data_json.get('duration'),
             'formats': formats,
             'subtitles': subtitles,
@@ -337,10 +336,7 @@ class WatchESPNIE(AdobePassIE):
             headers['Authorization'] = f'Bearer {self._API_KEY}'
         parse = urllib.parse.urlencode if path == 'token' else json.dumps
         return self._download_json(
-            f'https://espn.api.edge.bamgrid.com/{path}',
-            video_id,
-            headers=headers,
-            data=parse(payload).encode())
+            f'https://espn.api.edge.bamgrid.com/{path}', video_id, headers=headers, data=parse(payload).encode())
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -358,16 +354,9 @@ class WatchESPNIE(AdobePassIE):
             jwt = self._search_regex(r'=([^|]+)\|', cookie.value, 'cookie jwt')
             id_token = self._download_json(
                 'https://registerdisney.go.com/jgc/v6/client/ESPN-ONESITE.WEB-PROD/guest/refresh-auth',
-                None,
-                'Refreshing token',
-                headers={
-                    'Content-Type': 'application/json'},
-                data=json.dumps(
-                    {
-                        'refreshToken': json.loads(
-                            base64.urlsafe_b64decode(
-                                f'{jwt}==='))['refresh_token'],
-                    }).encode())['data']['token']['id_token']
+                None, 'Refreshing token', headers={'Content-Type': 'application/json'}, data=json.dumps({
+                    'refreshToken': json.loads(base64.urlsafe_b64decode(f'{jwt}==='))['refresh_token'],
+                }).encode())['data']['token']['id_token']
 
             assertion = self._call_bamgrid_api(
                 'devices', video_id,
@@ -401,15 +390,12 @@ class WatchESPNIE(AdobePassIE):
                 })['access_token']
 
             playback = self._download_json(
-                video_data['videoHref'].format(
-                    scenario='browser~ssai'),
-                video_id,
+                video_data['videoHref'].format(scenario='browser~ssai'), video_id,
                 headers={
                     'Accept': 'application/vnd.media-service+json; version=5',
                     'Authorization': token,
                 })
-            m3u8_url, headers = playback['stream']['complete'][0]['url'], {
-                'authorization': token}
+            m3u8_url, headers = playback['stream']['complete'][0]['url'], {'authorization': token}
 
         # No login required
         elif video_data.get('sourceId') == 'ESPN_FREE':
@@ -420,21 +406,15 @@ class WatchESPNIE(AdobePassIE):
 
         # TV Provider required
         else:
-            resource = self._get_mvpd_resource(
-                'espn1', video_data['name'], video_id, None)
-            auth = self._extract_mvpd_auth(
-                url, video_id, 'ESPN', resource, self._SOFTWARE_STATEMENT).encode()
+            resource = self._get_mvpd_resource('espn1', video_data['name'], video_id, None)
+            auth = self._extract_mvpd_auth(url, video_id, 'ESPN', resource, self._SOFTWARE_STATEMENT).encode()
 
             asset = self._download_json(
                 f'https://watch.auth.api.espn.com/video/auth/media/{video_id}/asset?apikey=uiqlbgzdwuru14v627vdusswb',
-                video_id,
-                data=f'adobeToken={
-                    urllib.parse.quote_plus(
-                        base64.b64encode(auth))}&drmSupport=HLS'.encode())
+                video_id, data=f'adobeToken={urllib.parse.quote_plus(base64.b64encode(auth))}&drmSupport=HLS'.encode())
             m3u8_url, headers = asset['stream'], {}
 
-        formats, subtitles = self._extract_m3u8_formats_and_subtitles(
-            m3u8_url, video_id, 'mp4', m3u8_id='hls')
+        formats, subtitles = self._extract_m3u8_formats_and_subtitles(m3u8_url, video_id, 'mp4', m3u8_id='hls')
 
         return {
             'id': video_id,

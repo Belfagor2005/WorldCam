@@ -25,8 +25,7 @@ from ..utils.traversal import find_element, find_elements, traverse_obj
 
 class BandcampIE(InfoExtractor):
     _VALID_URL = r'https?://(?P<uploader>[^/]+)\.bandcamp\.com/track/(?P<id>[^/?#&]+)'
-    _EMBED_REGEX = [
-        r'<meta property="og:url"[^>]*?content="(?P<url>.*?bandcamp\.com.*?)"']
+    _EMBED_REGEX = [r'<meta property="og:url"[^>]*?content="(?P<url>.*?bandcamp\.com.*?)"']
     _TESTS = [{
         'url': 'http://youtube-dl.bandcamp.com/track/youtube-dl-test-song',
         'md5': 'c557841d5e50261777a6585648adf439',
@@ -147,12 +146,7 @@ class BandcampIE(InfoExtractor):
         },
     }]
 
-    def _extract_data_attr(
-            self,
-            webpage,
-            video_id,
-            attr='tralbum',
-            fatal=True):
+    def _extract_data_attr(self, webpage, video_id, attr='tralbum', fatal=True):
         return self._parse_json(self._html_search_regex(
             rf'data-{attr}=(["\'])({{.+?}})\1', webpage,
             attr + ' data', group=2), video_id, fatal=fatal)
@@ -193,8 +187,7 @@ class BandcampIE(InfoExtractor):
 
         embed = self._extract_data_attr(webpage, title, 'embed', False)
         current = tralbum.get('current') or {}
-        artist = embed.get('artist') or current.get(
-            'artist') or tralbum.get('artist')
+        artist = embed.get('artist') or current.get('artist') or tralbum.get('artist')
         album_artist = self._html_search_regex(
             r'<h3 class="albumTitle">[\S\s]*?by\s*<span>\s*<a href="[^>]+">\s*([^>]+?)\s*</a>',
             webpage, 'album artist', fatal=False)

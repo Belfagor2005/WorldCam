@@ -44,16 +44,13 @@ class PrankCastIE(InfoExtractor):
     }]
 
     def _real_extract(self, url):
-        video_id, display_id = self._match_valid_url(
-            url).group('id', 'display_id')
+        video_id, display_id = self._match_valid_url(url).group('id', 'display_id')
 
         webpage = self._download_webpage(url, video_id)
-        json_info = self._search_nextjs_data(
-            webpage, video_id)['props']['pageProps']['ssr_data_showreel']
+        json_info = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['ssr_data_showreel']
 
         uploader = json_info.get('user_name')
-        guests_json = self._parse_json(
-            json_info.get('guests_json') or '{}', video_id)
+        guests_json = self._parse_json(json_info.get('guests_json') or '{}', video_id)
         start_date = parse_iso8601(json_info.get('start_date'))
 
         return {
@@ -74,71 +71,74 @@ class PrankCastIE(InfoExtractor):
 
 class PrankCastPostIE(InfoExtractor):
     _VALID_URL = r'https?://(?:www\.)?prankcast\.com/[^/?#]+/posts/(?P<id>\d+)-(?P<display_id>[^/?#]+)'
-    _TESTS = [{'url': 'https://prankcast.com/devonanustart/posts/6214-happy-national-rachel-day-',
-               'info_dict': {'id': '6214',
-                             'ext': 'mp3',
-                             'title': 'Happy National Rachel Day!',
-                             'display_id': 'happy-national-rachel-day-',
-                             'timestamp': 1704333938,
-                             'uploader': 'Devonanustart',
-                             'channel_id': '4',
-                             'duration': 13175,
-                             'cast': ['Devonanustart'],
-                             'description': '',
-                             'categories': ['prank call'],
-                             'upload_date': '20240104',
-                             },
-               },
-              {'url': 'https://prankcast.com/despicabledogs/posts/6217-jake-the-work-crow-',
-               'info_dict': {'id': '6217',
-                             'ext': 'mp3',
-                             'title': 'Jake the Work Crow!',
-                             'display_id': 'jake-the-work-crow-',
-                             'timestamp': 1704346592,
-                             'uploader': 'despicabledogs',
-                             'channel_id': '957',
-                             'duration': 263.287,
-                             'cast': ['despicabledogs'],
-                             'description': 'https://imgur.com/a/vtxLvKU',
-                             'upload_date': '20240104',
-                             },
-               },
-              {'url': 'https://prankcast.com/drtomservo/posts/11988-butteye-s-late-night-stank-episode-1-part-1-',
-               'info_dict': {'id': '11988',
-                             'ext': 'mp3',
-                             'title': 'Butteye\'s Late Night Stank Episode 1 (Part 1)',
-                             'display_id': 'butteye-s-late-night-stank-episode-1-part-1-',
-                             'timestamp': 1754238686,
-                             'uploader': 'DrTomServo',
-                             'channel_id': '136',
-                             'duration': 2176.464,
-                             'cast': ['DrTomServo'],
-                             'description': '',
-                             'upload_date': '20250803',
-                             },
-               },
-              {'url': 'https://prankcast.com/drtomservo/posts/12105-butteye-s-late-night-stank-episode-08-16-2025-part-2',
-               'info_dict': {'id': '12105',
-                             'ext': 'mp3',
-                             'title': 'Butteye\'s Late Night Stank Episode 08-16-2025 Part 2',
-                             'display_id': 'butteye-s-late-night-stank-episode-08-16-2025-part-2',
-                             'timestamp': 1755453505,
-                             'uploader': 'DrTomServo',
-                             'channel_id': '136',
-                             'duration': 19018.392,
-                             'cast': ['DrTomServo'],
-                             'description': '',
-                             'upload_date': '20250817',
-                             },
-               }]
+    _TESTS = [{
+        'url': 'https://prankcast.com/devonanustart/posts/6214-happy-national-rachel-day-',
+        'info_dict': {
+            'id': '6214',
+            'ext': 'mp3',
+            'title': 'Happy National Rachel Day!',
+            'display_id': 'happy-national-rachel-day-',
+            'timestamp': 1704333938,
+            'uploader': 'Devonanustart',
+            'channel_id': '4',
+            'duration': 13175,
+            'cast': ['Devonanustart'],
+            'description': '',
+            'categories': ['prank call'],
+            'upload_date': '20240104',
+        },
+    }, {
+        'url': 'https://prankcast.com/despicabledogs/posts/6217-jake-the-work-crow-',
+        'info_dict': {
+            'id': '6217',
+            'ext': 'mp3',
+            'title': 'Jake the Work Crow!',
+            'display_id': 'jake-the-work-crow-',
+            'timestamp': 1704346592,
+            'uploader': 'despicabledogs',
+            'channel_id': '957',
+            'duration': 263.287,
+            'cast': ['despicabledogs'],
+            'description': 'https://imgur.com/a/vtxLvKU',
+            'upload_date': '20240104',
+        },
+    }, {
+        'url': 'https://prankcast.com/drtomservo/posts/11988-butteye-s-late-night-stank-episode-1-part-1-',
+        'info_dict': {
+            'id': '11988',
+            'ext': 'mp3',
+            'title': 'Butteye\'s Late Night Stank Episode 1 (Part 1)',
+            'display_id': 'butteye-s-late-night-stank-episode-1-part-1-',
+            'timestamp': 1754238686,
+            'uploader': 'DrTomServo',
+            'channel_id': '136',
+            'duration': 2176.464,
+            'cast': ['DrTomServo'],
+            'description': '',
+            'upload_date': '20250803',
+        },
+    }, {
+        'url': 'https://prankcast.com/drtomservo/posts/12105-butteye-s-late-night-stank-episode-08-16-2025-part-2',
+        'info_dict': {
+            'id': '12105',
+            'ext': 'mp3',
+            'title': 'Butteye\'s Late Night Stank Episode 08-16-2025 Part 2',
+            'display_id': 'butteye-s-late-night-stank-episode-08-16-2025-part-2',
+            'timestamp': 1755453505,
+            'uploader': 'DrTomServo',
+            'channel_id': '136',
+            'duration': 19018.392,
+            'cast': ['DrTomServo'],
+            'description': '',
+            'upload_date': '20250817',
+        },
+    }]
 
     def _real_extract(self, url):
-        video_id, display_id = self._match_valid_url(
-            url).group('id', 'display_id')
+        video_id, display_id = self._match_valid_url(url).group('id', 'display_id')
 
         webpage = self._download_webpage(url, video_id)
-        post = self._search_nextjs_data(webpage, video_id)[
-            'props']['pageProps']['ssr_data_posts']
+        post = self._search_nextjs_data(webpage, video_id)['props']['pageProps']['ssr_data_posts']
         content = self._parse_json(post['post_contents_json'], video_id)[0]
 
         return {

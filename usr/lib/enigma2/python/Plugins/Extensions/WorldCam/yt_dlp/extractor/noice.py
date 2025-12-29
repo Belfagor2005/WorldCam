@@ -68,8 +68,7 @@ class NoicePodcastIE(InfoExtractor):
         for url in variadic(media_url):
             ext = determine_ext(url)
             if ext == 'm3u8':
-                fmts, subs = self._extract_m3u8_formats_and_subtitles(
-                    url, video_id)
+                fmts, subs = self._extract_m3u8_formats_and_subtitles(url, video_id)
                 formats.extend(fmts)
                 self._merge_subtitles(subs, target=subtitles)
             else:
@@ -85,13 +84,10 @@ class NoicePodcastIE(InfoExtractor):
         display_id = self._match_id(url)
         webpage = self._download_webpage(url, display_id)
 
-        nextjs_data = self._search_nextjs_data(
-            webpage, display_id)['props']['pageProps']['contentDetails']
+        nextjs_data = self._search_nextjs_data(webpage, display_id)['props']['pageProps']['contentDetails']
 
-        media_url_list = traverse_obj(
-            nextjs_data, (('rawContentUrl', 'url'), ))
-        formats, subtitles = self._get_formats_and_subtitles(
-            media_url_list, display_id)
+        media_url_list = traverse_obj(nextjs_data, (('rawContentUrl', 'url'), ))
+        formats, subtitles = self._get_formats_and_subtitles(media_url_list, display_id)
 
         return {
             'id': nextjs_data.get('id') or display_id,

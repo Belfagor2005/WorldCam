@@ -20,23 +20,12 @@ class DaystarClipIE(InfoExtractor):
         video_id = self._match_id(url)
         webpage = self._download_webpage(url, video_id)
 
-        src_iframe = self._search_regex(
-            r'\<iframe[^>]+src="([^"]+)"', webpage, 'src iframe')
+        src_iframe = self._search_regex(r'\<iframe[^>]+src="([^"]+)"', webpage, 'src iframe')
         webpage_iframe = self._download_webpage(
-            src_iframe.replace(
-                'player.php',
-                'config2.php'),
-            video_id,
-            headers={
-                'Referer': src_iframe})
+            src_iframe.replace('player.php', 'config2.php'), video_id, headers={'Referer': src_iframe})
 
-        sources = self._parse_json(
-            self._search_regex(
-                r'sources\:\s*(\[.*?\])',
-                webpage_iframe,
-                'm3u8 source'),
-            video_id,
-            transform_source=js_to_json)
+        sources = self._parse_json(self._search_regex(
+            r'sources\:\s*(\[.*?\])', webpage_iframe, 'm3u8 source'), video_id, transform_source=js_to_json)
 
         formats, subtitles = [], {}
         for source in sources:

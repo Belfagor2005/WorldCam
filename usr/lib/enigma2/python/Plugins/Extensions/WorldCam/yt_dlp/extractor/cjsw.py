@@ -31,13 +31,10 @@ class CJSWIE(InfoExtractor):
 
         webpage = self._download_webpage(url, episode_id)
 
-        title = unescapeHTML(
-            self._search_regex(
-                (r'<h1[^>]+class=["\']episode-header__title["\'][^>]*>(?P<title>[^<]+)',
-                 r'data-audio-title=(["\'])(?P<title>(?:(?!\1).)+)\1'),
-                webpage,
-                'title',
-                group='title'))
+        title = unescapeHTML(self._search_regex(
+            (r'<h1[^>]+class=["\']episode-header__title["\'][^>]*>(?P<title>[^<]+)',
+             r'data-audio-title=(["\'])(?P<title>(?:(?!\1).)+)\1'),
+            webpage, 'title', group='title'))
 
         audio_url = self._search_regex(
             r'<button[^>]+data-audio-src=(["\'])(?P<url>(?:(?!\1).)+)\1',
