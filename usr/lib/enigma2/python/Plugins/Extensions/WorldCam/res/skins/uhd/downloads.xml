@@ -1,0 +1,11 @@
+<screen position="center,center" size="2560,1267" title="RaiPlay Download Manager" flags="wfNoBorder">
+    <widget name="poster" position="21,21" size="640,960" zPosition="1" />
+    <widget name="text" position="704,30" size="1820,953" font="Regular;24" itemHeight="35" scrollbarMode="showNever" />
+    <widget name="title" position="21,1000" size="2518,85" font="Regular;60" halign="center" valign="center" />
+    <widget name="info" position="21,1085" size="2518,64" font="Regular;52" halign="center" valign="center" />
+    <eLabel position="21,1150" size="2518,3" backgroundColor="grey" />
+    <widget name="key_red" position="210,1170" size="425,64" font="Regular;46" halign="center" valign="center" backgroundColor="red" />
+    <widget name="key_green" position="830,1170" size="425,64" font="Regular;46" halign="center" valign="center" backgroundColor="green" />
+    <widget name="key_yellow" position="1450,1170" size="425,64" font="Regular;46" halign="center" valign="center" backgroundColor="yellow" />
+    <widget name="key_blue" position="2070,1170" size="425,64" font="Regular;46" halign="center" valign="center" backgroundColor="blue" />
+</screen>

@@ -1,0 +1,9 @@
+<screen name="Playstream1" position="center,center" size="1920,1080" title="Playstream1" backgroundColor="#FF000000" flags="wfNoBorder">
+	<eLabel position="22,114" zPosition="-1" size="767,862" backgroundColor="#00000000" />
+	<widget name="list" position="39,186" size="726,704" zPosition="4" scrollbarMode="showOnDemand" />
+	<widget name="info" position="26,118" zPosition="4" size="764,56" font="Regular;38" foregroundColor="#ffffff" transparent="1" halign="center" valign="center" />
+	<eLabel backgroundColor="red" position="93,970" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="green" position="554,969" size="210,6" zPosition="10" />
+	<widget name="key_red" position="92,910" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<widget name="key_green" position="556,910" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+</screen>

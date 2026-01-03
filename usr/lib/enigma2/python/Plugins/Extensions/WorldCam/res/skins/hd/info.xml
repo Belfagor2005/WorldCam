@@ -1,0 +1,16 @@
+<screen name="RaiPlayInfo" position="center,center" size="1280,720" title="..::RaiPlay::.." backgroundColor="#20000000" flags="wfNoBorder">
+	<widget name="title" position="143,657" size="689,51" font="Regular;24" halign="left" valign="center" foregroundColor="#002a79b8" backgroundColor="black" transparent="1" zPosition="5" />
+	<eLabel position="76,0" size="826,720" backgroundColor="#60000000" zPosition="1" />
+	<eLabel position="957,360" size="260,340" zPosition="3" backgroundColor="#808080" />
+	<widget name="poster" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/icon.png" position="957,356" size="260,340" zPosition="4" backgroundColor="#30000000" transparent="1" alphatest="on" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/main2hd.png" position="0,0" size="886,720" zPosition="2" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/tvs.png" position="146,11" size="279,50" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/sep.png" position="146,71" size="686,5" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/sep.png" position="146,646" size="686,5" zPosition="5" />
+	<!-- Menu List -->
+	<widget name="text" position="146,78" size="686,566" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/sliderb.png" />
+	<!-- minitv -->
+    <eLabel name="" position="773,10" size="52,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="9" font="Regular; 16" zPosition="3" text="EXIT" />
+	<ePixmap position="543,1" size="156,75" zPosition="2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/PayPal.png" alphatest="on" />
+	<ePixmap position="920,26" size="320,320" zPosition="3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/RaiPlay/res/pics/qr-code.png" alphatest="on" />	
+</screen>
