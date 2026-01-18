@@ -1,422 +1,268 @@
 #, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: WorldCam\n"
-"POT-Creation-Date: 2025-11-22 19:33+0100\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: it\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.8\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-SearchPath-0: __init__.py\n"
-"X-Poedit-SearchPath-1: player.py\n"
-"X-Poedit-SearchPath-2: scraper.py\n"
-"X-Poedit-SearchPath-3: utils.py\n"
-"X-Poedit-SearchPath-4: plugin.py\n"
 
-#: __init__.py:39
-msgid ""
-"Like this plugin?\n"
-"Buy me a coffee by scanning QR code.\n"
-"Your support keeps development alive!\n"
-msgstr ""
-
-#: player.py:313
-msgid "Error switching webcam"
-msgstr ""
-
-#: player.py:327 plugin.py:1400 plugin.py:1430
-msgid "Removed from favorites"
-msgstr ""
-
-#: player.py:328
-msgid "Error removing favorite"
-msgstr ""
-
-#: player.py:332 plugin.py:1408 plugin.py:1422
-msgid "Added to favorites!"
-msgstr ""
-
-#: player.py:333
-msgid "Error adding favorite"
-msgstr ""
-
-#: player.py:365
-msgid "Could not extract video stream"
-msgstr ""
-
-#: player.py:394
-msgid "Invalid YouTube URL"
-msgstr ""
-
-#: player.py:414
-msgid "All YouTube playback methods failed!"
-msgstr ""
-
-#: player.py:417
-msgid "Error playing YouTube video!"
-msgstr ""
-
-#: player.py:615
-msgid "Playback failed!"
-msgstr ""
-
-#: player.py:655
-msgid "Play/pause not supported for this stream"
-msgstr ""
-
-#: plugin.py:342 plugin.py:690
-#, python-brace-format
-msgid "WorldCam v{}"
-msgstr ""
-
-#: plugin.py:343 plugin.py:737 plugin.py:821 plugin.py:908 plugin.py:981
-#: plugin.py:1032 plugin.py:1083 plugin.py:1138 plugin.py:1198 plugin.py:1271
-#: plugin.py:1347
-msgid "Exit"
-msgstr ""
-
-#: plugin.py:344
-msgid "Select"
-msgstr ""
-
-#: plugin.py:345
-msgid "Update"
-msgstr ""
-
-#: plugin.py:346 plugin.py:1350
-msgid "Menu"
-msgstr ""
-
-#: plugin.py:351 plugin.py:817 utils.py:731
-msgid "User Lists"
-msgstr ""
-
-#: plugin.py:352
-msgid "Favorites"
-msgstr ""
-
-#: plugin.py:353 plugin.py:977 utils.py:732
-msgid "Continents"
-msgstr ""
-
-#: plugin.py:354 utils.py:733
-msgid "Countries"
-msgstr ""
-
-#: plugin.py:355 plugin.py:1134 utils.py:734
-msgid "Categories"
-msgstr ""
-
-#: plugin.py:356 plugin.py:1194 utils.py:735
-msgid "Top Webcams"
-msgstr ""
-
-#: plugin.py:419
-msgid "Technical error in Webcam.pl"
-msgstr ""
-
-#: plugin.py:425
-msgid "Change language"
-msgstr ""
-
-#: plugin.py:426
-msgid "Update plugin"
-msgstr ""
-
-#: plugin.py:427
-msgid "Update yt-dlp"
-msgstr ""
-
-#: plugin.py:428
-msgid "Settings"
-msgstr ""
-
-#: plugin.py:429
-msgid "About"
-msgstr ""
-
-#: plugin.py:436
-msgid "Select an option"
-msgstr ""
-
-#: plugin.py:469
-msgid "Error opening language selection"
-msgstr ""
-
-#: plugin.py:492
-#, python-format
-msgid "Language changed to %s"
-msgstr ""
-
-#: plugin.py:497
-msgid "Error changing language"
-msgstr ""
-
-#: plugin.py:524
-msgid "Settings functionality coming soon!"
-msgstr ""
-
-#: plugin.py:528
-#, python-format
-msgid ""
-"Error opening settings:\n"
-"%s"
-msgstr ""
-
-#: plugin.py:555
-#, python-brace-format
-msgid ""
-"Unable to fetch version info:\n"
-"{}"
-msgstr ""
-
-#: plugin.py:577
-#, python-brace-format
-msgid "You are already running the latest version: {}"
-msgstr ""
-
-#: plugin.py:586
-#, python-format
-msgid ""
-"New version %s available\n"
-"\n"
-"Changelog: %s\n"
-"\n"
-"Do you want to install it now?"
-msgstr ""
-
-#: plugin.py:600
-msgid "Upgrading..."
-msgstr ""
-
-#: plugin.py:610
-#, python-format
-msgid ""
-"Update failed:\n"
-"%s"
-msgstr ""
-
-#: plugin.py:613
-msgid "Update Aborted!"
-msgstr ""
-
-#: plugin.py:621
-msgid ""
-"Update completed successfully!\n"
-"\n"
-"The plugin will now close."
-msgstr ""
-
-#: plugin.py:627
-#, python-format
-msgid "Update encountered an error (code: %s)"
-msgstr ""
-
-#: plugin.py:678
-msgid "yt-dlp updated successfully!"
-msgstr ""
-
-#: plugin.py:684
-#, python-format
-msgid ""
-"Failed to update yt-dlp:\n"
-"%s"
-msgstr ""
-
-#: plugin.py:691
-msgid "Live webcam viewer featuring global locations"
-msgstr ""
-
-#: plugin.py:692
-msgid "Developed by Lululla"
-msgstr ""
-
-#: plugin.py:693
-msgid "Powered by Enigma2 and Python"
-msgstr ""
-
-#: plugin.py:694
-msgid "GitHub: https://github.com/Belfagor2005/"
-msgstr ""
-
-#: plugin.py:695
-msgid "Forum support: www.corvoboys.org"
-msgstr ""
-
-#: plugin.py:696
-msgid "Included playlists and sources:"
-msgstr ""
-
-#: plugin.py:697
-msgid "- Local webcam list"
-msgstr ""
-
-#: plugin.py:698
 msgid "- Local YouTube playlist"
 msgstr ""
 
-#: plugin.py:699
-msgid "- Online webcam list"
+msgid "- Local webcam list"
 msgstr ""
 
-#: plugin.py:700
 msgid "- Online Direct and YouTube webcams"
 msgstr ""
 
-#: plugin.py:701
+msgid "- Online webcam list"
+msgstr ""
+
 msgid "- Other sources"
 msgstr ""
 
-#: plugin.py:733
-msgid "Your Favorites"
+msgid "AFRICA"
 msgstr ""
 
-#: plugin.py:738 plugin.py:1376
-msgid "Play"
-msgstr ""
-
-#: plugin.py:739 plugin.py:764
-msgid "Remove"
-msgstr ""
-
-#: plugin.py:740 plugin.py:1349
-msgid "Export"
-msgstr ""
-
-#: plugin.py:757
-msgid "No favorites yet"
-msgstr ""
-
-#: plugin.py:767
-msgid "Error loading favorites"
-msgstr ""
-
-#: plugin.py:780
-#, python-format
-msgid "Removed from favorites: %s"
-msgstr ""
-
-#: plugin.py:851
-msgid "No playlists found"
-msgstr ""
-
-#: plugin.py:865
-msgid "Error loading playlists"
-msgstr ""
-
-#: plugin.py:875
-msgid "No playlists available"
-msgstr ""
-
-#: plugin.py:880
-msgid "Select a valid playlist"
-msgstr ""
-
-#: plugin.py:888
-msgid "Error opening playlist"
-msgstr ""
-
-#: plugin.py:926
-msgid "File not found"
-msgstr ""
-
-#: plugin.py:931
-msgid "Empty playlist file"
-msgstr ""
-
-#: plugin.py:938
-msgid "No valid webcams in playlist"
-msgstr ""
-
-#: plugin.py:945
-msgid "Error loading playlist"
-msgstr ""
-
-#: plugin.py:954 plugin.py:1243 plugin.py:1490
-msgid "Select a valid webcam"
-msgstr ""
-
-#: plugin.py:1005
-msgid "Error loading continents"
-msgstr ""
-
-#: plugin.py:1056 plugin.py:1106
-msgid "Error loading countries"
-msgstr ""
-
-#: plugin.py:1079
-msgid "Country"
-msgstr ""
-
-#: plugin.py:1165
-msgid "Error loading categories"
-msgstr ""
-
-#: plugin.py:1176
-msgid "Select a valid category"
-msgstr ""
-
-#: plugin.py:1230
-msgid "Error loading top webcams"
-msgstr ""
-
-#: plugin.py:1301
-msgid "Error loading locations"
-msgstr ""
-
-#: plugin.py:1314
-msgid "Select a valid location"
-msgstr ""
-
-#: plugin.py:1348
-msgid "Add/Remove"
-msgstr ""
-
-#: plugin.py:1374
-msgid "Add to favorites"
-msgstr ""
-
-#: plugin.py:1375
-msgid "Remove from favorites"
-msgstr ""
-
-#: plugin.py:1377
-msgid "Export All to Bouquet"
-msgstr ""
-
-#: plugin.py:1477
-msgid "Error loading webcams"
-msgstr ""
-
-#: plugin.py:1525
-msgid "Live webcams from around the world"
-msgstr ""
-
-#: utils.py:316
-msgid "No favorites to export"
-msgstr ""
-
-#: utils.py:364
-msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
-
-#: utils.py:367
-msgid "Export failed: "
-msgstr ""
-
-#: utils.py:736
 msgid "AMERICAS"
 msgstr ""
 
-#: utils.py:737
+msgid "About"
+msgstr ""
+
+msgid "Add to favorites"
+msgstr ""
+
+msgid "Add/Remove"
+msgstr ""
+
+msgid "Added to favorites!"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Change language"
+msgstr ""
+
+msgid "Continents"
+msgstr ""
+
+msgid "Could not extract YouTube stream"
+msgstr ""
+
+msgid "Could not extract video stream"
+msgstr ""
+
+msgid "Countries"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "Developed by Lululla"
+msgstr ""
+
 msgid "EUROPE"
 msgstr ""
 
-#: utils.py:738
-msgid "AFRICA"
+msgid "Empty playlist file"
+msgstr ""
+
+msgid "Error adding favorite"
+msgstr ""
+
+msgid "Error changing language"
+msgstr ""
+
+msgid "Error loading categories"
+msgstr ""
+
+msgid "Error loading continents"
+msgstr ""
+
+msgid "Error loading countries"
+msgstr ""
+
+msgid "Error loading favorites"
+msgstr ""
+
+msgid "Error loading locations"
+msgstr ""
+
+msgid "Error loading playlist"
+msgstr ""
+
+msgid "Error loading playlists"
+msgstr ""
+
+msgid "Error loading top webcams"
+msgstr ""
+
+msgid "Error loading webcams"
+msgstr ""
+
+msgid "Error opening language selection"
+msgstr ""
+
+msgid "Error opening playlist"
+msgstr ""
+
+msgid "Error removing favorite"
+msgstr ""
+
+msgid "Error switching webcam"
+msgstr ""
+
+msgid "Exit"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Export All to Bouquet"
+msgstr ""
+
+msgid "Export failed:"
+msgstr ""
+
+msgid "Favorites"
+msgstr ""
+
+msgid "Favorites exported successfully! Restart Enigma2 to see them."
+msgstr ""
+
+msgid "File not found"
+msgstr ""
+
+msgid "Forum support: www.corvoboys.org"
+msgstr ""
+
+msgid "GitHub: https://github.com/Belfagor2005/"
+msgstr ""
+
+msgid "Included playlists and sources:"
+msgstr ""
+
+msgid "Invalid YouTube URL"
+msgstr ""
+
+msgid "Language changed to %s"
+msgstr ""
+
+msgid "Live webcam viewer featuring global locations"
+msgstr ""
+
+msgid "Live webcams from around the world"
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "No favorites to export"
+msgstr ""
+
+msgid "No favorites yet"
+msgstr ""
+
+msgid "No playlists available"
+msgstr ""
+
+msgid "No playlists found"
+msgstr ""
+
+msgid "No valid webcams in playlist"
+msgstr ""
+
+msgid "Play"
+msgstr ""
+
+msgid "Play/pause not supported for this stream"
+msgstr ""
+
+msgid "Playback error"
+msgstr ""
+
+msgid "Playback failed!"
+msgstr ""
+
+msgid "Powered by Enigma2 and Python"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Remove from favorites"
+msgstr ""
+
+msgid "Removed from favorites"
+msgstr ""
+
+msgid "Removed from favorites: %s"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Select a valid category"
+msgstr ""
+
+msgid "Select a valid location"
+msgstr ""
+
+msgid "Select a valid playlist"
+msgstr ""
+
+msgid "Select a valid webcam"
+msgstr ""
+
+msgid "Select an option"
+msgstr ""
+
+msgid "Select language"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings functionality coming soon!"
+msgstr ""
+
+msgid "Technical error in Webcam.pl"
+msgstr ""
+
+msgid "Top Webcams"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Update Aborted!"
+msgstr ""
+
+msgid "Update encountered an error (code: %s)"
+msgstr ""
+
+msgid "Update plugin"
+msgstr ""
+
+msgid "Update yt-dlp"
+msgstr ""
+
+msgid "Upgrading..."
+msgstr ""
+
+msgid "User Lists"
+msgstr ""
+
+msgid "WorldCam v{}"
+msgstr ""
+
+msgid "You are already running the latest version: {}"
+msgstr ""
+
+msgid "YouTube playback error"
+msgstr ""
+
+msgid "Your Favorites"
+msgstr ""
+
+msgid "yt-dlp not found. Please install it."
+msgstr ""
+
+msgid "yt-dlp updated successfully!"
 msgstr ""

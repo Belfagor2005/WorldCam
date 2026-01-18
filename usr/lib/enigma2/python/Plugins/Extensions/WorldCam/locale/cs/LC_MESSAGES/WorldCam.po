@@ -14,470 +14,396 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: LanguageScreen.py:49
 #, fuzzy
-#| msgid "Change language"
-msgid "Select language"
-msgstr "Změnit jazyk"
-
-#: __init__.py:38
-msgid ""
-"Like this plugin?\n"
-"Buy me a coffee by scanning QR code.\n"
-"Your support keeps development alive!\n"
-msgstr ""
-"Líbí se vám tento plugin?\n"
-"Kupte mi kávu naskenováním QR kódu.\n"
-"Vaše podpora udržuje vývoj při životě!\n"
-
-#: player.py:112 player.py:323 plugin.py:340 plugin.py:858 plugin.py:947
-#: plugin.py:1035 plugin.py:1103 plugin.py:1156 plugin.py:1208 plugin.py:1264
-#: plugin.py:1325 plugin.py:1399 plugin.py:1476
-msgid "Exit"
-msgstr "Odejít"
-
-#: player.py:294
-#, fuzzy
-#| msgid "Error loading webcams"
-msgid "Error switching webcam"
-msgstr "Chyba při načítání webkamer"
-
-#: player.py:300
-#, fuzzy
-#| msgid ""
-#| "Player Controls:\n"
-#| "OK - Show/hide info bar\n"
-#| "BLUE - Toggle favorite\n"
-#| "PLAY/PAUSE - Toggle playback\n"
-#| "STOP - Stop playback\n"
-#| "EXIT - Close player\n"
-msgid ""
-"Player Controls:\n"
-"OK - Show/hide info bar\n"
-"GREEN - Previous webcam\n"
-"YELLOW - Next webcam\n"
-"BLUE - Toggle favorite\n"
-"PLAY/PAUSE - Toggle playback\n"
-"STOP - Stop playback\n"
-"EXIT - Close player\n"
-msgstr ""
-"Ovládání přehrávače:\n"
-"OK - Zobrazit/skrýt informační panel\n"
-"MODRÁ - Přepnout/Přepnout oblíbené\n"
-"PLAY/PAUSE - Přepnout/Přepnout přehrávání\n"
-"STOP - Zastavit přehrávání\n"
-"EXIT - Zavřít přehrávač\n"
-
-#: player.py:345 plugin.py:1533 plugin.py:1563
-msgid "Removed from favorites"
-msgstr "Odebráno z oblíbených"
-
-#: player.py:346
-msgid "Error removing favorite"
-msgstr "Chyba při odebírání položky z oblíbených"
-
-#: player.py:350 plugin.py:1541 plugin.py:1555
-msgid "Added to favorites!"
-msgstr "Přidáno k oblíbeným!"
-
-#: player.py:351
-msgid "Error adding favorite"
-msgstr "Chyba při přidávání oblíbeného"
-
-#: player.py:418
-msgid "Could not extract video stream"
-msgstr "Nelze extrahovat video stream"
-
-#: player.py:521 player.py:1101
-msgid "Invalid YouTube URL"
-msgstr "Neplatná URL adresa YouTube"
-
-#: player.py:543
-msgid "All YouTube playback methods failed!"
-msgstr "Všechny metody přehrávání na YouTube selhaly!"
-
-#: player.py:547
-msgid "Error playing YouTube video!"
-msgstr "Chyba při přehrávání videa z YouTube!"
-
-#: player.py:788
-msgid "All YouTube methods failed!"
-msgstr "Všechny metody na YouTube selhaly!"
-
-#: player.py:963
-msgid "Playback failed!"
-msgstr "Přehrávání se nezdařilo!"
-
-#: player.py:1111
-msgid "Couldn't extract video stream"
-msgstr "Nepodařilo se extrahovat video stream"
-
-#: player.py:1153
-msgid "Error playing YouTube video with proxy!"
-msgstr "Chyba při přehrávání videa z YouTube přes proxy!"
-
-#: plugin.py:338
-msgid "WorldCam v{}"
-msgstr "WorldCam verze {}"
-
-#: plugin.py:341
-msgid "Select"
-msgstr "Vybrat"
-
-#: plugin.py:342
-msgid "Update"
-msgstr "Aktualizovat"
-
-#: plugin.py:343 plugin.py:1479
-msgid "Menu"
-msgstr "Menu"
-
-#: plugin.py:349 plugin.py:942 utils.py:567
-msgid "User Lists"
-msgstr "Seznamy uživatelů"
-
-#: plugin.py:350
-msgid "Favorites"
-msgstr "Oblíbené"
-
-#: plugin.py:351 plugin.py:1098 utils.py:568
-msgid "Continents"
-msgstr "Kontinenty"
-
-#: plugin.py:352 utils.py:569
-msgid "Countries"
-msgstr "Země"
-
-#: plugin.py:353 plugin.py:1259 utils.py:570
-msgid "Categories"
-msgstr "Kategorie"
-
-#: plugin.py:354 plugin.py:1320 utils.py:571
-msgid "Top Webcams"
-msgstr "Nejlepší webkamery"
-
-#: plugin.py:514
-msgid "Change language"
-msgstr "Změnit jazyk"
-
-#: plugin.py:515
-msgid "Update plugin"
-msgstr "Aktualizovat modul"
-
-#: plugin.py:516
-msgid "Update yt-dlp"
-msgstr "Aktualizace yt-dlp"
-
-#: plugin.py:517
-msgid "Settings"
-msgstr "Nastavení"
-
-#: plugin.py:518
-msgid "About"
-msgstr "O nás"
-
-#: plugin.py:526
-msgid "Select an option"
-msgstr "Vyberte možnost"
-
-#: plugin.py:566
-msgid "Error opening language selection"
-msgstr "Chyba při otevírání výběru jazyka"
-
-#: plugin.py:595
-#, python-format
-msgid "Language changed to %s"
-msgstr "Jazyk změněn na %s"
-
-#: plugin.py:600
-msgid "Error changing language"
-msgstr "Chyba při změně jazyka"
-
-#: plugin.py:650
-msgid "Settings functionality coming soon!"
-msgstr "Funkce nastavení bude brzy k dispozici!"
-
-#: plugin.py:654
-#, python-format
-msgid ""
-"Error opening settings:\n"
-"%s"
-msgstr ""
-"Chyba při otevírání nastavení:\n"
-"%s"
-
-#: plugin.py:680
-msgid ""
-"Unable to fetch version info:\n"
-"{}"
-msgstr ""
-"Nelze načíst informace o verzi:\n"
-"0}"
-
-#: plugin.py:702
-msgid "You are already running the latest version: {}"
-msgstr "Již používáte nejnovější verzi: {}"
-
-#: plugin.py:710
-#, python-format
-msgid ""
-"New version %s available\n"
-"\n"
-"Changelog: %s\n"
-"\n"
-"Do you want to install it now?"
-msgstr ""
-"Nová verze %s k dispozici\n"
-"\n"
-"Seznam změn: %s\n"
-"\n"
-"Chcete ji nyní nainstalovat?"
-
-#: plugin.py:723
-msgid "Upgrading..."
-msgstr "Aktualizace..."
-
-#: plugin.py:733
-#, python-format
-msgid ""
-"Update failed:\n"
-"%s"
-msgstr ""
-"Aktualizace selhala:\n"
-"%s"
-
-#: plugin.py:736
-msgid "Update Aborted!"
-msgstr "Aktualizace zrušena!"
-
-#: plugin.py:743
-msgid ""
-"Update completed successfully!\n"
-"\n"
-"The plugin will now close."
-msgstr ""
-"Aktualizace úspěšně dokončena!\n"
-"\n"
-"Plugin se nyní zavře."
-
-#: plugin.py:749
-#, python-format
-msgid "Update encountered an error (code: %s)"
-msgstr "Aktualizace narazila na chybu (kód: %s)"
-
-#: plugin.py:801
-msgid "yt-dlp updated successfully!"
-msgstr "yt-dlp byl úspěšně aktualizován!"
-
-#: plugin.py:807
-#, python-format
-msgid ""
-"Failed to update yt-dlp:\n"
-"%s"
-msgstr ""
-"Aktualizace yt-dlp se nezdařilo:\n"
-"%s"
-
-#: plugin.py:820
-#, python-format
-msgid "WorldCam v%s"
-msgstr "WorldCam verze %s"
-
-#: plugin.py:821
-msgid "Live webcam viewer featuring global locations."
-msgstr "Prohlížeč živého videa z webkamery s lokacemi po celém světě."
-
-#: plugin.py:822
-msgid "Developed by Lululla"
-msgstr "Vyvinuto společností Lululla"
-
-#: plugin.py:823
-msgid "Powered by Enigma2 and Python"
-msgstr "Poháněno Enigmou2 a Pythonem"
-
-#: plugin.py:824
-msgid "GitHub: https://github.com/Belfagor2005/"
-msgstr "GitHub: https://github.com/Belfagor2005/"
-
-#: plugin.py:825
-msgid "Forum support: www.corvoboys.org"
-msgstr "Podpora fóra: www.corvoboys.org"
-
-#: plugin.py:826
-msgid "Included playlists and sources:\n"
-msgstr "Zahrnuté playlisty a zdroje:\n"
-
-#: plugin.py:827
-msgid "- Local webcam list\n"
-msgstr "- Seznam místních webkamer\n"
-
-#: plugin.py:828
-msgid "- Local YouTube playlist (test)\n"
+msgid "- Local YouTube playlist"
 msgstr "- Lokální playlist na YouTube (test)\n"
 
-#: plugin.py:829
-msgid "- Online webcam list\n"
-msgstr "- Seznam webkamer online\n"
+#, fuzzy
+msgid "- Local webcam list"
+msgstr "- Seznam místních webkamer\n"
 
-#: plugin.py:830
-msgid "- Online Direct and YouTube webcams playlist (test)\n"
+#, fuzzy
+msgid "- Online Direct and YouTube webcams"
 msgstr "- Seznam videí z online webkamer a webkamer na YouTube (test)\n"
 
-#: plugin.py:831
-msgid "- Other sources\n"
+#, fuzzy
+msgid "- Online webcam list"
+msgstr "- Seznam webkamer online\n"
+
+#, fuzzy
+msgid "- Other sources"
 msgstr "- Jiné zdroje\n"
 
-#: plugin.py:853
-msgid "Your Favorites"
-msgstr "Vaše oblíbené"
+msgid "AFRICA"
+msgstr "AFRIKA"
 
-#: plugin.py:859 plugin.py:1507
-msgid "Play"
-msgstr "Přehrát"
-
-#: plugin.py:860 plugin.py:887
-msgid "Remove"
-msgstr "Odstranit"
-
-#: plugin.py:861 plugin.py:1478
-msgid "Export"
-msgstr ""
-
-#: plugin.py:880
-msgid "No favorites yet"
-msgstr "Zatím žádné oblíbené"
-
-#: plugin.py:890
-msgid "Error loading favorites"
-msgstr "Chyba při načítání oblíbených položek"
-
-#: plugin.py:904
-#, python-format
-msgid "Removed from favorites: %s"
-msgstr "Odebráno z oblíbených: %s"
-
-#: plugin.py:977
-msgid "No playlists found"
-msgstr "Nenalezeny žádné playlisty"
-
-#: plugin.py:991
-msgid "Error loading playlists"
-msgstr "Chyba při načítání playlistů"
-
-#: plugin.py:1001
-msgid "No playlists available"
-msgstr "Žádné playlisty nejsou k dispozici"
-
-#: plugin.py:1006
-msgid "Select a valid playlist"
-msgstr "Vyberte platný seznam skladeb"
-
-#: plugin.py:1014
-msgid "Error opening playlist"
-msgstr "Chyba při otevírání playlistu"
-
-#: plugin.py:1056
-msgid "Playlist file not found or empty"
-msgstr "Soubor seznamu skladeb nebyl nalezen nebo je prázdný"
-
-#: plugin.py:1063
-msgid "Playlist file not found"
-msgstr "Soubor playlistu nebyl nalezen"
-
-#: plugin.py:1066
-msgid "Error loading playlist"
-msgstr "Chyba při načítání playlistu"
-
-#: plugin.py:1075 plugin.py:1370 plugin.py:1623
-msgid "Select a valid webcam"
-msgstr "Vyberte platnou webkameru"
-
-#: plugin.py:1128
-msgid "Error loading continents"
-msgstr "Chyba při načítání kontinentů"
-
-#: plugin.py:1180 plugin.py:1231
-msgid "Error loading countries"
-msgstr "Chyba při načítání zemí"
-
-#: plugin.py:1203
-msgid "Country"
-msgstr "Země"
-
-#: plugin.py:1291
-msgid "Error loading categories"
-msgstr "Chyba při načítání kategorií"
-
-#: plugin.py:1302
-msgid "Select a valid category"
-msgstr "Vyberte platnou kategorii"
-
-#: plugin.py:1357
-msgid "Error loading top webcams"
-msgstr "Chyba při načítání nejlepších webkamer"
-
-#: plugin.py:1429
-msgid "Error loading locations"
-msgstr "Chyba při načítání lokalit"
-
-#: plugin.py:1442
-msgid "Select a valid location"
-msgstr "Vyberte platné místo"
-
-#: plugin.py:1477
-#, fuzzy
-#| msgid "Remove"
-msgid "Add/Remove"
-msgstr "Odstranit"
-
-#: plugin.py:1503
-msgid "Add to favorites"
-msgstr "Přidat do oblíbených"
-
-#: plugin.py:1505
-msgid "Remove from favorites"
-msgstr "Odebrat z oblíbených"
-
-#: plugin.py:1509
-msgid "Export All to Bouquet"
-msgstr ""
-
-#: plugin.py:1610
-msgid "Error loading webcams"
-msgstr "Chyba při načítání webkamer"
-
-#: plugin.py:1655
-msgid "Live webcams from around the world"
-msgstr "Živé webkamery z celého světa"
-
-#: utils.py:199
-#, fuzzy
-#| msgid "No favorites yet"
-msgid "No favorites to export"
-msgstr "Zatím žádné oblíbené"
-
-#: utils.py:245
-msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
-
-#: utils.py:248
-#, fuzzy
-#| msgid ""
-#| "Update failed:\n"
-#| "%s"
-msgid "Export failed: "
-msgstr ""
-"Aktualizace selhala:\n"
-"%s"
-
-#: utils.py:572
 msgid "AMERICAS"
 msgstr "AMERIKA"
 
-#: utils.py:573
+msgid "About"
+msgstr "O nás"
+
+msgid "Add to favorites"
+msgstr "Přidat do oblíbených"
+
+#, fuzzy
+msgid "Add/Remove"
+msgstr "Odstranit"
+
+msgid "Added to favorites!"
+msgstr "Přidáno k oblíbeným!"
+
+msgid "Categories"
+msgstr "Kategorie"
+
+msgid "Change language"
+msgstr "Změnit jazyk"
+
+msgid "Continents"
+msgstr "Kontinenty"
+
+#, fuzzy
+msgid "Could not extract YouTube stream"
+msgstr "Nelze extrahovat video stream"
+
+msgid "Could not extract video stream"
+msgstr "Nelze extrahovat video stream"
+
+msgid "Countries"
+msgstr "Země"
+
+msgid "Country"
+msgstr "Země"
+
+msgid "Developed by Lululla"
+msgstr "Vyvinuto společností Lululla"
+
 msgid "EUROPE"
 msgstr "EVROPA"
 
-#: utils.py:574
-msgid "AFRICA"
-msgstr "AFRIKA"
+#, fuzzy
+msgid "Empty playlist file"
+msgstr "Žádné playlisty nejsou k dispozici"
+
+msgid "Error adding favorite"
+msgstr "Chyba při přidávání oblíbeného"
+
+msgid "Error changing language"
+msgstr "Chyba při změně jazyka"
+
+msgid "Error loading categories"
+msgstr "Chyba při načítání kategorií"
+
+msgid "Error loading continents"
+msgstr "Chyba při načítání kontinentů"
+
+msgid "Error loading countries"
+msgstr "Chyba při načítání zemí"
+
+msgid "Error loading favorites"
+msgstr "Chyba při načítání oblíbených položek"
+
+msgid "Error loading locations"
+msgstr "Chyba při načítání lokalit"
+
+msgid "Error loading playlist"
+msgstr "Chyba při načítání playlistu"
+
+msgid "Error loading playlists"
+msgstr "Chyba při načítání playlistů"
+
+msgid "Error loading top webcams"
+msgstr "Chyba při načítání nejlepších webkamer"
+
+msgid "Error loading webcams"
+msgstr "Chyba při načítání webkamer"
+
+msgid "Error opening language selection"
+msgstr "Chyba při otevírání výběru jazyka"
+
+msgid "Error opening playlist"
+msgstr "Chyba při otevírání playlistu"
+
+msgid "Error removing favorite"
+msgstr "Chyba při odebírání položky z oblíbených"
+
+#, fuzzy
+msgid "Error switching webcam"
+msgstr "Chyba při načítání webkamer"
+
+msgid "Exit"
+msgstr "Odejít"
+
+msgid "Export"
+msgstr ""
+
+msgid "Export All to Bouquet"
+msgstr ""
+
+#, fuzzy
+msgid "Export failed:"
+msgstr ""
+"Aktualizace selhala:\n"
+"%s"
+
+msgid "Favorites"
+msgstr "Oblíbené"
+
+msgid "Favorites exported successfully! Restart Enigma2 to see them."
+msgstr ""
+
+#, fuzzy
+msgid "File not found"
+msgstr "Soubor playlistu nebyl nalezen"
+
+msgid "Forum support: www.corvoboys.org"
+msgstr "Podpora fóra: www.corvoboys.org"
+
+msgid "GitHub: https://github.com/Belfagor2005/"
+msgstr "GitHub: https://github.com/Belfagor2005/"
+
+#, fuzzy
+msgid "Included playlists and sources:"
+msgstr "Zahrnuté playlisty a zdroje:\n"
+
+msgid "Invalid YouTube URL"
+msgstr "Neplatná URL adresa YouTube"
+
+msgid "Language changed to %s"
+msgstr "Jazyk změněn na %s"
+
+#, fuzzy
+msgid "Live webcam viewer featuring global locations"
+msgstr "Prohlížeč živého videa z webkamery s lokacemi po celém světě."
+
+msgid "Live webcams from around the world"
+msgstr "Živé webkamery z celého světa"
+
+msgid "Menu"
+msgstr "Menu"
+
+#, fuzzy
+msgid "No favorites to export"
+msgstr "Zatím žádné oblíbené"
+
+msgid "No favorites yet"
+msgstr "Zatím žádné oblíbené"
+
+msgid "No playlists available"
+msgstr "Žádné playlisty nejsou k dispozici"
+
+msgid "No playlists found"
+msgstr "Nenalezeny žádné playlisty"
+
+#, fuzzy
+msgid "No valid webcams in playlist"
+msgstr "- Seznam místních webkamer\n"
+
+msgid "Play"
+msgstr "Přehrát"
+
+msgid "Play/pause not supported for this stream"
+msgstr ""
+
+#, fuzzy
+msgid "Playback error"
+msgstr "Přehrávání se nezdařilo!"
+
+msgid "Playback failed!"
+msgstr "Přehrávání se nezdařilo!"
+
+msgid "Powered by Enigma2 and Python"
+msgstr "Poháněno Enigmou2 a Pythonem"
+
+msgid "Remove"
+msgstr "Odstranit"
+
+msgid "Remove from favorites"
+msgstr "Odebrat z oblíbených"
+
+msgid "Removed from favorites"
+msgstr "Odebráno z oblíbených"
+
+msgid "Removed from favorites: %s"
+msgstr "Odebráno z oblíbených: %s"
+
+msgid "Select"
+msgstr "Vybrat"
+
+msgid "Select a valid category"
+msgstr "Vyberte platnou kategorii"
+
+msgid "Select a valid location"
+msgstr "Vyberte platné místo"
+
+msgid "Select a valid playlist"
+msgstr "Vyberte platný seznam skladeb"
+
+msgid "Select a valid webcam"
+msgstr "Vyberte platnou webkameru"
+
+msgid "Select an option"
+msgstr "Vyberte možnost"
+
+#, fuzzy
+msgid "Select language"
+msgstr "Změnit jazyk"
+
+msgid "Settings"
+msgstr "Nastavení"
+
+msgid "Settings functionality coming soon!"
+msgstr "Funkce nastavení bude brzy k dispozici!"
+
+msgid "Technical error in Webcam.pl"
+msgstr ""
+
+msgid "Top Webcams"
+msgstr "Nejlepší webkamery"
+
+msgid "Update"
+msgstr "Aktualizovat"
+
+msgid "Update Aborted!"
+msgstr "Aktualizace zrušena!"
+
+msgid "Update encountered an error (code: %s)"
+msgstr "Aktualizace narazila na chybu (kód: %s)"
+
+msgid "Update plugin"
+msgstr "Aktualizovat modul"
+
+msgid "Update yt-dlp"
+msgstr "Aktualizace yt-dlp"
+
+msgid "Upgrading..."
+msgstr "Aktualizace..."
+
+msgid "User Lists"
+msgstr "Seznamy uživatelů"
+
+msgid "WorldCam v{}"
+msgstr "WorldCam verze {}"
+
+msgid "You are already running the latest version: {}"
+msgstr "Již používáte nejnovější verzi: {}"
+
+#, fuzzy
+msgid "YouTube playback error"
+msgstr "Všechny metody přehrávání na YouTube selhaly!"
+
+msgid "Your Favorites"
+msgstr "Vaše oblíbené"
+
+msgid "yt-dlp not found. Please install it."
+msgstr ""
+
+msgid "yt-dlp updated successfully!"
+msgstr "yt-dlp byl úspěšně aktualizován!"
+
+#~ msgid "All YouTube methods failed!"
+#~ msgstr "Všechny metody na YouTube selhaly!"
+
+#~ msgid "Couldn't extract video stream"
+#~ msgstr "Nepodařilo se extrahovat video stream"
+
+#, python-format
+#~ msgid ""
+#~ "Error opening settings:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Chyba při otevírání nastavení:\n"
+#~ "%s"
+
+#~ msgid "Error playing YouTube video with proxy!"
+#~ msgstr "Chyba při přehrávání videa z YouTube přes proxy!"
+
+#~ msgid "Error playing YouTube video!"
+#~ msgstr "Chyba při přehrávání videa z YouTube!"
+
+#, python-format
+#~ msgid ""
+#~ "Failed to update yt-dlp:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Aktualizace yt-dlp se nezdařilo:\n"
+#~ "%s"
+
+#~ msgid ""
+#~ "Like this plugin?\n"
+#~ "Buy me a coffee by scanning QR code.\n"
+#~ "Your support keeps development alive!\n"
+#~ msgstr ""
+#~ "Líbí se vám tento plugin?\n"
+#~ "Kupte mi kávu naskenováním QR kódu.\n"
+#~ "Vaše podpora udržuje vývoj při životě!\n"
+
+#, python-format
+#~ msgid ""
+#~ "New version %s available\n"
+#~ "\n"
+#~ "Changelog: %s\n"
+#~ "\n"
+#~ "Do you want to install it now?"
+#~ msgstr ""
+#~ "Nová verze %s k dispozici\n"
+#~ "\n"
+#~ "Seznam změn: %s\n"
+#~ "\n"
+#~ "Chcete ji nyní nainstalovat?"
+
+#, fuzzy
+#~| msgid ""
+#~| "Player Controls:\n"
+#~| "OK - Show/hide info bar\n"
+#~| "BLUE - Toggle favorite\n"
+#~| "PLAY/PAUSE - Toggle playback\n"
+#~| "STOP - Stop playback\n"
+#~| "EXIT - Close player\n"
+#~ msgid ""
+#~ "Player Controls:\n"
+#~ "OK - Show/hide info bar\n"
+#~ "GREEN - Previous webcam\n"
+#~ "YELLOW - Next webcam\n"
+#~ "BLUE - Toggle favorite\n"
+#~ "PLAY/PAUSE - Toggle playback\n"
+#~ "STOP - Stop playback\n"
+#~ "EXIT - Close player\n"
+#~ msgstr ""
+#~ "Ovládání přehrávače:\n"
+#~ "OK - Zobrazit/skrýt informační panel\n"
+#~ "MODRÁ - Přepnout/Přepnout oblíbené\n"
+#~ "PLAY/PAUSE - Přepnout/Přepnout přehrávání\n"
+#~ "STOP - Zastavit přehrávání\n"
+#~ "EXIT - Zavřít přehrávač\n"
+
+#~ msgid "Playlist file not found or empty"
+#~ msgstr "Soubor seznamu skladeb nebyl nalezen nebo je prázdný"
+
+#~ msgid ""
+#~ "Unable to fetch version info:\n"
+#~ "{}"
+#~ msgstr ""
+#~ "Nelze načíst informace o verzi:\n"
+#~ "0}"
+
+#~ msgid ""
+#~ "Update completed successfully!\n"
+#~ "\n"
+#~ "The plugin will now close."
+#~ msgstr ""
+#~ "Aktualizace úspěšně dokončena!\n"
+#~ "\n"
+#~ "Plugin se nyní zavře."
+
+#, python-format
+#~ msgid ""
+#~ "Update failed:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Aktualizace selhala:\n"
+#~ "%s"
+
+#, python-format
+#~ msgid "WorldCam v%s"
+#~ msgstr "WorldCam verze %s"

@@ -5,7 +5,7 @@ __author__ = "Lululla"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "GPL-v2"
-__version__ = "6.4"
+__version__ = "6.5"
 
 import gettext
 from os import environ

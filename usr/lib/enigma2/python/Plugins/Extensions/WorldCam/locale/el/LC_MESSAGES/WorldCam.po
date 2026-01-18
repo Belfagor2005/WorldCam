@@ -19,446 +19,378 @@ msgstr ""
 "X-Poedit-SearchPath-3: utils.py\n"
 "X-Poedit-SearchPath-4: plugin.py\n"
 
-#: __init__.py:38
-msgid ""
-"Like this plugin?\n"
-"Buy me a coffee by scanning QR code.\n"
-"Your support keeps development alive!\n"
-msgstr ""
-"Σας άρεσε αυτό το πρόσθετο;\n"
-"Κεράστε μου έναν καφέ σκανάροντας τον κωδικό QR.\n"
-"Η υποστήριξή σας κρατά την ανάπτυξη ζωντανή!\n"
-
-#: player.py:112 player.py:323 plugin.py:340 plugin.py:858 plugin.py:947
-#: plugin.py:1035 plugin.py:1103 plugin.py:1156 plugin.py:1208 plugin.py:1264
-#: plugin.py:1325 plugin.py:1399 plugin.py:1476
-msgid "Exit"
-msgstr "Έξοδος"
-
-#: player.py:294
-msgid "Error switching webcam"
-msgstr "Σφάλμα κατά την εναλλαγή κάμερας ιστού"
-
-#: player.py:300
-msgid ""
-"Player Controls:\n"
-"OK - Show/hide info bar\n"
-"GREEN - Previous webcam\n"
-"YELLOW - Next webcam\n"
-"BLUE - Toggle favorite\n"
-"PLAY/PAUSE - Toggle playback\n"
-"STOP - Stop playback\n"
-"EXIT - Close player\n"
-msgstr ""
-"Χειριστήρια προγράμματος αναπαραγωγής:\n"
-"OK - Εμφάνιση/απόκρυψη μπάρας πληροφοριών\n"
-"GREEN - Προηγούμενη κάμερα ιστού\n"
-"YELLOW - Επόμενη κάμερα ιστού\n"
-"BLUE - Εναλλαγή αγαπημένων\n"
-"PLAY/PAUSE - Εναλλαγή αναπαραγωγής\n"
-"STOP - Διακοπή αναπαραγωγής\n"
-"EXIT - Κλείσιμο προγράμματος αναπαραγωγής\n"
-
-#: player.py:345 plugin.py:1533 plugin.py:1563
-msgid "Removed from favorites"
-msgstr "Αφαιρέθηκε από τα αγαπημένα"
-
-#: player.py:346
-msgid "Error removing favorite"
-msgstr "Σφάλμα κατά την αφαίρεση από τα αγαπημένα"
-
-#: player.py:350 plugin.py:1541 plugin.py:1555
-msgid "Added to favorites!"
-msgstr "Προστέθηκε στα αγαπημένα!"
-
-#: player.py:351
-msgid "Error adding favorite"
-msgstr "Σφάλμα κατά την προσθήκη στα αγαπημένα"
-
-#: player.py:418
-msgid "Could not extract video stream"
-msgstr "Δεν ήταν δυνατή η εξαγωγή της ροής βίντεο"
-
-#: player.py:521 player.py:1101
-msgid "Invalid YouTube URL"
-msgstr "Μη έγκυρο URL YouTube"
-
-#: player.py:543
-msgid "All YouTube playback methods failed!"
-msgstr "Όλες οι μέθοδοι αναπαραγωγής YouTube απέτυχαν!"
-
-#: player.py:547
-msgid "Error playing YouTube video!"
-msgstr "Σφάλμα κατά την αναπαραγωγή βίντεο YouTube!"
-
-#: player.py:788
-msgid "All YouTube methods failed!"
-msgstr "Όλες οι μέθοδοι του YouTube απέτυχαν!"
-
-#: player.py:963
-msgid "Playback failed!"
-msgstr "Η αναπαραγωγή απέτυχε!"
-
-#: player.py:1111
-msgid "Couldn't extract video stream"
-msgstr "Δεν ήταν δυνατή η εξαγωγή της ροής βίντεο"
-
-#: player.py:1153
-msgid "Error playing YouTube video with proxy!"
-msgstr "Σφάλμα κατά την αναπαραγωγή βίντεο YouTube μέσω proxy!"
-
-#: plugin.py:338
-msgid "WorldCam v{}"
-msgstr "WorldCam v{}"
-
-#: plugin.py:341
-msgid "Select"
-msgstr "Επιλογή"
-
-#: plugin.py:342
-msgid "Update"
-msgstr "Ενημέρωση"
-
-#: plugin.py:343 plugin.py:1479
-msgid "Menu"
-msgstr "Μενού"
-
-#: plugin.py:349 plugin.py:942 utils.py:567
-msgid "User Lists"
-msgstr "Λίστες χρήστη"
-
-#: plugin.py:350
-msgid "Favorites"
-msgstr "Αγαπημένα"
-
-#: plugin.py:351 plugin.py:1098 utils.py:568
-msgid "Continents"
-msgstr "Ήπειροι"
-
-#: plugin.py:352 utils.py:569
-msgid "Countries"
-msgstr "Χώρες"
-
-#: plugin.py:353 plugin.py:1259 utils.py:570
-msgid "Categories"
-msgstr "Κατηγορίες"
-
-#: plugin.py:354 plugin.py:1320 utils.py:571
-msgid "Top Webcams"
-msgstr "Κορυφαίες κάμερες ιστού"
-
-#: plugin.py:514
-msgid "Change language"
-msgstr "Αλλαγή γλώσσας"
-
-#: plugin.py:515
-msgid "Update plugin"
-msgstr "Ενημέρωση του πρόσθετου"
-
-#: plugin.py:516
-msgid "Update yt-dlp"
-msgstr "Ενημέρωση yt-dlp"
-
-#: plugin.py:517
-msgid "Settings"
-msgstr "Ρυθμίσεις"
-
-#: plugin.py:518
-msgid "About"
-msgstr "Σχετικά"
-
-#: plugin.py:526
-msgid "Select an option"
-msgstr "Επιλέξτε μια επιλογή"
-
-#: plugin.py:566
-msgid "Error opening language selection"
-msgstr "Σφάλμα κατά το άνοιγμα της επιλογής γλώσσας"
-
-#: plugin.py:595
-#, python-format
-msgid "Language changed to %s"
-msgstr "Η γλώσσα άλλαξε σε %s"
-
-#: plugin.py:600
-msgid "Error changing language"
-msgstr "Σφάλμα κατά την αλλαγή γλώσσας"
-
-#: plugin.py:650
-msgid "Settings functionality coming soon!"
-msgstr "Η λειτουργία Ρυθμίσεις έρχεται σύντομα!"
-
-#: plugin.py:654
-#, python-format
-msgid ""
-"Error opening settings:\n"
-"%s"
-msgstr ""
-"Σφάλμα κατά το άνοιγμα των ρυθμίσεων:\n"
-"%s"
-
-#: plugin.py:680
-msgid ""
-"Unable to fetch version info:\n"
-"{}"
-msgstr ""
-"Αδυναμία λήψης πληροφοριών έκδοσης:\n"
-"{}"
-
-#: plugin.py:702
-msgid "You are already running the latest version: {}"
-msgstr "Χρησιμοποιείτε ήδη την πιο πρόσφατη έκδοση: {}"
-
-#: plugin.py:710
-#, python-format
-msgid ""
-"New version %s available\n"
-"\n"
-"Changelog: %s\n"
-"\n"
-"Do you want to install it now?"
-msgstr ""
-"Διαθέσιμη νέα έκδοση %s\n"
-"\n"
-"Καταγραφή αλλαγών: %s\n"
-"\n"
-"Θέλετε να την εγκαταστήσετε τώρα;"
-
-#: plugin.py:723
-msgid "Upgrading..."
-msgstr "Αναβάθμιση..."
-
-#: plugin.py:733
-#, python-format
-msgid ""
-"Update failed:\n"
-"%s"
-msgstr ""
-"Η ενημέρωση απέτυχε:\n"
-"%s"
-
-#: plugin.py:736
-msgid "Update Aborted!"
-msgstr "Η ενημέρωση ακυρώθηκε!"
-
-#: plugin.py:743
-msgid ""
-"Update completed successfully!\n"
-"\n"
-"The plugin will now close."
-msgstr ""
-"Η ενημέρωση ολοκληρώθηκε με επιτυχία!\n"
-"\n"
-"Το πρόσθετο θα κλείσει τώρα."
-
-#: plugin.py:749
-#, python-format
-msgid "Update encountered an error (code: %s)"
-msgstr "Προέκυψε σφάλμα κατά την ενημέρωση (κωδικός: %s)"
-
-#: plugin.py:801
-msgid "yt-dlp updated successfully!"
-msgstr "Το yt-dlp ενημερώθηκε με επιτυχία!"
-
-#: plugin.py:807
-#, python-format
-msgid ""
-"Failed to update yt-dlp:\n"
-"%s"
-msgstr ""
-"Αποτυχία ενημέρωσης του yt-dlp:\n"
-"%s"
-
-#: plugin.py:820
-#, python-format
-msgid "WorldCam v%s"
-msgstr "WorldCam v%s"
-
-#: plugin.py:821
-msgid "Live webcam viewer featuring global locations"
-msgstr "Προβολή ζωντανών καμερών ιστού από τοποθεσίες παγκοσμίως"
-
-#: plugin.py:822
-msgid "Developed by Lululla"
-msgstr "Ανάπτυξη από τον Lululla"
-
-#: plugin.py:823
-msgid "Powered by Enigma2 and Python"
-msgstr "Με την υποστήριξη των Enigma2 και Python"
-
-#: plugin.py:824
-msgid "GitHub: https://github.com/Belfagor2005/"
-msgstr "GitHub: https://github.com/Belfagor2005/"
-
-#: plugin.py:825
-msgid "Forum support: www.corvoboys.org"
-msgstr "Φόρουμ υποστήριξης: www.corvoboys.org"
-
-#: plugin.py:826
-msgid "Included playlists and sources:"
-msgstr "Περιλαμβανόμενες λίστες αναπαραγωγής και πηγές:"
-
-#: plugin.py:827
-msgid "- Local webcam list"
-msgstr "- Τοπική λίστα καμερών ιστού"
-
-#: plugin.py:828
 msgid "- Local YouTube playlist"
 msgstr "- Τοπική λίστα αναπαραγωγής YouTube"
 
-#: plugin.py:829
-msgid "- Online webcam list"
-msgstr "- Διαδικτυακή λίστα καμερών ιστού"
+msgid "- Local webcam list"
+msgstr "- Τοπική λίστα καμερών ιστού"
 
-#: plugin.py:830
 msgid "- Online Direct and YouTube webcams"
 msgstr "- Διαδικτυακές απευθείας κάμερες ιστού και YouTube"
 
-#: plugin.py:831
+msgid "- Online webcam list"
+msgstr "- Διαδικτυακή λίστα καμερών ιστού"
+
 msgid "- Other sources"
 msgstr "- Άλλες πηγές"
 
-#: plugin.py:853
-msgid "Your Favorites"
-msgstr "Τα αγαπημένα σας"
+msgid "AFRICA"
+msgstr "ΑΦΡΙΚΗ"
 
-#: plugin.py:859 plugin.py:1507
-msgid "Play"
-msgstr "Αναπαραγωγή"
-
-#: plugin.py:860 plugin.py:887
-msgid "Remove"
-msgstr "Αφαίρεση"
-
-#: plugin.py:861 plugin.py:1478
-msgid "Export"
-msgstr "Εξαγωγή"
-
-#: plugin.py:880
-msgid "No favorites yet"
-msgstr "Δεν υπάρχουν αγαπημένα ακόμα"
-
-#: plugin.py:890
-msgid "Error loading favorites"
-msgstr "Σφάλμα φόρτωσης αγαπημένων"
-
-#: plugin.py:904
-#, python-format
-msgid "Removed from favorites: %s"
-msgstr "Αφαιρέθηκε από τα αγαπημένα: %s"
-
-#: plugin.py:977
-msgid "No playlists found"
-msgstr "Δεν βρέθηκαν λίστες αναπαραγωγής"
-
-#: plugin.py:991
-msgid "Error loading playlists"
-msgstr "Σφάλμα κατά τη φόρτωση των λιστών αναπαραγωγής"
-
-#: plugin.py:1001
-msgid "No playlists available"
-msgstr "Καμία διαθέσιμη λίστα αναπαραγωγής"
-
-#: plugin.py:1006
-msgid "Select a valid playlist"
-msgstr "Επιλέξτε έγκυρη λίστα αναπαραγωγής"
-
-#: plugin.py:1014
-msgid "Error opening playlist"
-msgstr "Σφάλμα κατά το άνοιγμα της λίστας αναπαραγωγής"
-
-#: plugin.py:1056
-msgid "Playlist file not found or empty"
-msgstr "Το αρχείο λίστας αναπαραγωγής δεν βρέθηκε ή είναι κενό"
-
-#: plugin.py:1063
-msgid "Playlist file not found"
-msgstr "Το αρχείο λίστας αναπαραγωγής δεν βρέθηκε"
-
-#: plugin.py:1066
-msgid "Error loading playlist"
-msgstr "Σφάλμα κατά τη φόρτωση της λίστας αναπαραγωγής"
-
-#: plugin.py:1075 plugin.py:1370 plugin.py:1623
-msgid "Select a valid webcam"
-msgstr "Επιλέξτε έγκυρη κάμερα ιστού"
-
-#: plugin.py:1128
-msgid "Error loading continents"
-msgstr "Σφάλμα κατά τη φόρτωση των ηπείρων"
-
-#: plugin.py:1180 plugin.py:1231
-msgid "Error loading countries"
-msgstr "Σφάλμα κατά τη φόρτωση των χωρών"
-
-#: plugin.py:1203
-msgid "Country"
-msgstr "Χώρα"
-
-#: plugin.py:1291
-msgid "Error loading categories"
-msgstr "Σφάλμα κατά τη φόρτωση των κατηγοριών"
-
-#: plugin.py:1302
-msgid "Select a valid category"
-msgstr "Επιλέξτε έγκυρη κατηγορία"
-
-#: plugin.py:1357
-msgid "Error loading top webcams"
-msgstr "Σφάλμα κατά τη φόρτωση των κορυφαίων καμερών ιστού"
-
-#: plugin.py:1429
-msgid "Error loading locations"
-msgstr "Σφάλμα κατά τη φόρτωση των τοποθεσιών"
-
-#: plugin.py:1442
-msgid "Select a valid location"
-msgstr "Επιλέξτε έγκυρη τοποθεσία"
-
-#: plugin.py:1477
-msgid "Add/Remove"
-msgstr "Προσθήκη/Αφαίρεση"
-
-#: plugin.py:1503
-msgid "Add to favorites"
-msgstr "Προσθήκη στα αγαπημένα"
-
-#: plugin.py:1505
-msgid "Remove from favorites"
-msgstr "Αφαίρεση από τα αγαπημένα"
-
-#: plugin.py:1509
-msgid "Export All to Bouquet"
-msgstr "Εξαγωγή όλων σε μπουκέτο"
-
-#: plugin.py:1610
-msgid "Error loading webcams"
-msgstr "Σφάλμα κατά τη φόρτωση των καμερών ιστού"
-
-#: plugin.py:1655
-msgid "Live webcams from around the world"
-msgstr "Ζωντανές κάμερες ιστού από όλο τον κόσμο"
-
-#: utils.py:199
-msgid "No favorites to export"
-msgstr "Δεν υπάρχουν αγαπημένα προς εξαγωγή"
-
-#: utils.py:245
-msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr "Τα αγαπημένα εξήχθησαν με επιτυχία! Επανεκκινήστε το Enigma2 για να τα δείτε."
-
-#: utils.py:248
-msgid "Export failed: "
-msgstr "Η εξαγωγή απέτυχε: "
-
-#: utils.py:572
 msgid "AMERICAS"
 msgstr "ΑΜΕΡΙΚΗ"
 
-#: utils.py:573
+msgid "About"
+msgstr "Σχετικά"
+
+msgid "Add to favorites"
+msgstr "Προσθήκη στα αγαπημένα"
+
+msgid "Add/Remove"
+msgstr "Προσθήκη/Αφαίρεση"
+
+msgid "Added to favorites!"
+msgstr "Προστέθηκε στα αγαπημένα!"
+
+msgid "Categories"
+msgstr "Κατηγορίες"
+
+msgid "Change language"
+msgstr "Αλλαγή γλώσσας"
+
+msgid "Continents"
+msgstr "Ήπειροι"
+
+#, fuzzy
+msgid "Could not extract YouTube stream"
+msgstr "Δεν ήταν δυνατή η εξαγωγή της ροής βίντεο"
+
+msgid "Could not extract video stream"
+msgstr "Δεν ήταν δυνατή η εξαγωγή της ροής βίντεο"
+
+msgid "Countries"
+msgstr "Χώρες"
+
+msgid "Country"
+msgstr "Χώρα"
+
+msgid "Developed by Lululla"
+msgstr "Ανάπτυξη από τον Lululla"
+
 msgid "EUROPE"
 msgstr "ΕΥΡΩΠΗ"
 
-#: utils.py:574
-msgid "AFRICA"
-msgstr "ΑΦΡΙΚΗ"
+#, fuzzy
+msgid "Empty playlist file"
+msgstr "Καμία διαθέσιμη λίστα αναπαραγωγής"
+
+msgid "Error adding favorite"
+msgstr "Σφάλμα κατά την προσθήκη στα αγαπημένα"
+
+msgid "Error changing language"
+msgstr "Σφάλμα κατά την αλλαγή γλώσσας"
+
+msgid "Error loading categories"
+msgstr "Σφάλμα κατά τη φόρτωση των κατηγοριών"
+
+msgid "Error loading continents"
+msgstr "Σφάλμα κατά τη φόρτωση των ηπείρων"
+
+msgid "Error loading countries"
+msgstr "Σφάλμα κατά τη φόρτωση των χωρών"
+
+msgid "Error loading favorites"
+msgstr "Σφάλμα φόρτωσης αγαπημένων"
+
+msgid "Error loading locations"
+msgstr "Σφάλμα κατά τη φόρτωση των τοποθεσιών"
+
+msgid "Error loading playlist"
+msgstr "Σφάλμα κατά τη φόρτωση της λίστας αναπαραγωγής"
+
+msgid "Error loading playlists"
+msgstr "Σφάλμα κατά τη φόρτωση των λιστών αναπαραγωγής"
+
+msgid "Error loading top webcams"
+msgstr "Σφάλμα κατά τη φόρτωση των κορυφαίων καμερών ιστού"
+
+msgid "Error loading webcams"
+msgstr "Σφάλμα κατά τη φόρτωση των καμερών ιστού"
+
+msgid "Error opening language selection"
+msgstr "Σφάλμα κατά το άνοιγμα της επιλογής γλώσσας"
+
+msgid "Error opening playlist"
+msgstr "Σφάλμα κατά το άνοιγμα της λίστας αναπαραγωγής"
+
+msgid "Error removing favorite"
+msgstr "Σφάλμα κατά την αφαίρεση από τα αγαπημένα"
+
+msgid "Error switching webcam"
+msgstr "Σφάλμα κατά την εναλλαγή κάμερας ιστού"
+
+msgid "Exit"
+msgstr "Έξοδος"
+
+msgid "Export"
+msgstr "Εξαγωγή"
+
+msgid "Export All to Bouquet"
+msgstr "Εξαγωγή όλων σε μπουκέτο"
+
+#, fuzzy
+msgid "Export failed:"
+msgstr "Η εξαγωγή απέτυχε: "
+
+msgid "Favorites"
+msgstr "Αγαπημένα"
+
+msgid "Favorites exported successfully! Restart Enigma2 to see them."
+msgstr "Τα αγαπημένα εξήχθησαν με επιτυχία! Επανεκκινήστε το Enigma2 για να τα δείτε."
+
+#, fuzzy
+msgid "File not found"
+msgstr "Το αρχείο λίστας αναπαραγωγής δεν βρέθηκε"
+
+msgid "Forum support: www.corvoboys.org"
+msgstr "Φόρουμ υποστήριξης: www.corvoboys.org"
+
+msgid "GitHub: https://github.com/Belfagor2005/"
+msgstr "GitHub: https://github.com/Belfagor2005/"
+
+msgid "Included playlists and sources:"
+msgstr "Περιλαμβανόμενες λίστες αναπαραγωγής και πηγές:"
+
+msgid "Invalid YouTube URL"
+msgstr "Μη έγκυρο URL YouTube"
+
+msgid "Language changed to %s"
+msgstr "Η γλώσσα άλλαξε σε %s"
+
+msgid "Live webcam viewer featuring global locations"
+msgstr "Προβολή ζωντανών καμερών ιστού από τοποθεσίες παγκοσμίως"
+
+msgid "Live webcams from around the world"
+msgstr "Ζωντανές κάμερες ιστού από όλο τον κόσμο"
+
+msgid "Menu"
+msgstr "Μενού"
+
+msgid "No favorites to export"
+msgstr "Δεν υπάρχουν αγαπημένα προς εξαγωγή"
+
+msgid "No favorites yet"
+msgstr "Δεν υπάρχουν αγαπημένα ακόμα"
+
+msgid "No playlists available"
+msgstr "Καμία διαθέσιμη λίστα αναπαραγωγής"
+
+msgid "No playlists found"
+msgstr "Δεν βρέθηκαν λίστες αναπαραγωγής"
+
+#, fuzzy
+msgid "No valid webcams in playlist"
+msgstr "- Τοπική λίστα καμερών ιστού"
+
+msgid "Play"
+msgstr "Αναπαραγωγή"
+
+msgid "Play/pause not supported for this stream"
+msgstr ""
+
+#, fuzzy
+msgid "Playback error"
+msgstr "Η αναπαραγωγή απέτυχε!"
+
+msgid "Playback failed!"
+msgstr "Η αναπαραγωγή απέτυχε!"
+
+msgid "Powered by Enigma2 and Python"
+msgstr "Με την υποστήριξη των Enigma2 και Python"
+
+msgid "Remove"
+msgstr "Αφαίρεση"
+
+msgid "Remove from favorites"
+msgstr "Αφαίρεση από τα αγαπημένα"
+
+msgid "Removed from favorites"
+msgstr "Αφαιρέθηκε από τα αγαπημένα"
+
+msgid "Removed from favorites: %s"
+msgstr "Αφαιρέθηκε από τα αγαπημένα: %s"
+
+msgid "Select"
+msgstr "Επιλογή"
+
+msgid "Select a valid category"
+msgstr "Επιλέξτε έγκυρη κατηγορία"
+
+msgid "Select a valid location"
+msgstr "Επιλέξτε έγκυρη τοποθεσία"
+
+msgid "Select a valid playlist"
+msgstr "Επιλέξτε έγκυρη λίστα αναπαραγωγής"
+
+msgid "Select a valid webcam"
+msgstr "Επιλέξτε έγκυρη κάμερα ιστού"
+
+msgid "Select an option"
+msgstr "Επιλέξτε μια επιλογή"
+
+#, fuzzy
+msgid "Select language"
+msgstr "Αλλαγή γλώσσας"
+
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+msgid "Settings functionality coming soon!"
+msgstr "Η λειτουργία Ρυθμίσεις έρχεται σύντομα!"
+
+msgid "Technical error in Webcam.pl"
+msgstr ""
+
+msgid "Top Webcams"
+msgstr "Κορυφαίες κάμερες ιστού"
+
+msgid "Update"
+msgstr "Ενημέρωση"
+
+msgid "Update Aborted!"
+msgstr "Η ενημέρωση ακυρώθηκε!"
+
+msgid "Update encountered an error (code: %s)"
+msgstr "Προέκυψε σφάλμα κατά την ενημέρωση (κωδικός: %s)"
+
+msgid "Update plugin"
+msgstr "Ενημέρωση του πρόσθετου"
+
+msgid "Update yt-dlp"
+msgstr "Ενημέρωση yt-dlp"
+
+msgid "Upgrading..."
+msgstr "Αναβάθμιση..."
+
+msgid "User Lists"
+msgstr "Λίστες χρήστη"
+
+msgid "WorldCam v{}"
+msgstr "WorldCam v{}"
+
+msgid "You are already running the latest version: {}"
+msgstr "Χρησιμοποιείτε ήδη την πιο πρόσφατη έκδοση: {}"
+
+#, fuzzy
+msgid "YouTube playback error"
+msgstr "Όλες οι μέθοδοι αναπαραγωγής YouTube απέτυχαν!"
+
+msgid "Your Favorites"
+msgstr "Τα αγαπημένα σας"
+
+msgid "yt-dlp not found. Please install it."
+msgstr ""
+
+msgid "yt-dlp updated successfully!"
+msgstr "Το yt-dlp ενημερώθηκε με επιτυχία!"
+
+#~ msgid "All YouTube methods failed!"
+#~ msgstr "Όλες οι μέθοδοι του YouTube απέτυχαν!"
+
+#~ msgid "Couldn't extract video stream"
+#~ msgstr "Δεν ήταν δυνατή η εξαγωγή της ροής βίντεο"
+
+#, python-format
+#~ msgid ""
+#~ "Error opening settings:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Σφάλμα κατά το άνοιγμα των ρυθμίσεων:\n"
+#~ "%s"
+
+#~ msgid "Error playing YouTube video with proxy!"
+#~ msgstr "Σφάλμα κατά την αναπαραγωγή βίντεο YouTube μέσω proxy!"
+
+#~ msgid "Error playing YouTube video!"
+#~ msgstr "Σφάλμα κατά την αναπαραγωγή βίντεο YouTube!"
+
+#, python-format
+#~ msgid ""
+#~ "Failed to update yt-dlp:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Αποτυχία ενημέρωσης του yt-dlp:\n"
+#~ "%s"
+
+#~ msgid ""
+#~ "Like this plugin?\n"
+#~ "Buy me a coffee by scanning QR code.\n"
+#~ "Your support keeps development alive!\n"
+#~ msgstr ""
+#~ "Σας άρεσε αυτό το πρόσθετο;\n"
+#~ "Κεράστε μου έναν καφέ σκανάροντας τον κωδικό QR.\n"
+#~ "Η υποστήριξή σας κρατά την ανάπτυξη ζωντανή!\n"
+
+#, python-format
+#~ msgid ""
+#~ "New version %s available\n"
+#~ "\n"
+#~ "Changelog: %s\n"
+#~ "\n"
+#~ "Do you want to install it now?"
+#~ msgstr ""
+#~ "Διαθέσιμη νέα έκδοση %s\n"
+#~ "\n"
+#~ "Καταγραφή αλλαγών: %s\n"
+#~ "\n"
+#~ "Θέλετε να την εγκαταστήσετε τώρα;"
+
+#~ msgid ""
+#~ "Player Controls:\n"
+#~ "OK - Show/hide info bar\n"
+#~ "GREEN - Previous webcam\n"
+#~ "YELLOW - Next webcam\n"
+#~ "BLUE - Toggle favorite\n"
+#~ "PLAY/PAUSE - Toggle playback\n"
+#~ "STOP - Stop playback\n"
+#~ "EXIT - Close player\n"
+#~ msgstr ""
+#~ "Χειριστήρια προγράμματος αναπαραγωγής:\n"
+#~ "OK - Εμφάνιση/απόκρυψη μπάρας πληροφοριών\n"
+#~ "GREEN - Προηγούμενη κάμερα ιστού\n"
+#~ "YELLOW - Επόμενη κάμερα ιστού\n"
+#~ "BLUE - Εναλλαγή αγαπημένων\n"
+#~ "PLAY/PAUSE - Εναλλαγή αναπαραγωγής\n"
+#~ "STOP - Διακοπή αναπαραγωγής\n"
+#~ "EXIT - Κλείσιμο προγράμματος αναπαραγωγής\n"
+
+#~ msgid "Playlist file not found or empty"
+#~ msgstr "Το αρχείο λίστας αναπαραγωγής δεν βρέθηκε ή είναι κενό"
+
+#~ msgid ""
+#~ "Unable to fetch version info:\n"
+#~ "{}"
+#~ msgstr ""
+#~ "Αδυναμία λήψης πληροφοριών έκδοσης:\n"
+#~ "{}"
+
+#~ msgid ""
+#~ "Update completed successfully!\n"
+#~ "\n"
+#~ "The plugin will now close."
+#~ msgstr ""
+#~ "Η ενημέρωση ολοκληρώθηκε με επιτυχία!\n"
+#~ "\n"
+#~ "Το πρόσθετο θα κλείσει τώρα."
+
+#, python-format
+#~ msgid ""
+#~ "Update failed:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Η ενημέρωση απέτυχε:\n"
+#~ "%s"
+
+#, python-format
+#~ msgid "WorldCam v%s"
+#~ msgstr "WorldCam v%s"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-version='6.4'
-changelog='Fix Youtube Wrapper'
+version='6.5'
+changelog='Fix Youtube Movie'
 
 TMPPATH=/tmp/WorldCam-install
 FILEPATH=/tmp/WorldCam-main.tar.gz

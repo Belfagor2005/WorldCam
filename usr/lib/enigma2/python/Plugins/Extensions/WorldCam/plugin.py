@@ -646,13 +646,21 @@ class WorldCamMainScreen(WebcamBaseScreen):
     def ask_update(self):
         """Prompt user to update"""
         def ask():
+            msg = _(
+                "New version %(version)s available\n\n"
+                "Changelog:\n%(changelog)s\n\n"
+                "Do you want to install it now?"
+            ) % {
+                "version": self.new_version,
+                "changelog": self.new_changelog
+            }
+
             self.session.openWithCallback(
                 self.install_update,
                 MessageBox,
-                _("New version %s available\n\nChangelog: %s\n\nDo you want to install it now?") %
-                (self.new_version,
-                    self.new_changelog),
-                MessageBox.TYPE_YESNO)
+                msg,
+                MessageBox.TYPE_YESNO
+            )
         self._defer_timer = eTimer()
         self._defer_timer.callback.append(ask)
         self._defer_timer.start(100, True)
@@ -751,13 +759,12 @@ class WorldCamMainScreen(WebcamBaseScreen):
                 str(e), MessageBox.TYPE_ERROR)
 
     def get_about_text(self):
-        """Generate about text"""
-        return (
-            _("WorldCam v{}").format(PLUGIN_VERSION) + "\n\n" +
+        text = (
+            _("WorldCam v%s") % PLUGIN_VERSION + "\n\n" +
             _("Live webcam viewer featuring global locations") + "\n\n" +
             _("Developed by Lululla") + "\n\n" +
             _("Powered by Enigma2 and Python") + "\n\n" +
-            _("GitHub: https://github.com/Belfagor2005/") + "\n" +
+            _("GitHub: %s") % "https://github.com/Belfagor2005/" + "\n" +
             _("Forum support: www.corvoboys.org") + "\n\n" +
             _("Included playlists and sources:") + "\n" +
             _("- Local webcam list") + "\n" +
@@ -766,6 +773,7 @@ class WorldCamMainScreen(WebcamBaseScreen):
             _("- Online Direct and YouTube webcams") + "\n" +
             _("- Other sources")
         )
+        return text
 
     def open_about(self):
         """Open about dialog from menu"""

@@ -48,7 +48,7 @@ from . import _
 from .scraper import SkylineScraper
 from .utils import (
     unquote,
-    is_ytdlp_available,
+    # is_ytdlp_available,
     disable_summary,
     FavoritesManager,
     AspectManager,
@@ -82,8 +82,13 @@ class TvInfoBarShowHide():
 
     def __init__(self):
         self["ShowHideActions"] = ActionMap(
-            ["InfobarShowHideActions"], {
-                "toggleShow": self.OkPressed, "hide": self.hide}, 0)
+            ["InfobarShowHideActions"],
+            {
+                "toggleShow": self.OkPressed,
+                "hide": self.hide
+            },
+            0
+        )
         self.__event_tracker = ServiceEventTracker(
             screen=self, eventmap={
                 iPlayableService.evStart: self.serviceStarted})
@@ -118,24 +123,29 @@ class TvInfoBarShowHide():
 
     def show_help_overlay(self):
         help_text = (
-            "OK = Info | CH-/CH+ = Prev/Next | BLUE = Fav | PLAY/PAUSE = Toggle | STOP = Stop | EXIT = Exit"
+            "OK = Info | CH-/CH+ = Prev/Next | BLUE = Fav | PLAY/PAUSE = Toggle | STOP = Stop | EXIT = Exit | by Lululla"
         )
         self["helpOverlay"].setText(help_text)
         self["helpOverlay"].show()
 
-        self.help_timer = eTimer()
-        self.help_timer.callback.append(self.hide_help_overlay)
+        if not hasattr(self, 'help_timer'):
+            self.help_timer = eTimer()
+            self.help_timer.callback.append(self.hide_help_overlay)
+
         self.help_timer.start(5000, True)
 
     def hide_help_overlay(self):
-        self["helpOverlay"].hide()
+        if self["helpOverlay"].visible:
+            self["helpOverlay"].hide()
 
     def OkPressed(self):
-        if self["helpOverlay"].visible:
-            self.help_timer.stop()
-            self.hide_help_overlay()
-        else:
-            self.show_help_overlay()
+        if self.__state == self.STATE_SHOWN:
+            if self["helpOverlay"].visible:
+                self.help_timer.stop()
+                self.hide_help_overlay()
+            else:
+                self.show_help_overlay()
+
         self.toggleShow()
 
     def __onShow(self):
@@ -144,6 +154,19 @@ class TvInfoBarShowHide():
 
     def __onHide(self):
         self.__state = self.STATE_HIDDEN
+
+    def doShow(self):
+        self.hideTimer.stop()
+        self.show()
+        self.startHideTimer()
+
+    def doHide(self):
+        self.hideTimer.stop()
+        self.hide()
+        if self["helpOverlay"].visible:
+            self.help_timer.stop()
+            self.hide_help_overlay()
+        self.startHideTimer()
 
     def serviceStarted(self):
         if self.execing and config.usage.show_infobar_on_zap.value:
@@ -154,27 +177,21 @@ class TvInfoBarShowHide():
             self.hideTimer.stop()
             self.hideTimer.start(5000, True)
 
-    def doShow(self):
-        self.hideTimer.stop()
-        self.show()
-        self.startHideTimer()
-
     def doTimerHide(self):
         self.hideTimer.stop()
         if self.__state == self.STATE_SHOWN:
             self.hide()
+            if self["helpOverlay"].visible:
+                self.help_timer.stop()
+                self.hide_help_overlay()
 
     def toggleShow(self):
         if not self.skipToggleShow:
             if self.__state == self.STATE_HIDDEN:
-                self.show()
-                self.hideTimer.stop()
+                self.doShow()
                 self.show_help_overlay()
-
             else:
-                self.hide()
-                self.startHideTimer()
-
+                self.doHide()
                 if self["helpOverlay"].visible:
                     self.help_timer.stop()
                     self.hide_help_overlay()
@@ -205,15 +222,7 @@ class TvInfoBarShowHide():
         print(text + " %s\n" % obj)
 
 
-class WorldCamPlayer(
-        InfoBarBase,
-        InfoBarMenu,
-        InfoBarSeek,
-        InfoBarAudioSelection,
-        InfoBarSubtitleSupport,
-        InfoBarNotifications,
-        TvInfoBarShowHide,
-        Screen):
+class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarNotifications, TvInfoBarShowHide, Screen):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -256,8 +265,10 @@ class WorldCamPlayer(
         self["key_blue"] = Label("")
         self["actions"] = ActionMap(
             [
-                "ColorActions", "OkCancelActions",
-                "WorldCamPlayer", "MediaPlayerActions",
+                "ColorActions",
+                "OkCancelActions",
+                "WorldCamPlayer",
+                "MediaPlayerActions",
             ],
 
             {
@@ -353,342 +364,171 @@ class WorldCamPlayer(
     def cancel(self):
         self.close()
 
+    def find_ytdlp(self):
+        """
+        Find yt-dlp executable
+        """
+        ytdlp_paths = [
+            "/usr/bin/yt-dlp",
+            "/usr/local/bin/yt-dlp",
+            "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp/yt-dlp",
+            PLUGIN_PATH + "/yt_dlp/yt-dlp",
+        ]
+
+        for path in ytdlp_paths:
+            try:
+                if exists(path):
+                    # Test if it works
+                    cmd = [path, "--version"]
+                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                    if result.returncode == 0:
+                        self.logger.info("Found working yt-dlp at: " + path)
+                        return path
+            except:
+                continue
+
+        self.logger.error("No working yt-dlp found")
+        return None
+
+    def get_url_type(self, url):
+        """
+        Determine type of URL for logging
+        """
+        url_lower = url.lower()
+        if ".mp4" in url_lower:
+            return "MP4"
+        elif ".m3u8" in url_lower:
+            return "HLS"
+        elif "googlevideo.com/videoplayback" in url:
+            return "Direct Google Video"
+        elif "manifest.googlevideo.com" in url:
+            return "YouTube Manifest"
+        else:
+            return "Unknown"
+
+    def get_stream_with_ytdlp(self, ytdlp_path, video_id):
+        """
+        Get stream URL using yt-dlp with various format options
+        """
+        youtube_url = "https://www.youtube.com/watch?v=" + video_id
+
+        # Format options in order of preference
+        # MP4 formats are most compatible with Enigma2
+        format_options = [
+            ["-g", "-f", "18"],                             # MP4 360p (most compatible)
+            ["-g", "-f", "best[ext=mp4]"],                  # Best MP4
+            ["-g", "-f", "22/37"],                          # MP4 720p/1080p
+            ["-g", "-f", "best[protocol!=m3u8_native]"],    # Avoid HLS
+            ["-g", "-f", "best"],                           # Any format
+        ]
+
+        for fmt in format_options:
+            cmd = [ytdlp_path] + fmt + [youtube_url]
+            self.logger.info("Trying: " + " ".join(cmd))
+
+            try:
+                # Run yt-dlp with timeout
+                result = subprocess.run(
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    timeout=30
+                )
+
+                if result.returncode == 0:
+                    stream_url = result.stdout.strip()
+
+                    # Check if we got a valid URL
+                    if stream_url and stream_url.startswith(("http://", "https://")):
+                        self.logger.info("Successfully extracted stream URL")
+                        self.logger.debug("URL type: " + self.get_url_type(stream_url))
+                        return stream_url
+                else:
+                    # Log error but continue trying other formats
+                    error_msg = result.stderr[:100] if result.stderr else "Unknown error"
+                    self.logger.warning("Format failed: " + error_msg)
+
+            except subprocess.TimeoutExpired:
+                self.logger.warning("Timeout for format: " + " ".join(fmt))
+                continue
+            except Exception as e:
+                self.logger.warning("Error for format: " + str(e))
+                continue
+
+        return None
+
     def start_playback(self):
+        """
+        Start playback with improved error handling
+        """
         try:
             current_webcam = self.get_current_webcam()
-            self.logger.info(
-                "Starting playback for: {0}".format(current_webcam["name"])
-            )
-            self.logger.info(
-                "URL: {0}".format(current_webcam["url"])
-            )
+            self.logger.info("Starting playback for: " + current_webcam["name"])
 
-            stream_url = self.scraper.get_stream_url(current_webcam["url"])
-            if not stream_url:
-                self.logger.error("Could not extract stream URL")
-                self.show_error(_("Could not extract video stream"))
-                return
-
-            self.logger.info("Stream URL: {0}".format(stream_url))
-
-            if "youtube.com" in stream_url or "youtu.be" in stream_url:
+            # Check if it's YouTube
+            url = current_webcam["url"]
+            if "youtube.com" in url or "youtu.be" in url:
                 self.logger.info("Detected YouTube stream")
-                self.play_youtube(stream_url, current_webcam["name"])
+                self.play_youtube(url, current_webcam["name"])
             else:
-                self.logger.info("Detected regular stream")
+                # For other streams
+                stream_url = self.scraper.get_stream_url(url)
+                if not stream_url:
+                    self.logger.error("Could not extract stream URL")
+                    self.show_error(_("Could not extract video stream"))
+                    return
+
+                self.logger.info("Stream URL extracted")
                 self.play_stream(stream_url, current_webcam["name"])
 
         except Exception as e:
-            self.logger.error("Playback error: {0}".format(e))
-            self.show_error("Playback error: {0}".format(e))
+            self.logger.error("Playback error: " + str(e))
+            self.show_error(_("Playback error"))
 
     def play_youtube(self, url, title):
         """
-        Main YouTube playback method.
-        Tries the new system YT-DLP wrapper first, falls back to the internal yt-dlp executable if it fails.
-        """
-        # === PHASE 1: Try the new YT-DLP system wrapper ===
-        self.logger.info("[YouTube Playback] Starting for: " + title)
-        self.logger.info("[YouTube Playback] URL: " + url)
-
-        wrapper_url = "YT-DLP://" + url
-        service = eServiceReference(4097, 0, wrapper_url)
-        service.setName(title)
-
-        try:
-            self.logger.info(
-                "[YouTube Playback] Attempting playback via YT-DLP system wrapper...")
-            play_result = self.session.nav.playService(service)
-            if play_result:
-                self.logger.info(
-                    "[YouTube Playback] Successfully started via YT-DLP wrapper.")
-                return True
-            else:
-                # If playService returns False (but doesn't raise an exception)
-                self.logger.warning(
-                    "[YouTube Playback] YT-DLP wrapper returned False, initiating fallback.")
-                raise Exception("Service playback returned False")
-
-        except Exception as e:
-            self.logger.error(
-                "[YouTube Playback] YT-DLP wrapper failed: " + str(e))
-
-            # === PHASE 2: Fallback to internal yt-dlp executable ===
-            self.logger.info(
-                "[Fallback] Switching to internal yt-dlp executable.")
-            try:
-                # 1. Extract video ID (reusing your existing method)
-                video_id = self.extract_video_id(url)
-                if not video_id:
-                    self.logger.error("[Fallback] Could not extract Video ID.")
-                    return False
-
-                # 2. Construct path to the internal yt-dlp binary
-                ytdlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp/yt-dlp"
-
-                # 3. Build command: '-g' gets the stream URL, '-f b' selects
-                # the best format.
-                command = [
-                    ytdlp_path,
-                    "-g",
-                    "-f",
-                    "b",
-                    "https://www.youtube.com/watch?v=" +
-                    video_id]
-                self.logger.info(
-                    "[Fallback] Executing command: " +
-                    " ".join(command))
-
-                # 4. Execute yt-dlp with a timeout
-                result = subprocess.run(
-                    command, capture_output=True, text=True, timeout=30)
-
-                if result.returncode != 0:
-                    self.logger.error(
-                        "[Fallback] yt-dlp execution failed. STDERR: " +
-                        result.stderr)
-                    return False
-
-                stream_url = result.stdout.strip()
-                if not stream_url:
-                    self.logger.error(
-                        "[Fallback] yt-dlp did not return a stream URL.")
-                    return False
-
-                self.logger.info(
-                    "[Fallback] Stream URL obtained (first 200 chars): " + stream_url[:200] + "...")
-
-                # 5. Play the extracted stream URL using the existing
-                # 'play_stream' method
-                self.play_stream(stream_url, title)
-                self.logger.info(
-                    "[Fallback] Playback started successfully via internal yt-dlp.")
-                return True
-
-            except subprocess.TimeoutExpired:
-                self.logger.error(
-                    "[Fallback] Timeout while waiting for yt-dlp.")
-                return False
-            except FileNotFoundError:
-                self.logger.error(
-                    "[Fallback] Internal yt-dlp executable not found at specified path.")
-                return False
-            except Exception as fallback_e:
-                self.logger.error(
-                    "[Fallback] Unexpected error during fallback: " +
-                    str(fallback_e))
-                return False
-
-    def play_youtubeOld(self, url, title):
-        """
-        Fallback method using yt-dlp from the plugin folder.
-        Replicates the original plugin logic before the wrapper was introduced.
+        Main YouTube playback method
         """
         try:
-            self.logger.info(
-                "[Fallback] Attempting internal yt-dlp for: " + url)
+            self.logger.info("[YouTube Playback] Starting for: " + title)
 
-            # 1. Extract the video ID (like the old method)
+            # Extract video ID
             video_id = self.extract_video_id(url)
             if not video_id:
-                self.logger.error("[Fallback] Unable to extract video ID.")
+                self.logger.error("Could not extract video ID")
+                self.show_error(_("Invalid YouTube URL"))
                 return False
 
-            self.logger.info("[Fallback] Video ID: " + video_id)
+            self.logger.info("Video ID: " + video_id)
 
-            # 2. Build the absolute path to the yt-dlp executable in the plugin
-            # folder
-            ytdlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp/yt-dlp"
-
-            # 3. Prepare the command to extract the stream URL.
-            # Use '-g' to get only the URL, and '-f best' for the best format.
-            command = [
-                ytdlp_path,
-                "-g",
-                "-f",
-                "best",
-                "https://www.youtube.com/watch?v=" +
-                video_id]
-
-            self.logger.info("[Fallback] Running: " + " ".join(command))
-
-            # 4. Run yt-dlp and capture the output (the stream URL)
-            result = subprocess.run(
-                command, capture_output=True, text=True, timeout=30)
-
-            if result.returncode != 0:
-                self.logger.error("[Fallback] yt-dlp error: " + result.stderr)
+            # Try to find yt-dlp
+            ytdlp_path = self.find_ytdlp()
+            if not ytdlp_path:
+                self.logger.error("yt-dlp not found")
+                self.show_error(_("yt-dlp not found. Please install it."))
                 return False
 
-            stream_url = result.stdout.strip()
+            # Extract stream URL using yt-dlp
+            stream_url = self.get_stream_with_ytdlp(ytdlp_path, video_id)
             if not stream_url:
-                self.logger.error("[Fallback] yt-dlp did not return a URL.")
+                self.logger.error("Failed to extract stream URL")
+                self.show_error(_("Could not extract YouTube stream"))
                 return False
 
-            self.logger.info(
-                "[Fallback] Stream URL obtained: " + stream_url[:200] + "...")
-
-            # 5. Play the obtained URL using the existing play_stream method
+            # Play the stream
+            self.logger.info("Playing extracted stream")
             self.play_stream(stream_url, title)
-            self.logger.info("[Fallback] Playback started successfully.")
             return True
 
-        except subprocess.TimeoutExpired:
-            self.logger.error("[Fallback] Timeout while running yt-dlp.")
-            return False
-        except FileNotFoundError:
-            self.logger.error(
-                "[Fallback] yt-dlp executable not found at expected path.")
-            return False
         except Exception as e:
-            self.logger.error("[Fallback] Unexpected error: " + str(e))
-            return False
-
-    def play_with_ytdlp(self, video_id, title):
-        """Primary method using yt-dlp for stream extraction"""
-        self.logger.info("Trying yt-dlp method")
-
-        YoutubeDL, DownloadError = is_ytdlp_available(logger=self.logger)
-        if not YoutubeDL:
-            return False
-
-        try:
-            # Check validity of cookie file
-            cookiefile = "/etc/enigma2/yt_cookies.txt"
-            valid_cookiefile = None
-            if exists(cookiefile):
-                try:
-                    with open(cookiefile, "r") as f:
-                        content = f.read()
-                        if content.count("\t") >= 6:
-                            self.logger.info("Valid cookie file found")
-                            valid_cookiefile = cookiefile
-                        else:
-                            self.logger.warning(
-                                "Invalid cookie file format, skipping")
-                except Exception as e:
-                    self.logger.warning(
-                        "Error reading cookie file: %s", str(e))
-            # Configure yt-dlp options
-            ydl_opts = {
-                "format": "bestvideo[height<=720]+bestaudio/best[height<=720]",
-                "quiet": False,
-                "logger": self.logger,
-                "nocheckcertificate": True,
-                "outtmpl": "",
-                "cachedir": False,
-                "no_warnings": False,
-                "ignoreerrors": False,
-                "geo_bypass": True,
-                "geo_bypass_country": "US",
-                "http_headers": {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-                    "Referer": "https://www.youtube.com/",
-                    "Origin": "https://www.youtube.com"},
-                "extractor_args": {
-                    "youtube": {
-                        "player_client": [
-                            "android_embedded",
-                            "web"],
-                        "player_skip": ["config"]}},
-                "force_ipv4": True,
-                "verbose": True,
-                "compat_opts": ["no-youtube-unavailable-videos"],
-            }
-
-            if valid_cookiefile:
-                ydl_opts["cookiefile"] = valid_cookiefile
-
-            youtube_url = "https://www.youtube.com/watch?v=%s" % video_id
-
-            with YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(youtube_url, download=False)
-
-                if not info:
-                    self.logger.error("No video info returned by yt_dlp")
-                    return False
-
-                if 'url' in info:
-                    stream_url = info['url']
-                elif 'formats' in info:
-                    formats = [
-                        f for f in info['formats'] if f.get(
-                            'protocol', '').startswith('http')]
-
-                    if not formats:
-                        self.logger.error("No HTTP formats available")
-                        return False
-
-                    compatible_formats = [
-                        f for f in formats
-                        if not f.get('acodec', 'none') == 'none'
-                        and not f.get('vcodec', 'none') == 'none'
-                    ]
-
-                    if not compatible_formats:
-                        compatible_formats = formats
-
-                    compatible_formats.sort(
-                        key=lambda f: f.get(
-                            'height', 0), reverse=True)
-                    best_format = compatible_formats[0]
-                    stream_url = best_format['url']
-
-                    self.logger.info("Selected format: " +
-                                     best_format['format_id'] +
-                                     " (" +
-                                     str(best_format.get('width', 0)) +
-                                     "x" +
-                                     str(best_format.get('height', 0)) +
-                                     ")")
-                else:
-                    self.logger.error("No playable formats found")
-                    return False
-
-                self.logger.info("Stream URL: " + stream_url[:200] + "...")
-
-                # Determine service type
-                if '.m3u8' in stream_url.lower():
-                    service_type = 5001  # HLS
-                    self.logger.info("Detected HLS stream")
-                else:
-                    service_type = 4097  # HTTP
-                    self.logger.info("Detected HTTP stream")
-
-                service = eServiceReference(service_type, 0, stream_url)
-                service.setName(title)
-                self.start_service_playback(service)
-                return True
-
-        except DownloadError as e:
-            self.logger.error("yt-dlp download error: " + str(e))
-            return False
-        except Exception as e:
-            self.logger.error("yt-dlp processing error: " + str(e))
-            return False
-
-    def play_with_direct_embed(self, video_id, title):
-        """Fallback method using direct embed URL"""
-        try:
-            self.logger.info("Trying direct embed method")
-            url = "https://www.youtube.com/embed/" + video_id
-
-            # Create headers string
-            headers = (
-                "User-Agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36&"
-                "Referer=https://www.youtube.com/embed/" + video_id + "&"
-                "Origin=https://www.youtube.com")
-
-            service = eServiceReference(4097, 0, url + "|" + headers)
-            service.setName(title)
-            self.start_service_playback(service)
-            return True
-        except Exception as e:
-            self.logger.error("Direct embed method failed: " + str(e))
+            self.logger.error("YouTube playback error: " + str(e))
+            self.show_error(_("YouTube playback error"))
             return False
 
     def extract_video_id(self, url):
-        """Extracts the video ID from a YouTube URL"""
+        """
+        Extract video ID from YouTube URL
+        """
         try:
             decoded_url = unquote(url)
             patterns = [
