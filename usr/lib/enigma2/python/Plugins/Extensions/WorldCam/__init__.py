@@ -14,7 +14,7 @@ from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 
 
-PLUGIN_VERSION = "6.4"
+PLUGIN_VERSION = "6.5"
 PLUGIN_PATH = dirname(__file__)
 DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
 BASE_URL = "https://www.skylinewebcams.com"
