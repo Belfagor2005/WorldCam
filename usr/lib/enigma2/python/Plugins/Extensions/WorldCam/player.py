@@ -145,7 +145,6 @@ class TvInfoBarShowHide():
                 self.hide_help_overlay()
             else:
                 self.show_help_overlay()
-
         self.toggleShow()
 
     def __onShow(self):
@@ -364,6 +363,76 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
     def cancel(self):
         self.close()
 
+    def start_playback(self):
+        try:
+            current_webcam = self.get_current_webcam()
+            self.logger.info(
+                "Starting playback for: {0}".format(current_webcam["name"])
+            )
+            self.logger.info(
+                "URL: {0}".format(current_webcam["url"])
+            )
+
+            # Check if it's YouTube
+            url = current_webcam["url"]
+            stream_url = self.scraper.get_stream_url(url)
+            if not stream_url:
+                self.logger.error("Could not extract stream URL")
+                self.show_error(_("Could not extract video stream"))
+                return
+
+            self.logger.info("Stream URL: {0}".format(stream_url))
+
+            if "youtube.com" in url or "youtu.be" in url:
+                self.logger.info("Detected YouTube stream")
+                self.play_youtube(url, current_webcam["name"])
+            else:
+                # For other streams
+                self.logger.info("Stream URL extracted")
+                self.play_stream(stream_url, current_webcam["name"])
+
+        except Exception as e:
+            self.logger.error("Playback error: " + str(e))
+            self.show_error(_("Playback error"))
+
+    def play_youtube(self, url, title):
+        """
+        Main YouTube playback method
+        """
+        try:
+            self.logger.info("[YouTube Playback] Starting for: " + title)
+            # Extract video ID
+            video_id = self.extract_video_id(url)
+            if not video_id:
+                self.logger.error("Could not extract video ID")
+                self.show_error(_("Invalid YouTube URL"))
+                return False
+
+            self.logger.info("Video ID: " + video_id)
+
+            # Try to find yt-dlp
+            ytdlp_path = self.find_ytdlp()
+            if not ytdlp_path:
+                self.logger.error("yt-dlp not found")
+                self.show_error(_("yt-dlp not found. Please install it."))
+                return False
+
+            # Extract stream URL using yt-dlp
+            stream_url = self.get_stream_with_ytdlp(ytdlp_path, video_id)
+            if not stream_url:
+                self.logger.error("Failed to extract stream URL")
+                self.show_error(_("Could not extract YouTube stream"))
+                return False
+
+            # Play the stream
+            self.logger.info("Playing extracted stream")
+            self.play_stream(stream_url, title)
+            return True
+        except Exception as e:
+            self.logger.error("YouTube playback error: " + str(e))
+            self.show_error(_("YouTube playback error"))
+            return False
+
     def find_ytdlp(self):
         """
         Find yt-dlp executable
@@ -456,74 +525,6 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
                 continue
 
         return None
-
-    def start_playback(self):
-        """
-        Start playback with improved error handling
-        """
-        try:
-            current_webcam = self.get_current_webcam()
-            self.logger.info("Starting playback for: " + current_webcam["name"])
-
-            # Check if it's YouTube
-            url = current_webcam["url"]
-            if "youtube.com" in url or "youtu.be" in url:
-                self.logger.info("Detected YouTube stream")
-                self.play_youtube(url, current_webcam["name"])
-            else:
-                # For other streams
-                stream_url = self.scraper.get_stream_url(url)
-                if not stream_url:
-                    self.logger.error("Could not extract stream URL")
-                    self.show_error(_("Could not extract video stream"))
-                    return
-
-                self.logger.info("Stream URL extracted")
-                self.play_stream(stream_url, current_webcam["name"])
-
-        except Exception as e:
-            self.logger.error("Playback error: " + str(e))
-            self.show_error(_("Playback error"))
-
-    def play_youtube(self, url, title):
-        """
-        Main YouTube playback method
-        """
-        try:
-            self.logger.info("[YouTube Playback] Starting for: " + title)
-
-            # Extract video ID
-            video_id = self.extract_video_id(url)
-            if not video_id:
-                self.logger.error("Could not extract video ID")
-                self.show_error(_("Invalid YouTube URL"))
-                return False
-
-            self.logger.info("Video ID: " + video_id)
-
-            # Try to find yt-dlp
-            ytdlp_path = self.find_ytdlp()
-            if not ytdlp_path:
-                self.logger.error("yt-dlp not found")
-                self.show_error(_("yt-dlp not found. Please install it."))
-                return False
-
-            # Extract stream URL using yt-dlp
-            stream_url = self.get_stream_with_ytdlp(ytdlp_path, video_id)
-            if not stream_url:
-                self.logger.error("Failed to extract stream URL")
-                self.show_error(_("Could not extract YouTube stream"))
-                return False
-
-            # Play the stream
-            self.logger.info("Playing extracted stream")
-            self.play_stream(stream_url, title)
-            return True
-
-        except Exception as e:
-            self.logger.error("YouTube playback error: " + str(e))
-            self.show_error(_("YouTube playback error"))
-            return False
 
     def extract_video_id(self, url):
         """
