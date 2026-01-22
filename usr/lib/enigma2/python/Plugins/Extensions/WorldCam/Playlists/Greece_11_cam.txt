@@ -1,0 +1,11 @@
+Kalathi 1###https://livecameras.gr:30443/live/kala1/chunks.m3u8
+Kalathi 2 Kalamata###https://livecameras.gr:30443/live/kala2/chunks.m3u8
+Kalathi 3 Haikos hotel###https://livecameras.gr:30443/live/kala3/chunks.m3u8
+Kalathi 4 Haikos hotel###https://livecameras.gr:30443/live/kala4/chunks.m3u8
+Kalathi 5 Castle###https://livecameras.gr:30443/live/kala5/chunks.m3u8
+Kalathi 6 pogled na Mesinski zaliv###https://livecameras.gr:30443/live/kala6/chunks.m3u8
+Kalathi 7 Kalamata NE###https://livecameras.gr:30443/live/kala7/chunks.m3u8
+Paliochori panorama###https://livecameras.gr:30443/live/palio1/chunks.m3u8
+Греция 1###https://corfulive.gr/akti_kontogialos/akti_kontogialos.m3u8
+Греция 2###https://corfulive.gr/OasisHotel/OasisHotel.m3u8
+Греция 3###https://corfulive.gr/Akron/Akron.m3u8
