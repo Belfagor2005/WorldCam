@@ -6,9 +6,9 @@ LICENSE = "proprietary"
 
 require conf/license/license-gplv2.inc
 
-inherit gitpkgv
+RDEPENDS:${PN} = "ffmpeg gstplayer exteplayer3 enigma2-plugin-systemplugins-serviceapp"
 
-SRCREV = "${AUTOREV}"
+inherit allarch gitpkgv python3-compileall
 PV = "1.0+git${SRCPV}"
 PKGV = "1.0+git${GITPKGV}"
 VER ="1.0"
@@ -18,8 +18,9 @@ SRC_URI = "git://github.com/Belfagor2005/WorldCam.git;protocol=https;branch=main
 
 S = "${WORKDIR}/git"
 
-FILES_${PN} = "/usr/*"
+FILES:${PN} = "/usr/*"
+FILES:${PN}-src = "${libdir}/enigma2/python/Plugins/Extensions/WorldCam/*.py ${libdir}/enigma2/python/Plugins/Extensions/WorldCam/*/*.py"
 
 do_install() {
-    cp -af --no-preserve=ownership ${S}/usr* ${D}/ 
+    cp -af --no-preserve=ownership ${S}/usr* ${D}/
 }
