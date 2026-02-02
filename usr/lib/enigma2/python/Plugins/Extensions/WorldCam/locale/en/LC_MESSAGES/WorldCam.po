@@ -1,0 +1,288 @@
+# WorldCam translations
+# Copyright (C) 2025 Lululla Team
+# This file is distributed under the same license as the Lululla package.
+# [lululla] <ekekaz@gmail.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WorldCam\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2026-02-02 22:47+0100\n"
+"Last-Translator: root <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "- Local YouTube playlist"
+msgstr "- Local YouTube playlist"
+
+msgid "- Local webcam list"
+msgstr "- Local webcam list"
+
+msgid "- Online Direct and YouTube webcams"
+msgstr "- Online Direct and YouTube webcams"
+
+msgid "- Online webcam list"
+msgstr "- Online webcam list"
+
+msgid "- Other sources"
+msgstr "- Other sources"
+
+msgid "AFRICA"
+msgstr "AFRICA"
+
+msgid "AMERICAS"
+msgstr "AMERICAS"
+
+msgid "About"
+msgstr "About"
+
+msgid "Add to favorites"
+msgstr "Add to favorites"
+
+msgid "Add/Remove"
+msgstr "Add/Remove"
+
+msgid "Added to favorites!"
+msgstr "Added to favorites!"
+
+msgid "Categories"
+msgstr "Categories"
+
+msgid "Change language"
+msgstr "Change language"
+
+msgid "Continents"
+msgstr "Continents"
+
+msgid "Could not extract YouTube stream"
+msgstr "Could not extract YouTube stream"
+
+msgid "Could not extract video stream"
+msgstr "Could not extract video stream"
+
+msgid "Countries"
+msgstr "Countries"
+
+msgid "Country"
+msgstr "Country"
+
+msgid "Developed by Lululla"
+msgstr "Developed by Lululla"
+
+msgid "EUROPE"
+msgstr "EUROPE"
+
+msgid "Empty playlist file"
+msgstr "Empty playlist file"
+
+msgid "Error adding favorite"
+msgstr "Error adding favorite"
+
+msgid "Error changing language"
+msgstr "Error changing language"
+
+msgid "Error loading categories"
+msgstr "Error loading categories"
+
+msgid "Error loading continents"
+msgstr "Error loading continents"
+
+msgid "Error loading countries"
+msgstr "Error loading countries"
+
+msgid "Error loading favorites"
+msgstr "Error loading favorites"
+
+msgid "Error loading locations"
+msgstr "Error loading locations"
+
+msgid "Error loading playlist"
+msgstr "Error loading playlist"
+
+msgid "Error loading playlists"
+msgstr "Error loading playlists"
+
+msgid "Error loading top webcams"
+msgstr "Error loading top webcams"
+
+msgid "Error loading webcams"
+msgstr "Error loading webcams"
+
+msgid "Error opening language selection"
+msgstr "Error opening language selection"
+
+msgid "Error opening playlist"
+msgstr "Error opening playlist"
+
+msgid "Error removing favorite"
+msgstr "Error removing favorite"
+
+msgid "Error switching webcam"
+msgstr "Error switching webcam"
+
+msgid "Exit"
+msgstr "Exit"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Export All to Bouquet"
+msgstr "Export All to Bouquet"
+
+msgid "Export failed:"
+msgstr "Export failed:"
+
+msgid "Favorites"
+msgstr "Favorites"
+
+msgid "Favorites exported successfully! Restart Enigma2 to see them."
+msgstr "Favorites exported successfully! Restart Enigma2 to see them."
+
+msgid "File not found"
+msgstr "File not found"
+
+msgid "Forum support: www.corvoboys.org"
+msgstr "Forum support: www.corvoboys.org"
+
+msgid "GitHub: %s"
+msgstr "GitHub: %s"
+
+msgid "Included playlists and sources:"
+msgstr "Included playlists and sources:"
+
+msgid "Invalid YouTube URL"
+msgstr "Invalid YouTube URL"
+
+msgid "Language changed to %s"
+msgstr "Language changed to %s"
+
+msgid "Live webcam viewer featuring global locations"
+msgstr "Live webcam viewer featuring global locations"
+
+msgid "Live webcams from around the world"
+msgstr "Live webcams from around the world"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "No favorites to export"
+msgstr "No favorites to export"
+
+msgid "No favorites yet"
+msgstr "No favorites yet"
+
+msgid "No playlists available"
+msgstr "No playlists available"
+
+msgid "No playlists found"
+msgstr "No playlists found"
+
+msgid "No valid webcams in playlist"
+msgstr "No valid webcams in playlist"
+
+msgid "Play"
+msgstr "Play"
+
+msgid "Play/pause not supported for this stream"
+msgstr "Play/pause not supported for this stream"
+
+msgid "Playback error"
+msgstr "Playback error"
+
+msgid "Playback failed!"
+msgstr "Playback failed!"
+
+msgid "Powered by Enigma2 and Python"
+msgstr "Powered by Enigma2 and Python"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Remove from favorites"
+msgstr "Remove from favorites"
+
+msgid "Removed from favorites"
+msgstr "Removed from favorites"
+
+msgid "Removed from favorites: %s"
+msgstr "Removed from favorites: %s"
+
+msgid "Select"
+msgstr "Select"
+
+msgid "Select a valid category"
+msgstr "Select a valid category"
+
+msgid "Select a valid location"
+msgstr "Select a valid location"
+
+msgid "Select a valid playlist"
+msgstr "Select a valid playlist"
+
+msgid "Select a valid webcam"
+msgstr "Select a valid webcam"
+
+msgid "Select an option"
+msgstr "Select an option"
+
+msgid "Select language"
+msgstr "Select language"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Settings functionality coming soon!"
+msgstr "Settings functionality coming soon!"
+
+msgid "Technical error in Webcam.pl"
+msgstr "Technical error in Webcam.pl"
+
+msgid "Top Webcams"
+msgstr "Top Webcams"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Update Aborted!"
+msgstr "Update Aborted!"
+
+msgid "Update encountered an error (code: %s)"
+msgstr "Update encountered an error (code: %s)"
+
+msgid "Update plugin"
+msgstr "Update plugin"
+
+msgid "Update yt-dlp"
+msgstr "Update yt-dlp"
+
+msgid "Upgrading..."
+msgstr "Upgrading..."
+
+msgid "User Lists"
+msgstr "User Lists"
+
+msgid "WorldCam v%s"
+msgstr "WorldCam v%s"
+
+msgid "WorldCam v{}"
+msgstr "WorldCam v{}"
+
+msgid "You are already running the latest version: {}"
+msgstr "You are already running the latest version: {}"
+
+msgid "YouTube playback error"
+msgstr "YouTube playback error"
+
+msgid "Your Favorites"
+msgstr "Your Favorites"
+
+msgid "yt-dlp not found. Please install it."
+msgstr "yt-dlp not found. Please install it."
+
+msgid "yt-dlp updated successfully!"
+msgstr "yt-dlp updated successfully!"
