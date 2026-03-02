@@ -171,7 +171,7 @@ def wcListEntry(name, idx, is_category=False, is_country=False, icon=None):
         text_pos, text_size = (110, -12), (950, 90)
     else:
         row_height = 100
-        text_pos, text_size = (100, -6), (500, 50)
+        text_pos, text_size = (100, 4), (500, 50)
 
     # Determine appropriate icon
     if is_category:
