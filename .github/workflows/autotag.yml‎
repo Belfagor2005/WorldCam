@@ -6,18 +6,7 @@ on:
       - usr/lib/enigma2/python/Plugins/Extensions/WorldCam/__init__.py
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      force_version:
-        description: 'Versione forzata (es. 6.7) - lascia vuoto per usare quella dal file'
-        required: false
-        type: string
-      skip_tag_check:
-        description: 'Forza creazione anche se tag esiste (true/false)'
-        required: false
-        default: 'false'
-        type: string
-
+  workflow_dispatch: 
 
 permissions:
   contents: write
