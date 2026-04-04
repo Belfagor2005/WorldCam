@@ -63,15 +63,16 @@ jobs:
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+    
+    - name: Create GitHub Release
+      if: steps.check_tag.outputs.skip != 'true'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TAG="v${{ steps.get_version.outputs.version }}"
+        BODY="## Changes in this release"$'\n\n'"${{ steps.changelog.outputs.changelog }}"
+        gh release create "$TAG" \
+          --title "Release $TAG" \
+          --notes "$BODY" \
+          --target "${{ github.sha }}"
 
-      - name: Create GitHub Release
-        if: steps.check_tag.outputs.skip != 'true'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          name: Release v${{ steps.get_version.outputs.version }}
-          body: |
-            ## Changes in this release
-            ${{ steps.changelog.outputs.changelog }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
