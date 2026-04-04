@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version='6.5'
+version='6.6'
 changelog='Fix Youtube Movie'
 
 TMPPATH=/tmp/WorldCam-install
