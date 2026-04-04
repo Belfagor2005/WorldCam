@@ -64,15 +64,15 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
     
-    - name: Create GitHub Release
-      if: steps.check_tag.outputs.skip != 'true'
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        TAG="v${{ steps.get_version.outputs.version }}"
-        BODY="## Changes in this release"$'\n\n'"${{ steps.changelog.outputs.changelog }}"
-        gh release create "$TAG" \
-          --title "Release $TAG" \
-          --notes "$BODY" \
-          --target "${{ github.sha }}"
+      - name: Create GitHub Release
+        if: steps.check_tag.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="v${{ steps.get_version.outputs.version }}"
+          BODY="## Changes in this release"$'\n\n'"${{ steps.changelog.outputs.changelog }}"
+          gh release create "$TAG" \
+            --title "Release $TAG" \
+            --notes "$BODY" \
+            --target "${{ github.sha }}"
 
