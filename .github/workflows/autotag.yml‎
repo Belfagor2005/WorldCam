@@ -7,6 +7,17 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      force_version:
+        description: 'Versione forzata (es. 6.7) - lascia vuoto per usare quella dal file'
+        required: false
+        type: string
+      skip_tag_check:
+        description: 'Forza creazione anche se tag esiste (true/false)'
+        required: false
+        default: 'false'
+        type: string
+
 
 permissions:
   contents: write
