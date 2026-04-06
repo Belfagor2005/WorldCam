@@ -2,26 +2,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
-"""
-#########################################################
-#                                                       #
-#  Worldcam Player from Web Plugin                      #
-#  Completely rewritten and optimized in version *5.0*  #
-#  Version: 5.8                                         #
-#  Created by Lululla (https://github.com/Belfagor2005) #
-#  License: CC BY-NC-SA 4.0                             #
-#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: "18:30 - 20250703"                    #
-#                                                       #
-#  Credits:                                             #
-#  - Original concept Lululla                           #
-#  Usage of this code without proper attribution        #
-#  is strictly prohibited.                              #
-#  For modifications and redistribution,                #
-#  please maintain this credit header.                  #
-#########################################################
-"""
-# Standard library
 import tempfile
 import zipfile
 from os import makedirs
@@ -29,7 +9,6 @@ from os.path import abspath, dirname, exists, join, splitext, getsize
 from shutil import copyfile, copyfileobj, rmtree
 import requests
 
-# Enigma2 core
 from enigma import (
     RT_HALIGN_LEFT,
     RT_VALIGN_CENTER,
@@ -40,7 +19,6 @@ from enigma import (
     loadPNG,
 )
 
-# Enigma2 components
 from Components.ActionMap import HelpableActionMap
 from Components.Button import Button
 from Components.Label import Label
@@ -48,13 +26,11 @@ from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
 from Components.Pixmap import Pixmap
 
-# Enigma2 screens
 from Screens.ChoiceBox import ChoiceBox
 from Screens.Console import Console
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-# Internal imports
 from . import (
     _,
     AgentRequest,
@@ -83,6 +59,25 @@ from .utils import (
     FavoritesManager
 )
 
+"""
+#########################################################
+#                                                       #
+#  Worldcam Player from Web Plugin                      #
+#  Completely rewritten and optimized in version *5.0*  #
+#  Version: 5.8                                         #
+#  Created by Lululla (https://github.com/Belfagor2005) #
+#  License: CC BY-NC-SA 4.0                             #
+#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
+#  Last Modified: "18:30 - 20250703"                    #
+#                                                       #
+#  Credits:                                             #
+#  - Original concept Lululla                           #
+#  Usage of this code without proper attribution        #
+#  is strictly prohibited.                              #
+#  For modifications and redistribution,                #
+#  please maintain this credit header.                  #
+#########################################################
+"""
 
 try:
     unicode

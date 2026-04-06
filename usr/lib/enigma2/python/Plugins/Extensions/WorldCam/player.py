@@ -2,32 +2,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
-"""
-#########################################################
-#                                                       #
-#  Worldcam Player from Plugin                          #
-#  Completely rewritten and optimized in version *5.0*  #
-#  Version: 5.8                                         #
-#  Created by Lululla (https://github.com/Belfagor2005) #
-#  License: CC BY-NC-SA 4.0                             #
-#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: "18:30 - 20250703"                    #
-#                                                       #
-#  Credits:                                             #
-#  - Original concept Lululla                           #
-#  Usage of this code without proper attribution        #
-#  is strictly prohibited.                              #
-#  For modifications and redistribution,                #
-#  please maintain this credit header.                  #
-#########################################################
-"""
-
 import sys
 import subprocess
 from os import remove
 from os.path import abspath, dirname, exists, join
 from re import IGNORECASE, search
-
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ServiceEventTracker import InfoBarBase, ServiceEventTracker
@@ -53,6 +32,26 @@ from .utils import (
     AspectManager,
     Logger
 )
+
+"""
+#########################################################
+#                                                       #
+#  Worldcam Player from Plugin                          #
+#  Completely rewritten and optimized in version *5.0*  #
+#  Version: 5.8                                         #
+#  Created by Lululla (https://github.com/Belfagor2005) #
+#  License: CC BY-NC-SA 4.0                             #
+#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
+#  Last Modified: "18:30 - 20250703"                    #
+#                                                       #
+#  Credits:                                             #
+#  - Original concept Lululla                           #
+#  Usage of this code without proper attribution        #
+#  is strictly prohibited.                              #
+#  For modifications and redistribution,                #
+#  please maintain this credit header.                  #
+#########################################################
+"""
 
 PLUGIN_PATH = dirname(__file__)
 screen_width = getDesktop(0).size().width()

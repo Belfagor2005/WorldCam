@@ -1,27 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
-
-"""
-#########################################################
-#                                                       #
-#  Worldcam Cam Scraper from Plugin                     #
-#  Completely rewritten and optimized in version *5.0*  #
-#  Version: 5.8                                         #
-#  Created by Lululla (https://github.com/Belfagor2005) #
-#  License: CC BY-NC-SA 4.0                             #
-#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: "18:30 - 20250703"                    #
-#                                                       #
-#  Credits:                                             #
-#  - Original concept Lululla                           #
-#  Usage of this code without proper attribution        #
-#  is strictly prohibited.                              #
-#  For modifications and redistribution,                #
-#  please maintain this credit header.                  #
-#########################################################
-"""
-
 from enigma import eTimer
 from re import search, escape, findall, DOTALL, IGNORECASE  # , sub
 from os import listdir
@@ -43,6 +22,26 @@ from .utils import (
     # urlunparse,
     # safe_encode_url
 )
+
+"""
+#########################################################
+#                                                       #
+#  Worldcam Cam Scraper from Plugin                     #
+#  Completely rewritten and optimized in version *5.0*  #
+#  Version: 5.8                                         #
+#  Created by Lululla (https://github.com/Belfagor2005) #
+#  License: CC BY-NC-SA 4.0                             #
+#  https://creativecommons.org/licenses/by-nc-sa/4.0    #
+#  Last Modified: "18:30 - 20250703"                    #
+#                                                       #
+#  Credits:                                             #
+#  - Original concept Lululla                           #
+#  Usage of this code without proper attribution        #
+#  is strictly prohibited.                              #
+#  For modifications and redistribution,                #
+#  please maintain this credit header.                  #
+#########################################################
+"""
 
 try:
     unicode

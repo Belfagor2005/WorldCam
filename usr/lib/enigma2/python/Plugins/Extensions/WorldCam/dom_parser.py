@@ -1,6 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+from re import findall, finditer, compile, sub, DOTALL, match as re_match, S, I, M
+from collections import namedtuple
+from sys import version_info
+
+
 """
    Based on Parsedom for XBMC plugins
    Copyright (C) 2010-2011 Tobias Ussing And Henrik Mosgaard Jensen
@@ -18,10 +24,6 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from __future__ import absolute_import
-from re import findall, finditer, compile, sub, DOTALL, match as re_match, S, I, M
-from collections import namedtuple
-from sys import version_info
 
 is_py2 = version_info[0] == 2
 is_py3 = version_info[0] == 3

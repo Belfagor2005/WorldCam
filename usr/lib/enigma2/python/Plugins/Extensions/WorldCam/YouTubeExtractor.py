@@ -1,6 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
+
+import json
+import requests
+import urllib.parse
+from bs4 import BeautifulSoup
+from re import sub, search, IGNORECASE, DOTALL
+from .utils import quote
+
 """
 #########################################################
 #                                                       #
@@ -19,15 +27,6 @@ from __future__ import absolute_import, print_function
 #  please maintain this credit header.                  #
 #########################################################
 """
-
-# import re
-import json
-import requests
-import urllib.parse
-# import time
-from bs4 import BeautifulSoup
-from re import sub, search, IGNORECASE, DOTALL
-from .utils import quote
 
 
 class YouTubeExtractor:

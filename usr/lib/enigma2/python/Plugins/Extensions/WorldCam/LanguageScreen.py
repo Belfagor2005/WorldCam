@@ -2,6 +2,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
+from Components.ActionMap import ActionMap
+from Components.Sources.List import List
+from Screens.Screen import Screen
+from Tools.LoadPixmap import LoadPixmap
+
+from . import _
+from .utils import get_flag_path
+
 """
 #########################################################
 #                                                       #
@@ -20,14 +28,6 @@ from __future__ import absolute_import, print_function
 #  please maintain this credit header.                  #
 #########################################################
 """
-
-from Components.ActionMap import ActionMap
-from Components.Sources.List import List
-from Screens.Screen import Screen
-from Tools.LoadPixmap import LoadPixmap
-
-from . import _
-from .utils import get_flag_path
 
 
 def LanguageEntryComponent(name, code):

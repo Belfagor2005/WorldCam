@@ -1,6 +1,26 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
+
+from json import load, dump
+from os import makedirs, remove, listdir
+from os.path import abspath, dirname, exists, isfile, join
+from re import search, sub
+import sys
+import html
+from time import strftime
+from threading import Lock
+from urllib.error import HTTPError, URLError
+from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse, urlunparse
+from urllib.request import Request, urlopen
+from enigma import eDVBDB, eEnv
+from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
+import logging
+from logging.handlers import RotatingFileHandler
+
+from . import _, BASE_URL
+from . import checkdependencies
+
 """
 #########################################################
 #                                                       #
@@ -19,27 +39,6 @@ from __future__ import absolute_import, print_function
 #  please maintain this credit header.                  #
 #########################################################
 """
-
-from json import load, dump
-from os import makedirs, remove, listdir
-from os.path import abspath, dirname, exists, isfile, join
-
-from re import search, sub
-import sys
-import html
-from time import strftime
-from threading import Lock
-from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse, urlunparse
-from urllib.request import Request, urlopen
-from enigma import eDVBDB, eEnv
-from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
-import logging
-from logging.handlers import RotatingFileHandler
-
-from . import _, BASE_URL
-from . import checkdependencies
-
 
 try:
     from Components.AVSwitch import AVSwitch

@@ -1,6 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from random import randrange, choice
+from re import sub, compile, findall, S, M
+from sys import version_info
+import time
+import six
+from six.moves import urllib_request, urllib_error
+from six.moves import xrange
+from six.moves.html_parser import HTMLParser
+from six.moves.urllib.parse import urlparse, quote_plus
+
 '''
     Tulip routine libraries, based on lambda's lamlib
     Author Twilight0
@@ -18,16 +28,6 @@
         You should have received a copy of the GNU General Public License
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-
-from random import randrange, choice
-from re import sub, compile, findall, S, M
-from sys import version_info
-import time
-import six
-from six.moves import urllib_request, urllib_error
-from six.moves import xrange
-from six.moves.html_parser import HTMLParser
-from six.moves.urllib.parse import urlparse, quote_plus
 
 
 try:
