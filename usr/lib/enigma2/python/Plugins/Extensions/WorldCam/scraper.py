@@ -22,8 +22,6 @@ from __future__ import absolute_import, print_function
 #########################################################
 """
 
-__author__ = "Lululla"
-
 from enigma import eTimer
 from re import search, escape, findall, DOTALL, IGNORECASE  # , sub
 from os import listdir

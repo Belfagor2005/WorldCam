@@ -20,7 +20,6 @@ from __future__ import absolute_import, print_function
 #  please maintain this credit header.                  #
 #########################################################
 """
-__author__ = "Lululla"
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
