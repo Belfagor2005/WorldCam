@@ -26,5 +26,5 @@ jobs:
 
       - name: Run Ruff
         run: |
-          cd src
+          cd usr/lib/enigma2/python/Plugins/Extensions/WorldCam
           ruff check .
