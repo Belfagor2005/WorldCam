@@ -21,8 +21,6 @@ from __future__ import absolute_import, print_function
 #  please maintain this credit header.                  #
 #########################################################
 """
-__author__ = "Lululla"
-
 # Standard library
 import tempfile
 import zipfile
