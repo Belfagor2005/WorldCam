@@ -6,6 +6,17 @@ require conf/license/license-gplv2.inc
 require conf/python/python3-compileall.inc
 
 RDEPENDS:${PN} = "ffmpeg gstplayer exteplayer3 enigma2-plugin-systemplugins-serviceapp streamlink enigma2-plugin-extensions-streamlinkwrapper enigma2-plugin-extensions-ytdlpwrapper enigma2-plugin-extensions-ytdlwrapper gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav python3-youtube-dl python3-yt-dlp python3-requests"
+DEPENDS = " \
+    enigma2-plugin-extensions-streamlinkwrapper \
+    enigma2-plugin-extensions-ytdlpwrapper \
+    enigma2-plugin-extensions-ytdlwrapper \
+"
+
+DEPENDS = " \
+    enigma2-plugin-extensions-streamlinkwrapper \
+    enigma2-plugin-extensions-ytdlpwrapper \
+    enigma2-plugin-extensions-ytdlwrapper \
+"
 
 inherit gittag
 
