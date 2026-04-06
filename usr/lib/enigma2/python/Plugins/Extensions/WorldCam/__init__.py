@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-__author__ = "Lululla"
-__email__ = "ekekaz@gmail.com"
-__copyright__ = 'Copyright (c) 2024 Lululla'
-__license__ = "GPL-v2"
-__version__ = "6.7"
 
 import gettext
 from os import environ
@@ -14,6 +9,12 @@ from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 
 
+__author__ = "Lululla"
+__email__ = "ekekaz@gmail.com"
+__copyright__ = 'Copyright (c) 2024 Lululla'
+__license__ = "GPL-v2"
+__version__ = "6.7"
+
 PLUGIN_VERSION = __version__
 PLUGIN_PATH = dirname(__file__)
 DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
@@ -21,7 +22,6 @@ BASE_URL = "https://www.skylinewebcams.com"
 
 PluginLanguageDomain = 'WorldCam'
 PluginLanguagePath = 'Extensions/WorldCam/locale'
-# AgentRequest = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.3'
 AgentRequest = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 OPR/66.0.3515.115'
 installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9Xb3JsZENhbS9tYWluL2luc3RhbGxlci5zaA=='
 developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvV29ybGRDYW0='
