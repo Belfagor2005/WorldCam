@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
+# import re
 import json
 import requests
 import urllib.parse
+# import time
 from bs4 import BeautifulSoup
 from re import sub, search, IGNORECASE, DOTALL
 from .utils import quote
@@ -27,6 +29,7 @@ from .utils import quote
 #  please maintain this credit header.                  #
 #########################################################
 """
+__author__ = "Lululla"
 
 
 class YouTubeExtractor:

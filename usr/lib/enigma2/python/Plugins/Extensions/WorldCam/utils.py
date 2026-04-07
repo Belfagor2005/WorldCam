@@ -5,18 +5,20 @@ from __future__ import absolute_import, print_function
 from json import load, dump
 from os import makedirs, remove, listdir
 from os.path import abspath, dirname, exists, isfile, join
+
 from re import search, sub
 import sys
 import html
 from time import strftime
 from threading import Lock
-from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse, urlunparse
-from urllib.request import Request, urlopen
+from urllib.parse import quote, urlparse, urlunparse
 from enigma import eDVBDB, eEnv
 from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
-import logging
-from logging.handlers import RotatingFileHandler
+
+try:
+    from Components.AVSwitch import AVSwitch
+except ImportError:
+    from Components.AVSwitch import eAVControl as AVSwitch
 
 from . import _, BASE_URL
 from . import checkdependencies
@@ -39,11 +41,7 @@ from . import checkdependencies
 #  please maintain this credit header.                  #
 #########################################################
 """
-
-try:
-    from Components.AVSwitch import AVSwitch
-except ImportError:
-    from Components.AVSwitch import eAVControl as AVSwitch
+__author__ = "Lululla"
 
 # Python version flags
 PY2 = sys.version_info[0] == 2
@@ -720,8 +718,6 @@ language_flag_mapping = {
     "il": "🇮🇱",  # Israele
     "mv": "🇲🇻",  # Maldive
     "lk": "🇱🇰",  # Sri Lanka
-    "th": "🇹🇭",  # Thailandia
-    "tr": "🇹🇷",  # Turchia
     "vn": "🇻🇳",  # Vietnam
 }
 

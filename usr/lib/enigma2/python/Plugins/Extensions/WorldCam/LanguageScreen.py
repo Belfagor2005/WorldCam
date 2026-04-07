@@ -28,6 +28,7 @@ from .utils import get_flag_path
 #  please maintain this credit header.                  #
 #########################################################
 """
+__author__ = "Lululla"
 
 
 def LanguageEntryComponent(name, code):

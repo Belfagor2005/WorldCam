@@ -7,6 +7,7 @@ import subprocess
 from os import remove
 from os.path import abspath, dirname, exists, join
 from re import IGNORECASE, search
+
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ServiceEventTracker import InfoBarBase, ServiceEventTracker
@@ -52,6 +53,7 @@ from .utils import (
 #  please maintain this credit header.                  #
 #########################################################
 """
+__author__ = "Lululla"
 
 PLUGIN_PATH = dirname(__file__)
 screen_width = getDesktop(0).size().width()
@@ -443,13 +445,16 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
         ]
 
         for path in ytdlp_paths:
-            if exists(path):
-                # Test if it works
-                cmd = [path, "--version"]
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-                if result.returncode == 0:
-                    self.logger.info("Found working yt-dlp at: " + path)
-                    return path
+            try:
+                if exists(path):
+                    # Test if it works
+                    cmd = [path, "--version"]
+                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                    if result.returncode == 0:
+                        self.logger.info("Found working yt-dlp at: " + path)
+                        return path
+            except:
+                continue
 
         self.logger.error("No working yt-dlp found")
         return None

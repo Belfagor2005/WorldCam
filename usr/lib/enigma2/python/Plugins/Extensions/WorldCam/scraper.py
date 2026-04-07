@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
+
 from enigma import eTimer
 from re import search, escape, findall, DOTALL, IGNORECASE  # , sub
 from os import listdir
@@ -23,6 +24,12 @@ from .utils import (
     # safe_encode_url
 )
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
+
 """
 #########################################################
 #                                                       #
@@ -43,11 +50,7 @@ from .utils import (
 #########################################################
 """
 
-try:
-    unicode
-except NameError:
-    unicode = str
-
+__author__ = "Lululla"
 
 BASE_URL = "https://www.skylinewebcams.com"
 

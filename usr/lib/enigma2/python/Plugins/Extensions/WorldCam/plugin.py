@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
+# Standard library
 import tempfile
 import zipfile
 from os import makedirs
@@ -9,6 +10,7 @@ from os.path import abspath, dirname, exists, join, splitext, getsize
 from shutil import copyfile, copyfileobj, rmtree
 import requests
 
+# Enigma2 core
 from enigma import (
     RT_HALIGN_LEFT,
     RT_VALIGN_CENTER,
@@ -19,6 +21,7 @@ from enigma import (
     loadPNG,
 )
 
+# Enigma2 components
 from Components.ActionMap import HelpableActionMap
 from Components.Button import Button
 from Components.Label import Label
@@ -26,11 +29,13 @@ from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
 from Components.Pixmap import Pixmap
 
+# Enigma2 screens
 from Screens.ChoiceBox import ChoiceBox
 from Screens.Console import Console
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
+# Internal imports
 from . import (
     _,
     AgentRequest,
@@ -59,6 +64,12 @@ from .utils import (
     FavoritesManager
 )
 
+
+try:
+    unicode
+except NameError:
+    unicode = str
+
 """
 #########################################################
 #                                                       #
@@ -78,11 +89,7 @@ from .utils import (
 #  please maintain this credit header.                  #
 #########################################################
 """
-
-try:
-    unicode
-except NameError:
-    unicode = str
+__author__ = "Lululla"
 
 
 # Initialize logger

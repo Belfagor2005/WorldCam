@@ -6,7 +6,6 @@ from re import findall, finditer, compile, sub, DOTALL, match as re_match, S, I,
 from collections import namedtuple
 from sys import version_info
 
-
 """
    Based on Parsedom for XBMC plugins
    Copyright (C) 2010-2011 Tobias Ussing And Henrik Mosgaard Jensen
@@ -24,7 +23,6 @@ from sys import version_info
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 is_py2 = version_info[0] == 2
 is_py3 = version_info[0] == 3
 
