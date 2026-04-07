@@ -349,7 +349,7 @@ def _getDOMElements(item, name, attrs):
             test = range(len(lst))
             test.reverse()
             for i in test:  # Delete anything missing from the next list.
-                if not lst[i] in lst2:
+                if lst[i] not in lst2:
                     del (lst[i])
 
     if len(lst) == 0 and attrs == {}:

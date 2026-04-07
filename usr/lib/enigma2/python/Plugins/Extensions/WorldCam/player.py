@@ -445,16 +445,13 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
         ]
 
         for path in ytdlp_paths:
-            try:
-                if exists(path):
-                    # Test if it works
-                    cmd = [path, "--version"]
-                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-                    if result.returncode == 0:
-                        self.logger.info("Found working yt-dlp at: " + path)
-                        return path
-            except:
-                continue
+            if exists(path):
+                # Test if it works
+                cmd = [path, "--version"]
+                result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                if result.returncode == 0:
+                    self.logger.info("Found working yt-dlp at: " + path)
+                    return path
 
         self.logger.error("No working yt-dlp found")
         return None
