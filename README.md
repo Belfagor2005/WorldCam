@@ -1,5 +1,4 @@
-![](https://komarev.com/ghpvc/?username=Belfagor2005) [![Python package](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml)
-
+![](https://komarev.com/ghpvc/?username=Belfagor2005) [![Python package](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/WorldCam/actions/workflows/pylint.yml)[![Ruff Status](https://github.com/Belfagor2005/WorldCam/actions/workflows/ruff.yml/badge.svg)](https://github.com/Belfagor2005/WorldCam/actions/workflows/ruff.yml)
 # 🌍 You WorldCam Plugin v6.7
 
 **WorldCam** is an Enigma2 plugin that allows you to view live webcams from around the world,  
