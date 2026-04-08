@@ -34,6 +34,7 @@ from .utils import (
     Logger
 )
 
+
 """
 #########################################################
 #                                                       #
@@ -374,8 +375,7 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
             )
 
             # Check if it's YouTube
-            url = current_webcam["url"]
-            stream_url = self.scraper.get_stream_url(url)
+            stream_url = self.scraper.get_stream_url(current_webcam["url"])
             if not stream_url:
                 self.logger.error("Could not extract stream URL")
                 self.show_error(_("Could not extract video stream"))
@@ -383,12 +383,11 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
 
             self.logger.info("Stream URL: {0}".format(stream_url))
 
-            if "youtube.com" in url or "youtu.be" in url:
+            if "youtube.com" in stream_url or "youtu.be" in stream_url:
                 self.logger.info("Detected YouTube stream")
-                self.play_youtube(url, current_webcam["name"])
+                self.play_youtube(stream_url, current_webcam["name"])
             else:
-                # For other streams
-                self.logger.info("Stream URL extracted")
+                self.logger.info("Detected regular stream")
                 self.play_stream(stream_url, current_webcam["name"])
 
         except Exception as e:
