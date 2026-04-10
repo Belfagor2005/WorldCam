@@ -1,11 +1,44 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import absolute_import
 import gettext
+from sys import version_info
 from os import environ
 from os.path import join, dirname
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
+
+# ========== CHECK AND INSTALL REQUESTS IF MISSING ==========
+def ensure_requests():
+    """
+    Check if 'requests' module is available. If not, try to install it via opkg.
+    Compatible with Python 2 and Python 3.
+    Returns the requests module if successful, otherwise None.
+    """
+    try:
+        import requests
+        return requests
+    except ImportError:
+        print("[WorldCam] requests module not found, attempting to install...")
+        # Detect Python version
+        py_version = "python3" if version_info[0] == 3 else "python"
+        cmd = 'opkg update && opkg install {}-requests'.format(py_version)
+        try:
+            import subprocess
+            subprocess.call(cmd, shell=True)
+            # Try to import again after installation
+            import requests
+            print("[WorldCam] requests successfully installed.")
+            return requests
+        except Exception as e:
+            print("[WorldCam] Installation failed: {}".format(e))
+            return None
+
+# Run the check at plugin startup (optional)
+_requests = ensure_requests()
+if _requests is None:
+    print("[WorldCam] WARNING: 'requests' not available. Network functions may fail.")
+# ============================================================
+
 __author__ = "Lululla"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
