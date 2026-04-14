@@ -8,10 +8,33 @@ from os.path import abspath, dirname, exists, isfile, join
 
 from re import search, sub
 import sys
-import html
 from time import strftime
 from threading import Lock
-from urllib.parse import quote, urlparse, urlunparse
+try:
+    import html
+except ImportError:
+    try:
+        import HTMLParser as _HTMLParser
+    except ImportError:
+        _HTMLParser = None
+
+    class _HtmlCompat(object):
+        @staticmethod
+        def unescape(value):
+            if _HTMLParser is not None:
+                return _HTMLParser.HTMLParser().unescape(value)
+            return value
+
+    html = _HtmlCompat()
+
+try:
+    from urllib.parse import quote, unquote, urlparse, urlunparse
+    from urllib.request import Request, urlopen
+    from urllib.error import HTTPError, URLError
+except ImportError:
+    from urllib import quote, unquote
+    from urlparse import urlparse, urlunparse
+    from urllib2 import Request, urlopen, HTTPError, URLError
 from enigma import eDVBDB, eEnv
 from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
 
