@@ -831,40 +831,10 @@ def get_flag_path(country_code=None):
     return paths_to_check[-1]  # Default icon
 
 
-# # Esempio di utilizzo
-# country_name = "Deutschland"
-# country_code = get_country_code(country_name)  # Restituisce 'de'
-# flag_path = get_flag_path(country_code)  # Restituisce .../countries/de.png
-
-
-"""
-def get_country_code(country_name):
-    cleaned_name = country_name.lower()
-
-    # Exact match
-    if cleaned_name in country_codes:
-        return country_codes[cleaned_name]
-
-    # Match without special characters
-    normalized_name = sub(r"[^a-z0-9]", "", cleaned_name)
-    for name, code in country_codes.items():
-        normalized_key = sub(r"[^a-z0-9]", "", name.lower())
-        if normalized_name == normalized_key:
-            return code
-
-    # Partial match for longer names
-    for name, code in country_codes.items():
-        if cleaned_name in name.lower() or name.lower() in cleaned_name:
-            return code
-
-    # Match after removing common prefixes/suffixes
-    base_name = sub(r"\b(region|province|state|of|the|and)\b", "", cleaned_name).strip()
-    for name, code in country_codes.items():
-        if base_name in name.lower():
-            return code
-
-    return None
-"""
+# Example usage
+# country_name = "Germany"
+# country_code = get_country_code(country_name)  # Returns 'de'
+# flag_path = get_flag_path(country_code)  # Returns .../countries/de.png
 
 
 class VideoURLHelper:
