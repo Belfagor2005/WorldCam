@@ -1,4 +1,4 @@
-![](https://komarev.com/ghpvc/?username=OwnerPlugins) [![Python package](https://github.com/OwnerPlugins/WorldCam/actions/workflows/pylint.yml/badge.svg)](https://github.com/OwnerPlugins/WorldCam/actions/workflows/pylint.yml)
+![](https://komarev.com/ghpvc/?username=Belfagor2005) [![Python package](https://github.com/OwnerPlugins/WorldCam/actions/workflows/pylint.yml/badge.svg)](https://github.com/OwnerPlugins/WorldCam/actions/workflows/pylint.yml)
 [![Ruff Status](https://github.com/OwnerPlugins/WorldCam/actions/workflows/ruff.yml/badge.svg)](https://github.com/OwnerPlugins/WorldCam/actions/workflows/ruff.yml)
 # 🌍 You WorldCam Plugin v6.7
 
