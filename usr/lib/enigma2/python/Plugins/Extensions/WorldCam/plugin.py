@@ -66,7 +66,6 @@ from .utils import (
 #                                                       #
 #  Worldcam Player from Web Plugin                      #
 #  Completely rewritten and optimized in version *5.0*  #
-#  Version: 5.8                                         #
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
