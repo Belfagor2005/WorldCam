@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function
 
 import sys
 import subprocess
 from os import remove
-from os.path import abspath, dirname, exists, join
+from os.path import abspath, dirname, exists
 from re import IGNORECASE, search
+
+from urllib.parse import unquote
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
@@ -26,12 +27,10 @@ from Screens.Screen import Screen
 from . import _
 from .scraper import SkylineScraper
 from .utils import (
-    unquote,
-    # is_ytdlp_available,
-    disable_summary,
-    FavoritesManager,
     AspectManager,
-    Logger
+    FavoritesManager,
+    Logger,
+    disable_summary,
 )
 
 
@@ -59,18 +58,9 @@ __author__ = "Lululla"
 PLUGIN_PATH = dirname(__file__)
 screen_width = getDesktop(0).size().width()
 
-yt_dlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp"
-if yt_dlp_path not in sys.path:
-    sys.path.append(yt_dlp_path)
-
 plugin_dir = dirname(abspath(__file__))
 if plugin_dir not in sys.path:
     sys.path.append(plugin_dir)
-
-
-yt_dlp_subdir = join(plugin_dir, 'yt_dlp')
-if yt_dlp_subdir not in sys.path:
-    sys.path.append(yt_dlp_subdir)
 
 
 class TvInfoBarShowHide():
@@ -439,8 +429,6 @@ class WorldCamPlayer(InfoBarBase, InfoBarMenu, InfoBarSeek, InfoBarAudioSelectio
         ytdlp_paths = [
             "/usr/bin/yt-dlp",
             "/usr/local/bin/yt-dlp",
-            "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp/yt-dlp",
-            PLUGIN_PATH + "/yt_dlp/yt-dlp",
         ]
 
         for path in ytdlp_paths:

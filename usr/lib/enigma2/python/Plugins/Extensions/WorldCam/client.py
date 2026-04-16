@@ -3,13 +3,12 @@
 
 from random import randrange, choice
 from re import sub, compile, findall, S, M
-from sys import version_info
 import time
-import six
-from six.moves import urllib_request, urllib_error
-from six.moves import xrange
-from six.moves.html_parser import HTMLParser
-from six.moves.urllib.parse import urlparse, quote_plus
+from urllib import error as urllib_error, request as urllib_request
+from html import unescape as html_unescape
+from urllib.parse import quote_plus, urlparse
+import http.cookiejar as cookielib
+from urllib.request import ProxyHandler
 
 '''
     Tulip routine libraries, based on lambda's lamlib
@@ -35,14 +34,6 @@ try:
     requester = requests.get
 except ImportError:
     requester = None
-
-if six.PY3:
-    unicode = str
-    import http.cookiejar as cookielib
-    from urllib.request import ProxyHandler
-elif six.PY2:
-    import cookielib
-    from urllib2 import ProxyHandler
 
 
 def request(
@@ -76,9 +67,6 @@ def request(
         urllib_request.install_opener(opener)
 
     try:
-
-        if version_info < (2, 7, 9):
-            raise Exception()
 
         import ssl
         ssl_context = ssl.create_default_context()
@@ -226,8 +214,8 @@ def parseDOM(html, name=u"", attrs=None, ret=False):
             html = [html.decode("utf-8")]  # Replace with chardet thingy
         except BaseException:
             html = [html]
-    elif isinstance(html, unicode):
-        html = [html]
+    elif isinstance(html, bytes):
+        html = [html.decode("utf-8", "replace")]
     elif not isinstance(html, list):
         return u""
 
@@ -363,7 +351,7 @@ def _getDOMElements(item, name, attrs):
 def replaceHTMLCodes(txt):
 
     txt = sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
-    txt = HTMLParser().unescape(txt)
+    txt = html_unescape(txt)
     txt = txt.replace("&quot;", "\"")
     txt = txt.replace("&amp;", "&")
     txt = txt.replace("&#38;", "&")
@@ -373,7 +361,7 @@ def replaceHTMLCodes(txt):
 
 def randomagent():
 
-    BR_VERS = [['%s.0' % i for i in xrange(18,
+    BR_VERS = [['%s.0' % i for i in range(18,
                                            43)],
                ['37.0.2062.103',
                 '37.0.2062.120',
@@ -483,7 +471,7 @@ def cfcookie(netloc, ua, timeout):
                 decryptVal = int(
                     eval(str(decryptVal) + sections[0][-1] + str(line_val)))
 
-        answer = decryptVal + len(urlparse.urlparse(netloc).netloc)
+        answer = decryptVal + len(urlparse(netloc).netloc)
 
         query = '%s/cdn-cgi/l/chk_jschl?jschl_vc=%s&jschl_answer=%s' % (
             netloc, jschl, answer)

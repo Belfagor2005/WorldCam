@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
 import gettext
-from sys import version_info
 from os import environ
 from os.path import join, dirname
 from Components.Language import language
@@ -11,7 +9,6 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 def ensure_requests():
     """
     Check if 'requests' module is available. If not, try to install it via opkg.
-    Compatible with Python 2 and Python 3.
     Returns the requests module if successful, otherwise None.
     """
     try:
@@ -19,9 +16,7 @@ def ensure_requests():
         return requests
     except ImportError:
         print("[WorldCam] requests module not found, attempting to install...")
-        # Detect Python version
-        py_version = "python3" if version_info[0] == 3 else "python"
-        cmd = 'opkg update && opkg install {}-requests'.format(py_version)
+        cmd = "opkg update && opkg install python3-requests"
         try:
             import subprocess
             subprocess.call(cmd, shell=True)
@@ -43,7 +38,7 @@ __author__ = "Lululla"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "GPL-v2"
-__version__ = "6.7"
+__version__ = "6.8"
 
 PLUGIN_VERSION = __version__
 PLUGIN_PATH = dirname(__file__)

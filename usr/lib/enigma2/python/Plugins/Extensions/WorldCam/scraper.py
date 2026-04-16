@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function
 
 from enigma import eTimer
 from re import search, escape, findall, DOTALL, IGNORECASE  # , sub
@@ -11,23 +10,10 @@ from os.path import (
     join,
 )
 
-from .utils import (
-    Logger,
-    Request,
-    HTTPError,
-    URLError,
-    urlopen,
-    # clean_html_entities
-    # quote,
-    # urlparse,
-    # urlunparse,
-    # safe_encode_url
-)
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
-try:
-    unicode
-except NameError:
-    unicode = str
+from .utils import Logger
 
 
 """
@@ -82,8 +68,8 @@ BASE_URL = "https://www.skylinewebcams.com"
 
 def safe_log_string(text):
     """Safely encode strings for logging"""
-    if isinstance(text, unicode):
-        return text.encode('utf-8', 'replace')
+    if isinstance(text, bytes):
+        return text.decode("utf-8", "replace")
     return text
 
 

@@ -1,10 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 from re import findall, finditer, compile, sub, DOTALL, match as re_match, S, I, M
 from collections import namedtuple
-from sys import version_info
 
 """
    Based on Parsedom for XBMC plugins
@@ -23,37 +21,8 @@ from sys import version_info
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-is_py2 = version_info[0] == 2
-is_py3 = version_info[0] == 3
-
-
-try:
-    unicode
-except NameError:
-    unicode = str
-
-try:
-    basestring
-except NameError:
-    basestring = str
-
-try:
-    xrange
-except NameError:
-    xrange = range
-
-
-if is_py2:
-    def bytes(b, encoding="ascii"):
-        return str(b)
-
-    def iteritems(d, **kw):
-        return d.iteritems(**kw)
-
-elif is_py3:
-
-    def iteritems(d, **kw):
-        return iter(d.items(**kw))
+def iteritems(d, **kw):
+    return iter(d.items(**kw))
 
 
 DomMatch = namedtuple('DOMMatch', ['attrs', 'content'])
@@ -103,9 +72,9 @@ def __get_dom_elements(item, name, attrs):
         this_list = findall(pattern, item, M | S | I)
     else:
         last_list = None
-        for key, value in attrs.iteritems():
+        for key, value in iteritems(attrs):
             value_is_regex = isinstance(value, re_type)
-            value_is_str = isinstance(value, basestring)
+            value_is_str = isinstance(value, str)
             pattern = r'''(<{tag}[^>]*\s{key}=(?P<delim>['"])(.*?)(?P=delim)[^>]*>)'''.format(
                 tag=name, key=key)
             re_list = findall(pattern, item, M | S | I)
@@ -159,16 +128,12 @@ def parse_dom(html, name='', attrs=None, req=False, exclude_comments=False):
         attrs = {}
     name = name.strip()
 
-    if isinstance(html, unicode) or isinstance(html, DomMatch):
+    if isinstance(html, DomMatch):
         html = [html]
+    elif isinstance(html, bytes):
+        html = [html.decode("utf-8", "replace")]
     elif isinstance(html, str):
-        try:
-            html = [html.decode("utf-8")]  # Replace with chardet thingy
-        except BaseException:
-            try:
-                html = [html.decode("utf-8", "replace")]
-            except BaseException:
-                html = [html]
+        html = [html]
     elif not isinstance(html, list):
         return ''
 

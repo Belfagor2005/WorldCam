@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function
 
 from json import load, dump
 from os import makedirs, remove, listdir
@@ -10,31 +9,9 @@ from re import search, sub
 import sys
 from time import strftime
 from threading import Lock
-try:
-    import html
-except ImportError:
-    try:
-        import HTMLParser as _HTMLParser
-    except ImportError:
-        _HTMLParser = None
+import html
 
-    class _HtmlCompat(object):
-        @staticmethod
-        def unescape(value):
-            if _HTMLParser is not None:
-                return _HTMLParser.HTMLParser().unescape(value)
-            return value
-
-    html = _HtmlCompat()
-
-try:
-    from urllib.parse import quote, unquote, urlparse, urlunparse
-    from urllib.request import Request, urlopen
-    from urllib.error import HTTPError, URLError
-except ImportError:
-    from urllib import quote, unquote
-    from urlparse import urlparse, urlunparse
-    from urllib2 import Request, urlopen, HTTPError, URLError
+from urllib.parse import quote, urlparse, urlunparse
 from enigma import eDVBDB, eEnv
 from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
 
@@ -66,23 +43,14 @@ from . import checkdependencies
 """
 __author__ = "Lululla"
 
-# Python version flags
-PY2 = sys.version_info[0] == 2
-PY3 = sys.version_info.major >= 3
-PY34 = sys.version_info[0:2] >= (3, 4)
-PY39 = sys.version_info[0:2] >= (3, 9)
+# Python 3 runtime
+PY3 = True
 
 # Plugin path and resources
 PLUGIN_PATH = dirname(__file__)
 COUNTRY_CODES_FILE = {}
 COUNTRY_CODES_FILE = join(PLUGIN_PATH, "cowntry_code.json")
 DEFAULT_ICON = join(PLUGIN_PATH, "pics/webcam.png")
-
-# Compatibility alias for unicode
-try:
-    unicode
-except NameError:
-    unicode = str
 
 
 def reload_services():
@@ -151,19 +119,19 @@ class Logger:
                 print(f"Log write failed: {str(e)}")
 
     def debug(self, message, *args):
-        self.log("DEBUG", message % args if args else message)
+        self.log(message % args if args else message, "DEBUG")
 
     def info(self, message, *args):
-        self.log("INFO", message % args if args else message)
+        self.log(message % args if args else message, "INFO")
 
     def warning(self, message, *args):
-        self.log("WARNING", message % args if args else message)
+        self.log(message % args if args else message, "WARNING")
 
     def error(self, message, *args):
-        self.log("ERROR", message % args if args else message)
+        self.log(message % args if args else message, "ERROR")
 
     def critical(self, message, *args):
-        self.log("ERROR", "CRITICAL: " + (message % args if args else message))
+        self.log("CRITICAL: " + (message % args if args else message), "ERROR")
 
     def exception(self, message, *args):
         exc_info = self._get_exception_info()
@@ -206,12 +174,12 @@ FAVORITES_FILE = join(eEnv.resolve("${sysconfdir}/enigma2"), "favorites.json")
 # Update the safe_encode_url function
 def safe_encode_url(url):
     """Safely encode URLs with non-ASCII characters"""
-    if isinstance(url, unicode):
+    if isinstance(url, str):
         try:
             parsed = urlparse(url)
-            netloc = parsed.netloc.encode('idna')
-            path = quote(parsed.path.encode('utf-8'), safe='/-_')
-            query = quote(parsed.query.encode('utf-8'), safe='=&')
+            netloc = parsed.netloc.encode('idna').decode('ascii')
+            path = quote(parsed.path, safe='/-_')
+            query = quote(parsed.query, safe='=&')
             return urlunparse((
                 parsed.scheme,
                 netloc,
@@ -222,7 +190,7 @@ def safe_encode_url(url):
             ))
         except Exception:
             # Fallback to UTF-8 encoding
-            return url.encode('utf-8', 'ignore')
+            return url.encode('utf-8', 'ignore').decode('utf-8', 'ignore')
     return url
 
 
@@ -540,12 +508,10 @@ def _sort_by_name(items):
 
 
 def get_ytdlp_path():
-    """Return valid yt-dlp import path or None if not found"""
+    """Return the system yt-dlp executable path if available."""
     possible_paths = [
         "/usr/bin/yt-dlp",
         "/usr/local/bin/yt-dlp",
-        "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp",
-        join(dirname(abspath(__file__)), 'yt_dlp')
     ]
 
     for path in possible_paths:
@@ -555,82 +521,17 @@ def get_ytdlp_path():
 
 
 def is_ytdlp_available(logger=None):
-    """
-    Check availability of yt_dlp module in different locations with fallbacks.
-    Returns:
-        tuple: (YoutubeDL, DownloadError) if found, otherwise (None, None)
-    """
-
-    # 1. Try system-wide import
+    """Return (YoutubeDL, DownloadError) from the system installation."""
     try:
         from yt_dlp import YoutubeDL
         from yt_dlp.utils import DownloadError
         if logger:
             logger.info("Using system-wide yt_dlp")
         return YoutubeDL, DownloadError
-    except ImportError:
-        pass
-
-    # 2. Try plugin's hardcoded path
-    try:
-        yt_dlp_path = "/usr/lib/enigma2/python/Plugins/Extensions/WorldCam/yt_dlp"
-        if yt_dlp_path not in sys.path:
-            sys.path.append(yt_dlp_path)
-        from yt_dlp import YoutubeDL
-        from yt_dlp.utils import DownloadError
-        if logger:
-            logger.info("Using plugin's hardcoded path yt_dlp")
-        return YoutubeDL, DownloadError
-    except ImportError:
-        pass
-
-    # 3. Try plugin's relative path
-    try:
-        plugin_dir = dirname(abspath(__file__))
-        if plugin_dir not in sys.path:
-            sys.path.append(plugin_dir)
-        from yt_dlp import YoutubeDL
-        from yt_dlp.utils import DownloadError
-        if logger:
-            logger.info("Using plugin's relative path yt_dlp")
-        return YoutubeDL, DownloadError
-    except ImportError:
-        pass
-
-    # 4. Try plugin's yt_dlp subdirectory
-    try:
-        plugin_dir = dirname(abspath(__file__))
-        yt_dlp_subdir = join(plugin_dir, 'yt_dlp')
-        if yt_dlp_subdir not in sys.path:
-            sys.path.append(yt_dlp_subdir)
-        from yt_dlp import YoutubeDL
-        from yt_dlp.utils import DownloadError
-        if logger:
-            logger.info("Using plugin's yt_dlp subdirectory")
-        return YoutubeDL, DownloadError
-    except ImportError:
-        pass
-
-    # 5. Try imp fallback
-    try:
-        import imp
-        plugin_dir = dirname(abspath(__file__))
-        yt_dlp_path = join(plugin_dir, 'yt_dlp', '__init__.py')
-
-        if exists(yt_dlp_path):
-            yt_dlp_module = imp.load_source('yt_dlp', yt_dlp_path)
-            if logger:
-                logger.info("Using imp-loaded yt_dlp")
-            return yt_dlp_module.YoutubeDL, Exception  # fallback generico
     except Exception as e:
         if logger:
-            logger.error("imp fallback failed: %s", str(e))
-
-    # All methods failed
-    if logger:
-        logger.error("yt_dlp not found in any location")
-    return None, None
-
+            logger.error("System yt_dlp import failed: %s", str(e))
+        return None, None
 
 def extract_list_item(current, logger=None):
     """

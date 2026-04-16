@@ -1,14 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function
 
 # Standard library
-import tempfile
-import zipfile
 from os import makedirs
-from os.path import abspath, dirname, exists, join, splitext, getsize
-from shutil import copyfile, copyfileobj, rmtree
-import requests
+from os.path import exists, join, splitext, getsize
+
+from urllib.request import Request, urlopen
 
 # Enigma2 core
 from enigma import (
@@ -49,8 +46,8 @@ from .player import WorldCamPlayer
 from .scraper import SkylineScraper
 from .utils import (
     CATEGORY_ICONS,
+    FavoritesManager,
     Logger,
-    Request,
     b64decoder,
     disable_summary,
     get_category_icon,
@@ -60,15 +57,9 @@ from .utils import (
     get_system_language,
     language_flag_mapping,
     set_current_language,
-    urlopen,
-    FavoritesManager
 )
 
 
-try:
-    unicode
-except NameError:
-    unicode = str
 
 """
 #########################################################
@@ -467,7 +458,6 @@ class WorldCamMainScreen(WebcamBaseScreen):
             self.menu_items = [
                 (_("Change language"), self.change_language),
                 (_("Update plugin"), self.update_plugin),
-                (_("Update yt-dlp"), self.update_yt_dlp_from_github),
                 (_("Settings"), self.open_settings),
                 (_("About"), self.open_about),
             ]
@@ -701,62 +691,6 @@ class WorldCamMainScreen(WebcamBaseScreen):
                 _("Update encountered an error (code: %s)") % str(result),
                 MessageBox.TYPE_ERROR
             )
-
-    def update_yt_dlp_from_github(self):
-        """Update yt-dlp from GitHub"""
-        self.logger.info("Starting yt-dlp update...")
-        try:
-            # Setup temp directory
-            tmp_dir = tempfile.mkdtemp(prefix="worldcam_yt_dlp_update_")
-            zip_path = join(tmp_dir, "yt_dlp.zip")
-
-            # Download yt-dlp
-            repo_url = "https://github.com/yt-dlp/yt-dlp/archive/refs/heads/master.zip"
-            response = requests.get(repo_url, stream=True, timeout=30)
-            response.raise_for_status()
-            with open(zip_path, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-
-            with zipfile.ZipFile(zip_path, "r") as zip_ref:
-                root_folder = zip_ref.namelist()[0].split("/")[0]
-                self.logger.info(
-                    f"Extracting 'yt_dlp' folder from {root_folder}")
-
-                plugin_folder = dirname(abspath(__file__))
-                dest_yt_dlp_folder = join(plugin_folder, "yt_dlp")
-
-                # Remove old version
-                if exists(dest_yt_dlp_folder):
-                    self.logger.info("Removing old yt_dlp folder")
-                    rmtree(dest_yt_dlp_folder)
-
-                # Extract new version
-                for member in zip_ref.namelist():
-                    if member.startswith(f"{root_folder}/yt_dlp/"):
-                        rel_path = member[len(root_folder) + 1:]
-                        target_path = join(plugin_folder, rel_path)
-                        if member.endswith("/"):
-                            makedirs(target_path, exist_ok=True)
-                        else:
-                            with zip_ref.open(member) as source, open(target_path, "wb") as target:
-                                copyfileobj(source, target)
-
-            # Cleanup
-            rmtree(tmp_dir)
-            init_mod = join(PLUGIN_PATH, "__init__-mod-ytl-extractor.py")
-            init_extract = join(PLUGIN_PATH, "yt_dlp/extractor/__init__.py")
-            copyfile(init_mod, init_extract)
-            self.logger.info("yt-dlp update completed successfully")
-            self.defer_message(
-                _("yt-dlp updated successfully!"),
-                MessageBox.TYPE_INFO)
-
-        except Exception as e:
-            self.logger.error(f"Failed to update yt-dlp: {str(e)}")
-            self.defer_message(
-                _("Failed to update yt-dlp:\n%s") %
-                str(e), MessageBox.TYPE_ERROR)
 
     def get_about_text(self):
         text = (

@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function
-
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
 from Screens.Screen import Screen
