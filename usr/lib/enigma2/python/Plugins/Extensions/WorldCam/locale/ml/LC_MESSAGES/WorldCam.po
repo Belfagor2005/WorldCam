@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- പ്രാദേശിക YouTube പ്ലേലിസ്റ്റ്"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- പ്രാദേശിക വെബ്‌ക്യാം ലിസ്റ്റ്"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- ഓൺലൈൻ ഡയറക്ടും YouTube വെബ്‌ക്യാമുകളും"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- ഓൺലൈൻ വെബ്‌ക്യാം ലിസ്റ്റ്"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- മറ്റ് ഉറവിടങ്ങൾ"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "ആഫ്രിക്ക"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "അമേരിക്ക"
 
 msgid "About"
-msgstr ""
+msgstr "കുറിച്ച്"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവയിലേക്ക് ചേർക്കുക"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "ചേർക്കുക/നീക്കം ചെയ്യുക"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവയിലേക്ക് ചേർത്തു!"
 
 msgid "Categories"
-msgstr ""
+msgstr "വിഭാഗങ്ങൾ"
 
 msgid "Change language"
-msgstr ""
+msgstr "ഭാഷ മാറ്റുക"
 
 msgid "Continents"
-msgstr ""
+msgstr "ഭൂഖണ്ഡങ്ങൾ"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube സ്ട്രീം എക്‌സ്‌ട്രാക്‌റ്റുചെയ്യാനായില്ല"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "വീഡിയോ സ്ട്രീം എക്‌സ്‌ട്രാക്‌റ്റുചെയ്യാനായില്ല"
 
 msgid "Countries"
-msgstr ""
+msgstr "രാജ്യങ്ങൾ"
 
 msgid "Country"
-msgstr ""
+msgstr "രാജ്യം"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "ലുലുല്ല വികസിപ്പിച്ചെടുത്തത്"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "യൂറോപ്പ്"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "പ്ലേലിസ്റ്റ് ഫയൽ ശൂന്യമാക്കുക"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടത് ചേർക്കുന്നതിൽ പിശക്"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "ഭാഷ മാറ്റുന്നതിൽ പിശക്"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "വിഭാഗങ്ങൾ ലോഡുചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "ഭൂഖണ്ഡങ്ങൾ ലോഡുചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "രാജ്യങ്ങൾ ലോഡുചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവ ലോഡുചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "ലൊക്കേഷനുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "പ്ലേലിസ്റ്റ് ലോഡുചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "പ്ലേലിസ്റ്റുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "മികച്ച വെബ്‌ക്യാമുകൾ ലോഡുചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "വെബ്‌ക്യാമുകൾ ലോഡുചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "ഭാഷ തിരഞ്ഞെടുക്കൽ തുറക്കുന്നതിൽ പിശക്"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "പ്ലേലിസ്റ്റ് തുറക്കുന്നതിൽ പിശക്"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടത് നീക്കം ചെയ്യുന്നതിൽ പിശക്"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "വെബ്‌ക്യാം മാറുന്നതിൽ പിശക്"
 
 msgid "Exit"
-msgstr ""
+msgstr "പുറത്ത്"
 
 msgid "Export"
-msgstr ""
+msgstr "കയറ്റുമതി"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "എല്ലാം പൂച്ചെണ്ടിലേക്ക് കയറ്റുമതി ചെയ്യുക"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "കയറ്റുമതി പരാജയപ്പെട്ടു:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവ"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവ വിജയകരമായി കയറ്റുമതി ചെയ്തു! അവ കാണുന്നതിന് Enigma2 പുനരാരംഭിക്കുക."
 
 msgid "File not found"
-msgstr ""
+msgstr "ഫയൽ കണ്ടില്ല"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "ഫോറം പിന്തുണ: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "ഉൾപ്പെടുത്തിയ പ്ലേലിസ്റ്റുകളും ഉറവിടങ്ങളും:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "അസാധുവായ YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "ഭാഷ %s എന്നാക്കി മാറ്റി"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "ആഗോള ലൊക്കേഷനുകൾ ഫീച്ചർ ചെയ്യുന്ന തത്സമയ വെബ്‌ക്യാം വ്യൂവർ"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "ലോകമെമ്പാടുമുള്ള തത്സമയ വെബ്‌ക്യാമുകൾ"
 
 msgid "Menu"
-msgstr ""
+msgstr "മെനു"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "കയറ്റുമതി ചെയ്യാൻ പ്രിയപ്പെട്ടവ ഒന്നുമില്ല"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "ഇതുവരെ പ്രിയങ്കരങ്ങളൊന്നുമില്ല"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "പ്ലേലിസ്റ്റുകളൊന്നും ലഭ്യമല്ല"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "പ്ലേലിസ്റ്റുകളൊന്നും കണ്ടെത്തിയില്ല"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "പ്ലേലിസ്റ്റിൽ സാധുവായ വെബ്‌ക്യാമുകളൊന്നുമില്ല"
 
 msgid "Play"
-msgstr ""
+msgstr "കളിക്കുക"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "ഈ സ്ട്രീമിനായി പ്ലേ/താൽക്കാലികമായി നിർത്തൽ പിന്തുണയ്ക്കുന്നില്ല"
 
 msgid "Playback error"
-msgstr ""
+msgstr "പ്ലേബാക്ക് പിശക്"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "പ്ലേബാക്ക് പരാജയപ്പെട്ടു!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2, Python എന്നിവയാൽ പ്രവർത്തിക്കുന്നത്"
 
 msgid "Remove"
-msgstr ""
+msgstr "നീക്കം ചെയ്യുക"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവയിൽ നിന്ന് നീക്കം ചെയ്യുക"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവയിൽ നിന്ന് നീക്കംചെയ്‌തു"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "പ്രിയപ്പെട്ടവയിൽ നിന്ന് നീക്കംചെയ്‌തു: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "തിരഞ്ഞെടുക്കുക"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "സാധുവായ ഒരു വിഭാഗം തിരഞ്ഞെടുക്കുക"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "സാധുവായ ഒരു ലൊക്കേഷൻ തിരഞ്ഞെടുക്കുക"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "സാധുവായ ഒരു പ്ലേലിസ്റ്റ് തിരഞ്ഞെടുക്കുക"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "സാധുവായ ഒരു വെബ്‌ക്യാം തിരഞ്ഞെടുക്കുക"
 
 msgid "Select an option"
-msgstr ""
+msgstr "ഒരു ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക"
 
 msgid "Select language"
-msgstr ""
+msgstr "ഭാഷ തിരഞ്ഞെടുക്കുക"
 
 msgid "Settings"
-msgstr ""
+msgstr "ക്രമീകരണങ്ങൾ"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "ക്രമീകരണ പ്രവർത്തനം ഉടൻ വരുന്നു!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl-ൽ സാങ്കേതിക പിശക്"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "മുൻനിര വെബ്‌ക്യാമുകൾ"
 
 msgid "Update"
-msgstr ""
+msgstr "അപ്ഡേറ്റ്"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "അപ്ഡേറ്റ് നിർത്തലാക്കി!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "അപ്‌ഡേറ്റിൽ ഒരു പിശക് നേരിട്ടു (കോഡ്: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "പ്ലഗിൻ അപ്ഡേറ്റ് ചെയ്യുക"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "നവീകരിക്കുന്നു..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "ഉപയോക്തൃ പട്ടികകൾ"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "നിങ്ങൾ ഇതിനകം ഏറ്റവും പുതിയ പതിപ്പ് പ്രവർത്തിപ്പിക്കുന്നു: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube പ്ലേബാക്ക് പിശക്"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "നിങ്ങളുടെ പ്രിയപ്പെട്ടവ"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp കണ്ടെത്തിയില്ല. ദയവായി ഇത് ഇൻസ്റ്റാൾ ചെയ്യുക."

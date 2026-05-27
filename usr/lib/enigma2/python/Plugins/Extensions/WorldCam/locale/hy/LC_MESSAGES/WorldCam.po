@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Տեղական YouTube երգացանկ"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Տեղական վեբ-տեսախցիկի ցուցակ"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Առցանց Direct և YouTube վեբ-տեսախցիկներ"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Առցանց վեբ-տեսախցիկի ցուցակ"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Այլ աղբյուրներ"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "ԱՖՐԻԿԱ"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "ԱՄԵՐԻԿԱ"
 
 msgid "About"
-msgstr ""
+msgstr "Մոտ"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Ավելացնել ընտրյալների մեջ"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Ավելացնել/հեռացնել"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Ավելացվեց ընտրյալների մեջ:"
 
 msgid "Categories"
-msgstr ""
+msgstr "Կատեգորիաներ"
 
 msgid "Change language"
-msgstr ""
+msgstr "Փոխել լեզուն"
 
 msgid "Continents"
-msgstr ""
+msgstr "Մայրցամաքներ"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Չհաջողվեց հանել YouTube-ի հոսքը"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Չհաջողվեց հանել տեսանյութի հոսքը"
 
 msgid "Countries"
-msgstr ""
+msgstr "Երկրներ"
 
 msgid "Country"
-msgstr ""
+msgstr "Երկիր"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Մշակված է Lululla-ի կողմից"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ԵՎՐՈՊԱ"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Դատարկ երգացանկի ֆայլ"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Չհաջողվեց ավելացնել ընտրյալը"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Լեզուն փոխելիս սխալ առաջացավ"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել կատեգորիաները"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել մայրցամաքները"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել երկրները"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել ընտրյալները"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել վայրերը"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել երգացանկը"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել երգացանկերը"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Չհաջողվեց բեռնել լավագույն վեբ-տեսախցիկները"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Վեբ-տեսախցիկները բեռնելիս սխալ առաջացավ"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Չհաջողվեց բացել լեզվի ընտրությունը"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Չհաջողվեց բացել երգացանկը"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Սիրվածը հեռացնելիս սխալ առաջացավ"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Վեբ-տեսախցիկի միացման սխալ"
 
 msgid "Exit"
-msgstr ""
+msgstr "Ելք"
 
 msgid "Export"
-msgstr ""
+msgstr "Արտահանում"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Արտահանել բոլորը դեպի Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Չհաջողվեց արտահանել."
 
 msgid "Favorites"
-msgstr ""
+msgstr "Ֆավորիտներ"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Ընտրյալները հաջողությամբ արտահանվեցին: Վերագործարկեք Enigma2-ը՝ դրանք տեսնելու համար:"
 
 msgid "File not found"
-msgstr ""
+msgstr "Ֆայլը չի ​​գտնվել"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Ֆորումի աջակցություն՝ www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub՝ %s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Ներառված երգացանկեր և աղբյուրներ."
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Անվավեր YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Լեզուն փոխվել է %s-ի"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Ուղիղ վեբ-տեսախցիկ դիտող՝ գլոբալ վայրերով"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Ուղիղ տեսախցիկներ ամբողջ աշխարհից"
 
 msgid "Menu"
-msgstr ""
+msgstr "Մենյու"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Արտահանման ֆավորիտներ չկան"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Դեռևս ֆավորիտներ չկան"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Տեսացանկ չկա"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Տեսացանկեր չեն գտնվել"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Երգացանկում վավեր վեբ-տեսախցիկներ չկան"
 
 msgid "Play"
-msgstr ""
+msgstr "Խաղալ"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Նվագարկել/դադարեցնել այս հեռարձակումը չի աջակցվում"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Նվագարկման սխալ"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Նվագարկումը ձախողվեց:"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Powered by Enigma2 և Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Հեռացնել"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Հեռացնել ընտրյալներից"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Հեռացված է ընտրյալներից"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Հեռացված է ընտրյալներից՝ %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Ընտրել"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Ընտրեք վավեր կատեգորիա"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Ընտրեք վավեր վայր"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Ընտրեք վավեր երգացանկ"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Ընտրեք վավեր վեբ տեսախցիկ"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Ընտրեք տարբերակ"
 
 msgid "Select language"
-msgstr ""
+msgstr "Ընտրեք լեզուն"
 
 msgid "Settings"
-msgstr ""
+msgstr "Կարգավորումներ"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Կարգավորումների ֆունկցիոնալությունը շուտով:"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Տեխնիկական սխալ Webcam.pl-ում"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Լավագույն վեբ-տեսախցիկներ"
 
 msgid "Update"
-msgstr ""
+msgstr "Թարմացնել"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Թարմացումը ընդհատվեց:"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Թարմացումը սխալ առաջացավ (կոդ՝ %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Թարմացրեք փլագինը"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Թարմացվում է..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Օգտագործողների ցուցակներ"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Դուք արդեն աշխատում եք վերջին տարբերակը՝ {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube-ի նվագարկման սխալ"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Ձեր ընտրյալները"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp-ը չի գտնվել: Խնդրում ենք տեղադրել այն:"

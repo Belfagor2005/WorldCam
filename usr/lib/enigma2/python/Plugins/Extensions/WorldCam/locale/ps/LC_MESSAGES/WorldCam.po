@@ -17,271 +17,265 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- ځایی یوټیوب پلی لیست"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- د محلي ویب کیم لیست"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- آنلاین مستقیم او یوټیوب ویب کیمونه"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- د آنلاین ویب کیم لیست"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- نورې سرچینې"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "افریقا"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "امریکا"
 
 msgid "About"
-msgstr ""
+msgstr "په اړه"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "په خوښیو کې اضافه کړئ"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "اضافه / لیرې کول"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "په خوښیو کې اضافه شوي!"
 
 msgid "Categories"
-msgstr ""
+msgstr "کټګورۍ"
 
 msgid "Change language"
-msgstr ""
+msgstr "ژبه بدله کړه"
 
 msgid "Continents"
-msgstr ""
+msgstr "براعظمونه"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "د یوټیوب جریان نشي ایستل کیدی"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "د ویډیو جریان نشي ایستل کیدی"
 
 msgid "Countries"
-msgstr ""
+msgstr "هیوادونه"
 
 msgid "Country"
-msgstr ""
+msgstr "هیواد"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "د لولولا لخوا رامینځته شوی"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "اروپا"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "د پلی لیست خالي فایل"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "د خوښې په اضافه کولو کې تېروتنه"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "د ژبې په بدلولو کې تېروتنه"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "د کټګوریو په بارولو کې تېروتنه"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "د براعظمونو په بارولو کې تېروتنه"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "د هیوادونو په بارولو کې تېروتنه"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "د خوښې په بارولو کې تېروتنه"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "د ځایونو په بارولو کې تېروتنه"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "د پلی لیست په پورته کولو کې تېروتنه"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "د پلی لیستونو په پورته کولو کې تېروتنه"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "د غوره ویب کیمونو په پورته کولو کې تېروتنه"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "د ویب کیمونو په بارولو کې تېروتنه"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "د ژبې انتخاب پرانستلو کې تېروتنه"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "د پلی لیست په پرانیستلو کې تېروتنه"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "د خوښې لرې کولو کې تېروتنه"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "د ویب کیم په بدلولو کې تېروتنه"
 
 msgid "Exit"
-msgstr ""
+msgstr "وتل"
 
 msgid "Export"
-msgstr ""
+msgstr "صادرول"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "ټول ګلدان ته صادر کړئ"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "صادرات ناکام شول:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "د خوښې وړ"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "خوښې په بریالیتوب سره صادرې شوې! د دوی لیدلو لپاره Enigma2 بیا پیل کړئ."
 
 msgid "File not found"
-msgstr ""
+msgstr "دوتنه ونه موندل شوه"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "د فورم ملاتړ: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "شامل شوي پلی لیستونه او سرچینې:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "ناسم یوټیوب URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "ژبه په %s بدله شوه"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "ژوندی ویب کیم لیدونکی چې نړیوال موقعیتونه وړاندې کوي"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "د نړۍ له ګوټ ګوټ څخه ژوندی ویب کیمونه"
 
 msgid "Menu"
-msgstr ""
+msgstr "مینو"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "د صادرولو لپاره هیڅ خوښې نشته"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "تر اوسه هیڅ خوښ نه دي"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "هیڅ پلی لیست شتون نلري"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "هیڅ پلی لیست ونه موندل شو"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "په پلی لیست کې هیڅ معتبر ویب کیمونه نشته"
 
 msgid "Play"
-msgstr ""
+msgstr "لوبه وکړئ"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "د دې جریان لپاره پلی/پاز ملاتړ نه کوي"
 
 msgid "Playback error"
-msgstr ""
+msgstr "د پلې بیک تېروتنه"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "پلې بیک ناکام شو!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "د Enigma2 او Python لخوا پرمخ وړل کیږي"
 
 msgid "Remove"
-msgstr ""
+msgstr "لرې کړئ"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "د خوښې څخه لرې کړئ"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "د خوښې څخه لرې شوی"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "د خوښې څخه لرې شوی: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "وټاکئ"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "د اعتبار وړ کټګورۍ غوره کړئ"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "یو معتبر ځای وټاکئ"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "یو معتبر پلی لیست غوره کړئ"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "یو معتبر ویب کیم غوره کړئ"
 
 msgid "Select an option"
-msgstr ""
+msgstr "یو اختیار غوره کړئ"
 
 msgid "Select language"
-msgstr ""
+msgstr "ژبه غوره کړئ"
 
 msgid "Settings"
-msgstr ""
+msgstr "ترتیبات"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "د تنظیماتو فعالیت ډیر ژر راځي!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "په Webcam.pl کې تخنیکي تېروتنه"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "غوره ویب کیمونه"
 
 msgid "Update"
-msgstr ""
+msgstr "تازه کول"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "تازه کول لغوه شوي!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "تازه کول د یوې تېروتنې سره مخ شول (کوډ: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "پلگ ان تازه کړئ"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "لوړول..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "د کاروونکو لیست"
 
 msgid "WorldCam v%s"
-msgstr ""
+msgstr "ورلډ کیم v%s"
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "ورلډ کیم v{}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "تاسو لا دمخه وروستۍ نسخه پرمخ وړئ: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "د یوټیوب پلې بیک تېروتنه"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "ستاسو د خوښې وړ"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ونه موندل شو. مهرباني وکړئ دا نصب کړئ."

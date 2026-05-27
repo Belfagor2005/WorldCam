@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lokalni YouTube popis za reprodukciju"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lokalni popis web kamera"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct i YouTube web kamere"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Online popis web kamera"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Drugi izvori"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Oko"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Dodaj u favorite"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Dodaj/Ukloni"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Dodano u favorite!"
 
 msgid "Categories"
-msgstr ""
+msgstr "kategorije"
 
 msgid "Change language"
-msgstr ""
+msgstr "Promjena jezika"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinenti"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Nije moguće izdvojiti YouTube stream"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Nije moguće izdvojiti video stream"
 
 msgid "Countries"
-msgstr ""
+msgstr "zemlje"
 
 msgid "Country"
-msgstr ""
+msgstr "Zemlja"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Razvio Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Prazna datoteka popisa za reprodukciju"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Pogreška pri dodavanju favorita"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Greška pri promjeni jezika"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Pogreška pri učitavanju kategorija"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Pogreška pri učitavanju kontinenata"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Pogreška pri učitavanju zemalja"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Pogreška pri učitavanju favorita"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Pogreška pri učitavanju lokacija"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Pogreška pri učitavanju popisa za reprodukciju"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Pogreška pri učitavanju popisa za reprodukciju"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Pogreška pri učitavanju najboljih web kamera"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Pogreška pri učitavanju web kamera"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Pogreška pri otvaranju odabira jezika"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Pogreška pri otvaranju popisa za reprodukciju"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Pogreška prilikom uklanjanja favorita"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Pogreška pri prebacivanju web kamere"
 
 msgid "Exit"
-msgstr ""
+msgstr "Izlaz"
 
 msgid "Export"
-msgstr ""
+msgstr "Izvoz"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Izvezi sve u Buket"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Izvoz nije uspio:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favoriti"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Favoriti su uspješno izvezeni! Ponovno pokrenite Enigmu2 da biste ih vidjeli."
 
 msgid "File not found"
-msgstr ""
+msgstr "Datoteka nije pronađena"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Forumska podrška: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Uključeni popisi za reprodukciju i izvori:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Nevažeći YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Jezik promijenjen u %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Preglednik web kamere uživo s globalnim lokacijama"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Web kamere uživo iz cijelog svijeta"
 
 msgid "Menu"
-msgstr ""
+msgstr "Jelovnik"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Nema favorita za izvoz"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Još nema favorita"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Nema dostupnih popisa za reprodukciju"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Nema pronađenih popisa za reprodukciju"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Nema valjanih web kamera na popisu za reprodukciju"
 
 msgid "Play"
-msgstr ""
+msgstr "Igrati"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Reprodukcija/pauza nije podržana za ovaj stream"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Pogreška reprodukcije"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Reprodukcija nije uspjela!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Pokreće Enigma2 i Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Ukloniti"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Ukloni iz favorita"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Uklonjeno iz favorita"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Uklonjeno iz favorita: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Odaberite"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Odaberite valjanu kategoriju"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Odaberite valjanu lokaciju"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Odaberite važeći popis za reprodukciju"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Odaberite valjanu web kameru"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Odaberite opciju"
 
 msgid "Select language"
-msgstr ""
+msgstr "Odaberite jezik"
 
 msgid "Settings"
-msgstr ""
+msgstr "postavke"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Funkcionalnost postavki uskoro!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Tehnička greška u Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Vrhunske web kamere"
 
 msgid "Update"
-msgstr ""
+msgstr "Ažurirati"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Ažuriranje prekinuto!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Ažuriranje je naišlo na pogrešku (kôd: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Ažurirajte dodatak"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Nadogradnja..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Popisi korisnika"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Već koristite najnoviju verziju: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Pogreška reprodukcije YouTubea"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Vaši favoriti"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp nije pronađen. Molimo instalirajte ga."

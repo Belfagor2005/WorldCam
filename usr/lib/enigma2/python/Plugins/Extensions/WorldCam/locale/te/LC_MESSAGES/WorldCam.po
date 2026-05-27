@@ -17,271 +17,265 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- స్థానిక YouTube ప్లేజాబితా"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- స్థానిక వెబ్‌క్యామ్ జాబితా"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- ఆన్‌లైన్ డైరెక్ట్ మరియు యూట్యూబ్ వెబ్‌క్యామ్‌లు"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- ఆన్‌లైన్ వెబ్‌క్యామ్ జాబితా"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- ఇతర వనరులు"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "ఆఫ్రికా"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "అమెరికా"
 
 msgid "About"
-msgstr ""
+msgstr "గురించి"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "ఇష్టమైన వాటికి జోడించండి"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "జోడించండి/తీసివేయండి"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "ఇష్టమైన వాటికి జోడించబడింది!"
 
 msgid "Categories"
-msgstr ""
+msgstr "వర్గాలు"
 
 msgid "Change language"
-msgstr ""
+msgstr "భాషను మార్చండి"
 
 msgid "Continents"
-msgstr ""
+msgstr "ఖండాలు"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube స్ట్రీమ్‌ను సంగ్రహించడం సాధ్యపడలేదు"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "వీడియో స్ట్రీమ్‌ని సంగ్రహించడం సాధ్యపడలేదు"
 
 msgid "Countries"
-msgstr ""
+msgstr "దేశాలు"
 
 msgid "Country"
-msgstr ""
+msgstr "దేశం"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "లులుల్లాచే అభివృద్ధి చేయబడింది"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "యూరోప్"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "ప్లేజాబితా ఫైల్ ఖాళీ"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "ఇష్టమైనవి జోడించడంలో లోపం"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "భాషను మార్చడంలో లోపం ఏర్పడింది"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "వర్గాలను లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "ఖండాలను లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "దేశాలను లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "ఇష్టమైనవి లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "స్థానాలను లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "ప్లేజాబితాను లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "ప్లేజాబితాలను లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "టాప్ వెబ్‌క్యామ్‌లను లోడ్ చేయడంలో లోపం"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "వెబ్‌క్యామ్‌లను లోడ్ చేయడంలో లోపం"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "భాష ఎంపికను తెరవడంలో లోపం ఏర్పడింది"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "ప్లేజాబితాను తెరవడంలో లోపం"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "ఇష్టమైనదాన్ని తీసివేయడంలో లోపం"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "వెబ్‌క్యామ్ మారడంలో లోపం"
 
 msgid "Exit"
-msgstr ""
+msgstr "నిష్క్రమించు"
 
 msgid "Export"
-msgstr ""
+msgstr "ఎగుమతి చేయండి"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "అన్నింటినీ బొకేకి ఎగుమతి చేయండి"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "ఎగుమతి విఫలమైంది:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "ఇష్టమైనవి"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "ఇష్టమైనవి విజయవంతంగా ఎగుమతి చేయబడ్డాయి! వాటిని చూడటానికి Enigma2ని పునఃప్రారంభించండి."
 
 msgid "File not found"
-msgstr ""
+msgstr "ఫైల్ కనుగొనబడలేదు"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "ఫోరమ్ మద్దతు: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "ప్లేజాబితాలు మరియు మూలాలు ఉన్నాయి:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "చెల్లని YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "భాష %sకి మార్చబడింది"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "గ్లోబల్ స్థానాలను ఫీచర్ చేసే లైవ్ వెబ్‌క్యామ్ వ్యూయర్"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "ప్రపంచవ్యాప్తంగా ఉన్న లైవ్ వెబ్‌క్యామ్‌లు"
 
 msgid "Menu"
-msgstr ""
+msgstr "మెనూ"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "ఎగుమతి చేయడానికి ఇష్టమైనవి లేవు"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "ఇంకా ఇష్టమైనవి లేవు"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "ప్లేజాబితాలు అందుబాటులో లేవు"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "ప్లేజాబితాలు ఏవీ కనుగొనబడలేదు"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "ప్లేజాబితాలో చెల్లుబాటు అయ్యే వెబ్‌క్యామ్‌లు లేవు"
 
 msgid "Play"
-msgstr ""
+msgstr "ఆడండి"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "ఈ స్ట్రీమ్‌కు ప్లే/పాజ్ మద్దతు లేదు"
 
 msgid "Playback error"
-msgstr ""
+msgstr "ప్లేబ్యాక్ లోపం"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "ప్లేబ్యాక్ విఫలమైంది!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 మరియు Python ద్వారా ఆధారితం"
 
 msgid "Remove"
-msgstr ""
+msgstr "తొలగించు"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "ఇష్టమైన వాటి నుండి తీసివేయండి"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "ఇష్టమైన వాటి నుండి తీసివేయబడింది"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "ఇష్టమైన వాటి నుండి తీసివేయబడింది: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "ఎంచుకోండి"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "చెల్లుబాటు అయ్యే వర్గాన్ని ఎంచుకోండి"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "చెల్లుబాటు అయ్యే స్థానాన్ని ఎంచుకోండి"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "చెల్లుబాటు అయ్యే ప్లేజాబితాను ఎంచుకోండి"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "చెల్లుబాటు అయ్యే వెబ్‌క్యామ్‌ను ఎంచుకోండి"
 
 msgid "Select an option"
-msgstr ""
+msgstr "ఒక ఎంపికను ఎంచుకోండి"
 
 msgid "Select language"
-msgstr ""
+msgstr "భాషను ఎంచుకోండి"
 
 msgid "Settings"
-msgstr ""
+msgstr "సెట్టింగ్‌లు"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "సెట్టింగ్‌ల కార్యాచరణ త్వరలో వస్తుంది!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.plలో సాంకేతిక లోపం"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "అగ్ర వెబ్‌క్యామ్‌లు"
 
 msgid "Update"
-msgstr ""
+msgstr "నవీకరించు"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "నవీకరణ రద్దు చేయబడింది!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "నవీకరణ లోపాన్ని ఎదుర్కొంది (కోడ్: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "ప్లగిన్‌ని నవీకరించండి"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "అప్‌గ్రేడ్ అవుతోంది..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "వినియోగదారు జాబితాలు"
 
 msgid "WorldCam v%s"
-msgstr ""
+msgstr "వరల్డ్‌క్యామ్ v%s"
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "వరల్డ్‌క్యామ్ v{}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "మీరు ఇప్పటికే తాజా సంస్కరణను అమలు చేస్తున్నారు: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube ప్లేబ్యాక్ లోపం"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "మీ ఇష్టమైనవి"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp కనుగొనబడలేదు. దయచేసి దీన్ని ఇన్‌స్టాల్ చేయండి."

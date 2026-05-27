@@ -17,271 +17,265 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- YouTubeирле YouTube плейлисты"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Localирле веб-камера исемлеге"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Онлайн туры һәм YouTube веб-камералары"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Онлайн веб-камера исемлеге"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Башка чыганаклар"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "Африка"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "АМЕРИКА"
 
 msgid "About"
-msgstr ""
+msgstr "Турында"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Фаворитларга өстәргә"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Кушу / бетерү"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Фаворитларга өстәлде!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Төркемнәр"
 
 msgid "Change language"
-msgstr ""
+msgstr "Телне үзгәртү"
 
 msgid "Continents"
-msgstr ""
+msgstr "Континентлар"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube агымын чыгарып булмады"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Видео агымны чыгарып булмады"
 
 msgid "Countries"
-msgstr ""
+msgstr "Илләр"
 
 msgid "Country"
-msgstr ""
+msgstr "Ил"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Лулулла тарафыннан эшләнгән"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "Европа"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Плейлист файллары буш"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Фаворитны өстәүдә хата"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Телне үзгәртүдә хата"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Төркемнәрне йөкләүдә хата"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Континентларны йөкләүдә хата"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Илләрне йөкләүдә хата"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Фаворитларны йөкләүдә хата"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Урыннарны йөкләүдә хата"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Плейлистны йөкләүдә хата"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Плейлистларны йөкләүдә хата"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Topгары веб-камераларны йөкләүдә хата"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Веб-камераларны йөкләүдә хата"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Тел сайлауда хата"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Плейлистны ачуда хата"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Яратканны бетерүдә хата"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Веб-камераны күчерүдә хата"
 
 msgid "Exit"
-msgstr ""
+msgstr "Чык"
 
 msgid "Export"
-msgstr ""
+msgstr "Экспорт"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Барысын да Букетка экспортлагыз"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Экспорт уңышсыз:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Фаворитлар"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Фаворитлар уңышлы экспортланды! Аларны күрү өчен Enigma2-ны яңадан эшләтеп җибәрегез."
 
 msgid "File not found"
-msgstr ""
+msgstr "Файл табылмады"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Форум ярдәме: www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub:% s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Плейлистлар һәм чыганаклар кертелгән:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Ярак YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Тел% s итеп үзгәрде"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Глобаль урнашкан веб-камера тамашачысы"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Бөтен дөньядан турыдан-туры веб-камералар"
 
 msgid "Menu"
-msgstr ""
+msgstr "Меню"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Экспортка фаворитлар юк"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Фаворитлар юк"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Плейлистлар юк"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Плейлистлар табылмады"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Плейлистта дөрес веб-камералар юк"
 
 msgid "Play"
-msgstr ""
+msgstr "Уйна"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Бу агым өчен уйнау / пауза булмый"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Уйнау хата"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Уйнау уңышсыз!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 һәм Python белән эшләнгән"
 
 msgid "Remove"
-msgstr ""
+msgstr "Чыгар"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Фаворитлардан бетерегез"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Фаворитлардан алынды"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Фаворитлардан алынды:% s"
 
 msgid "Select"
-msgstr ""
+msgstr "Сайлагыз"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Дөрес категорияне сайлагыз"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Дөрес урынны сайлагыз"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Дөрес плейлистны сайлагыз"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Дөрес веб-камераны сайлагыз"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Вариантны сайлагыз"
 
 msgid "Select language"
-msgstr ""
+msgstr "Телне сайлагыз"
 
 msgid "Settings"
-msgstr ""
+msgstr "Көйләүләр"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Тиздән көйләү функциясе!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl'да техник хата"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Иң яхшы веб-камералар"
 
 msgid "Update"
-msgstr ""
+msgstr "Яңарту"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Яңартылган!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Яңарту хата белән очрашты (код:% s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Плагинны яңарту"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Яңарту ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Кулланучылар исемлеге"
 
 msgid "WorldCam v%s"
-msgstr ""
+msgstr "WorldCam v% s"
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "WorldCam v {}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Сез инде соңгы версияне эшлисез: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube уйнау хата"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Сезнең яратканнарыгыз"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp табылмады. Зинһар, урнаштырыгыз."

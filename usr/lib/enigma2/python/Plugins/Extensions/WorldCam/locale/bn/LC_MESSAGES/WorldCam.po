@@ -17,271 +17,265 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- স্থানীয় ইউটিউব প্লেলিস্ট"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- স্থানীয় ওয়েবক্যাম তালিকা"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- অনলাইন সরাসরি এবং YouTube ওয়েবক্যাম"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- অনলাইন ওয়েবক্যাম তালিকা"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- অন্যান্য উত্স"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "আফ্রিকা"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "আমেরিকা"
 
 msgid "About"
-msgstr ""
+msgstr "সম্পর্কে"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "পছন্দসই যোগ করুন"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "যোগ/সরান"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "ফেভারিট যোগ করা হয়েছে!"
 
 msgid "Categories"
-msgstr ""
+msgstr "ক্যাটাগরি"
 
 msgid "Change language"
-msgstr ""
+msgstr "ভাষা পরিবর্তন করুন"
 
 msgid "Continents"
-msgstr ""
+msgstr "মহাদেশ"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube স্ট্রীম বের করা যায়নি"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "ভিডিও স্ট্রীম বের করা যায়নি"
 
 msgid "Countries"
-msgstr ""
+msgstr "দেশগুলো"
 
 msgid "Country"
-msgstr ""
+msgstr "দেশ"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "লুলুল্লা দ্বারা বিকশিত"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ইউরোপ"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "খালি প্লেলিস্ট ফাইল"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "প্রিয় যোগ করার সময় ত্রুটি"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "ভাষা পরিবর্তনে ত্রুটি"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "বিভাগগুলি লোড করার সময় ত্রুটি৷"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "মহাদেশগুলি লোড করার সময় ত্রুটি৷"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "দেশগুলি লোড করতে ত্রুটি৷"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "প্রিয় লোড করার সময় ত্রুটি"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "অবস্থানগুলি লোড করার সময় ত্রুটি৷"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "প্লেলিস্ট লোড করার সময় ত্রুটি৷"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "প্লেলিস্ট লোড করার সময় ত্রুটি৷"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "শীর্ষ ওয়েবক্যাম লোড করার সময় ত্রুটি৷"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "ওয়েবক্যাম লোড করার সময় ত্রুটি৷"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "ভাষা নির্বাচন খোলার সময় ত্রুটি"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "প্লেলিস্ট খোলার সময় ত্রুটি৷"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "প্রিয় সরানোর সময় ত্রুটি৷"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "ওয়েবক্যাম পরিবর্তন করার সময় ত্রুটি৷"
 
 msgid "Exit"
-msgstr ""
+msgstr "প্রস্থান করুন"
 
 msgid "Export"
-msgstr ""
+msgstr "রপ্তানি"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "তোড়া সব রপ্তানি করুন"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "রপ্তানি ব্যর্থ হয়েছে:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "প্রিয়"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "প্রিয় রপ্তানি সফলভাবে! সেগুলি দেখতে Enigma2 পুনরায় চালু করুন।"
 
 msgid "File not found"
-msgstr ""
+msgstr "ফাইল পাওয়া যায়নি"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "ফোরাম সমর্থন: www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "গিটহাব: %s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "অন্তর্ভুক্ত প্লেলিস্ট এবং উত্স:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "অবৈধ YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "ভাষা %s এ পরিবর্তিত হয়েছে"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "বিশ্বব্যাপী অবস্থান সমন্বিত লাইভ ওয়েবক্যাম দর্শক"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "সারা বিশ্ব থেকে লাইভ ওয়েবক্যাম"
 
 msgid "Menu"
-msgstr ""
+msgstr "মেনু"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "রপ্তানি করার জন্য কোন পছন্দসই নেই"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "এখনও কোন প্রিয়"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "কোনো প্লেলিস্ট উপলব্ধ নেই৷"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "কোনো প্লেলিস্ট পাওয়া যায়নি"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "প্লেলিস্টে কোনো বৈধ ওয়েবক্যাম নেই"
 
 msgid "Play"
-msgstr ""
+msgstr "খেলা"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "এই স্ট্রীমের জন্য প্লে/পজ সমর্থিত নয়"
 
 msgid "Playback error"
-msgstr ""
+msgstr "প্লেব্যাক ত্রুটি"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "প্লেব্যাক ব্যর্থ!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 এবং Python দ্বারা চালিত"
 
 msgid "Remove"
-msgstr ""
+msgstr "সরান"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "প্রিয় থেকে সরান"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "প্রিয় থেকে সরানো হয়েছে"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "পছন্দসই থেকে সরানো হয়েছে: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "নির্বাচন করুন"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "একটি বৈধ বিভাগ নির্বাচন করুন"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "একটি বৈধ অবস্থান নির্বাচন করুন"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "একটি বৈধ প্লেলিস্ট নির্বাচন করুন৷"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "একটি বৈধ ওয়েবক্যাম নির্বাচন করুন৷"
 
 msgid "Select an option"
-msgstr ""
+msgstr "একটি বিকল্প নির্বাচন করুন"
 
 msgid "Select language"
-msgstr ""
+msgstr "ভাষা নির্বাচন করুন"
 
 msgid "Settings"
-msgstr ""
+msgstr "সেটিংস"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "সেটিংস কার্যকারিতা শীঘ্রই আসছে!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl-এ প্রযুক্তিগত ত্রুটি"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "শীর্ষ ওয়েবক্যাম"
 
 msgid "Update"
-msgstr ""
+msgstr "আপডেট"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "আপডেট বাতিল করা হয়েছে!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "আপডেট একটি ত্রুটির সম্মুখীন হয়েছে (কোড: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "প্লাগইন আপডেট করুন"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "আপগ্রেড হচ্ছে..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "ব্যবহারকারীর তালিকা"
 
 msgid "WorldCam v%s"
-msgstr ""
+msgstr "ওয়ার্ল্ডক্যাম বনাম%s"
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "ওয়ার্ল্ডক্যাম বনাম{}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "আপনি ইতিমধ্যেই সর্বশেষ সংস্করণ চালাচ্ছেন: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube প্লেব্যাক ত্রুটি"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "আপনার প্রিয়"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp পাওয়া যায়নি। এটা ইনস্টল করুন."

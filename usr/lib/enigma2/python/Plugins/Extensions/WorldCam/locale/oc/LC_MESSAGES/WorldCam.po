@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lista de reproduccion locala de YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lista de camèra web locala"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Webcams Direct e YouTube en linha"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Lista de webcams en linha"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Autras fonts"
 
 msgid "AFRICA"
 msgstr ""
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERICA"
 
 msgid "About"
-msgstr ""
+msgstr "A prepaus"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Apondre als favorits"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Apondre/Suprimir"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Ajustat als favorits!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Categorias"
 
 msgid "Change language"
-msgstr ""
+msgstr "Cambiar de lenga"
 
 msgid "Continents"
 msgstr ""
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Poguèt pas extraire lo flux YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Poguèt pas extraire lo flux vidèo"
 
 msgid "Countries"
-msgstr ""
+msgstr "Païses"
 
 msgid "Country"
-msgstr ""
+msgstr "País"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Desvolopat per Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Fichièr de lista de lectura void"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Error a l'apond de favorit"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Error al moment de cambiar de lenga"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Error al moment de cargament de categorias"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Error al moment de cargar los continents"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Error al moment del cargament dels païses"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Error al moment de cargar los favorits"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Error al moment de cargament dels emplaçaments"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Error al moment de cargament de la lista de lectura"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Error al moment de cargament de las listas de lectura"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Error al moment del cargament de las camèras web superioras"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Error al moment del cargament de las camèras web"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Error al moment de dobrir la seleccion de lenga"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Error al moment de la dobertura de la lista de lectura"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Error al moment de suprimir lo favorit"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Error al moment de cambiar la camèra web"
 
 msgid "Exit"
-msgstr ""
+msgstr "Sortida"
 
 msgid "Export"
-msgstr ""
+msgstr "Exportar"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Exportar tot a Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "L'exportacion a fracassat :"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favorits"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Los favorits exportats amb succès! Tornatz aviar Enigma2 per los veire."
 
 msgid "File not found"
-msgstr ""
+msgstr "Fichièr pas trobat"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Supòrt del forum: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Listas de lectura e fonts incluses:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube invalida"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Lenga modificada a %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Visor de webcam en dirècte amb d'emplaçaments globals"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Webcams en dirècte de tot lo mond"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menú"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Pas de favorits a exportar"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Pas de favorits encara"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Cap de lista de lectura disponibla"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Cap de lista de lectura pas trobada"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Pas de camèras web validas dins la lista de lectura"
 
 msgid "Play"
-msgstr ""
+msgstr "Jogar"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Reproduccion/pausa pas presa en carga per aqueste flux"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Error de lectura"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "La lectura a fracassat!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Alimentat per Enigma2 e Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Levar"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Suprimir dels favorits"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Suprimit dels favorits"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Suprimit dels favorits : %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Causir"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Seleccionatz una categoria valida"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Seleccionatz un emplaçament valid"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Seleccionatz una lista de lectura valida"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Seleccionatz una camèra web valida"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Seleccionatz una opcion"
 
 msgid "Select language"
-msgstr ""
+msgstr "Seleccionar la lenga"
 
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "La foncionalitat dels paramètres a venir lèu!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Error tecnica dins Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Las melhoras camèras web"
 
 msgid "Update"
-msgstr ""
+msgstr "Metre al jorn"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Mesa a jorn avortada!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "La mesa a jorn a rencontrat una error (còde : %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Mesa a jorn lo plugin"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Mesa a jorn..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Listas d'utilizaires"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Sètz ja en cors d'execucion de la darrièra version : {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Error de lectura de YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Vòstres favorits"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp pas trobat. Mercés de l'installar."

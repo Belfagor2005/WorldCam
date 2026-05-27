@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lista de reprodução local do YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lista de webcams locais"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Webcams Online Direct e YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Lista de webcams on-line"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Outras fontes"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "ÁFRICA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMÉRICAS"
 
 msgid "About"
-msgstr ""
+msgstr "Sobre"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Adicionar aos favoritos"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Adicionar/Remover"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Adicionado aos favoritos!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Categorias"
 
 msgid "Change language"
-msgstr ""
+msgstr "Alterar idioma"
 
 msgid "Continents"
-msgstr ""
+msgstr "Continentes"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Não foi possível extrair o stream do YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Não foi possível extrair o stream de vídeo"
 
 msgid "Countries"
-msgstr ""
+msgstr "Países"
 
 msgid "Country"
-msgstr ""
+msgstr "País"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Desenvolvido por Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Arquivo de lista de reprodução vazio"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Erro ao adicionar favorito"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Erro ao alterar o idioma"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Erro ao carregar categorias"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Erro ao carregar continentes"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Erro ao carregar países"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Erro ao carregar favoritos"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Erro ao carregar locais"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Erro ao carregar a lista de reprodução"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Erro ao carregar playlists"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Erro ao carregar as melhores webcams"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Erro ao carregar webcams"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Erro ao abrir seleção de idioma"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Erro ao abrir a playlist"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Erro ao remover favorito"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Erro ao trocar a webcam"
 
 msgid "Exit"
-msgstr ""
+msgstr "Saída"
 
 msgid "Export"
-msgstr ""
+msgstr "Exportar"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Exportar tudo para buquê"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Falha na exportação:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritos"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Favoritos exportados com sucesso! Reinicie o Enigma2 para vê-los."
 
 msgid "File not found"
-msgstr ""
+msgstr "Arquivo não encontrado"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Apoio ao fórum: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Playlists e fontes incluídas:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL do YouTube inválido"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Idioma alterado para %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Visualizador de webcam ao vivo com locais globais"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Webcams ao vivo de todo o mundo"
 
 msgid "Menu"
 msgstr ""
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Não há favoritos para exportar"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Ainda não há favoritos"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Nenhuma lista de reprodução disponível"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Nenhuma playlist encontrada"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Não há webcams válidas na playlist"
 
 msgid "Play"
-msgstr ""
+msgstr "Jogar"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Reproduzir/pausar não é compatível com esta transmissão"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Erro de reprodução"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Falha na reprodução!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Desenvolvido por Enigma2 e Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Remover"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Remover dos favoritos"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Removido dos favoritos"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Removido dos favoritos: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Selecione"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Selecione uma categoria válida"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Selecione um local válido"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Selecione uma playlist válida"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Selecione uma webcam válida"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Selecione uma opção"
 
 msgid "Select language"
-msgstr ""
+msgstr "Selecione o idioma"
 
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Funcionalidade de configurações em breve!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Erro técnico em Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Melhores webcams"
 
 msgid "Update"
-msgstr ""
+msgstr "Atualizar"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Atualização abortada!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "A atualização encontrou um erro (código: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Plug-in de atualização"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Atualizando..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Listas de usuários"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Você já está executando a versão mais recente: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Erro de reprodução do YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Seus favoritos"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp não encontrado. Por favor instale-o."

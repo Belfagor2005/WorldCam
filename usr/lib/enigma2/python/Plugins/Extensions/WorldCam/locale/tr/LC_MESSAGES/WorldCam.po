@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Yerel YouTube oynatma listesi"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Yerel web kamerası listesi"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Çevrimiçi Doğrudan ve YouTube web kameraları"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Çevrimiçi web kamerası listesi"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Diğer kaynaklar"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRİKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERİKA KITALARI"
 
 msgid "About"
-msgstr ""
+msgstr "Hakkında"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Favorilere ekle"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Ekle/Kaldır"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Favorilere eklendi!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategoriler"
 
 msgid "Change language"
-msgstr ""
+msgstr "Dili değiştir"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kıtalar"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube akışı çıkarılamadı"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Video akışı çıkarılamadı"
 
 msgid "Countries"
-msgstr ""
+msgstr "Ülkeler"
 
 msgid "Country"
-msgstr ""
+msgstr "Ülke"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Lululla tarafından geliştirildi"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "AVRUPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Çalma listesi dosyasını boşalt"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Favori eklenirken hata oluştu"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Dil değiştirilirken hata oluştu"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Kategoriler yüklenirken hata oluştu"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Kıtalar yüklenirken hata oluştu"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Ülkeler yüklenirken hata oluştu"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Favoriler yüklenirken hata oluştu"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Konumlar yüklenirken hata oluştu"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Oynatma listesi yüklenirken hata oluştu"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Oynatma listeleri yüklenirken hata oluştu"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "En iyi web kameraları yüklenirken hata oluştu"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Web kameraları yüklenirken hata oluştu"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Dil seçimi açılırken hata oluştu"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Oynatma listesi açılırken hata oluştu"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Favori kaldırılırken hata oluştu"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Web kamerası değiştirilirken hata oluştu"
 
 msgid "Exit"
-msgstr ""
+msgstr "Çıkış"
 
 msgid "Export"
-msgstr ""
+msgstr "İhracat"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Tümünü Bukete Aktar"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Dışa aktarma başarısız oldu:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favoriler"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Favoriler başarıyla dışa aktarıldı! Bunları görmek için Enigma2'yi yeniden başlatın."
 
 msgid "File not found"
-msgstr ""
+msgstr "Dosya bulunamadı"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Forum desteği: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Dahil edilen çalma listeleri ve kaynaklar:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Geçersiz YouTube URL'si"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Dil %s olarak değiştirildi"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Küresel konumları gösteren canlı web kamerası görüntüleyici"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Dünyanın dört bir yanından canlı web kameraları"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menü"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Dışa aktarılacak favori yok"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Henüz favori yok"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Oynatma listesi yok"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Oynatma listesi bulunamadı"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Çalma listesinde geçerli bir web kamerası yok"
 
 msgid "Play"
-msgstr ""
+msgstr "Oynamak"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Bu yayın için oynatma/duraklatma desteklenmiyor"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Oynatma hatası"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Oynatma başarısız oldu!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 ve Python tarafından desteklenmektedir"
 
 msgid "Remove"
-msgstr ""
+msgstr "Kaldırmak"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Favorilerden kaldır"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Favorilerden kaldırıldı"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Favorilerden kaldırıldı: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Seçme"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Geçerli bir kategori seçin"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Geçerli bir konum seçin"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Geçerli bir oynatma listesi seçin"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Geçerli bir web kamerası seçin"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Bir seçenek seçin"
 
 msgid "Select language"
-msgstr ""
+msgstr "Dil seçin"
 
 msgid "Settings"
-msgstr ""
+msgstr "Ayarlar"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Ayarlar işlevi çok yakında!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl'de teknik hata"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "En İyi Web Kameraları"
 
 msgid "Update"
-msgstr ""
+msgstr "Güncelleme"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Güncelleme İptal Edildi!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Güncelleme bir hatayla karşılaştı (kod: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Eklentiyi güncelle"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Yükseltiliyor..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Kullanıcı Listeleri"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Zaten en son sürümü çalıştırıyorsunuz: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube oynatma hatası"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Favorileriniz"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp bulunamadı. Lütfen yükleyin."

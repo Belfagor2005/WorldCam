@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lista e luajtjes lokale në YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lista lokale e kamerave të internetit"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Kamerat në internet Direct dhe YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Lista e kamerave në internet"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Burime të tjera"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Rreth"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Shtoni në të preferuarat"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Shto/Hiq"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Shtuar në të preferuarat!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategoritë"
 
 msgid "Change language"
-msgstr ""
+msgstr "Ndrysho gjuhën"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinentet"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Transmetimi në YouTube nuk mund të nxirret"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Transmetimi i videos nuk mund të nxirret"
 
 msgid "Countries"
-msgstr ""
+msgstr "shtetet"
 
 msgid "Country"
-msgstr ""
+msgstr "Vendi"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Zhvilluar nga Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EVROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Skedari bosh i listës së luajtjes"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Gabim në shtimin e të preferuarit"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Gabim gjatë ndryshimit të gjuhës"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të kategorive"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të kontinenteve"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të vendeve"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të të preferuarave"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të vendndodhjeve"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të listës së luajtjes"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të listave për luajtje"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të kamerave kryesore të uebit"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të kamerave në internet"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Gabim në hapjen e përzgjedhjes së gjuhës"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Gabim në hapjen e listës së luajtjes"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Gabim gjatë heqjes së të preferuarit"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Gabim gjatë ndërrimit të kamerës së internetit"
 
 msgid "Exit"
-msgstr ""
+msgstr "Dilni"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksporto"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Eksporto të gjitha në buqetë"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksporti dështoi:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Të preferuarat"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Të preferuarat u eksportuan me sukses! Rinisni Enigma2 për t'i parë ato."
 
 msgid "File not found"
-msgstr ""
+msgstr "Skedari nuk u gjet"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Mbështetja e forumit: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Listat e luajtjes dhe burimet e përfshira:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL e pavlefshme e YouTube"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Gjuha u ndryshua në %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Shikues i drejtpërdrejtë i kamerës së internetit me vendndodhje globale"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Uebkamera të drejtpërdrejta nga e gjithë bota"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menyja"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Nuk ka të preferuar për eksport"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Ende nuk ka të preferuar"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Nuk ka lista luajtjeje të disponueshme"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Nuk u gjet asnjë listë luajtjeje"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Nuk ka webkamera të vlefshme në listën e luajtjes"
 
 msgid "Play"
-msgstr ""
+msgstr "Luaj"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Luajtja/ndërprerja nuk mbështetet për këtë transmetim"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Gabim riprodhimi"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Riprodhimi dështoi!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Mundësuar nga Enigma2 dhe Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Hiq"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Hiq nga të preferuarat"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "U hoq nga të preferuarat"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "U hoq nga të preferuarat: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Zgjidhni"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Zgjidhni një kategori të vlefshme"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Zgjidhni një vendndodhje të vlefshme"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Zgjidhni një listë të vlefshme luajtjeje"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Zgjidhni një kamerë të vlefshme në internet"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Zgjidhni një opsion"
 
 msgid "Select language"
-msgstr ""
+msgstr "Zgjidhni gjuhën"
 
 msgid "Settings"
-msgstr ""
+msgstr "Cilësimet"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Funksionaliteti i cilësimeve vjen së shpejti!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Gabim teknik në Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Webkamerat kryesore"
 
 msgid "Update"
-msgstr ""
+msgstr "Përditëso"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Përditësimi u ndërpre!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Përditësimi hasi në një gabim (kodi: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Përditëso shtojcën"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Po përmirësohet..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Listat e përdoruesve"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Ju tashmë po ekzekutoni versionin më të fundit: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Gabim riprodhimi në YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Të preferuarat tuaja"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp nuk u gjet. Ju lutemi instaloni atë."

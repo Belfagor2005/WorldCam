@@ -256,9 +256,6 @@ msgstr ""
 msgid "Update plugin"
 msgstr ""
 
-msgid "Update yt-dlp"
-msgstr ""
-
 msgid "Upgrading..."
 msgstr ""
 
@@ -281,7 +278,4 @@ msgid "Your Favorites"
 msgstr ""
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
 msgstr ""

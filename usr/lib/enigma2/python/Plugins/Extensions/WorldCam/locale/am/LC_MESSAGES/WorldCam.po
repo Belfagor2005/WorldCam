@@ -20,40 +20,40 @@ msgid "- Local YouTube playlist"
 msgstr ""
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- የአካባቢ የድር ካሜራ ዝርዝር"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- የመስመር ላይ ቀጥታ እና የዩቲዩብ ድር ካሜራዎች"
 
 msgid "- Online webcam list"
 msgstr ""
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- ሌሎች ምንጮች"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "አፍሪካ"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "አሜሪካ"
 
 msgid "About"
-msgstr ""
+msgstr "ስለ"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "ወደ ተወዳጆች ያክሉ"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "አክል/አስወግድ"
 
 msgid "Added to favorites!"
 msgstr ""
 
 msgid "Categories"
-msgstr ""
+msgstr "ምድቦች"
 
 msgid "Change language"
-msgstr ""
+msgstr "ቋንቋ ቀይር"
 
 msgid "Continents"
 msgstr ""
@@ -62,226 +62,220 @@ msgid "Could not extract YouTube stream"
 msgstr ""
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "የቪዲዮ ዥረት ማውጣት አልተቻለም"
 
 msgid "Countries"
-msgstr ""
+msgstr "አገሮች"
 
 msgid "Country"
-msgstr ""
+msgstr "ሀገር"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "በሉሉላ የተገነባ"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "አውሮፓ"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "ባዶ አጫዋች ዝርዝር ፋይል"
 
 msgid "Error adding favorite"
 msgstr ""
 
 msgid "Error changing language"
-msgstr ""
+msgstr "ቋንቋ መቀየር ላይ ስህተት"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "ምድቦችን መጫን ላይ ስህተት"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "አህጉራትን መጫን ላይ ስህተት"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "አገሮችን መጫን ላይ ስህተት"
 
 msgid "Error loading favorites"
 msgstr ""
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "ቦታዎችን መጫን ላይ ስህተት"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "አጫዋች ዝርዝር መጫን ላይ ስህተት"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "አጫዋች ዝርዝሮችን መጫን ላይ ስህተት"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "ከፍተኛ የድር ካሜራዎችን መጫን ላይ ስህተት"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "የድር ካሜራዎችን መጫን ላይ ስህተት"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "የቋንቋ ምርጫን መክፈት ላይ ስህተት"
 
 msgid "Error opening playlist"
 msgstr ""
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "ተወዳጅን ማስወገድ ላይ ስህተት"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "የድር ካሜራ መቀየር ላይ ስህተት"
 
 msgid "Exit"
-msgstr ""
+msgstr "ውጣ"
 
 msgid "Export"
-msgstr ""
+msgstr "ወደ ውጪ ላክ"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "ሁሉንም ወደ ቡኬት ላክ"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "ወደ ውጭ መላክ አልተሳካም፦"
 
 msgid "Favorites"
-msgstr ""
+msgstr "ተወዳጆች"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "ተወዳጆች በተሳካ ሁኔታ ወደ ውጭ ተልከዋል! እነሱን ለማየት Enigma2ን እንደገና ያስጀምሩ።"
 
 msgid "File not found"
-msgstr ""
+msgstr "ፋይል አልተገኘም።"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "የመድረክ ድጋፍ፡ www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub፡ %s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "የተካተቱ አጫዋች ዝርዝሮች እና ምንጮች፡-"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "ልክ ያልሆነ የዩቲዩብ ዩአርኤል"
 
 msgid "Language changed to %s"
 msgstr ""
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "አለምአቀፍ አካባቢዎችን የሚያሳይ የቀጥታ የድር ካሜራ መመልከቻ"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "የቀጥታ የድር ካሜራዎች ከዓለም ዙሪያ"
 
 msgid "Menu"
-msgstr ""
+msgstr "ምናሌ"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "ወደ ውጭ ለመላክ ምንም ተወዳጆች የሉም"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "እስካሁን ምንም ተወዳጆች የሉም"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "ምንም አጫዋች ዝርዝሮች የሉም"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "ምንም አጫዋች ዝርዝሮች አልተገኙም።"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "በአጫዋች ዝርዝር ውስጥ ምንም የሚሰራ የድር ካሜራዎች የሉም"
 
 msgid "Play"
-msgstr ""
+msgstr "ይጫወቱ"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "ለዚህ ዥረት መጫወት/አፍታ ማቆም አይደገፍም።"
 
 msgid "Playback error"
-msgstr ""
+msgstr "የመልሶ ማጫወት ስህተት"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "መልሶ ማጫወት አልተሳካም!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "በEnigma2 እና Python የተጎላበተ"
 
 msgid "Remove"
-msgstr ""
+msgstr "አስወግድ"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "ከተወዳጆች አስወግድ"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "ከተወዳጆች ተወግዷል"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "ከተወዳጆች ተወግዷል፡ %s"
 
 msgid "Select"
-msgstr ""
+msgstr "ይምረጡ"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "የሚሰራ ምድብ ይምረጡ"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "የሚሰራ ቦታ ይምረጡ"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "የሚሰራ አጫዋች ዝርዝር ይምረጡ"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "የሚሰራ የድር ካሜራ ይምረጡ"
 
 msgid "Select an option"
-msgstr ""
+msgstr "አንድ አማራጭ ይምረጡ"
 
 msgid "Select language"
-msgstr ""
+msgstr "ቋንቋ ይምረጡ"
 
 msgid "Settings"
-msgstr ""
+msgstr "ቅንብሮች"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "የቅንብሮች ተግባር በቅርቡ ይመጣል!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "የቴክኒክ ስህተት በ Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "ከፍተኛ የድር ካሜራዎች"
 
 msgid "Update"
-msgstr ""
+msgstr "አዘምን"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "ዝማኔ ተቋርጧል!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "ማዘመን ስህተት አጋጥሞታል ( ኮድ፡ %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "ተሰኪን ያዘምኑ"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "በማሻሻል ላይ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "የተጠቃሚ ዝርዝሮች"
 
 msgid "WorldCam v%s"
-msgstr ""
+msgstr "ወርልድ ካም v%s"
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "ወርልድ ካም ቪ{}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "አስቀድመው የቅርብ ጊዜውን ስሪት እያሄዱ ነው፡ {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "የዩቲዩብ መልሶ ማጫወት ስህተት"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "የእርስዎ ተወዳጆች"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp አልተገኘም። እባክዎ ይጫኑት።"

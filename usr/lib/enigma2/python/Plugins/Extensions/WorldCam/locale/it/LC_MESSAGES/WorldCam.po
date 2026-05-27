@@ -149,7 +149,7 @@ msgstr "File non trovato"
 msgid "Forum support: www.corvoboys.org"
 msgstr ""
 
-msgid "GitHub: https://github.com/Belfagor2005/"
+msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
@@ -257,14 +257,14 @@ msgstr "L'aggiornamento ha riscontrato un errore (codice: %s)"
 msgid "Update plugin"
 msgstr "Aggiornamento Plugin"
 
-msgid "Update yt-dlp"
-msgstr "Aggiornamento modulo yt-dl"
-
 msgid "Upgrading..."
 msgstr "Aggiornamento..."
 
 msgid "User Lists"
 msgstr "Lista Utente"
+
+msgid "WorldCam v%s"
+msgstr ""
 
 msgid "WorldCam v{}"
 msgstr ""
@@ -281,8 +281,11 @@ msgstr "I tuoi preferiti"
 msgid "yt-dlp not found. Please install it."
 msgstr "yt-dlp non trovato. Installalo."
 
-msgid "yt-dlp updated successfully!"
-msgstr "yt-dlp aggiornato con successo!"
+#~ msgid "Update yt-dlp"
+#~ msgstr "Aggiornamento modulo yt-dl"
+
+#~ msgid "yt-dlp updated successfully!"
+#~ msgstr "yt-dlp aggiornato con successo!"
 
 #, python-format
 #~ msgid ""

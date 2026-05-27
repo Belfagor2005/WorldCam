@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Орон нутгийн YouTube тоглуулах жагсаалт"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Орон нутгийн вэбкамерын жагсаалт"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Онлайн шууд болон YouTube вэбкамерууд"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Онлайн вэбкамерын жагсаалт"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Бусад эх сурвалж"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "АФРИКА"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "АМЕРИК"
 
 msgid "About"
-msgstr ""
+msgstr "тухай"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Дуртай зүйлд нэмнэ үү"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Нэмэх/ Устгах"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Дуртай жагсаалтанд нэмсэн!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Ангилал"
 
 msgid "Change language"
-msgstr ""
+msgstr "Хэлийг өөрчлөх"
 
 msgid "Continents"
-msgstr ""
+msgstr "Тивүүд"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube дамжуулалтыг задалж чадсангүй"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Видео урсгалыг задалж чадсангүй"
 
 msgid "Countries"
-msgstr ""
+msgstr "Улс орнууд"
 
 msgid "Country"
-msgstr ""
+msgstr "Улс"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Лулулла боловсруулсан"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ЕВРОП"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Хоосон тоглуулах жагсаалт файл"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Дуртай нэмэхэд алдаа гарлаа"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Хэлийг өөрчлөхөд алдаа гарлаа"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Ангилалуудыг ачаалахад алдаа гарлаа"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Тивүүдийг ачаалахад алдаа гарлаа"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Улсуудыг ачаалахад алдаа гарлаа"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Дуртай зүйлсийг ачаалахад алдаа гарлаа"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Байршлыг ачаалахад алдаа гарлаа"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Тоглуулах жагсаалтыг ачаалахад алдаа гарлаа"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Тоглуулах жагсаалтыг ачаалахад алдаа гарлаа"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Шилдэг вэбкамеруудыг ачаалахад алдаа гарлаа"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Вэбкамерыг ачаалахад алдаа гарлаа"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Хэлний сонголтыг нээхэд алдаа гарлаа"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Тоглуулах жагсаалтыг нээхэд алдаа гарлаа"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Дуртай зүйлийг устгахад алдаа гарлаа"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Вэбкамерыг солиход алдаа гарлаа"
 
 msgid "Exit"
-msgstr ""
+msgstr "Гарах"
 
 msgid "Export"
-msgstr ""
+msgstr "Экспорт"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Бүгдийг Bouquet руу экспортлох"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Экспорт амжилтгүй болсон:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Дуртай"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Дуртай зүйлс амжилттай экспортлогдсон! Тэдгээрийг харахын тулд Enigma2-г дахин эхлүүлнэ үү."
 
 msgid "File not found"
-msgstr ""
+msgstr "Файл олдсонгүй"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Форумын дэмжлэг: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Оруулсан тоглуулах жагсаалт болон эх сурвалжууд:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Буруу YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Хэлийг %s болгож өөрчилсөн"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Дэлхийн байршлыг харуулсан шууд вэб камер харагч"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Дэлхийн өнцөг булан бүрээс шууд вэбкамерууд"
 
 msgid "Menu"
-msgstr ""
+msgstr "Цэс"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Экспортлох дуртай зүйл байхгүй"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Одоогоор дуртай зүйл алга"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Тоглуулах жагсаалт байхгүй"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Тоглуулах жагсаалт олдсонгүй"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Тоглуулах жагсаалтад хүчинтэй вэбкамер алга"
 
 msgid "Play"
-msgstr ""
+msgstr "Тоглох"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Энэ дамжуулалтыг тоглуулах/түр зогсоохыг дэмждэггүй"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Тоглуулах алдаа"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Дахин тоглуулж чадсангүй!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 болон Python-оор дэмжигдсэн"
 
 msgid "Remove"
-msgstr ""
+msgstr "Устгах"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Дуртай зүйлсээс хасах"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Дуртай зүйлсээс хассан"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Дуртай зүйлсээс хассан: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Сонго"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Хүчинтэй ангилал сонгоно уу"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Зөв байршлыг сонгоно уу"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Зөв тоглуулах жагсаалт сонгоно уу"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Хүчинтэй вэбкамер сонгоно уу"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Сонголтыг сонгоно уу"
 
 msgid "Select language"
-msgstr ""
+msgstr "Хэл сонгоно уу"
 
 msgid "Settings"
-msgstr ""
+msgstr "Тохиргоо"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Тохиргооны функц удахгүй гарна!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl дээрх техникийн алдаа"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Шилдэг вэбкамерууд"
 
 msgid "Update"
-msgstr ""
+msgstr "Шинэчлэх"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Шинэчлэлтийг зогсоосон!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Шинэчлэлтэнд алдаа гарлаа (код: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Plugin шинэчлэх"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Сайжруулж байна..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Хэрэглэгчийн жагсаалт"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Та аль хэдийн хамгийн сүүлийн хувилбарыг ажиллуулж байна: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube тоглуулах алдаа"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Таны дуртай"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp олдсонгүй. Үүнийг суулгана уу."

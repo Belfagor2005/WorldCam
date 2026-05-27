@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lokalni YouTube seznam predvajanja"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lokalni seznam spletnih kamer"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- spletne kamere Online Direct in YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Spletni seznam spletnih kamer"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Drugi viri"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKE"
 
 msgid "About"
-msgstr ""
+msgstr "O tem"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Dodaj med priljubljene"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Dodaj/Odstrani"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Dodano med priljubljene!"
 
 msgid "Categories"
-msgstr ""
+msgstr "kategorije"
 
 msgid "Change language"
-msgstr ""
+msgstr "Spremenite jezik"
 
 msgid "Continents"
-msgstr ""
+msgstr "Celine"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTubovega toka ni bilo mogoče ekstrahirati"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Videotoka ni bilo mogoče ekstrahirati"
 
 msgid "Countries"
-msgstr ""
+msgstr "Države"
 
 msgid "Country"
-msgstr ""
+msgstr "Država"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Razvil Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EVROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Prazna datoteka seznama predvajanja"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Napaka pri dodajanju priljubljenih"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Napaka pri spreminjanju jezika"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Napaka pri nalaganju kategorij"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Napaka pri nalaganju celin"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Napaka pri nalaganju držav"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Napaka pri nalaganju priljubljenih"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Napaka pri nalaganju lokacij"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Napaka pri nalaganju seznama predvajanja"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Napaka pri nalaganju seznamov predvajanja"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Napaka pri nalaganju najboljših spletnih kamer"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Napaka pri nalaganju spletnih kamer"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Napaka pri odpiranju izbire jezika"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Napaka pri odpiranju seznama predvajanja"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Napaka pri odstranjevanju priljubljenih"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Napaka pri zamenjavi spletne kamere"
 
 msgid "Exit"
-msgstr ""
+msgstr "Izhod"
 
 msgid "Export"
-msgstr ""
+msgstr "Izvozi"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Izvozi vse v šopek"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Izvoz ni uspel:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Priljubljene"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Priljubljene so uspešno izvožene! Znova zaženite Enigmo2, da jih vidite."
 
 msgid "File not found"
-msgstr ""
+msgstr "Datoteke ni mogoče najti"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Forumska podpora: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Vključeni seznami predvajanja in viri:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Neveljaven URL YouTube"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Jezik spremenjen v %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Pregledovalnik spletnih kamer v živo z globalnimi lokacijami"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Spletne kamere v živo z vsega sveta"
 
 msgid "Menu"
-msgstr ""
+msgstr "meni"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Ni priljubljenih za izvoz"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Ni še priljubljenih"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Na voljo ni noben seznam predvajanja"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Ni seznamov predvajanja"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Na seznamu predvajanja ni veljavnih spletnih kamer"
 
 msgid "Play"
-msgstr ""
+msgstr "Igraj"
 
 msgid "Play/pause not supported for this stream"
 msgstr ""
 
 msgid "Playback error"
-msgstr ""
+msgstr "Napaka pri predvajanju"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Predvajanje ni uspelo!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Poganjata Enigma2 in Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Odstrani"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Odstrani iz priljubljenih"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Odstranjeno iz priljubljenih"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Odstranjeno iz priljubljenih: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Izberite"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Izberite veljavno kategorijo"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Izberite veljavno lokacijo"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Izberite veljaven seznam predvajanja"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Izberite veljavno spletno kamero"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Izberite možnost"
 
 msgid "Select language"
-msgstr ""
+msgstr "Izberite jezik"
 
 msgid "Settings"
-msgstr ""
+msgstr "nastavitve"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Funkcionalnost nastavitev kmalu na voljo!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Tehnična napaka v Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Vrhunske spletne kamere"
 
 msgid "Update"
-msgstr ""
+msgstr "posodobitev"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Posodobitev prekinjena!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Posodobitev je naletela na napako (koda: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Posodobi vtičnik"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Nadgradnja ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Seznami uporabnikov"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Že uporabljate najnovejšo različico: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Napaka pri predvajanju YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Vaši priljubljeni"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ni mogoče najti. Prosim namestite ga."

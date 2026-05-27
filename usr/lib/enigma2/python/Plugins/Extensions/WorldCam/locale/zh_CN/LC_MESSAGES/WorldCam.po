@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- 本地 YouTube 播放列表"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- 本地网络摄像头列表"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- 在线直播和 YouTube 网络摄像头"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- 在线网络摄像头列表"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- 其他来源"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "非洲"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "美洲"
 
 msgid "About"
-msgstr ""
+msgstr "关于"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "添加到收藏夹"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "添加/删除"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "已添加至收藏夹！"
 
 msgid "Categories"
-msgstr ""
+msgstr "类别"
 
 msgid "Change language"
-msgstr ""
+msgstr "更改语言"
 
 msgid "Continents"
-msgstr ""
+msgstr "大陆"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "无法提取 YouTube 流"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "无法提取视频流"
 
 msgid "Countries"
-msgstr ""
+msgstr "国家"
 
 msgid "Country"
-msgstr ""
+msgstr "国家"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "由 卢鲁拉 开发"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "欧洲"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "空播放列表文件"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "添加收藏夹时出错"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "更改语言时出错"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "加载类别时出错"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "加载大陆时出错"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "加载国家/地区时出错"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "加载收藏夹时出错"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "加载位置时出错"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "加载播放列表时出错"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "加载播放列表时出错"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "加载顶级网络摄像头时出错"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "加载网络摄像头时出错"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "打开语言选择时出错"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "打开播放列表时出错"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "删除收藏夹时出错"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "切换网络摄像头时出错"
 
 msgid "Exit"
-msgstr ""
+msgstr "出口"
 
 msgid "Export"
-msgstr ""
+msgstr "出口"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "全部导出到花束"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "导出失败："
 
 msgid "Favorites"
-msgstr ""
+msgstr "收藏夹"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "收藏夹导出成功！重新启动 Enigma2 即可看到它们。"
 
 msgid "File not found"
-msgstr ""
+msgstr "找不到文件"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "论坛支持：www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub：%s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "包含的播放列表和来源："
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "YouTube 网址无效"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "语言更改为 %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "具有全球位置的实时网络摄像头查看器"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "来自世界各地的实时网络摄像头"
 
 msgid "Menu"
-msgstr ""
+msgstr "菜单"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "没有可导出的收藏夹"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "还没有收藏夹"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "没有可用的播放列表"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "未找到播放列表"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "播放列表中没有有效的网络摄像头"
 
 msgid "Play"
-msgstr ""
+msgstr "玩"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "此流不支持播放/暂停"
 
 msgid "Playback error"
-msgstr ""
+msgstr "播放错误"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "播放失败！"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "由 Enigma2 和 Python 提供支持"
 
 msgid "Remove"
-msgstr ""
+msgstr "消除"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "从收藏夹中删除"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "已从收藏夹中删除"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "已从收藏夹中删除：%s"
 
 msgid "Select"
-msgstr ""
+msgstr "选择"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "选择有效类别"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "选择有效位置"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "选择有效的播放列表"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "选择有效的网络摄像头"
 
 msgid "Select an option"
-msgstr ""
+msgstr "选择一个选项"
 
 msgid "Select language"
-msgstr ""
+msgstr "选择语言"
 
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "设置功能即将推出！"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl 中的技术错误"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "热门网络摄像头"
 
 msgid "Update"
-msgstr ""
+msgstr "更新"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "更新中止！"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "更新遇到错误（代码：%s）"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "更新插件"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "正在升级..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "用户列表"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "您已经在运行最新版本：{}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube 播放错误"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "您的最爱"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "未找到 yt-dlp。请安装它。"

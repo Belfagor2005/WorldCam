@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- لیست پخش محلی YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- لیست وب کم محلی"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- وب کم مستقیم آنلاین و یوتیوب"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- لیست وب کم آنلاین"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- منابع دیگر"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "آفریقا"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "آمریکا"
 
 msgid "About"
-msgstr ""
+msgstr "درباره"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "به علاقه مندی ها اضافه کنید"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "افزودن/حذف"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "به علاقه مندی ها اضافه شد!"
 
 msgid "Categories"
-msgstr ""
+msgstr "دسته بندی ها"
 
 msgid "Change language"
-msgstr ""
+msgstr "تغییر زبان"
 
 msgid "Continents"
-msgstr ""
+msgstr "قاره ها"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "پخش جریانی YouTube استخراج نشد"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "پخش جریانی ویدیو استخراج نشد"
 
 msgid "Countries"
-msgstr ""
+msgstr "کشورها"
 
 msgid "Country"
-msgstr ""
+msgstr "کشور"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "توسعه یافته توسط Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "اروپا"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "فایل لیست پخش خالی"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "خطا در افزودن موارد دلخواه"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "خطا در تغییر زبان"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "خطا در بارگیری دسته‌ها"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "خطا در بارگیری قاره ها"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "خطا در بارگیری کشورها"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "خطا در بارگیری موارد دلخواه"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "خطا در بارگیری مکان‌ها"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "خطا در بارگیری لیست پخش"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "خطا در بارگیری لیست های پخش"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "خطا در بارگیری وب کم های برتر"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "خطا در بارگیری وب کم"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "خطا در باز کردن انتخاب زبان"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "خطا در باز کردن لیست پخش"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "خطا در حذف موارد دلخواه"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "خطا در تعویض وب کم"
 
 msgid "Exit"
-msgstr ""
+msgstr "خارج شوید"
 
 msgid "Export"
-msgstr ""
+msgstr "صادرات"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "صادرات همه به دسته گل"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "صادرات انجام نشد:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "موارد دلخواه"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "موارد دلخواه با موفقیت صادر شد! Enigma2 را مجددا راه اندازی کنید تا آنها را ببینید."
 
 msgid "File not found"
-msgstr ""
+msgstr "فایل پیدا نشد"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "پشتیبانی انجمن: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "فهرست‌های پخش و منابع موجود:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube نامعتبر است"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "زبان به %s تغییر کرد"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "نمایشگر وب کم زنده با مکان های جهانی"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "وب کم های زنده از سراسر جهان"
 
 msgid "Menu"
-msgstr ""
+msgstr "منو"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "هیچ مورد دلخواه برای صادرات وجود ندارد"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "هنوز موارد دلخواه وجود ندارد"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "هیچ لیست پخشی در دسترس نیست"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "هیچ لیست پخشی یافت نشد"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "هیچ وب کم معتبری در لیست پخش وجود ندارد"
 
 msgid "Play"
-msgstr ""
+msgstr "بازی کنید"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "پخش/مکث برای این جریان پشتیبانی نمی‌شود"
 
 msgid "Playback error"
-msgstr ""
+msgstr "خطای پخش"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "پخش نشد!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "ارائه شده توسط Enigma2 و Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "حذف کنید"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "حذف از موارد دلخواه"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "از موارد دلخواه حذف شد"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "از موارد دلخواه حذف شد: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "انتخاب کنید"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "یک دسته معتبر انتخاب کنید"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "یک مکان معتبر انتخاب کنید"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "یک لیست پخش معتبر انتخاب کنید"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "یک وب کم معتبر انتخاب کنید"
 
 msgid "Select an option"
-msgstr ""
+msgstr "یک گزینه را انتخاب کنید"
 
 msgid "Select language"
-msgstr ""
+msgstr "زبان را انتخاب کنید"
 
 msgid "Settings"
-msgstr ""
+msgstr "تنظیمات"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "عملکرد تنظیمات به زودی!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "خطای فنی در Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "وب کم های برتر"
 
 msgid "Update"
-msgstr ""
+msgstr "به روز رسانی"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "به روز رسانی لغو شد!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "به روز رسانی با خطا مواجه شد (کد: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "افزونه را به روز کنید"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "در حال ارتقاء..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "لیست های کاربر"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "شما در حال حاضر آخرین نسخه را اجرا می کنید: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "خطای پخش YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "موارد دلخواه شما"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp پیدا نشد. لطفا آن را نصب کنید."

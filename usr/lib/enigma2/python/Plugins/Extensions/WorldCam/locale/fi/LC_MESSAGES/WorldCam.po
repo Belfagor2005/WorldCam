@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Paikallinen YouTube-soittolista"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Paikallinen verkkokameraluettelo"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct- ja YouTube-verkkokamerat"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Verkkokameraluettelo"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Muut lähteet"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKAS"
 
 msgid "About"
-msgstr ""
+msgstr "Noin"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Lisää suosikkeihin"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Lisää/Poista"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Lisätty suosikkeihin!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Luokat"
 
 msgid "Change language"
-msgstr ""
+msgstr "Vaihda kieli"
 
 msgid "Continents"
-msgstr ""
+msgstr "maanosat"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube-streamia ei voitu purkaa"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Videovirtaa ei voitu purkaa"
 
 msgid "Countries"
-msgstr ""
+msgstr "maat"
 
 msgid "Country"
-msgstr ""
+msgstr "Maa"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Kehittäjä Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROOPPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Tyhjä soittolistatiedosto"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Virhe suosikin lisäämisessä"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Virhe kielen vaihtamisessa"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Virhe ladattaessa luokkia"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Virhe ladattaessa maanosia"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Virhe ladattaessa maita"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Virhe ladattaessa suosikkeja"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Virhe ladattaessa sijainteja"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Virhe soittolistan lataamisessa"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Virhe soittolistojen lataamisessa"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Virhe ladattaessa parhaita verkkokameroita"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Virhe verkkokameroiden lataamisessa"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Virhe avattaessa kielivalintaa"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Virhe avattaessa soittolistaa"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Virhe poistettaessa suosikkia"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Virhe verkkokameraa vaihdettaessa"
 
 msgid "Exit"
-msgstr ""
+msgstr "Poistu"
 
 msgid "Export"
-msgstr ""
+msgstr "Viedä"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Vie kaikki Bouquetiin"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Vienti epäonnistui:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Suosikit"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Suosikkien vienti onnistui! Käynnistä Enigma2 uudelleen nähdäksesi ne."
 
 msgid "File not found"
-msgstr ""
+msgstr "Tiedostoa ei löydy"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Foorumin tuki: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Mukana olevat soittolistat ja lähteet:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Virheellinen YouTube-URL-osoite"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Kieleksi vaihdettiin %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Live-verkkokamerakatseluohjelma, joka sisältää maailmanlaajuiset sijainnit"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Live-web-kamerat ympäri maailmaa"
 
 msgid "Menu"
-msgstr ""
+msgstr "Valikko"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Ei suosikkeja vietäväksi"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Ei vielä suosikkeja"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Ei soittolistoja saatavilla"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Soittolistoja ei löytynyt"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Soittolistassa ei ole kelvollisia verkkokameroita"
 
 msgid "Play"
-msgstr ""
+msgstr "Pelata"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Toistoa/taukoa ei tueta tässä suoratoistossa"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Toistovirhe"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Toisto epäonnistui!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Voimanlähteenä Enigma2 ja Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Poistaa"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Poista suosikeista"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Poistettu suosikeista"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Poistettu suosikeista: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Valitse"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Valitse kelvollinen luokka"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Valitse kelvollinen sijainti"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Valitse kelvollinen soittolista"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Valitse kelvollinen verkkokamera"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Valitse vaihtoehto"
 
 msgid "Select language"
-msgstr ""
+msgstr "Valitse kieli"
 
 msgid "Settings"
-msgstr ""
+msgstr "Asetukset"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Asetukset tulevat pian!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Tekninen virhe Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Suosituimmat verkkokamerat"
 
 msgid "Update"
-msgstr ""
+msgstr "Päivittää"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Päivitys keskeytetty!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Päivitys havaitsi virheen (koodi: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Päivitä laajennus"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Päivitetään..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Käyttäjäluettelot"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Käytössäsi on jo uusin versio: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube-toistovirhe"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Omat suosikit"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ei löydy. Asenna se."

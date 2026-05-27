@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Playlist local YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lista locală de camere web"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct și camere web YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Lista de camere web online"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Alte surse"
 
 msgid "AFRICA"
 msgstr ""
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERICII"
 
 msgid "About"
-msgstr ""
+msgstr "Despre"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Adăugați la favorite"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Adăugați/Eliminați"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Adăugat la favorite!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Categorii"
 
 msgid "Change language"
-msgstr ""
+msgstr "Schimbați limba"
 
 msgid "Continents"
-msgstr ""
+msgstr "Continentele"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Nu s-a putut extrage fluxul YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Nu s-a putut extrage fluxul video"
 
 msgid "Countries"
-msgstr ""
+msgstr "Țări"
 
 msgid "Country"
-msgstr ""
+msgstr "Ţară"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Dezvoltat de Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Fișierul playlist gol"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Eroare la adăugarea preferatului"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Eroare la schimbarea limbii"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Eroare la încărcarea categoriilor"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Eroare la încărcarea continentelor"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Eroare la încărcarea țărilor"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Eroare la încărcarea favoritelor"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Eroare la încărcarea locațiilor"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Eroare la încărcarea playlistului"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Eroare la încărcarea listelor de redare"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Eroare la încărcarea camerelor web de top"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Eroare la încărcarea camerelor web"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Eroare la deschiderea selecției limbii"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Eroare la deschiderea listei de redare"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Eroare la eliminarea preferatului"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Eroare la comutarea camerei web"
 
 msgid "Exit"
-msgstr ""
+msgstr "Ieșire"
 
 msgid "Export"
 msgstr ""
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Exportați totul în Buchet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Export eșuat:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favorite"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Favoritele au fost exportate cu succes! Reporniți Enigma2 pentru a le vedea."
 
 msgid "File not found"
-msgstr ""
+msgstr "Fișierul nu a fost găsit"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Suport pe forum: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Liste de redare și surse incluse:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Adresă URL YouTube nevalidă"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Limba a fost schimbată în %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Vizualizator live webcam cu locații globale"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Camere web live din întreaga lume"
 
 msgid "Menu"
-msgstr ""
+msgstr "Meniu"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Nu sunt favorite de exportat"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Încă nu sunt favorite"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Nu există liste de redare disponibile"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Nu s-au găsit liste de redare"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Nu există camere web valide în lista de redare"
 
 msgid "Play"
-msgstr ""
+msgstr "Juca"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Redarea/pauză nu este acceptată pentru acest flux"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Eroare de redare"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Redarea a eșuat!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Produs de Enigma2 și Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Elimina"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Eliminați din favorite"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Eliminat din favorite"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Eliminat din favorite: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Selecta"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Selectați o categorie validă"
 
 msgid "Select a valid location"
 msgstr ""
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Selectați o listă de redare validă"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Selectați o cameră web validă"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Selectați o opțiune"
 
 msgid "Select language"
-msgstr ""
+msgstr "Selectați limba"
 
 msgid "Settings"
-msgstr ""
+msgstr "Setări"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Funcționalitatea setărilor va veni în curând!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Eroare tehnică în Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Cele mai bune camere web"
 
 msgid "Update"
-msgstr ""
+msgstr "Actualizare"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Actualizare a fost anulată!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Actualizarea a întâmpinat o eroare (cod: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Actualizați pluginul"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Se actualizează..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Liste de utilizatori"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Rulați deja cea mai recentă versiune: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Eroare de redare YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Favoritele tale"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp nu a fost găsit. Vă rugăm să o instalați."

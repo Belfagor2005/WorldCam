@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Rhestr chwarae YouTube leol"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Rhestr gwe-gamera leol"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Gwe-gamerâu Ar-lein Uniongyrchol a YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Rhestr gwe-gamera ar-lein"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Ffynonellau eraill"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFFRICA"
 
 msgid "AMERICAS"
 msgstr ""
 
 msgid "About"
-msgstr ""
+msgstr "Ynghylch"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Ychwanegu at ffefrynnau"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Ychwanegu/Dileu"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Wedi'i ychwanegu at ffefrynnau!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Categorïau"
 
 msgid "Change language"
-msgstr ""
+msgstr "Newid iaith"
 
 msgid "Continents"
-msgstr ""
+msgstr "Cyfandiroedd"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Methu echdynnu ffrwd YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Methu echdynnu ffrwd fideo"
 
 msgid "Countries"
-msgstr ""
+msgstr "Gwledydd"
 
 msgid "Country"
-msgstr ""
+msgstr "Gwlad"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Datblygwyd gan Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EWROP"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Ffeil rhestr chwarae wag"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Gwall wrth ychwanegu ffefryn"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Gwall wrth newid iaith"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Gwall wrth lwytho categorïau"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Gwall wrth lwytho cyfandiroedd"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Gwall wrth lwytho gwledydd"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Gwall wrth lwytho ffefrynnau"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Gwall wrth lwytho lleoliadau"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Gwall wrth lwytho rhestr chwarae"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Gwall wrth lwytho rhestri chwarae"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Gwall wrth lwytho gwe-gamerâu uchaf"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Gwall wrth lwytho gwe-gamerâu"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Gwall wrth agor y dewis iaith"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Gwall wrth agor y rhestr chwarae"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Gwall wrth ddileu'r ffefryn"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Gwall wrth newid gwe-gamera"
 
 msgid "Exit"
-msgstr ""
+msgstr "Ymadael"
 
 msgid "Export"
-msgstr ""
+msgstr "Allforio"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Allforio Pawb i Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Wedi methu allforio:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Ffefrynnau"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Ffefrynnau allforio yn llwyddiannus! Ailgychwyn Enigma2 i'w gweld."
 
 msgid "File not found"
-msgstr ""
+msgstr "Ffeil heb ei chanfod"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Cefnogaeth fforwm: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Wedi cynnwys rhestri chwarae a ffynonellau:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube annilys"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Iaith wedi newid i %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Gwyliwr gwe-gamera byw yn cynnwys lleoliadau byd-eang"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Gwe-gamerâu byw o bob rhan o'r byd"
 
 msgid "Menu"
-msgstr ""
+msgstr "Bwydlen"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Dim ffefrynnau i'w hallforio"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Dim ffefrynnau eto"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Dim rhestri chwarae ar gael"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Heb ganfod rhestri chwarae"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Dim gwe-gamerâu dilys yn y rhestr chwarae"
 
 msgid "Play"
-msgstr ""
+msgstr "Chwarae"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Ni chefnogir chwarae/saib ar gyfer y ffrwd hon"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Gwall chwarae"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Methodd chwarae!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Wedi'i bweru gan Enigma2 a Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Dileu"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Tynnwch o'r ffefrynnau"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Wedi'i dynnu o'r ffefrynnau"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Wedi'i dynnu o'r ffefrynnau: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Dewiswch"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Dewiswch gategori dilys"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Dewiswch leoliad dilys"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Dewiswch restr chwarae ddilys"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Dewiswch we-gamera dilys"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Dewiswch opsiwn"
 
 msgid "Select language"
-msgstr ""
+msgstr "Dewiswch iaith"
 
 msgid "Settings"
-msgstr ""
+msgstr "Gosodiadau"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Swyddogaeth gosodiadau yn dod yn fuan!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Gwall technegol yn Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Gwegamerâu Gorau"
 
 msgid "Update"
-msgstr ""
+msgstr "Diweddariad"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Diweddariad wedi'i Erthylu!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Daeth y diweddariad ar draws gwall (cod: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Diweddaru ategyn"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Wrthi'n uwchraddio..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Rhestrau Defnyddwyr"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Rydych chi eisoes yn rhedeg y fersiwn diweddaraf: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Gwall chwarae YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Eich Ffefrynnau"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp heb ei ganfod. Os gwelwch yn dda gosod."

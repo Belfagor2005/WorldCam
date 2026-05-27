@@ -17,271 +17,265 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- YouTubeerli “YouTube” sanaw sanawy"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- weberli web kamera sanawy"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Onlaýn göni we YouTube web kameralary"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Onlaýn web kamera sanawy"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Beýleki çeşmeler"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Takmynan"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Halanýanlara goşuň"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Goş / aýyr"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Halanýanlara goşuldy!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategoriýalar"
 
 msgid "Change language"
-msgstr ""
+msgstr "Dil üýtgetmek"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinentler"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube akymyny alyp bolmady"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Wideo akymyny alyp bolmady"
 
 msgid "Countries"
-msgstr ""
+msgstr "Countriesurtlar"
 
 msgid "Country"
-msgstr ""
+msgstr "Countryurt"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Lululla tarapyndan işlenip düzüldi"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "UREWROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Boş sanaw sanawy faýly"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Halaýanlary goşmakda säwlik"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Dil üýtgetmekde säwlik"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Kategoriýalary ýüklemekde säwlik"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Kontinentleri ýüklemekde ýalňyşlyk"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Countriesurtlary ýüklemekde ýalňyşlyk"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Halanýanlary ýüklemekde säwlik"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Ationserleri ýüklemekde säwlik"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Aýdym sanawyny ýüklemekde säwlik"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Sanaw sanawlaryny ýüklemekde säwlik"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Topokarky web kameralaryny ýüklemekde säwlik"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Web kameralary ýüklemekde säwlik"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Dil saýlamakda ýalňyşlyk"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Aýdym sanawyny açmakda säwlik"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Halaýanlary aýyrmakda säwlik"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Web kamerany üýtgetmekde säwlik"
 
 msgid "Exit"
-msgstr ""
+msgstr "Çyk"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksport"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Hemmesini bukja eksport ediň"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksport şowsuz:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Halanýanlar"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Halanýanlar üstünlikli eksport edildi! Olary görmek üçin Enigma2-i täzeden açyň."
 
 msgid "File not found"
-msgstr ""
+msgstr "Faýl tapylmady"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Forum goldawy: www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub:% s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Goşulan sanaw sanawlary we çeşmeler:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Nädogry YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Dil% s üýtgedi"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Global ýerleri görkezýän göni web kamera tomaşaçysy"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Dünýäniň dürli künjeginden göni web kameralary"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menýu"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Eksport etmek üçin halanýanlar ýok"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Halanýanlar ýok"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Pleýlist ýok"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Sanaw sanawlary tapylmady"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Aýdym sanawynda dogry web kameralary ýok"
 
 msgid "Play"
-msgstr ""
+msgstr "Oýna"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Bu akym üçin goldanok / duruzyň"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Aýtdyrmak säwligi"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Aýtdyrmak şowsuz!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 we Python tarapyndan işlenýär"
 
 msgid "Remove"
-msgstr ""
+msgstr "Aýyr"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Halanýanlardan aýyryň"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Halanýanlardan aýryldy"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Halanýanlardan aýryldy:% s"
 
 msgid "Select"
-msgstr ""
+msgstr "Saýlaň"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Dogry kategoriýany saýlaň"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Dogry ýeri saýlaň"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Dogry sanaw sanawyny saýlaň"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Dogry web kamerasyny saýlaň"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Bir warianty saýlaň"
 
 msgid "Select language"
-msgstr ""
+msgstr "Dil saýlaň"
 
 msgid "Settings"
-msgstr ""
+msgstr "Sazlamalar"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Sazlamalaryň işlemegi ýakyn wagtda!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl-de tehniki ýalňyşlyk"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Iň ýokary web kameralary"
 
 msgid "Update"
-msgstr ""
+msgstr "Täzelen"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Täzelenme ýatyryldy!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Täzelenme säwlik bilen ýüzbe-ýüz boldy (kod:% s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Plagini täzeläň"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Döwrebaplaşdyrmak ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Ulanyjy sanawlary"
 
 msgid "WorldCam v%s"
-msgstr ""
+msgstr "WorldCam v% s"
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "WorldCam v {}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Iň soňky wersiýasyny eýýäm işleýärsiňiz: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube oýnamak ýalňyşlygy"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Halaýanlaryňyz"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp tapylmady Gurnamagyňyzy haýyş edýäris."

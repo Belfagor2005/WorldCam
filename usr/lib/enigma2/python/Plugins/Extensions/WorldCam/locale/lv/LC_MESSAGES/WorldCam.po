@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Vietējais YouTube atskaņošanas saraksts"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Vietējo tīmekļa kameru saraksts"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Tiešsaistes un YouTube tīmekļa kameras"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Tiešsaistes tīmekļa kameru saraksts"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Citi avoti"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "ĀFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Par"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Pievienot izlasei"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Pievienot/Noņemt"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Pievienots izlasei!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorijas"
 
 msgid "Change language"
-msgstr ""
+msgstr "Mainīt valodu"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinenti"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Nevarēja izvilkt YouTube straumi"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Nevarēja izvilkt video straumi"
 
 msgid "Countries"
-msgstr ""
+msgstr "valstis"
 
 msgid "Country"
-msgstr ""
+msgstr "Valsts"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Izstrādāja Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EIROPĀ"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Tukšs atskaņošanas saraksta fails"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Pievienojot izlasi, radās kļūda"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Mainot valodu, radās kļūda"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Ielādējot kategorijas, radās kļūda"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Ielādējot kontinentus, radās kļūda"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Ielādējot valstis, radās kļūda"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Ielādējot izlases, radās kļūda"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Ielādējot atrašanās vietas, radās kļūda"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Ielādējot atskaņošanas sarakstu, radās kļūda"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Ielādējot atskaņošanas sarakstus, radās kļūda"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Ielādējot populārākās tīmekļa kameras, radās kļūda"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Ielādējot tīmekļa kameras, radās kļūda"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Atverot valodas atlasi, radās kļūda"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Atverot atskaņošanas sarakstu, radās kļūda"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Noņemot izlasi, radās kļūda"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Pārslēdzot tīmekļa kameru, radās kļūda"
 
 msgid "Exit"
-msgstr ""
+msgstr "Iziet"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksportēt"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Eksportējiet visu uz pušķi"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksportēšana neizdevās:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Izlase"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Izlase veiksmīgi eksportēta! Restartējiet Enigma2, lai tos redzētu."
 
 msgid "File not found"
-msgstr ""
+msgstr "Fails nav atrasts"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Foruma atbalsts: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Iekļautie atskaņošanas saraksti un avoti:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Nederīgs YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Valoda mainīta uz %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Tiešsaistes tīmekļa kameru skatītājs ar globālām atrašanās vietām"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Tiešraides tīmekļa kameras no visas pasaules"
 
 msgid "Menu"
-msgstr ""
+msgstr "Izvēlne"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Nav izlases, ko eksportēt"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Izlases vēl nav"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Nav pieejams neviens atskaņošanas saraksts"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Nav atrasts neviens atskaņošanas saraksts"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Atskaņošanas sarakstā nav derīgu tīmekļa kameru"
 
 msgid "Play"
-msgstr ""
+msgstr "Spēlēt"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Atskaņošana/pauze šai straumei netiek atbalstīta"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Atskaņošanas kļūda"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Atskaņošana neizdevās!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Darbojas ar Enigma2 un Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Noņemt"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Noņemt no izlases"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Noņemts no izlases"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Noņemts no izlases: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Izvēlieties"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Atlasiet derīgu kategoriju"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Izvēlieties derīgu atrašanās vietu"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Atlasiet derīgu atskaņošanas sarakstu"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Izvēlieties derīgu tīmekļa kameru"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Izvēlieties opciju"
 
 msgid "Select language"
-msgstr ""
+msgstr "Izvēlieties valodu"
 
 msgid "Settings"
-msgstr ""
+msgstr "Iestatījumi"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Drīzumā būs pieejama iestatījumu funkcionalitāte!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Tehniska kļūda Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Populārākās tīmekļa kameras"
 
 msgid "Update"
-msgstr ""
+msgstr "Atjaunināt"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Atjaunināšana pārtraukta!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Atjauninot radās kļūda (kods: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Atjaunināt spraudni"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Notiek jaunināšana..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Lietotāju saraksti"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Jūs jau izmantojat jaunāko versiju: ​​{}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube atskaņošanas kļūda"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Jūsu izlase"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp nav atrasts. Lūdzu, instalējiet to."

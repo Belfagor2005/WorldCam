@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Loka jutuba ludlisto"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Listo de loka retkamerao"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Retaj Rektaj kaj Jutubaj retkameraoj"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Listo de retkameraoj"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Aliaj fontoj"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKO"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKOJ"
 
 msgid "About"
-msgstr ""
+msgstr "Pri"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Aldoni al plej ŝatataj"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Aldoni/Forigi"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Aldonita al plej ŝatataj!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorioj"
 
 msgid "Change language"
-msgstr ""
+msgstr "Ŝanĝi lingvon"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinentoj"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Ne eblis ĉerpi jutuban fluon"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Ne eblis ĉerpi videofluon"
 
 msgid "Countries"
-msgstr ""
+msgstr "Landoj"
 
 msgid "Country"
-msgstr ""
+msgstr "Lando"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Evoluigite fare de Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EŬROPO"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Malplena ludlistdosiero"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Eraro aldonante favoraton"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Eraro dum ŝanĝado de lingvo"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de kategorioj"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de kontinentoj"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de landoj"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de plej ŝatataj"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de lokoj"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de ludlisto"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de ludlistoj"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de supraj retkameraoj"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Eraro dum ŝarĝo de retkameraoj"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Eraro dum malfermado de lingvoelekto"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Eraro dum malfermado de ludlisto"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Eraro dum forigo de favorato"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Eraro ŝanĝante retkameraon"
 
 msgid "Exit"
-msgstr ""
+msgstr "Eliro"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksporto"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Eksportu Ĉion al Bukedo"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksporto malsukcesis:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Plej ŝatataj"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Plej ŝatataj eksportitaj sukcese! Rekomencu Enigma2 por vidi ilin."
 
 msgid "File not found"
-msgstr ""
+msgstr "Dosiero ne trovita"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Foruma subteno: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Inkluditaj ludlistoj kaj fontoj:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Nevalida YouTube-URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Lingvo ŝanĝita al %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Viva retkamerao-spektilo kun tutmondaj lokoj"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Vivaj retkameraoj el la tuta mondo"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menuo"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Neniuj ŝatatoj por eksporti"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Ankoraŭ neniuj ŝatatoj"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Neniuj ludlistoj haveblaj"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Neniuj ludlistoj trovitaj"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Neniuj validaj retkameraoj en ludlisto"
 
 msgid "Play"
-msgstr ""
+msgstr "Ludu"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Ludo/paŭzo ne estas subtenata por ĉi tiu fluo"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Eraro de reprodukto"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Reproduktado malsukcesis!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Funkciigita de Enigma2 kaj Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Forigi"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Forigi el plej ŝatataj"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Forigita el la plej ŝatataj"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Forigita el la plej ŝatataj: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Elektu"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Elektu validan kategorion"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Elektu validan lokon"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Elektu validan ludliston"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Elektu validan retkameraon"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Elektu opcion"
 
 msgid "Select language"
-msgstr ""
+msgstr "Elektu lingvon"
 
 msgid "Settings"
-msgstr ""
+msgstr "Agordoj"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Agordaj funkcioj baldaŭ venos!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Teknika eraro en Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Supraj Retkameraoj"
 
 msgid "Update"
-msgstr ""
+msgstr "Ĝisdatigo"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Ĝisdatigo interrompita!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Ĝisdatigo renkontis eraron (kodo: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Ĝisdatigi kromaĵon"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Ĝisdatigante..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Uzantlistoj"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Vi jam funkcias la plej novan version: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Jutuba reprodukta eraro"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Viaj Favoritaj"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ne trovita. Bonvolu instali ĝin."

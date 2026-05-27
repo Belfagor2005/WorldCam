@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Playlist lokali ta' YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lista tal-webcams lokali"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Webcams Diretti Online u YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Lista tal-webcams onlajn"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Sorsi oħra"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "L-AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "L-AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Dwar"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Żid mal-favoriti"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Żid/Neħħi"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Miżjud mal-favoriti!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategoriji"
 
 msgid "Change language"
-msgstr ""
+msgstr "Ibdel il-lingwa"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinenti"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Ma setax estratt YouTube stream"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Ma setax estratt nixxiegħa tal-vidjo"
 
 msgid "Countries"
-msgstr ""
+msgstr "Pajjiżi"
 
 msgid "Country"
-msgstr ""
+msgstr "Pajjiż"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Żviluppat minn Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "L-EWROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Fajl tal-playlist vojt"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Żball li żżid favorit"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Żball meta tbiddel il-lingwa"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-kategoriji"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-kontinenti"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-pajjiżi"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-favoriti"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-postijiet"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-playlist"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-playlists"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-aqwa webcams"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Żball fit-tagħbija tal-webcams"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Żball fil-ftuħ tal-għażla tal-lingwa"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Żball fil-ftuħ tal-playlist"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Żball fit-tneħħija tal-favorit"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Żball meta taqleb il-webcam"
 
 msgid "Exit"
-msgstr ""
+msgstr "Ħruġ"
 
 msgid "Export"
-msgstr ""
+msgstr "Esportazzjoni"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Esportazzjoni Kollha għal Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "L-esportazzjoni falliet:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favoriti"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Il-favoriti esportati b'suċċess! Erġa' ibda Enigma2 biex tarahom."
 
 msgid "File not found"
-msgstr ""
+msgstr "Fajl ma nstabx"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Appoġġ tal-forum: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Playlists u sorsi inklużi:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube mhux validu"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Lingwa nbidlet għal %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Telespettatur tal-webcam live li fih postijiet globali"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Webcams ħajjin minn madwar id-dinja"
 
 msgid "Menu"
 msgstr ""
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Ebda favoriti għall-esportazzjoni"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Għadu l-ebda favoriti"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Ebda playlists disponibbli"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Ma nstab l-ebda playlist"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Ebda webcams validi fil-playlist"
 
 msgid "Play"
 msgstr ""
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Play/pawsa mhux appoġġjat għal dan il-fluss"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Żball tal-plejbek"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Il-plejbek falla!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Mħaddma minn Enigma2 u Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Neħħi"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Neħħi mill-favoriti"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Imneħħija mill-favoriti"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Imneħħi mill-favoriti: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Agħżel"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Agħżel kategorija valida"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Agħżel post validu"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Agħżel playlist valida"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Agħżel webcam valida"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Agħżel għażla"
 
 msgid "Select language"
-msgstr ""
+msgstr "Agħżel il-lingwa"
 
 msgid "Settings"
 msgstr ""
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Il-funzjonalità tas-settings dalwaqt!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Żball tekniku f'Webcam.pl"
 
 msgid "Top Webcams"
 msgstr ""
 
 msgid "Update"
-msgstr ""
+msgstr "Aġġornament"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Aġġornament Abortat!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "L-aġġornament sab żball (kodiċi: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Aġġorna l-plugin"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Taġġorna..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Listi tal-Utenti"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Diġà qed tħaddem l-aħħar verżjoni: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Żball fil-plejbek ta' YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Il-favoriti tiegħek"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ma nstabx. Jekk jogħġbok installah."

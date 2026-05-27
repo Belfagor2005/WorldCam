@@ -147,7 +147,7 @@ msgstr "Nie znaleziono pliku listy odtwarzania"
 msgid "Forum support: www.corvoboys.org"
 msgstr "Wsparcie forum: www.corvoboys.org"
 
-msgid "GitHub: https://github.com/Belfagor2005/"
+msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
@@ -188,7 +188,7 @@ msgid "Play"
 msgstr "Odtwarzaj"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Odtwarzanie/pauza nie jest obsługiwana w przypadku tego strumienia"
 
 #, fuzzy
 msgid "Playback error"
@@ -240,7 +240,7 @@ msgid "Settings functionality coming soon!"
 msgstr "Funkcjonalność ustawień będzie dostępna już wkrótce!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Błąd techniczny w Webcam.pl"
 
 msgid "Top Webcams"
 msgstr "Najlepsze kamery internetowe"
@@ -257,14 +257,14 @@ msgstr "Podczas aktualizacji wystąpił błąd (kod: %s)"
 msgid "Update plugin"
 msgstr "Aktualizuj wtyczkę"
 
-msgid "Update yt-dlp"
-msgstr "Aktualizuj yt-dlp"
-
 msgid "Upgrading..."
 msgstr "Aktualizowanie..."
 
 msgid "User Lists"
 msgstr "Listy użytkownika"
+
+msgid "WorldCam v%s"
+msgstr ""
 
 msgid "WorldCam v{}"
 msgstr ""
@@ -280,10 +280,13 @@ msgid "Your Favorites"
 msgstr "Twoje ulubione"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
+msgstr "Nie znaleziono yt-dlp. Zainstaluj go."
 
-msgid "yt-dlp updated successfully!"
-msgstr "yt-dlp zaktualizowano pomyślnie!"
+#~ msgid "Update yt-dlp"
+#~ msgstr "Aktualizuj yt-dlp"
+
+#~ msgid "yt-dlp updated successfully!"
+#~ msgstr "yt-dlp zaktualizowano pomyślnie!"
 
 #~ msgid "All YouTube methods failed!"
 #~ msgstr "Wszystkie metody YouTube zawiodły!"

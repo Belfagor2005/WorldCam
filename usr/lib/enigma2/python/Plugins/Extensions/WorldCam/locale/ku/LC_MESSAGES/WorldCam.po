@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lîsteya lîstika YouTube ya herêmî"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lîsteya webcama herêmî"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Webkamerên Direct û YouTube yên serhêl"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Lîsteya webcama serhêl"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Çavkaniyên din"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "EFRÎKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERÎKA"
 
 msgid "About"
-msgstr ""
+msgstr "Ji dor"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Têxe nav bijartan"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Zêdekirin/Rakirin"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Li bijartan zêde kirin!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorî"
 
 msgid "Change language"
-msgstr ""
+msgstr "Ziman biguherînin"
 
 msgid "Continents"
-msgstr ""
+msgstr "Parzemîn"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Nekarî weşana YouTube derxe"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Nekarî weşana vîdyoyê derxe"
 
 msgid "Countries"
-msgstr ""
+msgstr "Welatên"
 
 msgid "Country"
-msgstr ""
+msgstr "Welat"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Ji hêla Lululla ve hatî pêşve xistin"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EWROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Pelê lîsteya lîstikê vala"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Çewtiya zêdekirina bijare"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Di guhertina ziman de çewtî"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Di barkirina kategoriyan de çewtî"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Di barkirina parzemînan de çewtî"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Di barkirina welatan de çewtî"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Di barkirina bijareyan de çewtî"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Di barkirina cihan de çewtî"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Di barkirina lîsteya lîstikê de çewtî"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Di barkirina lîsteyên lîstikê de çewtî"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Di barkirina webkamerên jorîn de çewtî"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Di barkirina webkameran de çewtî"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Çewtiya vekirina hilbijartina ziman"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Di vekirina lîsteya lîstikê de çewtî"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Di rakirina bijare de çewtî"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Di guhertina webcamê de çewtî"
 
 msgid "Exit"
-msgstr ""
+msgstr "Derî"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksport"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Hemî ji Bouquet re hinarde bikin"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Hinardekirin têk çû:"
 
 msgid "Favorites"
 msgstr ""
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Vebijarkên bi serfirazî hatin îxrackirin! Enigma2 ji nû ve bidin destpêkirin da ku wan bibînin."
 
 msgid "File not found"
-msgstr ""
+msgstr "Pelê nehat dîtin"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Piştgiriya Forumê: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Lîsteyên lîstikê û çavkaniyan tê de:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL-ya YouTube nederbasdar e"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Ziman bû %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Dîmenderê kameraya zindî ya ku cîhên gerdûnî vedihewîne"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Malperên zindî yên ji çar aliyên cîhanê"
 
 msgid "Menu"
-msgstr ""
+msgstr "Qerta xûrekê"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "No favorites ji bo hinardekirina"
 
 msgid "No favorites yet"
 msgstr ""
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Lîsteyên lîstikê tune"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Lîsteyên lîstikê nehatin dîtin"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Di lîsteya lîstikê de webcamên derbasdar tune"
 
 msgid "Play"
-msgstr ""
+msgstr "Bazî"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Ji bo vê weşanê lîstin/raweste nayê piştgirî kirin"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Çewtiya lîstikê"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Playback têk çû!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Ji hêla Enigma2 û Python ve hatî hêz kirin"
 
 msgid "Remove"
-msgstr ""
+msgstr "Dûrxistin"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Ji bijartan rakin"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Ji bijartan rakirin"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Ji bijartan hat rakirin: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Neqandin"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Kategoriyek derbasdar hilbijêrin"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Cihek derbasdar hilbijêrin"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Lîsteya lîstikek derbasdar hilbijêrin"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Webcamek derbasdar hilbijêrin"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Vebijêrkek hilbijêre"
 
 msgid "Select language"
-msgstr ""
+msgstr "Ziman hilbijêrin"
 
 msgid "Settings"
 msgstr ""
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "fonksiyona mîhengan di demek nêzîk de tê!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Çewtiya teknîkî di Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Top Webkamera"
 
 msgid "Update"
-msgstr ""
+msgstr "Nûvekirin"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Nûvekirin hate betal kirin!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Nûvekirin rastî xeletiyek hat (kod: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Plugin nûve bikin"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Nûvekirin..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Lîsteyên Bikarhêner"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Jixwe tu guhertoya herî dawî dixebitî: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Çewtiya lîstika YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Favorites te"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp nehat dîtin. Ji kerema xwe saz bikin."

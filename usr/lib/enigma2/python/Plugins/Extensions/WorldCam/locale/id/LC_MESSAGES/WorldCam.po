@@ -17,271 +17,265 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Daftar putar YouTube lokal"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Daftar webcam lokal"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Webcam Langsung Online dan YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Daftar webcam online"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Sumber lain"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Tentang"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Tambahkan ke favorit"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Tambah/Hapus"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Ditambahkan ke favorit!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategori"
 
 msgid "Change language"
-msgstr ""
+msgstr "Ganti bahasa"
 
 msgid "Continents"
-msgstr ""
+msgstr "benua"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Tidak dapat mengekstrak aliran YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Tidak dapat mengekstrak aliran video"
 
 msgid "Countries"
-msgstr ""
+msgstr "Negara"
 
 msgid "Country"
-msgstr ""
+msgstr "Negara"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Dikembangkan oleh Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "File daftar putar kosong"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Terjadi kesalahan saat menambahkan favorit"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Terjadi kesalahan saat mengubah bahasa"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat kategori"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat benua"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat negara"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat favorit"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat lokasi"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat daftar putar"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat daftar putar"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat webcam teratas"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Terjadi kesalahan saat memuat webcam"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Terjadi kesalahan saat membuka pilihan bahasa"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Terjadi kesalahan saat membuka daftar putar"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Terjadi kesalahan saat menghapus favorit"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Terjadi kesalahan saat mengganti kamera web"
 
 msgid "Exit"
-msgstr ""
+msgstr "KELUAR"
 
 msgid "Export"
-msgstr ""
+msgstr "Ekspor"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Ekspor Semua ke Buket"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Ekspor gagal:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favorit"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Favorit berhasil diekspor! Mulai ulang Enigma2 untuk melihatnya."
 
 msgid "File not found"
-msgstr ""
+msgstr "Berkas tidak ditemukan"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Dukungan forum: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Daftar putar dan sumber yang disertakan:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube tidak valid"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Bahasa diubah menjadi %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Penampil webcam langsung yang menampilkan lokasi global"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Webcam langsung dari seluruh dunia"
 
 msgid "Menu"
 msgstr ""
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Tidak ada favorit untuk diekspor"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Belum ada favorit"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Tidak ada daftar putar yang tersedia"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Tidak ada daftar putar yang ditemukan"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Tidak ada webcam yang valid dalam daftar putar"
 
 msgid "Play"
-msgstr ""
+msgstr "Bermain"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Putar/jeda tidak didukung untuk streaming ini"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Kesalahan pemutaran"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Pemutaran gagal!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Didukung oleh Enigma2 dan Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Menghapus"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Hapus dari favorit"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Dihapus dari favorit"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Dihapus dari favorit: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Memilih"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Pilih kategori yang valid"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Pilih lokasi yang valid"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Pilih daftar putar yang valid"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Pilih kamera web yang valid"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Pilih sebuah opsi"
 
 msgid "Select language"
-msgstr ""
+msgstr "Pilih bahasa"
 
 msgid "Settings"
-msgstr ""
+msgstr "Pengaturan"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Fungsi pengaturan segera hadir!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Kesalahan teknis di Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Webcam Teratas"
 
 msgid "Update"
-msgstr ""
+msgstr "Memperbarui"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Pembaruan Dibatalkan!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Pembaruan mengalami kesalahan (kode: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Perbarui plugin"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Perbaikan..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Daftar Pengguna"
 
 msgid "WorldCam v%s"
 msgstr ""
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "Kamera Dunia v{}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Anda sudah menjalankan versi terbaru: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Kesalahan pemutaran YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Favorit Anda"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp tidak ditemukan. Silakan menginstalnya."

@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lokale YouTube-playlist"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lokale webcam list"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct en YouTube webcams"
 
 msgid "- Online webcam list"
 msgstr ""
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Oare boarnen"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Oer"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Taheakje oan favoriten"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Taheakje / Fuortsmite"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Taheakke oan favoriten!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategoryen"
 
 msgid "Change language"
-msgstr ""
+msgstr "Feroarje taal"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontininten"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Koe YouTube-stream net útpakke"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Koe de fideostream net ekstrahearje"
 
 msgid "Countries"
-msgstr ""
+msgstr "Lannen"
 
 msgid "Country"
-msgstr ""
+msgstr "Lân"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Ûntwikkele troch Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Lege playlist triem"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Flater by it tafoegjen fan favoryt"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Flater by it feroarjen fan taal"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Flater by it laden fan kategoryen"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Flater by it laden fan kontininten"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Flater by it laden fan lannen"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Flater by it laden fan favoriten"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Flater by it laden fan lokaasjes"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Flater by it laden fan playlist"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Flater by it laden fan playlists"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Flater by it laden fan top webcams"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Flater by it laden fan webcams"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Flater by it iepenjen fan taalseleksje"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Flater by it iepenjen fan playlist"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Flater by it fuortsmiten fan favoryt"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Flater by it wikseljen fan webcam"
 
 msgid "Exit"
-msgstr ""
+msgstr "Útgong"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksportearje"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Eksportearje Alles nei Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksportearje mislearre:"
 
 msgid "Favorites"
 msgstr ""
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Favorites mei súkses eksportearre! Start Enigma2 opnij om se te sjen."
 
 msgid "File not found"
-msgstr ""
+msgstr "Triem net fûn"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Foarum stipe: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Opnommen playlists en boarnen:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Unjildige YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Taal feroare yn %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Live webcam werjouwer mei wrâldwide lokaasjes"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Live webcams fan oer de hiele wrâld"
 
 msgid "Menu"
 msgstr ""
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Gjin favoriten om te eksportearjen"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Noch gjin favoriten"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Gjin playlists beskikber"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Gjin playlists fûn"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Gjin jildige webcams yn playlist"
 
 msgid "Play"
-msgstr ""
+msgstr "Toanielstik"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Play/pauze net stipe foar dizze stream"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Playback flater"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Ofspieljen mislearre!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Oandreaun troch Enigma2 en Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Fuortsmite"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Fuortsmite fan favoriten"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Fuortsmite fan favoriten"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Fuortsmite fan favoriten: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Selektearje"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Selektearje in jildige kategory"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Selektearje in jildige lokaasje"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Selektearje in jildige playlist"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Selektearje in jildige webcam"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Selektearje in opsje"
 
 msgid "Select language"
-msgstr ""
+msgstr "Selektearje taal"
 
 msgid "Settings"
-msgstr ""
+msgstr "Ynstellings"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Ynstellingsfunksjonaliteit komt gau!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Technyske flater yn Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Top webcams"
 
 msgid "Update"
 msgstr ""
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Update ôfbrutsen!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Fernijing fûn in flater (koade: %s)"
 
 msgid "Update plugin"
 msgstr ""
 
-msgid "Update yt-dlp"
-msgstr ""
-
 msgid "Upgrading..."
-msgstr ""
+msgstr "Opwurdearje..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Brûkerslisten"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Jo rinne al de lêste ferzje: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube-ôfspielflater"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Jo Favorites"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp net fûn. Ynstallearje it asjebleaft."

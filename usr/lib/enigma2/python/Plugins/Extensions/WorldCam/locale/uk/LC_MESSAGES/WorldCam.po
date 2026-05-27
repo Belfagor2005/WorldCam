@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Локальний список відтворення YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Локальний список веб-камер"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Веб-камери Online Direct і YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Список веб-камер онлайн"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Інші джерела"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "АФРИКА"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "АМЕРИКА"
 
 msgid "About"
-msgstr ""
+msgstr "про"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Додати в обране"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Додати/Видалити"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Додано до обраних!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Категорії"
 
 msgid "Change language"
-msgstr ""
+msgstr "Змінити мову"
 
 msgid "Continents"
-msgstr ""
+msgstr "Континенти"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Не вдалося видобути потік YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Не вдалося видобути відеопотік"
 
 msgid "Countries"
-msgstr ""
+msgstr "Країни"
 
 msgid "Country"
-msgstr ""
+msgstr "Країна"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Розроблено Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ЄВРОПА"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Порожній файл списку відтворення"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Помилка додавання вибраного"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Помилка зміни мови"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Помилка завантаження категорій"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Помилка завантаження континентів"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Помилка завантаження країн"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Помилка завантаження вибраного"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Помилка завантаження місць"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Помилка завантаження списку відтворення"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Помилка завантаження списків відтворення"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Помилка завантаження найпопулярніших веб-камер"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Помилка завантаження веб-камер"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Помилка відкриття вибору мови"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Помилка відкриття списку відтворення"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Помилка видалення вибраного"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Помилка перемикання веб-камери"
 
 msgid "Exit"
-msgstr ""
+msgstr "Вихід"
 
 msgid "Export"
-msgstr ""
+msgstr "Експорт"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Експортувати все в букет"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Помилка експорту:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Вибране"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Вибране успішно експортовано! Перезапустіть Enigma2, щоб побачити їх."
 
 msgid "File not found"
-msgstr ""
+msgstr "Файл не знайдено"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Підтримка форуму: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Включені списки відтворення та джерела:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Недійсна URL-адреса YouTube"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Мову змінено на %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Засіб перегляду з веб-камери в реальному часі, що показує глобальні місця розташування"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Онлайн веб-камери з усього світу"
 
 msgid "Menu"
-msgstr ""
+msgstr "Меню"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Немає вибраного для експорту"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Вибраних ще немає"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Немає доступних списків відтворення"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Списків відтворення не знайдено"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "У списку відтворення немає дійсних веб-камер"
 
 msgid "Play"
-msgstr ""
+msgstr "грати"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Відтворення/пауза не підтримується для цього потоку"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Помилка відтворення"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Помилка відтворення!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Працює на Enigma2 і Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "видалити"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Видалити з вибраного"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Видалено з вибраного"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Видалено з вибраного: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Виберіть"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Виберіть дійсну категорію"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Виберіть дійсне розташування"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Виберіть дійсний список відтворення"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Виберіть дійсну веб-камеру"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Виберіть опцію"
 
 msgid "Select language"
-msgstr ""
+msgstr "Виберіть мову"
 
 msgid "Settings"
-msgstr ""
+msgstr "Налаштування"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Незабаром з’являться функції налаштувань!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Технічна помилка в Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Топ веб-камер"
 
 msgid "Update"
-msgstr ""
+msgstr "оновлення"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Оновлення скасовано!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Оновлення виявило помилку (код: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Оновити плагін"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Оновлення..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Списки користувачів"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Ви вже використовуєте останню версію: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Помилка відтворення YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Ваші улюблені"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp не знайдено. Будь ласка, встановіть його."

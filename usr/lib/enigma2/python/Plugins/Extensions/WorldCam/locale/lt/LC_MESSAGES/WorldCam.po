@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Vietinis „YouTube“ grojaraštis"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Vietinių internetinių kamerų sąrašas"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Tiesioginės ir „YouTube“ internetinės kameros"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Internetinių kamerų sąrašas"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "– Kiti šaltiniai"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Apie"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Pridėti prie mėgstamiausių"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Pridėti / pašalinti"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Pridėta prie mėgstamiausių!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorijos"
 
 msgid "Change language"
-msgstr ""
+msgstr "Keisti kalbą"
 
 msgid "Continents"
-msgstr ""
+msgstr "Žemynai"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Nepavyko išskleisti „YouTube“ srauto"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Nepavyko išgauti vaizdo srauto"
 
 msgid "Countries"
-msgstr ""
+msgstr "Šalys"
 
 msgid "Country"
-msgstr ""
+msgstr "Šalis"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Sukūrė Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Tuščias grojaraščio failas"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Pridedant mėgstamiausią įvyko klaida"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Keičiant kalbą įvyko klaida"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Klaida įkeliant kategorijas"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Įkeliant žemynus įvyko klaida"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Klaida įkeliant šalis"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Įkeliant mėgstamiausius įvyko klaida"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Įkeliant vietas įvyko klaida"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Įkeliant grojaraštį įvyko klaida"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Įkeliant grojaraščius įvyko klaida"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Įkeliant populiariausias žiniatinklio kameras įvyko klaida"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Įkeliant žiniatinklio kameras įvyko klaida"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Klaida atidarant kalbos pasirinkimą"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Klaida atidarant grojaraštį"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Klaida šalinant mėgstamiausią"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Perjungiant internetinę kamerą įvyko klaida"
 
 msgid "Exit"
-msgstr ""
+msgstr "Išeiti"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksportuoti"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Eksportuokite viską į puokštę"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksportuoti nepavyko:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Mėgstamiausi"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Mėgstamiausi sėkmingai eksportuoti! Iš naujo paleiskite Enigma2, kad pamatytumėte juos."
 
 msgid "File not found"
-msgstr ""
+msgstr "Failas nerastas"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Forumo palaikymas: www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "„GitHub“: %s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Įtraukti grojaraščiai ir šaltiniai:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Netinkamas „YouTube“ URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Kalba pakeista į %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Tiesioginė žiniatinklio kameros peržiūros priemonė su pasaulio vietovėmis"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Tiesioginės internetinės kameros iš viso pasaulio"
 
 msgid "Menu"
-msgstr ""
+msgstr "Meniu"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Nėra mėgstamų eksportuoti"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Mėgstamiausių dar nėra"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Nėra pasiekiamų grojaraščių"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Nerasta jokių grojaraščių"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Grojaraštyje nėra galiojančių internetinių kamerų"
 
 msgid "Play"
-msgstr ""
+msgstr "Žaisti"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Paleisti / pristabdyti šiame sraute nepalaikoma"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Atkūrimo klaida"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Atkūrimas nepavyko!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Palaiko Enigma2 ir Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Pašalinti"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Pašalinti iš mėgstamiausių"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Pašalinta iš mėgstamiausių"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Pašalinta iš mėgstamiausių: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Pasirinkite"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Pasirinkite tinkamą kategoriją"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Pasirinkite tinkamą vietą"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Pasirinkite tinkamą grojaraštį"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Pasirinkite tinkamą internetinę kamerą"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Pasirinkite parinktį"
 
 msgid "Select language"
-msgstr ""
+msgstr "Pasirinkite kalbą"
 
 msgid "Settings"
-msgstr ""
+msgstr "Nustatymai"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Nustatymų funkcija netrukus!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Techninė klaida Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Populiariausios internetinės kameros"
 
 msgid "Update"
-msgstr ""
+msgstr "Atnaujinti"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Atnaujinimas nutrauktas!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Atnaujinant įvyko klaida (kodas: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Atnaujinti papildinį"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Naujovinama..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Vartotojų sąrašai"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Jau naudojate naujausią versiją: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "„YouTube“ atkūrimo klaida"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Jūsų mėgstamiausi"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp nerastas. Įdiekite jį."

@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Orodha ya kucheza ya YouTube ya ndani"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Orodha ya kamera ya wavuti ya ndani"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Kamera za wavuti za Moja kwa moja na YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Orodha ya kamera ya mtandaoni"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Vyanzo vingine"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "MAREKANI"
 
 msgid "About"
-msgstr ""
+msgstr "Kuhusu"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Ongeza kwa vipendwa"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Ongeza/Ondoa"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Imeongezwa kwa vipendwa!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategoria"
 
 msgid "Change language"
-msgstr ""
+msgstr "Badilisha lugha"
 
 msgid "Continents"
-msgstr ""
+msgstr "Mabara"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Haikuweza kutoa mtiririko wa YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Haikuweza kutoa mtiririko wa video"
 
 msgid "Countries"
-msgstr ""
+msgstr "Nchi"
 
 msgid "Country"
-msgstr ""
+msgstr "Nchi"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Imeandaliwa na Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ULAYA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Faili tupu ya orodha ya kucheza"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Hitilafu katika kuongeza kipendwa"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Hitilafu katika kubadilisha lugha"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Hitilafu katika kupakia kategoria"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Hitilafu katika kupakia mabara"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Hitilafu katika kupakia nchi"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Hitilafu katika kupakia vipendwa"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Hitilafu katika kupakia maeneo"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Hitilafu katika kupakia orodha ya kucheza"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Hitilafu katika kupakia orodha za kucheza"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Hitilafu katika kupakia kamera za wavuti maarufu"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Hitilafu katika kupakia kamera za wavuti"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Hitilafu katika kufungua uteuzi wa lugha"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Hitilafu katika kufungua orodha ya kucheza"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Hitilafu katika kuondoa kipendwa"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Hitilafu katika kubadilisha kamera ya wavuti"
 
 msgid "Exit"
-msgstr ""
+msgstr "Utgång"
 
 msgid "Export"
-msgstr ""
+msgstr "Hamisha"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Hamisha Yote kwa Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Imeshindwa kutuma:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Vipendwa"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Vipendwa vimehamishwa! Anzisha upya Enigma2 ili kuziona."
 
 msgid "File not found"
-msgstr ""
+msgstr "Faili haijapatikana"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Usaidizi wa jukwaa: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Orodha za kucheza na vyanzo vilivyojumuishwa:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL ya YouTube si sahihi"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Lugha imebadilishwa hadi %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Kitazamaji cha moja kwa moja cha kamera ya wavuti kinachoangazia maeneo ya kimataifa"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Kamera za wavuti moja kwa moja kutoka kote ulimwenguni"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menyu"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Hakuna vipendwa vya kusafirisha"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Bado hakuna vipendwa"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Hakuna orodha za kucheza zinazopatikana"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Hakuna orodha za kucheza zilizopatikana"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Hakuna kamera za wavuti halali katika orodha ya kucheza"
 
 msgid "Play"
-msgstr ""
+msgstr "Cheza"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Cheza/sitisha haitumiki kwa mtiririko huu"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Hitilafu ya kucheza tena"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Imeshindwa kucheza!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Inaendeshwa na Enigma2 na Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Ondoa"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Ondoa kutoka kwa vipendwa"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Imeondolewa kwenye vipendwa"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Imeondolewa kutoka kwa vipendwa: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Chagua"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Chagua kategoria halali"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Chagua eneo sahihi"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Chagua orodha sahihi ya kucheza"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Chagua kamera ya wavuti halali"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Chagua chaguo"
 
 msgid "Select language"
-msgstr ""
+msgstr "Chagua lugha"
 
 msgid "Settings"
-msgstr ""
+msgstr "Mipangilio"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Utendaji wa mipangilio unakuja hivi karibuni!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Hitilafu ya kiufundi katika Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Kamera za wavuti za juu"
 
 msgid "Update"
-msgstr ""
+msgstr "Sasisha"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Usasishaji Umeghairiwa!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Usasishaji umekumbana na hitilafu (msimbo: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Sasisha programu-jalizi"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Inaboresha..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Orodha za Watumiaji"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Tayari unatumia toleo jipya zaidi: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Hitilafu ya kucheza YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Vipendwa vyako"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp haipatikani. Tafadhali isakinishe."

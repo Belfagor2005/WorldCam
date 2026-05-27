@@ -18,271 +18,265 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- 로컬 YouTube 재생목록"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- 로컬 웹캠 목록"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- 온라인 다이렉트 및 YouTube 웹캠"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- 온라인 웹캠 목록"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- 기타 소스"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "아프리카"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "아메리카"
 
 msgid "About"
-msgstr ""
+msgstr "에 대한"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "즐겨찾기에 추가"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "추가/제거"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "즐겨찾기에 추가되었습니다!"
 
 msgid "Categories"
-msgstr ""
+msgstr "카테고리"
 
 msgid "Change language"
-msgstr ""
+msgstr "언어 변경"
 
 msgid "Continents"
-msgstr ""
+msgstr "대륙"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube 스트림을 추출할 수 없습니다."
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "비디오 스트림을 추출할 수 없습니다."
 
 msgid "Countries"
-msgstr ""
+msgstr "국가"
 
 msgid "Country"
-msgstr ""
+msgstr "국가"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "룰룰라(Lululla)에서 개발한"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "유럽"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "빈 재생 목록 파일"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "즐겨찾기를 추가하는 중에 오류가 발생했습니다."
 
 msgid "Error changing language"
-msgstr ""
+msgstr "언어 변경 중 오류 발생"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "카테고리를 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "대륙을 로드하는 중 오류가 발생했습니다."
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "국가를 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "즐겨찾기를 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "위치를 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "재생목록을 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "재생목록을 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "최고의 웹캠을 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "웹캠을 로드하는 중에 오류가 발생했습니다."
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "언어 선택을 여는 중에 오류가 발생했습니다."
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "재생목록을 여는 중에 오류가 발생했습니다."
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "즐겨찾기를 삭제하는 중에 오류가 발생했습니다."
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "웹캠 전환 오류"
 
 msgid "Exit"
-msgstr ""
+msgstr "출구"
 
 msgid "Export"
-msgstr ""
+msgstr "내보내다"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "부케로 모두 내보내기"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "내보내기 실패:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "즐겨찾기"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "즐겨찾기를 성공적으로 내보냈습니다! Enigma2를 다시 시작하여 확인하세요."
 
 msgid "File not found"
-msgstr ""
+msgstr "파일을 찾을 수 없습니다"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "포럼 지원: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "포함된 재생목록 및 소스:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "잘못된 YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "언어가 %s(으)로 변경되었습니다."
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "전 세계 위치를 보여주는 라이브 웹캠 뷰어"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "전 세계의 라이브 웹캠"
 
 msgid "Menu"
-msgstr ""
+msgstr "메뉴"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "내보낼 즐겨찾기가 없습니다."
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "아직 즐겨찾기가 없습니다."
 
 msgid "No playlists available"
-msgstr ""
+msgstr "사용 가능한 재생목록이 없습니다."
 
 msgid "No playlists found"
-msgstr ""
+msgstr "재생목록을 찾을 수 없습니다."
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "재생목록에 유효한 웹캠이 없습니다."
 
 msgid "Play"
-msgstr ""
+msgstr "놀다"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "이 스트림에서는 재생/일시중지가 지원되지 않습니다."
 
 msgid "Playback error"
-msgstr ""
+msgstr "재생 오류"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "재생에 실패했습니다!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 및 Python으로 구동"
 
 msgid "Remove"
-msgstr ""
+msgstr "제거하다"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "즐겨찾기에서 제거"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "즐겨찾기에서 삭제됨"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "즐겨찾기에서 제거됨: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "선택하다"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "유효한 카테고리를 선택하세요."
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "유효한 위치를 선택하세요."
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "유효한 재생목록을 선택하세요."
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "유효한 웹캠을 선택하세요"
 
 msgid "Select an option"
-msgstr ""
+msgstr "옵션을 선택하세요"
 
 msgid "Select language"
-msgstr ""
+msgstr "언어 선택"
 
 msgid "Settings"
-msgstr ""
+msgstr "설정"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "설정 기능이 곧 제공될 예정입니다!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl의 기술적 오류"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "인기 웹캠"
 
 msgid "Update"
-msgstr ""
+msgstr "업데이트"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "업데이트가 중단되었습니다!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "업데이트 중에 오류가 발생했습니다(코드: %s)."
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "플러그인 업데이트"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "업그레이드 중..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "사용자 목록"
 
 msgid "WorldCam v%s"
 msgstr ""
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "월드캠 v{}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "이미 최신 버전을 실행하고 있습니다: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "유튜브 재생 오류"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "즐겨찾기"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp를 찾을 수 없습니다. 설치해 주세요."

@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- يەرلىك YouTube قويۇش تىزىملىكى"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- يەرلىك تور كامېرا تىزىملىكى"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- توردا بىۋاسىتە ۋە YouTube تور كامېراسى"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- توردىكى كامېرا تىزىملىكى"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- باشقا مەنبەلەر"
 
 msgid "AFRICA"
 msgstr ""
@@ -38,250 +38,244 @@ msgid "AMERICAS"
 msgstr ""
 
 msgid "About"
-msgstr ""
+msgstr "ھەققىدە"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "ياقتۇرىدىغانلارغا قوشۇڭ"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "قوشۇش / ئۆچۈرۈش"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "ياقتۇرىدىغانلارغا قوشۇلدى!"
 
 msgid "Categories"
-msgstr ""
+msgstr "سەھىپىلەر"
 
 msgid "Change language"
-msgstr ""
+msgstr "تىلنى ئۆزگەرتىش"
 
 msgid "Continents"
-msgstr ""
+msgstr "قىتئەلەر"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube ئېقىمىنى چىقىرىۋېتەلمىدى"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "سىن ئېقىمىنى چىقىرىۋېتەلمىدى"
 
 msgid "Countries"
-msgstr ""
+msgstr "دۆلەتلەر"
 
 msgid "Country"
-msgstr ""
+msgstr "دۆلەت"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Lululla تەرىپىدىن ئىجاد قىلىنغان"
 
 msgid "EUROPE"
 msgstr ""
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "قويۇش تىزىملىكى ھۆججىتىنى بوش قويۇڭ"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "ياقتۇرىدىغاننى قوشۇشتا خاتالىق"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "تىل ئۆزگەرتىشتە خاتالىق"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "سەھىپىلەرنى يۈكلەشتە خاتالىق"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "قىتئەلەرنى يۈكلەشتە خاتالىق"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "دۆلەتلەرنى يۈكلەشتە خاتالىق"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "ياقتۇرىدىغانلارنى يۈكلەشتە خاتالىق"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "ئورۇنلارنى يۈكلەشتە خاتالىق"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "قويۇش تىزىملىكى يۈكلەشتە خاتالىق"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "قويۇش تىزىملىكىنى يۈكلەشتە خاتالىق"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "ئۈستۈنكى كامېرالارنى يۈكلەشتە خاتالىق"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "تور كامېراسىنى يۈكلەشتە خاتالىق"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "تىل تاللاشتا خاتالىق"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "قويۇش تىزىملىكىنى ئېچىشتا خاتالىق"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "ياقتۇرىدىغاننى ئۆچۈرۈشتە خاتالىق"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "كامېرا ئالماشتۇرۇشتا خاتالىق"
 
 msgid "Exit"
-msgstr ""
+msgstr "چىقىش"
 
 msgid "Export"
-msgstr ""
+msgstr "ئېكسپورت"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "ھەممىنى گۈلگە چىقىرىش"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "ئېكسپورت مەغلۇپ بولدى:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "ياقتۇرىدىغانلار"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "مۇۋەپپەقىيەتلىك ئېكسپورت قىلىنغان ئامراقلار! ئۇلارنى كۆرۈش ئۈچۈن Enigma2 نى قايتا قوزغىتىڭ."
 
 msgid "File not found"
-msgstr ""
+msgstr "ھۆججەت تېپىلمىدى"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "مۇنبەرنى قوللاش: www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub:% s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "قويۇش تىزىملىكى ۋە مەنبەلەرنى ئۆز ئىچىگە ئالىدۇ:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "YouTube ئادرېسى ئىناۋەتسىز"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "تىل% s غا ئۆزگەردى"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "يەر شارى ئورۇنلىرى بار نەق مەيدان كامېرا كۆرگۈچى"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "دۇنيانىڭ ھەر قايسى جايلىرىدىكى نەق مەيدان كامېرا"
 
 msgid "Menu"
-msgstr ""
+msgstr "تىزىملىك"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "ئېكسپورت قىلىشقا ئامراق ئەمەس"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "ياقتۇرىدىغانلار تېخى يوق"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "قويغۇچ تىزىملىكى يوق"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "قويغۇچ تىزىملىكى تېپىلمىدى"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "قويۇش تىزىملىكىدە ئىناۋەتلىك تور كامېراسى يوق"
 
 msgid "Play"
-msgstr ""
+msgstr "ئويناش"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "قويۇش / توختىتىش بۇ ئېقىننى قوللىمايدۇ"
 
 msgid "Playback error"
-msgstr ""
+msgstr "قويۇش خاتالىقى"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "قويۇش مەغلۇب بولدى!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 ۋە Python تەرىپىدىن ئىشلەنگەن"
 
 msgid "Remove"
-msgstr ""
+msgstr "ئۆچۈرۈڭ"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "ياقتۇرىدىغانلاردىن ئۆچۈرۈڭ"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "ياقتۇرىدىغانلاردىن ئۆچۈرۈلدى"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "ياقتۇرىدىغانلاردىن چىقىرىۋېتىلدى:% s"
 
 msgid "Select"
-msgstr ""
+msgstr "تاللاڭ"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "ئىناۋەتلىك كاتېگورىيەنى تاللاڭ"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "ئىناۋەتلىك ئورۇننى تاللاڭ"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "ئىناۋەتلىك قويۇش تىزىملىكىنى تاللاڭ"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "ئىناۋەتلىك تور كامېراسىنى تاللاڭ"
 
 msgid "Select an option"
-msgstr ""
+msgstr "بىر تاللاشنى تاللاڭ"
 
 msgid "Select language"
-msgstr ""
+msgstr "تىل تاللاڭ"
 
 msgid "Settings"
-msgstr ""
+msgstr "تەڭشەك"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "تەڭشەك ئىقتىدارى پات يېقىندا كېلىدۇ!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl دىكى تېخنىكىلىق خاتالىق"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "ئەڭ يۇقىرى تور كامېراسى"
 
 msgid "Update"
-msgstr ""
+msgstr "يېڭىلاش"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "يېڭىلانغان ئەمەلدىن قالدۇرۇلدى!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "يېڭىلاش خاتالىققا يولۇقتى (كود:% s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "قىستۇرمىنى يېڭىلاڭ"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "يېڭىلاش ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "ئىشلەتكۈچى تىزىملىكى"
 
 msgid "WorldCam v%s"
-msgstr ""
+msgstr "WorldCam v% s"
 
 msgid "WorldCam v{}"
-msgstr ""
+msgstr "WorldCam v {}"
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "سىز ئەڭ يېڭى نەشرىنى ئىجرا قىلىۋاتىسىز: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube قويۇش خاتالىقى"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "ياقتۇرىدىغانلىرىڭىز"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp تېپىلمىدى. ئۇنى قاچىلاڭ."

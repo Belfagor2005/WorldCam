@@ -257,9 +257,6 @@ msgstr "Update encountered an error (code: %s)"
 msgid "Update plugin"
 msgstr "Update plugin"
 
-msgid "Update yt-dlp"
-msgstr "Update yt-dlp"
-
 msgid "Upgrading..."
 msgstr "Upgrading..."
 
@@ -284,5 +281,8 @@ msgstr "Your Favorites"
 msgid "yt-dlp not found. Please install it."
 msgstr "yt-dlp not found. Please install it."
 
-msgid "yt-dlp updated successfully!"
-msgstr "yt-dlp updated successfully!"
+#~ msgid "Update yt-dlp"
+#~ msgstr "Update yt-dlp"
+
+#~ msgid "yt-dlp updated successfully!"
+#~ msgstr "yt-dlp updated successfully!"

@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- לאקאלע יאָוטובע פּלייַליסט"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- לאקאלע וועבקאַם רשימה"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- אָנליין דירעקט און יאָוטובע וועבקאַמס"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- אָנליין וועבקאַם רשימה"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- אנדערע מקורים"
 
 msgid "AFRICA"
 msgstr ""
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "אמעריקע"
 
 msgid "About"
-msgstr ""
+msgstr "וועגן"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "לייג צו פאַוואָריטעס"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "לייג / אַראָפּנעמען"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "צוגעגעבן צו פאַוואָריטעס!"
 
 msgid "Categories"
-msgstr ""
+msgstr "קאַטעגאָריעס"
 
 msgid "Change language"
-msgstr ""
+msgstr "טוישן שפּראַך"
 
 msgid "Continents"
-msgstr ""
+msgstr "קאָנטינענץ"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "קען נישט עקסטראַקט יאָוטובע סטרים"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "קען נישט עקסטראַקט ווידעא סטרים"
 
 msgid "Countries"
-msgstr ""
+msgstr "לענדער"
 
 msgid "Country"
-msgstr ""
+msgstr "לאַנד"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "דעוועלאָפּעד דורך Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "אייראָפּע"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "ליידיק פּלייַליסט טעקע"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "טעות צו לייגן באַליבסטע"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "טעות ביי ענדערן שפּראַך"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "טעות לאָודינג קאַטעגאָריעס"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "טעות לאָודינג קאָנטינענץ"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "טעות לאָודינג לענדער"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "טעות לאָודינג פאַוואָריטעס"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "טעות לאָודינג לאָוקיישאַנז"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "טעות לאָודינג פּלייַליסט"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "טעות לאָודינג פּלייַליסץ"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "טעות לאָודינג שפּיץ וועבקאַמס"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "טעות לאָודינג וועבקאַמס"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "טעות אין עפענונג שפּראַך סעלעקציע"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "טעות אין עפענונג פּלייַליסט"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "טעות רימוווינג באַליבט"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "טעות ביי סוויטשינג וועבקאַם"
 
 msgid "Exit"
-msgstr ""
+msgstr "אַרויסגאַנג"
 
 msgid "Export"
-msgstr ""
+msgstr "עקספּאָרט"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "עקספּאָרט אַלע צו בוקיי"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "עקספּאָרט ניט אַנדערש:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "פאַוואָריטעס"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "פאַוואָריטעס יקספּאָרטאַד הצלחה! ריסטאַרט Enigma2 צו זען זיי."
 
 msgid "File not found"
-msgstr ""
+msgstr "טעקע ניט געפונען"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "פאָרום שטיצן: www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "גיטהוב: %s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "אַרייַנגערעכנט פּלייַליסץ און מקורים:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "אומגילטיק יאָוטובע URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "שפּראַך געביטן צו %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "לעבן וועבקאַם צוקוקער מיט גלאבאלע לאָוקיישאַנז"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "לעבן וועבקאַמס פון אַרום די וועלט"
 
 msgid "Menu"
-msgstr ""
+msgstr "מעניו"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "קיין פאַוואָריטעס צו אַרויספירן"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "קיין פאַוואָריטעס נאָך"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "ניט קיין פּלייַליסץ בנימצא"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "קיין פּלייַליסץ געפונען"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "קיין גילטיק וועבקאַמס אין פּלייַליסט"
 
 msgid "Play"
-msgstr ""
+msgstr "שפּיל"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "שפּיל / פּויזע ניט געשטיצט פֿאַר דעם טייַך"
 
 msgid "Playback error"
-msgstr ""
+msgstr "פּלייבאַק טעות"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "פּלייבאַק ניט אַנדערש!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "פּאַוערד דורך Enigma2 און Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "אַראָפּנעמען"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "אַראָפּנעמען פון פאַוואָריטעס"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "אַוועקגענומען פון פאַוואָריטעס"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "אַוועקגענומען פון פאַוואָריטעס: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "אויסקלייַבן"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "אויסקלייַבן אַ גילטיק קאַטעגאָריע"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "אויסקלייַבן אַ גילטיק אָרט"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "אויסקלייַבן אַ גילטיק פּלייַליסט"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "אויסקלייַבן אַ גילטיק וועבקאַם"
 
 msgid "Select an option"
-msgstr ""
+msgstr "אויסקלייַבן אַן אָפּציע"
 
 msgid "Select language"
-msgstr ""
+msgstr "אויסקלייַבן שפּראַך"
 
 msgid "Settings"
-msgstr ""
+msgstr "סעטטינגס"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "סעטטינגס פאַנגקשאַנאַליטי קומט באַלד!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "טעכניש טעות אין Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "שפּיץ וועבקאַמס"
 
 msgid "Update"
-msgstr ""
+msgstr "דערהייַנטיקן"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "דערהייַנטיקן אַבאָרטיד!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "דערהייַנטיקונגען געפֿונען אַ טעות (קאָד: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "דערהייַנטיקן פּלוגין"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "אַפּגרייד ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "באַניצער רשימות"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "איר לויפן שוין די לעצטע ווערסיע: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "יאָוטובע פּלייבאַק טעות"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "דיין פאַוואָריטעס"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ניט געפֿונען. ביטע ינסטאַלירן עס."

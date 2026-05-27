@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- បញ្ជីចាក់ YouTube ក្នុងស្រុក"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- បញ្ជី webcam ក្នុងស្រុក"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- អ៊ីនធឺណិតផ្ទាល់ និងគេហទំព័រ YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- បញ្ជីកាមេរ៉ាតាមអ៊ីនធឺណិត"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- ប្រភពផ្សេងទៀត។"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "អាហ្រ្វិក"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "អាមេរិក"
 
 msgid "About"
-msgstr ""
+msgstr "អំពី"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "បន្ថែមទៅចំណូលចិត្ត"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "បន្ថែម/លុប"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "បន្ថែមទៅចំណូលចិត្ត!"
 
 msgid "Categories"
-msgstr ""
+msgstr "ប្រភេទ"
 
 msgid "Change language"
-msgstr ""
+msgstr "ផ្លាស់ប្តូរភាសា"
 
 msgid "Continents"
-msgstr ""
+msgstr "ទ្វីប"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "មិន​អាច​ទាញ​យក​ការ​ផ្សាយ​របស់ YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "មិន​អាច​ទាញ​យក​ការ​ផ្សាយ​វីដេអូ"
 
 msgid "Countries"
-msgstr ""
+msgstr "ប្រទេស"
 
 msgid "Country"
-msgstr ""
+msgstr "ប្រទេស"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "បង្កើតឡើងដោយ Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "អឺរ៉ុប"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "ឯកសារបញ្ជីចាក់ទទេ"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "កំហុសក្នុងការបន្ថែមចំណូលចិត្ត"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "កំហុសក្នុងការផ្លាស់ប្តូរភាសា"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "មាន​បញ្ហា​ក្នុង​ការ​ផ្ទុក​ប្រភេទ"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "កំហុសក្នុងការផ្ទុកទ្វីប"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "កំហុសក្នុងការផ្ទុកប្រទេស"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "កំហុសក្នុងការផ្ទុកចំណូលចិត្ត"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "កំហុសក្នុងការផ្ទុកទីតាំង"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "មាន​បញ្ហា​ក្នុង​ការ​ផ្ទុក​បញ្ជី​ចាក់"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "មាន​បញ្ហា​ក្នុង​ការ​ផ្ទុក​បញ្ជី​ចាក់"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "កំហុសក្នុងការផ្ទុកគេហទំព័រកាមេរ៉ាកំពូល"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "មាន​បញ្ហា​ក្នុង​ការ​ផ្ទុក​កាមេរ៉ា​បណ្ដាញ"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "កំហុសក្នុងការបើកការជ្រើសរើសភាសា"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "កំហុសក្នុងការបើកបញ្ជីចាក់"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "មាន​បញ្ហា​ក្នុង​ការ​យក​សំណព្វ​ចេញ"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "មាន​បញ្ហា​ក្នុង​ការ​ប្ដូរ​កាមេរ៉ា​បណ្ដាញ"
 
 msgid "Exit"
-msgstr ""
+msgstr "ចេញ"
 
 msgid "Export"
-msgstr ""
+msgstr "នាំចេញ"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "នាំចេញទាំងអស់ទៅភួង"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "ការនាំចេញបរាជ័យ៖"
 
 msgid "Favorites"
-msgstr ""
+msgstr "ចំណូលចិត្ត"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "ចំណូលចិត្តបាននាំចេញដោយជោគជ័យ! ចាប់ផ្ដើម Enigma2 ឡើងវិញ ដើម្បីមើលពួកវា។"
 
 msgid "File not found"
-msgstr ""
+msgstr "រកមិនឃើញឯកសារ"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "វេទិកាគាំទ្រ៖ www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub៖ %s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "បញ្ជីចាក់ និងប្រភពរួមបញ្ចូល៖"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube មិន​ត្រឹមត្រូវ"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "ភាសាបានប្តូរទៅជា %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "កម្មវិធីមើលកាមេរ៉ាបណ្ដាញផ្ទាល់ដែលមានទីតាំងសកល"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "ការផ្សាយបន្តផ្ទាល់តាមអ៊ីនធឺណិតពីជុំវិញពិភពលោក"
 
 msgid "Menu"
-msgstr ""
+msgstr "ម៉ឺនុយ"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "មិនមានចំណូលចិត្តក្នុងការនាំចេញទេ។"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "មិនទាន់មានចំណូលចិត្តនៅឡើយទេ"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "មិនមានបញ្ជីចាក់ទេ។"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "រកមិនឃើញបញ្ជីចាក់ទេ។"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "មិនមាន webcams ត្រឹមត្រូវនៅក្នុងបញ្ជីចាក់ទេ។"
 
 msgid "Play"
-msgstr ""
+msgstr "លេង"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "មិនគាំទ្រការលេង/ផ្អាកសម្រាប់ការផ្សាយនេះទេ។"
 
 msgid "Playback error"
-msgstr ""
+msgstr "កំហុសក្នុងការចាក់សារថ្មី។"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "ការចាក់សារថ្មីបានបរាជ័យ!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "ដំណើរការដោយ Enigma2 និង Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "ដកចេញ"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "យកចេញពីចំណូលចិត្ត"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "បានដកចេញពីចំណូលចិត្ត"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "បានដកចេញពីចំណូលចិត្ត៖ %s"
 
 msgid "Select"
-msgstr ""
+msgstr "ជ្រើសរើស"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "ជ្រើសរើសប្រភេទត្រឹមត្រូវ។"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "ជ្រើសរើសទីតាំងត្រឹមត្រូវ។"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "ជ្រើសរើសបញ្ជីចាក់ត្រឹមត្រូវ។"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "ជ្រើសរើស webcam ត្រឹមត្រូវ។"
 
 msgid "Select an option"
-msgstr ""
+msgstr "ជ្រើសរើសជម្រើសមួយ។"
 
 msgid "Select language"
-msgstr ""
+msgstr "ជ្រើសរើសភាសា"
 
 msgid "Settings"
-msgstr ""
+msgstr "ការកំណត់"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "មុខងារកំណត់នឹងមកដល់ឆាប់ៗនេះ!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "កំហុសបច្ចេកទេសនៅក្នុង Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "គេហទំព័រកាមេរ៉ាកំពូល"
 
 msgid "Update"
-msgstr ""
+msgstr "ធ្វើបច្ចុប្បន្នភាព"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "ការអាប់ដេតត្រូវបានលុបចោល!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "ការអាប់ដេតបានជួបប្រទះបញ្ហា (កូដ៖ %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "ធ្វើបច្ចុប្បន្នភាពកម្មវិធីជំនួយ"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "កំពុងដំឡើងកំណែ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "បញ្ជីអ្នកប្រើប្រាស់"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "អ្នកកំពុងដំណើរការកំណែចុងក្រោយបំផុតរួចហើយ៖ {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "កំហុសក្នុងការលេង YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "ចំណូលចិត្តរបស់អ្នក។"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp រកមិនឃើញទេ។ សូមដំឡើងវា។"

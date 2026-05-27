@@ -138,11 +138,11 @@ msgid "Export"
 msgstr ""
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Exportálja az összeset a csokorba"
 
 #, fuzzy
 msgid "Export failed:"
-msgstr ""
+msgstr "Nem sikerült exportálni:"
 "Frissítés sikertelen:\n"
 "%s"
 
@@ -150,7 +150,7 @@ msgid "Favorites"
 msgstr "Kedvencek"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "A kedvencek sikeresen exportálva! A megtekintéséhez indítsa újra az Enigma2-t."
 
 #, fuzzy
 msgid "File not found"
@@ -159,8 +159,8 @@ msgstr "Lejátszási lista fájl nem található"
 msgid "Forum support: www.corvoboys.org"
 msgstr "Fórum támogatás: www.corvoboys.org"
 
-msgid "GitHub: https://github.com/Belfagor2005/"
-msgstr "GitHub: https://github.com/Belfagor2005/"
+msgid "GitHub: %s"
+msgstr ""
 
 #, fuzzy
 msgid "Included playlists and sources:"
@@ -203,7 +203,7 @@ msgid "Play"
 msgstr "Lejátszás"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "A lejátszás/szünet nem támogatott ennél az adatfolyamnál"
 
 #, fuzzy
 msgid "Playback error"
@@ -256,7 +256,7 @@ msgid "Settings functionality coming soon!"
 msgstr "Beállítások funkció hamarosan elérhető!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Technikai hiba a Webcam.pl oldalon"
 
 msgid "Top Webcams"
 msgstr "Legjobb webkamerák"
@@ -273,14 +273,14 @@ msgstr "A frissítés hibát észlelt (kód: %s)"
 msgid "Update plugin"
 msgstr "Bővítmény frissítése"
 
-msgid "Update yt-dlp"
-msgstr "Yt-dlp frissítése"
-
 msgid "Upgrading..."
 msgstr "Frissítés..."
 
 msgid "User Lists"
 msgstr "Felhasználói listák"
+
+msgid "WorldCam v%s"
+msgstr "WorldCam v%s"
 
 msgid "WorldCam v{}"
 msgstr "WorldCam v{}"
@@ -296,10 +296,16 @@ msgid "Your Favorites"
 msgstr "Kedvenceid"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
+msgstr "yt-dlp nem található. Kérjük, telepítse."
 
-msgid "yt-dlp updated successfully!"
-msgstr "az yt-dlp frissítése sikeresen megtörtént!"
+#~ msgid "GitHub: https://github.com/Belfagor2005/"
+#~ msgstr "GitHub: https://github.com/Belfagor2005/"
+
+#~ msgid "Update yt-dlp"
+#~ msgstr "Yt-dlp frissítése"
+
+#~ msgid "yt-dlp updated successfully!"
+#~ msgstr "az yt-dlp frissítése sikeresen megtörtént!"
 
 #~ msgid "All YouTube methods failed!"
 #~ msgstr "Minden YouTube metódus kudarcot vallott!"
@@ -403,7 +409,3 @@ msgstr "az yt-dlp frissítése sikeresen megtörtént!"
 #~ msgstr ""
 #~ "Frissítés sikertelen:\n"
 #~ "%s"
-
-#, python-format
-#~ msgid "WorldCam v%s"
-#~ msgstr "WorldCam v%s"

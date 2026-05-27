@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lokal YouTube-spilleliste"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Lokal webkamera liste"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct og YouTube webkameraer"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Online webkamera liste"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Andre kilder"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Om"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Legg til i favoritter"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Legg til/fjern"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Lagt til i favoritter!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorier"
 
 msgid "Change language"
-msgstr ""
+msgstr "Bytt språk"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinenter"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Kunne ikke trekke ut YouTube-strømmen"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Kunne ikke trekke ut videostrømmen"
 
 msgid "Countries"
-msgstr ""
+msgstr "Land"
 
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Utviklet av Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Tom spillelistefil"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Feil ved å legge til favoritt"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Feil ved endring av språk"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Feil ved innlasting av kategorier"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Feil ved innlasting av kontinenter"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Feil ved innlasting av land"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Feil ved innlasting av favoritter"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Feil ved innlasting av plasseringer"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Feil ved innlasting av spilleliste"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Feil ved innlasting av spillelister"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Feil ved innlasting av de beste webkameraene"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Feil ved innlasting av webkameraer"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Feil ved åpning av språkvalg"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Feil ved åpning av spilleliste"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Feil ved fjerning av favoritt"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Feil ved bytte av webkamera"
 
 msgid "Exit"
-msgstr ""
+msgstr "Gå"
 
 msgid "Export"
-msgstr ""
+msgstr "Eksport"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Eksporter alt til bukett"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksport mislyktes:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritter"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Favoritter ble eksportert! Start Enigma2 på nytt for å se dem."
 
 msgid "File not found"
-msgstr ""
+msgstr "Filen ble ikke funnet"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Forumstøtte: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Inkluderte spillelister og kilder:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Ugyldig YouTube-URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Språk endret til %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Live webkameravisning med globale steder"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Live webkameraer fra hele verden"
 
 msgid "Menu"
-msgstr ""
+msgstr "Meny"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Ingen favoritter å eksportere"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Ingen favoritter ennå"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Ingen spillelister tilgjengelig"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Ingen spillelister funnet"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Ingen gyldige webkameraer i spillelisten"
 
 msgid "Play"
-msgstr ""
+msgstr "Spille"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Spill av/pause støttes ikke for denne strømmen"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Avspillingsfeil"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Avspilling mislyktes!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Drevet av Enigma2 og Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Fjerne"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Fjern fra favoritter"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Fjernet fra favoritter"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Fjernet fra favoritter: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Velge"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Velg en gyldig kategori"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Velg et gyldig sted"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Velg en gyldig spilleliste"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Velg et gyldig webkamera"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Velg et alternativ"
 
 msgid "Select language"
-msgstr ""
+msgstr "Velg språk"
 
 msgid "Settings"
-msgstr ""
+msgstr "Innstillinger"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Innstillingsfunksjonalitet kommer snart!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Teknisk feil i Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Topp webkameraer"
 
 msgid "Update"
-msgstr ""
+msgstr "Oppdater"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Oppdatering avbrutt!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Oppdateringen oppdaget en feil (kode: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Oppdater plugin"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Oppgraderer..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Brukerlister"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Du kjører allerede den nyeste versjonen: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube-avspillingsfeil"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Dine favoritter"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ikke funnet. Vennligst installer den."

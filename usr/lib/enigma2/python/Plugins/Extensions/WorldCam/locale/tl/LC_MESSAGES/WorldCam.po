@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Lokal na playlist sa YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Listahan ng lokal na webcam"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct at YouTube webcams"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Online na listahan ng webcam"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Iba pang mga mapagkukunan"
 
 msgid "AFRICA"
 msgstr ""
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Tungkol sa"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Idagdag sa mga paborito"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Magdagdag/Mag-alis"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Idinagdag sa mga paborito!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Mga kategorya"
 
 msgid "Change language"
-msgstr ""
+msgstr "Baguhin ang wika"
 
 msgid "Continents"
-msgstr ""
+msgstr "Mga kontinente"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Hindi ma-extract ang stream sa YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Hindi ma-extract ang video stream"
 
 msgid "Countries"
-msgstr ""
+msgstr "Mga bansa"
 
 msgid "Country"
-msgstr ""
+msgstr "Bansa"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Binuo ni Lululla"
 
 msgid "EUROPE"
 msgstr ""
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Walang laman ang playlist file"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Error sa pagdaragdag ng paborito"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Error sa pagpapalit ng wika"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Error sa paglo-load ng mga kategorya"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Error sa paglo-load ng mga kontinente"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Error sa paglo-load ng mga bansa"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Error sa paglo-load ng mga paborito"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Error sa paglo-load ng mga lokasyon"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Error sa paglo-load ng playlist"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Error sa paglo-load ng mga playlist"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Error sa paglo-load ng mga nangungunang webcam"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Error sa paglo-load ng mga webcam"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Error sa pagbubukas ng pagpili ng wika"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Error sa pagbubukas ng playlist"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Error sa pag-alis ng paborito"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Error sa paglipat ng webcam"
 
 msgid "Exit"
-msgstr ""
+msgstr "Lumabas"
 
 msgid "Export"
-msgstr ""
+msgstr "I-export"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "I-export ang Lahat sa Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Nabigo ang pag-export:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Mga paborito"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Matagumpay na na-export ang mga paborito! I-restart ang Enigma2 para makita sila."
 
 msgid "File not found"
-msgstr ""
+msgstr "Hindi nahanap ang file"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Suporta sa forum: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Mga kasamang playlist at source:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Di-wastong URL ng YouTube"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Ginawang %s ang wika"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Live na webcam viewer na nagtatampok ng mga pandaigdigang lokasyon"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Mga live na webcam mula sa buong mundo"
 
 msgid "Menu"
 msgstr ""
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Walang mga paboritong i-export"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Wala pang paborito"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Walang available na playlist"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Walang nakitang mga playlist"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Walang wastong webcam sa playlist"
 
 msgid "Play"
-msgstr ""
+msgstr "Maglaro"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Hindi sinusuportahan ang pag-play/pause para sa stream na ito"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Error sa pag-playback"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Nabigo ang pag-playback!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Pinapatakbo ng Enigma2 at Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Alisin"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Alisin sa mga paborito"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Inalis sa mga paborito"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Inalis sa mga paborito: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Pumili"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Pumili ng wastong kategorya"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Pumili ng wastong lokasyon"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Pumili ng wastong playlist"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Pumili ng wastong webcam"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Pumili ng opsyon"
 
 msgid "Select language"
-msgstr ""
+msgstr "Pumili ng wika"
 
 msgid "Settings"
-msgstr ""
+msgstr "Mga setting"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Paparating na ang functionality ng mga setting!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Teknikal na error sa Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Mga Nangungunang Webcam"
 
 msgid "Update"
 msgstr ""
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Na-abort ang Update!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Nagkaroon ng error ang update (code: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "I-update ang plugin"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Ina-upgrade..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Mga Listahan ng Gumagamit"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Pinapatakbo mo na ang pinakabagong bersyon: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Error sa pag-playback ng YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Mga Paborito mo"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "hindi nahanap ang yt-dlp. Mangyaring i-install ito."

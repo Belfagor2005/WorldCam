@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- רשימת השמעה מקומית של YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- רשימת מצלמות אינטרנט מקומיות"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- מצלמות אינטרנט ישירות ו-YouTube באינטרנט"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- רשימת מצלמות אינטרנט מקוונת"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- מקורות אחרים"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "אַפְרִיקָה"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "אמריקה"
 
 msgid "About"
-msgstr ""
+msgstr "אוֹדוֹת"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "הוסף למועדפים"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "הוסף/הסר"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "נוסף למועדפים!"
 
 msgid "Categories"
-msgstr ""
+msgstr "קטגוריות"
 
 msgid "Change language"
-msgstr ""
+msgstr "שנה שפה"
 
 msgid "Continents"
-msgstr ""
+msgstr "יבשות"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "לא ניתן היה לחלץ את זרם YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "לא ניתן היה לחלץ את זרם הווידאו"
 
 msgid "Countries"
-msgstr ""
+msgstr "מדינות"
 
 msgid "Country"
-msgstr ""
+msgstr "מְדִינָה"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "פותח על ידי Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "אֵירוֹפָּה"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "קובץ פלייליסט ריק"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "שגיאה בהוספת מועדף"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "שגיאה בשינוי שפה"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "שגיאה בטעינת קטגוריות"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "שגיאה בטעינת יבשות"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "שגיאה בטעינת מדינות"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "שגיאה בטעינת המועדפים"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "שגיאה בטעינת מיקומים"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "שגיאה בטעינת הפלייליסט"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "שגיאה בטעינת רשימות השמעה"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "שגיאה בטעינת מצלמות רשת מובילות"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "שגיאה בטעינת מצלמות אינטרנט"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "שגיאה בפתיחת בחירת השפה"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "שגיאה בפתיחת רשימת השמעה"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "שגיאה בהסרת המועדף"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "שגיאה בהחלפת מצלמת אינטרנט"
 
 msgid "Exit"
-msgstr ""
+msgstr "יְצִיאָה"
 
 msgid "Export"
-msgstr ""
+msgstr "יְצוּא"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "ייצא הכל לזר"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "הייצוא נכשל:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "מועדפים"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "המועדפים יוצאו בהצלחה! הפעל מחדש את Enigma2 כדי לראות אותם."
 
 msgid "File not found"
-msgstr ""
+msgstr "הקובץ לא נמצא"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "תמיכה בפורום: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "רשימות השמעה ומקורות כלולים:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "כתובת אתר לא חוקית של YouTube"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "השפה השתנתה ל-%s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "מציג מצלמת אינטרנט חיה הכוללת מיקומים גלובליים"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "מצלמות רשת חיות מכל העולם"
 
 msgid "Menu"
-msgstr ""
+msgstr "תַפרִיט"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "אין מועדפים לייצוא"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "עדיין אין מועדפים"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "אין רשימות השמעה זמינות"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "לא נמצאו רשימות השמעה"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "אין מצלמות אינטרנט חוקיות ברשימת ההשמעה"
 
 msgid "Play"
-msgstr ""
+msgstr "לְשַׂחֵק"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "הפעלה/השהיה לא נתמכת עבור הזרם הזה"
 
 msgid "Playback error"
-msgstr ""
+msgstr "שגיאת השמעה"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "ההשמעה נכשלה!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "מופעל על ידי Enigma2 ו-Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "לְהַסִיר"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "הסר מהמועדפים"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "הוסר מהמועדפים"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "הוסר מהמועדפים: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "לִבחוֹר"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "בחר קטגוריה חוקית"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "בחר מיקום חוקי"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "בחר רשימת השמעה חוקית"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "בחר מצלמת אינטרנט חוקית"
 
 msgid "Select an option"
-msgstr ""
+msgstr "בחר אפשרות"
 
 msgid "Select language"
-msgstr ""
+msgstr "בחר שפה"
 
 msgid "Settings"
-msgstr ""
+msgstr "הגדרות"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "פונקציונליות ההגדרות בקרוב!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "שגיאה טכנית ב-Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "מצלמות אינטרנט מובילות"
 
 msgid "Update"
-msgstr ""
+msgstr "לְעַדְכֵּן"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "העדכון בוטל!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "העדכון נתקל בשגיאה (קוד: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "עדכון תוסף"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "משדרג..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "רשימות משתמשים"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "אתה כבר מפעיל את הגרסה העדכנית ביותר: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "שגיאת הפעלה של YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "המועדפים שלך"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp לא נמצא. נא להתקין אותו."

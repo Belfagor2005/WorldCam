@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Tokiko YouTube erreprodukzio-zerrenda"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Tokiko webcam zerrenda"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Lineako Zuzeneko eta YouTube-ko web-kamerak"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Lineako webcam zerrenda"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Beste iturri batzuk"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKAK"
 
 msgid "About"
-msgstr ""
+msgstr "Buruz"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Gehitu gogokoetara"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Gehitu/Kendu"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Gogokoetara gehitu da!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategoriak"
 
 msgid "Change language"
-msgstr ""
+msgstr "Hizkuntza aldatu"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinenteak"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Ezin izan da YouTube-ko korrontea atera"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Ezin izan da bideo-korrontea atera"
 
 msgid "Countries"
-msgstr ""
+msgstr "Herrialdeak"
 
 msgid "Country"
-msgstr ""
+msgstr "Herrialdea"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Lulullak garatua"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Erreprodukzio-zerrenda fitxategia hutsik"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Errore bat gertatu da gogokoa gehitzean"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Errore bat gertatu da hizkuntza aldatzean"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Errore bat gertatu da kategoriak kargatzean"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Errore bat gertatu da kontinenteak kargatzean"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Errore bat gertatu da herrialdeak kargatzean"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Errore bat gertatu da gogokoak kargatzean"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Errore bat gertatu da kokapenak kargatzean"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Errore bat gertatu da erreprodukzio-zerrenda kargatzean"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Errore bat gertatu da erreprodukzio-zerrendak kargatzean"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Errore bat gertatu da goiko web-kamerak kargatzean"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Errore bat gertatu da webcam-ak kargatzean"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Errore bat gertatu da hizkuntza-hautapena irekitzean"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Errore bat gertatu da erreprodukzio-zerrenda irekitzean"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Errore bat gertatu da gogokoa kentzean"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Errore bat gertatu da webcam aldatzean"
 
 msgid "Exit"
-msgstr ""
+msgstr "Irten"
 
 msgid "Export"
-msgstr ""
+msgstr "Esportatu"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Esportatu guztiak Bouquet-era"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Ezin izan da esportatu:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Gogokoak"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Gogokoak ongi esportatu dira! Berrabiarazi Enigma2 haiek ikusteko."
 
 msgid "File not found"
-msgstr ""
+msgstr "Ez da fitxategia aurkitu"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Foroaren laguntza: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Sartutako erreprodukzio zerrendak eta iturriak:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "YouTube URL baliogabea"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Hizkuntza aldatu da: %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Zuzeneko webcam ikuslea kokapen globalak dituena"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Mundu osoko zuzeneko webcamak"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menua"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Ez dago gogokorik esportatzeko"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Oraindik ez dago gogokorik"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Ez dago erreprodukzio zerrendarik erabilgarri"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Ez da aurkitu erreprodukzio-zerrendarik"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Ez dago baliozko webcamrik erreprodukzio-zerrendan"
 
 msgid "Play"
-msgstr ""
+msgstr "Jolastu"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Erreproduzitu/pausatu ezin da korronte honetan"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Erreprodukzio-errorea"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Erreprodukzioak huts egin du!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 eta Python-ek bultzatuta"
 
 msgid "Remove"
-msgstr ""
+msgstr "Kendu"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Kendu gogokoetatik"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Gogokoetatik kendu da"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Gogokoetatik kendu da: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Hautatu"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Aukeratu baliozko kategoria bat"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Aukeratu baliozko kokapen bat"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Hautatu baliozko erreprodukzio-zerrenda bat"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Hautatu baliozko webcam bat"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Hautatu aukera bat"
 
 msgid "Select language"
-msgstr ""
+msgstr "Hautatu hizkuntza"
 
 msgid "Settings"
-msgstr ""
+msgstr "Ezarpenak"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Ezarpenen funtzionaltasuna laster egongo da!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Errore teknikoa Webcam.pl-en"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Webkamera nagusiak"
 
 msgid "Update"
-msgstr ""
+msgstr "Eguneratu"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Eguneratzea bertan behera utzi da!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Eguneratzeak errore bat aurkitu du (kodea: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Eguneratu plugina"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Berritzen..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Erabiltzaileen zerrendak"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Dagoeneko azken bertsioa exekutatzen ari zara: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube-ren erreprodukzio-errorea"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Zure gogokoenak"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ez da aurkitu. Mesedez, instala ezazu."

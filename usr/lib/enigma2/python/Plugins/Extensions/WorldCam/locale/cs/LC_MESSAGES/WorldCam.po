@@ -135,14 +135,14 @@ msgid "Exit"
 msgstr "Odejít"
 
 msgid "Export"
-msgstr ""
+msgstr "Vývozní"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Exportovat vše do Bouquet"
 
 #, fuzzy
 msgid "Export failed:"
-msgstr ""
+msgstr "Export se nezdařil:"
 "Aktualizace selhala:\n"
 "%s"
 
@@ -150,7 +150,7 @@ msgid "Favorites"
 msgstr "Oblíbené"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Oblíbené položky byly úspěšně exportovány! Restartujte Enigmu2, abyste je viděli."
 
 #, fuzzy
 msgid "File not found"
@@ -159,8 +159,8 @@ msgstr "Soubor playlistu nebyl nalezen"
 msgid "Forum support: www.corvoboys.org"
 msgstr "Podpora fóra: www.corvoboys.org"
 
-msgid "GitHub: https://github.com/Belfagor2005/"
-msgstr "GitHub: https://github.com/Belfagor2005/"
+msgid "GitHub: %s"
+msgstr ""
 
 #, fuzzy
 msgid "Included playlists and sources:"
@@ -203,7 +203,7 @@ msgid "Play"
 msgstr "Přehrát"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Přehrávání/pozastavení u tohoto streamu není podporováno"
 
 #, fuzzy
 msgid "Playback error"
@@ -256,7 +256,7 @@ msgid "Settings functionality coming soon!"
 msgstr "Funkce nastavení bude brzy k dispozici!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Technická chyba na Webcam.pl"
 
 msgid "Top Webcams"
 msgstr "Nejlepší webkamery"
@@ -273,14 +273,14 @@ msgstr "Aktualizace narazila na chybu (kód: %s)"
 msgid "Update plugin"
 msgstr "Aktualizovat modul"
 
-msgid "Update yt-dlp"
-msgstr "Aktualizace yt-dlp"
-
 msgid "Upgrading..."
 msgstr "Aktualizace..."
 
 msgid "User Lists"
 msgstr "Seznamy uživatelů"
+
+msgid "WorldCam v%s"
+msgstr "WorldCam verze %s"
 
 msgid "WorldCam v{}"
 msgstr "WorldCam verze {}"
@@ -296,10 +296,16 @@ msgid "Your Favorites"
 msgstr "Vaše oblíbené"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
+msgstr "yt-dlp nebyl nalezen. Nainstalujte jej prosím."
 
-msgid "yt-dlp updated successfully!"
-msgstr "yt-dlp byl úspěšně aktualizován!"
+#~ msgid "GitHub: https://github.com/Belfagor2005/"
+#~ msgstr "GitHub: https://github.com/Belfagor2005/"
+
+#~ msgid "Update yt-dlp"
+#~ msgstr "Aktualizace yt-dlp"
+
+#~ msgid "yt-dlp updated successfully!"
+#~ msgstr "yt-dlp byl úspěšně aktualizován!"
 
 #~ msgid "All YouTube methods failed!"
 #~ msgstr "Všechny metody na YouTube selhaly!"
@@ -403,7 +409,3 @@ msgstr "yt-dlp byl úspěšně aktualizován!"
 #~ msgstr ""
 #~ "Aktualizace selhala:\n"
 #~ "%s"
-
-#, python-format
-#~ msgid "WorldCam v%s"
-#~ msgstr "WorldCam verze %s"

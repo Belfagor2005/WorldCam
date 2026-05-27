@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Danh sách phát YouTube địa phương"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Danh sách webcam cục bộ"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Webcam trực tuyến và YouTube trực tuyến"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Danh sách webcam trực tuyến"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Các nguồn khác"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "CHÂU PHI"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "CHÂU MỸ"
 
 msgid "About"
-msgstr ""
+msgstr "Về"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Thêm vào mục yêu thích"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Thêm/Xóa"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Đã thêm vào mục yêu thích!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Thể loại"
 
 msgid "Change language"
-msgstr ""
+msgstr "Thay đổi ngôn ngữ"
 
 msgid "Continents"
-msgstr ""
+msgstr "lục địa"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Không thể trích xuất luồng YouTube"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Không thể trích xuất luồng video"
 
 msgid "Countries"
-msgstr ""
+msgstr "Quốc gia"
 
 msgid "Country"
-msgstr ""
+msgstr "Quốc gia"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Được phát triển bởi Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "CHÂU ÂU"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Tệp danh sách phát trống"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Lỗi thêm mục yêu thích"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Lỗi thay đổi ngôn ngữ"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Lỗi tải danh mục"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Lỗi tải lục địa"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Lỗi tải quốc gia"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Lỗi tải mục yêu thích"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Lỗi tải vị trí"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Lỗi tải danh sách phát"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Lỗi tải danh sách phát"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Lỗi tải webcam hàng đầu"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Lỗi tải webcam"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Lỗi mở lựa chọn ngôn ngữ"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Lỗi mở danh sách phát"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Lỗi xóa mục yêu thích"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Lỗi chuyển đổi webcam"
 
 msgid "Exit"
-msgstr ""
+msgstr "Ra"
 
 msgid "Export"
-msgstr ""
+msgstr "Xuất khẩu"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Xuất tất cả sang bó hoa"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Xuất không thành công:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Yêu thích"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Đã xuất thành công mục yêu thích! Khởi động lại Enigma2 để xem chúng."
 
 msgid "File not found"
-msgstr ""
+msgstr "Không tìm thấy tập tin"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Hỗ trợ diễn đàn: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Danh sách phát và nguồn bao gồm:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube không hợp lệ"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Ngôn ngữ đã thay đổi thành %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Trình xem webcam trực tiếp có các vị trí trên toàn cầu"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Webcam trực tiếp từ khắp nơi trên thế giới"
 
 msgid "Menu"
-msgstr ""
+msgstr "Thực đơn"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Không có mục yêu thích nào để xuất"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Chưa có mục yêu thích nào"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Không có danh sách phát nào"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Không tìm thấy danh sách phát nào"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Không có webcam hợp lệ trong danh sách phát"
 
 msgid "Play"
-msgstr ""
+msgstr "Chơi"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Phát/tạm dừng không được hỗ trợ cho luồng này"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Lỗi phát lại"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Phát lại không thành công!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Được cung cấp bởi Enigma2 và Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Di dời"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Xóa khỏi mục yêu thích"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Đã xóa khỏi mục yêu thích"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Đã xóa khỏi mục yêu thích: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Lựa chọn"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Chọn danh mục hợp lệ"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Chọn vị trí hợp lệ"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Chọn danh sách phát hợp lệ"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Chọn một webcam hợp lệ"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Chọn một tùy chọn"
 
 msgid "Select language"
-msgstr ""
+msgstr "Chọn ngôn ngữ"
 
 msgid "Settings"
-msgstr ""
+msgstr "Cài đặt"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Chức năng cài đặt sắp ra mắt!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Lỗi kỹ thuật trong Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Webcam hàng đầu"
 
 msgid "Update"
-msgstr ""
+msgstr "Cập nhật"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Cập nhật bị hủy bỏ!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Cập nhật gặp lỗi (mã: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Cập nhật plugin"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Đang nâng cấp..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Danh sách người dùng"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Bạn đang chạy phiên bản mới nhất: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Lỗi phát lại YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Yêu thích của bạn"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "không tìm thấy yt-dlp. Hãy cài đặt nó."

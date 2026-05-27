@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- kohalik YouTube'i esitusloend"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- kohalike veebikaamerate loend"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct ja YouTube'i veebikaamerad"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Veebikaamerate loend"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Muud allikad"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AAFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMEERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Umbes"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Lisa lemmikute hulka"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Lisa/Eemalda"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Lisatud lemmikute hulka!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategooriad"
 
 msgid "Change language"
-msgstr ""
+msgstr "Muuda keelt"
 
 msgid "Continents"
-msgstr ""
+msgstr "Mandrid"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube'i voogu ei saanud ekstraktida"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Videovoogu ei saanud ekstraktida"
 
 msgid "Countries"
-msgstr ""
+msgstr "Riigid"
 
 msgid "Country"
-msgstr ""
+msgstr "Riik"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Arendanud Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROOPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Tühi esitusloendi fail"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Viga lemmiku lisamisel"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Viga keele muutmisel"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Viga kategooriate laadimisel"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Mandrite laadimisel tekkis viga"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Viga riikide laadimisel"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Viga lemmikute laadimisel"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Viga asukohtade laadimisel"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Viga esitusloendi laadimisel"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Viga esitusloendite laadimisel"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Viga parimate veebikaamerate laadimisel"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Viga veebikaamerate laadimisel"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Viga keelevaliku avamisel"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Viga esitusloendi avamisel"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Lemmiku eemaldamisel tekkis viga"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Viga veebikaamera vahetamisel"
 
 msgid "Exit"
-msgstr ""
+msgstr "Välju"
 
 msgid "Export"
-msgstr ""
+msgstr "Ekspordi"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Eksportige kõik kimpu"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Eksport ebaõnnestus:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Lemmikud"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Lemmikud eksporditi edukalt! Nende nägemiseks taaskäivitage Enigma2."
 
 msgid "File not found"
-msgstr ""
+msgstr "Faili ei leitud"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Foorumi tugi: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Kaasatud esitusloendid ja allikad:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Vale YouTube'i URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Keeleks muudeti %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Reaalajas veebikaamera vaataja globaalsete asukohtadega"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Reaalajas veebikaamerad kogu maailmast"
 
 msgid "Menu"
-msgstr ""
+msgstr "Menüü"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Lemmikuid, mida eksportida, pole"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Lemmikuid veel pole"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Esitusloendeid pole saadaval"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Esitusloendeid ei leitud"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Esitusloendis pole kehtivaid veebikaameraid"
 
 msgid "Play"
-msgstr ""
+msgstr "Mängi"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Esitust/peatamist selle voo puhul ei toetata"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Taasesituse viga"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Taasesitus ebaõnnestus!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Toiteallikaks on Enigma2 ja Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Eemalda"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Eemalda lemmikutest"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Lemmikutest eemaldatud"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Lemmikutest eemaldatud: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Valige"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Valige kehtiv kategooria"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Valige sobiv asukoht"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Valige kehtiv esitusloend"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Valige sobiv veebikaamera"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Valige suvand"
 
 msgid "Select language"
-msgstr ""
+msgstr "Valige keel"
 
 msgid "Settings"
-msgstr ""
+msgstr "Seaded"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Seadete funktsioon on peagi saadaval!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Tehniline viga saidil Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Parimad veebikaamerad"
 
 msgid "Update"
-msgstr ""
+msgstr "Värskenda"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Värskendus katkestatud!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Värskenduses ilmnes viga (kood: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Värskenda pistikprogrammi"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Täiendamine..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Kasutajate loendid"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Kasutate juba uusimat versiooni: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube'i taasesituse viga"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Teie lemmikud"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ei leitud. Palun installige see."

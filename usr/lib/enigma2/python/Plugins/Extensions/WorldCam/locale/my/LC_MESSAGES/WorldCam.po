@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- ဒေသတွင်း YouTube အစီအစဉ်"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- ဒေသဆိုင်ရာ webcam စာရင်း"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- အွန်လိုင်းတိုက်ရိုက်နှင့် YouTube ဝဘ်ကင်မရာများ"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- အွန်လိုင်း webcam စာရင်း"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- အခြားသတင်းရင်းမြစ်များ"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "အာဖရိက"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "အမေရိကား"
 
 msgid "About"
-msgstr ""
+msgstr "အကြောင်း"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "စိတ်ကြိုက်များထဲသို့ထည့်ပါ။"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "ထည့်/ဖယ်"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "စိတ်ကြိုက်များထဲသို့ ပေါင်းထည့်ခဲ့သည်။"
 
 msgid "Categories"
-msgstr ""
+msgstr "အမျိုးအစားများ"
 
 msgid "Change language"
-msgstr ""
+msgstr "ဘာသာစကားပြောင်းပါ။"
 
 msgid "Continents"
-msgstr ""
+msgstr "တိုက်ကြီး"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube ထုတ်လွှင့်မှုကို ထုတ်ယူ၍မရပါ။"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "ဗီဒီယိုစီးကြောင်းကို ထုတ်ယူ၍မရပါ။"
 
 msgid "Countries"
-msgstr ""
+msgstr "နိုင်ငံတွေ"
 
 msgid "Country"
-msgstr ""
+msgstr "တိုင်းပြည်"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Lululla မှတီထွင်ခဲ့သည်။"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ဥရောပ"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "ဖွင့်ရန်စာရင်းဖိုင် ဗလာ"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "အကြိုက်ဆုံးထည့်ရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "ဘာသာစကားပြောင်းရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "အမျိုးအစားများကို တင်ရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "တိုက်ကြီးများကို ဖွင့်ရာတွင် အမှားအယွင်းရှိနေသည်။"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "နိုင်ငံများကို ဖွင့်ရာတွင် အမှားအယွင်းရှိနေသည်။"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "စိတ်ကြိုက်များကို တင်ရာတွင် အမှားအယွင်းရှိနေသည်။"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "တည်နေရာများကို ဖွင့်ရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "အစီအစဉ်ကို ဖွင့်ရာတွင် အမှားအယွင်းရှိနေသည်။"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "အစီအစဉ်များကို ဖွင့်ရာတွင် အမှားအယွင်းရှိနေသည်။"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "ထိပ်တန်း ဝဘ်ကင်မရာများကို တင်ရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "ဝဘ်ကင်မရာများကို တင်ရာတွင် အမှားအယွင်းရှိနေသည်။"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "ဘာသာစကားရွေးချယ်မှုကို ဖွင့်ရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "အစီအစဉ်ဖွင့်ရာတွင် အမှားအယွင်းရှိနေသည်။"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "အကြိုက်ဆုံးကို ဖယ်ရှားရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "ဝဘ်ကင်မရာကို ပြောင်းရာတွင် အမှားအယွင်းရှိသည်။"
 
 msgid "Exit"
-msgstr ""
+msgstr "ထွက်ပေါက်"
 
 msgid "Export"
-msgstr ""
+msgstr "တင်ပို့ခြင်း။"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "အားလုံးကို ပန်းစည်းသို့ တင်ပို့ပါ။"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "ထုတ်ယူမှု မအောင်မြင်ပါ"
 
 msgid "Favorites"
-msgstr ""
+msgstr "အကြိုက်ဆုံးများ"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "စိတ်ကြိုက်များကို အောင်မြင်စွာ တင်ပို့ပြီးပါပြီ။ ၎င်းတို့ကိုကြည့်ရှုရန် Enigma2 ကို ပြန်လည်စတင်ပါ။"
 
 msgid "File not found"
-msgstr ""
+msgstr "ဖိုင်မတွေ့ပါ။"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "ဖိုရမ်ပံ့ပိုးမှု- www.corvoboys.org"
 
 msgid "GitHub: %s"
-msgstr ""
+msgstr "GitHub- %s"
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "အစီအစဉ်များနှင့် အရင်းအမြစ်များ ပါဝင်သည်-"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "YouTube URL မမှန်ကန်ပါ။"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "ဘာသာစကားကို %s သို့ပြောင်းထားသည်။"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "ကမ္ဘာလုံးဆိုင်ရာတည်နေရာများပါ ၀ င်သောတိုက်ရိုက်ဝဘ်ကင်မရာကြည့်ရှုသူ"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "ကမ္ဘာတစ်ဝှမ်းမှ တိုက်ရိုက် webcams များ"
 
 msgid "Menu"
-msgstr ""
+msgstr "မီနူး"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "တင်ပို့ရန် စိတ်ကြိုက်များမရှိပါ။"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "အကြိုက်ဆုံးများ မရှိသေးပါ။"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "အစီအစဉ်များ မရရှိနိုင်ပါ။"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "အစီအစဉ်များ မတွေ့ပါ။"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "အစီအစဉ်တွင် တရားဝင် ဝဘ်ကင်မရာများ မရှိပါ။"
 
 msgid "Play"
-msgstr ""
+msgstr "ကစားပါ။"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "ဤထုတ်လွှင့်မှုအတွက် ဖွင့်/ခေတ္တရပ်ခြင်းကို မပံ့ပိုးပါ။"
 
 msgid "Playback error"
-msgstr ""
+msgstr "ပြန်ဖွင့်ခြင်း အမှား"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "ပြန်ဖွင့်ခြင်း မအောင်မြင်ပါ။"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 နှင့် Python တို့ဖြင့် လုပ်ဆောင်ထားသည်။"
 
 msgid "Remove"
-msgstr ""
+msgstr "ဖယ်ရှားပါ။"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "စိတ်ကြိုက်များမှ ဖယ်ရှားပါ။"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "စိတ်ကြိုက်များမှ ဖယ်ရှားထားသည်။"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "စိတ်ကြိုက်များမှ ဖယ်ရှားထားသည်- %s"
 
 msgid "Select"
-msgstr ""
+msgstr "ရွေးချယ်ပါ။"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "မှန်ကန်သောအမျိုးအစားကို ရွေးပါ။"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "မှန်ကန်သောတည်နေရာကို ရွေးချယ်ပါ။"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "မှန်ကန်သော အစီအစဉ်ကို ရွေးချယ်ပါ။"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "မှန်ကန်သော ဝဘ်ကင်မရာကို ရွေးချယ်ပါ။"
 
 msgid "Select an option"
-msgstr ""
+msgstr "ရွေးချယ်မှုတစ်ခုကို ရွေးချယ်ပါ။"
 
 msgid "Select language"
-msgstr ""
+msgstr "ဘာသာစကားကို ရွေးပါ။"
 
 msgid "Settings"
-msgstr ""
+msgstr "ဆက်တင်များ"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "ဆက်တင်များ လုပ်ဆောင်ချက်ကို မကြာမီလာမည်"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl တွင် နည်းပညာပိုင်းဆိုင်ရာ အမှားအယွင်း"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "ထိပ်တန်း ဝဘ်ကင်မရာများ"
 
 msgid "Update"
-msgstr ""
+msgstr "အပ်ဒိတ်"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "အပ်ဒိတ်ကို ဖျက်သိမ်းလိုက်ပါပြီ။"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "အပ်ဒိတ်တွင် အမှားအယွင်းတစ်ခုတွေ့ခဲ့သည် (ကုဒ်- %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "ပလပ်အင်ကို အပ်ဒိတ်လုပ်ပါ။"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "အဆင့်မြှင့်တင်နေသည်..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "အသုံးပြုသူစာရင်းများ"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "သင်သည် နောက်ဆုံးဗားရှင်းကို အသုံးပြုနေပြီဖြစ်သည်- {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube ပြန်ဖွင့်ခြင်း အမှား"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "သင့်အကြိုက်များ"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp မတွေ့ပါ။ ကျေးဇူးပြု၍ ထည့်သွင်းပါ။"

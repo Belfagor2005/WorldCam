@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- දේශීය YouTube ධාවන ලැයිස්තුව"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- දේශීය වෙබ් කැමරා ලැයිස්තුව"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- මාර්ගගත සෘජු සහ YouTube වෙබ් කැමරා"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- මාර්ගගත වෙබ් කැමරා ලැයිස්තුව"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- වෙනත් මූලාශ්ර"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "අප්රිකාව"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "ඇමරිකාව"
 
 msgid "About"
-msgstr ""
+msgstr "ගැන"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "ප්‍රියතමයන් වෙත එක් කරන්න"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "එකතු කරන්න/ඉවත් කරන්න"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "ප්‍රියතමයන් වෙත එක් කරන ලදී!"
 
 msgid "Categories"
-msgstr ""
+msgstr "වර්ග"
 
 msgid "Change language"
-msgstr ""
+msgstr "භාෂාව වෙනස් කරන්න"
 
 msgid "Continents"
-msgstr ""
+msgstr "මහාද්වීප"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube ප්‍රවාහය උපුටා ගැනීමට නොහැකි විය"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "වීඩියෝ ප්‍රවාහය උපුටා ගැනීමට නොහැකි විය"
 
 msgid "Countries"
-msgstr ""
+msgstr "රටවල්"
 
 msgid "Country"
-msgstr ""
+msgstr "රට"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "ලුලුල්ලා විසින් වැඩි දියුණු කරන ලදී"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "යුරෝපය"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "හිස් ධාවන ලැයිස්තු ගොනුව"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "ප්රියතම එකතු කිරීමේ දෝෂයකි"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "භාෂාව වෙනස් කිරීමේ දෝෂයකි"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "ප්‍රවර්ග පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "මහාද්වීප පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "රටවල් පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "ප්‍රියතමයන් පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "ස්ථාන පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "ධාවන ලැයිස්තුව පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "ධාවන ලැයිස්තු පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "ඉහළ වෙබ් කැමරා පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "වෙබ් කැමරා පූරණය කිරීමේ දෝෂයකි"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "භාෂා තේරීම විවෘත කිරීමේ දෝෂයකි"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "ධාවන ලැයිස්තුව විවෘත කිරීමේ දෝෂයකි"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "ප්රියතම ඉවත් කිරීමේ දෝෂයකි"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "වෙබ් කැමරාව මාරු කිරීමේ දෝෂයකි"
 
 msgid "Exit"
-msgstr ""
+msgstr "පිටවීම"
 
 msgid "Export"
-msgstr ""
+msgstr "අපනයනය කරන්න"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Bouquet වෙත සියල්ල අපනයනය කරන්න"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "අපනයනය අසාර්ථක විය:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "ප්රියතම"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "ප්‍රියතමයන් සාර්ථකව අපනයනය කරන ලදී! ඒවා බැලීමට Enigma2 නැවත ආරම්භ කරන්න."
 
 msgid "File not found"
-msgstr ""
+msgstr "ගොනුව හමු නොවිණි"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "සංසද සහාය: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "ඇතුළත් ධාවන ලැයිස්තු සහ මූලාශ්‍ර:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "වලංගු නොවන YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "භාෂාව %s වෙත වෙනස් විය"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "ගෝලීය ස්ථාන සහිත සජීවී වෙබ් කැමරා නරඹන්නා"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "ලොව පුරා සජීවී වෙබ් කැමරා"
 
 msgid "Menu"
-msgstr ""
+msgstr "මෙනුව"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "අපනයනය කිරීමට ප්‍රියතමයන් නැත"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "තවමත් ප්‍රියතමයන් නැත"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "ධාවන ලැයිස්තු නොමැත"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "ධාවන ලැයිස්තු හමු නොවීය"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "ධාවන ලැයිස්තුවේ වලංගු වෙබ් කැමරා නැත"
 
 msgid "Play"
-msgstr ""
+msgstr "සෙල්ලම් කරන්න"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "මෙම ප්‍රවාහය සඳහා Play/pause සහාය නොදක්වයි"
 
 msgid "Playback error"
-msgstr ""
+msgstr "පසුධාවන දෝෂයකි"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "පසුධාවනය අසාර්ථක විය!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Enigma2 සහ Python මගින් බල ගැන්වේ"
 
 msgid "Remove"
-msgstr ""
+msgstr "ඉවත් කරන්න"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "ප්‍රියතමයන් වෙතින් ඉවත් කරන්න"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "ප්‍රියතමයන් වෙතින් ඉවත් කරන ලදී"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "ප්‍රියතමයන් වෙතින් ඉවත් කරන ලදී: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "තෝරන්න"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "වලංගු ප්‍රවර්ගයක් තෝරන්න"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "වලංගු ස්ථානයක් තෝරන්න"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "වලංගු ධාවන ලැයිස්තුවක් තෝරන්න"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "වලංගු වෙබ් කැමරාවක් තෝරන්න"
 
 msgid "Select an option"
-msgstr ""
+msgstr "විකල්පයක් තෝරන්න"
 
 msgid "Select language"
-msgstr ""
+msgstr "භාෂාව තෝරන්න"
 
 msgid "Settings"
-msgstr ""
+msgstr "සැකසීම්"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "සැකසීම් ක්‍රියාකාරිත්වය ඉක්මනින් පැමිණේ!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl හි තාක්ෂණික දෝෂයකි"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "ඉහළම වෙබ් කැමරා"
 
 msgid "Update"
-msgstr ""
+msgstr "යාවත්කාලීන කරන්න"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "යාවත්කාලීන කිරීම නවත්වන ලදී!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "යාවත්කාලීන කිරීමේදී දෝෂයක් ඇති විය (කේතය: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "ප්ලගිනය යාවත්කාලීන කරන්න"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "උත්ශ්‍රේණි කරමින්..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "පරිශීලක ලැයිස්තු"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "ඔබ දැනටමත් නවතම අනුවාදය ධාවනය කරයි: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube පසුධාවන දෝෂයකි"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "ඔබේ ප්රියතම"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp හමු නොවීය. කරුණාකර එය ස්ථාපනය කරන්න."

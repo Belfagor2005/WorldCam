@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Staðbundinn YouTube lagalisti"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Staðbundinn vefmyndavélalisti"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct og YouTube vefmyndavélar"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Listi með vefmyndavél á netinu"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Aðrar heimildir"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "BANDARÍKIN"
 
 msgid "About"
-msgstr ""
+msgstr "Um"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Bæta við eftirlæti"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Bæta við/fjarlægja"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Bætt við uppáhöld!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Flokkar"
 
 msgid "Change language"
-msgstr ""
+msgstr "Skiptu um tungumál"
 
 msgid "Continents"
-msgstr ""
+msgstr "Heimsálfur"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Ekki tókst að draga út YouTube straum"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Ekki tókst að draga út vídeóstraum"
 
 msgid "Countries"
-msgstr ""
+msgstr "Lönd"
 
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Hannað af Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EVRÓPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Tóm lagalistaskrá"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Villa við að bæta við uppáhalds"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Villa við að skipta um tungumál"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Villa við að hlaða flokkum"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Villa við að hlaða heimsálfum"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Villa við að hlaða löndum"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Villa við að hlaða eftirlæti"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Villa við að hlaða staðsetningar"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Villa við að hlaða spilunarlista"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Villa við að hlaða spilunarlista"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Villa við að hlaða helstu vefmyndavélum"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Villa við að hlaða vefmyndavélum"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Villa við að opna tungumálaval"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Villa við að opna spilunarlista"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Villa við að fjarlægja uppáhalds"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Villa við að skipta um vefmyndavél"
 
 msgid "Exit"
-msgstr ""
+msgstr "Hætta"
 
 msgid "Export"
-msgstr ""
+msgstr "Útflutningur"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Flytja allt út í vönd"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Útflutningur mistókst:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Uppáhalds"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Eftirlæti flutt út! Endurræstu Enigma2 til að sjá þá."
 
 msgid "File not found"
-msgstr ""
+msgstr "Skrá fannst ekki"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Stuðningur við vettvang: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Meðfylgjandi lagalistar og heimildir:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Ógild YouTube vefslóð"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Tungumáli breytt í %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Live vefmyndavélaskoðari með alþjóðlegum stöðum"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Vefmyndavélar í beinni frá öllum heimshornum"
 
 msgid "Menu"
-msgstr ""
+msgstr "Matseðill"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Engir eftirlæti til að flytja út"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Engin eftirlæti ennþá"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Engir lagalistar í boði"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Engir spilunarlistar fundust"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Engar gildar vefmyndavélar á lagalista"
 
 msgid "Play"
-msgstr ""
+msgstr "Spila"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Spilun/hlé er ekki stutt fyrir þennan straum"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Spilunarvilla"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Spilun mistókst!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Keyrt af Enigma2 og Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Fjarlægja"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Fjarlægja úr eftirlæti"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Fjarlægt úr eftirlæti"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Fjarlægt úr eftirlæti: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Veldu"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Veldu gildan flokk"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Veldu gilda staðsetningu"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Veldu gildan lagalista"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Veldu gilda vefmyndavél"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Veldu valkost"
 
 msgid "Select language"
-msgstr ""
+msgstr "Veldu tungumál"
 
 msgid "Settings"
-msgstr ""
+msgstr "Stillingar"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Stillingavirkni kemur fljótlega!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Tæknileg villa í Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Vinsælustu vefmyndavélar"
 
 msgid "Update"
-msgstr ""
+msgstr "Uppfærsla"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Uppfærsla hætt!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Villa kom upp í uppfærslu (kóði: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Uppfæra viðbót"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Uppfærir..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Notendalistar"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Þú ert nú þegar að keyra nýjustu útgáfuna: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube spilunarvilla"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Uppáhaldið þitt"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp fannst ekki. Vinsamlegast settu það upp."

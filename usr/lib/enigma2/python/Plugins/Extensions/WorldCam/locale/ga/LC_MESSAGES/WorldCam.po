@@ -18,253 +18,250 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n==2 ? 1 : 2;\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Seinmliosta áitiúil YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Liosta ceamara gréasáin áitiúil"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Ceamaraí gréasáin Díreacha Ar Líne agus YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Liosta ceamara gréasáin ar líne"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Foinsí eile"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AN AFRAIC"
 
 msgid "AMERICAS"
 msgstr ""
 
 msgid "About"
-msgstr ""
+msgstr "Maidir"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Cuir le ceanáin"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Cuir leis/Bain"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Curtha le ceanáin!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Catagóirí"
 
 msgid "Change language"
-msgstr ""
+msgstr "Athraigh teanga"
 
 msgid "Continents"
-msgstr ""
+msgstr "Mór-roinne"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Níorbh fhéidir sruth YouTube a bhaint as"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Níorbh fhéidir sruth físeáin a bhaint as"
 
 msgid "Countries"
-msgstr ""
+msgstr "Tíortha"
 
 msgid "Country"
-msgstr ""
+msgstr "Tír"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Arna fhorbairt ag Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EORAIP"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Comhad seinmliosta folamh"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Earráid agus an ceann is fearr leat á chur leis"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Earráid agus teanga á hathrú"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Earráid agus na catagóirí á lódáil"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Earráid agus ilchríocha á lódáil"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Earráid agus tíortha á lódáil"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Earráid agus ceanáin á lódáil"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Earráid agus suíomhanna á lódáil"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Earráid agus an seinmliosta á lódáil"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Earráid agus seinmliostaí á lódáil"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Earráid agus na ceamaraí gréasáin is fearr á lódáil"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Earráid agus ceamara gréasáin á lódáil"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Earráid agus an roghnú teanga á oscailt"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Earráid agus an seinmliosta á oscailt"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Earráid agus an ceann is fearr leat á bhaint"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Earráid agus ceamara gréasáin á athrú"
 
 msgid "Exit"
-msgstr ""
+msgstr "Scoir"
 
 msgid "Export"
-msgstr ""
+msgstr "Easpórtáil"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Easpórtáil go léir chuig Bouquet"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Theip ar easpórtáil:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Ceanáin"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Ceanáin easpórtáilte go rathúil! Atosaigh Enigma2 chun iad a fheiceáil."
 
 msgid "File not found"
-msgstr ""
+msgstr "Comhad gan aimsiú"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Tacaíocht an Fhóraim: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Seinmliostaí agus foinsí san áireamh:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL YouTube neamhbhailí"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Athraíodh an teanga go %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Breathnóir ceamara gréasáin beo le láithreacha domhanda"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Ceamara gréasáin beo ó ar fud an domhain"
 
 msgid "Menu"
-msgstr ""
+msgstr "Roghchlár"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Níl aon cheanáin le heaspórtáil"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Níl aon cheanáin go fóill"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Níl aon seinmliostaí ar fáil"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Níor aimsíodh aon seinmliostaí"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Níl aon cheamara gréasáin bhailí sa seinmliosta"
 
 msgid "Play"
-msgstr ""
+msgstr "Imirt"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Ní thacaítear le súgradh/sos don sruth seo"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Earráid athsheinm"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Theip ar athsheinm!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Cumhachtaithe ag Enigma2 agus Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Bain"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Bain ó cheanáin"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Bainte de cheanáin"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Bainte de cheanáin: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Roghnaigh"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Roghnaigh catagóir bhailí"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Roghnaigh suíomh bailí"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Roghnaigh seinmliosta bailí"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Roghnaigh ceamara gréasáin bailí"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Roghnaigh rogha"
 
 msgid "Select language"
-msgstr ""
+msgstr "Roghnaigh teanga"
 
 msgid "Settings"
-msgstr ""
+msgstr "Socruithe"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Feidhmiúlacht socruithe ag teacht go luath!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Earráid theicniúil i Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Barr ceamaraí Gréasáin"
 
 msgid "Update"
-msgstr ""
+msgstr "Nuashonrú"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Tobscoireadh an Nuashonrú!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Tharla earráid leis an nuashonrú (cód: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Nuashonraigh breiseán"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Uasghrádú..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Liostaí Úsáideoirí"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -273,16 +270,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Tá an leagan is déanaí á rith agat cheana: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Earráid athsheinm YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Do Cheanáin"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp gan aimsiú. Suiteáil é le do thoil."

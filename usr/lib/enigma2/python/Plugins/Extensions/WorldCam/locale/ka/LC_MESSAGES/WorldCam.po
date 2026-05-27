@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- ადგილობრივი YouTube დასაკრავი სია"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- ადგილობრივი ვებკამერის სია"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- ონლაინ Direct და YouTube ვებკამერები"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- ონლაინ ვებკამერის სია"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- სხვა წყაროები"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "აფრიკა"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "ამერიკა"
 
 msgid "About"
-msgstr ""
+msgstr "შესახებ"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "დაამატეთ რჩეულებში"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "დამატება/წაშლა"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "დამატებულია რჩეულებში!"
 
 msgid "Categories"
-msgstr ""
+msgstr "კატეგორიები"
 
 msgid "Change language"
-msgstr ""
+msgstr "ენის შეცვლა"
 
 msgid "Continents"
-msgstr ""
+msgstr "კონტინენტები"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube ნაკადის ამოღება ვერ მოხერხდა"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "ვიდეო ნაკადის ამოღება ვერ მოხერხდა"
 
 msgid "Countries"
-msgstr ""
+msgstr "ქვეყნები"
 
 msgid "Country"
-msgstr ""
+msgstr "ქვეყანა"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "შემუშავებული Lululla-ს მიერ"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ევროპა"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "დასაკრავი სიის ცარიელი ფაილი"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "შეცდომა ფავორიტის დამატებისას"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "ენის შეცვლა მოხდა შეცდომა"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "შეცდომა კატეგორიების ჩატვირთვისას"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "შეცდომა კონტინენტების ჩატვირთვისას"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "შეცდომა ქვეყნების ჩატვირთვისას"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "რჩეულების ჩატვირთვის შეცდომა"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "მდებარეობების ჩატვირთვის შეცდომა"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "შეცდომა დასაკრავი სიის ჩატვირთვისას"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "შეცდომა დასაკრავი სიების ჩატვირთვისას"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "შეცდომა საუკეთესო ვებკამერების ჩატვირთვისას"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "შეცდომა ვებკამერების ჩატვირთვისას"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "ენის შერჩევის გახსნის შეცდომა"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "შეცდომა დასაკრავი სიის გახსნისას"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "შეცდომა ფავორიტის წაშლისას"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "შეცდომა ვებკამერის გადართვისას"
 
 msgid "Exit"
-msgstr ""
+msgstr "გასვლა"
 
 msgid "Export"
-msgstr ""
+msgstr "ექსპორტი"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "ექსპორტი ყველა ბუკეტში"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "ექსპორტი ვერ მოხერხდა:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "რჩეულები"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "რჩეულები წარმატებით იქნა ექსპორტირებული! გადატვირთეთ Enigma2 მათი სანახავად."
 
 msgid "File not found"
-msgstr ""
+msgstr "ფაილი ვერ მოიძებნა"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "ფორუმის მხარდაჭერა: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "მოყვება დასაკრავი სიები და წყაროები:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "არასწორი YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "ენა შეიცვალა %s-ით"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "ცოცხალი ვებკამერის მაყურებელი გლობალური მდებარეობებით"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "ცოცხალი ვებკამერები მთელი მსოფლიოდან"
 
 msgid "Menu"
-msgstr ""
+msgstr "მენიუ"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "არ არის ფავორიტები ექსპორტისთვის"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "ჯერ არ არის რჩეული"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "დასაკრავი სიები არ არის ხელმისაწვდომი"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "დასაკრავი სიები ვერ მოიძებნა"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "მოქმედი ვებკამერები დასაკრავ სიაში არ არის"
 
 msgid "Play"
-msgstr ""
+msgstr "ითამაშეთ"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "დაკვრა/პაუზა არ არის მხარდაჭერილი ამ ნაკადისთვის"
 
 msgid "Playback error"
-msgstr ""
+msgstr "დაკვრის შეცდომა"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "დაკვრა ვერ მოხერხდა!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "უზრუნველყოფილია Enigma2 და Python-ის მიერ"
 
 msgid "Remove"
-msgstr ""
+msgstr "ამოღება"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "რჩეულებიდან ამოღება"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "ამოღებულია რჩეულებიდან"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "წაშლილია რჩეულებიდან: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "აირჩიეთ"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "აირჩიეთ სწორი კატეგორია"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "აირჩიეთ სწორი მდებარეობა"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "აირჩიეთ სწორი დასაკრავი სია"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "აირჩიეთ სწორი ვებკამერა"
 
 msgid "Select an option"
-msgstr ""
+msgstr "აირჩიეთ ვარიანტი"
 
 msgid "Select language"
-msgstr ""
+msgstr "აირჩიეთ ენა"
 
 msgid "Settings"
-msgstr ""
+msgstr "პარამეტრები"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "პარამეტრების ფუნქციონირება მალე მოვა!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "ტექნიკური შეცდომა Webcam.pl-ში"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "ტოპ ვებკამერები"
 
 msgid "Update"
-msgstr ""
+msgstr "განახლება"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "განახლება შეწყდა!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "განახლებისას მოხდა შეცდომა (კოდი: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "მოდულის განახლება"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "განახლება..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "მომხმარებელთა სიები"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "თქვენ უკვე იყენებთ უახლეს ვერსიას: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube დაკვრის შეცდომა"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "შენი რჩეულები"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ვერ მოიძებნა. გთხოვთ დააინსტალიროთ."

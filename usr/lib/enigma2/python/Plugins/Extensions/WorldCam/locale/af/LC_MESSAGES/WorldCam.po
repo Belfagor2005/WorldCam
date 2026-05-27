@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Plaaslike YouTube-snitlys"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Plaaslike webcam lys"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Online Direct en YouTube-webkameras"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Aanlyn webcam lys"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Ander bronne"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "AFRIKA"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "AMERIKA"
 
 msgid "About"
-msgstr ""
+msgstr "Oor"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Voeg by gunstelinge"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Voeg by/verwyder"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "By gunstelinge gevoeg!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Kategorieë"
 
 msgid "Change language"
-msgstr ""
+msgstr "Verander taal"
 
 msgid "Continents"
-msgstr ""
+msgstr "Kontinente"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Kon nie YouTube-stroom onttrek nie"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Kon nie videostroom onttrek nie"
 
 msgid "Countries"
-msgstr ""
+msgstr "Lande"
 
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Ontwikkel deur Lululla"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "EUROPA"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Leë snitlyslêer"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Kon nie gunsteling byvoeg nie"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Kon nie taal verander nie"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Kon nie kategorieë laai nie"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Kon nie kontinente laai nie"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Kon nie lande laai nie"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Kon nie gunstelinge laai nie"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Kon nie liggings laai nie"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Kon nie snitlys laai nie"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Kon nie snitlyste laai nie"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Kon nie top webcams laai nie"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Kon nie webcams laai nie"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Kon nie taalkeuse oopmaak nie"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Kon nie snitlys oopmaak nie"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Kon nie gunsteling verwyder nie"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Kon nie webcam oorskakel nie"
 
 msgid "Exit"
-msgstr ""
+msgstr "Verlaat"
 
 msgid "Export"
-msgstr ""
+msgstr "Uitvoer"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Voer alles uit na boeket"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Uitvoer misluk:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Gunstelinge"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Gunstelinge is suksesvol uitgevoer! Herbegin Enigma2 om hulle te sien."
 
 msgid "File not found"
-msgstr ""
+msgstr "Lêer nie gevind nie"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Forumondersteuning: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Ingesluit snitlyste en bronne:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "Ongeldige YouTube-URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Taal verander na %s"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Regstreekse webcam-kyker met globale liggings"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Regstreekse webcams van regoor die wêreld"
 
 msgid "Menu"
-msgstr ""
+msgstr "Spyskaart"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Geen gunstelinge om uit te voer nie"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Nog geen gunstelinge nie"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Geen snitlyste beskikbaar nie"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Geen snitlyste gevind nie"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Geen geldige webkameras in snitlys nie"
 
 msgid "Play"
-msgstr ""
+msgstr "Speel"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Speel/onderbreek word nie vir hierdie stroom gesteun nie"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Terugspeelfout"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Terugspeel het misluk!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Aangedryf deur Enigma2 en Python"
 
 msgid "Remove"
-msgstr ""
+msgstr "Verwyder"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Verwyder uit gunstelinge"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Uit gunstelinge verwyder"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Uit gunstelinge verwyder: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Kies"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Kies 'n geldige kategorie"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Kies 'n geldige ligging"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Kies 'n geldige snitlys"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Kies 'n geldige webkamera"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Kies 'n opsie"
 
 msgid "Select language"
-msgstr ""
+msgstr "Kies taal"
 
 msgid "Settings"
-msgstr ""
+msgstr "Instellings"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Instellingsfunksie kom binnekort!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Tegniese fout in Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Top Webkameras"
 
 msgid "Update"
-msgstr ""
+msgstr "Dateer op"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Opdatering afgelas!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Opdatering het 'n fout teëgekom (kode: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Dateer inprop op"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Gradeer tans op …"
 
 msgid "User Lists"
-msgstr ""
+msgstr "Gebruikerslyste"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Jy gebruik reeds die nuutste weergawe: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube-terugspeelfout"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Jou gunstelinge"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp nie gevind nie. Installeer dit asseblief."

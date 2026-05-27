@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- Рӯйхати мусиқии маҳаллии YouTube"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- Рӯйхати веб-камераи маҳаллӣ"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- Веб-камераҳои мустақими онлайн ва YouTube"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- Рӯйхати веб-камера онлайн"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- Дигар манбаъҳо"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "АФРИКА"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "АМЕРИКА"
 
 msgid "About"
-msgstr ""
+msgstr "Дар бораи"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "Ба дӯстдоштаҳо илова кунед"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "Илова/ Хориҷ"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "Ба дӯстдоштаҳо илова карда шуд!"
 
 msgid "Categories"
-msgstr ""
+msgstr "Категорияҳо"
 
 msgid "Change language"
-msgstr ""
+msgstr "Забонро иваз кунед"
 
 msgid "Continents"
-msgstr ""
+msgstr "Қитъаҳо"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "Ҷараёни YouTube-ро истихроҷ карда натавонист"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "Ҷараёни видеоро гирифта натавонист"
 
 msgid "Countries"
-msgstr ""
+msgstr "Кишварҳо"
 
 msgid "Country"
-msgstr ""
+msgstr "кишвар"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "Аз ҷониби Лулулла таҳия шудааст"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ЕВРОПА"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "Файли рӯйхати плеери холӣ"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "Хатогӣ ҳангоми илова кардани дӯстдошта"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "Хатогӣ ҳангоми тағир додани забон"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "Хатогӣ дар боркунии категорияҳо"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "Хатогӣ ҳангоми боркунии континентҳо"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "Хатогии боркунии кишварҳо"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "Хатогӣ ҳангоми боркунии дӯстдоштаҳо"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "Хатогӣ ҳангоми боркунии ҷойҳо"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "Хатогии боркунии рӯйхати навозиш"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "Хатогӣ ҳангоми боркунии рӯйхатҳои навозиш"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "Хатогӣ ҳангоми боркунии веб-камераҳои боло"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "Хатогӣ ҳангоми боркунии веб-камераҳо"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "Хатогии кушодани интихоби забон"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "Хатогии кушодани рӯйхати навозиш"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "Хатогӣ ҳангоми нест кардани дӯстдошта"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "Хатогӣ дар иваз кардани веб-камера"
 
 msgid "Exit"
-msgstr ""
+msgstr "Баромадгоҳ"
 
 msgid "Export"
-msgstr ""
+msgstr "Содирот"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "Ҳамаро ба Букет содир кунед"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "Содирот ноком шуд:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "Дӯстдоштаҳо"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "Дӯстдоштаҳо бомуваффақият содир карда шуданд! Барои дидани онҳо Enigma2-ро аз нав оғоз кунед."
 
 msgid "File not found"
-msgstr ""
+msgstr "Парванда дарёфт нашуд"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "Дастгирии форум: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "Рӯйхати навозишҳо ва манбаъҳои дохилшуда:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "URL-и YouTube нодуруст"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "Забон ба %s иваз карда шуд"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "Намоишгари веб-камераи зинда, ки дорои маконҳои глобалӣ мебошад"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "Веб-камераҳои зинда аз саросари ҷаҳон"
 
 msgid "Menu"
-msgstr ""
+msgstr "Меню"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "Ягон дӯстдошта барои содирот"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "Ҳанӯз дӯстдошта нест"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "Рӯйхати навозиш дастрас нест"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "Ягон рӯйхати навозиш ёфт нашуд"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "Дар рӯйхати навозиш ягон веб-камераи дуруст нест"
 
 msgid "Play"
-msgstr ""
+msgstr "Бозӣ"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "Бозӣ/таваффақ барои ин ҷараён дастгирӣ намешавад"
 
 msgid "Playback error"
-msgstr ""
+msgstr "Хатогии навозиш"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "Бозӣ ноком шуд!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "Аз ҷониби Enigma2 ва Python таҳия шудааст"
 
 msgid "Remove"
-msgstr ""
+msgstr "Хориҷ кунед"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Аз дӯстдоштаҳо хориҷ кунед"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "Аз дӯстдоштаҳо хориҷ карда шуд"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "Аз дӯстдоштаҳо хориҷ карда шуд: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Интихоб кунед"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "Категорияи дурустро интихоб кунед"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "Ҷойгоҳи дурустро интихоб кунед"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "Рӯйхати навозишро интихоб кунед"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "Веб-камераи дурустро интихоб кунед"
 
 msgid "Select an option"
-msgstr ""
+msgstr "Интихоберо интихоб кунед"
 
 msgid "Select language"
-msgstr ""
+msgstr "Забонро интихоб кунед"
 
 msgid "Settings"
-msgstr ""
+msgstr "Танзимотҳо"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "Функсияи танзимот ба зудӣ меояд!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Хатои техникӣ дар Webcam.pl"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "Веб-камераҳои беҳтарин"
 
 msgid "Update"
-msgstr ""
+msgstr "Навсозӣ"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "Навсозӣ қатъ карда шуд!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "Навсозӣ ба хатогӣ дучор шуд (рамз: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "Навсозии плагин"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "Навсозӣ..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "Рӯйхати корбарон"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "Шумо аллакай версияи охиринро иҷро карда истодаед: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "Хатогии бозикунии YouTube"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "Дӯстдоштаи шумо"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp ёфт нашуд. Лутфан онро насб кунед."

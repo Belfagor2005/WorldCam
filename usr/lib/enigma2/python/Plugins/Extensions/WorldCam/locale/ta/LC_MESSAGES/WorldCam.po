@@ -17,253 +17,250 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "- Local YouTube playlist"
-msgstr ""
+msgstr "- உள்ளூர் YouTube பிளேலிஸ்ட்"
 
 msgid "- Local webcam list"
-msgstr ""
+msgstr "- உள்ளூர் வெப்கேம் பட்டியல்"
 
 msgid "- Online Direct and YouTube webcams"
-msgstr ""
+msgstr "- ஆன்லைன் நேரடி மற்றும் YouTube வெப்கேம்கள்"
 
 msgid "- Online webcam list"
-msgstr ""
+msgstr "- ஆன்லைன் வெப்கேம் பட்டியல்"
 
 msgid "- Other sources"
-msgstr ""
+msgstr "- பிற ஆதாரங்கள்"
 
 msgid "AFRICA"
-msgstr ""
+msgstr "ஆப்பிரிக்கா"
 
 msgid "AMERICAS"
-msgstr ""
+msgstr "அமெரிக்கா"
 
 msgid "About"
-msgstr ""
+msgstr "பற்றி"
 
 msgid "Add to favorites"
-msgstr ""
+msgstr "பிடித்தவைகளில் சேர்க்கவும்"
 
 msgid "Add/Remove"
-msgstr ""
+msgstr "சேர்/நீக்கு"
 
 msgid "Added to favorites!"
-msgstr ""
+msgstr "பிடித்தவைகளில் சேர்க்கப்பட்டது!"
 
 msgid "Categories"
-msgstr ""
+msgstr "வகைகள்"
 
 msgid "Change language"
-msgstr ""
+msgstr "மொழியை மாற்றவும்"
 
 msgid "Continents"
-msgstr ""
+msgstr "கண்டங்கள்"
 
 msgid "Could not extract YouTube stream"
-msgstr ""
+msgstr "YouTube ஸ்ட்ரீமைப் பிரித்தெடுக்க முடியவில்லை"
 
 msgid "Could not extract video stream"
-msgstr ""
+msgstr "வீடியோ ஸ்ட்ரீமைப் பிரித்தெடுக்க முடியவில்லை"
 
 msgid "Countries"
-msgstr ""
+msgstr "நாடுகள்"
 
 msgid "Country"
-msgstr ""
+msgstr "நாடு"
 
 msgid "Developed by Lululla"
-msgstr ""
+msgstr "லுலுல்லாவால் உருவாக்கப்பட்டது"
 
 msgid "EUROPE"
-msgstr ""
+msgstr "ஐரோப்பா"
 
 msgid "Empty playlist file"
-msgstr ""
+msgstr "வெற்று பிளேலிஸ்ட் கோப்பு"
 
 msgid "Error adding favorite"
-msgstr ""
+msgstr "பிடித்ததைச் சேர்ப்பதில் பிழை"
 
 msgid "Error changing language"
-msgstr ""
+msgstr "மொழியை மாற்றுவதில் பிழை"
 
 msgid "Error loading categories"
-msgstr ""
+msgstr "வகைகளை ஏற்றுவதில் பிழை"
 
 msgid "Error loading continents"
-msgstr ""
+msgstr "கண்டங்களை ஏற்றுவதில் பிழை"
 
 msgid "Error loading countries"
-msgstr ""
+msgstr "நாடுகளை ஏற்றுவதில் பிழை"
 
 msgid "Error loading favorites"
-msgstr ""
+msgstr "பிடித்தவைகளை ஏற்றுவதில் பிழை"
 
 msgid "Error loading locations"
-msgstr ""
+msgstr "இருப்பிடங்களை ஏற்றுவதில் பிழை"
 
 msgid "Error loading playlist"
-msgstr ""
+msgstr "பிளேலிஸ்ட்டை ஏற்றுவதில் பிழை"
 
 msgid "Error loading playlists"
-msgstr ""
+msgstr "பிளேலிஸ்ட்களை ஏற்றுவதில் பிழை"
 
 msgid "Error loading top webcams"
-msgstr ""
+msgstr "மேல் வெப் கேமராக்களை ஏற்றுவதில் பிழை"
 
 msgid "Error loading webcams"
-msgstr ""
+msgstr "வெப்கேம்களை ஏற்றுவதில் பிழை"
 
 msgid "Error opening language selection"
-msgstr ""
+msgstr "மொழித் தேர்வைத் திறப்பதில் பிழை"
 
 msgid "Error opening playlist"
-msgstr ""
+msgstr "பிளேலிஸ்ட்டை திறப்பதில் பிழை"
 
 msgid "Error removing favorite"
-msgstr ""
+msgstr "பிடித்ததை அகற்றுவதில் பிழை"
 
 msgid "Error switching webcam"
-msgstr ""
+msgstr "வெப்கேமை மாற்றுவதில் பிழை"
 
 msgid "Exit"
-msgstr ""
+msgstr "வெளியேறு"
 
 msgid "Export"
-msgstr ""
+msgstr "ஏற்றுமதி"
 
 msgid "Export All to Bouquet"
-msgstr ""
+msgstr "அனைத்தையும் பூங்கொத்துக்கு ஏற்றுமதி செய்யுங்கள்"
 
 msgid "Export failed:"
-msgstr ""
+msgstr "ஏற்றுமதி தோல்வி:"
 
 msgid "Favorites"
-msgstr ""
+msgstr "பிடித்தவை"
 
 msgid "Favorites exported successfully! Restart Enigma2 to see them."
-msgstr ""
+msgstr "பிடித்தவை வெற்றிகரமாக ஏற்றுமதி செய்யப்பட்டன! அவற்றைப் பார்க்க Enigma2 ஐ மீண்டும் தொடங்கவும்."
 
 msgid "File not found"
-msgstr ""
+msgstr "கோப்பு கிடைக்கவில்லை"
 
 msgid "Forum support: www.corvoboys.org"
-msgstr ""
+msgstr "மன்ற ஆதரவு: www.corvoboys.org"
 
 msgid "GitHub: %s"
 msgstr ""
 
 msgid "Included playlists and sources:"
-msgstr ""
+msgstr "பிளேலிஸ்ட்கள் மற்றும் ஆதாரங்கள் சேர்க்கப்பட்டுள்ளன:"
 
 msgid "Invalid YouTube URL"
-msgstr ""
+msgstr "தவறான YouTube URL"
 
 msgid "Language changed to %s"
-msgstr ""
+msgstr "மொழி %sக்கு மாற்றப்பட்டது"
 
 msgid "Live webcam viewer featuring global locations"
-msgstr ""
+msgstr "உலகளாவிய இருப்பிடங்களைக் கொண்ட நேரடி வெப்கேம் பார்வையாளர்"
 
 msgid "Live webcams from around the world"
-msgstr ""
+msgstr "உலகம் முழுவதிலுமிருந்து நேரடி வெப் கேமராக்கள்"
 
 msgid "Menu"
-msgstr ""
+msgstr "மெனு"
 
 msgid "No favorites to export"
-msgstr ""
+msgstr "ஏற்றுமதி செய்ய பிடித்தவை இல்லை"
 
 msgid "No favorites yet"
-msgstr ""
+msgstr "இன்னும் பிடித்தவை இல்லை"
 
 msgid "No playlists available"
-msgstr ""
+msgstr "பிளேலிஸ்ட்கள் எதுவும் இல்லை"
 
 msgid "No playlists found"
-msgstr ""
+msgstr "பிளேலிஸ்ட்கள் எதுவும் இல்லை"
 
 msgid "No valid webcams in playlist"
-msgstr ""
+msgstr "பிளேலிஸ்ட்டில் சரியான வெப்கேம்கள் இல்லை"
 
 msgid "Play"
-msgstr ""
+msgstr "விளையாடு"
 
 msgid "Play/pause not supported for this stream"
-msgstr ""
+msgstr "இந்த ஸ்ட்ரீமில் ப்ளே/இடைநிறுத்தம் ஆதரிக்கப்படவில்லை"
 
 msgid "Playback error"
-msgstr ""
+msgstr "பின்னணி பிழை"
 
 msgid "Playback failed!"
-msgstr ""
+msgstr "பிளேபேக் தோல்வி!"
 
 msgid "Powered by Enigma2 and Python"
-msgstr ""
+msgstr "எனிக்மா2 மற்றும் பைதான் மூலம் இயக்கப்படுகிறது"
 
 msgid "Remove"
-msgstr ""
+msgstr "அகற்று"
 
 msgid "Remove from favorites"
-msgstr ""
+msgstr "பிடித்தவற்றிலிருந்து அகற்று"
 
 msgid "Removed from favorites"
-msgstr ""
+msgstr "பிடித்தவையிலிருந்து அகற்றப்பட்டது"
 
 msgid "Removed from favorites: %s"
-msgstr ""
+msgstr "பிடித்தவையிலிருந்து அகற்றப்பட்டது: %s"
 
 msgid "Select"
-msgstr ""
+msgstr "தேர்ந்தெடு"
 
 msgid "Select a valid category"
-msgstr ""
+msgstr "சரியான வகையைத் தேர்ந்தெடுக்கவும்"
 
 msgid "Select a valid location"
-msgstr ""
+msgstr "சரியான இடத்தைத் தேர்ந்தெடுக்கவும்"
 
 msgid "Select a valid playlist"
-msgstr ""
+msgstr "சரியான பிளேலிஸ்ட்டைத் தேர்ந்தெடுக்கவும்"
 
 msgid "Select a valid webcam"
-msgstr ""
+msgstr "சரியான வெப்கேமைத் தேர்ந்தெடுக்கவும்"
 
 msgid "Select an option"
-msgstr ""
+msgstr "ஒரு விருப்பத்தைத் தேர்ந்தெடுக்கவும்"
 
 msgid "Select language"
-msgstr ""
+msgstr "மொழியைத் தேர்ந்தெடுக்கவும்"
 
 msgid "Settings"
-msgstr ""
+msgstr "அமைப்புகள்"
 
 msgid "Settings functionality coming soon!"
-msgstr ""
+msgstr "அமைப்புகளின் செயல்பாடு விரைவில்!"
 
 msgid "Technical error in Webcam.pl"
-msgstr ""
+msgstr "Webcam.pl இல் தொழில்நுட்ப பிழை"
 
 msgid "Top Webcams"
-msgstr ""
+msgstr "சிறந்த வெப்கேம்கள்"
 
 msgid "Update"
-msgstr ""
+msgstr "புதுப்பிக்கவும்"
 
 msgid "Update Aborted!"
-msgstr ""
+msgstr "புதுப்பிப்பு நிறுத்தப்பட்டது!"
 
 msgid "Update encountered an error (code: %s)"
-msgstr ""
+msgstr "புதுப்பிப்பில் பிழை ஏற்பட்டது (குறியீடு: %s)"
 
 msgid "Update plugin"
-msgstr ""
-
-msgid "Update yt-dlp"
-msgstr ""
+msgstr "செருகுநிரலைப் புதுப்பிக்கவும்"
 
 msgid "Upgrading..."
-msgstr ""
+msgstr "மேம்படுத்துகிறது..."
 
 msgid "User Lists"
-msgstr ""
+msgstr "பயனர் பட்டியல்கள்"
 
 msgid "WorldCam v%s"
 msgstr ""
@@ -272,16 +269,13 @@ msgid "WorldCam v{}"
 msgstr ""
 
 msgid "You are already running the latest version: {}"
-msgstr ""
+msgstr "நீங்கள் ஏற்கனவே சமீபத்திய பதிப்பை இயக்குகிறீர்கள்: {}"
 
 msgid "YouTube playback error"
-msgstr ""
+msgstr "YouTube பிளேபேக் பிழை"
 
 msgid "Your Favorites"
-msgstr ""
+msgstr "உங்களுக்கு பிடித்தவை"
 
 msgid "yt-dlp not found. Please install it."
-msgstr ""
-
-msgid "yt-dlp updated successfully!"
-msgstr ""
+msgstr "yt-dlp கிடைக்கவில்லை. தயவுசெய்து அதை நிறுவவும்."
